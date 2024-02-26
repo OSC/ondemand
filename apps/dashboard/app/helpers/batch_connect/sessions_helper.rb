@@ -3,69 +3,35 @@
 # Note that this module programatically generates the cards for
 # active batch connect sessions.
 module BatchConnect::SessionsHelper
-  def session_panel(session)
-    content_tag(:div, id: "id_#{session.id}", class: "card session-panel mb-4", data: { id: session.id, hash: session.to_hash }) do
-      concat(
-        content_tag(:div, class: "card-heading") do
-          content_tag(:h5, class: "card-header overflow-auto alert-#{status_context(session)}") do
-            concat link_to(content_tag(:span, session.title, class: "card-text alert-#{status_context(session)}"), new_batch_connect_session_context_path(token: session.token))
-            concat tag.span(" (#{session.job_id})", class: 'card-text')
-            concat(
-              content_tag(:div, class: "float-right") do
-                num_nodes = session.info.allocated_nodes.size
-                num_cores = session.info.procs.to_i
 
-                # Generate nice status display
-                status = []
-                if session.starting? || session.running?
-                  status << content_tag(:span, pluralize(num_nodes, "node"), class: "badge badge-#{status_context(session)} badge-pill") unless num_nodes.zero?
-                  status << content_tag(:span, pluralize(num_cores, "core"), class: "badge badge-#{status_context(session)} badge-pill") unless num_cores.zero?
-                end
-                status << "#{status session}"
-                relaunch(status, session)
-                tag.span(status.join(" | ").html_safe, class: "card-text")
-              end
-            )
-          end
+  def render_connection(session)
+    if session.running?
+      if session.view
+        views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
+      else
+        if session.vnc?
+          views = []
+          views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect, app_title: session.title } }
+          views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]
+        else
+          views = { partial: "missing_connection" }
         end
-      )
-      concat(
-        content_tag(:div, class: "card-body") do
-          yield
-        end
-      )
+      end
+    elsif session.starting?
+      views = { partial: "starting" }
+    elsif session.queued?
+      views = { partial: "queued" }
+    elsif session.completed?
+      views = { partial: "completed", locals: { session: session } }
+    else
+      views = { partial: "bad" }
     end
+
+    connection_tabs(session.id, views)
   end
 
-  def session_view(session)
-    capture do
-      concat(
-        content_tag(:div) do
-          concat content_tag(:div, cancel_or_delete(session), class: 'float-right')
-          concat host(session)
-          concat created(session)
-          concat render_session_time(session)
-          concat id(session)
-          concat support_ticket(session) unless @user_configuration.support_ticket.empty?
-          concat display_choices(session)
-          safe_concat custom_info_view(session) if session.app.session_info_view
-          safe_concat completed_view(session) if session.app.session_completed_view && session.completed?          
-        end
-      )
-      concat content_tag(:div) { yield }
-    end
-  end
-
-  def custom_info_view(session)
-    render(partial: 'batch_connect/sessions/card/custom_info_view', locals: { session: session })
-  end
-
-  def completed_view(session)
-    render(partial: 'batch_connect/sessions/card/completed_view', locals: { session: session })
-  end
-
-  def created(session)
-    render(partial: 'batch_connect/sessions/card/created', locals: { session: session })
+  def render_card_partial(name, session)
+    render(partial: "batch_connect/sessions/card/#{name}", locals: { session: session })
   end
 
   def session_time(session)
@@ -82,26 +48,6 @@ module BatchConnect::SessionsHelper
         [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
       end
     end
-  end
-
-  def render_session_time(session)
-    render(partial: 'batch_connect/sessions/card/session_time', locals: { session: session })
-  end
-
-  def host(session)
-    render(partial: 'batch_connect/sessions/card/host', locals: { session: session })
-  end
-
-  def id(session)
-    render(partial: 'batch_connect/sessions/card/id', locals: { session: session })
-  end
-
-  def support_ticket(session)
-    render(partial: 'batch_connect/sessions/card/support_ticket', locals: { session: session })
-  end
-
-  def display_choices(session)
-    render(partial: 'batch_connect/sessions/card/display_choices', locals: { session: session })
   end
 
   def status(session)
@@ -138,7 +84,7 @@ module BatchConnect::SessionsHelper
     end
   end
 
-  def relaunch(status_array, session)
+  def relaunch(session)
     return unless session.completed?
 
     batch_connect_app = session.app
@@ -147,7 +93,7 @@ module BatchConnect::SessionsHelper
     user_context = session.user_context
     params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, '')]}.to_h
     title = "#{t('dashboard.batch_connect_sessions_relaunch_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
-    status_array << button_to(
+    button_to(
       batch_connect_session_contexts_path(token: batch_connect_app.token),
       method: :post,
       class: %w[btn px-1 py-0 btn-outline-dark relaunch],

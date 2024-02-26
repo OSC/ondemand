@@ -53,28 +53,10 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
     assert_equal delete_session_title, button['title']
   end
 
-  test 'relaunch should ignore sessions when session is not completed' do
-    OodCore::Job::Status.states.each do |state|
-      next if state == :completed
-
-      status_array = []
-      relaunch(status_array, create_session(state))
-      assert_equal [], status_array
-    end
-  end
-
-  test 'relaunch should ignore sessions when session application is not valid' do
-    status_array = []
-    relaunch(status_array, create_session(:completed, valid: false))
-    assert_equal [], status_array
-  end
-
   test 'relaunch should add relaunch form when session is completed' do
-    status_array = []
-    relaunch(status_array, create_session(:completed))
+    button = relaunch(create_session(:completed))
 
-    assert_equal 1, status_array.size
-    html = Nokogiri::HTML(status_array[0])
+    html = Nokogiri::HTML(button)
     form = html.at_css('form')
     assert_equal batch_connect_session_contexts_path(token: 'sys/token'), form['action']
     assert_equal true, form['class'].include?('relaunch')

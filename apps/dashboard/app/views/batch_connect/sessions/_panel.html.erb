@@ -1,28 +1,5 @@
-<%= session_panel session do %>
-  <%= session_view session do %>
-    <%
-      if session.running?
-        if session.view
-          views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
-        else
-          if session.vnc?
-            views = []
-            views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect, app_title: session.title } }
-            views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]
-          else
-            views = { partial: "missing_connection" }
-          end
-        end
-      elsif session.starting?
-        views = { partial: "starting" }
-      elsif session.queued?
-        views = { partial: "queued" }
-      elsif session.completed?
-        views = { partial: "completed", locals: { session: session } }
-      else
-        views = { partial: "bad" }
-      end
-    %>
-    <%= connection_tabs(session.id, views) %>
-  <% end %>
-<% end %>
+<div id="<%= "id_#{session.id}" %>" class="card session-panel mb-4"
+  data-id="<%= session.id%>" data-hash="<%= session.to_hash %>" >
+  <%= render_card_partial('card_header', session) %>
+  <%= render_card_partial('card_body', session) %>
+</div>
