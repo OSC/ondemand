@@ -6,10 +6,10 @@
 
  <div class="row">
   <div class="col-sm-6">
-   <%= f.number_field(:compression, class: 'custom-range', type: 'range', min: 0, max: 9, value: 6, label: "Compression", help: "0 (low) to 9 (high)") %>
+   <%= f.number_field(:compression, class: 'custom-range', type: 'range', min: 0, max: 9, value: Connection.novnc_connection_compression, label: "Compression", help: "0 (low) to 9 (high)") %>
   </div>
   <div class="col-sm-6">
-   <%= f.number_field(:quality, class: 'custom-range', type: 'range', min: 0, max: 9, value: 2, label: "Image Quality", help: "0 (low) to 9 (high)") %>
+   <%= f.number_field(:quality, class: 'custom-range', type: 'range', min: 0, max: 9, value: Connection.novnc_connection_quality, label: "Image Quality", help: "0 (low) to 9 (high)") %>
   </div>
  </div>
 
