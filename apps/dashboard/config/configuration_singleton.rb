@@ -62,16 +62,18 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def string_configs
     {
-      :module_file_dir          => nil,
-      :user_settings_file       => Pathname.new("~/.config/ondemand/settings.yml").expand_path.to_s,
-      :facl_domain              => nil,
-      :auto_groups_filter       => nil,
-      :bc_clean_old_dirs_days   => '30',
-      :google_analytics_tag_id  => nil,
-      :project_template_dir     => "#{config_root}/projects",
-      :rclone_extra_config      => nil,
-      :default_profile          => nil,
-      :project_size_timeout     => '15'
+      :module_file_dir                => nil,
+      :user_settings_file             => Pathname.new("~/.config/ondemand/settings.yml").expand_path.to_s,
+      :facl_domain                    => nil,
+      :auto_groups_filter             => nil,
+      :bc_clean_old_dirs_days         => '30',
+      :google_analytics_tag_id        => nil,
+      :project_template_dir           => "#{config_root}/projects",
+      :rclone_extra_config            => nil,
+      :default_profile                => nil,
+      :project_size_timeout           => '15',
+      :novnc_default_compression   => '6',
+      :novnc_default_quality       => '2'
     }.freeze
   end
 
