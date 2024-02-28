@@ -107,6 +107,22 @@ module BatchConnect::SessionsHelper
     end
   end
 
+  def edit(session)
+    title = t('dashboard.batch_connect_sessions_edit_title', title: session.title)
+    button_to(
+      new_batch_connect_session_context_path(token: session.token),
+      method: :get,
+      class: %w[btn px-1 py-0 btn-outline-dark],
+      form_class: %w[d-inline edit-session],
+      title: title,
+      'aria-label': title,
+      data: { toggle: "tooltip", placement: "left" },
+      params: {session_id: session.id}
+    ) do
+      "#{fa_icon('pen', classes: nil, title: '')}".html_safe
+    end
+  end
+
   def cancel_or_delete(session)
     if Configuration.cancel_session_enabled && !session.completed?
       cancel(session)

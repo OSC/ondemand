@@ -126,6 +126,7 @@ en:
     batch_connect_sessions_cancel_confirm: "Are you sure?"
     batch_connect_sessions_cancel_title: "Cancel"
     batch_connect_sessions_relaunch_title: "Relaunch"
+    batch_connect_sessions_edit_title: "Edit new %{title} with this session parameters"
     batch_connect_sessions_errors_staging: "Failed to stage the template with the following error:"
     batch_connect_sessions_errors_submission: "Failed to submit session with the following error:"
     batch_connect_sessions_novnc_launch: "Launch %{app_title}"

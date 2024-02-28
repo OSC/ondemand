@@ -10,9 +10,13 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_session_context
     set_prefill_templates
 
+    session_id = params[:session_id]
+    valid_session = session_id && BatchConnect::Session.exist?(session_id)
+
     if @app.valid?
       begin
-        @app.update_session_with_cache(@session_context, cache_file)
+        app_parameters_file = valid_session ? BatchConnect::Session.find(session_id).user_defined_context_file : cache_file
+        @app.update_session_with_cache(@session_context, app_parameters_file)
       rescue => e
         flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error',error_message: e.message)
       end

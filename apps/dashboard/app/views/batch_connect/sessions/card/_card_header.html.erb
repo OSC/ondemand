@@ -21,8 +21,10 @@
       <%- end -%>
       <%= status(session) %>
       <%- if session.completed? -%>
-      <span class="card-text"> | </span>
-      <%= relaunch(session) %>
+        <span class="card-text"> | </span>
+        <%= edit(session) %>
+        <span class="card-text"> | </span>
+        <%= relaunch(session) %>
       <%- end -%>
     </div>
   </div>
