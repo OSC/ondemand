@@ -38,6 +38,10 @@ group :development do
   # gem 'web-console', '~> 2.0'
 end
 
+# lock nokogiri to 1.15 because 1.16 requires Ruby 3.x
+# which Ubuntu 20.04 does not have.
+gem 'nokogiri', '~> 1.15', '< 1.16'
+
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
 gem 'redcarpet', '~> 3.3'
