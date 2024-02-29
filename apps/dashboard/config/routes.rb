@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
-    constraints(lambda { |request| reqest.params[:filepath].to_s.match(/.+/) && request.params[:fs].to_s.match?(/^(?!(edit|api))[^\/]+/) }) do
+    constraints(lambda { |request| request.params[:filepath].to_s.match(/.+/) && request.params[:fs].to_s.match?(/^(?!(edit|api))[^\/]+/) }) do
       get "files/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false, as: :files
       put "files/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
 
