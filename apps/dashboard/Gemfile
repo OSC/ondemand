@@ -38,9 +38,10 @@ group :development do
   # gem 'web-console', '~> 2.0'
 end
 
-# lock nokogiri to 1.15 because 1.16 requires Ruby 3.x
-# which Ubuntu 20.04 does not have.
+# lock nokogiri & net-imap to versions that are compatible with ruby 2.7.0
+# Ubuntu 20.04 uses.
 gem 'nokogiri', '~> 1.15', '< 1.16'
+gem 'net-imap', '~> 0.3', '< 0.4'
 
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
