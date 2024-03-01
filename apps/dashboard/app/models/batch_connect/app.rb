@@ -303,8 +303,8 @@ module BatchConnect
     # Completed view used for session info if it exists
     # @return [String, nil] session info
     def session_completed_view
-      @session_completed_view ||= Pathname.new(root).glob("completed.{md,html}.erb").find(&:file?).try(:read)
-    rescue
+      @session_completed_view ||= Pathname.new(root).glob('completed.{md,html}.erb').find(&:file?).try(:read)
+    rescue StandardError
       nil
     end
 
