@@ -230,8 +230,11 @@ en:
     jobs_project_delete_project_confirmation: "Delete all contents of project directory?"
     jobs_project_not_found: "Cannot find project %{project_id}"
     jobs_project_manifest_updated: "Project manifest updated!"
+    jobs_project_name_placeholder: "Project name"
     jobs_project_name_validation: "Project name may only contain letters, digits, dashes, underscores, and spaces"
-    jobs_project_directory_help: "Override the default location for this project"
+    jobs_project_directory_placeholder: "Project directory absolute path"
+    jobs_project_directory_help_html: "Leave empty and a new directory will be created. <br />Default location: %{root_directory}"
+    jobs_project_description_placeholder: "Project description"
     jobs_create_blank_project: "Create a new project"
     jobs_create_template_project: "Create a new project from a template"
 
