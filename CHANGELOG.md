@@ -6,18 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Improved project directory field text in new/edit flows (#3362)\
-lint a random file (#3392)\
-Added edit session feature to load BatchConnect form with existing session parameters (#3358)\
-Bump rack from 2.2.8 to 2.2.8.1 in /apps/myjobs (#3388)\
-Bump rack from 2.2.8 to 2.2.8.1 in /apps/dashboard (#3387)\
-lint a random file (#3384)\
-Extracts novnc connection compression & quality into Configuration variables (#3380)\
-more batch connect card refactor work (#3352)\
-lint a random file (#3366)\
-ensure build dir is clean when building assets (#3356)\
-expose xdmod and analytics through js config (#3354)\
-Merge pull request #3371 from NucciTheBoss/fix-spelling-error
+
+### Added
+- BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
+- NoVNC compression & quality have configurable defaults in [3380](https://github.com/OSC/ondemand/pull/3380).
+
+### Changed
+
+### Fixed
+- Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
 
 ## [3.1.0] - 02-08-2024
 
