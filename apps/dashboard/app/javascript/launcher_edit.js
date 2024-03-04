@@ -318,12 +318,12 @@ function initFixedFields(){
 jQuery(() => {
   newFieldTemplate = $('#new_field_template');
   $('#add_new_field_button').on('click', (event) => { addNewField(event) });
-  $('.new_script')
+  $('.new_launcher')
     .find('.editable-form-field')
     .find('.btn-danger')
     .on('click', (event) => { removeField(event) });
 
-  $('.new_script')
+  $('.new_launcher')
     .find('.editable-form-field')
     .find('.btn-primary')
     .on('click', (event) => { showEditField(event) });
