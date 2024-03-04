@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # ScriptsHelper is the helper module for scripts pages.
-module ScriptsHelper
+module LaunchersHelper
   def create_editable_widget(form, attrib, format: nil)
     widget = attrib.widget
     attrib.html_options = { class: 'real-field', autocomplete: 'off' }
@@ -22,7 +22,7 @@ module ScriptsHelper
   end
 
   def editable_partial(partial)
-    "scripts/editable_form_fields/#{partial}"
+    "launchers/editable_form_fields/#{partial}"
   end
 
   def parse_select_data(select_data)

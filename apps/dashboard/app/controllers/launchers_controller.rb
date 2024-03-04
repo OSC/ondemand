@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # The controller for apps pages /dashboard/projects/:project_id/scripts
-class ScriptsController < ApplicationController
+class LaunchersController < ApplicationController
 
   before_action :find_project
   before_action :find_script, only: [:show, :edit, :destroy, :submit, :save]
@@ -16,13 +16,13 @@ class ScriptsController < ApplicationController
   ].freeze
 
   def new
-    @script = Script.new(project_dir: @project.directory)
+    @script = Launcher.new(project_dir: @project.directory)
   end
 
   # POST  /dashboard/projects/:project_id/scripts
   def create
-    opts = { project_dir: @project.directory }.merge(create_script_params[:script])
-    @script = Script.new(opts)
+    opts = { project_dir: @project.directory }.merge(create_script_params[:launcher])
+    @script = Launcher.new(opts)
     default_script_created = @script.create_default_script
 
     if @script.save
@@ -51,7 +51,7 @@ class ScriptsController < ApplicationController
   # POST   /projects/:project_id/scripts/:id/save
   # save the script after editing
   def save
-    @script.update(save_script_params[:script])
+    @script.update(save_script_params[:launcher])
 
     if @script.save
       redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_updated')
@@ -63,7 +63,7 @@ class ScriptsController < ApplicationController
   # POST   /projects/:project_id/scripts/:id/submit
   # submit the job
   def submit
-    opts = submit_script_params[:script].to_h.symbolize_keys
+    opts = submit_script_params[:launcher].to_h.symbolize_keys
 
     if (job_id = @script.submit(opts))
       redirect_to(project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_submitted', job_id: job_id))
@@ -75,12 +75,12 @@ class ScriptsController < ApplicationController
   private
 
   def find_script
-    @script = Script.find(show_script_params[:id], @project.directory)
+    @script = Launcher.find(show_script_params[:id], @project.directory)
     redirect_to(project_path(@project.id), alert: "Cannot find script #{show_script_params[:id]}") if @script.nil?
   end
 
   def create_script_params
-    params.permit({ script: [:title] }, :project_id)
+    params.permit({ launcher: [:title] }, :project_id)
   end
 
   def show_script_params
@@ -89,11 +89,11 @@ class ScriptsController < ApplicationController
 
   def submit_script_params
     keys = @script.smart_attributes.map { |sm| sm.id.to_s }
-    params.permit({ script: keys }, :project_id, :id)
+    params.permit({ launcher: keys }, :project_id, :id)
   end
 
   def save_script_params
-    params.permit({ script: SAVE_SCRIPT_KEYS }, :project_id, :id)
+    params.permit({ launcher: SAVE_SCRIPT_KEYS }, :project_id, :id)
   end
 
   def find_project

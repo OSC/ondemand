@@ -10,7 +10,7 @@
 
   <div class="d-none edit-group">
 
-    <%= render(partial: 'scripts/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
+    <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
     <ol class="list-group text-center col-md-4 mb-3">
       <%- attrib.select_choices(hide_excludable: false).each do |select_data| %>
@@ -48,5 +48,5 @@
     value="<%= attrib.exclude_select_choices.join(',') %>">
   </input>
 
-  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
+  <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
 </div>

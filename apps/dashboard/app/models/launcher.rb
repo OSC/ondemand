@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Script
+class Launcher
   include ActiveModel::Model
 
   class ClusterNotFound < StandardError; end
@@ -15,14 +15,14 @@ class Script
     end
 
     def find(id, project_dir)
-      script_path = Script.script_path(project_dir, id)
+      script_path = Launcher.script_path(project_dir, id)
       file = script_form_file(script_path)
-      Script.from_yaml(file, project_dir)
+      Launcher.from_yaml(file, project_dir)
     end
 
     def all(project_dir)
       Dir.glob("#{scripts_dir(project_dir).to_s}/*/form.yml").map do |file|
-        Script.from_yaml(file, project_dir)
+        Launcher.from_yaml(file, project_dir)
       end.compact.sort_by do |s|
         s.created_at
       end
@@ -137,11 +137,11 @@ class Script
   end
 
   def save
-    @id = Script.next_id if @id.nil?
+    @id = Launcher.next_id if @id.nil?
     @created_at = Time.now.to_i if @created_at.nil?
-    script_path = Script.script_path(project_dir, id)
+    script_path = Launcher.script_path(project_dir, id)
     script_path.mkpath unless script_path.exist?
-    File.write(Script.script_form_file(script_path), to_yaml)
+    File.write(Launcher.script_form_file(script_path), to_yaml)
 
     true
   rescue StandardError => e
@@ -152,8 +152,8 @@ class Script
 
   def destroy
     return true unless id
-    script_path = Script.script_path(project_dir, id)
-    FileUtils.remove_dir(Script.script_path(project_dir, id)) if script_path.exist?
+    script_path = Launcher.script_path(project_dir, id)
+    FileUtils.remove_dir(Launcher.script_path(project_dir, id)) if script_path.exist?
     true
   rescue StandardError => e
     errors.add(:destroy, e.message)
@@ -199,7 +199,7 @@ class Script
   end
 
   def create_default_script
-    return false if Script.scripts?(project_dir) || default_script_path.exist?
+    return false if Launcher.scripts?(project_dir) || default_script_path.exist?
 
     script_content = <<~DEFAULT_SCRIPT
       #!/bin/bash
@@ -213,7 +213,7 @@ class Script
   private
 
   def self.script_path(root_dir, script_id)
-    Pathname.new(File.join(Script.scripts_dir(root_dir), script_id.to_s))
+    Pathname.new(File.join(Launcher.scripts_dir(root_dir), script_id.to_s))
   end
 
   def default_script_path
@@ -271,7 +271,7 @@ class Script
   end
 
   def cache_file_path
-    Pathname.new(File.join(Script.script_path(project_dir, id), "cache.json"))
+    Pathname.new(File.join(Launcher.script_path(project_dir, id), "cache.json"))
   end
 
   def cache_file_exists?
@@ -280,7 +280,7 @@ class Script
 
   def cached_values
     @cached_values ||= begin
-      cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
+      cache_file_path = OodAppkit.dataroot.join(Launcher.scripts_dir("#{project_dir}"), "#{id}_opts.json")
       cache_file_content = File.read(cache_file_path) if cache_file_path.exist?
       
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
@@ -311,7 +311,7 @@ class Script
   end
 
   def job_log_file
-    @job_log_file ||= Pathname.new(File.join(Script.script_path(project_dir, id), "job_history.log")).tap do |path|
+    @job_log_file ||= Pathname.new(File.join(Launcher.script_path(project_dir, id), "job_history.log")).tap do |path|
       FileUtils.touch(path.to_s)
     end
   end

@@ -25,13 +25,13 @@
 </div>
 
 <div class='card'>
-  <h3 class='card-header'>Scripts</h3>
+  <h3 class='card-header'>Launchers</h3>
   <div class='card-body'>
     <table class='table table-bordered table-hover'>
       <thead>
         <tr>
           <th scope='col' class='text-center'>Job Info</th>
-          <th scope='col' class='text-center'>Script Name</th>
+          <th scope='col' class='text-center'>Launcher Name</th>
           <th scope='col' class='text-center'>Actions</th>
         </tr>
       </thead>
@@ -51,21 +51,21 @@
           <div class="d-inline-flex">
             <%= link_to(
                 t('dashboard.show'),
-                  project_script_path(@project.id, script.id),
+                  project_launcher_path(@project.id, script.id),
                   class: "btn btn-success mx-1 #{disabled_class}"
                 )
             %>
 
             <%= link_to(
               t('dashboard.edit'),
-              edit_project_script_path(@project.id, script.id),
+              edit_project_launcher_path(@project.id, script.id),
               class: "btn btn-primary mx-1 #{disabled_class}",
             )
             %>
 
             <%= link_to(
               t('dashboard.delete'),
-              project_script_path(@project.id, script.id),
+              project_launcher_path(@project.id, script.id),
               class: "btn btn-danger mx-1 #{disabled_class}",
               method: 'delete',
               data: { confirm: I18n.t('dashboard.jobs_scripts_delete_script_confirmation') },
@@ -73,12 +73,12 @@
             %>
 
             <%-
-              params = script.smart_attributes.map { |attr| ["script[#{attr.id}]", attr.value] }.to_h
+              params = script.smart_attributes.map { |attr| ["launcher[#{attr.id}]", attr.value] }.to_h
             -%>
 
             <%= button_to(
               t('dashboard.batch_connect_form_launch'),
-              submit_project_script_path(@project.id, script.id),
+              submit_project_launcher_path(@project.id, script.id),
               class: "btn btn-secondary mx-1",
               title: 'Launch script with cached values',
               data: {:method => "post"},
@@ -93,8 +93,8 @@
       </tbody>
     </table>
 
-    <%= link_to('New Script',
-          new_project_script_path(@project.id),
+    <%= link_to('New Launcher',
+          new_project_launcher_path(@project.id),
           class: "btn btn-info #{disabled_class}",
           title: I18n.t('dashboard.jobs_project_create_new_project_directory'))
     %>

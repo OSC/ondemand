@@ -18,7 +18,7 @@
 
   <div class="d-none edit-group mb-3">
 
-    <%= render(partial: 'scripts/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
+    <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
     <label for="<%= min_edit_id %>">Minimum</label>
     <input  min="1" step="1"
@@ -32,5 +32,5 @@
 
   </div>
 
-  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons', locals: { field_id: field_id }) %>
+  <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons', locals: { field_id: field_id }) %>
 </div>

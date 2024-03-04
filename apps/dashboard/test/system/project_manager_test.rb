@@ -3,7 +3,7 @@
 require 'application_system_test_case'
 
 # Tests /projects URL and the associated code paths
-class ProjectsTest < ApplicationSystemTestCase
+class ProjectManagerTest < ApplicationSystemTestCase
   def setup
     stub_clusters
     stub_user
@@ -42,8 +42,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def setup_script(project_id)
     visit project_path(project_id)
-    click_on 'New Script'
-    find('#script_title').set('the script title')
+    click_on 'New Launcher'
+    find('#lancher_title').set('the script title')
     click_on 'Save'
 
     script_element = find('.script-card')
@@ -52,8 +52,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def add_account(project_id, script_id)
     visit project_path(project_id)
-    edit_script_path = edit_project_script_path(project_id, script_id)
-    find("[href='#{edit_script_path}']").click
+    edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+    find("[href='#{edit_launcher_path}']").click
 
     # now add 'auto_accounts'
     click_on('Add new option')
@@ -64,8 +64,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def add_bc_num_hours(project_id, script_id)
     visit project_path(project_id)
-    edit_script_path = edit_project_script_path(project_id, script_id)
-    find("[href='#{edit_script_path}']").click
+    edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+    find("[href='#{edit_launcher_path}']").click
 
     # now add 'bc_num_hours'
     click_on('Add new option')
@@ -249,8 +249,8 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
     end
   end
@@ -262,8 +262,8 @@ class ProjectsTest < ApplicationSystemTestCase
       project_dir = File.join(dir, 'projects', project_id)
       add_account(project_id, script_id)
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
@@ -312,8 +312,8 @@ class ProjectsTest < ApplicationSystemTestCase
       script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
       add_account(project_id, script_id)
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -352,8 +352,8 @@ class ProjectsTest < ApplicationSystemTestCase
       script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
       add_account(project_id, script_id)
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -385,8 +385,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       visit project_path(project_id)
 
-      edit_script_path = edit_project_script_path(project_id, script_id)
-      find("[href='#{edit_script_path}']").click
+      edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+      find("[href='#{edit_launcher_path}']").click
 
       click_on('Add new option')
       new_field_id = 'add_new_field_select'
@@ -404,8 +404,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       visit project_path(project_id)
 
-      edit_script_path = edit_project_script_path(project_id, script_id)
-      find("[href='#{edit_script_path}']").click
+      edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+      find("[href='#{edit_launcher_path}']").click
 
       # only shows 'cluster' & 'auto_scripts'
       assert_equal 2, page.all('.form-group').size
@@ -418,7 +418,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # add bc_num_hours
       add_bc_num_hours(project_id, script_id)
-      script_edit_path = edit_project_script_path(project_id, script_id)
+      script_edit_path = edit_project_launcher_path(project_id, script_id)
       find("[href='#{script_edit_path}']").click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
@@ -496,8 +496,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # go to edit it and see that there is cluster and bc_num_hours
       visit project_path(project_id)
-      edit_script_path = edit_project_script_path(project_id, script_id)
-      find("[href='#{edit_script_path}']").click
+      edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+      find("[href='#{edit_launcher_path}']").click
       # puts page.body
       assert_equal 4, page.all('.form-group').size
       assert_not_nil find('#script_auto_batch_clusters')
@@ -586,19 +586,19 @@ class ProjectsTest < ApplicationSystemTestCase
   end
 
   test 'cant create script when project is invalid' do
-    visit edit_project_script_path('1', '1')
+    visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
   end
 
   test 'cant show script when project is invalid' do
-    visit project_script_path('1', '1')
+    visit project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
   end
 
   test 'cant edit script when project is invalid' do
-    visit edit_project_script_path('1', '1')
+    visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
   end
@@ -606,7 +606,7 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'cant show invalid script' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      visit project_script_path(project_id, '1')
+      visit project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
       assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
     end
@@ -615,7 +615,7 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'cant edit invalid script' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      visit edit_project_script_path(project_id, '1')
+      visit edit_project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
       assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
     end
@@ -633,7 +633,7 @@ class ProjectsTest < ApplicationSystemTestCase
       script_id = setup_script(project_id)
       add_account(project_id, script_id)
 
-      visit edit_project_script_path(project_id, script_id)
+      visit edit_project_launcher_path(project_id, script_id)
 
       find('#edit_script_auto_accounts').click
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
@@ -653,8 +653,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       find('#save_script_edit').click
       assert_current_path(project_path(project_id))
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
 
       # now let's check scripts#show to see if they've actually been excluded.
       show_account_options = page.all('#script_auto_accounts option').map(&:value)
@@ -662,7 +662,7 @@ class ProjectsTest < ApplicationSystemTestCase
         assert(!show_account_options.include?(acct))
       end
 
-      visit edit_project_script_path(project_id, script_id)
+      visit edit_project_launcher_path(project_id, script_id)
       find('#edit_script_auto_accounts').click
 
       exclude_accounts.each do |acct|
@@ -681,8 +681,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       find('#save_script_edit').click
       assert_current_path(project_path(project_id))
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
 
       # now let's check scripts#show and they should be back.
       show_account_options = page.all('#script_auto_accounts option').map(&:value)
@@ -698,7 +698,7 @@ class ProjectsTest < ApplicationSystemTestCase
       script_id = setup_script(project_id)
       add_account(project_id, script_id)
 
-      visit edit_project_script_path(project_id, script_id)
+      visit edit_project_launcher_path(project_id, script_id)
 
       find('#edit_script_auto_accounts').click
       accounts_select = find('#script_auto_accounts')
@@ -727,7 +727,7 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
       script_id = setup_script(project_id)
-      visit(edit_project_script_path(project_id, script_id))
+      visit(edit_project_launcher_path(project_id, script_id))
 
       # now add 'auto_accounts'
       click_on('Add new option')

@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   if Configuration.can_access_projects?
     resources :projects do
       root 'projects#index'
-      resources :scripts do
+      resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
       end

@@ -4,7 +4,7 @@
 
 <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default my-3',  title: 'Return to projects page' %>
 
-<%= bootstrap_form_for(@script, url: save_project_script_path, html: { autocomplete: "off" }) do |f| %>
+<%= bootstrap_form_for(@script, url: save_project_launcher_path, html: { autocomplete: "off" }) do |f| %>
   <% @script.smart_attributes.each do |attrib| %>
     <%# TODO generate render_format %>
     <%= create_editable_widget(f, attrib, format: nil) %>
