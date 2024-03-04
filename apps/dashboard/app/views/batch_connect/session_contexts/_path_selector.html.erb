@@ -9,9 +9,10 @@
   button_id = "#{path_selector_id}_button"
   table_id = "#{path_selector_id}_table"
   breadcrumb_id = "#{path_selector_id}_breadcrumb"
+  options =  { data: { 'path-selector': true }}.merge(field_options)
 %>
 
-<%= form.text_field(attrib.id, class: 'form-control', data: { 'path-selector': true }, label: field_options[:label]) %>
+<%= form.text_field(attrib.id, class: 'form-control', **options) %>
 
 <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#<%= path_selector_id %>">
   Select Path
