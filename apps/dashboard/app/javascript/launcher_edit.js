@@ -28,7 +28,7 @@ function addNewFieldButton() {
 function enableNewFieldButton() {
   const newFieldButton = addNewFieldButton();
   for(let newField in newFieldData) {
-    const field = document.getElementById(`script_${newField}`);
+    const field = document.getElementById(`launcher_${newField}`);
     if(field === null) {
       // There is at least one field to be added.
       // Enabled add button.
@@ -62,7 +62,7 @@ function addNewField(_event) {
 
 function updateNewFieldOptions(selectMenu) {
   for(let newField in newFieldData) {
-    const field = document.getElementById(`script_${newField}`);
+    const field = document.getElementById(`launcher_${newField}`);
 
     // if the field doesn't already exist, it's an option for a new field.
     if(field === null) {

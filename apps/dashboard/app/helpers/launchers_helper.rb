@@ -58,10 +58,10 @@ module LaunchersHelper
   # Otherwise you'd have required fields that you cannot actually edit
   # because they're hidden.
   def script_form_double
-    BootstrapForm::FormBuilder.new('script', nil, self, {})
+    BootstrapForm::FormBuilder.new('launcher', nil, self, {})
   end
 
   def script_removable_field?(id)
-    ['script_auto_scripts', 'script_auto_batch_clusters'].exclude?(id.to_s)
+    ['launcher_auto_scripts', 'launcher_auto_batch_clusters'].exclude?(id.to_s)
   end
 end
