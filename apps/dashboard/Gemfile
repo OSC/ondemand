@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.1.7.6'
+gem 'rails', '7.0.8'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -38,6 +38,11 @@ group :development do
   # gem 'web-console', '~> 2.0'
 end
 
+# lock nokogiri & net-imap to versions that are compatible with ruby 2.7.0
+# Ubuntu 20.04 uses.
+gem 'nokogiri', '~> 1.15', '< 1.16'
+gem 'net-imap', '~> 0.3', '< 0.4'
+
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
 gem 'redcarpet', '~> 3.3'
@@ -53,6 +58,8 @@ gem 'rss', '~> 0.2'
 
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
+# should upgrade to propshaft - only have an issue with fontawesome icons
+gem 'sprockets-rails', '>= 2.0.0'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
@@ -66,4 +73,3 @@ gem "sinatra", require: false
 gem "sinatra-contrib", require: false
 gem "erubi", require: false
 gem "dalli", require: false
-

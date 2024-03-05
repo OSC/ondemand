@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-ENV['RAILS_ENV'] ||= 'test'
-ENV['OOD_LOCALES_ROOT'] = Rails.root.join('config/locales').to_s
-
 require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
 require 'climate_control'
 require 'timecop'
+
+ENV['RAILS_ENV'] ||= 'test'
+ENV['OOD_LOCALES_ROOT'] = Rails.root.join('config/locales').to_s
+
 
 module ActiveSupport
   class TestCase

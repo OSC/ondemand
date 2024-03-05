@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
-    constraints filepath: /.+/, fs: /(?!(edit|api\/v1))[^\/]+/  do
+    constraints(lambda { |request| request.params[:fs].to_s.match?(/^(?!(edit|api))[^\/]+$/) }) do
       get "files/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false, as: :files
       put "files/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
 
@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     post "files/upload/:fs" => "files#upload", :defaults => { :fs => 'fs' } if Configuration.upload_enabled?
 
     get "files", to: redirect("files/fs#{Dir.home}")
+    get 'files/fs', to: redirect("files/fs#{Dir.home}")
 
     resources :transfers, only: [:show, :create, :destroy]
   end
