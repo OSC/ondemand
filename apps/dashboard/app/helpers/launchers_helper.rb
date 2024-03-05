@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # ScriptsHelper is the helper module for scripts pages.
-module ScriptsHelper
+module LaunchersHelper
   def create_editable_widget(form, attrib, format: nil)
     widget = attrib.widget
     attrib.html_options = { class: 'real-field', autocomplete: 'off' }
@@ -22,7 +22,7 @@ module ScriptsHelper
   end
 
   def editable_partial(partial)
-    "scripts/editable_form_fields/#{partial}"
+    "launchers/editable_form_fields/#{partial}"
   end
 
   def parse_select_data(select_data)
@@ -58,10 +58,10 @@ module ScriptsHelper
   # Otherwise you'd have required fields that you cannot actually edit
   # because they're hidden.
   def script_form_double
-    BootstrapForm::FormBuilder.new('script', nil, self, {})
+    BootstrapForm::FormBuilder.new('launcher', nil, self, {})
   end
 
   def script_removable_field?(id)
-    ['script_auto_scripts', 'script_auto_batch_clusters'].exclude?(id.to_s)
+    ['launcher_auto_scripts', 'launcher_auto_batch_clusters'].exclude?(id.to_s)
   end
 end

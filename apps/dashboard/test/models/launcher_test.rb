@@ -2,9 +2,9 @@
 
 require 'test_helper'
 
-class ScriptTest < ActiveSupport::TestCase
+class LauncherTest < ActiveSupport::TestCase
   test 'supported field postfix' do
-    target = Script.new({ project_dir: '/path/project', id: 1234, title: 'Test Script' })
+    target = Launcher.new({ project_dir: '/path/project', id: 1234, title: 'Test Script' })
     refute target.send('attribute_parameter?', nil)
     refute target.send('attribute_parameter?', '')
     refute target.send('attribute_parameter?', 'account_notsupported')
@@ -18,7 +18,7 @@ class ScriptTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
+      target = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
 
       assert target.save
       assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
@@ -29,7 +29,7 @@ class ScriptTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
+      target = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
 
       assert target.save
       assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
@@ -42,24 +42,24 @@ class ScriptTest < ActiveSupport::TestCase
   test 'clusters? return false when auto_batch_clusters returns no clusters' do
     Configuration.stubs(:job_clusters).returns([])
 
-    assert_equal false, Script.clusters?
+    assert_equal false, Launcher.clusters?
   end
 
   test 'clusters? return true when auto_batch_clusters returns clusters' do
     Configuration.stubs(:job_clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
 
-    assert_equal true, Script.clusters?
+    assert_equal true, Launcher.clusters?
   end
 
   test 'deletes script should succeed when directory does not exists' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      script = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
+      script = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
       assert script.save
       assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
 
-      target = Script.new({ project_dir: projects_path.to_s, id: 33, title: 'Not saved' })
+      target = Launcher.new({ project_dir: projects_path.to_s, id: 33, title: 'Not saved' })
       assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33')
 
       assert target.destroy
@@ -78,7 +78,7 @@ class ScriptTest < ActiveSupport::TestCase
       TEST_SCRIPT
       File.open(File.join(projects_path, 'test_script.sh'), 'w+') { |file| file.write(script_content) }
 
-      assert_equal true, Script.scripts?(projects_path)
+      assert_equal true, Launcher.scripts?(projects_path)
     end
   end
 
@@ -87,7 +87,7 @@ class ScriptTest < ActiveSupport::TestCase
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
 
-      assert_equal false, Script.scripts?(projects_path)
+      assert_equal false, Launcher.scripts?(projects_path)
     end
   end
 
@@ -96,7 +96,7 @@ class ScriptTest < ActiveSupport::TestCase
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
 
-      target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'Default Script' })
+      target = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'Default Script' })
       created_script = target.create_default_script
 
       assert_equal true, created_script
@@ -114,7 +114,7 @@ class ScriptTest < ActiveSupport::TestCase
       TEST_SCRIPT
       File.open(File.join(projects_path, 'test_script.sh'), 'w+') { |file| file.write(script_content) }
 
-      target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'With Script' })
+      target = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'With Script' })
       created_script = target.create_default_script
 
       assert_equal false, created_script

@@ -222,13 +222,13 @@ class Project
     false
   end
 
-  # When copying a project from a template, we need new Script objects
+  # When copying a project from a template, we need new Launcher objects
   # that point to the _new_ project directory, not the template's directory.
   # This creates them _and_ serializes them to yml in the new directory.
   def save_new_scripts
-    dir = Script.scripts_dir(template)
+    dir = Launcher.scripts_dir(template)
     Dir.glob("#{dir}/*/form.yml").map do |script_yml|
-      Script.from_yaml(script_yml, project_dataroot)
+      Launcher.from_yaml(script_yml, project_dataroot)
     end.map do |script|
       saved_successfully = script.save
       errors.add(:save, script.errors.full_messages) unless saved_successfully

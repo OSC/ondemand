@@ -9,9 +9,9 @@ class ProjectsController < ApplicationController
     if @project.nil?
       redirect_to(projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
     else
-      @scripts = Script.all(@project.directory)
-      @valid_project = Script.clusters?
-      @valid_scripts = Script.scripts?(@project.directory)
+      @scripts = Launcher.all(@project.directory)
+      @valid_project = Launcher.clusters?
+      @valid_scripts = Launcher.scripts?(@project.directory)
 
       alert_messages = []
       alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_clusters') unless @valid_project

@@ -3,7 +3,7 @@
 require 'application_system_test_case'
 
 # Tests /projects URL and the associated code paths
-class ProjectsTest < ApplicationSystemTestCase
+class ProjectManagerTest < ApplicationSystemTestCase
   def setup
     stub_clusters
     stub_user
@@ -42,8 +42,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def setup_script(project_id)
     visit project_path(project_id)
-    click_on 'New Script'
-    find('#script_title').set('the script title')
+    click_on 'New Launcher'
+    find('#launcher_title').set('the script title')
     click_on 'Save'
 
     script_element = find('.script-card')
@@ -52,8 +52,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def add_account(project_id, script_id)
     visit project_path(project_id)
-    edit_script_path = edit_project_script_path(project_id, script_id)
-    find("[href='#{edit_script_path}']").click
+    edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+    find("[href='#{edit_launcher_path}']").click
 
     # now add 'auto_accounts'
     click_on('Add new option')
@@ -64,14 +64,14 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def add_bc_num_hours(project_id, script_id)
     visit project_path(project_id)
-    edit_script_path = edit_project_script_path(project_id, script_id)
-    find("[href='#{edit_script_path}']").click
+    edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+    find("[href='#{edit_launcher_path}']").click
 
     # now add 'bc_num_hours'
     click_on('Add new option')
     select('Hours', from: 'add_new_field_select')
     click_on(I18n.t('dashboard.add'))
-    fill_in('script_bc_num_hours', with: 1)
+    fill_in('launcher_bc_num_hours', with: 1)
     click_on(I18n.t('dashboard.save'))
   end
 
@@ -249,8 +249,8 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
     end
   end
@@ -262,19 +262,19 @@ class ProjectsTest < ApplicationSystemTestCase
       project_dir = File.join(dir, 'projects', project_id)
       add_account(project_id, script_id)
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
                            'pzs1117', 'pzs1118', 'pzs1124'].to_set
 
-      assert_equal(expected_accounts, page.all('#script_auto_accounts option').map(&:value).to_set)
+      assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
-                   page.all('#script_auto_scripts option').map(&:value).to_set)
+                   page.all('#launcher_auto_scripts option').map(&:value).to_set)
 
       # clusters are automatically added
-      assert_equal(['owens', 'oakley'].to_set, page.all('#script_auto_batch_clusters option').map(&:value).to_set)
+      assert_equal(['owens', 'oakley'].to_set, page.all('#launcher_auto_batch_clusters option').map(&:value).to_set)
     end
   end
 
@@ -312,19 +312,19 @@ class ProjectsTest < ApplicationSystemTestCase
       script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
       add_account(project_id, script_id)
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
-      assert_equal 'oakley', find('#script_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#script_auto_accounts').value
-      assert_equal "#{project_dir}/my_cool_script.sh", find('#script_auto_scripts').value
+      assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
 
-      select('owens', from: 'script_auto_batch_clusters')
-      select('pas2051', from: 'script_auto_accounts')
-      select('my_cooler_script.bash', from: 'script_auto_scripts')
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas2051', from: 'launcher_auto_accounts')
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
 
       Open3
         .stubs(:capture3)
@@ -352,19 +352,19 @@ class ProjectsTest < ApplicationSystemTestCase
       script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
       add_account(project_id, script_id)
 
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
-      assert_equal 'oakley', find('#script_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#script_auto_accounts').value
-      assert_equal "#{project_dir}/my_cool_script.sh", find('#script_auto_scripts').value
+      assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
 
-      select('owens', from: 'script_auto_batch_clusters')
-      select('pas2051', from: 'script_auto_accounts')
-      select('my_cooler_script.bash', from: 'script_auto_scripts')
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas2051', from: 'launcher_auto_accounts')
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
 
       Open3
         .stubs(:capture3)
@@ -385,8 +385,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       visit project_path(project_id)
 
-      edit_script_path = edit_project_script_path(project_id, script_id)
-      find("[href='#{edit_script_path}']").click
+      edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+      find("[href='#{edit_launcher_path}']").click
 
       click_on('Add new option')
       new_field_id = 'add_new_field_select'
@@ -404,36 +404,36 @@ class ProjectsTest < ApplicationSystemTestCase
 
       visit project_path(project_id)
 
-      edit_script_path = edit_project_script_path(project_id, script_id)
-      find("[href='#{edit_script_path}']").click
+      edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+      find("[href='#{edit_launcher_path}']").click
 
       # only shows 'cluster' & 'auto_scripts'
       assert_equal 2, page.all('.form-group').size
-      assert_not_nil find('#script_auto_batch_clusters')
-      assert_not_nil find('#script_auto_scripts')
-      select('oakley', from: 'script_auto_batch_clusters')
+      assert_not_nil find('#launcher_auto_batch_clusters')
+      assert_not_nil find('#launcher_auto_scripts')
+      select('oakley', from: 'launcher_auto_batch_clusters')
       assert_raises(Capybara::ElementNotFound) do
-        find('#script_bc_num_hours')
+        find('#launcher_bc_num_hours')
       end
 
       # add bc_num_hours
       add_bc_num_hours(project_id, script_id)
-      script_edit_path = edit_project_script_path(project_id, script_id)
+      script_edit_path = edit_project_launcher_path(project_id, script_id)
       find("[href='#{script_edit_path}']").click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
       assert_equal 3, page.all('.form-group').size
-      assert_not_nil find('#script_auto_batch_clusters')
-      assert_not_nil find('#script_auto_scripts')
-      assert_not_nil find('#script_bc_num_hours')
+      assert_not_nil find('#launcher_auto_batch_clusters')
+      assert_not_nil find('#launcher_auto_scripts')
+      assert_not_nil find('#launcher_bc_num_hours')
 
       # edit default, min & max
-      find('#edit_script_bc_num_hours').click
-      fill_in('script_bc_num_hours', with: 42)
-      fill_in('script_bc_num_hours_min', with: 20)
-      fill_in('script_bc_num_hours_max', with: 101)
-      find('#script_bc_num_hours_fixed').click
-      find('#save_script_bc_num_hours').click
+      find('#edit_launcher_bc_num_hours').click
+      fill_in('launcher_bc_num_hours', with: 42)
+      fill_in('launcher_bc_num_hours_min', with: 20)
+      fill_in('launcher_bc_num_hours_max', with: 101)
+      find('#launcher_bc_num_hours_fixed').click
+      find('#save_launcher_bc_num_hours').click
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
@@ -496,24 +496,24 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # go to edit it and see that there is cluster and bc_num_hours
       visit project_path(project_id)
-      edit_script_path = edit_project_script_path(project_id, script_id)
-      find("[href='#{edit_script_path}']").click
+      edit_launcher_path = edit_project_launcher_path(project_id, script_id)
+      find("[href='#{edit_launcher_path}']").click
       # puts page.body
       assert_equal 4, page.all('.form-group').size
-      assert_not_nil find('#script_auto_batch_clusters')
-      assert_not_nil find('#script_auto_scripts')
-      assert_not_nil find('#script_bc_num_hours')
-      assert_not_nil find('#script_auto_accounts')
-      select('oakley', from: 'script_auto_batch_clusters')
+      assert_not_nil find('#launcher_auto_batch_clusters')
+      assert_not_nil find('#launcher_auto_scripts')
+      assert_not_nil find('#launcher_bc_num_hours')
+      assert_not_nil find('#launcher_auto_accounts')
+      select('oakley', from: 'launcher_auto_batch_clusters')
 
       # remove bc num hours and it's not in the form
-      find('#remove_script_bc_num_hours').click
+      find('#remove_launcher_bc_num_hours').click
       assert_equal 3, page.all('.form-group').size
-      assert_not_nil find('#script_auto_batch_clusters')
-      assert_not_nil find('#script_auto_scripts')
-      assert_not_nil find('#script_auto_accounts')
+      assert_not_nil find('#launcher_auto_batch_clusters')
+      assert_not_nil find('#launcher_auto_scripts')
+      assert_not_nil find('#launcher_auto_accounts')
       assert_raises(Capybara::ElementNotFound) do
-        find('#script_bc_num_hours')
+        find('#launcher_bc_num_hours')
       end
 
       # correctly saves
@@ -586,19 +586,19 @@ class ProjectsTest < ApplicationSystemTestCase
   end
 
   test 'cant create script when project is invalid' do
-    visit edit_project_script_path('1', '1')
+    visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
   end
 
   test 'cant show script when project is invalid' do
-    visit project_script_path('1', '1')
+    visit project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
   end
 
   test 'cant edit script when project is invalid' do
-    visit edit_project_script_path('1', '1')
+    visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
   end
@@ -606,7 +606,7 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'cant show invalid script' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      visit project_script_path(project_id, '1')
+      visit project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
       assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
     end
@@ -615,7 +615,7 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'cant edit invalid script' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      visit edit_project_script_path(project_id, '1')
+      visit edit_project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
       assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
     end
@@ -633,13 +633,13 @@ class ProjectsTest < ApplicationSystemTestCase
       script_id = setup_script(project_id)
       add_account(project_id, script_id)
 
-      visit edit_project_script_path(project_id, script_id)
+      visit edit_project_launcher_path(project_id, script_id)
 
-      find('#edit_script_auto_accounts').click
+      find('#edit_launcher_auto_accounts').click
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
       exclude_accounts.each do |acct|
-        rm_btn = find("#script_auto_accounts_remove_#{acct}")
-        add_btn = find("#script_auto_accounts_add_#{acct}")
+        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
@@ -653,21 +653,21 @@ class ProjectsTest < ApplicationSystemTestCase
 
       find('#save_script_edit').click
       assert_current_path(project_path(project_id))
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
 
       # now let's check scripts#show to see if they've actually been excluded.
-      show_account_options = page.all('#script_auto_accounts option').map(&:value)
+      show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
         assert(!show_account_options.include?(acct))
       end
 
-      visit edit_project_script_path(project_id, script_id)
-      find('#edit_script_auto_accounts').click
+      visit edit_project_launcher_path(project_id, script_id)
+      find('#edit_launcher_auto_accounts').click
 
       exclude_accounts.each do |acct|
-        rm_btn = find("#script_auto_accounts_remove_#{acct}")
-        add_btn = find("#script_auto_accounts_add_#{acct}")
+        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{acct}")
 
         # now add is enabled and rm is disabled. (opposite of the above)
         assert_equal('false', add_btn[:disabled])
@@ -681,11 +681,11 @@ class ProjectsTest < ApplicationSystemTestCase
 
       find('#save_script_edit').click
       assert_current_path(project_path(project_id))
-      script_path = project_script_path(project_id, script_id)
-      find("[href='#{script_path}'].btn-success").click
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
 
       # now let's check scripts#show and they should be back.
-      show_account_options = page.all('#script_auto_accounts option').map(&:value)
+      show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
         assert(show_account_options.include?(acct))
       end
@@ -698,21 +698,21 @@ class ProjectsTest < ApplicationSystemTestCase
       script_id = setup_script(project_id)
       add_account(project_id, script_id)
 
-      visit edit_project_script_path(project_id, script_id)
+      visit edit_project_launcher_path(project_id, script_id)
 
-      find('#edit_script_auto_accounts').click
-      accounts_select = find('#script_auto_accounts')
+      find('#edit_launcher_auto_accounts').click
+      accounts_select = find('#launcher_auto_accounts')
       account_options = accounts_select.all('option')
-      find("#script_auto_accounts_fixed").click
+      find("#launcher_auto_accounts_fixed").click
 
       # Validate that UI changes when field is fixed.
       assert_equal('true', accounts_select[:disabled])
       account_options.each do |option|
-        rm_btn = find("#script_auto_accounts_remove_#{option.text}")
-        add_btn = find("#script_auto_accounts_add_#{option.text}")
+        rm_btn = find("#launcher_auto_accounts_remove_#{option.text}")
+        add_btn = find("#launcher_auto_accounts_add_#{option.text}")
 
         option_text_strike = option.selected? ? 0 : 1
-        assert_selector("li.text-strike > button#script_auto_accounts_add_#{option.text}", count: option_text_strike)
+        assert_selector("li.text-strike > button#launcher_auto_accounts_add_#{option.text}", count: option_text_strike)
         assert_equal(true, option.disabled?)
         assert_equal('true', add_btn[:disabled])
         assert_equal('true', rm_btn[:disabled])
@@ -727,17 +727,17 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
       script_id = setup_script(project_id)
-      visit(edit_project_script_path(project_id, script_id))
+      visit(edit_project_launcher_path(project_id, script_id))
 
       # now add 'auto_accounts'
       click_on('Add new option')
       select('Account', from: 'add_new_field_select')
       click_on(I18n.t('dashboard.add'))
-      find('#edit_script_auto_accounts').click
+      find('#edit_launcher_auto_accounts').click
 
       ['pas2051', 'pas1871', 'pas1754', 'pas1604'].each do |acct|
-        rm_btn = find("#script_auto_accounts_remove_#{acct}")
-        add_btn = find("#script_auto_accounts_add_#{acct}")
+        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
