@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
+- NoVNC compression & quality have configurable defaults in [3380](https://github.com/OSC/ondemand/pull/3380).
+
+### Changed
+
+### Fixed
+- Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
+
 ## [3.1.0] - 02-08-2024
 
 ### Added
