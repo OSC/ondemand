@@ -1295,6 +1295,43 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'path selector can relabel' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            help: 'select a path using the button below'
+            label: 'working directory'
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      base_id = 'batch_connect_session_context_path'
+      input = find("##{base_id}")
+
+      # got the new label
+      label = find("label[for='#{base_id}']")
+      assert_equal('working directory', label.text)
+
+      # the input has help text sibling with correct text
+      help = input.sibling('small[class="form-text text-muted"]')
+      assert_equal('select a path using the button below', help.text)
+    end
+  end
+
   test 'saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
