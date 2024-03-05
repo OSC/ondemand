@@ -30,7 +30,7 @@ module BatchConnect::SessionContextsHelper
         form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)
       end
     when 'path_selector'
-      form.form_group attrib.id, help: field_options[:help] do
+      form.form_group(attrib.id) do
         render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options })
       end
     when 'file_attachments'
