@@ -26,6 +26,18 @@ these out too.
 * [repository for the Open OnDemand documentation](https://github.com/OSC/ood-documentation)
 * [repository for the Open OnDemand core library](https://github.com/OSC/ood_core)
 
+## Branches and Tags
+
+All development work happens in the `master` branch.
+
+Once the software reaches a state the maintainers feel is good enough to release,
+they tag the `v<version>` tag from the `master` branch. At this time, on the same
+commit as the tag, a `release_<version>` branch is made.
+
+Once the release branch is made maintainers will need to backport any bugfixes
+to the release branch for that version. They will also make tag off of the release
+branch for patch releases of that version.
+
 ## Pull Request Process
 
 If you have a large feature it may be preferential to open an issue and discuss
