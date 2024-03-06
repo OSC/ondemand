@@ -20,9 +20,11 @@
       <span class="card-text"> | </span>
       <%- end -%>
       <%= status(session) %>
-      <%- if session.completed? -%>
+      <%- if session.completed? && !session.app.preset? -%>
         <span class="card-text"> | </span>
         <%= edit(session) %>
+      <%- end -%>
+      <%- if session.completed? -%>
         <span class="card-text"> | </span>
         <%= relaunch(session) %>
       <%- end -%>
