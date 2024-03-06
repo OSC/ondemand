@@ -97,18 +97,39 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'should render session panel with relaunch button' do
+  test 'should render session panel with edit and relaunch button for completed sessions' do
     value = '{"id":"1234","job_id":"1","created_at":1669139262,"token":"sys/token","title":"session title","cache_completed":true}'
     session = BatchConnect::Session.new.from_json(value)
     session.stubs(:status).returns(OodCore::Job::Status.new(state: :completed))
-    session.stubs(:app).returns(stub(valid?: true, token: 'sys/token', attributes: [], session_info_view: nil, session_completed_view: nil, ssh_allow?: true))
+    session.stubs(:app).returns(stub(valid?: true, preset?: false, token: 'sys/token', attributes: [], session_info_view: nil, session_completed_view: nil, ssh_allow?: true))
     BatchConnect::Session.stubs(:all).returns([session])
 
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div#id_1234 div.card-heading div.float-right form.relaunch' do |form|
-      assert_equal batch_connect_session_contexts_path(token: 'sys/token'), form.first['action']
+    assert_select 'div#id_1234 div.card-heading div.float-right form' do |forms|
+      assert_equal 2, forms.size
+      assert_equal true, forms[0]['class'].include?('edit-session')
+      assert_equal new_batch_connect_session_context_path(token: 'sys/token'), forms[0]['action']
+
+      assert_equal true, forms[1]['class'].include?('relaunch')
+      assert_equal batch_connect_session_contexts_path(token: 'sys/token'), forms[1]['action']
+    end
+  end
+
+  test 'should not render edit button for preset applications sessions' do
+    value = '{"id":"1234","job_id":"1","created_at":1669139262,"token":"sys/token","title":"session title","cache_completed":true}'
+    session = BatchConnect::Session.new.from_json(value)
+    session.stubs(:status).returns(OodCore::Job::Status.new(state: :completed))
+    session.stubs(:app).returns(stub(valid?: true, preset?: true, token: 'sys/token', attributes: [], session_info_view: nil, session_completed_view: nil, ssh_allow?: true))
+    BatchConnect::Session.stubs(:all).returns([session])
+
+    get batch_connect_sessions_path
+    assert_response :success
+
+    assert_select 'div#id_1234 div.card-heading div.float-right form' do |forms|
+      assert_equal 1, forms.size
+      assert_equal true, forms.first['class'].include?('relaunch')
     end
   end
 end
