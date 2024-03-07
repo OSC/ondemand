@@ -1,141 +1,35 @@
 <div class="xdmod">
-<div id="jobsEfficiencyReportPanelDiv"></div>
-<div id="coreHoursEfficiencyReportPanelDiv"></div>
+  <div id="jobsEfficiencyReportPanelDiv"></div>
+  <div id="coreHoursEfficiencyReportPanelDiv"></div>
 
-<script id="job-efficiency-template" type="text/x-handlebars-template">
-<div class="card mt-3">
+  <script id="job-efficiency-template" type="text/x-handlebars-template">
+    <div class="card mt-3">
 
-  <div class="card-header">
-    <a href="{{xdmod_url}}" class="float-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
-    <h3>{{title}} - {{date_range}}</h3>
-  </div>
-
-  <div class="card-body">
-    {{#if error}}
-      <div class="alert alert-danger mb-0">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
-    {{else}}
-      {{#if nodata}}
-        <p class="card-text">{{msg}}</p>
-      {{else}}
-      <p class="d-flex justify-content-between card-text font-weight-bold"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficient</span></p>
-      <div class="progress progress-custom">
-        <div class="progress-bar bg-success w-{{good_percent}}" role="progressbar" aria-label="percent efficient" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100">
-        </div>
-        <div class="progress-bar bg-danger w-{{bad_percent}}" role="progressbar" aria-label="percent inefficient" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100">
-        </div>
+      <div class="card-header">
+        <a href="{{xdmod_url}}" class="float-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
+        <h3>{{title}} - {{date_range}}</h3>
       </div>
-      <p class="card-text text-center mt-2">
-        <span class="text-danger">{{count_bad}} inefficient {{unit}} </span> &frasl; {{count}} total {{unit}}
-      </p>
-      {{/if}}
-    {{/if}}
-  </div>
-</div>
-</script>
 
-
-<%= javascript_tag nonce: true do -%>
-(function(){
-
-var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
-     thirtyDaysAgo = '<%= 30.days.ago.strftime("%Y-%m-%d") %>',
-     today = '<%= Date.today.strftime("%Y-%m-%d") %>';
-
-function jobsUrl(user){
-  var url = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/aggregatedata');
-  url.searchParams.set('_dc', Date.now());
-  url.searchParams.set('start', 0);
-  url.searchParams.set('limit', 1);
-  url.searchParams.set('config', JSON.stringify({
-    "realm":"JobEfficiency",
-    "group_by":"person",
-    "aggregation_unit":"day",
-    "start_date": thirtyDaysAgo,
-    "end_date": today,
-    "filters": {"person": user?.results?.person_id},
-    "order_by":{
-      "field":"core_time_bad",
-      "dirn":"desc"
-    },
-    "statistics": ["core_time","core_time_bad","bad_core_ratio","job_count","job_count_bad","bad_job_ratio"]
-  }));
-
-  return url;
-}
-
-var template_source = $('#job-efficiency-template').html();
-var template = Handlebars.compile(template_source);
-var helpers = {
-  title: function(){
-    return this.unit_title + " Efficiency Report";
-  },
-  date_range: function() {
-    return thirtyDaysAgo + " to " + today;
-  },
-  xdmod_url: function(){
-    return '<%= Configuration.xdmod_host %>';
-  },
-  bad_percent: function(){
-    return (parseFloat(this.bad_ratio)).toFixed()
-  },
-  good_percent: function(){
-    return (100 - parseFloat(this.bad_ratio)).toFixed()
-  }
-};
-
-var round = function(num){
-   return parseFloat(num).toFixed(1);
-}
-
-var render_jobs_template = function(context){
-  $('#jobsEfficiencyReportPanelDiv').html(template(_.merge(context, {unit: "jobs", unit_title: "Jobs"}), {helpers: helpers}));
-}
-var render_core_hours_template = function(context){
-  $('#coreHoursEfficiencyReportPanelDiv').html(template(_.merge(context, {unit: "core hours", unit_title: "Core Hours"}), {helpers: helpers}));
-}
-
-render_jobs_template({nodata: true, msg: 'LOADING...'});
-render_core_hours_template({nodata: true, msg: 'LOADING...'});
-
-var xdmodUrl = '<%= Configuration.xdmod_host %>';
-promiseLoggedIntoXDMoD(xdmodUrl)
-  .then((user_data) => fetch(jobsUrl(user_data), { credentials: 'include' }))
-  .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
-  .then(response => response.json())
-  .then((data) => {
-    if(data && data["success"] && Array.isArray(data["results"])){
-      let results = data["results"][0];
-      if(results){
-        render_jobs_template({
-          bad_ratio: results.bad_job_ratio,
-          count_bad: results.job_count_bad,
-          count: results.job_count
-        });
-        render_core_hours_template({
-          bad_ratio: results.bad_core_ratio,
-          count_bad: round(results.core_time_bad),
-          count: round(results.core_time)
-        });
-      }
-      else{
-        render_jobs_template({nodata: true, msg: 'No data available.'});
-        render_core_hours_template({nodata: true, msg: 'No data available.'});
-      }
-    }
-    else{
-      throw new Error('Job data returned by request is invalid.')
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-    render_jobs_template({error: error});
-    render_core_hours_template({error: error});
-
-    // error - report back for analytics purposes
-    let analyticsUrl = new URL("<%= analytics_url(type: 'xdmod_job_widget_efficiency_error') %>");
-    analyticsUrl.searchParams.append('error', error);
-    fetch(analyticsUrl);
-  });
-}());
-<%- end -%>
+      <div class="card-body">
+        {{#if error}}
+          <div class="alert alert-danger mb-0">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
+        {{else}}
+          {{#if nodata}}
+            <p class="card-text">{{msg}}</p>
+          {{else}}
+          <p class="d-flex justify-content-between card-text font-weight-bold"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficient</span></p>
+          <div class="progress progress-custom">
+            <div class="progress-bar bg-success w-{{good_percent}}" role="progressbar" aria-label="percent efficient" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100">
+            </div>
+            <div class="progress-bar bg-danger w-{{bad_percent}}" role="progressbar" aria-label="percent inefficient" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100">
+            </div>
+          </div>
+          <p class="card-text text-center mt-2">
+            <span class="text-danger">{{count_bad}} inefficient {{unit}} </span> &frasl; {{count}} total {{unit}}
+          </p>
+          {{/if}}
+        {{/if}}
+      </div>
+    </div>
+  </script>
 </div>
