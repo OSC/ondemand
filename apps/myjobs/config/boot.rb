@@ -3,7 +3,7 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 require 'bundler/setup' # Set up gems listed in the Gemfile.
 
 # load dotenv files before "before_configuration" callback
-require File.expand_path('../configuration_singleton', __FILE__)
+require_relative 'configuration_singleton'
 
 # global instance to access and use
 Configuration = ConfigurationSingleton.new
