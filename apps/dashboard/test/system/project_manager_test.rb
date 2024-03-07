@@ -819,7 +819,6 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.save'))
 
       find('i.fa-atom').click
-      File.write('delme.html', page.body)
       input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
 
       project_id = URI.parse(current_url).path.split('/').last
