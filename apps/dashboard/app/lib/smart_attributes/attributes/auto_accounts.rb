@@ -20,10 +20,27 @@ module SmartAttributes
                 end
 
       static_opts = {
-        options: options
-      }.merge(opts.without(:options).to_h)
+        options: options,
+        value:   default_value(opts, options)
+      }.merge(opts.without(:options, :value).to_h)
 
       Attributes::AutoAccounts.new('auto_accounts', static_opts)
+    end
+
+    # try to find which default account value to use given
+    # all the input options and the actual users' account list.
+    def self.default_value(input_options, account_list)
+      input_value = input_options[:value].to_s
+      exclude_list = input_options[:exclude_options].to_a
+      available_accounts = account_list - exclude_list
+
+      if account_list.include?(input_value)
+        input_value
+      elsif !available_accounts.empty?
+        available_accounts.first
+      else
+        account_list.first
+      end
     end
   end
 
