@@ -46,9 +46,15 @@ class Announcement
                   {}
                 end
       @opts.symbolize_keys.compact
-    rescue Errno::ENOENT, SyntaxError # File does not exist or syntax errors
+    rescue Errno::ENOENT # File does not exist
+      Rails.logger.warn "Announcement file not found: #{@path}"
       @opts = {}
-    rescue => e
+    rescue SyntaxError => e # Syntax errors
+      @error = e.message
+      Rails.logger.warn "Syntax error in announcement file '#{@path}': #{e.message}. Please check the file for proper syntax."
+      @opts = {}
+    rescue => e # Other exceptions
+      @error = e.message
       Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
       @opts = {}
     end
