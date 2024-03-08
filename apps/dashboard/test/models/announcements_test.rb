@@ -11,7 +11,7 @@ class AnnouncementsTest < ActiveSupport::TestCase
     assert_equal 0, announcements.count
   end
 
-  test "should create invalid announcement for file that doesn't exist" do
+  test "should create invalid announcement for file that doesn't exist" do 
     f = Tempfile.open(["announcement", ".md"])
     path = f.path
     f.close(true)
@@ -75,6 +75,18 @@ class AnnouncementsTest < ActiveSupport::TestCase
     announcements = Announcements.all(f.path)
     assert_equal 1, announcements.count
     assert_equal 0, announcements.select(&:valid?).count
+  end
+
+  #checking for invalid case (syntax error) and correct message
+  test "should create announcement for syntax error" do
+    f = Tempfile.open(["announcement", ".yml"])
+    f.write "<%- end %>"
+    f.close
+
+    announcements = Announcements.all(f.path)
+    announcement = announcements.first
+    assert_equal :warning, announcement.type
+    assert_send([announcement.instance_variable_get(:@error).to_str, :include?, "syntax error"])
   end
 
   test "should create invalid announcement for invalid yaml file" do
