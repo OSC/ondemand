@@ -15,6 +15,10 @@ const newFieldData = {
     label: "Account",
     help: "The account the job will be submitted with."
   },
+  auto_job_name: {
+    label: "Job Name",
+    help: "The name the job will have."
+  },
   bc_num_slots: {
     label: "Nodes",
     help: "How many nodes the job will run on."
