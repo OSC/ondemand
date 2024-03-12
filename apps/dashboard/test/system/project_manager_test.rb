@@ -50,7 +50,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     script_element[:id]
   end
 
-  def add_account(project_id, script_id)
+  def add_account(project_id, script_id, save: true)
     visit project_path(project_id)
     edit_launcher_path = edit_project_launcher_path(project_id, script_id)
     find("[href='#{edit_launcher_path}']").click
@@ -59,7 +59,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     click_on('Add new option')
     select('Account', from: 'add_new_field_select')
     click_on(I18n.t('dashboard.add'))
-    click_on(I18n.t('dashboard.save'))
+    click_on(I18n.t('dashboard.save')) if save
   end
 
   def add_bc_num_hours(project_id, script_id)
@@ -329,6 +329,54 @@ class ProjectManagerTest < ApplicationSystemTestCase
       Open3
         .stubs(:capture3)
         .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      click_on 'Launch'
+      assert_selector('.alert-success', text: 'job-id-123')
+      assert_equal [{ 'id'          => 'job-id-123',
+                      'submit_time' => @expected_now,
+                      'cluster'     => 'owens' }],
+                   YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+    end
+  end
+
+  # super similar to test above, only it adds auto_job_name
+  test 'submitting a script with job name' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
+      add_account(project_id, script_id, save: false)
+
+      click_on('Add new option')
+      select('Job Name', from: 'add_new_field_select')
+      click_on(I18n.t('dashboard.add'))
+      fill_in('launcher_auto_job_name', with: 'my cool job name')
+      click_on(I18n.t('dashboard.save'))
+
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
+      assert_selector('h1', text: 'the script title', count: 1)
+
+      # assert defaults
+      assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
+      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas2051', from: 'launcher_auto_accounts')
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
+
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-J', 'my cool job name', '-A', 'pas2051', '--export',
+                  'NONE', '--parsable', '-M', 'owens',
               stdin_data: "hostname\n")
         .returns(['job-id-123', '', exit_success])
 
