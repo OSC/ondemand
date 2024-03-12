@@ -12,7 +12,8 @@ class LaunchersController < ApplicationController
     :auto_queues, :auto_queues_exclude, :auto_queues_fixed,
     :auto_batch_clusters, :auto_batch_clusters_exclude, :auto_batch_clusters_fixed,
     :bc_num_slots, :bc_num_slots_fixed, :bc_num_slots_min, :bc_num_slots_max,
-    :bc_num_hours, :bc_num_hours_fixed, :bc_num_hours_min, :bc_num_hours_max
+    :bc_num_hours, :bc_num_hours_fixed, :bc_num_hours_min, :bc_num_hours_max,
+    :auto_job_name
   ].freeze
 
   def new

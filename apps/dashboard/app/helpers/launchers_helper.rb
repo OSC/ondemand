@@ -16,6 +16,8 @@ module LaunchersHelper
       render(partial: editable_partial('editable_number'), locals: locals)
     when 'select'
       render(partial: editable_partial('editable_select'), locals: locals)
+    when 'text_field'
+      render(partial: editable_partial('editable_text_field'), locals: locals)
     else
       render(partial: editable_partial('generic'), locals: locals)
     end
@@ -50,6 +52,11 @@ module LaunchersHelper
 
   def auto_accounts_template
     attrib = SmartAttributes::AttributeFactory.build_auto_accounts
+    create_editable_widget(script_form_double, attrib)
+  end
+
+  def auto_job_name_template
+    attrib = SmartAttributes::AttributeFactory.build_auto_job_name
     create_editable_widget(script_form_double, attrib)
   end
 

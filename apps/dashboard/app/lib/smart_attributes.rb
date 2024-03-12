@@ -8,6 +8,7 @@ module SmartAttributes
   require 'smart_attributes/attributes/auto_accounts'
   require 'smart_attributes/attributes/auto_batch_clusters'
   require 'smart_attributes/attributes/auto_groups'
+  require 'smart_attributes/attributes/auto_job_name'
   require 'smart_attributes/attributes/auto_modules'
   require 'smart_attributes/attributes/auto_primary_group'
   require 'smart_attributes/attributes/auto_queues'
