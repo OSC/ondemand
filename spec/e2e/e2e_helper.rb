@@ -51,7 +51,7 @@ def dist
     major_version = host_inventory['platform_version'].split('.')[0]
     "el#{major_version}"
   when 'amazon'
-    "amzn#{host_inventory['platform_version']}"
+    "amzn#{host_inventory['platform_version'].split('.')[0]}"
   when 'ubuntu'
     "ubuntu-#{host_inventory['platform_version']}"
   when 'debian'
