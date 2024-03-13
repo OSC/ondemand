@@ -59,21 +59,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test 'loading custom OSC external config in production env' do
-    config_root = Rails.root.join('config', 'examples', 'osc')
-    config = config_via_runner(env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}")
-
-    assert_equal File.expand_path('~/ondemand/data/sys/myjobs'), config.dataroot.to_s
-    assert_equal File.expand_path('~/ondemand/data/sys/myjobs/production.sqlite3'), config.production_database_path.to_s
-    assert_equal true, config.load_external_config
+    with_modified_env({ RAILS_ENV: 'production', OOD_DATAROOT: nil }) do
+      config = ConfigurationSingleton.new
+      assert_equal File.expand_path('~/ondemand/data/sys/myjobs'), config.dataroot.to_s
+      assert_equal File.expand_path('~/ondemand/data/sys/myjobs/production.sqlite3'), config.production_database_path.to_s
+      assert_equal true, config.load_external_config?
+    end
   end
 
   test 'loading custom AweSim external config in production env' do
-    config_root = Rails.root.join('config', 'examples', 'awesim')
-    config = config_via_runner(env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}")
-
-    assert_equal File.expand_path('~/awesim/data/sys/myjobs'), config.dataroot.to_s
-    assert_equal File.expand_path('~/awesim/data/sys/myjobs/production.sqlite3'), config.production_database_path.to_s
-    assert_equal true, config.load_external_config
+    with_modified_env({ RAILS_ENV: 'production', OOD_DATAROOT: nil, OOD_PORTAL: 'awesim' }) do
+      config = ConfigurationSingleton.new
+      assert_equal File.expand_path('~/awesim/data/sys/myjobs'), config.dataroot.to_s
+      assert_equal File.expand_path('~/awesim/data/sys/myjobs/production.sqlite3'), config.production_database_path.to_s
+      assert_equal true, config.load_external_config?
+    end
   end
 
   test 'setting dataroot and database path' do
