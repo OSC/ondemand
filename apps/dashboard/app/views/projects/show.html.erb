@@ -4,17 +4,17 @@
   disabled_class = disabled ? 'disabled' : ''
 -%>
 
-<div class='page-header text-center'>
-  <h1 class="my-2"><%= @project.title %></h1>
+<div class='row'>
+  <div class="col-2 align-self-center justify-content-center d-flex">
+    <%= link_to 'Back', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
+  </div>
 
-  <small class="text-muted">This is a preview of the new 'Project Manager'</small>
-</div>
 
+  <div class='page-header text-center col-8'>
+    <h1 class="my-2 h3"><%= @project.title %></h1>
 
-<div class='row row-cols-1 row-cols-md-2'>
-  <p>
-    <%= link_to 'Back', projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
-  </p>
+    <small class="text-muted">This is a preview of the new 'Project Manager'</small>
+  </div>
 </div>
 
 <div class="row my-2">
@@ -22,6 +22,33 @@
     <i class="fas fa-folder-open" aria-hidden="true"></i>
     <%= t('dashboard.project') %> <%= t('dashboard.directory') %> <span data-toggle="project" data-url="<%= project_path(@project.id) %>"></span>
   </a>
+</div>
+
+<div class="row mb-3">
+  <div class="col-4">
+    <div class="list-group" id="launcher-list" role="tablist">
+
+      <%- @scripts.each_with_index do |script, index| -%>
+      <%- active_class = index.positive? ? '' : 'active' -%>
+      <a class="list-group-item list-group-item list-group-item-action <%= active_class %>" id="show_<%= script.id %>" data-toggle="list" href="#view_<%= script.id %>" role="tab">
+        <%= script.title %>
+      </a>
+      <%- end -%>
+
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="tab-content" id="some id">
+
+      <%- @scripts.each_with_index do |script, index| -%>
+      <%- active_class = index.positive? ? '' : 'show active' -%>
+      <div class="tab-pane fade <%= active_class %>" id="view_<%= script.id %>" role="tabpanel" >
+        <p>This would show data on the <strong><%= script.title %></strong> launcher.</p>
+      </div>
+      <%- end -%>
+
+    </div>
+  </div>
 </div>
 
 <div class='card'>
