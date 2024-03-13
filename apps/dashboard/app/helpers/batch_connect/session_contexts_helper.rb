@@ -138,11 +138,20 @@ module BatchConnect::SessionContextsHelper
   end
 
   def pathselector_favorites(favorites)
+    allowlist = AllowlistPolicy.new(Configuration.allowlist_paths)
+    Rails.logger.debug("")
+    Rails.logger.debug("allowlist.allowlist: #{allowlist.allowlist}")
+    Rails.logger.debug("")
+
     # If favorites is false, return nil
     if favorites.nil?
-      OodFilesApp.new.favorite_paths.reject(&:remote?)
+      nil
     elsif favorites
-      favorites.map { |f| FavoritePath.new(f) }
+      favorites.select do |f|
+        allowlist.permitted?(FavoritePath.new(f))
+      end
     end
+    #elsif favorites # favorites.each { |path| AllowlistPolicy.validate!(path) }
+    #  favorites.map { |f| FavoritePath.new(f) }
   end
 end
