@@ -1,3 +1,32 @@
+# Table of Contents
+
+1. [Contributing](#Contributing)
+    1. [Issues](#issues)
+    2. [Other repositories](#other-repositories)
+    3. [Branches and Tags](#branches-and-tags)
+    4. [Pull Request Process](#pull-request-process)
+2. [Branch Naming and Issue Tagging](#branch-naming-and-issue-tagging)
+    1. [Adding a Feature](#adding-a-feature)
+    2. [Fixing a Bug](#fixing-a-bug)
+    3. [Tagging Your Issue](#tagging-your-issue)
+    4. [Pull Request Comments](#pull-request-comments)
+3. [Project Style Guide](#project-styleguide)
+    1. [Project Conventions](#project-conventions)
+    2. [Linters](#linters)
+    3. [Ruby Style](#ruby-style)
+    4. [Syntax and Layout](#syntax-and-layout)
+    5. [Classes and Modules](#classes-and-modules)
+    6. [Collections](#collections)
+    7. [Code Comments](#comments)
+    8. [Exceptions](#exceptions)
+    9. [Naming Conventions](#naming)
+        1. [Variables](#variables)
+        2. [Methods](#methods)
+        3. [Classes and Modules](#class-and-module-naming)
+4. [Javascript Style Guide](#javascript-style)
+5. [HTML Style Guide](#html-style)
+6. [CSS Style Guide](#css-style)
+
 # Contributing
 
 First off - Thank you for your interest in contributing to the Open OnDemand project!
@@ -362,7 +391,7 @@ function snakeCaseWords(str) {
     end
     ```
 
-### Classe and Modules
+### Class and Module Naming
 
 * Mountain/Pascal case for Class and Module names.
 
