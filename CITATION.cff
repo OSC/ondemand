@@ -1,8 +1,9 @@
 @software{OSC_software_2022_6323791,
   author       = {Jeff Ohrstrom and
                   Travis Ravert and
-                  Gerald Byrket and
+                  Hazel Randquist and
                   Trey Dockendorf and
+                  Matt Walton and
                   Alan Chalker},
   title        = {Open OnDemand Source Code},
   month        = mar,
