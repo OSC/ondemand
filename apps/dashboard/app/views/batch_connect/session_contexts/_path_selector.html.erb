@@ -2,18 +2,13 @@
   show_hidden = field_options.fetch(:show_hidden, false)
   show_files = field_options.fetch(:show_files, true)
   inital_directory = field_options.fetch(:directory, CurrentUser.home)
-  Rails.logger.debug("")
-  #Rails.logger.debug("field_options.try(:[], :favorites): #{field_options.try(:favorites)}")
-  # favorites = pathselector_favorites(field_options.try(:favorites))
   favorites = pathselector_favorites(OodFilesApp.new.favorite_paths.reject(&:remote?))
-
   input_field_id = "#{form.object_name}_#{attrib.id}"
   path_selector_id = "#{input_field_id}_path_selector"
   button_id = "#{path_selector_id}_button"
   table_id = "#{path_selector_id}_table"
   breadcrumb_id = "#{path_selector_id}_breadcrumb"
   options =  { data: { 'path-selector': true }}.merge(field_options)
-  Rails.logger.debug("")
 %>
 
 <%= form.text_field(attrib.id, class: 'form-control', **options) %>
