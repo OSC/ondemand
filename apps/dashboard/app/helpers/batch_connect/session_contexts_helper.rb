@@ -139,9 +139,6 @@ module BatchConnect::SessionContextsHelper
 
   def pathselector_favorites(favorites)
     allowlist = AllowlistPolicy.new(Configuration.allowlist_paths)
-    Rails.logger.debug("")
-    Rails.logger.debug("allowlist.allowlist: #{allowlist.allowlist}")
-    Rails.logger.debug("")
 
     # If favorites is false, return nil
     if favorites.nil?
@@ -151,7 +148,5 @@ module BatchConnect::SessionContextsHelper
         allowlist.permitted?(FavoritePath.new(f))
       end
     end
-    #elsif favorites # favorites.each { |path| AllowlistPolicy.validate!(path) }
-    #  favorites.map { |f| FavoritePath.new(f) }
   end
 end
