@@ -295,7 +295,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       end
 
       accept_confirm do
-        click_on 'Delete'
+        find("#delete_#{script_id}").click
       end
 
       assert_selector '.alert-success', text: 'Script successfully deleted!'

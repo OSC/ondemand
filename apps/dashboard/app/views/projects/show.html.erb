@@ -43,7 +43,7 @@
       <%- @scripts.each_with_index do |script, index| -%>
       <%- active_class = index.positive? ? '' : 'show active' -%>
       <div class="tab-pane fade <%= active_class %>" id="view_<%= script.id %>" role="tabpanel" >
-        <p>This would show data on the <strong><%= script.title %></strong> launcher.</p>
+        <%= render(partial: 'launcher_details', locals: { launcher: script }) %>
       </div>
       <%- end -%>
 
@@ -88,15 +88,6 @@
               edit_project_launcher_path(@project.id, script.id),
               class: "btn btn-primary mx-1 #{disabled_class}",
             )
-            %>
-
-            <%= link_to(
-              t('dashboard.delete'),
-              project_launcher_path(@project.id, script.id),
-              class: "btn btn-danger mx-1 #{disabled_class}",
-              method: 'delete',
-              data: { confirm: I18n.t('dashboard.jobs_scripts_delete_script_confirmation') },
-              )
             %>
 
             <%-
