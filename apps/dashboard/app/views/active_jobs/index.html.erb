@@ -65,7 +65,7 @@
   data-cluster-id=<%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage").html_safe %>
   data-console-log-performance-report=<%= Configuration.console_log_performance_report? %>
   data-base-uri=<%= controller.relative_url_root %>
-  data-git-string=<%= `git describe --always --tags`.strip %>
+  data-git-string=<%= 'git describe --always --tags'.strip %>
 ></div>
 
 <%=  javascript_include_tag 'active_jobs/performance_report', nonce: true %>
