@@ -34,7 +34,7 @@ locals: {
       %>
     </div>
     <div class="col-md-9">
-      <div id="batch_connect_sessions" class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= ENV["POLL_DELAY"] || 10000 %>">
+      <div id="batch_connect_sessions" class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= Configuration.bc_sessions_poll_delay %>">
         <% if @sessions.empty? %>
           <div class="ood-appkit markdown">
             <p><%= t('dashboard.batch_connect_no_sessions') %></p>

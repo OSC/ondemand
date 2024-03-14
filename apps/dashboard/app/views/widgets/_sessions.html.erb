@@ -1,6 +1,6 @@
 <%-
   max_sessions = 3
-  poll_delay = ENV["POLL_DELAY"] || 10000
+  poll_delay = Configuration.bc_sessions_poll_delay
   active_sessions = BatchConnect::Session.all.reject { |s| s.completed? }
   session_selection = active_sessions.first(max_sessions)
 -%>
