@@ -2,7 +2,7 @@
 
 import oboe from 'oboe';
 import dataTableProcessing from 'datatables.net-plugins/api/processing()';
-import { cssBadgeForState, capitalizeFirstLetter } from './utils.js'
+import { cssBadgeForState, capitalizeFirstLetter } from '.././utils.js'
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;

@@ -1,4 +1,4 @@
-<%=  javascript_include_tag 'active_jobs', nonce: true %>
+<%=  javascript_include_tag 'active_jobs/active_jobs', nonce: true %>
 
 <div class="row">
   <div class="col-md-12">
@@ -59,46 +59,13 @@
   </div>
 </div>
 
-<script>
-var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{default_filter_id}'").html_safe %>;
-var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
-var performance_tracking_enabled = false;
+<div hidden=true
+  id="active_jobs_config"
+  data-filter-id=<%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage#{default_filter_id}").html_safe %>
+  data-cluster-id=<%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage").html_safe %>
+  data-console-log-performance-report=<%= Configuration.console_log_performance_report? %>
+  data-base-uri=<%= controller.relative_url_root %>
+  data-git-string=<%= `git describe --always --tags`.strip %>
+></div>
 
-<% if Configuration.console_log_performance_report? %>
-function report_performance(){
-  var marks = performance.getEntriesByType('mark');
-  marks.forEach(function(entry){
-    console.log(entry.startTime + "," + entry.name);
-  });
-
-  // hack but only one mark for document ready, and rest are draw times
-  if(marks.length > 1){
-    console.log("version,documentReady,firstDraw,lastDraw");
-    console.log(`<%= `git describe --always --tags`.strip() %>,${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
-  }
-}
-
-performance_tracking_enabled = true;
-performance.mark('document ready - build table and make ajax request for jobs');
-<% end %>
-
-var table = create_datatable({
-  drawCallback: function(settings){
-    // do a performance mark every time we draw the table (which happens when new records are downloaded)
-    if(performance_tracking_enabled && settings.aoData.length > 0){
-      performance.mark('draw records - ' + settings.aoData.length);
-    }
-  },
-  base_uri: '<%= controller.relative_url_root %>'
-});
-
-fetch_table_data(table, {
-  doneCallback: function(){
-    // generate report after done fetching records
-    if(performance_tracking_enabled){
-      setTimeout(report_performance, 2000);
-    }
-  },
-  base_uri: '<%= controller.relative_url_root %>'
-});
-</script>
+<%=  javascript_include_tag 'active_jobs/performance_report', nonce: true %>
