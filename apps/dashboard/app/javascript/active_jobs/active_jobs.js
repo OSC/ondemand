@@ -1,15 +1,12 @@
 'use strict';
 
 import oboe from 'oboe';
-import dataTableProcessing from 'datatables.net-plugins/api/processing()';
 import { cssBadgeForState, capitalizeFirstLetter } from '.././utils.js'
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
 window.set_cluster_id = set_cluster_id;
 window.set_filter_id = set_filter_id;
-
-dataTableProcessing(window, jQuery);
 
 var entityMap = {
   '&': '&amp;',
