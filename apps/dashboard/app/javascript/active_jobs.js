@@ -336,27 +336,15 @@ function reload_page() {
 
 const activeJobsConfig = $('#active_jobs_config')[0].dataset;
 
-var filter_id = null;
-var cluster_id = null;
+var filter_id = activeJobsConfig.filterId;
+var cluster_id = activeJobsConfig.clusterId;
 
-if (activeJobsConfig.filterId.includes('localStorage')) {
-  filter_id = localStorage.getItem('jobfilter');
-} else {
-  filter_id = activeJobsConfig.filterId;
-};
-
-if (filter_id == null || filter_id == undefined) {
-  filter_id = activeJobsConfig.filterId.match(/localStorage(.*)/)[1];
+if (filter_id == "null") {
+  filter_id = localStorage.getItem('jobfilter') || activeJobsConfig.defaultFilterId;
 }
 
-if (activeJobsConfig.clusterId.includes('localStorage')) {
-  cluster_id = localStorage.getItem('jobcluster');
-} else {
-  cluster_id = activeJobsConfig.clusterId;
-}
-
-if (cluster_id == null || cluster_id == undefined) {
-  cluster_id = 'all';
+if (cluster_id == "null") {
+  cluster_id = localStorage.getItem('jobcluster') || 'all';
 }
 
 var performance_tracking_enabled = false;
@@ -370,7 +358,7 @@ function report_performance(){
   // hack but only one mark for document ready, and rest are draw times
   if(marks.length > 1){
     console.log("version,documentReady,firstDraw,lastDraw");
-    console.log(`${activeJobsConfig.gitString},${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
+    console.log(`${activeJobsConfig.oodVersion},${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
   }
 }
 

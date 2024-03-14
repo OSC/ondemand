@@ -59,11 +59,13 @@
 
 <div hidden=true
   id="active_jobs_config"
-  data-filter-id=<%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage#{default_filter_id}").html_safe %>
-  data-cluster-id=<%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage").html_safe %>
+  data-filter-id=<%= @jobfilter ? "#{@jobfilter}" : "null" %>
+  data-default-filter-id=<%= default_filter_id %> 
+  data-cluster-id=<%= @jobcluster ? "#{@jobcluster}" : "null" %> 
   data-console-log-performance-report=<%= Configuration.console_log_performance_report? %>
   data-base-uri=<%= controller.relative_url_root %>
-  data-git-string=<%= 'git describe --always --tags'.strip %>
-></div>
+  data-ood-version=<%= Configuration.ood_version %>
+>
+</div>
 
 <%=  javascript_include_tag 'active_jobs', nonce: true %>
