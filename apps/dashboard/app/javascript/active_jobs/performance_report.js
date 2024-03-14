@@ -2,22 +2,27 @@
 
 const activeJobsConfig = $('#active_jobs_config')[0].dataset;
 
+var filter_id = null;
+var cluster_id = null;
+
 if (activeJobsConfig.filterId.includes('localStorage')) {
-  var filter_id = localStorage.getItem('jobfilter')
-  if (filter_id == null) {
-    filter_id = activeJobsConfig.filterId.match(/localStorage(.*)/)[1];
-  }
+  filter_id = localStorage.getItem('jobfilter');
 } else {
-  var filter_id = activeJobsConfig.filter_id;
+  filter_id = activeJobsConfig.filterId;
 };
 
+if (filter_id == null || filter_id == undefined) {
+  filter_id = activeJobsConfig.filterId.match(/localStorage(.*)/)[1];
+}
+
 if (activeJobsConfig.clusterId.includes('localStorage')) {
-  var cluster_id = localStorage.getItem('jobcluster');
-  if (cluster_id == null) {
-    cluster_id = 'all';
-  }
+  cluster_id = localStorage.getItem('jobcluster');
 } else {
-  var cluster_id = activeJobsConfig.cluster_id;
+  cluster_id = activeJobsConfig.clusterId;
+}
+
+if (cluster_id == null || cluster_id == undefined) {
+  cluster_id = 'all';
 }
 
 var performance_tracking_enabled = false;
