@@ -83,13 +83,6 @@
                 )
             %>
 
-            <%= link_to(
-              t('dashboard.edit'),
-              edit_project_launcher_path(@project.id, script.id),
-              class: "btn btn-primary mx-1 #{disabled_class}",
-            )
-            %>
-
             <%-
               params = script.smart_attributes.map { |attr| ["launcher[#{attr.id}]", attr.value] }.to_h
             -%>
