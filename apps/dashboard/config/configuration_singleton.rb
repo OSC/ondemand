@@ -368,6 +368,15 @@ class ConfigurationSingleton
     (ood_bc_card_time_int < 0) ? 0 : ood_bc_card_time_int
   end
 
+  # Returns the number of milliseconds to wait between calls to the BatchConnect Sessions resource
+  # to update the sessions card information.
+  # The default and minimum value is 10s = 10_000
+  def bc_sessions_poll_delay
+    bc_poll_delay = ENV['POLL_DELAY']
+    bc_poll_delay_int = bc_poll_delay.nil? ? config.fetch(:sessions_poll_delay, '10000').to_i : bc_poll_delay.to_i
+    bc_poll_delay_int < 10_000 ? 10_000 : bc_poll_delay_int
+  end
+
   def config
     @config ||= read_config
   end

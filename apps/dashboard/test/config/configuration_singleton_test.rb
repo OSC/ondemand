@@ -496,4 +496,31 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "bc_sessions_poll_delay default value" do
+    assert_equal(10_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
+  end
+
+  test "bc_sessions_poll_delay reads value from environment" do
+    with_modified_env('POLL_DELAY': '20000') do
+      assert_equal(20_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
+    end
+  end
+
+  test 'bc_sessions_poll_delay reads from config' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        sessions_config = { 'sessions_poll_delay' => '99999' }
+        File.open("#{dir}/sessions_config.yml", 'w+') { |f| f.write(sessions_config.to_yaml) }
+
+        assert_equal(99_999, ConfigurationSingleton.new.bc_sessions_poll_delay)
+      end
+    end
+  end
+
+  test "bc_sessions_poll_delay minimum value is 10_000" do
+    with_modified_env('POLL_DELAY': '100') do
+      assert_equal(10_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
+    end
+  end
 end
