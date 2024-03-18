@@ -102,6 +102,10 @@ class Launcher
   end
   alias inspect to_h
 
+  def quick_launch_params
+    smart_attributes.map { |attr| ["launcher[#{attr.id}]", attr.value] }.to_h
+  end
+
   # Delegate methods to smart_attributes' getter
   #
   # @param method_name the method name called

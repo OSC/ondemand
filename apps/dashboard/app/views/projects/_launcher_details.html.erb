@@ -9,7 +9,6 @@
 <div class='card'>
   <div class='card-header'>
     <div class="row">
-      <!-- this is just a placeholder for when we actually implement it -->
       <div class="col-2 d-flex align-items-center justify-content-center">
         <%= link_to(
           edit_project_launcher_path(@project.id, launcher.id),
@@ -41,7 +40,31 @@
   </div>
 
   <div class="card-body">
-    placeholder for launcher details.
+    <div class="row justify-content-between">
+      <div class="col-4">
+        <%= button_to(
+          t('dashboard.batch_connect_form_launch'),
+          submit_project_launcher_path(@project.id, launcher.id),
+          class: 'btn btn-secondary',
+          title: 'Launch script with cached or default values',
+          disabled: disabled,
+          params: launcher.quick_launch_params
+        )
+        %>
+      </div>
+
+      <div class="col-4">
+        <%= link_to(
+            t('dashboard.show'),
+            project_launcher_path(@project.id, launcher.id),
+            class: "btn btn-success float-right #{disabled_class}")
+        %>
+      </div>
+    </div>
+
+    <div class="row">
+      <%= launcher.most_recent_job_id %>
+    </div>
   </div>
 </div>
 

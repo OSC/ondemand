@@ -46,8 +46,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
     find('#launcher_title').set('the script title')
     click_on 'Save'
 
-    script_element = find('.script-card')
-    script_element[:id]
+    script_element = all('#launcher_list a').first
+    script_element[:id].gsub('show_', '')
   end
 
   def add_account(project_id, script_id, save: true)
