@@ -6,24 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Added POLL_DELAY environment variable to Configuration class (#3421)\
-Refactors inline javascript in active_jobs (#3423)\
-upgrade myjobs to rails-7 (#3404)\
-update citation materials (#3415)\
-remove unused files (#3416)\
-Add ToC to Dev Guide (#3418)\
-support setting the job name in the launchers (#3411)\
-Fix Amazon 2023 e2e tests (#3412)\
-Update Changelog (#3407)\
-lint a random file (#3406)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
 - NoVNC compression & quality have configurable defaults in [3380](https://github.com/OSC/ondemand/pull/3380).
+- Added `bc_sessions_poll_delay` in favor of hidden environment variable POLL_DELAY in [3421](https://github.com/OSC/ondemand/pull/3421).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
 - The dashboard has been upgraded to rails 7.0 in [3353](https://github.com/OSC/ondemand/pull/3353).
+- Myjobs has been upgraded to rails 7.0 in [3404](https://github.com/OSC/ondemand/pull/3404).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
