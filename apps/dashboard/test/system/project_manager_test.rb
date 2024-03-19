@@ -886,7 +886,6 @@ class ProjectManagerTest < ApplicationSystemTestCase
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
       click_on I18n.t('Launch')
-      File.write('delme.html', page.body)
       assert_selector('.alert-success', text: 'job-id-123')
     end
   end
