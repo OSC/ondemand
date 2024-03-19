@@ -885,7 +885,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
-      find("form[action='/projects/#{project_id}/launchers/8woi7ghd/submit']").click
+      click_on I18n.t('Launch')
+      File.write('delme.html', page.body)
       assert_selector('.alert-success', text: 'job-id-123')
     end
   end
