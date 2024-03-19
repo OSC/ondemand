@@ -255,6 +255,18 @@ en:
 
     settings_updated: "Settings updated"
 
+    bc_saved_settings:
+      title: "Saved Settings"
+      no_settings_title: "You have no saved settings."
+      launch_label: "Launch"
+      launch_title: "Launch %{app_title} with %{settings_name} parameters"
+      delete_label: "Delete"
+      delete_title: "Delete %{settings_name} saved settings"
+      delete_confirm: "Are you sure?"
+      deleted_message: "Saved settings %{settings_name} deleted."
+      settings_values_label: "Values"
+      outdated_message: "%{app_title} parameters have changed since these settings were created."
+
     user_configuration:
       support_ticket_error: "support_ticket is misconfigured. \"email\" or \"rt_api\" sections are required in the configuration YAML."
 

@@ -48,6 +48,7 @@ Rails.application.routes.draw do
     resources :sessions, only: [:index, :destroy]
     post 'sessions/:id/cancel', to: 'sessions#cancel', as: 'cancel_session'
     scope '*token', constraints: { token: %r{((usr/[^/]+)|dev|sys)/[^/]+(/[^/]+)?} } do
+      resources :settings, only: [:show, :destroy]
       resources :session_contexts, only: [:new, :create]
       root 'session_contexts#new'
     end
