@@ -46,8 +46,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
     find('#launcher_title').set('the script title')
     click_on 'Save'
 
-    script_element = find('.script-card')
-    script_element[:id]
+    script_element = all('#launcher_list a').first
+    script_element[:id].gsub('show_', '')
   end
 
   def add_account(project_id, script_id, save: true)
@@ -302,7 +302,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       end
 
       accept_confirm do
-        click_on 'Delete'
+        find("#delete_#{script_id}").click
       end
 
       assert_selector '.alert-success', text: 'Script successfully deleted!'
@@ -873,6 +873,44 @@ class ProjectManagerTest < ApplicationSystemTestCase
         assert_equal(filename, option[0])
         assert_equal(full_path, option[1])
       end
+    end
+  end
+
+  test 'submitting launchers from a template project works' do
+    Dir.mktmpdir do |dir|
+      # use different accounts than what the template was generated with
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', stdin_data: '')
+        .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts_alt.txt'), '', exit_success])
+
+      Project.stubs(:dataroot).returns(Pathname.new(dir))
+      Configuration.stubs(:project_template_dir).returns("#{Rails.root}/test/fixtures/projects")
+
+      visit(projects_root_path)
+      click_on(I18n.t('dashboard.jobs_create_template_project'))
+
+      select('Chemistry 5533', from: 'project_template')
+      click_on(I18n.t('dashboard.save'))
+
+      find('i.fa-atom').click
+      input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
+
+      project_id = URI.parse(current_url).path.split('/').last
+
+      # note that we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
+      # from the template.
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-A', 'pzs1715', '--export', 'NONE', '--parsable', '-M', 'owens',
+              stdin_data: input_data)
+        .returns(['job-id-123', '', exit_success])
+
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("form[action='/projects/#{project_id}/launchers/8woi7ghd/submit']").click
+      assert_selector('.alert-success', text: 'job-id-123')
     end
   end
 end

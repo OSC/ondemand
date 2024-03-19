@@ -1332,6 +1332,112 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'path selector displays favorites' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      OodFilesApp.stubs(:candidate_favorite_paths).returns([
+        FavoritePath.new('/tmp'),
+        FavoritePath.new('/var')
+      ])
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on('Select Path')
+
+      # shows the OodFilesApp.candidate_favorite_paths favorites
+      favorites = all('#favorites li')
+      assert_equal(2, favorites.size)
+      assert_equal('/tmp', favorites[0].text.strip)
+      assert_equal('/var', favorites[1].text.strip)
+    end
+  end
+
+  test 'path selector can choose new favorites' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            favorites:
+              - '/fs/ess'
+              - '/fs/scratch'
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on('Select Path')
+
+      # favorites that have been configured in yml
+      favorites = all('#favorites li')
+      assert_equal(2, favorites.size)
+      assert_equal('/fs/ess', favorites[0].text.strip)
+      assert_equal('/fs/scratch', favorites[1].text.strip)
+    end
+  end
+
+  test 'path selector can disable favorites' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      OodFilesApp.stubs(:candidate_favorite_paths).returns([
+        FavoritePath.new('/tmp'),
+        FavoritePath.new('/var')
+      ])
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            favorites: false
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on('Select Path')
+
+      # no favorites show up
+      favorites = all('#favorites li')
+      assert_equal(0, favorites.size)
+    end
+  end
+
   test 'saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
