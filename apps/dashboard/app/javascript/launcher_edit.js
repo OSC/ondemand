@@ -10,7 +10,7 @@ const newFieldData = {
   auto_queues: {
     label: "Queues",
     help: "Which queue the job will submit too.",
-  },
+  }, 
   auto_accounts: {
     label: "Account",
     help: "The account the job will be submitted with."
@@ -151,9 +151,41 @@ function addInProgressField(event) {
   justAdded.find('[data-fixed-toggler]')
            .on('click', (event) => { toggleFixedField(event) });
 
+  justAdded.find('#aev_name')
+           .on('keyup', (event) => { updateAutoEnvironmentVariableName(event) });
+
+  justAdded.find('#aev_value')
+           .on('keyup', (event) => { updateAutoEnvironmentVariableValue(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
+}
+
+function updateAutoEnvironmentVariableName(event) {
+  var aev_name = event.target.value;
+  if ($('#launcher_auto_environment_variable_' + aev_name)[0] == undefined) {
+    var input_field = event.target.parentElement.parentElement.children[0].children[1];
+    var value_field = event.target.parentElement.children[4];
+    var aev_value = value_field.value;
+    value_field.disabled = false;
+
+    input_field.id = `launcher_auto_environment_variable_${aev_name}`;
+    input_field.name = `launcher[auto_environment_variable_${aev_name}]`;
+    input_field.value = `${aev_name}=${aev_value}`
+  }
+}
+
+function updateAutoEnvironmentVariableValue(event) {
+  var aev_value = event.target.value;
+  var aev_name = event.target.parentElement.children[2].value;
+
+  if ($('#launcher_auto_environment_variable_' + aev_name)[0] != undefined) {
+    var input_field = event.target.parentElement.parentElement.children[0].children[1];
+    input_field.value = `${aev_name}=${aev_value}`;
+  } else {
+    // this should never happen bc value is disabled unless name is defined
+  }
 }
 
 function fixExcludeBasedOnSelect(selectElement) {

@@ -12,8 +12,9 @@ module SmartAttributes
         def initialize(id, opts = {})
           super
   
-          @key = @opts[:key]
-          @id = "#{id}_#{normalize_module(@key)}" # reset the id to be unique from other auto_environment_variable_*
+          @key = @opts.delete(:key)
+          # reset the id to be unique from other auto_environment_variable_*
+          @id = @key ? "#{id}_#{normalize_key(@key)}" : id
         end
 
         def widget
@@ -23,9 +24,13 @@ module SmartAttributes
         def label(*)
           (opts[:label] || 'Environment Variable').to_s
         end
+
+        def field_options(fmt: nil)
+          super.merge({readonly: true})
+        end
   
-        def normalize_module(module_name)
-          module_name.to_s.gsub('-', '_')
+        def normalize_key(key_name)
+          key_name.to_s.gsub('-', '_')
         end
       end
     end

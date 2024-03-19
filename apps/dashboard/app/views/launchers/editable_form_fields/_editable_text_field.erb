@@ -7,7 +7,16 @@
 
   <div class="d-none edit-group mb-3">
     <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
-  </div>
+  
+    <% if field_id.match?('auto_environment_variable') %>
+      <label for="aev_name">Name</label>
+      <input class="form-control edit-field" type="text" name="aev_name" id="aev_name"></inut>
+
+      <label for="aev_value">Value</label>
+      <input class="form-control edit-field" disabled=true type="text" name="aev_value" id="aev_value"></input>
+    <% end %>
+
+    </div>
 
   <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons', locals: { field_id: field_id }) %>
 </div>
