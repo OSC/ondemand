@@ -165,7 +165,7 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.0)
-    nokogiri (1.15.5)
+    nokogiri (1.15.6)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     ood_appkit (2.1.4)
@@ -299,7 +299,7 @@ DEPENDENCIES
   local_time (~> 1.0.3)
   mocha (~> 2.1)
   net-imap (~> 0.3, < 0.4)
-  nokogiri (~> 1.15, < 1.16)
+  nokogiri (~> 1.15)
   ood_appkit (~> 2.1.0)
   ood_core (~> 0.24.1)
   ood_support (~> 0.0.2)

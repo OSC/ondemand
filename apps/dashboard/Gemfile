@@ -40,7 +40,7 @@ end
 
 # lock nokogiri & net-imap to versions that are compatible with ruby 2.7.0
 # Ubuntu 20.04 uses.
-gem 'nokogiri', '~> 1.15', '< 1.16'
+gem 'nokogiri', '~> 1.15'
 gem 'net-imap', '~> 0.3', '< 0.4'
 
 # Extra third-party gems
