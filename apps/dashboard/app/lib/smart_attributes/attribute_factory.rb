@@ -2,6 +2,7 @@ module SmartAttributes
   class AttributeFactory
 
     AUTO_MODULES_REX = /\Aauto_modules_([\w-]+)\z/.freeze
+    AUTO_ENVIRONMENT_VARIABLE_REX = /\Aauto_environment_variable_([\w-]+)\z/.freeze
 
     class << self
       # Build an attribute object from an id and its options
@@ -14,6 +15,10 @@ module SmartAttributes
           hpc_mod = id.match(AUTO_MODULES_REX)[1]
           id = 'auto_modules'
           opts = opts.merge({'module' => hpc_mod})
+        elsif id.match?(AUTO_ENVIRONMENT_VARIABLE_REX)
+          env_variable = id.match(AUTO_ENVIRONMENT_VARIABLE_REX)[1]
+          id = 'auto_environment_variable'
+          opts = opts.merge({'key' => env_variable})
         end
 
         build_method = "build_#{id}"

@@ -22,6 +22,10 @@ const newFieldData = {
   bc_num_slots: {
     label: "Nodes",
     help: "How many nodes the job will run on."
+  },
+  auto_environment_variable: {
+    label: 'Environment Variable',
+    help: 'Add an environment variable.'
   }
 }
 
