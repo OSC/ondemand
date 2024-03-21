@@ -873,7 +873,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       end
     end
   end
-=begin
+
   test 'submitting launchers from a template project works' do
     Dir.mktmpdir do |dir|
       # use different accounts than what the template was generated with
@@ -911,5 +911,4 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('.alert-success', text: 'job-id-123')
     end
   end
-=end
 end
