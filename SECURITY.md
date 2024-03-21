@@ -1,6 +1,6 @@
 # Security Policy
 
-This document outlines security procedures and general policies for the `OnDemand`
+This document outlines security procedures and general policies for the `Open OnDemand`
 project.
 
 ## Reporting a Vulnerability
@@ -26,12 +26,14 @@ involving the following steps:
 ## Comments on this Policy
 
 If you have suggestions on how this process could be improved please submit 
-a ticket, open a [Discorse](https://discourse.osc.edu/) topic or open a pull request.
+a ticket, open a [Discourse](https://discourse.openondemand.org/) topic or open a pull request.
 
 ## Security Audits
 
-[Trusted CI](https://trustedci.org/), the NSF Cybersecurity Center of 
+, the NSF Cybersecurity Center of 
 Excellence, conducted an in-depth vulnerability assessment of Open OnDemand, completing 
 it in December 2018. This assessment included a careful review of the code, increasing 
-our confidence in its security. The Ohio Supercomputing Center addressed the implementation 
+our confidence in its security. The Ohio Supercomputer Center addressed the implementation 
 issues (bugs) that were found during this review, producing a more robust revision of Open OnDemand.
+
+The Open OnDemand core development team has had several engagements with [Trusted CI](https://trustedci.org/), the NSF Cybersecurity Center of Excellence. The first engagement was in 2018, during which Trusted CI conducted an in-depth vulnerability assessment and identified a few implementation issues that the Open OnDemand developers subsequently addressed.  [A report of that 2018 engagement is available here.](https://openondemand.org/trustedci-2018) The next engagement was in early 2021 and had three objectives: (1) integrate security automation into DevOps flows; (2) transfer skills for vulnerability assessments; and (3) develop needed security policies, practices, and procedures.  [A report of that 2021 engagement is available here.](https://openondemand.org/trustedci) 
