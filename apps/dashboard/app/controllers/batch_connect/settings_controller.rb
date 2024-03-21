@@ -8,8 +8,9 @@ class BatchConnect::SettingsController < ApplicationController
     set_app_groups
     set_saved_settings
 
-    app_token = params[:token]
-    settings_name = params[:id]
+    settings_params = settings_request_params
+    app_token = settings_params[:token]
+    settings_name = settings_params[:id]
     settings_values = bc_templates(app_token).fetch(settings_name.to_sym, {})
     @settings = BatchConnect::Settings.new(app_token, settings_name, settings_values)
     if @settings.outdated?
@@ -19,14 +20,19 @@ class BatchConnect::SettingsController < ApplicationController
 
   # DELETE /batch_connect/<app_token>/settings/<settings_name>
   def destroy
-    app_token = params[:token]
-    settings_name = params[:id]
+    settings_params = settings_request_params
+    app_token = settings_params[:token]
+    settings_name = settings_params[:id]
     delete_bc_template(app_token, settings_name)
     redirect_to new_batch_connect_session_context_path(token: app_token),
                 notice: t('dashboard.bc_saved_settings.deleted_message', settings_name: settings_name)
   end
 
   private
+
+  def settings_request_params
+    params.permit(:token, :id)
+  end
 
   # Set the all the saved settings to render the navigation
   def set_saved_settings

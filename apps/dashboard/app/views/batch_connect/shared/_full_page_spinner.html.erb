@@ -1,15 +1,6 @@
-<script nonce="<%= content_security_policy_nonce %>">
-jQuery(function (){
-    function showSpinner() {
-        $('body').addClass('modal-open');
-        $('#full-page-spinner').removeClass('d-none');
-    }
-
-    $('.full-page-spinner').each((index, element) => {
-        $(element).closest('form').on('submit', showSpinner);
-    });
-});
-</script>
+<%- content_for :head do -%>
+  <%= javascript_include_tag('full_page_spinner', nonce: true) %>
+<%- end -%>
 <div id="full-page-spinner" class="d-none">
   <div class="spinner-border" role="status"></div>
 </div>
