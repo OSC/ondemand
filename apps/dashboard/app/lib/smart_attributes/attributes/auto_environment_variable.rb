@@ -20,13 +20,21 @@ module SmartAttributes
         def widget
           'text_field'
         end
-        
+
+        def original_label
+          if @opts[:label]
+            @opts[:label].to_s.gsub(": #{@key}", "")
+          else
+            'Environment Variable'
+          end
+        end
+
         def label(*)
-          (@key|| 'Environment Variable').to_s
+          "#{original_label}: #{@key}"
         end
 
         def field_options(fmt: nil)
-          super.merge({readonly: true})
+          @key.blank? ? super.merge({readonly: true}) : super
         end
 
         def normalize_key(key_name)

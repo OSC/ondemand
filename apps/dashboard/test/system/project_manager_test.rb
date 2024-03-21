@@ -498,10 +498,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_environment_variable').click
 
       find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
-      find("[data-auto-environment-variable='value']").fill_in(with: 'some_value')
-
-      field = find('#launcher_auto_environment_variable_SOME_VARIABLE')
-      assert_equal field.value, "some_value"
+      find("#launcher_auto_environment_variable_SOME_VARIABLE").fill_in(with: 'some_value')
 
       find('#save_launcher_auto_environment_variable').click
 
@@ -552,7 +549,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: true
           auto_environment_variable_SOME_VARIABLE:
             value: some_value
-            label: SOME_VARIABLE
+            label: 'Environment Variable: SOME_VARIABLE'
             help: ''
             required: false
       HEREDOC

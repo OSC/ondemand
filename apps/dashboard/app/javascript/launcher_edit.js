@@ -154,9 +154,6 @@ function addInProgressField(event) {
   justAdded.find('[data-auto-environment-variable="name"]')
            .on('keyup', (event) => { updateAutoEnvironmentVariableName(event) });
 
-  justAdded.find('[data-auto-environment-variable="value"]')
-           .on('keyup', (event) => { updateAutoEnvironmentVariableValue(event) });
-
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
@@ -164,22 +161,14 @@ function addInProgressField(event) {
 
 function updateAutoEnvironmentVariableName(event) {
   var aev_name = event.target.value;
+  const labelString = event.target.dataset.labelString;
   var input_field = event.target.parentElement.parentElement.children[0].children[1];
   var label_field = event.target.parentElement.parentElement.children[0].children[0];
-  var value_field = event.target.parentElement.children[4];
-  var aev_value = value_field.value;
-  value_field.removeAttribute('readonly');
 
+  input_field.removeAttribute('readonly');
   input_field.id = `launcher_auto_environment_variable_${aev_name}`;
   input_field.name = `launcher[auto_environment_variable_${aev_name}]`;
-  label_field.innerHTML = aev_name;
-}
-
-function updateAutoEnvironmentVariableValue(event) {
-  var aev_value = event.target.value;
-  var aev_name = event.target.parentElement.children[2].value;
-  var input_field = event.target.parentElement.parentElement.children[0].children[1];
-  input_field.value = aev_value
+  label_field.innerHTML = `${labelString}: ${aev_name}`;
 }
 
 function fixExcludeBasedOnSelect(selectElement) {
@@ -370,9 +359,6 @@ jQuery(() => {
 
   $('[data-auto-environment-variable="name"]')
       .on('keyup', (event) => { updateAutoEnvironmentVariableName(event) });
-
-  $('[data-auto-environment-variable="value"]')
-      .on('keyup', (event) => { updateAutoEnvironmentVariableValue(event) });
 
   initSelectFields();
   initFixedFields();

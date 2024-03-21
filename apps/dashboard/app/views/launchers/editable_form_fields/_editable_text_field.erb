@@ -13,16 +13,9 @@
       <input class="form-control edit-field"
              type="text"
              data-auto-environment-variable="name"
+             data-label-string=<%= attrib.original_label.gsub(' ', '&#32;').force_encoding('utf-8') %>
              value=<%= attrib.id.gsub(/auto_environment_variable_?/, '') %>
       ></inut>
-
-      <label>Value</label>
-      <input class="form-control edit-field"
-             <%= 'readonly' if attrib.value.empty? %>
-             type="text"
-             data-auto-environment-variable="value"
-             value=<%= attrib.value %>
-      ></input>
     <% end %>
 
     </div>
