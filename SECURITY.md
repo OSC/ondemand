@@ -30,10 +30,4 @@ a ticket, open a [Discourse](https://discourse.openondemand.org/) topic or open 
 
 ## Security Audits
 
-, the NSF Cybersecurity Center of 
-Excellence, conducted an in-depth vulnerability assessment of Open OnDemand, completing 
-it in December 2018. This assessment included a careful review of the code, increasing 
-our confidence in its security. The Ohio Supercomputer Center addressed the implementation 
-issues (bugs) that were found during this review, producing a more robust revision of Open OnDemand.
-
 The Open OnDemand core development team has had several engagements with [Trusted CI](https://trustedci.org/), the NSF Cybersecurity Center of Excellence. The first engagement was in 2018, during which Trusted CI conducted an in-depth vulnerability assessment and identified a few implementation issues that the Open OnDemand developers subsequently addressed.  [A report of that 2018 engagement is available here.](https://openondemand.org/trustedci-2018) The next engagement was in early 2021 and had three objectives: (1) integrate security automation into DevOps flows; (2) transfer skills for vulnerability assessments; and (3) develop needed security policies, practices, and procedures.  [A report of that 2021 engagement is available here.](https://openondemand.org/trustedci) 
