@@ -22,11 +22,8 @@ module SmartAttributes
         end
 
         def original_label
-          if @opts[:label]
-            @opts[:label].to_s.gsub(": #{@key}", "")
-          else
-            'Environment Variable'
-          end
+          return 'Environment Variable' unless @opts[:label]
+          @opts[:label].to_s.gsub(": #{@key}", "")
         end
 
         def label(*)
