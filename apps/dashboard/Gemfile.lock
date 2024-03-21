@@ -270,7 +270,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.6.12)
-    zip_tricks (5.6.0)
+    zip_kit (6.2.2)
 
 PLATFORMS
   ruby
@@ -306,7 +306,7 @@ DEPENDENCIES
   sinatra-contrib
   timecop (~> 0.9)
   webrick
-  zip_tricks (~> 5.5)
+  zip_kit (~> 6.2)
 
 BUNDLED WITH
    2.3.6
