@@ -22,13 +22,13 @@ module SmartAttributes
         end
         
         def label(*)
-          (opts[:label] || 'Environment Variable').to_s
+          (@key|| 'Environment Variable').to_s
         end
 
         def field_options(fmt: nil)
           super.merge({readonly: true})
         end
-  
+
         def normalize_key(key_name)
           key_name.to_s.gsub('-', '_')
         end

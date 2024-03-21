@@ -9,11 +9,20 @@
     <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
   
     <% if field_id.match?('auto_environment_variable') %>
-      <label for="aev_name">Name</label>
-      <input class="form-control edit-field" type="text" name="aev_name" id="aev_name"></inut>
+      <label>Name</label>
+      <input class="form-control edit-field"
+             type="text"
+             data-auto-environment-variable="name"
+             value=<%= attrib.id.gsub(/auto_environment_variable_?/, '') %>
+      ></inut>
 
-      <label for="aev_value">Value</label>
-      <input class="form-control edit-field" disabled=true type="text" name="aev_value" id="aev_value"></input>
+      <label>Value</label>
+      <input class="form-control edit-field"
+             <%= 'readonly' if attrib.value.empty? %>
+             type="text"
+             data-auto-environment-variable="value"
+             value=<%= attrib.value %>
+      ></input>
     <% end %>
 
     </div>
