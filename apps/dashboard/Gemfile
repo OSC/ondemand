@@ -53,7 +53,7 @@ gem 'mocha', '~> 2.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
-gem 'zip_tricks', '~> 5.5'
+gem 'zip_kit', '~> 6.2'
 gem 'rss', '~> 0.2'
 
 gem 'jsbundling-rails', '~> 1.0'
