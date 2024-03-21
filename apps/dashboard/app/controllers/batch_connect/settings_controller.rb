@@ -1,14 +1,17 @@
 # The controller to manage BatchConnect saved settings
 class BatchConnect::SettingsController < ApplicationController
   include BatchConnectConcern
+  include UserSettingStore
 
   # GET /batch_connect/<app_token>/settings/<settings_name>
   def show
     set_app_groups
+    set_saved_settings
 
     app_token = params[:token]
     settings_name = params[:id]
-    @settings = BatchConnect::Settings.find(app_token, settings_name)
+    settings_values = bc_templates(app_token).fetch(settings_name.to_sym, {})
+    @settings = BatchConnect::Settings.new(app_token, settings_name, settings_values)
     if @settings.outdated?
       flash.now[:alert] = t('dashboard.bc_saved_settings.outdated_message', app_title: @settings.app.title)
     end
@@ -18,13 +21,18 @@ class BatchConnect::SettingsController < ApplicationController
   def destroy
     app_token = params[:token]
     settings_name = params[:id]
-    settings = BatchConnect::Settings.find(app_token, settings_name)
-    settings.delete
+    delete_bc_template(app_token, settings_name)
     redirect_to new_batch_connect_session_context_path(token: app_token),
-                notice: t('dashboard.bc_saved_settings.deleted_message', settings_name: settings.name)
+                notice: t('dashboard.bc_saved_settings.deleted_message', settings_name: settings_name)
   end
 
   private
+
+  # Set the all the saved settings to render the navigation
+  def set_saved_settings
+    @bc_saved_settings = all_bc_templates
+  end
+
   # Set list of app lists for navigation
   def set_app_groups
     @sys_app_groups = bc_sys_app_groups

@@ -1,5 +1,5 @@
 <%- if Configuration.bc_saved_settings? -%>
-  <% all_settings = BatchConnect::Settings.all_by_app_title %>
+  <% all_settings = @bc_saved_settings %>
   <div id="saved-settings-menu" class="card system-and-shared-apps-header">
     <div class="card-header"><%= t('dashboard.bc_saved_settings.title') %></div>
     <div class="list-group list-group-flush">
@@ -8,8 +8,8 @@
           <%= t('dashboard.bc_saved_settings.no_settings_title') %>
         </span>
       <% end %>
-      <% all_settings.each_with_index do | (_, saved_settings_list), index|
-        app = saved_settings_list.first.app
+      <% all_settings.sort.each_with_index do | (app_token, app_saved_settings), index|
+        app = BatchConnect::App.from_token(app_token.to_s)
         link = app.link
       %>
         <p class="list-group-item mb-0 header">
@@ -19,12 +19,12 @@
           </a>
         </p>
         <div id="<%= "saved-settings-#{index}" %>" class="show saved-settings-list">
-          <% saved_settings_list.sort_by(&:name).each do |settings| %>
+          <% app_saved_settings.sort.each do |setting_name, _| %>
             <a class="list-group-item list-group-item-action"
-               href="<%= batch_connect_setting_path(token: settings.app.token, id: settings.name) %>"
+               href="<%= batch_connect_setting_path(token: app.token, id: setting_name) %>"
                title="">
               <i id="" class="fa fa-file fa-fw app-icon" aria-hidden="true"></i>
-              <%= settings.name %>
+              <%= setting_name %>
             </a>
           <% end %>
         </div>

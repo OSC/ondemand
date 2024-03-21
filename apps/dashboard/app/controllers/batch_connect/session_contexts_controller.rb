@@ -1,6 +1,7 @@
 # The controller for creating batch connect sessions.
 class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
+  include UserSettingStore
 
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
@@ -25,6 +26,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
 
     set_app_groups
+    set_saved_settings
     set_my_quotas
   end
 
@@ -53,6 +55,7 @@ class BatchConnect::SessionContextsController < ApplicationController
         set_prefill_templates
         format.html do
           set_app_groups
+          set_saved_settings
           render :new
         end
         format.json { render json: @session_context.errors, status: :unprocessable_entity }
@@ -75,6 +78,11 @@ class BatchConnect::SessionContextsController < ApplicationController
       @apps_menu_group = bc_custom_apps_group
     end
 
+    # Set the all the saved settings to render the navigation
+    def set_saved_settings
+      @bc_saved_settings = all_bc_templates
+    end
+
     # Set the session context from the app
     def set_session_context
       @session_context = @app.build_session_context
@@ -87,13 +95,13 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Set the rendering format for displaying attributes
     def set_prefill_templates
-      @prefill_templates ||=  BatchConnect::Settings.app_settings(@app.token)
+      @prefill_templates ||= bc_templates(@app.token)
     end
 
     def save_template
       return unless params[:save_template].present? && params[:save_template] == "on" && params[:template_name].present?
 
-      BatchConnect::Settings.new(@app.token, params[:template_name], @session_context.to_h).save
+      save_bc_template(@app.token, params[:template_name], @session_context.to_h)
     end
 
     # Only permit certian parameters

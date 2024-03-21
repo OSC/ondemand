@@ -39,4 +39,40 @@ module UserSettingStore
   def user_settings_path
     Pathname.new(::Configuration.user_settings_file)
   end
+
+  def all_bc_templates
+    user_settings[BC_TEMPLATES].to_h
+  end
+
+  def bc_templates(app_token)
+    templates = all_bc_templates
+    return {} if templates.empty?
+
+    user_settings[BC_TEMPLATES][app_token.to_sym].to_h
+  end
+
+  def save_bc_template(app_token, name, key_values)
+    current_templates = user_settings[BC_TEMPLATES] || {}
+    current_app_templates = current_templates[app_token.to_sym] || {}
+
+    new_template = {}
+    new_template[name.to_sym] = key_values
+
+    new_settings = {}
+    new_settings[BC_TEMPLATES] = {}
+    new_settings[BC_TEMPLATES][app_token.to_sym] = current_app_templates.merge(new_template)
+
+    update_user_settings(new_settings)
+  end
+
+  def delete_bc_template(app_token, name)
+    current_templates = all_bc_templates
+    current_templates.fetch(app_token.to_sym, {}).delete(name.to_sym)
+    # Delete app_token group when empty
+    current_templates.delete(app_token.to_sym) if current_templates.fetch(app_token.to_sym, {}).empty?
+
+    new_settings = {}
+    new_settings[BC_TEMPLATES] = current_templates
+    update_user_settings(new_settings)
+  end
 end
