@@ -8,10 +8,16 @@ class BatchConnect::SettingsController < ApplicationController
     set_app_groups
     set_saved_settings
 
-    settings_params = settings_request_params
-    app_token = settings_params[:token]
-    settings_name = settings_params[:id]
-    settings_values = bc_templates(app_token).fetch(settings_name.to_sym, {})
+    request_params = settings_request_params
+    app_token = request_params[:token]
+    settings_name = request_params[:id]
+    settings_values = bc_templates(app_token)[settings_name.to_sym]
+    if settings_values.nil?
+      redirect_to new_batch_connect_session_context_path(token: app_token),
+                  alert: t('dashboard.bc_saved_settings.missing_settings')
+      return
+    end
+
     @settings = BatchConnect::Settings.new(app_token, settings_name, settings_values)
     if @settings.outdated?
       flash.now[:alert] = t('dashboard.bc_saved_settings.outdated_message', app_title: @settings.app.title)
@@ -20,9 +26,9 @@ class BatchConnect::SettingsController < ApplicationController
 
   # DELETE /batch_connect/<app_token>/settings/<settings_name>
   def destroy
-    settings_params = settings_request_params
-    app_token = settings_params[:token]
-    settings_name = settings_params[:id]
+    request_params = settings_request_params
+    app_token = request_params[:token]
+    settings_name = request_params[:id]
     delete_bc_template(app_token, settings_name)
     redirect_to new_batch_connect_session_context_path(token: app_token),
                 notice: t('dashboard.bc_saved_settings.deleted_message', settings_name: settings_name)

@@ -258,6 +258,7 @@ en:
     bc_saved_settings:
       title: "Saved Settings"
       no_settings_title: "You have no saved settings."
+      missing_settings: "Selected saved settings not found."
       launch_label: "Launch"
       launch_title: "Launch %{app_title} with %{settings_name} parameters"
       delete_label: "Delete"
