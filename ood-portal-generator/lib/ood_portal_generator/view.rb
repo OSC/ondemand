@@ -107,7 +107,11 @@ module OodPortalGenerator
       @oidc_provider_metadata_url       = opts.fetch(:oidc_provider_metadata_url, nil)
       @oidc_client_id                   = opts.fetch(:oidc_client_id, nil)
       @oidc_client_secret               = opts.fetch(:oidc_client_secret, nil)
-      @oidc_redirect_uri                = "#{protocol}#{servername}#{@oidc_uri}"
+      @oidc_redirect_uri                = if opts.key?(:proxy_server)
+                                            "#{protocol}#{@proxy_server}#{@oidc_uri}"
+                                          else
+                                            @oidc_uri.to_s
+                                          end
       @oidc_remote_user_claim           = opts.fetch(:oidc_remote_user_claim, 'preferred_username')
       @oidc_scope                       = opts.fetch(:oidc_scope, "openid profile email")
       @oidc_crypto_passphrase           = opts.fetch(:oidc_crypto_passphrase, Digest::SHA1.hexdigest(servername))
