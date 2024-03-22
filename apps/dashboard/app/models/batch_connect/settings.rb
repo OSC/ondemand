@@ -15,10 +15,6 @@ module BatchConnect
       @app ||= BatchConnect::App.from_token token
     end
 
-    def to_h
-      values.clone
-    end
-
     def outdated?
       outdated = false
       # CHECK IF THERE ARE NEW ATTRIBUTES NOT IN THE VALUES HASH
