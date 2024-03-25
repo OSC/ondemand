@@ -1,6 +1,7 @@
 # The controller for active batch connect sessions.
 class BatchConnect::SessionsController < ApplicationController
   include BatchConnectConcern
+  include UserSettingStore
 
   # GET /batch_connect/sessions
   # GET /batch_connect/sessions.json
@@ -9,6 +10,7 @@ class BatchConnect::SessionsController < ApplicationController
     @sessions.each(&:update_cache_completed!)
 
     set_app_groups
+    set_saved_settings
     set_my_quotas
   end
 
@@ -60,6 +62,11 @@ class BatchConnect::SessionsController < ApplicationController
       @usr_app_groups = bc_usr_app_groups
       @dev_app_groups = bc_dev_app_groups
       @apps_menu_group = bc_custom_apps_group
+    end
+
+    # Set the all the saved settings to render the navigation
+    def set_saved_settings
+      @bc_saved_settings = all_bc_templates
     end
 
     def delete_session_panel?

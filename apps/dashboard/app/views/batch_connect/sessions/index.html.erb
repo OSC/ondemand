@@ -21,6 +21,7 @@ locals: {
 <div class="row">
   <%- if any_apps -%>
     <div class="col-md-3">
+      <%= render partial: 'batch_connect/shared/saved_settings_menu' %>
       <%=
         render(
           partial: "batch_connect/shared/app_menu",
