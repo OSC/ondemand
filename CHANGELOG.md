@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#3447)\
+Bump rails from 7.0.8 to 7.0.8.1 in /apps/myjobs (#3446)\
+Adds 'searchable: false' to actions column in files app (#3443)\
+re-enable ActionController::Live (#3441)\
+update DEVELOPMENT.md to include developing the dashboard (#3437)\
+Update SECURITY.md (#3440)\
+wait 5 seconds for this modal to show (#3439)\
+fix this test (#3435)\
+change the default value for auto_accounts when copying from template. (#3401)\
+start to redesign the projects#show page (#3419)\
+add test for setting path_selector favorites (#3428)\
+lint a random file (#3431)\
+Add completed_at attribute to mark job finish. (#3424)\
+Update Changelog (#3427)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
