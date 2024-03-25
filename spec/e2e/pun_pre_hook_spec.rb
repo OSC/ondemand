@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_e2e'
 
 describe 'Pun Pre Hook' do
@@ -14,7 +16,7 @@ describe 'Pun Pre Hook' do
     restart_dex
   end
 
-  after(:each) do
+  after do
     browser.close
     on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
   end
