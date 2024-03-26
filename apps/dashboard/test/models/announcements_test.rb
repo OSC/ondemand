@@ -77,6 +77,17 @@ class AnnouncementsTest < ActiveSupport::TestCase
     assert_equal 0, announcements.select(&:valid?).count
   end
 
+  test "should create announcement for syntax error" do
+    f = Tempfile.open(["announcemment", ".yml"])
+    f.write "<%- end %>"
+    f.close
+
+    announcements = Announcements.all(f.path)
+    announcement = announcements.first
+    assert_equal :warning, announcement.type
+    assert_send([announcement.instance_variable_get(:@error).to_str, :include?, "syntax error"])
+  end
+
   test "should create invalid announcement for invalid yaml file" do
     f = Tempfile.open(["announcement", ".yml"])
     f.write %{INVALID: YAML\nINVALID YAML}
