@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# TODO: Refactor batch_connect_test.rb to include tests that require slurm
+# (testing that things submit) and pull out/write tests for widgets (do not
+# require form submission) into this file - perhaps a batch_connect_test/
+# directory
+
 require 'application_system_test_case'
 require 'ood_core/job/adapters/slurm'
 
