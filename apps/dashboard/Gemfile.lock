@@ -88,6 +88,7 @@ GEM
       xpath (~> 3.2)
     childprocess (4.1.0)
     climate_control (0.2.0)
+    coderay (1.1.3)
     coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
       railties (>= 5.2.0)
@@ -181,6 +182,9 @@ GEM
     ood_support (0.0.5)
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     psych (5.1.2)
       stringio
     public_suffix (5.0.4)
@@ -304,6 +308,7 @@ DEPENDENCIES
   ood_core (~> 0.24.1)
   ood_support (~> 0.0.2)
   pbs (~> 2.2.1)
+  pry
   rails (= 7.0.8)
   redcarpet (~> 3.3)
   rest-client (~> 2.0)
