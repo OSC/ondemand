@@ -26,6 +26,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
 
     set_app_groups
+    set_saved_settings
     set_my_quotas
   end
 
@@ -54,6 +55,7 @@ class BatchConnect::SessionContextsController < ApplicationController
         set_prefill_templates
         format.html do
           set_app_groups
+          set_saved_settings
           render :new
         end
         format.json { render json: @session_context.errors, status: :unprocessable_entity }
@@ -74,6 +76,11 @@ class BatchConnect::SessionContextsController < ApplicationController
       @usr_app_groups = bc_usr_app_groups
       @dev_app_groups = bc_dev_app_groups
       @apps_menu_group = bc_custom_apps_group
+    end
+
+    # Set the all the saved settings to render the navigation
+    def set_saved_settings
+      @bc_saved_settings = all_bc_templates
     end
 
     # Set the session context from the app

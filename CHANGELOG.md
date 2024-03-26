@@ -11,15 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
 - NoVNC compression & quality have configurable defaults in [3380](https://github.com/OSC/ondemand/pull/3380).
 - Added `bc_sessions_poll_delay` in favor of hidden environment variable POLL_DELAY in [3421](https://github.com/OSC/ondemand/pull/3421).
+- BatchConnect applications now write out `completed_at` attributes in [3424](https://github.com/OSC/ondemand/pull/3424).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
 - The dashboard has been upgraded to rails 7.0 in [3353](https://github.com/OSC/ondemand/pull/3353).
 - Myjobs has been upgraded to rails 7.0 in [3404](https://github.com/OSC/ondemand/pull/3404).
+- ActionController::Live has been re-enabled in the file app in [3441](https://github.com/OSC/ondemand/pull/3441).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
 - The path_selector can now inheret configurations in [3375](https://github.com/OSC/ondemand/pull/3375).
+- The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
 
 ## [3.1.0] - 02-08-2024
 
