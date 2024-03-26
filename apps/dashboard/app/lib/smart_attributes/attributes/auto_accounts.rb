@@ -38,7 +38,6 @@ module SmartAttributes
     # try to find which default account value to use given
     # all the input options and the actual users' account list.
     def self.default_value(input_options, account_list)
-      Rails.logger.debug("input: #{input_options.inspect} & #{account_list.inspect}")
       input_value = input_options[:value].to_s
       exclude_list = input_options[:exclude_options].to_a
       available_accounts = account_list - exclude_list
