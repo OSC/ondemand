@@ -71,4 +71,48 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       refute find("[data-target='#batch_connect_session_context_path_path_selector']", visible: :hidden).visible?
     end
   end
+
+  test 'radio_button can be hidden with data-hide-*' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+  
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - radio
+          - hide_radio
+        attributes:
+          radio:
+            widget: 'radio_button'
+            options:
+              - ['one', 1]
+              - ['zero', 0]
+            value: 1
+          hide_radio:
+            widget: 'select'
+            options:
+              - ['show radio', 'show radio']
+              - ['hide radio', 'hide radio', data-hide-radio: true]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('show radio', from: 'batch_connect_session_context_hide_radio')
+      assert find('#batch_connect_session_context_radio_0')
+      assert find('#batch_connect_session_context_radio_1')
+      
+      select('hide radio', from: 'batch_connect_session_context_hide_radio')
+      refute find('#batch_connect_session_context_radio_0', visible: :hidden).visible?
+      refute find('#batch_connect_session_context_radio_1', visible: :hidden).visible?
+    end
+  end
 end

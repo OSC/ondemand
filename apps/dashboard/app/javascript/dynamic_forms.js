@@ -153,7 +153,18 @@ function makeChangeHandlers(prefix){
               } else if(key.startsWith('set')) {
                 addSetHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('hide')) {
-                addHideHandler(element['id'], opt.value, key, data[key]);
+                let token = key.replace(/^hide/, '');
+                let changeId = idFromToken(token)
+                if (changeId == undefined) {
+                  let nameString = `[name='${idPrefix}[${token.toLowerCase()}]']`;
+                  let elList = $(nameString);
+
+                  elList.each((_index, ele) => {
+                    addHideHandler(element['id'], opt.value, ele.id.replace(`${idPrefix}_`, '').replace('_', '-'), data[key]);
+                  });
+                } else {
+                  addHideHandler(element['id'], opt.value, key, data[key]);
+                }
               }
             });
           }
@@ -178,8 +189,9 @@ function makeChangeHandlers(prefix){
 };
 
 function addHideHandler(optionId, option, key, configValue) {
-  const changeId = idFromToken(key.replace(/^hide/,''));
-
+  const token = key.replace(/^hide/, '');
+  const changeId = idFromToken(token);
+  
   if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, undefined);
   const table = hideLookup[optionId];
   table.put(changeId, option, configValue);
@@ -198,6 +210,7 @@ function addHideHandler(optionId, option, key, configValue) {
 
   updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
 }
+
 
 /**
  *
@@ -633,7 +646,7 @@ function minOrMax(key) {
  */
 function idFromToken(str) {
   elements = formTokens.map((token) => {
-    let match = str.match(`^${token}{1}`);
+    let match = str.match(`^${token.toLowerCase()}{1}`);
 
     if (match && match.length >= 1) {
       let ele = snakeCaseWords(match[0]);
@@ -643,7 +656,7 @@ function idFromToken(str) {
     return id !== undefined;
   });
 
-  if(elements.length == 0) {
+  if(elements.length == 0) {   
     return undefined;
   }else if(elements.length == 1) {
     return elements[0];
@@ -658,7 +671,6 @@ function idFromToken(str) {
     })[0];
   }
 }
-
 
 /**
  * Extract the option for out of an option for directive.
