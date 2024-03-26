@@ -297,7 +297,6 @@ module OodPortalGenerator
       attrs = {
         dex_http_port:              http_port,
         oidc_uri:                   '/oidc',
-        oidc_redirect_uri:          client_redirect_uri,
         oidc_provider_metadata_url: "#{issuer}/.well-known/openid-configuration",
         oidc_client_id:             client_id,
         oidc_client_secret:         client_secret
