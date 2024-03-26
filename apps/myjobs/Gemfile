@@ -66,7 +66,7 @@ gem 'ood_appkit', '~> 2.0'
 
 # we have to lock rdoc because 6.4 depends on psych 4.0 which breaks with
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
-gem 'rdoc', '6.3.3'
+gem 'rdoc', '6.3.4.1'
 
 # lock nokogiri & net-imap to versions that are compatible with ruby 2.7.0
 # Ubuntu 20.04 uses.
