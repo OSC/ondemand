@@ -21,10 +21,18 @@ module SmartAttributes
 
       static_opts = {
         options: options,
-        value:   default_value(opts, options)
+        value:   default_value(opts, scalar_accounts(options))
       }.merge(opts.without(:options, :value).to_h)
 
       Attributes::AutoAccounts.new('auto_accounts', static_opts)
+    end
+
+    # dynamic accounts are in the form [acct, acct, {}]. so cast these
+    # arrays to scalar strings if applicable.
+    def self.scalar_accounts(account_list)
+      account_list.map do |account|
+        account.is_a?(Array) ? account.first : account
+      end
     end
 
     # try to find which default account value to use given
