@@ -189,14 +189,6 @@ module OodPortalGenerator
       "#{client_protocol}#{client_id}#{client_port}"
     end
 
-    def apache_redirect_uri
-      if @view.proxy_server.to_s != @view.servername.to_s
-        "#{client_protocol}#{@view.proxy_server}/oidc"
-      else
-        '/oidc'
-      end
-    end
-
     def client_redirect_uri
       "#{client_url}/oidc"
     end
@@ -305,7 +297,6 @@ module OodPortalGenerator
       attrs = {
         dex_http_port:              http_port,
         oidc_uri:                   '/oidc',
-        oidc_redirect_uri:          apache_redirect_uri,
         oidc_provider_metadata_url: "#{issuer}/.well-known/openid-configuration",
         oidc_client_id:             client_id,
         oidc_client_secret:         client_secret
