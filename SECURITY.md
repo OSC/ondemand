@@ -6,7 +6,7 @@ project.
 ## Reporting a Vulnerability
 
 If you have security concerns or think you have found a vulnerability in Open OnDemand,
-please submit a private report by visiting the 'Security' section of our GitHub located at [github.com/OSC/ondemand/security/](https://github.com/OSC/ondemand/security/policy) 
+please submit a private report by visiting the 'Security' section of our GitHub located at [github.com/OSC/ondemand/security/](https://github.com/OSC/ondemand/security/) 
 and clicking 'Report a vulnerability'. 
 
 If you have questions about Open OnDemand's security, or have issues submitting a report please 
