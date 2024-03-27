@@ -98,9 +98,9 @@ class LaunchersController < ApplicationController
       k.match?('auto_environment_variable')
     end
     
-    whitelisted_params = SAVE_SCRIPT_KEYS + auto_env_params
+    allowlist = SAVE_SCRIPT_KEYS + auto_env_params
 
-    params.permit({ launcher: whitelisted_params }, :project_id, :id)
+    params.permit({ launcher: allowlist }, :project_id, :id)
   end
 
   def find_project
