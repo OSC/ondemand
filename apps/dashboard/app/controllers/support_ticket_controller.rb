@@ -53,6 +53,10 @@ class SupportTicketController < ApplicationController
   end
 
   def read_support_ticket_from_request
-    params.require(:support_ticket).permit!
+    params.require(:support_ticket).require(
+      :username, :email, :subject, :description
+    ).permit(
+      :cc, :session_id, :attachments, :queue
+    )
   end
 end
