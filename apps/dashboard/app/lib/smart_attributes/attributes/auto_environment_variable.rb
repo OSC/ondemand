@@ -39,7 +39,7 @@ module SmartAttributes
         end
 
         def submit(*)
-          { script: { job_environment: { @key.to_s.upcase: value }}}
+          { script: { job_environment: { @key.to_s.upcase => value }}}
         end
       end
     end
