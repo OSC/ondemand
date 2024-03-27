@@ -33,11 +33,9 @@ class UserSettingStoreTest < ActionView::TestCase
   end
 
   test 'update_user_settings should create data directory when is not available' do
-    Dir.mktmpdir do |temp_data_dir|
-      data_root = Pathname.new(temp_data_dir).join('update_test')
+    with_user_settings_file('update_test') do
+      data_root = Pathname.new(File.dirname(Configuration.user_settings_file))
       assert_equal false, data_root.exist?
-
-      Configuration.stubs(:user_settings_file).returns("#{data_root.to_s}/settings.yml")
 
       update_user_settings({})
 
@@ -46,15 +44,88 @@ class UserSettingStoreTest < ActionView::TestCase
   end
 
   test 'update_user_settings should update internal data and user settings file' do
-    Dir.mktmpdir do |temp_data_dir|
-      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
-
+    with_user_settings_file do
       settings = user_settings
       settings[:profile] = 'profile_value'
       update_user_settings(settings)
 
       assert_equal settings, user_settings
       assert_equal settings, YAML.safe_load(File.read(user_settings_path)).deep_symbolize_keys
+    end
+  end
+
+  test 'all_bc_templates returns empty hash when there is no data' do
+    with_user_settings_file do
+      assert_equal({}, all_bc_templates)
+    end
+  end
+
+  test 'bc_templates returns empty hash when there is no data' do
+    with_user_settings_file do
+      assert_equal({}, bc_templates('app/token'))
+    end
+  end
+
+  test 'bc_templates returns application saved settings' do
+    with_user_settings_file do
+      app_token = 'app/token'
+      values = { name1: 'value1', name2: 'value2' }
+
+      save_bc_template(app_token, 'settings1', values)
+      save_bc_template(app_token, 'settings2', values)
+      assert_equal({ settings1: values, settings2: values }, bc_templates(app_token))
+    end
+  end
+
+  test 'save_bc_template save settings with expected structure' do
+    with_user_settings_file do
+      app_token = 'app/token'
+      values = { name1: 'value1', name2: 'value2' }
+
+      save_bc_template(app_token, 'settings1', values)
+      save_bc_template(app_token, 'settings2', values)
+      assert_equal({ app_token.to_sym => { settings1: values, settings2: values } }, all_bc_templates)
+    end
+  end
+
+  test 'delete_bc_template deletes settings data' do
+    with_user_settings_file do
+      assert_equal({}, all_bc_templates)
+      app_token = 'app/token'
+      values = { name1: 'value1', name2: 'value2' }
+
+      save_bc_template(app_token, 'settings1', values)
+      save_bc_template(app_token, 'settings2', values)
+      assert_equal({ app_token.to_sym => { settings1: values, settings2: values } }, all_bc_templates)
+
+      delete_bc_template(app_token, 'settings1')
+      assert_equal({ app_token.to_sym => { settings2: values } }, all_bc_templates)
+    end
+  end
+
+  test 'delete_bc_template deletes app entry when empty' do
+    with_user_settings_file do
+      assert_equal({}, all_bc_templates)
+      app_token = 'app/token'
+      values = { name1: 'value1', name2: 'value2' }
+
+      save_bc_template('app/token', 'settings name', values)
+      assert_equal({ app_token.to_sym => { :'settings name' => values } }, all_bc_templates)
+
+      delete_bc_template('app/token', 'settings name')
+      assert_equal({}, all_bc_templates)
+    end
+  end
+
+  private
+
+  def with_user_settings_file(sub_folder = nil)
+    Dir.mktmpdir do |temp_data_dir|
+      path_parts = [temp_data_dir, sub_folder, 'settings.yml'].compact
+      Configuration.stubs(:user_settings_file).returns(File.join(path_parts))
+
+      yield if block_given?
+
     end
   end
 

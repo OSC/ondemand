@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8'
+gem 'rails', '7.0.8.1'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -54,7 +54,7 @@ gem 'mocha', '~> 2.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
-gem 'zip_tricks', '~> 5.5'
+gem 'zip_kit', '~> 6.2'
 gem 'rss', '~> 0.2'
 
 gem 'jsbundling-rails', '~> 1.0'
