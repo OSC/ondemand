@@ -37,6 +37,10 @@ module SmartAttributes
         def normalize_key(key_name)
           key_name.to_s.gsub('-', '_')
         end
+
+        def submit(*)
+          { script: { job_environment: { @key.to_s.upcase: value }}}
+        end
       end
     end
   end
