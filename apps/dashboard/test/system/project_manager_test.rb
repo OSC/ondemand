@@ -75,6 +75,13 @@ class ProjectManagerTest < ApplicationSystemTestCase
     click_on(I18n.t('dashboard.save'))
   end
 
+  def add_auto_environment_variable(project_id, script_id, save: true)
+    # now add 'auto_environment_variable'
+    click_on('Add new option')
+    select('Environment Variable', from: 'add_new_field_select')
+    click_on(I18n.t('dashboard.add'))
+  end
+
   test 'create a new project on fs and display the table entry' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
@@ -442,7 +449,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       actual_new_options = page.all("##{new_field_id} option").map(&:value).to_set
       expected_new_options = [
         'bc_num_hours', 'auto_queues', 'bc_num_slots',
-        'auto_accounts', 'auto_job_name'
+        'auto_accounts', 'auto_job_name', 'auto_environment_variable'
       ].to_set
       assert_equal expected_new_options, actual_new_options
     end
@@ -486,6 +493,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#launcher_bc_num_hours_fixed').click
       find('#save_launcher_bc_num_hours').click
 
+      # add auto_environment_variable
+      add_auto_environment_variable(project_id, script_id)
+      find('#edit_launcher_auto_environment_variable').click
+
+      find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
+      find("#launcher_auto_environment_variable_SOME_VARIABLE").fill_in(with: 'some_value')
+
+      find('#save_launcher_auto_environment_variable').click
+
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
@@ -501,6 +517,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         - auto_scripts
         - auto_batch_clusters
         - bc_num_hours
+        - auto_environment_variable_SOME_VARIABLE
         attributes:
           auto_scripts:
             options:
@@ -530,6 +547,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
             label: Number of hours
             help: ''
             required: true
+          auto_environment_variable_SOME_VARIABLE:
+            value: some_value
+            label: 'Environment Variable: SOME_VARIABLE'
+            help: ''
+            required: false
       HEREDOC
 
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))

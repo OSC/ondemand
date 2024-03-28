@@ -94,7 +94,13 @@ class LaunchersController < ApplicationController
   end
 
   def save_script_params
-    params.permit({ launcher: SAVE_SCRIPT_KEYS }, :project_id, :id)
+    auto_env_params = params[:launcher].keys.select do |k|
+      k.match?('auto_environment_variable')
+    end
+    
+    allowlist = SAVE_SCRIPT_KEYS + auto_env_params
+
+    params.permit({ launcher: allowlist }, :project_id, :id)
   end
 
   def find_project

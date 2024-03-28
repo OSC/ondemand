@@ -60,6 +60,11 @@ module LaunchersHelper
     create_editable_widget(script_form_double, attrib)
   end
 
+  def auto_environment_variable_template
+    attrib = SmartAttributes::AttributeFactory.build_auto_environment_variable
+    create_editable_widget(script_form_double, attrib)
+  end
+
   # We need a form builder to build the template divs. These are
   # templates so that they are not a part of the _actual_ form (yet).
   # Otherwise you'd have required fields that you cannot actually edit
