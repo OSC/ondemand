@@ -181,6 +181,20 @@ class FilesController < ApplicationController
 
   private
 
+  def send_stream(filename:, disposition: "attachment", type: nil)
+    response.headers["Content-Type"] =
+      (type.is_a?(Symbol) ? Mime[type].to_s : type) ||
+      Mime::Type.lookup_by_extension(File.extname(filename).downcase.delete("."))&.to_s ||
+      "application/octet-stream"
+
+    response.headers["Content-Disposition"] =
+      ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: filename)
+
+    yield response.stream
+  ensure
+    response.stream.close
+  end
+
   # set these headers to nil so that we (Rails) will read files
   # off of disk instead of nginx.
   def strip_sendfile_headers
