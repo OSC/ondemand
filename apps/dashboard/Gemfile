@@ -65,7 +65,7 @@ gem 'sprockets-rails', '>= 2.0.0'
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 2.1.0'
-gem 'ood_core', '~> 0.24.1'
+gem 'ood_core', '~> 0.24'
 gem 'pbs', '~> 2.2.1'
 gem 'rest-client', '~> 2.0'
 
