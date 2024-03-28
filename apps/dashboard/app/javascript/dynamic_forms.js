@@ -418,7 +418,6 @@ function updateVisibility(event, changeId) {
   $(`#${changeId}`).parents().each(function(_i, parent) {
     if(parent.classList.contains('form-group')) {
       changeElement = $(parent);
-      return false;
     }
   });
 

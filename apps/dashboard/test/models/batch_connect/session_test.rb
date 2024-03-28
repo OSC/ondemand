@@ -551,7 +551,8 @@ module BatchConnect
           'token'           => 'bc_jupyter',
           'title'           => 'Jupyter Notebook',
           'script_type'     => 'basic',
-          'cache_completed' => nil
+          'cache_completed' => nil,
+          'completed_at'    => nil
         }
         Timecop.freeze(now) do
           assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s

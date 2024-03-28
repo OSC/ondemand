@@ -31,6 +31,10 @@ module BatchConnect
     # @return [Integer] created at
     attr_accessor :created_at
 
+    # When this session finished, as a unix timestamp
+    # @return [Integer] completed at
+    attr_accessor :completed_at
+
     # Token describing app and sub app
     # @return [String] app token
     attr_accessor :token
@@ -87,7 +91,7 @@ module BatchConnect
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title script_type cache_completed).map do |attribute|
+      %w(id cluster_id job_id created_at token title script_type cache_completed completed_at).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -421,6 +425,7 @@ module BatchConnect
     def update_cache_completed!
       if (! cache_completed) && completed?
         self.cache_completed = true
+        self.completed_at = Time.now.to_i
         db_file.write(to_json)
       end
     end

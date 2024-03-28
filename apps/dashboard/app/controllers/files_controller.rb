@@ -1,6 +1,6 @@
 # The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
-  include ZipTricks::RailsStreaming
+  include ActionController::Live
 
   before_action :strip_sendfile_headers, only: [:fs]
 
@@ -58,22 +58,25 @@ class FilesController < ApplicationController
             response.sending_file = true
             response.cache_control[:public] ||= false
 
-            # FIXME: strategy 1: is below, use zip_tricks
-            # strategy 2: use actual zip command (likely much faster) and ActionController::Live
-            zip_tricks_stream do |zip|
-              @path.files_to_zip.each do |file|
-                begin
-                  next unless File.readable?(file.realpath)
+            zip_headers = ZipKit::OutputEnumerator.new.streaming_http_headers
+            response.headers.merge!(zip_headers)
 
-                  if File.file?(file.realpath)
-                    zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                      IO.copy_stream(file.realpath, zip_file)
+            send_stream(filename: zipname) do |stream|
+              ZipKit::Streamer.open(stream) do |zip|
+                @path.files_to_zip.each do |file|
+                  begin
+                    next unless File.readable?(file.realpath)
+
+                    if File.file?(file.realpath)
+                      zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                        IO.copy_stream(file.realpath, zip_file)
+                      end
+                    else
+                      zip.add_empty_directory(dirname: file.relative_path.to_s)
                     end
-                  else
-                    zip.add_empty_directory(dirname: file.relative_path.to_s)
+                  rescue => e
+                    logger.warn("error writing file #{file.path} to zip: #{e.message}")
                   end
-                rescue => e
-                  logger.warn("error writing file #{file.path} to zip: #{e.message}")
                 end
               end
             end
@@ -177,6 +180,20 @@ class FilesController < ApplicationController
   end
 
   private
+
+  def send_stream(filename:, disposition: "attachment", type: nil)
+    response.headers["Content-Type"] =
+      (type.is_a?(Symbol) ? Mime[type].to_s : type) ||
+      Mime::Type.lookup_by_extension(File.extname(filename).downcase.delete("."))&.to_s ||
+      "application/octet-stream"
+
+    response.headers["Content-Disposition"] =
+      ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: filename)
+
+    yield response.stream
+  ensure
+    response.stream.close
+  end
 
   # set these headers to nil so that we (Rails) will read files
   # off of disk instead of nginx.
