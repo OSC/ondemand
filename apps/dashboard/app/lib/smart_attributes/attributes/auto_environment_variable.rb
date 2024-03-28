@@ -22,12 +22,12 @@ module SmartAttributes
         end
 
         def original_label
-          return 'Environment Variable' unless @opts[:label]
-          @opts[:label].to_s.gsub(": #{@key}", "")
+          return 'Environment Variable' if !@opts[:label] || opts[:label].match('Environment Variable')
+          @opts[:label].to_s
         end
 
         def label(*)
-          "#{original_label}: #{@key}"
+          (opts[:label] || "Environment Variable: #{@key}").to_s
         end
 
         def field_options(fmt: nil)

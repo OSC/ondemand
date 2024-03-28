@@ -3,7 +3,7 @@
 let newFieldTemplate = undefined;
 
 const newFieldData = {
-  "bc_num_hours": {
+  bc_num_hours: {
     label: "Hours",
     help: "How long the job can run for.",
   },
@@ -152,23 +152,26 @@ function addInProgressField(event) {
            .on('click', (event) => { toggleFixedField(event) });
 
   justAdded.find('[data-auto-environment-variable="name"]')
-           .on('keyup', (event) => { updateAutoEnvironmentVariableName(event) });
+           .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
 
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
 }
 
-function updateAutoEnvironmentVariableName(event) {
+function updateAutoEnvironmentVariable(event) {
   var aev_name = event.target.value;
   const labelString = event.target.dataset.labelString;
-  var input_field = event.target.parentElement.parentElement.children[0].children[1];
-  var label_field = event.target.parentElement.parentElement.children[0].children[0];
+  var input_field = event.target.parentElement.children[2].children[1];
 
   input_field.removeAttribute('readonly');
   input_field.id = `launcher_auto_environment_variable_${aev_name}`;
   input_field.name = `launcher[auto_environment_variable_${aev_name}]`;
-  label_field.innerHTML = `${labelString}: ${aev_name}`;
+
+  if (labelString.match(/Environment(&#32;|\s)Variable/)) {
+    var label_field = event.target.parentElement.children[2].children[0];
+    label_field.innerHTML = `Environment Variable: ${aev_name}`;
+  }
 }
 
 function fixExcludeBasedOnSelect(selectElement) {
@@ -358,7 +361,7 @@ jQuery(() => {
       .on('click', (event) => { toggleFixedField(event) });
 
   $('[data-auto-environment-variable="name"]')
-      .on('keyup', (event) => { updateAutoEnvironmentVariableName(event) });
+      .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
 
   initSelectFields();
   initFixedFields();
