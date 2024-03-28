@@ -40,7 +40,7 @@ function pollForJobInfo(element) {
       element.innerHTML = jobInfoDiv(jobId, state);
       if(state !== 'completed') {
         // keep going
-        setTimeout(pollForJobInfo, 10000, element);
+        setTimeout(pollForJobInfo, 30000, element);
       }
     })
     .catch((error) => {
@@ -49,7 +49,7 @@ function pollForJobInfo(element) {
 }
 
 function jobInfoDiv(jobId, state, stateTitle='', stateDescription='') {
-  return `<div class="job-info">
+  return `<div class="job-info justify-content-center d-grid">
             <span class="mr-2">${jobId}</span>
             <span class="job-info-title badge ${cssBadgeForState(state)}" title="${stateTitle}">${state.toUpperCase()}</span>
             <span class="job-info-description text-muted">${stateDescription}</span>

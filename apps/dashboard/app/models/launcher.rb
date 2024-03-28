@@ -202,6 +202,26 @@ class Launcher
     most_recent_job['cluster']
   end
 
+  def active_jobs
+    @active_jobs ||= jobs.map do |job|
+      adapter = adapter(job['cluster'].to_sym).job_adapter
+      adapter.info(job['id'])
+    end.reject do |job|
+      job.status == :completed
+    end
+  end
+
+  def job_cluster(id)
+    job = jobs.select { |job| job['id'] == id }.first
+    return nil if job.nil?
+
+    job['cluster']
+  end
+
+  def jobs
+    @jobs ||= YAML.safe_load(File.read(job_log_file.to_s)).to_a
+  end
+
   def create_default_script
     return false if Launcher.scripts?(project_dir) || default_script_path.exist?
 
@@ -295,23 +315,19 @@ class Launcher
   end
 
   def most_recent_job
-    job_data.sort_by do |data|
+    jobs.sort_by do |data|
       data['submit_time']
     end.reverse.first.to_h
   end
 
   def update_job_log(job_id, cluster)
-    new_job_data = job_data + [{
+    new_jobs = jobs + [{
       'id'          => job_id,
       'submit_time' => Time.now.to_i,
       'cluster'     => cluster.to_s
     }]
 
-    File.write(job_log_file.to_s, new_job_data.to_yaml)
-  end
-
-  def job_data
-    @job_data ||= YAML.safe_load(File.read(job_log_file.to_s)).to_a
+    File.write(job_log_file.to_s, new_jobs.to_yaml)
   end
 
   def job_log_file

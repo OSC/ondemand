@@ -4,6 +4,8 @@
   disabled_class = disabled ? 'disabled' : ''
   edit_title = "#{t('dashboard.edit')} launcher #{launcher.title}"
   delete_title = "#{t('dashboard.delete')} launcher #{launcher.title}"
+  active_job_list_id = "active_job_list_#{launcher.id}"
+  active_job_list_button_id = "active_job_button_#{launcher.id}"
 -%>
 
 <div class='card'>
@@ -62,8 +64,28 @@
       </div>
     </div>
 
-    <div class="row">
-      <%= launcher.most_recent_job_id %>
+    <div class="row mt-2">
+      <div class="col-4">
+        <div class="list-group">
+          <a id="<%= active_job_list_button_id %>" class="btn btn-success list-toggler"
+            data-toggle="collapse" data-target="#<%= active_job_list_id %>"
+            aria-expanded="true" aria-controls="<%= active_job_list_id %>">
+            <span>Active Jobs</span>
+          </a>
+
+          <div id="<%= active_job_list_id %>" >
+          <%- launcher.active_jobs.each do |job| -%>
+            <a class="list-group-item list-group-item list-group-item-action justify-content-center"
+              data-job-poller="true"
+              data-job-cluster="<%= launcher.job_cluster(job.id) %>"
+              data-job-id="<%= job.id %>"
+            >
+              <%= job.id %>
+            </a>
+            <%- end -%>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
