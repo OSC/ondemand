@@ -71,7 +71,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
       pinned_apps_group_by: nil,
 
       show_all_apps_link: false,
-      filter_nav_categories?: false,
       nav_categories: ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"],
       nav_bar: [],
       help_bar: [],
@@ -170,20 +169,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
     target = UserConfiguration.new
 
     assert_equal [Pathname.new("/array/path/1"), Pathname.new("/array/path/2")], target.announcement_path
-  end
-
-  test "filter_nav_categories? should return true when categories is set in config" do
-    Configuration.stubs(:config).returns({nav_categories: []})
-    assert_equal true, UserConfiguration.new.filter_nav_categories?
-  end
-
-  test "filter_nav_categories? should return default value NavConfig.categories_whitelist? when categories is not set in config" do
-    Configuration.stubs(:config).returns({})
-    NavConfig.stubs(:categories_whitelist?).returns(false)
-    assert_equal false, UserConfiguration.new.filter_nav_categories?
-
-    NavConfig.stubs(:categories_whitelist?).returns(true)
-    assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 
   test "create_service_class returns SupportTicketEmailService when email configuration object defined" do
