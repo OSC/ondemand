@@ -177,13 +177,9 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 
-  test "filter_nav_categories? should return default value NavConfig.categories_whitelist? when categories is not set in config" do
+  test "filter_nav_categories? should return default value false when categories is not set in config" do
     Configuration.stubs(:config).returns({})
-    NavConfig.stubs(:categories_whitelist?).returns(false)
     assert_equal false, UserConfiguration.new.filter_nav_categories?
-
-    NavConfig.stubs(:categories_whitelist?).returns(true)
-    assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 
   test "create_service_class returns SupportTicketEmailService when email configuration object defined" do
