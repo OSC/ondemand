@@ -25,8 +25,4 @@ class HpcJob < OodCore::Job::Info
                        status:          status.to_s,
                        allocated_nodes: [] }).deep_stringify_keys
   end
-
-  def cache_key
-    "#{cluster}_#{id}"
-  end
 end
