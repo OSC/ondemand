@@ -13,7 +13,7 @@ class HpcJob < OodCore::Job::Info
 
   def initialize(cluster: nil, **args)
     @cluster = cluster
-    super(**args)
+    super(**args.deep_symbolize_keys)
   end
 
   def completed?

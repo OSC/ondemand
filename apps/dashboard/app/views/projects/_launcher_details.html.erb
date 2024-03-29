@@ -75,11 +75,7 @@
 
           <div id="<%= active_job_list_id %>" >
           <%- launcher.active_jobs.each do |job| -%>
-            <a class="list-group-item list-group-item list-group-item-action justify-content-center"
-              data-job-poller="true"
-              data-job-cluster="<%= launcher.job_cluster(job.id) %>"
-              data-job-id="<%= job.id %>"
-            >
+            <a class="list-group-item list-group-item list-group-item-action justify-content-center">
               <%= job.id %>
             </a>
             <%- end -%>

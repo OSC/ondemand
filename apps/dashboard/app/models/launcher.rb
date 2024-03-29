@@ -203,12 +203,7 @@ class Launcher
   end
 
   def active_jobs
-    @active_jobs ||= jobs.map do |job|
-      adapter = adapter(job['cluster'].to_sym).job_adapter
-      adapter.info(job['id'])
-    end.reject do |job|
-      job.status == :completed
-    end
+    @active_jobs ||= jobs.reject { |job| job.completed? }
   end
 
   def job_cluster(id)
@@ -219,7 +214,12 @@ class Launcher
   end
 
   def jobs
-    @jobs ||= YAML.safe_load(File.read(job_log_file.to_s), permitted_classes: [Time]).to_a
+    @jobs ||= begin
+      data = YAML.safe_load(File.read(job_log_file.to_s), permitted_classes: [Time]).to_a
+      data.map do |job_data|
+        HpcJob.new(**job_data)
+      end
+    end
   end
 
   def create_default_script
@@ -324,7 +324,7 @@ class Launcher
     adapter = adapter(cluster).job_adapter
     info = adapter.info(job_id)
     job = HpcJob.from_core_info(info: info, cluster: cluster)
-    new_jobs = jobs + [job.to_h]
+    new_jobs = (jobs + [job.to_h]).map(&:to_h)
 
     File.write(job_log_file.to_s, new_jobs.to_yaml)
   end
