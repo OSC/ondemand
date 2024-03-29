@@ -219,7 +219,7 @@ class Launcher
   end
 
   def jobs
-    @jobs ||= YAML.safe_load(File.read(job_log_file.to_s)).to_a
+    @jobs ||= YAML.safe_load(File.read(job_log_file.to_s), permitted_classes: [Time]).to_a
   end
 
   def create_default_script
@@ -321,11 +321,10 @@ class Launcher
   end
 
   def update_job_log(job_id, cluster)
-    new_jobs = jobs + [{
-      'id'          => job_id,
-      'submit_time' => Time.now.to_i,
-      'cluster'     => cluster.to_s
-    }]
+    adapter = adapter(cluster).job_adapter
+    info = adapter.info(job_id)
+    job = HpcJob.from_core_info(info: info, cluster: cluster)
+    new_jobs = jobs + [job.to_h]
 
     File.write(job_log_file.to_s, new_jobs.to_yaml)
   end
