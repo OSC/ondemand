@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The parent controller for all other controllers.
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
@@ -22,12 +24,13 @@ class ApplicationController < ActionController::Base
   end
 
   def set_nav_groups
-    #TODO: for AweSim, what if we added the shared apps here?
+    # TODO: for AweSim, what if we added the shared apps here?
     @nav_groups = filter_groups(sys_app_groups)
   end
 
   def set_featured_group
-    apps = AppRecategorizer.recategorize(@pinned_apps, I18n.t("dashboard.pinned_apps_category"), I18n.t('dashboard.pinned_apps_title'))
+    apps = AppRecategorizer.recategorize(@pinned_apps, I18n.t('dashboard.pinned_apps_category'),
+                                         I18n.t('dashboard.pinned_apps_title'))
     group = OodAppGroup.groups_for(apps: apps, nav_limit: @user_configuration.pinned_apps_menu_length)
 
     @featured_group = filter_groups(group).first # 1 single group called 'Apps'
@@ -71,7 +74,7 @@ class ApplicationController < ActionController::Base
 
   def set_announcements
     @announcements = Announcements.all(@user_configuration.announcement_path)
-  rescue => e
+  rescue StandardError => e
     logger.warn "Error parsing announcements: #{e.message}"
     @announcements = []
   end
