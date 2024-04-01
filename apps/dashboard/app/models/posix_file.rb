@@ -201,7 +201,7 @@ class PosixFile
     # > this is not be considered an error that affects the exit status.
     #
     # so instead we validate it against a regex that match mimetypes
-    raise "not valid mimetype: #{type}" unless type =~ /^\w+\/[-+\.\w]+$/
+    raise "not valid mimetype: #{type}" unless type =~ /\A\w+\/[-+\.\w]+\z/
 
     # if you touch a file and it is empty, the mime type is "inode/x-empty"
     # but in our interaction with the file we would treat this as "text/plain"
