@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update regular expression (#3476)\
+update ood_core (#3466)\
+enhance the projects#show page with list of active jobs (#3473)\
+3081 - auto_environment_variables (#3432)\
+lint a random file (#3470)\
+Fixes pathfinger_select widget with data-hide option (#3460)\
+Update SECURITY.md  (#3458)\
+fix bug for auto_accounts (#3457)\
+Merge pull request #3373 from osc-bot/osc-bot/dep-updates\
+Bump rdoc from 6.6.2 to 6.6.3.1 in /apps/dashboard (#3454)\
+Bump rdoc from 6.3.3 to 6.3.4.1 in /apps/myjobs (#3453)\
+update dependencies\
+Added saved settings menu and details view (#3434)\
+Update Changelog (#3451)\
+Bump rails from 7.0.8 to 7.0.8.1 in /apps/dashboard (#3445)\
+try to fix flaky tests again (#3449)\
+lint a random file (#3450)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
