@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
 - The path_selector can now inheret configurations in [3375](https://github.com/OSC/ondemand/pull/3375).
 - The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
+- data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
 
 ## [3.1.0] - 02-08-2024
 
