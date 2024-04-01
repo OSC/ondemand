@@ -1,15 +1,20 @@
 <%
-  show_hidden = field_options.fetch(:show_hidden, false)
-  show_files = field_options.fetch(:show_files, true)
-  inital_directory = field_options.fetch(:directory, CurrentUser.home)
-  favorites = pathselector_favorites(field_options.try(:[], :favorites))
-
   input_field_id = "#{form.object_name}_#{attrib.id}"
   path_selector_id = "#{input_field_id}_path_selector"
-  button_id = "#{path_selector_id}_button"
-  table_id = "#{path_selector_id}_table"
-  breadcrumb_id = "#{path_selector_id}_breadcrumb"
   options =  { data: { 'path-selector': true }}.merge(field_options)
+
+  locals = {
+    show_hidden: field_options.fetch(:show_hidden, false),
+    show_files: field_options.fetch(:show_files, true),
+    initial_directory: field_options.fetch(:directory, CurrentUser.home),
+    favorites: pathselector_favorites(field_options.try(:[], :favorites)),
+
+    path_selector_id: path_selector_id,
+    table_id: "#{path_selector_id}_table",
+    breadcrumb_id: "#{path_selector_id}_breadcrumb",
+    button_id: "#{path_selector_id}_button",
+    input_field_id: input_field_id
+  }
 %>
 
 <%= form.text_field(attrib.id, class: 'form-control', **options) %>
@@ -18,77 +23,4 @@
   Select Path
 </button>
 
-<!-- Modal -->
-<div
-    class="modal fade h-75"
-    id="<%= path_selector_id %>" tabindex="-1" role="dialog"
-    aria-labelledby="modal-path-selector" aria-hidden="true"
-    data-show-files="<%= show_files %>"
-    data-show-hidden="<%= show_hidden %>"
-    data-initial-directory="<%= inital_directory %>"
-    data-files-path="<%= files_path %>"
-    data-table-id="<%= table_id %>"
-    data-breadcrumb-id="<%= breadcrumb_id %>"
-    data-select-button-id="<%= button_id %>"
-    data-input-field-id="<%= input_field_id %>"
-    >
-
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-path-selector-title">Select Your Working Directory</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      
-        <div class="container-fluid">
-          <div class="row">
-          <% if favorites %>
-            <div class="col-sm-5">
-              <div class="panel panel-default">
-                <div class="panel-heading">Favorites</div>
-                <ol id="favorites" class="list-group text-nowrap">
-                  <%= render partial: 'favorites', collection: favorites, as: :path %>
-                </ol>
-              </div>
-            </div>
-          <% end %>
-        
-      
-            <div class="<%= favorites ? 'col-sm-7' : 'col-sm-12' %>">
-              <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter">
-              </ol>
-
-              <div class="d-none alert alert-warning" role="alert" id="forbidden-warning">
-                <%= t('dashboard.batch_connect_sessions_path_selector_forbidden_error') %>
-              </div>
-
-              <div class="d-flex justify-content-center">
-                <div id="loading-icon" class="spinner-border rem-5" role="status">
-                  <span class="sr-only">Loading...</span> 
-                </div>
-              </div>
-              <table class="table table-hover table-condensed d-table w-100" id="<%= table_id %>">
-                <caption>Choose a file or directory to use in the form.</caption>
-                <thead>
-                  <tr>
-                    <th>Type<span aria-hidden="true"></span></th>
-                    <th>Name<span aria-hidden="true"></span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer sticky-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="<%= button_id %>">Select Path</button>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render(partial: 'shared/path_selector_table', locals: locals ) %>
