@@ -209,6 +209,10 @@ class ConfigurationSingleton
     config.fetch(:globus_endpoints, nil)
   end
 
+  def launcher_default_items
+    config.fetch(:launcher_default_items, []).to_a
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
