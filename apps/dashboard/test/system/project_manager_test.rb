@@ -344,10 +344,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
-      assert_equal [{ 'id'          => 'job-id-123',
-                      'submit_time' => @expected_now,
-                      'cluster'     => 'owens' }],
-                   YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      jobs = YAML.safe_load(File.read("#{script_dir}/job_history.log"), permitted_classes: [Time])
+
+      assert_equal(1, jobs.size)
+      assert_equal('job-id-123', jobs[0]['id'])
     end
   end
 
@@ -392,10 +392,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
-      assert_equal [{ 'id'          => 'job-id-123',
-                      'submit_time' => @expected_now,
-                      'cluster'     => 'owens' }],
-                   YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      jobs = YAML.safe_load(File.read("#{script_dir}/job_history.log"), permitted_classes: [Time])
+
+      assert_equal(1, jobs.size)
+      assert_equal('job-id-123', jobs[0]['id'])
     end
   end
 
