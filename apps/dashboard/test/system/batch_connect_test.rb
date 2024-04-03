@@ -1361,6 +1361,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       click_on('Select Path')
 
       # shows the OodFilesApp.candidate_favorite_paths favorites
+      sleep 3
       favorites = all('#favorites li', wait: 30)
       assert_equal(2, favorites.size)
       assert_equal('/tmp', favorites[0].text.strip)
@@ -1396,6 +1397,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       click_on('Select Path')
 
       # favorites that have been configured in yml
+      sleep 3
       favorites = all('#favorites li', wait: 30)
       assert_equal(2, favorites.size)
       assert_equal('/fs/ess', favorites[0].text.strip)
@@ -1433,6 +1435,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       click_on('Select Path')
 
       # no favorites show up
+      sleep 3
       favorites = all('#favorites li', wait: 30)
       assert_equal(0, favorites.size)
     end
