@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fix file browser error on copy/move (#3495)\
+Fix paths for some partials (#3489)\
+launchers to serialize more job info (#3478)\
+projects#new support for path_selector (#3483)\
+changes the HTTP link to the SSN. (#3485)\
+Update Changelog (#3480)\
+update dependencies (#3481)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
