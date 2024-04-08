@@ -5,6 +5,11 @@ jQuery(function (){
     }
 
     $('.full-page-spinner').each((index, element) => {
-        $(element).closest('form').on('submit', showSpinner);
+        const $element = $(element);
+        if($element.is('a')) {
+            $element.on('click', showSpinner);
+        } else {
+            $element.closest('form').on('submit', showSpinner);
+        }
     });
 });

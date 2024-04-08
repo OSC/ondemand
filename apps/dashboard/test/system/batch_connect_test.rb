@@ -1449,7 +1449,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     favorites
   end
 
-  test 'saves settings as a template' do
+  test 'launches and saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
         Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
@@ -1472,6 +1472,34 @@ class BatchConnectTest < ApplicationSystemTestCase
         click_on('Save')
 
         click_on('Launch', wait: 30)
+        expected = output_fixture('user_settings/simple_bc_test.yml')
+        actual = File.read("#{dir}/settings.yml")
+
+        assert_equal(expected, actual)
+      end
+    end
+  end
+
+  test 'saves settings as a template' do
+    with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
+      Dir.mktmpdir do |dir|
+        Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
+        BatchConnect::Session.any_instance.expects(:save).never
+        OodCore::Job::Adapters::Slurm.any_instance.expects(:info).never
+
+        visit new_batch_connect_session_context_url('sys/bc_paraview')
+
+        fill_in(bc_ele_id('bc_num_hours'), with: 5)
+        fill_in(bc_ele_id('bc_account'), with: 'abc123')
+        fill_in('bc_vnc_resolution_x_field', with: '500')
+        fill_in('bc_vnc_resolution_y_field', with: '600')
+
+        check('batch_connect_session_save_template')
+        fill_in('modal_input_template_new_name', with: 'test template')
+        sleep 5 # modal needs to sleep?
+        click_on('Save')
+
+        click_on('Save settings and close', wait: 30)
         expected = output_fixture('user_settings/simple_bc_test.yml')
         actual = File.read("#{dir}/settings.yml")
 

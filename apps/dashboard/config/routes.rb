@@ -50,6 +50,9 @@ Rails.application.routes.draw do
     scope '*token', constraints: { token: %r{((usr/[^/]+)|dev|sys)/[^/]+(/[^/]+)?} } do
       resources :settings, only: [:show, :destroy]
       resources :session_contexts, only: [:new, :create]
+      get "session_contexts/edit_settings/:id", to: "session_contexts#edit_settings", as: 'edit_settings'
+      post "session_contexts/save_settings", to: "session_contexts#save_settings", as: 'save_settings'
+
       root 'session_contexts#new'
     end
   end
