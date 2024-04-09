@@ -123,7 +123,7 @@ pre.motd-monospaced {
 **/
 
 pre:not(#editor) {
-  @extend .bg-light;
+  @extend .bg-light !optional;
   @extend .p-2;
   @extend .rounded;
 }
