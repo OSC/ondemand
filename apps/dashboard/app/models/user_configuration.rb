@@ -122,17 +122,14 @@ class UserConfiguration
     end
   end
 
-  CATEGORIES = ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"].freeze
-  CATEGORIES_WHITELIST = false
+  DEFAULT_NAV_CATEGORIES = ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"].freeze
   
-  # Filtering is controlled with NavConfig.categories_allowlist? unless the configuration property categories is defined.
-  # If categories are defined, filter_nav_categories? will always be true.
   def filter_nav_categories?
-    fetch(:nav_categories, nil).nil? ? CATEGORIES_WHITELIST : true
+    fetch(:nav_categories, nil)
   end
 
   def nav_categories
-    fetch(:nav_categories, nil) || CATEGORIES
+    fetch(:nav_categories, DEFAULT_NAV_CATEGORIES)
   end
 
   # Create support ticket service class based on the configuration
