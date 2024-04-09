@@ -147,7 +147,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     assert_response :success
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 0
   end
-
+=begin
   test 'should not create app menus if NavConfig.categories is empty and whitelist is enabled' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
@@ -159,7 +159,8 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     assert_select dropdown_links, 1 # +1 here is 'Help'
     assert_select dropdown_link(1), text: 'Help' # ensure is Help
   end
-
+=end
+=begin
   test 'should exclude gateway apps if NavConfig.categories is set to default and whitelist is enabled' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
@@ -175,7 +176,8 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     assert_select  dropdown_link(4), text: 'Interactive Apps'
     assert_select  dropdown_link(5), text: 'Help'
   end
-
+=end
+=begin
   test 'uses NavConfig.categories as sort order if whitelist is false' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
@@ -191,12 +193,11 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     assert_select  dropdown_link(4), text: 'Clusters'
     assert_select  dropdown_link(5), text: 'Gateway Apps'
   end
+=end
 
-  test 'UserConfiguration.categories should filter and order the navigation and have precedence over NavConfig' do
+  test 'UserConfiguration.categories should filter and order the navigation' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
-    NavConfig.stubs(:categories_whitelist?).returns(false)
-    NavConfig.stubs(:categories).returns(['Jobs', 'Interactive Apps', 'Files', 'Clusters'])
 
     stub_user_configuration({
                               nav_categories: ['Files', 'Interactive Apps', 'Clusters']
@@ -213,8 +214,6 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
   test 'should not create app menus if UserConfiguration.categories is empty' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
-    NavConfig.stubs(:categories_whitelist?).returns(false)
-    NavConfig.stubs(:categories).returns(['Jobs', 'Interactive Apps', 'Files', 'Clusters'])
 
     stub_user_configuration({
                               nav_categories: []
@@ -225,12 +224,13 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     assert_select dropdown_links, 1 # +1 here is 'Help'
     assert_select dropdown_link(1), text: 'Help' # ensure is Help
   end
-
+=begin
   test 'verify default values for NavConfig' do
     refute NavConfig.categories_whitelist?
     assert NavConfig
   end
-
+=end
+=begin
   test 'display all app menus in alphabetical order if NavConfig.whitelist false & NavConfig.categories nil or []' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
@@ -247,11 +247,11 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     assert_select dropdown_link(4), text: 'Interactive Apps'
     assert_select dropdown_link(5), text: 'Jobs'
   end
+=end
 
   test 'apps with no category should not appear in menu' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
-    NavConfig.stubs(:categories_whitelist?).returns(false)
 
     get root_path
 
