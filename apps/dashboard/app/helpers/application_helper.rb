@@ -101,8 +101,13 @@ module ApplicationHelper
 
   # Creates the custom JS paths based on user configuration and the public URL
   def custom_javascript_paths
-    @user_configuration.custom_javascript_files.map do |js_file|
-      js_file.to_s.empty? ? nil : File.join(@user_configuration.public_url, js_file)
+    @user_configuration.custom_javascript_files.map do |js_file_config|
+      js_file_src = js_file_config.is_a?(Hash) ? js_file_config[:src].to_s : js_file_config.to_s
+      js_file_type = js_file_config.is_a?(Hash) ? js_file_config[:type].to_s : ''
+
+      next if js_file_src.empty?
+
+      { src: File.join(@user_configuration.public_url, js_file_src), type: js_file_type }
     end.compact
   end
 end
