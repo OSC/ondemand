@@ -15,7 +15,7 @@ describe OodPortalGenerator::View do
       example_config_opts -= %w(dex) 
       
       # delete inst vars that are not actual options in the example file
-      config_opts -= %w(protocol allowed_hosts oidc_redirect_uri dex_http_port)
+      config_opts -= %w(protocol allowed_hosts dex_http_port)
 
       expect(config_opts + example_config_opts - (config_opts & example_config_opts)).to be_empty
     end
