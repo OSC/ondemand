@@ -10,7 +10,7 @@
         params = app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", attribute.value]}.to_h
       -%>
       <div class="col-sm-3 col-md-3 app-launcher-container">
-        <div class="app-launcher app-launcher-hover" data-toggle="launcher-button">
+        <div class="app-launcher app-launcher-hover" data-bs-toggle="launcher-button">
           <%=
             button_to(
               batch_connect_session_contexts_path(token: app.token),

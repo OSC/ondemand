@@ -4,7 +4,7 @@
 </div>
 <div class="alert alert-<%= ssh_key ? "success" : "danger" %> clearfix alert-ssh-key">
   <% if ssh_key %>
-    <a class="text-success" role="button" data-toggle="collapse" href="#sshKeyValue" aria-expanded="false" aria-controls="collapseSshKeyValue">
+    <a class="text-success" role="button" data-bs-toggle="collapse" href="#sshKeyValue" aria-expanded="false" aria-controls="collapseSshKeyValue">
       <i class="fas fa-check" aria-hidden="true"></i> Detected locally generated SSH key
     </a>
     <div class="collapse" id="sshKeyValue">

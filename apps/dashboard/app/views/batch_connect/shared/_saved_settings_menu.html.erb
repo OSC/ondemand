@@ -13,7 +13,7 @@
         link = app.link
       %>
         <p class="list-group-item mb-0 header">
-          <a href="#" class="" data-toggle="collapse" data-target="<%= "#saved-settings-#{index}" %>" aria-expanded="true" aria-controls="<%= "saved-settings-#{index}" %>">
+          <a href="#" class="" data-bs-toggle="collapse" data-target="<%= "#saved-settings-#{index}" %>" aria-expanded="true" aria-controls="<%= "saved-settings-#{index}" %>">
             <%= icon_tag(link.icon_uri) unless link.icon_uri.to_s.blank? %>
             <%= app.title %>
           </a>
