@@ -125,7 +125,7 @@ class UserConfiguration
   DEFAULT_NAV_CATEGORIES = ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"].freeze
   
   def filter_nav_categories?
-    fetch(:nav_categories, nil)
+    !!fetch(:nav_categories, nil)
   end
 
   def nav_categories
