@@ -22,7 +22,7 @@
     <i class="fas fa-folder-open" aria-hidden="true"></i>
     <%= t('dashboard.project') %> <%= t('dashboard.directory') %>
     <%- if Configuration.project_size_enabled -%>
-      <span data-toggle="project" data-url="<%= project_path(@project.id) %>"></span>
+      <span data-bs-toggle="project" data-url="<%= project_path(@project.id) %>"></span>
     <%- end -%>
   </a>
 </div>
@@ -31,7 +31,7 @@
   <div class="col-2">
     <div class="list-group">
       <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
-          data-toggle="collapse" data-target="#launcher_list"
+          data-bs-toggle="collapse" data-bs-target="#launcher_list"
           aria-expanded="true" aria-controls="launcher_list">
         <span><%= t('dashboard.jobs_launchers') %></span>
       </a>

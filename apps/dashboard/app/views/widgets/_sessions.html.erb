@@ -18,7 +18,7 @@
   </div>
 
   <div class="active-sessions-content">
-    <div id="batch_connect_sessions" class="row" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= poll_delay %>">
+    <div id="batch_connect_sessions" class="row" data-bs-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= poll_delay %>">
       <div class="col-md-12">
         <%= render partial: "/batch_connect/sessions/panel", collection: session_selection, as: :session %>
       </div>

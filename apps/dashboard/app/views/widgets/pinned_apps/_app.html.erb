@@ -2,7 +2,7 @@
 <%- tile_data = link.tile -%>
 
 <div class="col-sm-3 col-md-3 app-launcher-container">
-  <div class="app-launcher app-launcher-hover" data-toggle="<%= link.new_tab? ? '' : 'launcher-button' %>">
+  <div class="app-launcher app-launcher-hover" data-bs-toggle="<%= link.new_tab? ? '' : 'launcher-button' %>">
   <%=
     link_to(
       link.url.to_s,
