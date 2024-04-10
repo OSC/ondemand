@@ -1362,7 +1362,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # shows the OodFilesApp.candidate_favorite_paths favorites
       sleep 3
-      favorites = all('#favorites li', wait: 30)
+      favorites = get_favorites
       assert_equal(2, favorites.size)
       assert_equal('/tmp', favorites[0].text.strip)
       assert_equal('/var', favorites[1].text.strip)
@@ -1398,7 +1398,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # favorites that have been configured in yml
       sleep 3
-      favorites = all('#favorites li', wait: 30)
+      favorites = get_favorites
       assert_equal(2, favorites.size)
       assert_equal('/fs/ess', favorites[0].text.strip)
       assert_equal('/fs/scratch', favorites[1].text.strip)
@@ -1436,9 +1436,17 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # no favorites show up
       sleep 3
-      favorites = all('#favorites li', wait: 30)
+      favorites = get_favorites
       assert_equal(0, favorites.size)
     end
+  end
+
+  def get_favorites
+    # For debugging flaky tests
+    favorites = all('#favorites li', wait: 30)
+    puts "FAVORITES: "
+    puts favorites.map{|i| i['innerHTML']}.join('')
+    favorites
   end
 
   test 'saves settings as a template' do

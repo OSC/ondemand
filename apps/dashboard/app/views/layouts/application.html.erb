@@ -5,8 +5,8 @@
   <%= favicon %>
 
   <%= javascript_include_tag 'application', nonce: true %>
-  <% custom_javascript_paths.each do |path| %>
-    <script src="<%= path %>" nonce="<%= content_security_policy_nonce %>"></script>
+  <% custom_javascript_paths.each do |custom_file_config| %>
+    <script src="<%= custom_file_config[:src] %>" type="<%= custom_file_config[:type] %>" nonce="<%= content_security_policy_nonce %>"></script>
   <% end %>
   <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all', rel: 'preload stylesheet', as: 'style', type: 'text/css' %>
   <%= render partial: '/layouts/nav/styles', locals: { bg_color: @user_configuration.brand_bg_color, link_active_color:  @user_configuration.brand_link_active_bg_color } %>
