@@ -416,9 +416,13 @@ function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   let changeElement = undefined;
+  
   $(`#${changeId}`).parents().each(function(_i, parent) {
-    if(parent.classList.contains('form-group')) {
-      changeElement = $(parent);
+    var classListValues = parent.classList.values();
+    for (const val of classListValues) {
+      if (val.match('container')) {
+        changeElement = $(parent);
+      }
     }
   });
 
