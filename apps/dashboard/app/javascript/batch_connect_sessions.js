@@ -6,7 +6,7 @@ import { replaceHTML } from './turbo_shim';
 function poll() {
   url = bcIndexUrl();
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
-    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text))
+    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
     .then((r) => r.text())
     .then((html) => replaceHTML("batch_connect_sessions", html))
     .then(setTimeout(poll, bcPollDelay()))
