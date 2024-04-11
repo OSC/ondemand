@@ -59,6 +59,8 @@ gem 'rss', '~> 0.2'
 
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
+gem 'turbo-rails', '~> 2.0'
+
 # should upgrade to propshaft - only have an issue with fontawesome icons
 gem 'sprockets-rails', '>= 2.0.0'
 
@@ -74,3 +76,4 @@ gem "sinatra", require: false
 gem "sinatra-contrib", require: false
 gem "erubi", require: false
 gem "dalli", require: false
+
