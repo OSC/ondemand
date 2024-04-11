@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'rake_helper'
+require 'securerandom'
 
 namespace :build do
   include RakeHelper
@@ -36,7 +37,10 @@ namespace :build do
               end
     task a.name.to_sym => depends do |_t|
       setup_path = a.path.join('bin', 'setup')
-      sh "PASSENGER_APP_ENV=#{PASSENGER_APP_ENV} #{setup_path}" if setup_path.exist? && setup_path.executable?
+      # SECRET_KEY_BASE is actually generated & used elsewhere. However, we have 
+      # to supply it now at build time for turbo.
+      env = "PASSENGER_APP_ENV=#{PASSENGER_APP_ENV} SECRET_KEY_BASE=#{SecureRandom.uuid}"
+      sh "#{env} #{setup_path}" if setup_path.exist? && setup_path.executable?
     end
   end
 
