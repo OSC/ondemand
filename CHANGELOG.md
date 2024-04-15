@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+redirect to HTTP_HOST to support aliases (#3508)\
+Removes NavConfig class & Replaces its use (#3475)\
+Added module support for custom javascript files (#3499)\
+lint a random file (#3505)\
+use relative OIDCRedirectURI where applicable (#3448)\
+update dependencies (#3497)\
+try again to fix flaky tests (#3490)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
