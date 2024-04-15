@@ -6,25 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-redirect to HTTP_HOST to support aliases (#3508)\
-Removes NavConfig class & Replaces its use (#3475)\
-Added module support for custom javascript files (#3499)\
-lint a random file (#3505)\
-use relative OIDCRedirectURI where applicable (#3448)\
-update dependencies (#3497)\
-try again to fix flaky tests (#3490)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
 - NoVNC compression & quality have configurable defaults in [3380](https://github.com/OSC/ondemand/pull/3380).
 - Added `bc_sessions_poll_delay` in favor of hidden environment variable POLL_DELAY in [3421](https://github.com/OSC/ondemand/pull/3421).
 - BatchConnect applications now write out `completed_at` attributes in [3424](https://github.com/OSC/ondemand/pull/3424).
+- Added module support for custom javascript files in [3499](https://github.com/OSC/ondemand/pull/3499).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
 - The dashboard has been upgraded to rails 7.0 in [3353](https://github.com/OSC/ondemand/pull/3353).
 - Myjobs has been upgraded to rails 7.0 in [3404](https://github.com/OSC/ondemand/pull/3404).
 - ActionController::Live has been re-enabled in the file app in [3441](https://github.com/OSC/ondemand/pull/3441).
+- use relative OIDCRedirectURI in [3448](https://github.com/OSC/ondemand/pull/3448).
+- Removes NavConfig class & Replaces its use [3475](https://github.com/OSC/ondemand/pull/3475).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
