@@ -28,6 +28,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
 - data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
 
+## [3.1.4] - 02-08-2024
+
+### Fixed
+- The path_selector now responds to labels and can be hidden in in [3467](https://github.com/OSC/ondemand/pull/3467).
+- Pinned app icons are now centered correctly in [3374](https://github.com/OSC/ondemand/pull/3374).
+
+### Added
+- ood_core now sends heartbeats to noVNC connections to keep them alive in [3467](https://github.com/OSC/ondemand/pull/3467).
+- Batch connect jobs now serialize `completed_at` attributes in [3467](https://github.com/OSC/ondemand/pull/3467).
+
+### Security
+- The files app now uses ActionController::Live to support streaming large files in [3467](https://github.com/OSC/ondemand/pull/3467)
+  preventing out of memory exceptions.
+- The regular expression for mime types has been updated in [3482](https://github.com/OSC/ondemand/pull/3482).
+
+## [3.1.1] - 02-08-2024
+
+### Fixed
+
+- Host field in the cards are only rendered when the job is running in [3365](https://github.com/OSC/ondemand/pull/3365).
+
 ## [3.1.0] - 02-08-2024
 
 ### Added
@@ -1326,6 +1347,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - From 1.3.7 - 1.4.2 updated app versions
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[3.1.4]: https://github.com/OSC/ondemand/compare/v3.1.1...v3.1.4
+[3.1.1]: https://github.com/OSC/ondemand/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/OSC/ondemand/compare/v3.0.3...v3.1.0
 [3.0.3]: https://github.com/OSC/ondemand/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/OSC/ondemand/compare/v3.0.1...v3.0.2
