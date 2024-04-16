@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
 - data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
 
-## [3.1.4] - 02-08-2024
+## [3.1.4] - 04-01-2024
 
 ### Fixed
 - The path_selector now responds to labels and can be hidden in in [3467](https://github.com/OSC/ondemand/pull/3467).
@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   preventing out of memory exceptions.
 - The regular expression for mime types has been updated in [3482](https://github.com/OSC/ondemand/pull/3482).
 
-## [3.1.1] - 02-08-2024
+## [3.1.1] - 02-12-2024
 
 ### Fixed
 
