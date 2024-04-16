@@ -62,3 +62,13 @@ export function analyticsPath(type){
   const basePath = cfgData['baseAnalyticsPath']
   return `${basePath}/${type}`;
 }
+
+export function bcPollDelay() {
+  const cfgData = configData();
+  return Number(cfgData['bcPollDelay']);
+}
+
+export function bcIndexUrl() {
+  const cfgData = configData();
+  return cfgData['bcIndexUrl'];
+}

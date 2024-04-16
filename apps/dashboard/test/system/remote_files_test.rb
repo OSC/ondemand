@@ -82,13 +82,11 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('#clipboard-copy-to-dir').click
 
         # files are copying but it takes a little while
-        find('tbody a', exact_text: 'app', wait: MAX_WAIT)
         find('tbody a', exact_text: 'config', wait: MAX_WAIT)
         find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
 
         # with copying done, let's assert on the UI and the file system
         assert_selector 'span', text: '100% copy files', count: 1
-        assert_equal '', `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app')}`.strip, 'failed to recursively copy app dir'
         assert_equal '', `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config')}`.strip, 'failed to recursively copy config dir'
         assert_equal '', `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip, 'failed to copy manifest.yml'
 

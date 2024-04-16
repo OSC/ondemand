@@ -35,14 +35,8 @@ locals: {
       %>
     </div>
     <div class="col-md-9">
-      <div id="batch_connect_sessions" class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= Configuration.bc_sessions_poll_delay %>">
-        <% if @sessions.empty? %>
-          <div class="ood-appkit markdown">
-            <p><%= t('dashboard.batch_connect_no_sessions') %></p>
-          </div>
-        <% else %>
-          <%= render partial: "panel", collection: @sessions, as: :session %>
-        <% end %>
+      <div id="batch_connect_sessions">
+        <%= render(partial: 'panels', locals: { use_template: false }) %>
       </div>
     </div>
   <%- else -%>

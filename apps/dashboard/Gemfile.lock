@@ -269,6 +269,10 @@ GEM
     tilt (2.3.0)
     timecop (0.9.8)
     timeout (0.4.1)
+    turbo-rails (2.0.5)
+      actionpack (>= 6.0.0)
+      activejob (>= 6.0.0)
+      railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     webrick (1.8.1)
@@ -318,6 +322,7 @@ DEPENDENCIES
   sinatra-contrib
   sprockets-rails (>= 2.0.0)
   timecop (~> 0.9)
+  turbo-rails (~> 2.0)
   webrick
   zip_kit (~> 6.2)
 
