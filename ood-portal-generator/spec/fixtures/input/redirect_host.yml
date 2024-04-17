@@ -1,0 +1,14 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+servername: ondemand.example.com
+proxy_server: ondemand.proxy.example.com
+redirect_host: ondemand.redirect-proxy.example.com
+
+port: 443
+ssl:
+  - 'SSLCertificateFile /etc/pki/tls/certs/ondemand.example.com.crt'
+  - 'SSLCertificateKeyFile /etc/pki/tls/private/ondemand.example.com.key'
+  - 'SSLCertificateChainFile /etc/pki/tls/certs/ondemand.example.com-interm.crt'

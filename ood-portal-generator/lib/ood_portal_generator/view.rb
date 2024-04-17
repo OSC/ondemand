@@ -39,6 +39,7 @@ module OodPortalGenerator
       @errorlog         = log_filename(error_log,"error")
       @logformat        = opts.fetch(:logformat, nil)
       @use_rewrites     = opts.fetch(:use_rewrites, true)
+      @redirect_host    = opts.fetch(:redirect_host, '%{HTTP_HOST}')
       @lua_root         = opts.fetch(:lua_root, "/opt/ood/mod_ood_proxy/lib")
       @lua_log_level    = opts.fetch(:lua_log_level, "info")
       @user_map_cmd     = opts.fetch(:user_map_cmd, nil)

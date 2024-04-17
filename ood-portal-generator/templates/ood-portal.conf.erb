@@ -63,7 +63,7 @@ Listen <%= addr_port %>
   <%- end -%>
 
   RewriteEngine On
-  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://%{HTTP_HOST}:<%= @port %>$1 [R=301,NE,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @redirect_host %>:<%= @port %>$1 [R=301,NE,L]
 </VirtualHost>
 <% end -%>
 
