@@ -1444,8 +1444,8 @@ class BatchConnectTest < ApplicationSystemTestCase
   def get_favorites
     # For debugging flaky tests
     favorites = all('#favorites li', wait: 30)
-    puts "FAVORITES: "
-    puts favorites.map{|i| i['innerHTML']}.join('')
+    # puts "FAVORITES: "
+    # puts favorites.map{|i| i['innerHTML']}.join('')
     favorites
   end
 
