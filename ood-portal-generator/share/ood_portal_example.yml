@@ -82,9 +82,9 @@
 
 # Specify the host to redirect to when redirecting from port 80
 # Example:
-#     redirect_host: my.proxy.host
-# Default: %{HTTP_HOST}
-#redirect_host: '%{HTTP_HOST}'
+#     http_redirect_host: my.proxy.host
+# Default: '%{HTTP_HOST}'
+#http_redirect_host: '%{HTTP_HOST}'
 
 # Should Maintenance Rewrite rules be added
 # Example:

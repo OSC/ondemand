@@ -5,7 +5,7 @@ auth:
 
 servername: ondemand.example.com
 proxy_server: ondemand.proxy.example.com
-redirect_host: ondemand.redirect-proxy.example.com
+http_redirect_host: ondemand.redirect-proxy.example.com
 
 port: 443
 ssl:
