@@ -96,7 +96,7 @@ GEM
     oga (3.3)
       ast
       ruby-ll (~> 2.1)
-    ood_packaging (0.14.0)
+    ood_packaging (0.14.1)
       rake (~> 13.0.1)
     open_uri_redirections (0.2.1)
     parallel (1.21.0)
