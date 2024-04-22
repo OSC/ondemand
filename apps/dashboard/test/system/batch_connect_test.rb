@@ -674,6 +674,18 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'display: none;', find_option_style('classroom_size', 'large')
   end
 
+  test 'can hide fields with numbers and characters' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults - gpus_num_v100 is hidden on page load.
+    assert_equal('any', find_value('node_type'))
+    refute(find("##{bc_ele_id('gpus_num_v100')}", visible: false).visible?)
+
+    # select gpu and now it's shown.
+    select('gpu', from: bc_ele_id('node_type'))
+    assert(find("##{bc_ele_id('gpus_num_v100')}").visible?)
+  end
+
   test 'options can check and uncheck' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
