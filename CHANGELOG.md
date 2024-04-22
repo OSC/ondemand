@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added `bc_sessions_poll_delay` in favor of hidden environment variable POLL_DELAY in [3421](https://github.com/OSC/ondemand/pull/3421).
 - BatchConnect applications now write out `completed_at` attributes in [3424](https://github.com/OSC/ondemand/pull/3424).
 - Added module support for custom javascript files in [3499](https://github.com/OSC/ondemand/pull/3499).
+- Added the turbo-rails gem and refactored BatchConnect::Sessions#index to use it in [3509](https://github.com/OSC/ondemand/pull/3509).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
