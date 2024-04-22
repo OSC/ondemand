@@ -357,7 +357,6 @@ class Launcher
 
   def add_default_fields(form: [], **_args)
     Configuration.launcher_default_items.each do |default_item|
-      Rails.logger.debug("adding #{default_item} unless #{form.include?(default_item)}")
       form << default_item unless form.include?(default_item)
     end
   end
