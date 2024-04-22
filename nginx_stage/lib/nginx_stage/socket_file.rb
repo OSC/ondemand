@@ -10,18 +10,6 @@ module NginxStage
       @socket = Pathname.new(socket)
       raise MissingSocketFile, "missing socket file: #{socket}" unless File.exist?(socket)
       raise InvalidSocketFile, "invalid socket file: #{socket}" unless File.socket?(socket)
-      @processes = get_processes
-    end
-
-    # The number of active sessions connected to this socket
-    # @return [Integer] number of active connections
-    def sessions
-      # generate array of inodes
-      ary_inodes = @processes.map{|h| h[:inode]}.reduce([], :+)
-
-      # count number of inodes without partner (assuming these are connected to
-      # apache proxy instead of root nginx process)
-      ary_inodes.group_by{|e| e}.select{|k,v| v.size == 1}.map(&:first).count
     end
 
     # Convert object to string
@@ -43,20 +31,5 @@ module NginxStage
       $stderr.puts "Unable to delete socket file at #{socket}"
     end
 
-    private
-      def get_processes
-        str = `lsof -F piu #{socket}`
-        ary = []
-        str.split(/\n/).each do |l|
-          if /^p(?<pid>\d+)$/ =~ l
-            ary << {pid: pid, uid: nil, inode: []}
-          elsif /^u(?<uid>\d+)$/ =~ l
-            ary.last[:uid] = uid
-          elsif /^i(?<inode>\d+)$/ =~ l
-            ary.last[:inode] << inode
-          end
-        end
-        ary
-      end
   end
 end

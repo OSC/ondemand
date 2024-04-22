@@ -1,6 +1,9 @@
 module NginxStage
   # This generator shows the state of the running per-user NGINX process.
   class NginxShowGenerator < Generator
+
+    include NginxStage::SessionFinder
+
     desc 'Show the details for a given per-user nginx process'
 
     footer <<-EOF.gsub(/^ {4}/, '')
@@ -31,7 +34,7 @@ module NginxStage
     add_hook :check_socket_for_active_sessions do
       socket = SocketFile.new socket_path
       puts "Socket: #{socket}"
-      puts "Sessions: #{socket.sessions}"
+      puts "Sessions: #{session_count(user)}"
     end
 
     private
