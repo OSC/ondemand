@@ -38,6 +38,7 @@ attributes:
           data-max-bc-num-slots-for-cluster-oakley: 8,
           data-min-gpus: 0,
           data-max-gpus: 0,
+          data-hide-gpus-num-v100: true,
         ]
       - [
           "broken",
@@ -46,6 +47,7 @@ attributes:
           data-maximum-bc-not-found-for-cluster-mistype: 30,
           data-min-gpus: 0,
           data-max-gpus: 0,
+          data-hide-gpus-num-v100: true,
         ]
       - [
           "gpu",
@@ -76,6 +78,7 @@ attributes:
 
           data-min-gpus: 0,
           data-max-gpus: 0,
+          data-hide-gpus-num-v100: true,
         ]
       - [
           "advanced",
@@ -85,6 +88,7 @@ attributes:
 
           data-min-gpus: 0,
           data-max-gpus: 0,
+          data-hide-gpus-num-v100: true,
         ]
       # this node type is the same for both clusters, so there's no 'for-cluster-...' clause
       - [
@@ -99,6 +103,7 @@ attributes:
 
           data-min-gpus: 0,
           data-max-gpus: 0,
+          data-hide-gpus-num-v100: true,
         ]
       - [
           "other-40ish-option",
@@ -108,6 +113,7 @@ attributes:
 
           data-min-gpus: 0,
           data-max-gpus: 0,
+          data-hide-gpus-num-v100: true,
         ]
   python_version:
     # let's set the account used by the python version for some reason
@@ -214,3 +220,4 @@ form:
   - auto_modules_intel
   - auto_modules_netcdf-serial
   - checkbox_test
+  - gpus_num_v100

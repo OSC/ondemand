@@ -599,7 +599,8 @@ module BatchConnect
           'auto_modules_app_jupyter'   => '',
           'auto_modules_intel'         => '',
           'auto_modules_netcdf_serial' => '',
-          'checkbox_test'              => ''
+          'checkbox_test'              => '',
+          'gpus_num_v100'              => ''
         }
 
         assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s
