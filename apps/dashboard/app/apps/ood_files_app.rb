@@ -21,6 +21,6 @@ class OodFilesApp
   def favorite_paths
     @favorite_paths ||= candidate_favorite_paths.select do |p|
       Configuration.allowlist_paths.include?(p.path) && (p.remote? || p.path.directory?) && p.path.readable? && p.path.executable?
-    end     
+    end
   end
 end
