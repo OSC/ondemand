@@ -19,7 +19,7 @@ jQuery(function(){
 
 function updateModal(event){
   const button = $(`#${event.target['id']}`);
-  if(button === undefined || button.data() === {}) { return; }
+  if(button === undefined || button.data() == {}) { return; }
 
   const title = button.data('title');
   const cmd = button.data('cmd');
