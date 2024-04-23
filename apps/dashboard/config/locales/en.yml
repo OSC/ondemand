@@ -237,6 +237,9 @@ en:
     jobs_project_description_placeholder: "Project description"
     jobs_create_blank_project: "Create a new project"
     jobs_create_template_project: "Create a new project from a template"
+    jobs_new_launcher: "New Launcher"
+    jobs_launchers: "Launchers"
+
 
     jobs_project_validation_error: "Invalid Request. Please review the errors below"
     jobs_project_save_error: "Cannot save manifest to %{path}"
