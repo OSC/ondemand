@@ -70,6 +70,8 @@ class Launcher
     }
 
     add_required_fields(**sm_opts)
+    # add defaults if it's a brand new launcher with only title and directory.
+    add_default_fields(**sm_opts) if opts.size <= 2
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
@@ -351,6 +353,12 @@ class Launcher
   def add_required_fields(form: [], attributes: {})
     add_cluster_to_form(form: form, attributes: attributes)
     add_script_to_form(form: form, attributes: attributes)
+  end
+
+  def add_default_fields(form: [], **_args)
+    Configuration.launcher_default_items.each do |default_item|
+      form << default_item unless form.include?(default_item)
+    end
   end
 
   def add_script_to_form(form: [], attributes: {})

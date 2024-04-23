@@ -262,6 +262,53 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'creates new laucher with default items' do
+    Dir.mktmpdir do |dir|
+      Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+
+      # note that bc_num_hours is in this YAML.
+      expected_yml = <<~HEREDOC
+        ---
+        title: the script title
+        created_at: #{@expected_now}
+        form:
+        - auto_batch_clusters
+        - auto_scripts
+        - bc_num_hours
+        attributes:
+          auto_batch_clusters:
+            options:
+            - oakley
+            - owens
+            label: Cluster
+            help: ''
+            required: false
+          auto_scripts:
+            options:
+            - - my_cool_script.sh
+              - "#{dir}/projects/#{project_id}/my_cool_script.sh"
+            - - my_cooler_script.bash
+              - "#{dir}/projects/#{project_id}/my_cooler_script.bash"
+            directory: "#{dir}/projects/#{project_id}"
+            label: Script
+            help: ''
+            required: false
+          bc_num_hours:
+            min: 1
+            step: 1
+            label: Number of hours
+            help: ''
+            required: true
+      HEREDOC
+
+      success_message = I18n.t('dashboard.jobs_scripts_created')
+      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
+    end
+  end
+
   test 'showing scripts with auto attributes' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
