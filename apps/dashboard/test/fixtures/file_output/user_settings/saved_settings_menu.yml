@@ -1,0 +1,8 @@
+---
+batch_connect_templates:
+  sys/bc_paraview:
+    menu_name:
+      cluster: quick
+      bc_num_hours: '5'
+      bc_account: abc123
+      bc_vnc_resolution: 500x600

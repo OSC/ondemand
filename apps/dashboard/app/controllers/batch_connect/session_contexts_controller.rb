@@ -63,6 +63,46 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
   end
 
+  # GET /batch_connect/<app_token>/session_contexts/edit_settings/<settings_name>
+  def edit_settings
+    set_app
+    set_render_format
+    set_session_context
+    set_prefill_templates
+
+    @template_name = params[:id].to_sym
+    settings = @prefill_templates[@template_name]
+    if settings.nil?
+      redirect_to new_batch_connect_session_context_path(token: @app.token),
+                  alert: t('dashboard.bc_saved_settings.missing_settings')
+      return
+    end
+
+    @session_context.update_with_cache(settings)
+
+    set_app_groups
+    set_saved_settings
+    set_my_quotas
+
+    render :new
+  end
+
+  # POST /batch_connect/<app_token>/session_contexts/save_settings
+  def save_settings
+    set_app
+    set_render_format
+    set_session_context
+
+    # Read in context from form parameters
+    @session_context.attributes = session_contexts_param
+
+    template_name = params[:template_name]
+    save_template
+
+    redirect_to batch_connect_setting_path(token: @app.token, id: template_name),
+                notice: t('dashboard.bc_saved_settings.saved_message', settings_name: template_name)
+  end
+
   private
 
     # Set the app from the token

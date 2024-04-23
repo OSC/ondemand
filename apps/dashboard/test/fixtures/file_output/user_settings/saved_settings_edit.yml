@@ -1,0 +1,8 @@
+---
+batch_connect_templates:
+  sys/bc_paraview:
+    edit_name:
+      cluster: quick
+      bc_num_hours: '10'
+      bc_account: edit_account
+      bc_vnc_resolution: 800x600

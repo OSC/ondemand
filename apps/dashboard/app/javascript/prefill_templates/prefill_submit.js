@@ -13,6 +13,7 @@ export function prefillSubmitHandler() {
   const chooseTemplateNameError = $("#batch_connect_session_template_name_error_modal");
   const templateName = $("#batch_connect_session_template_name");
   const saveTemplate = $("#batch_connect_session_save_template");
+  const saveSubmit = $("#batch_connect_session_save_template_submit");
 
   $(`#${selectorID}`).on("change", function () {
     const newName = $(`#${newNameID}`);
@@ -33,6 +34,7 @@ export function prefillSubmitHandler() {
     chooseTemplateNameError.modal('hide');
     templateName.val(name);
     chooseTemplateName.modal('hide');
+    saveSubmit.prop("disabled", false);
   });
 
   saveTemplate.on('change', function () {
@@ -44,6 +46,7 @@ export function prefillSubmitHandler() {
       const newName = $(`#${newNameID}`);
       newName.val("");
       newName.show();
+      saveSubmit.prop("disabled", true);
     }
   });
 
