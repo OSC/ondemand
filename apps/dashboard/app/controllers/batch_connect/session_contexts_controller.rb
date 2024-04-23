@@ -88,7 +88,6 @@ class BatchConnect::SessionContextsController < ApplicationController
   end
 
   # POST /batch_connect/<app_token>/session_contexts/save_settings
-  # POST /batch_connect/<app_token>/session_contexts/save_settings.json
   def save_settings
     set_app
     set_render_format
@@ -97,16 +96,11 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Read in context from form parameters
     @session_context.attributes = session_contexts_param
 
-    respond_to do |format|
-      template_name = params[:template_name]
-      save_template
+    template_name = params[:template_name]
+    save_template
 
-      format.html do
-        redirect_to batch_connect_setting_path(token: @app.token, id: template_name),
-                    notice: t('dashboard.bc_saved_settings.saved_message', settings_name: template_name)
-      end
-      format.json { head :no_content }
-    end
+    redirect_to batch_connect_setting_path(token: @app.token, id: template_name),
+                notice: t('dashboard.bc_saved_settings.saved_message', settings_name: template_name)
   end
 
   private
