@@ -25,6 +25,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     visit projects_path
     click_on I18n.t('dashboard.jobs_create_blank_project')
     find('#project_name').set(proj)
+    binding.pry
     find('#project_directory').set(override_project_dir) if override_project_dir
     find('#project_description').set(desc)
     find('#product_icon_select').set(icon)

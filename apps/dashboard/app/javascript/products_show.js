@@ -4,7 +4,7 @@ const id = 'product_cli_modal';
 const spinnerId = `${id}_spinner`;
 const headerId = `${id}_header`;
 const buttonId = `${id}_button`;
-const closeButton = `<button id="${buttonId}" class="close float-right" data-dismiss="modal">&times;</button>`;
+const closeButton = `<button id="${buttonId}" class="close float-right" data-bs-dismiss="modal">&times;</button>`;
 
 jQuery(function(){
   $('[data-toggle="cli"]').on('click', (event) => updateModal(event));
