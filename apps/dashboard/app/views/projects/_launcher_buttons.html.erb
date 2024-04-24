@@ -12,7 +12,8 @@
     class: 'btn btn-success mr-1 d-flex',
     title: 'Launch script with cached or default values',
     disabled: disabled,
-    params: launcher.quick_launch_params
+    params: launcher.quick_launch_params,
+    id: "launch_#{launcher.id}"
   ) do
   %>
     <i class="fa fa-play"></i>
@@ -20,7 +21,9 @@
 
   <%= link_to(
     project_launcher_path(@project.id, launcher.id),
-    class: "btn btn-success mr-1 d-flex #{disabled_class}") do
+    class: "btn btn-success mr-1 d-flex #{disabled_class}",
+    id: "show_#{launcher.id}"
+    ) do
   %>
     <i class="fa fa-bars"></i>
   <%- end -%>

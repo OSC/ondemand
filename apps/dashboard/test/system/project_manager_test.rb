@@ -46,8 +46,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
     find('#launcher_title').set('the script title')
     click_on 'Save'
 
-    script_element = all('#launcher_list a').first
-    script_element[:id].gsub('show_', '')
+    script_element = all('#launcher_list div.list-group-item').first
+    script_element[:id].gsub('launcher_', '')
   end
 
   def add_account(project_id, script_id, save: true)
@@ -907,7 +907,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
-      click_on I18n.t('dashboard.batch_connect_form_launch')
+      find("#launch_8woi7ghd").click
       assert_selector('.alert-success', text: 'job-id-123')
     end
   end
