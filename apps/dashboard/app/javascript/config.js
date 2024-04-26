@@ -27,9 +27,9 @@ export function transfersPath() {
   return transfersPath;
 }
 
-export function jobsInfoPath(){
+export function pmJobDetailsPath(){
   const cfgData = configData();
-  return cfgData['jobsInfoPath'];
+  return cfgData['pmJobDetailsPath'];
 }
 
 export function csrfToken() {

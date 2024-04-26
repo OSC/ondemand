@@ -2,22 +2,14 @@
 
 # The controller for jobs API /dashboard/jobs
 class JobsController < ApplicationController
-  def info
-    respond_to do |format|
-      format.json do
-        cluster = OodAppkit.clusters[info_params[:cluster].to_sym]
-        render :json => {}, :status => 404 if cluster.nil?
+  def pm_job_details
+    cluster_str = info_params[:cluster].to_s
+    cluster = OodAppkit.clusters[cluster_str.to_sym]
+    render(:status => 404) if cluster.nil?
 
-        job_info = cluster.job_adapter.info(info_params[:id].to_s)
-        render :json => info_to_hash(job_info)
-      end
-    end
-  end
-
-  def info_to_hash(info)
-    {
-      state: info.status.state
-    }
+    job_info = cluster.job_adapter.info(info_params[:id].to_s)
+    hpc_job = HpcJob.from_core_info(info: job_info, cluster: cluster_str)
+    render(partial: 'pm_job_panel', locals: { job: hpc_job })
   end
 
   def info_params

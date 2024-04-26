@@ -39,18 +39,7 @@
           <div class="row py-2 justify-content-center">
             <%= launcher.title %>
           </div>
-
           <%= render(partial: 'launcher_buttons', locals: { launcher: launcher }) %>
-
-          <!--
-            FIXME: we have to keep this div here to initialize the job history log that tests test for.
-            It's temporary until we can get actual job data displaying on this page.
-          -->
-          <div class="d-none">
-            <%= launcher.active_jobs %>
-          </div>
-          <!-- end temporary div -->
-
         </div>
         <%- end -%>
       </div>
@@ -62,6 +51,6 @@
     </div>
   </div>
   <div class="col-8">
-
+    <%= render(partial: 'job_details', collection: @project.jobs, as: :job) %>
   </div>
 </div>

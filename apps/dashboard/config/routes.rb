@@ -98,7 +98,7 @@ Rails.application.routes.draw do
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end
 
-  get '/jobs/info/:cluster/:id' => 'jobs#info', :defaults => { :format => 'json' }, :as => 'jobs_info'
+  get '/jobs/info/:cluster/:id' => 'jobs#pm_job_details', :defaults => { :format => 'turbo_stream' }, :as => 'pm_job_details'
 
   post 'settings', :to => 'settings#update'
 
