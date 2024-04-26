@@ -27,7 +27,7 @@ export function pollAndReplace(url, delay, id) {
     .then((html) => replaceHTML(id, html))
     .then(setTimeout(pollAndReplace, delay, url, delay, id))
     .catch((err) => {
-      console.log('Cannot not retrive partial due to error:');
+      console.log('Cannot retrive partial due to error:');
       console.log(err);
     });
 }
