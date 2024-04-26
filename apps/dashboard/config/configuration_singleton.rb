@@ -53,6 +53,7 @@ class ConfigurationSingleton
       :motd_render_html             => false,
       :upload_enabled               => true,
       :download_enabled             => true,
+      :project_size_enabled         => true,
     }.freeze
   end
 
