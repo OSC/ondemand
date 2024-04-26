@@ -26,34 +26,42 @@
 
 <div class="row mb-3">
   <div class="col-2">
-    <div class="list-group" id="launcher_list" role="tablist">
-
-      <%- @scripts.each_with_index do |script, index| -%>
-      <%- active_class = index.positive? ? '' : 'active' -%>
-      <a class="list-group-item list-group-item list-group-item-action <%= active_class %>"
-         id="show_<%= script.id %>" data-toggle="list" href="#view_<%= script.id %>" role="tab">
-        <%= script.title %>
+    <div class="list-group">
+      <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+          data-toggle="collapse" data-target="#launcher_list"
+          aria-expanded="true" aria-controls="launcher_list">
+        <span><%= t('dashboard.jobs_launchers') %></span>
       </a>
-      <%- end -%>
 
+      <div id="launcher_list" class="collapse show">
+        <%- @scripts.each do |launcher| -%>
+        <div class="list-group-item list-group-item-action" id="launcher_<%= launcher.id %>">
+          <div class="row py-2 justify-content-center">
+            <%= launcher.title %>
+          </div>
+
+          <%= render(partial: 'launcher_buttons', locals: { launcher: launcher }) %>
+
+          <!--
+            FIXME: we have to keep this div here to initialize the job history log that tests test for.
+            It's temporary until we can get actual job data displaying on this page.
+          -->
+          <div class="d-none">
+            <%= launcher.active_jobs %>
+          </div>
+          <!-- end temporary div -->
+
+        </div>
+        <%- end -%>
+      </div>
+
+      <a class="list-group-item list-group-item-action text-info font-weight-bold"
+        href="<%= new_project_launcher_path(@project.id) %>">
+        <%= t('dashboard.jobs_new_launcher') %>
+      </a>
     </div>
   </div>
   <div class="col-8">
-    <div class="tab-content" id="some id">
 
-      <%- @scripts.each_with_index do |script, index| -%>
-      <%- active_class = index.positive? ? '' : 'show active' -%>
-      <div class="tab-pane fade <%= active_class %>" id="view_<%= script.id %>" role="tabpanel" >
-        <%= render(partial: 'launcher_details', locals: { launcher: script }) %>
-      </div>
-      <%- end -%>
-
-    </div>
   </div>
 </div>
-
-<%= link_to('New Launcher',
-  new_project_launcher_path(@project.id),
-  class: "btn btn-info #{disabled_class}",
-  title: I18n.t('dashboard.jobs_project_create_new_project_directory'))
-%>
