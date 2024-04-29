@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+manually create a token for this workflow (#3533)\
+rework projects#show page (#3527)\
+Added support to edit saved settings from the details view (#3498)\
+add the ability to define default launcher fields (#3488)\
+fix this expression (#3525)\
+use ps to count sessions instead of lsof (#3511)\
+support for configurable redirect host (#3515)\
+support fields with numbers in dynamic bc (#3507)\
+fix flaky file test by resetting the session (#3517)\
+Update Changelog (#3523)\
+lint a random file (#3522)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
