@@ -29,7 +29,13 @@ export function transfersPath() {
 
 export function rootPath(){
   const cfgData = configData();
-  return cfgData['rootPath'];
+  const rootPath = cfgData['rootPath'];
+  if(rootPath == '/') {
+    return rootPath;
+  } else {
+    // remove the trailing / from /pun/sys/dashboard/
+    return rootPath.substring(0, p.length-1)
+  }
 }
 
 export function csrfToken() {
