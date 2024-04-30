@@ -25,7 +25,6 @@ class ProjectManagerTest < ApplicationSystemTestCase
     visit projects_path
     click_on I18n.t('dashboard.jobs_create_blank_project')
     find('#project_name').set(proj)
-    binding.pry
     find('#project_directory').set(override_project_dir) if override_project_dir
     find('#project_description').set(desc)
     find('#product_icon_select').set(icon)
@@ -514,7 +513,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[href='#{edit_launcher_path}']").click
 
       # only shows 'cluster' & 'auto_scripts'
-      assert_equal 2, page.all('.form-group').size
+      assert_equal 2, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       select('oakley', from: 'launcher_auto_batch_clusters')
@@ -528,7 +527,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[href='#{script_edit_path}']").click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
-      assert_equal 3, page.all('.form-group').size
+      assert_equal 3, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       assert_not_nil find('#launcher_bc_num_hours')
@@ -620,7 +619,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       edit_launcher_path = edit_project_launcher_path(project_id, script_id)
       find("[href='#{edit_launcher_path}']").click
       # puts page.body
-      assert_equal 4, page.all('.form-group').size
+      assert_equal 4, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       assert_not_nil find('#launcher_bc_num_hours')
@@ -629,7 +628,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # remove bc num hours and it's not in the form
       find('#remove_launcher_bc_num_hours').click
-      assert_equal 3, page.all('.form-group').size
+      assert_equal 3, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       assert_not_nil find('#launcher_auto_accounts')

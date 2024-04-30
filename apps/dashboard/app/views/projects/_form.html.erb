@@ -30,6 +30,7 @@
           <div class="field">
             <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
                                 readonly: edit_project_action,
+                                required: false,
                                 help: edit_project_action ? '' : I18n.t('dashboard.jobs_project_directory_help_html', root_directory: Project.dataroot.to_s).html_safe,
                                 data: { 'path-selector': true })%>
 

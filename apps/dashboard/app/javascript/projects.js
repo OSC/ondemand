@@ -7,7 +7,7 @@ jQuery(function() {
     pollForJobInfo(ele);
   });
 
-  $("[data-toggle='project']").each((_index, ele) => {
+  $("[data-bs-toggle='project']").each((_index, ele) => {
     updateProjectSize(ele);
   });
 });
