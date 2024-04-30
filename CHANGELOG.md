@@ -6,17 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-manually create a token for this workflow (#3533)\
-rework projects#show page (#3527)\
-Added support to edit saved settings from the details view (#3498)\
-add the ability to define default launcher fields (#3488)\
-fix this expression (#3525)\
-use ps to count sessions instead of lsof (#3511)\
-support for configurable redirect host (#3515)\
-support fields with numbers in dynamic bc (#3507)\
-fix flaky file test by resetting the session (#3517)\
-Update Changelog (#3523)\
-lint a random file (#3522)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
@@ -25,6 +14,8 @@ lint a random file (#3522)
 - BatchConnect applications now write out `completed_at` attributes in [3424](https://github.com/OSC/ondemand/pull/3424).
 - Added module support for custom javascript files in [3499](https://github.com/OSC/ondemand/pull/3499).
 - Added the turbo-rails gem and refactored BatchConnect::Sessions#index to use it in [3509](https://github.com/OSC/ondemand/pull/3509).
+- Added support to edit saved settings from the details view in [3498](https://github.com/OSC/ondemand/pull/3498).
+- The project manager can now define default launcher fields in [3488](https://github.com/OSC/ondemand/pull/3488).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -33,12 +24,15 @@ lint a random file (#3522)
 - ActionController::Live has been re-enabled in the file app in [3441](https://github.com/OSC/ondemand/pull/3441).
 - use relative OIDCRedirectURI in [3448](https://github.com/OSC/ondemand/pull/3448).
 - Removes NavConfig class & Replaces its use [3475](https://github.com/OSC/ondemand/pull/3475).
+- nginx_stage now uses ps to count sessions instead of lsof in [3511](https://github.com/OSC/ondemand/pull/3511).
+- The http to https redirect host is now configurable in [3515](https://github.com/OSC/ondemand/pull/3515).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
 - The path_selector can now inheret configurations in [3375](https://github.com/OSC/ondemand/pull/3375).
 - The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
 - data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
+- Cynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
 
 ## [3.1.4] - 04-01-2024
 
