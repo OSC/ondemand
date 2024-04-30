@@ -4,6 +4,9 @@
   disabled_class = disabled ? 'disabled' : ''
 -%>
 
+<div class="d-none" id="project_config" data-project-id="<%= @project.id %>">
+</div>
+
 <div class='row'>
   <div class="col-2 align-self-center justify-content-center d-flex">
     <%= link_to 'Back', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>

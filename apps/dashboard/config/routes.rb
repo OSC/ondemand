@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   if Configuration.can_access_projects?
     resources :projects do
       root 'projects#index'
+      get '/jobs/:cluster/:jobid' => 'projects#job_details', :defaults => { :format => 'turbo_stream' }, :as => 'job_details'
+
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
@@ -97,8 +99,6 @@ Rails.application.routes.draw do
     get '/activejobs/json' => 'active_jobs#json', :defaults => { :format => 'json' }
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end
-
-  get '/jobs/info/:cluster/:id' => 'jobs#pm_job_details', :defaults => { :format => 'turbo_stream' }, :as => 'pm_job_details'
 
   post 'settings', :to => 'settings#update'
 

@@ -1,4 +1,4 @@
-import { pmJobDetailsPath } from './config.js';
+import { rootPath } from './config.js';
 import { replaceHTML } from './turbo_shim';
 
 
@@ -12,13 +12,21 @@ jQuery(function() {
   });
 });
 
+function jobDetailsPath(cluster, jobId) {
+  const baseUrl = rootPath();
+  const config = document.getElementById('project_config');
+  const projectId = config.dataset['projectId'];
+
+  return `${baseUrl}/projects/${projectId}/jobs/${cluster}/${jobId}`;
+}
+
 function pollForJobInfo(element) {
   const cluster = element.dataset['jobCluster'];
   const jobId = element.dataset['jobId'];
 
   if(cluster === undefined || jobId === undefined){ return; }
 
-  const url = `${pmJobDetailsPath()}/${cluster}/${jobId}`;
+  const url = jobDetailsPath(cluster, jobId);
 
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
     .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
