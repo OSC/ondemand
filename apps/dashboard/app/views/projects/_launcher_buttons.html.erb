@@ -9,7 +9,7 @@
 
   <%= button_to(
     submit_project_launcher_path(@project.id, launcher.id),
-    class: 'btn btn-success mr-1 d-flex',
+    class: 'btn btn-success me-1 d-flex',
     title: 'Launch script with cached or default values',
     disabled: disabled,
     params: launcher.quick_launch_params,
@@ -21,7 +21,7 @@
 
   <%= link_to(
     project_launcher_path(@project.id, launcher.id),
-    class: "btn btn-success mr-1 d-flex #{disabled_class}",
+    class: "btn btn-success me-1 d-flex #{disabled_class}",
     id: "show_#{launcher.id}"
     ) do
   %>
@@ -30,7 +30,7 @@
 
   <%= link_to(
     edit_project_launcher_path(@project.id, launcher.id),
-    class: "btn btn-primary #{disabled_class} mr-1 d-flex",
+    class: "btn btn-primary #{disabled_class} me-1 d-flex",
     id: "edit_#{launcher.id}",
     title: edit_title) do
   %>
