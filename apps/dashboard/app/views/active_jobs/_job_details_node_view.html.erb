@@ -3,7 +3,7 @@
 <div class="card ms-5 mt-3">
 
         <% if has_ganglia(data.cluster) %>
-          <div class="card-header">Node: <%= node %> <span class="float-right">Job: <%= data.pbsid %> </span></div>
+          <div class="card-header">Node: <%= node %> <span class="float-end">Job: <%= data.pbsid %> </span></div>
           <div class="card-body">
         
             <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto" ), build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'large'), data: { lightbox: "cpu-report", title: "CPU Report " + node } %>

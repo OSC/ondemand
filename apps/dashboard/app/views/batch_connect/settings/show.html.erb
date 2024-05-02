@@ -36,7 +36,7 @@ locals: {
     <div id="settings-card" class="card mb-4">
       <div class="card-heading">
         <div class="h5 card-header overflow-auto">
-          <div class="float-right">
+          <div class="float-end">
               <%=
                 title = t('dashboard.bc_saved_settings.edit_title', settings_name: @settings.name)
                 link_to(
@@ -80,7 +80,7 @@ locals: {
 
       <p id="settings-app" class="list-group-item header"><%= @settings.app.title %></p>
       <div class="card-body">
-        <div class="float-right">
+        <div class="float-end">
           <%
             title = t('dashboard.bc_saved_settings.delete_title', settings_name: @settings.name)
           %>

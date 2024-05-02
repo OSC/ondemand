@@ -14,9 +14,9 @@
       </p>
     </div>
   <% else %>
-    <div class="float-left">
+    <div class="float-start">
       <i class="fas fa-times" aria-hidden="true"></i> No SSH key was found. You will need to generate a locally installed SSH key to clone the git repo using SSH.
     </div>
-    <%= link_to 'Generate SSH Key', create_key_products_path(type: type), class: 'btn btn-default float-right' %>
+    <%= link_to 'Generate SSH Key', create_key_products_path(type: type), class: 'btn btn-default float-end' %>
   <% end %>
 </div>
