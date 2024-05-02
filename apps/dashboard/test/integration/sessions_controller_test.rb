@@ -79,7 +79,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div#id_1234 div.card-body div.float-right form' do |form|
+    assert_select 'div#id_1234 div.card-body div.float-end form' do |form|
       assert_equal I18n.t('dashboard.batch_connect_sessions_delete_title'), form.first.text.strip
       assert_equal batch_connect_session_path('1234'), form.first['action']
     end
@@ -91,7 +91,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div#id_1234 div.card-body div.float-right form' do |form|
+    assert_select 'div#id_1234 div.card-body div.float-end form' do |form|
       assert_equal I18n.t('dashboard.batch_connect_sessions_cancel_title'), form.first.text.strip
       assert_equal batch_connect_cancel_session_path('1234'), form.first['action']
     end
@@ -107,7 +107,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div#id_1234 div.card-heading div.float-right form' do |forms|
+    assert_select 'div#id_1234 div.card-heading div.float-end form' do |forms|
       assert_equal 2, forms.size
       assert_equal true, forms[0]['class'].include?('edit-session')
       assert_equal new_batch_connect_session_context_path(token: 'sys/token'), forms[0]['action']
@@ -127,7 +127,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div#id_1234 div.card-heading div.float-right form' do |forms|
+    assert_select 'div#id_1234 div.card-heading div.float-end form' do |forms|
       assert_equal 1, forms.size
       assert_equal true, forms.first['class'].include?('relaunch')
     end
