@@ -41,7 +41,7 @@ module BatchConnect::SessionContextsHelper
   end
 
   def resolution_field(form, id, opts = {})
-    content_tag(:div, id: "#{id}_group", class: "container") do
+    content_tag(:div, id: "#{id}_group", class: "mb3") do
       concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
       concat(

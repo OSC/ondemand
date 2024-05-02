@@ -420,7 +420,11 @@ function updateVisibility(event, changeId) {
   $(`#${changeId}`).parents().each(function(_i, parent) {
     var classListValues = parent.classList.values();
     for (const val of classListValues) {
-      if (val.match('container')) {
+      // TODO: Using 'mb-3' here because 'form-group' was removed
+      // from Bootstrap 5 and replaced with 'mb-3' - however, this
+      // is a grid class which could (??) apply to parent elements
+      // in unpredictable parts of the chain - test for & resolve
+      if (val.match('mb-3')) {
         changeElement = $(parent);
       }
     }

@@ -1,5 +1,5 @@
 <% has_error = !form.object.errors[attrib.id].empty? %>
-<div class="container">
+<div class="form-group">
   <label class="form-label" for="<%= "#{form.object.class.name.underscore}_#{attrib.id}" %>"><%= attrib.label %></label>
   <p class="<%= has_error ? 'is-invalid' : '' %>" data-bs-toggle="attachments-error" id="<%= "#{form.object.class.name.underscore}_#{attrib.id}" %>">Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.</p>
   <% if has_error %>
