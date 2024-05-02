@@ -1,6 +1,6 @@
 <% if has_ganglia(data.cluster) || has_grafana(data.cluster) %>
 
-<div class="card ml-5 mt-3">
+<div class="card ms-5 mt-3">
 
         <% if has_ganglia(data.cluster) %>
           <div class="card-header">Node: <%= node %> <span class="float-right">Job: <%= data.pbsid %> </span></div>
@@ -14,8 +14,8 @@
         <% elsif has_grafana(data.cluster) %>
           <div class="card-header">
             Node: <%= node %>
-            <span class="ml-3">Job: <%= data.pbsid %></span>
-            <span class="ml-3">
+            <span class="ms-3">Job: <%= data.pbsid %></span>
+            <span class="ms-3">
               <a href="<%= build_grafana_link(data.cluster, data.starttime, 'node', node, data.pbsid) %>" target="_blank">
                     <span class="fa fa-external-link-square-alt"></span> Detailed Metrics
               </a>
