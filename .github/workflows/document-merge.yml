@@ -14,12 +14,13 @@ jobs:
   create-doc-issue:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+    env:
+      PR_NUM: ${{ github.event.pull_request.number }}
+      TITLE: ${{ github.event.pull_request.title }}
     steps:
       - name: Create an issue on the documentation repository
         if: contains(github.event.pull_request.labels.*.name, 'needs doc')
         run: |
-          PR_NUM=${{ github.event.pull_request.number }}
-          TITLE="${{ github.event.pull_request.title }}"
           BODY="{
              \"title\": \"$TITLE\",
              \"body\": \"Create documentation for https://github.com/OSC/ondemand/pull/$PR_NUM\"
@@ -34,8 +35,6 @@ jobs:
       - name: Create an issue on the puppet repository
         if: contains(github.event.pull_request.labels.*.name, 'needs automation')
         run: |
-          PR_NUM=${{ github.event.pull_request.number }}
-          TITLE="${{ github.event.pull_request.title }}"
           BODY="{
              \"title\": \"$TITLE\",
              \"body\": \"Create automation for https://github.com/OSC/ondemand/pull/$PR_NUM\"
@@ -50,8 +49,6 @@ jobs:
       - name: Create an issue on the ansible repository
         if: contains(github.event.pull_request.labels.*.name, 'needs automation')
         run: |
-          PR_NUM=${{ github.event.pull_request.number }}
-          TITLE="${{ github.event.pull_request.title }}"
           BODY="{
              \"title\": \"$TITLE\",
              \"body\": \"Create automation for https://github.com/OSC/ondemand/pull/$PR_NUM\"
