@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#3540)\
-Update Changelog (#3537)\
-lint a random file (#3536)\
-Update Passenger and NGINX dependencies (#3535)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
@@ -30,6 +26,7 @@ Update Passenger and NGINX dependencies (#3535)
 - Removes NavConfig class & Replaces its use [3475](https://github.com/OSC/ondemand/pull/3475).
 - nginx_stage now uses ps to count sessions instead of lsof in [3511](https://github.com/OSC/ondemand/pull/3511).
 - The http to https redirect host is now configurable in [3515](https://github.com/OSC/ondemand/pull/3515).
+- Passenger and NGINX have been updated 6.0.20 and 1.24.0 respectively in [3535](https://github.com/OSC/ondemand/pull/3535).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
