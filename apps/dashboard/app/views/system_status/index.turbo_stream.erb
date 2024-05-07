@@ -1,0 +1,7 @@
+<turbo-stream action="replace" target="system-status">
+  <template>
+    <% @clusters.each do |cluster| %>
+      <p>Hello world for <%= cluster %> at <%= Time.now %></p>
+    <% end %>
+  </template>
+</turbo-stream>

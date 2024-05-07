@@ -98,6 +98,8 @@ Rails.application.routes.draw do
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end
 
+  get '/systemstatus' => 'system_status#index'
+
   get '/jobs/info/:cluster/:id' => 'jobs#info', :defaults => { :format => 'json' }, :as => 'jobs_info'
 
   post 'settings', :to => 'settings#update'
