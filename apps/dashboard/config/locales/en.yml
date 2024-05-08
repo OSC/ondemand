@@ -212,6 +212,8 @@ en:
 
     recently_used_apps_title: 'Recently Used Apps'
 
+    saved_settings_title: 'Saved Settings'
+
     files_download_not_enabled: "Downloading files is not enabled on this server."
     files_directory_download_error_modal_title: "Directory too large to download"
     files_directory_download_unauthorized: "You can only download a directory as zip that you have read and execute access to"

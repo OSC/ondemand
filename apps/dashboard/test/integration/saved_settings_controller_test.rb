@@ -24,8 +24,8 @@ class SavedSettingsControllerTest < ActionDispatch::IntegrationTest
       assert_equal 'Paraview', css_select('div#settings-card p#settings-app').text.strip
 
       # display the saved settings actions buttons
-      assert_select 'div.card-header #edit-saved-settings-button', 1
-      assert_select 'div.card-header #launch-saved-settings-button', 1
+      assert_select 'div.card-header .edit-saved-settings-button', 1
+      assert_select 'div.card-header .launch-saved-settings-button', 1
       assert_select 'div.card-body #delete-saved-settings-button', 1
 
       # display the saved settings values
