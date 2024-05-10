@@ -72,3 +72,8 @@ export function bcIndexUrl() {
   const cfgData = configData();
   return cfgData['bcIndexUrl'];
 }
+
+export function statusIndexUrl() {
+  const cfgData = configData();
+  return cfgData['bcIndexUrl'];
+}

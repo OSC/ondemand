@@ -1,8 +1,8 @@
-import { bcPollDelay } from './config'
+import { bcPollDelay, statusIndexUrl } from './config'
 import { replaceHTML } from './turbo_shim'
 
 function poll() {
-  url = "";
+  url = statusIndexUrl();
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
     .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
     .then((r) => r.text())
