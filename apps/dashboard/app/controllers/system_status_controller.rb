@@ -1,6 +1,7 @@
 class SystemStatusController < ApplicationController
   def index
-    #TODO: Actually query clusters with ood-core gem
-    @clusters = %w[A B C]
+    @job_clusters = OodAppkit.clusters
+                             .select(&:job_allow?)
+                             .reject { |c| c.metadata.hidden }
   end
 end

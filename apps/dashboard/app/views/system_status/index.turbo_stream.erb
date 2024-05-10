@@ -1,33 +1,30 @@
 <turbo-stream action="replace" target="system-status">
   <template>
-    <% @clusters.each do |cluster| %>
+    <% @job_clusters.each do |c| %>
       <div class="col-sm-6 col-xs-12 p-2">
         <div class="col border rounded p-2 text-center">
-          <h4><strong><%= cluster.capitalize %> Cluster Status</strong></h4>
+          <h4><strong><%= title c %></strong></h4>
           <div>Hello world at <%= Time.now %></div>
+          <div><%= node_status c %></div>
           <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 50%">a</div>
+            <div class="progress-bar" role="progressbar" style="width: <%= node_pct c %>"><%= node_pct c %></div>
           </div>
-          <div>This represents the number of GPU nodes in use.</div>
+          <div><%= processor_status c %></div> 
           <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 28%">gpunodess</div>
+            <div class="progress-bar" role="progressbar" style="width: <%= processor_pct c %>"><%= processor_pct c %></div>
           </div>
-          <div>This represents the number of CPU cores in use.</div> 
+          <div><%= gpu_status c %></div>
           <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 25%">b</div>
-          </div>
-          <div>This represents the number of GPUs in use.</div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 70%">gpu usage</div>
+            <div class="progress-bar" role="progressbar" style="width: <%= gpu_pct c %>"><%= gpu_pct c %></div>
           </div>
           <h4 class="mt-2 pt-2 border-top">Jobs</h4>
-          <div>n Jobs Running</div>
+          <div><%= active_job_status c %></div>
           <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 54%">Running</div>
+            <div class="progress-bar" role="progressbar" style="width: <%= active_job_pct c %>"><%= active_job_pct c %></div>
           </div>
-          <div>n Jobs Queued</div>
+          <div><%= queued_job_status c %></div>
           <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 10%">Queued</div>
+            <div class="progress-bar" role="progressbar" style="width: <%= queued_job_pct c %>"><%= queued_job_pct c %></div>
           </div>
         </div>
       </div>
