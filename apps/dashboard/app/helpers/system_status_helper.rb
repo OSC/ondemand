@@ -11,7 +11,7 @@ module SystemStatusHelper
 
   def job_adapter(cluster)
     if @cluster != cluster
-      update_cluster cluster
+      update_cluster(cluster)
     end
 
     @job_adapter
@@ -19,7 +19,7 @@ module SystemStatusHelper
 
   def cluster_info(cluster)
     if @cluster != cluster
-      update_cluster cluster
+      update_cluster(cluster)
     end
 
     @cluster_info
@@ -38,32 +38,32 @@ module SystemStatusHelper
   end
 
   def node_status(cluster)
-    c_info = cluster_info cluster
+    c_info = cluster_info(cluster)
     generic_status(c_info.active_nodes, c_info.total_nodes, 'Nodes')
   end
 
   def node_pct(cluster)
-    c_info = cluster_info cluster
+    c_info = cluster_info(cluster)
     generic_pct(c_info.active_nodes, c_info.total_nodes)
   end
 
   def processor_status(cluster)
-    c_info = cluster_info cluster
+    c_info = cluster_info(cluster)
     generic_status(c_info.active_processors, c_info.total_processors, 'Processors')
   end
 
   def processor_pct(cluster)
-    c_info = cluster_info cluster
+    c_info = cluster_info(cluster)
     generic_pct(c_info.active_processors, c_info.total_processors)
   end
 
   def gpu_status(cluster)
-    c_info = cluster_info cluster
+    c_info = cluster_info(cluster)
     generic_status(c_info.active_gpus, c_info.total_gpus, 'GPUs')
   end
 
   def gpu_pct(cluster)
-    c_info = cluster_info cluster
+    c_info = cluster_info(cluster)
     generic_pct(c_info.active_gpus, c_info.total_gpus)
   end
 
@@ -92,7 +92,7 @@ module SystemStatusHelper
   end
 
   def queued_job_status(cluster)
-    "#{queued_jobs cluster} Jobs Queued"
+    "#{queued_jobs(cluster)} Jobs Queued"
   end
 
   def active_job_pct(cluster)
