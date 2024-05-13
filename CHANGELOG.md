@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#3547)\
-Update Changelog (#3543)\
-Added support to disable the project size feature (#3531)\
-security: ghsa-5q6q-9pp2-4jv8 (#3544)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
@@ -20,6 +16,7 @@ security: ghsa-5q6q-9pp2-4jv8 (#3544)
 - Added the turbo-rails gem and refactored BatchConnect::Sessions#index to use it in [3509](https://github.com/OSC/ondemand/pull/3509).
 - Added support to edit saved settings from the details view in [3498](https://github.com/OSC/ondemand/pull/3498).
 - The project manager can now define default launcher fields in [3488](https://github.com/OSC/ondemand/pull/3488).
+- The feature to show the project size is now configurable in [3531](https://github.com/OSC/ondemand/pull/3531).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
