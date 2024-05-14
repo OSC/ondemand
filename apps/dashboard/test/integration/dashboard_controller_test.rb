@@ -35,7 +35,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
         FavoritePath.new(scratch_path, title: 'Scratch'), 
         FavoritePath.new(project_path), 
         FavoritePath.new(project_path2), 
-        FavoritePath.new(s3_path,  title: 'S3', filesystem: 'Scratch')
+        FavoritePath.new(s3_path,  title: 'S3', filesystem: 's3')
       ]
 
       OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
@@ -45,8 +45,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
           `mkdir -p #{scratch_path}`
           `mkdir -p #{project_path}`
           `mkdir -p #{project_path2}`
-          # regular directory now though?
-          #`mkdir -p #{s3_path}`
+          `mkdir -p #{s3_path}`
 
           get root_path
           dditems = dropdown_list_items(dropdown_list('Files'))
@@ -64,11 +63,11 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
           dditemurls = dropdown_list_items_urls(dropdown_list('Files'))
           assert_equal [
-            "#{dir}/#{Dir.home}",
-            "#{scratch_path}",
-            "#{dir}/#{project_path}",
-            "#{dir}/#{project_path2}",
-            "#{dir}/s3/mybucket"
+            "/pun/sys/files/fs#{Dir.home}",
+            "/pun/sys/files/fs#{scratch_path}",
+            "/pun/sys/files/fs#{project_path}",
+            "/pun/sys/files/fs#{project_path2}",
+            "/pun/sys/files/s3#{s3_path}"
           ], dditemurls, 'Files dropdown URLs are incorrect'
         end
       end
