@@ -5,7 +5,7 @@
       <% cluster_info = job_adapter.cluster_info %>
       <div class="col-sm-6 col-xs-12 p-2">
         <div class="col border rounded p-2 text-center">
-          <div class="h4 bold"><%= title(c) %></div>
+          <div class="h4"><strong><%= title(c) %></strong></div>
           <div><%= node_status(cluster_info) %></div>
           <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: <%= node_pct(cluster_info) %>"><%= node_pct(cluster_info) %></div>

@@ -52,7 +52,7 @@ module SystemStatusHelper
 
   def queued_jobs(job_adapter)
     job_adapter.info_all_each.select do |info|
-      info.status.running?
+      info.status.queued?
     end.length
   end
 
