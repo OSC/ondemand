@@ -1,105 +1,71 @@
 # frozen_string_literal: true
 
-# helper for the system status page
+# Helpers for the system status page /dashboard/systemstatus
 module SystemStatusHelper
-  # Used to not repeatedly request the job adapter
-  def update_cluster(cluster)
-    @job_adapter = cluster.job_adapter
-    @cluster_info = @job_adapter.cluster_info
-    @cluster = cluster
-  end
-
-  def job_adapter(cluster)
-    if @cluster != cluster
-      update_cluster(cluster)
-    end
-
-    @job_adapter
-  end
-
-  def cluster_info(cluster)
-    if @cluster != cluster
-      update_cluster(cluster)
-    end
-
-    @cluster_info
-  end
-
   def title(cluster)
     "#{cluster.metadata.title.titleize} Cluster Status"
   end
 
-  def generic_pct(value, total)
+  def percent(value, total)
     "#{(value.to_f / total * 100).round 2}%"
   end
 
   def generic_status(active, total, name)
-    "#{active} of #{total} #{name} Active (#{total - active} Free)"
+    free = number_with_delimiter(total - active)
+    "#{number_with_delimiter(active)} of #{number_with_delimiter(total)} #{name} Active (#{free} Free)"
   end
 
-  def node_status(cluster)
-    c_info = cluster_info(cluster)
-    generic_status(c_info.active_nodes, c_info.total_nodes, 'Nodes')
+  def node_status(cluster_info)
+    generic_status(cluster_info.active_nodes, cluster_info.total_nodes, 'Nodes')
   end
 
-  def node_pct(cluster)
-    c_info = cluster_info(cluster)
-    generic_pct(c_info.active_nodes, c_info.total_nodes)
+  def node_pct(cluster_info)
+    percent(cluster_info.active_nodes, cluster_info.total_nodes)
   end
 
-  def processor_status(cluster)
-    c_info = cluster_info(cluster)
-    generic_status(c_info.active_processors, c_info.total_processors, 'Processors')
+  def processor_status(cluster_info)
+    generic_status(cluster_info.active_processors, cluster_info.total_processors, 'Processors')
   end
 
-  def processor_pct(cluster)
-    c_info = cluster_info(cluster)
-    generic_pct(c_info.active_processors, c_info.total_processors)
+  def processor_pct(cluster_info)
+    percent(cluster_info.active_processors, cluster_info.total_processors)
   end
 
-  def gpu_status(cluster)
-    c_info = cluster_info(cluster)
-    generic_status(c_info.active_gpus, c_info.total_gpus, 'GPUs')
+  def gpu_status(cluster_info)
+    generic_status(cluster_info.active_gpus, cluster_info.total_gpus, 'GPUs')
   end
 
-  def gpu_pct(cluster)
-    c_info = cluster_info(cluster)
-    generic_pct(c_info.active_gpus, c_info.total_gpus)
+  def gpu_pct(cluster_info)
+    percent(cluster_info.active_gpus, cluster_info.total_gpus)
   end
 
-  def active_jobs(cluster)
-    active_count = 0
-    job_adapter(cluster).info_all_each do |i|
-      if i.status.running?
-        active_count += 1
-      end
-    end
-    active_count
+  def active_jobs(job_adapter)
+    job_adapter.info_all_each.select do |info|
+      info.status.running?
+    end.length
   end
 
-  def active_job_status(cluster)
-    "#{active_jobs cluster} Jobs Running"
+  def active_job_status(job_adapter)
+    num_jobs = number_with_delimiter(active_jobs(job_adapter))
+    "#{num_jobs} Jobs Running"
   end
 
-  def queued_jobs(cluster)
-    queued_count = 0
-    job_adapter(cluster).info_all_each do |i|
-      if i.status.queued?
-        queued_count += 1
-      end
-    end
-    queued_count
+  def queued_jobs(job_adapter)
+    job_adapter.info_all_each.select do |info|
+      info.status.running?
+    end.length
   end
 
-  def queued_job_status(cluster)
-    "#{queued_jobs(cluster)} Jobs Queued"
+  def queued_job_status(job_adapter)
+    num_jobs = number_with_delimiter(queued_jobs(job_adapter))
+    "#{num_jobs} Jobs Queued"
   end
 
-  def active_job_pct(cluster)
-    generic_pct(active_jobs(cluster), active_jobs(cluster) + queued_jobs(cluster))
+  def active_job_pct(job_adapter)
+    percent(active_jobs(job_adapter), active_jobs(job_adapter) + queued_jobs(job_adapter))
   end
 
-  def queued_job_pct(cluster)
-    generic_pct(queued_jobs(cluster), active_jobs(cluster) + queued_jobs(cluster))
+  def queued_job_pct(job_adapter)
+    percent(queued_jobs(job_adapter), active_jobs(job_adapter) + queued_jobs(job_adapter))
   end
 end

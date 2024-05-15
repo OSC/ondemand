@@ -1,7 +1,5 @@
+# frozen_string_literal: true
+
+# The controller for the system status page /dashboard/systemstatus
 class SystemStatusController < ApplicationController
-  def index
-    @job_clusters = OodAppkit.clusters
-                             .select(&:job_allow?)
-                             .reject { |c| c.metadata.hidden }
-  end
 end
