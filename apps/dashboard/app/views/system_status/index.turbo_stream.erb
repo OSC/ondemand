@@ -1,0 +1,34 @@
+<turbo-stream action="replace" target="system-status">
+  <template>
+    <% Configuration.job_clusters.each do |c| %>
+      <% job_adapter = c.job_adapter %>
+      <% cluster_info = job_adapter.cluster_info %>
+      <div class="col-sm-6 col-xs-12 p-2">
+        <div class="col border rounded p-2 text-center">
+          <div class="h4"><strong><%= title(c) %></strong></div>
+          <div><%= node_status(cluster_info) %></div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: <%= node_pct(cluster_info) %>"><%= node_pct(cluster_info) %></div>
+          </div>
+          <div><%= processor_status(cluster_info) %></div> 
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: <%= processor_pct(cluster_info) %>"><%= processor_pct(cluster_info) %></div>
+          </div>
+          <div><%= gpu_status(cluster_info) %></div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: <%= gpu_pct(cluster_info) %>"><%= gpu_pct(cluster_info) %></div>
+          </div>
+          <div class="h4 mt-2 pt-2 border-top">Jobs</div>
+          <div><%= active_job_status(job_adapter) %></div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: <%= active_job_pct(job_adapter) %>"><%= active_job_pct(job_adapter) %></div>
+          </div>
+          <div><%= queued_job_status(job_adapter) %></div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: <%= queued_job_pct(job_adapter) %>"><%= queued_job_pct(job_adapter) %></div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </template>
+</turbo-stream>
