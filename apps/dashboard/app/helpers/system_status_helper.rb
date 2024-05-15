@@ -12,7 +12,7 @@ module SystemStatusHelper
 
   def generic_status(active, total, name)
     free = number_with_delimiter(total - active)
-    "#{number_with_delimiter(active)} of #{number_with_delimiter(total)} #{name} Active (#{free} Free)"
+    "#{name} Active: #{number_with_delimiter(active)}/#{number_with_delimiter(total)} (#{free} Free)"
   end
 
   def node_status(cluster_info)
