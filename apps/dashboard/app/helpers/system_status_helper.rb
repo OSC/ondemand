@@ -45,27 +45,9 @@ module SystemStatusHelper
     end.length
   end
 
-  def active_job_status(job_adapter)
-    num_jobs = number_with_delimiter(active_jobs(job_adapter))
-    "#{num_jobs} Jobs Running"
-  end
-
   def queued_jobs(job_adapter)
     job_adapter.info_all_each.select do |info|
       info.status.queued?
     end.length
-  end
-
-  def queued_job_status(job_adapter)
-    num_jobs = number_with_delimiter(queued_jobs(job_adapter))
-    "#{num_jobs} Jobs Queued"
-  end
-
-  def active_job_pct(job_adapter)
-    percent(active_jobs(job_adapter), active_jobs(job_adapter) + queued_jobs(job_adapter))
-  end
-
-  def queued_job_pct(job_adapter)
-    percent(queued_jobs(job_adapter), active_jobs(job_adapter) + queued_jobs(job_adapter))
   end
 end

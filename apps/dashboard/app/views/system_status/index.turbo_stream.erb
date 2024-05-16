@@ -18,15 +18,20 @@
           <div class="progress">
             <div class="progress-bar" role="progressbar" style="width: <%= gpu_pct(cluster_info) %>"><%= gpu_pct(cluster_info) %></div>
           </div>
-          <div class="h4 mt-2 pt-2 border-top">Jobs</div>
-          <div><%= active_job_status(job_adapter) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= active_job_pct(job_adapter) %>"><%= active_job_pct(job_adapter) %></div>
-          </div>
-          <div><%= queued_job_status(job_adapter) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= queued_job_pct(job_adapter) %>"><%= queued_job_pct(job_adapter) %></div>
-          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Jobs Running</th>
+                <th scope="col">Jobs Queued</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><%= active_jobs(job_adapter) %></td>
+                <td><%= queued_jobs(job_adapter) %></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     <% end %>
