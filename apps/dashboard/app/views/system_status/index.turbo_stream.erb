@@ -5,7 +5,7 @@
       <div class="col-sm-6 col-xs-12 p-2">
         <div class="col border rounded p-2 text-center">
           <div class="h4"><strong><%= title(c) %></strong></div>
-          <% status(job_adapter).each do |current_status| %>
+          <% components_status(job_adapter).each do |current_status| %>
             <div class="row justify-content-center m-0">
               <% current_status[:strings].each do |current_line| %>
                 <div class="col"><%= current_line %></div>
