@@ -16,7 +16,7 @@ module SystemStatusHelper
     }
   end
 
-  def status(job_adapter)
+  def components_status(job_adapter)
     cluster_info = job_adapter.cluster_info
     [
       status_hash('Nodes', cluster_info.active_nodes, cluster_info.total_nodes),
