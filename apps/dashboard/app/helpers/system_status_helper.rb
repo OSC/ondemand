@@ -8,10 +8,7 @@ module SystemStatusHelper
 
   def status_hash(name, active, total)
     {
-      strings: [
-        "#{name} Active: #{number_with_delimiter(active)}",
-        "#{name} Free: #{number_with_delimiter(total - active)}"
-      ],
+      message: "#{name} Available: #{number_with_delimiter(total - active)}",
       percent: percent(active, total)
     }
   end

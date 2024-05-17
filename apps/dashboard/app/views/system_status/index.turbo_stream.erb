@@ -2,33 +2,33 @@
   <template>
     <% Configuration.job_clusters.each do |c| %>
       <% job_adapter = c.job_adapter %>
-      <div class="col-sm-6 col-xs-12 p-2">
-        <div class="col border rounded p-2 text-center">
+      <div class="col-sm-6 col-xs-12">
+        <div class="col border rounded text-center p-2 m-2">
           <div class="h4"><strong><%= title(c) %></strong></div>
           <% components_status(job_adapter).each do |current_status| %>
-            <div class="row justify-content-center m-0">
-              <% current_status[:strings].each do |current_line| %>
-                <div class="col"><%= current_line %></div>
-              <% end %>
-            </div>
-            <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %></div>
+            <div class="container py-2">
+              <div><%= current_status[:message] %></div>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %></div>
+              </div>
             </div>
           <% end %>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Jobs Running</th>
-                <th scope="col">Jobs Queued</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><%= active_jobs(job_adapter) %></td>
-                <td><%= queued_jobs(job_adapter) %></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="col">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" class="border-top-0">Jobs Running</th>
+                  <th scope="col" class="border-top-0">Jobs Queued</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><%= active_jobs(job_adapter) %></td>
+                  <td><%= queued_jobs(job_adapter) %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     <% end %>
