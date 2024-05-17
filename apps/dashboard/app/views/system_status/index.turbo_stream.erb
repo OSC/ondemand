@@ -2,22 +2,19 @@
   <template>
     <% Configuration.job_clusters.each do |c| %>
       <% job_adapter = c.job_adapter %>
-      <% cluster_info = job_adapter.cluster_info %>
       <div class="col-sm-6 col-xs-12 p-2">
         <div class="col border rounded p-2 text-center">
           <div class="h4"><strong><%= title(c) %></strong></div>
-          <div><%= node_status(cluster_info) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= node_pct(cluster_info) %>"><%= node_pct(cluster_info) %></div>
-          </div>
-          <div><%= processor_status(cluster_info) %></div> 
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= processor_pct(cluster_info) %>"><%= processor_pct(cluster_info) %></div>
-          </div>
-          <div><%= gpu_status(cluster_info) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= gpu_pct(cluster_info) %>"><%= gpu_pct(cluster_info) %></div>
-          </div>
+          <% status(job_adapter).each do |current_status| %>
+            <div class="row justify-content-center m-0">
+              <% current_status[:strings].each do |current_line| %>
+                <div class="col"><%= current_line %></div>
+              <% end %>
+            </div>
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %></div>
+            </div>
+          <% end %>
           <table class="table">
             <thead>
               <tr>
