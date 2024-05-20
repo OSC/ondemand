@@ -592,7 +592,7 @@ class FilesTest < ApplicationSystemTestCase
         OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
 
         visit files_url(dir)
-        assert_selector('#favorites li', count: 1)
+        assert_selector('#favorites li', count: 2)
       end
     end
   end
