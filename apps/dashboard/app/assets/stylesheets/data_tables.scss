@@ -28,3 +28,7 @@ table.dataTable th[aria-sort="ascending"] span::after {
   font-size: 100%;
   top: 0;
 }
+
+table.dataTable td a {
+  text-decoration: none;
+}

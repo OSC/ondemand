@@ -6,6 +6,12 @@
   }
 }
 
+.breadcrumb-item {
+  a {
+    text-decoration: none !important;
+  }
+}
+
 .card-header h3 {
   font-size: 16px;
   font-weight: bold;
