@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added support to edit saved settings from the details view in [3498](https://github.com/OSC/ondemand/pull/3498).
 - The project manager can now define default launcher fields in [3488](https://github.com/OSC/ondemand/pull/3488).
 - The feature to show the project size is now configurable in [3531](https://github.com/OSC/ondemand/pull/3531).
+- The dashboard now has a system status page in [3549](https://github.com/OSC/ondemand/pull/3549).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
