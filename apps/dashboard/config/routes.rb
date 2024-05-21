@@ -98,7 +98,7 @@ Rails.application.routes.draw do
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end
 
-  get '/systemstatus', to: 'system_status#index', as: 'system_status'
+  get '/systemstatus', to: 'system_status#index', as: 'system_status' if Configuration.can_access_systemstatus?
 
   get '/jobs/info/:cluster/:id' => 'jobs#info', :defaults => { :format => 'json' }, :as => 'jobs_info'
 
