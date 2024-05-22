@@ -7,7 +7,7 @@ require 'i18n/backend/fallbacks'
 Rails.application.config.i18n = {}
 
 # replace the backend to allow missing translations to default to OOD-supplied ones
-I18n::Backend::Simple.include I18n::Backend::Fallbacks
+I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
 
 # load the local translations and any translations from config_root
 I18n.load_path += Dir[Rails.application.config.root.join('config', 'locales', '*.{yml,rb}'),
