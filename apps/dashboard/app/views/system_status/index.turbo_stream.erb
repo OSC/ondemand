@@ -11,9 +11,11 @@
             <div class="container py-2">
               <div><%= current_status[:message] %></div>
 
-              <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %> in use</div>
-              </div>
+              <% if valid_percent(current_status[:percent]) %>
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %> in use</div>
+                </div>
+              <% end %>
             </div>
           <% end %>
 
