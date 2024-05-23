@@ -100,7 +100,8 @@ function snakeCaseWords(str) {
       snakeCase += c.toLowerCase();
     } else if(c == c.toUpperCase() && isNaN(c)) {
       const nextIsUpper = (index + 1 !== str.length) ? str[index + 1] === str[index + 1].toUpperCase() : true;
-      if (str[index-1] === '_' || nextIsUpper) {
+      const nextIsNum = !isNaN(str[index + 1]);
+      if ((str[index-1] === '_' || nextIsUpper) && !nextIsNum) {
         snakeCase += c.toLowerCase();
       } else {
         snakeCase += `_${c.toLowerCase()}`;

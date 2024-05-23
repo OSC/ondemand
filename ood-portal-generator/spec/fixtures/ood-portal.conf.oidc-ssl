@@ -47,7 +47,7 @@
   ServerName ondemand.example.com
 
   RewriteEngine On
-  RewriteRule ^(.*) https://ondemand.example.com:443$1 [R=301,NE,L]
+  RewriteRule ^(.*) https://%{HTTP_HOST}:443$1 [R=301,NE,L]
 </VirtualHost>
 
 # The Open OnDemand portal VirtualHost
@@ -84,7 +84,7 @@
   OIDCProviderMetadataURL https://idp.example.com/auth/realms/osc/.well-known/openid-configuration
   OIDCClientID ondemand.example.com
   OIDCClientSecret secret
-  OIDCRedirectURI https://ondemand.example.com/oidc
+  OIDCRedirectURI /oidc
   OIDCRemoteUserClaim preferred_username
   OIDCScope "openid profile email groups"
   OIDCCryptoPassphrase e2c5ee12c92a019f19b5e532641ac0da2f9acdac

@@ -132,6 +132,10 @@ describe OodPortalGenerator::Application do
       test_generate('input/custom_directives.yml', 'output/custom_directives.conf')
     end
 
+    it 'http_redirect_host can be set' do
+      test_generate('input/http_redirect_host.yml', 'output/http_redirect_host.conf')
+    end
+
     it 'generates full OIDC config' do
       config = {
         servername: 'ondemand.example.com',

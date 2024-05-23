@@ -2,6 +2,9 @@ module NginxStage
   # This generator cleans all running per-user NGINX processes that are
   # inactive (i.e., not active connections).
   class NginxCleanGenerator < Generator
+
+    include NginxStage::SessionFinder
+
     desc 'Clean all user running PUNs with no active connections'
 
     footer <<-EOF.gsub(/^ {4}/, '')
@@ -59,8 +62,9 @@ module NginxStage
           next if (user && user != u.to_s)
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
           socket = SocketFile.new NginxStage.pun_socket_path(user: u)
-          cleanup_stale_files(pid_path, socket) unless pid_path.running_process? 
-          if socket.sessions.zero? || force
+          sessions = session_count(u)
+          cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
+          if sessions.zero? || force
             puts u
             if !skip_nginx
               NginxStage.clean_nginx_env(user: user)

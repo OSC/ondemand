@@ -63,7 +63,7 @@ Listen <%= addr_port %>
   <%- end -%>
 
   RewriteEngine On
-  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @proxy_server %>:<%= @port %>$1 [R=301,NE,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @http_redirect_host %>:<%= @port %>$1 [R=301,NE,L]
 </VirtualHost>
 <% end -%>
 
@@ -131,7 +131,7 @@ Listen <%= addr_port %>
   <%- if @oidc_client_secret -%>
   OIDCClientSecret <%= @oidc_client_secret %>
   <%- end -%>
-  OIDCRedirectURI <%= @oidc_redirect_uri %>
+  OIDCRedirectURI <%= @oidc_uri %>
   OIDCRemoteUserClaim <%= @oidc_remote_user_claim %>
   OIDCScope "<%= @oidc_scope %>"
   OIDCCryptoPassphrase <%= @oidc_crypto_passphrase %>
