@@ -2,31 +2,39 @@
   <template>
     <% Configuration.job_clusters.each do |c| %>
       <% job_adapter = c.job_adapter %>
-      <% cluster_info = job_adapter.cluster_info %>
-      <div class="col-sm-6 col-xs-12 p-2">
-        <div class="col border rounded p-2 text-center">
+      <div class="col-sm-6 col-xs-12">
+        <div class="col border rounded text-center p-2 m-2">
+          
           <div class="h4"><strong><%= title(c) %></strong></div>
-          <div><%= node_status(cluster_info) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= node_pct(cluster_info) %>"><%= node_pct(cluster_info) %></div>
+
+          <% components_status(job_adapter).each do |current_status| %>
+            <div class="container py-2">
+              <div><%= current_status[:message] %></div>
+
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %> in use</div>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="col">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" class="border-top-0">Jobs Running</th>
+                  <th scope="col" class="border-top-0">Jobs Queued</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><%= active_jobs(job_adapter) %></td>
+                  <td><%= queued_jobs(job_adapter) %></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div><%= processor_status(cluster_info) %></div> 
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= processor_pct(cluster_info) %>"><%= processor_pct(cluster_info) %></div>
-          </div>
-          <div><%= gpu_status(cluster_info) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= gpu_pct(cluster_info) %>"><%= gpu_pct(cluster_info) %></div>
-          </div>
-          <div class="h4 mt-2 pt-2 border-top">Jobs</div>
-          <div><%= active_job_status(job_adapter) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= active_job_pct(job_adapter) %>"><%= active_job_pct(job_adapter) %></div>
-          </div>
-          <div><%= queued_job_status(job_adapter) %></div>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: <%= queued_job_pct(job_adapter) %>"><%= queued_job_pct(job_adapter) %></div>
-          </div>
+
         </div>
       </div>
     <% end %>
