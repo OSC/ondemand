@@ -254,8 +254,9 @@ class OodApp
     Bundler.with_unbundled_env do
       ENV['BUNDLE_USER_CONFIG'] = '/dev/null'
       setup = "./bin/setup-production"
+      gemfile = './Gemfile'
       Dir.chdir(path) do
-        if File.exist?(setup) && File.executable?(setup)
+        if File.exist?(gemfile) && File.exist?(setup) && File.executable?(setup)
           # FIXME: write a test for this
 
           # Prepend #{path}/bin to the PATH so that bin/ruby wrapper is used if
