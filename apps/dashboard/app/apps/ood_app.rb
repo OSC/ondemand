@@ -254,9 +254,8 @@ class OodApp
     Bundler.with_unbundled_env do
       ENV['BUNDLE_USER_CONFIG'] = '/dev/null'
       setup = "./bin/setup-production"
-      gemfile = './Gemfile'
       Dir.chdir(path) do
-        if File.exist?(gemfile) && File.exist?(setup) && File.executable?(setup)
+        if File.exist?(setup) && File.executable?(setup)
           # FIXME: write a test for this
 
           # Prepend #{path}/bin to the PATH so that bin/ruby wrapper is used if
@@ -265,7 +264,8 @@ class OodApp
           #
           # This makes the execution of the setup-production script use the same ruby versions
           # that Passenger uses when launching the app.
-          output, status = Open3.capture2e({'PATH' => path.join('bin').to_s + ':'+ ENV['PATH']}, 'bundle','exec', setup)
+          cmd = File.exist?('./Gemfile') ? "bundle exec #{setup}" : setup
+          output, status = Open3.capture2e({'PATH' => path.join('bin').to_s + ':'+ ENV['PATH']}, cmd)
           unless status.success?
             msg = "Per user setup failed for script at #{path}/#{setup} "
             msg += "for user #{Etc.getpwuid.name} with output: #{output}"
