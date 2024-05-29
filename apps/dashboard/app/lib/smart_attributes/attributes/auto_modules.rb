@@ -31,19 +31,10 @@ module SmartAttributes
       end
 
       def select_choices(*)
-        versions = HpcModule.all_versions(@hpc_module).map do |mod|
-          data_opts = Configuration.job_clusters.map do |cluster|
-            { "data-option-for-cluster-#{cluster.id}": false } unless mod.on_cluster?(cluster.id)
-          end.compact
-
-          [mod.version, mod.to_s].concat(data_opts)
-        end
-
-        if show_default?
-          versions.prepend(['default', @hpc_module])
-        else
-          versions
-        end
+        versions = hpc_versions
+        versions = versions_with_default(versions) if show_default?
+        versions = filtered_versions(versions) if filter_versions?
+        versions
       end
 
       def show_default?
@@ -51,10 +42,40 @@ module SmartAttributes
         default.nil? ? true : default != false
       end
 
+      def filter
+        @filter ||= @opts[:filter]
+      end
+
+      def filter_versions?
+        filter.present?
+      end
+
       # normalize module names so they can be accessed through methods.
       # see https://github.com/OSC/ondemand/issues/2933
       def normalize_module(module_name)
         module_name.to_s.gsub('-', '_')
+      end
+
+      private
+
+      def hpc_versions
+        HpcModule.all_versions(@hpc_module).map do |mod|
+          data_opts = Configuration.job_clusters.map do |cluster|
+            { "data-option-for-cluster-#{cluster.id}": false } unless mod.on_cluster?(cluster.id)
+          end.compact
+
+          [mod.version, mod.to_s].concat(data_opts)
+        end
+      end
+
+      def versions_with_default(versions)
+        versions.prepend(['default', @hpc_module])
+      end
+
+      def filtered_versions(versions)
+        versions = versions.select do |version|
+          !version[0].match?(Regexp.new(filter))
+        end
       end
     end
   end
