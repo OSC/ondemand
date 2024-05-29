@@ -7,12 +7,12 @@
   <% end %>
 
   <%- if Configuration.bc_saved_settings? -%>
-  <div class="mb3 form-check">
+  <div class="mb-3 form-check">
       <input class="form-check-input align-self-center" name="save_template" type="checkbox" id="batch_connect_session_save_template" <%= @template_name ? 'checked' : '' %>>
       <label class="form-check-label align-self-center" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
   </div>
 
-  <div class="mb3 d-flex">
+  <div class="mb-3 d-flex">
     <input class="form-control w-50 me-2" name="template_name" value="<%= @template_name %>" type="text" id="batch_connect_session_template_name" aria-label="<%= t('dashboard.batch_connect_form_template_name_label') %>" readonly>
     <%= f.submit t('dashboard.batch_connect_form_save_submit'), id: 'batch_connect_session_save_template_submit', class: "ms-auto btn btn-primary", formaction: batch_connect_save_settings_path(token: @app.token), disabled: @template_name ? false : true %>
   </div>
