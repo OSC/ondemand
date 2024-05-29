@@ -2,17 +2,17 @@
 export function cssBadgeForState(state){
   switch (state) {
     case 'completed':
-      return 'badge-success';
+      return 'bg-success';
     case 'running':
-      return 'badge-primary'
+      return 'bg-primary'
     case 'queued':
-      return 'badge-info';
+      return 'bg-info';
     case 'queued_held':
-      return 'badge-warning';
+      return 'bg-warning';
     case 'suspended':
-      return 'badge-warning';
+      return 'bg-warning';
     default:
-      return 'badge-warning';
+      return 'bg-warning';
   }
 }
 

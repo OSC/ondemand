@@ -58,7 +58,7 @@ const jobHelpers = {
         severity = "danger";
       }
 
-      label = `<span class="badge badge-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
+      label = `<span class="badge bg-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
     }
 
     return new Handlebars.SafeString(label);
