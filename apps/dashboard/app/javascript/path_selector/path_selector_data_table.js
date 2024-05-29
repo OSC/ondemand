@@ -56,7 +56,7 @@ export class PathSelectorTable {
       //
       // put breadcrumbs below filter!!!
       dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-          "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-right'><'transfers-status'>>>>" +
+          "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-end'><'transfers-status'>>>>" +
           "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
       columns: [
         {

@@ -1,5 +1,5 @@
-// Place all Bootstrap 4 variable overrides in this file.
-// Bootstrap 4 SASS variables list: https://github.com/twbs/bootstrap/blob/v4.6.0/scss/_variables.scss
+// Place all Bootstrap 5 variable overrides in this file.
+// Bootstrap 5 SASS variables list: https://github.com/twbs/bootstrap/blob/v5.0.2/scss/_variables.scss
 
 // Miscellaneous
 $enable-responsive-font-sizes: "true";
@@ -10,11 +10,16 @@ $blue: rgb(51, 122, 183);
 $green: #5cb85c;
 $body-color: rgb(51, 51, 51);
 
-// see https://getbootstrap.com/docs/4.0/getting-started/theming/#modify-map
+// see https://getbootstrap.com/docs/5.0/customize/sass/#modify-map
 $theme-colors: (
   "primary": $blue,
   "success": $green,
-  "danger": #d9534f
+  "danger": #d9534f,
+  "secondary": #6c757d,
+  "info": #0dcaf0,
+  "warning": #ffc107,
+  "light": #f8f9fa,
+  "dark": #212529
 );
 
 // NOTE: bootstrap 3 info color was not teal but #5bc0de
@@ -60,6 +65,9 @@ $navbar-nav-link-padding-x: 0.75rem;
 
 // breadcrumbs are purely visual for accessibility
 $breadcrumb-divider: '';
+$breadcrumb-bg: #e9ecef;
+$breadcrumb-padding-y: 0.75rem;
+$breadcrumb-padding-x: 1rem;
 
 // files get copied during 'yarn build' in esbuild.config.js
 $fa-font-path: "../builds";

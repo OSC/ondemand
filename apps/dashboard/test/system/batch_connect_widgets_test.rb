@@ -64,11 +64,11 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       select('show path', from: 'batch_connect_session_context_hide_path')
       assert find('#batch_connect_session_context_path')
-      assert find("[data-target='#batch_connect_session_context_path_path_selector']")
+      assert find("[data-bs-target='#batch_connect_session_context_path_path_selector']")
 
       select('hide path', from: 'batch_connect_session_context_hide_path')
       refute find('#batch_connect_session_context_path', visible: :hidden).visible?
-      refute find("[data-target='#batch_connect_session_context_path_path_selector']", visible: :hidden).visible?
+      refute find("[data-bs-target='#batch_connect_session_context_path_path_selector']", visible: :hidden).visible?
     end
   end
 end

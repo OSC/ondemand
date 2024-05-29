@@ -7,7 +7,7 @@ jQuery(function() {
     pollForJobInfo(ele);
   });
 
-  $("[data-toggle='project']").each((_index, ele) => {
+  $("[data-bs-toggle='project']").each((_index, ele) => {
     updateProjectSize(ele);
   });
 });
@@ -50,7 +50,7 @@ function pollForJobInfo(element) {
 
 function jobInfoDiv(jobId, state, stateTitle='', stateDescription='') {
   return `<div class="job-info justify-content-center d-grid">
-            <span class="mr-2">${jobId}</span>
+            <span class="me-2">${jobId}</span>
             <span class="job-info-title badge ${cssBadgeForState(state)}" title="${stateTitle}">${state.toUpperCase()}</span>
             <span class="job-info-description text-muted">${stateDescription}</span>
           </div>`;

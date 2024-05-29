@@ -136,7 +136,7 @@ module BatchConnect::SessionsHelper
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
-      class: "btn btn-danger float-right btn-delete",
+      class: "btn btn-danger float-end btn-delete",
       title: title,
       'aria-label': title,
       data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
@@ -150,7 +150,7 @@ module BatchConnect::SessionsHelper
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
-      class: "btn btn-danger float-right btn-cancel",
+      class: "btn btn-danger float-end btn-cancel",
       title: title,
       'aria-label': title,
       data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom" }
