@@ -64,16 +64,16 @@
       <%= manifest_markdown(@product.app.manifest.description) %>
     </p>
   </div><!-- /.col-md-6 -->
-  <div class="col-md-2 col-xs-6">
-    <%= link_to 'Edit Metadata', edit_product_path(@product.name, type: @type), class: 'btn btn-default btn-block' %>
+  <div class="d-grid gap-2 col-md-2 col-xs-6 mb-auto">
+    <%= link_to 'Edit Metadata', edit_product_path(@product.name, type: @type), class: 'btn btn-default' %>
     <%= command_btn(title: "Bundle Install", key: "bundle_install", display: "bundle install --path=vendor/bundle") if @product.can_run_bundle_install? %>
     <%= command_btn(title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear") if @type == :usr && @product.passenger_rails_app? %>
     <%= command_btn(title: "Restart App", key: "restart_app", display: "mkdir -p tmp && touch tmp/restart.txt") if @product.passenger_app? %>
     <%= command_btn(title: "Rebuild App", key: "rebuild_passenger_rails_app", display: "RAILS_ENV=production bundle install --path=vendor/bundle && RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt", help: "Performs Bundle Install, Precompile Assets, and Restart App", color: "primary") if @type == :usr && @product.passenger_rails_app? %>
   </div><!-- /.col-md-2 -->
-  <div class="col-md-2 col-xs-6">
-    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
-    <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+  <div class="d-grid gap-2 col-md-2 col-xs-6 mb-auto">
+    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
   </div><!-- /.col-md-2 -->
 
 </div><!-- /.row -->

@@ -21,32 +21,36 @@
     <% end %>
   </td>
   <td>
-    <div class="btn-group-vertical btn-block">
-      <%- product.app.links_without_validation.each do |link| -%>
-        <%=
-          link_to(
-            "Launch #{link.title}",
-            link.url.to_s,
-            class: "btn btn-primary",
-            data: {
-              toggle: "popover",
-              content: manifest_markdown(link.description),
-              html: true,
-              trigger: "hover",
-              title: link.title,
-              container: "body",
-            },
-            target: link.new_tab? ? "_blank" : nil
-          )
-        %>
-      <%- end -%>
+    <div class="d-grid gap-2">
+      <div class="btn-group-vertical">
+        <%- product.app.links_without_validation.each do |link| -%>
+          <%=
+            link_to(
+              "Launch #{link.title}",
+              link.url.to_s,
+              class: "btn btn-primary",
+              data: {
+                toggle: "popover",
+                content: manifest_markdown(link.description),
+                html: true,
+                trigger: "hover",
+                title: link.title,
+                container: "body",
+              },
+              target: link.new_tab? ? "_blank" : nil
+            )
+          %>
+        <%- end -%>
+      </div>
     </div>
   </td>
   <td data-order="<%= modified_time.to_i %>"><%= modified_time.strftime("%m/%d/%y") %></td>
   <td>
-    <%= link_to 'Details', product_path(product.name, type: @type), class: 'btn btn-info btn-block' %>
-    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
-    <%= link_to 'Files', OodAppkit.files.url(path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+    <div class="d-grid gap-2">
+      <%= link_to 'Details', product_path(product.name, type: @type), class: 'btn btn-info' %>
+      <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
+      <%= link_to 'Files', OodAppkit.files.url(path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    </div>
   </td>
   <td>
   </td>

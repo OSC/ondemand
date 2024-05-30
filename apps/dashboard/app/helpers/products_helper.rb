@@ -73,7 +73,7 @@ module ProductsHelper
   # @param color [optional, String] The bootstrap color of the button. Ex. "primary", "info", "success", etc. ( Default: "default" )
   def command_btn(title:, key:, display:, help: nil, color: "default")
     button_tag(title,
-      class: "btn btn-#{color} btn-block",
+      class: "btn btn-#{color}",
       title: help,
       id: "#{key.to_s.downcase}_btn",
       data: {
