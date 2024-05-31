@@ -174,6 +174,7 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mv %{buildroot}/opt/ood/apps/shell %{buildroot}%{_localstatedir}/www/ood/apps/sys/shell
 %__mv %{buildroot}/opt/ood/apps/files %{buildroot}%{_localstatedir}/www/ood/apps/sys/files
 %__mv %{buildroot}/opt/ood/apps/projects %{buildroot}%{_localstatedir}/www/ood/apps/sys/projects
+%__mv %{buildroot}/opt/ood/apps/systemstatus %{buildroot}%{_localstatedir}/www/ood/apps/sys/systemstatus
 %__mv %{buildroot}/opt/ood/apps/file-editor %{buildroot}%{_localstatedir}/www/ood/apps/sys/file-editor
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
@@ -286,6 +287,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/projects
 %dir %attr(700, root, root) %{_localstatedir}/www/ood/apps/sys/projects
 %{_localstatedir}/www/ood/apps/sys/projects/manifest.yml
+%{_localstatedir}/www/ood/apps/sys/systemstatus
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
 %exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
 
