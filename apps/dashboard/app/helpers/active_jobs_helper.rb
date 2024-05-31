@@ -64,22 +64,22 @@ module ActiveJobsHelper
     case status
     when "completed"
       label = "Completed"
-      labelclass = "badge-success"
+      labelclass = "bg-success"
     when "running"
       label = "Running"
-      labelclass = "badge-primary"
+      labelclass = "bg-primary"
     when "queued"
       label = "Queued"
-      labelclass = "badge-info"
+      labelclass = "bg-info"
     when "queued_held"
       label = "Hold"
-      labelclass = "badge-warning"
+      labelclass = "bg-warning"
     when "suspended"
       label = "Suspend"
-      labelclass = "badge-warning"
+      labelclass = "bg-warning"
     else
       label = "Undetermined"
-      labelclass = "badge-secondary"
+      labelclass = "bg-secondary"
     end
     "<span class='badge #{labelclass}'>#{label}</span>".html_safe
   end
