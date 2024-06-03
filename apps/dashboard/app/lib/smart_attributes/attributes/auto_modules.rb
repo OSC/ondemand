@@ -73,7 +73,7 @@ module SmartAttributes
       end
 
       def filtered_versions(versions)
-        versions = versions.select do |version|
+        versions.select do |version|
           !version[0].match?(Regexp.new(filter))
         end
       end
