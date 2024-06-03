@@ -264,7 +264,8 @@ class OodApp
           #
           # This makes the execution of the setup-production script use the same ruby versions
           # that Passenger uses when launching the app.
-          cmd = File.exist?('./Gemfile') ? "bundle exec #{setup}" : setup
+          cmd = [setup]
+          cmd.prepend(%w[bundle exec]) if File.exist?('./Gemfile')
           output, status = Open3.capture2e({'PATH' => path.join('bin').to_s + ':'+ ENV['PATH']}, cmd)
           unless status.success?
             msg = "Per user setup failed for script at #{path}/#{setup} "
