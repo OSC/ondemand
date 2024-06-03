@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+simple refactor of turbo shim (#3514)\
+Add system status to navigation bar (#3567)\
+update badge classes (#3575)\
+lint a random file (#3578)\
+3461 bootstrap 5 upgrade (#3541)\
+Removes class 'w-100' from Dashboard logo (#3568)\
+lint a random file (#3572)
 
 ### Added
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
