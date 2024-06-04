@@ -43,7 +43,7 @@ function updateModal(event){
 
   xhr.onloadend = function() {
     $(`#${spinnerId}`).replaceWith(`
-      <button class="close float-end" data-dismiss="modal">&times;</button>
+      <button class="close float-end" data-bs-dismiss="modal">&times;</button>
     `);
     if (this.status != 200) {
       $(`#${id} .product-cli-body`).html(`${header}A fatal error has occurred`);
