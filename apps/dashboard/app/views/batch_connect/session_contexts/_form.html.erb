@@ -18,7 +18,9 @@
   </div>
   <%- end -%>
 
-  <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
+  <div class="d-grid gap-2">
+    <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary" %>
+  </div>
 <% end %>
 
 <%= javascript_include_tag('batch_connect_session_contexts', nonce: true) %>
