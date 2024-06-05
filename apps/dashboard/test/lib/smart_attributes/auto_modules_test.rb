@@ -40,4 +40,20 @@ class SmartAttributes::AutoModulesTest < ActiveSupport::TestCase
       refute attribute.select_choices.include?(['R-EliminateModule', 'R-EliminateModule'])
     end
   end
+
+  test 'can filter modules when given an array' do
+    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
+      attribute = SmartAttributes::AttributeFactory.build('auto_modules_R', { filter: [/Eliminate/, /GetRidOfMeToo/] })
+      versions = [['R-KeepThisModule', 'R-KeepThisModule'],
+                  ['R-AlsoKeep', 'R-AlsoKeep'],
+                  ['R-EliminateModule', 'R-EliminateModule'],
+                  ['R-GetRidOfMeToo', 'R-GetRidOfMeToo']]
+      attribute.expects(:hpc_versions).returns(versions)
+
+      choices = attribute.select_choices
+
+      refute choices.include?(['R-GetRidOfMeToo', 'R-GetRidOfMeToo'])
+      refute choices.include?(['R-EliminateModule', 'R-EliminateModule'])
+    end
+  end
 end

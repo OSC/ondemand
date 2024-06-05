@@ -73,8 +73,16 @@ module SmartAttributes
       end
 
       def filtered_versions(versions)
-        versions.select do |version|
-          !version[0].match?(Regexp.new(filter))
+        versions.reject do |version|
+          begin
+            if filter.is_a?(Array)
+              filter.any? { |f| version[0].match?(Regexp.new(f)) }
+            else
+              version[0].match?(Regexp.new(filter))
+            end
+          rescue RegexpError => e
+            puts "found #{e.message}"
+          end
         end
       end
     end
