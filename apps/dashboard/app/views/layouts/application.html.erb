@@ -54,7 +54,7 @@
             <%= render partial: 'layouts/nav/user' %>
             <%= render partial: 'layouts/nav/log_out' %>
           <% else %>
-            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
+            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-end' }%>
           <% end %>
         </div>
       </ul>
