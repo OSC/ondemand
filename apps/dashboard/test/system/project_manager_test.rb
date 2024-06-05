@@ -708,19 +708,19 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'cant create script when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant show script when project is invalid' do
     visit project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant edit script when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant show invalid script' do
