@@ -321,7 +321,7 @@ class ConfigurationSingleton
   end
 
   def can_access_systemstatus?
-    can_access_core_app? 'systemstatus'
+    can_access_core_app? 'system-status'
   end
 
   # Maximum file upload size that nginx will allow from clients in bytes
