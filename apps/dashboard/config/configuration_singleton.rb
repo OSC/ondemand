@@ -320,7 +320,7 @@ class ConfigurationSingleton
     can_access_core_app? 'projects'
   end
 
-  def can_access_systemstatus?
+  def can_access_system_status?
     can_access_core_app? 'system-status'
   end
 
