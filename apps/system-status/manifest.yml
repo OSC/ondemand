@@ -4,5 +4,5 @@ description: |-
   The Open OnDemand System Status App
 category: Clusters
 icon: fa://tachometer
-url: systemstatus
+url: system-status
 new_window: false
