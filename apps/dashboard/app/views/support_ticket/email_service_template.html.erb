@@ -40,7 +40,9 @@
         <%= create_widget(f, attrib, format: @render_format) %>
       <% end %>
 
-      <input type="submit" name="commit" value="Submit support ticket" class="btn btn-primary btn-block" />
+      <div class="d-grid gap-2">
+        <input type="submit" name="commit" value="Submit support ticket" class="btn btn-primary" />
+      </div>
     <% end %>
   </div>
 

@@ -49,7 +49,7 @@ gem 'dotenv-rails', '~> 2.1'
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
-gem 'bootstrap_form', '~> 4.0'
+gem 'bootstrap_form', '5.0'
 gem 'mocha', '~> 2.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'

@@ -100,6 +100,8 @@ Rails.application.routes.draw do
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end
 
+  get '/system-status', to: 'system_status#index', as: 'system_status' if Configuration.can_access_system_status?
+
   post 'settings', :to => 'settings#update'
 
   # Support ticket routes

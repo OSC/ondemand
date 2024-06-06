@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
   include ActionController::Live
@@ -16,7 +18,6 @@ class FilesController < ApplicationController
       request.format = 'zip' if download?
 
       respond_to do |format|
-
         format.html do
           render :index
         end
@@ -51,7 +52,7 @@ class FilesController < ApplicationController
                                         end
 
           if can_download
-            zipname = @path.basename.to_s.gsub('"', '\"') + '.zip'
+            zipname = "#{@path.basename.to_s.gsub('"', '\"')}.zip"
             response.set_header 'Content-Disposition', "attachment; filename=\"#{zipname}\""
             response.set_header 'Content-Type', 'application/zip'
             response.set_header 'Last-Modified', Time.now.httpdate
@@ -64,37 +65,35 @@ class FilesController < ApplicationController
             send_stream(filename: zipname) do |stream|
               ZipKit::Streamer.open(stream) do |zip|
                 @path.files_to_zip.each do |file|
-                  begin
-                    next unless File.readable?(file.realpath)
+                  next unless File.readable?(file.realpath)
 
-                    if File.file?(file.realpath)
-                      zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                        IO.copy_stream(file.realpath, zip_file)
-                      end
-                    else
-                      zip.add_empty_directory(dirname: file.relative_path.to_s)
+                  if File.file?(file.realpath)
+                    zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                      IO.copy_stream(file.realpath, zip_file)
                     end
-                  rescue => e
-                    logger.warn("error writing file #{file.path} to zip: #{e.message}")
+                  else
+                    zip.add_empty_directory(dirname: file.relative_path.to_s)
                   end
+                rescue StandardError => e
+                  logger.warn("error writing file #{file.path} to zip: #{e.message}")
                 end
               end
             end
           else
-            logger.warn "unable to download directory #{@path.to_s}: #{error_message}"
+            logger.warn "unable to download directory #{@path}: #{error_message}"
             response.set_header 'X-OOD-Failure-Reason', error_message
             head :internal_server_error
           end
-        rescue => e
+        rescue StandardError => e
           # Third party API requests (from outside of OnDemand) will see this error
           # message if there's an error while downloading a directory.
-          # 
+          #
           # The client side code in the Files App performs checks before downloading
           # a directory with the ?can_download query parameter but other implementations
           # that don't perform this check will see HTTP 500 returned and the error
           # error message will be in the "X-OOD-Failure-Reason" header.
           #
-          Rails.logger.warn "exception raised when attempting to download directory #{@path.to_s}: #{e.message}"
+          Rails.logger.warn "exception raised when attempting to download directory #{@path}: #{e.message}"
           response.set_header 'X-OOD-Failure-Reason', e.message
           head :internal_server_error
         end
@@ -102,21 +101,21 @@ class FilesController < ApplicationController
     else
       show_file
     end
-  rescue => e
+  rescue StandardError => e
     @files = []
-    flash.now[:alert] = "#{e.message}"
+    flash.now[:alert] = e.message.to_s
 
     logger.error(e.message)
 
     respond_to do |format|
-      format.html {
+      format.html do
         render :index
-      }
-      format.json {
+      end
+      format.json do
         @files = []
 
         render :index
-      }
+      end
     end
   end
 
@@ -143,7 +142,7 @@ class FilesController < ApplicationController
     end
 
     render json: {}
-  rescue => e
+  rescue StandardError => e
     render json: { error_message: e.message }
   end
 
@@ -161,7 +160,7 @@ class FilesController < ApplicationController
     render json: { error_message: e.message }, status: :forbidden
   rescue Errno::EACCES => e
     render json: { error_message: e.message }, status: :forbidden
-  rescue => e
+  rescue StandardError => e
     render json: { error_message: e.message }, status: :internal_server_error
   end
 
@@ -175,7 +174,7 @@ class FilesController < ApplicationController
     else
       redirect_to root_path, alert: "#{@path} is not an editable file"
     end
-  rescue => e
+  rescue StandardError => e
     redirect_to root_path, alert: e.message
   end
 
@@ -189,7 +188,7 @@ class FilesController < ApplicationController
   end
 
   def normalized_path(path = params[:filepath])
-    Pathname.new("/" + path.to_s.chomp("/").delete_prefix("/"))
+    Pathname.new("/#{path.to_s.chomp('/').delete_prefix('/')}")
   end
 
   def parse_path(path = params[:filepath], filesystem = params[:fs])
@@ -212,7 +211,7 @@ class FilesController < ApplicationController
       AllowlistPolicy.default.validate!(@path)
     elsif @path.remote_type.nil?
       raise StandardError, "Remote #{@path.remote} does not exist"
-    elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == "local" || @path.remote_type == "alias")
+    elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == 'local' || @path.remote_type == 'alias')
       # local and alias remotes would allow bypassing the AllowListPolicy
       # TODO: Attempt to evaluate the path of them and validate?
       raise StandardError, "Remotes of type #{@path.remote_type} are not allowed due to ALLOWLIST_PATH"
@@ -234,7 +233,7 @@ class FilesController < ApplicationController
     #     Pathname.new('/a/b').join('/c') => '/c'
     #
     # handle case where uppy.js sets relativePath to "null"
-    if params[:relativePath] && params[:relativePath] != "null"
+    if params[:relativePath] && params[:relativePath] != 'null'
       Pathname.new(File.join(params[:parent], params[:relativePath]))
     else
       Pathname.new(File.join(params[:parent], params[:name]))
@@ -261,7 +260,7 @@ class FilesController < ApplicationController
     else
       send_file @path, disposition: 'inline', type: Files.mime_type_for_preview(type)
     end
-  rescue => e
+  rescue StandardError => e
     logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
 
     if params[:downlaod]
@@ -274,24 +273,24 @@ class FilesController < ApplicationController
   def send_remote_file
     type = begin
       Files.mime_type_by_extension(@path).presence || @path.mime_type
-    rescue => e
+    rescue StandardError => e
       logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
     end
 
     # svgs aren't safe to view until we update our CSP
-    download = download? || type.to_s == "image/svg+xml"
-    type = "text/plain; charset=utf-8" if type.to_s == "image/svg+xml"
+    download = download? || type.to_s == 'image/svg+xml'
+    type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
 
     response.set_header('X-Accel-Buffering', 'no')
     response.sending_file = true
-    response.set_header("Last-Modified", Time.now.httpdate)
+    response.set_header('Last-Modified', Time.now.httpdate)
 
     if download
-      response.set_header("Content-Type", type) if type.present?
-      response.set_header("Content-Disposition", "attachment")
+      response.set_header('Content-Type', type) if type.present?
+      response.set_header('Content-Disposition', 'attachment')
     else
-      response.set_header("Content-Type", Files.mime_type_for_preview(type)) if type.present?
-      response.set_header("Content-Disposition", "inline")
+      response.set_header('Content-Type', Files.mime_type_for_preview(type)) if type.present?
+      response.set_header('Content-Disposition', 'inline')
     end
     begin
       @path.read do |chunk|

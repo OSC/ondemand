@@ -222,7 +222,7 @@ function create_datatable(options){
             },
             {
                 data:               "walltime_used",
-                className:          "text-right",
+                className:          "text-end",
                 "autoWidth":        true,
                 render: function (data, type, _row, _meta) {
                   if(type === 'display' || type === 'filter') {

@@ -7,7 +7,7 @@
   {{#if error_summary}}
     <div id="{{id}}" class="alert alert-danger alert-dismissible fade show" role="alert">
       <b><i class="fas fa-exclamation-triangle"></i> {{error_summary}}</b>
-      <button class="btn btn-outline-dark btn-sm ml-3 collapsed" type="button" data-toggle="collapse" data-target="#{{id}}-error-report" aria-expanded="false" aria-controls="#{{id}}-error-report">See details</button>
+      <button class="btn btn-outline-dark btn-sm ms-3 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{id}}-error-report" aria-expanded="false" aria-controls="#{{id}}-error-report">See details</button>
       <div id="{{id}}-error-report" class="collapse">
         <div class="mt-3 card">
           <pre class="card-body">{{error_message}}</pre>

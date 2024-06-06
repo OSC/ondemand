@@ -12,3 +12,4 @@ cancel_session_enabled: true
 bc_clean_old_dirs: true
 hide_app_version: true
 motd_render_html: true
+project_size_enabled: true

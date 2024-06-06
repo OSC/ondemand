@@ -53,6 +53,7 @@ class ConfigurationSingleton
       :motd_render_html             => false,
       :upload_enabled               => true,
       :download_enabled             => true,
+      :project_size_enabled         => true,
     }.freeze
   end
 
@@ -317,6 +318,10 @@ class ConfigurationSingleton
 
   def can_access_projects?
     can_access_core_app? 'projects'
+  end
+
+  def can_access_system_status?
+    can_access_core_app? 'system-status'
   end
 
   # Maximum file upload size that nginx will allow from clients in bytes

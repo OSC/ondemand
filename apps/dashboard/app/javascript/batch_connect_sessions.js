@@ -1,20 +1,7 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { replaceHTML } from './turbo_shim';
-
-function poll() {
-  url = bcIndexUrl();
-  fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
-    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
-    .then((r) => r.text())
-    .then((html) => replaceHTML("batch_connect_sessions", html))
-    .then(setTimeout(poll, bcPollDelay()))
-    .catch((err) => {
-      console.log('Cannot not retrive batch connect sessions due to error:');
-      console.log(err);
-    });
-}
+import { pollAndReplace } from './turbo_shim';
 
 function settingKey(id) {
   return id + '_value';
@@ -52,7 +39,7 @@ jQuery(function (){
     $('#full-page-spinner').removeClass('d-none');
   }
 
-  poll();
+  pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions");
 
   $('button.relaunch').each((index, element) => {
     $(element).on('click', showSpinner);

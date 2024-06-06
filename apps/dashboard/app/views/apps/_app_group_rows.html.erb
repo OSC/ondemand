@@ -7,15 +7,15 @@
           <span title="FontAwesome icon specified: folder" aria-hidden="true" class="fas fa-folder fa-fw"></span> Files
         <% end %>
 
-        <button type="button" class="btn dropdown-toggle dropdown-toggle-split btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn dropdown-toggle dropdown-toggle-split btn-primary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-        <ul class="dropdown-menu" x-placement="right-start">
+        <ul class="dropdown-menu" data-popper-placement="right-start">
           <%- app.links.each do |link| -%>
           <%= render partial: "link", locals: { link: link, class: 'dropdown-item pt-2 pb-0' } %>
           <%- end -%>
         </ul>
       </div>
-      <%= tag.div app.caption, class: "text-muted float-right" if caption_app?(app) %>
+      <%= tag.div app.caption, class: "text-muted float-end" if caption_app?(app) %>
       </td>
       <td><%= app.category %></td>
       <td><%= app.subcategory %></td>
@@ -28,7 +28,7 @@
       <tr id="<%= row_id(link.url) %>">
         <td>
           <%= render partial: "link", locals: { link: link } %>
-          <%= tag.div link.caption, class: "text-muted float-right" if caption_app?(app) %>
+          <%= tag.div link.caption, class: "text-muted float-end" if caption_app?(app) %>
         </td>
         <td><%= app.category %></td>
         <td><%= app.subcategory %></td>

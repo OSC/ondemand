@@ -1,0 +1,42 @@
+<turbo-stream action="replace" target="system-status">
+  <template>
+    <% Configuration.job_clusters.each do |c| %>
+      <% job_adapter = c.job_adapter %>
+      <div class="col-sm-6 col-xs-12">
+        <div class="col border rounded text-center p-2 m-2">
+          
+          <div class="h4"><strong><%= title(c) %></strong></div>
+
+          <% components_status(job_adapter).each do |current_status| %>
+            <div class="container py-2">
+              <div><%= current_status[:message] %></div>
+
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %> in use</div>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="col">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" class="border-top-0">Jobs Running</th>
+                  <th scope="col" class="border-top-0">Jobs Queued</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><%= active_jobs(job_adapter) %></td>
+                  <td><%= queued_jobs(job_adapter) %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    <% end %>
+  </template>
+</turbo-stream>

@@ -19,3 +19,15 @@ export function replaceHTML(id, html) {
     ele.innerHTML = newHTML;
   }
 }
+
+export function pollAndReplace(url, delay, id) {
+  fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
+    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
+    .then((r) => r.text())
+    .then((html) => replaceHTML(id, html))
+    .then(setTimeout(pollAndReplace, delay, url, delay, id))
+    .catch((err) => {
+      console.log('Cannot retrive partial due to error:');
+      console.log(err);
+    });
+}
