@@ -18,12 +18,14 @@ const minMaxHandlerCache = [];
 const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
+const labelHandlerCache = {};
 
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
+const labelLookup = {};
 
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
@@ -155,6 +157,8 @@ function makeChangeHandlers(prefix){
                 addSetHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('hide')) {
                 addHideHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('label')) {
+                addLabelHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -198,7 +202,36 @@ function addHideHandler(optionId, option, key, configValue) {
   }
 
   updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
+};
+
+function newLabel(changeElement, key) {
+  const selectedOptionLabelIndex = changeElement[0].selectedIndex;
+  const selectedOptionLabel = changeElement[0].options[selectedOptionLabelIndex];
+  return selectedOptionLabel.dataset[key];
+};
+
+function updateLabel(changeId, changeElement, key) {
+  $(`label[for="${changeId}"]`)[0].innerHTML = newLabel(changeElement, key);
 }
+
+function addLabelHandler(optionId, option, key, configValue) {
+  const changeId = idFromToken(key.replace(/^label/, ''));
+  const changeElement = $(`#${optionId}`);
+
+  if(labelLookup[optionId] === undefined) labelLookup[optionId] = new Table(changeId, undefined);
+  const table = labelLookup[optionId];
+  table.put(changeId, option, configValue);
+
+  if(labelHandlerCache[optionId] === undefined) labelHandlerCache[optionId] = [];
+
+  if(!labelHandlerCache[optionId].includes(changeId)) {
+    changeElement.on('change', (event) => {
+      updateLabel(changeId, changeElement, key);
+    });
+  };
+
+  updateLabel(changeId, changeElement, key);
+};
 
 /**
  *
