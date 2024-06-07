@@ -81,7 +81,7 @@ module SmartAttributes
               version[0].match?(Regexp.new(filter))
             end
           rescue RegexpError => e
-            puts "found #{e.message}"
+            Rails.logger.error "Can't filter modules because #{e.message}"
           end
         end
       end
