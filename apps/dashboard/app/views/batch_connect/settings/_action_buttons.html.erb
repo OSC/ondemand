@@ -1,0 +1,33 @@
+  <%=
+    title = t('dashboard.bc_saved_settings.edit_title', settings_name: settings.name)
+    link_to(
+      batch_connect_edit_settings_path(token: settings.token, id: settings.name),
+      class: %w[btn px-1 py-0 btn-outline-dark edit-saved-settings-button full-page-spinner],
+      title: title,
+      'aria-label': title,
+      data: { toggle: "tooltip", placement: "left" }
+    ) do
+      fa_icon('pen', classes: nil)
+    end
+  %>
+  <span class="card-text"> | </span>
+  <%
+    if settings.app.valid?
+      params = settings.values.map{|name, value| ["batch_connect_session_context[#{name}]", value]}.to_h
+      title = t('dashboard.bc_saved_settings.launch_title', app_title: settings.app.title, settings_name: settings.name)
+  %>
+    <%=
+      button_to(
+        batch_connect_session_contexts_path(token: settings.token),
+        method: :post,
+        class: %w[btn px-1 py-0 btn-outline-dark launch-saved-settings-button full-page-spinner],
+        form_class: %w[d-inline],
+        title: title,
+        'aria-label': title,
+        data: { toggle: "tooltip", placement: "left" },
+        params: params
+      ) do
+        fa_icon('play', classes: nil)
+      end
+    %>
+  <% end %>

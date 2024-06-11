@@ -1,0 +1,8 @@
+---
+batch_connect_templates:
+  sys/bc_paraview:
+    widget_name:
+      cluster: quick
+      bc_num_hours: '8'
+      bc_account: widget
+      bc_vnc_resolution: 500x600

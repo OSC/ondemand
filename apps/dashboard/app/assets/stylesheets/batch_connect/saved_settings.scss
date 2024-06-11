@@ -3,3 +3,35 @@
     color: rgba(0, 0, 0, 0.25);
   }
 }
+
+div.settings-widget {
+  .small {
+    font-size: 0.8rem;
+  }
+
+  img.app-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  i.app-icon {
+    height: unset;
+    font-size: 18px;
+    margin-top: 2px;
+    margin-right: 5px;
+  }
+
+  .header {
+    height: 38px;
+  }
+
+  .saved-settings-toggle {
+    font-size: 0.75rem;
+  }
+
+  .saved-settings-toggle:focus {
+    box-shadow: none;
+  }
+}
+
