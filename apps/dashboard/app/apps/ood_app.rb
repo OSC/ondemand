@@ -271,7 +271,7 @@ class OodApp
             cmd = setup
             args = []
           end
-          output, status = Open3.capture2e({'PATH' => path.join('bin').to_s + ':'+ ENV['PATH']}, cmd, args)
+          output, status = Open3.capture2e({'PATH' => path.join('bin').to_s + ':'+ ENV['PATH']}, cmd, *args)
           unless status.success?
             msg = "Per user setup failed for script at #{path}/#{setup} "
             msg += "for user #{Etc.getpwuid.name} with output: #{output}"
