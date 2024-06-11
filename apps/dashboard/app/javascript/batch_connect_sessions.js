@@ -39,7 +39,9 @@ jQuery(function (){
     $('#full-page-spinner').removeClass('d-none');
   }
 
-  pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions");
+  if ($('#batch_connect_sessions').length) {
+    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions");
+  }
 
   $('button.relaunch').each((index, element) => {
     $(element).on('click', showSpinner);
