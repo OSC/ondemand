@@ -39,7 +39,7 @@ module SystemStatusHelper
     "#{(value.to_f / total * 100).round 2}%"
   end
 
-  def valid_percent(percent)
+  def valid_percent?(percent)
     percent.to_f >= 0
   end
 
