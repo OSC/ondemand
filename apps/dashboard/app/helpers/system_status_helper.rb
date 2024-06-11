@@ -13,8 +13,21 @@ module SystemStatusHelper
     }
   end
 
+  def not_slurm_hash(job_adapter)
+    scheduler = job_adapter.class.name.demodulize
+    {
+      message: "Cluster information is not available with #{scheduler}. Currently, only Slurm clusters are supported.",
+      percent: -1
+    }
+  end
+
   def components_status(job_adapter)
-    cluster_info = job_adapter.cluster_info
+    begin
+      cluster_info = job_adapter.cluster_info
+    rescue NotImplementedError
+      return [not_slurm_hash(job_adapter)]
+    end
+
     [
       status_hash('Nodes', cluster_info.active_nodes, cluster_info.total_nodes),
       status_hash('Processors', cluster_info.active_processors, cluster_info.total_processors),
@@ -24,6 +37,10 @@ module SystemStatusHelper
 
   def percent(value, total)
     "#{(value.to_f / total * 100).round 2}%"
+  end
+
+  def valid_percent?(percent)
+    percent.to_f >= 0
   end
 
   def active_jobs(job_adapter)
