@@ -40,3 +40,19 @@ export function today() {
   const now = new Date();
   return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
 }
+
+function showSpinner() {
+  $('body').addClass('modal-open');
+  $('#full-page-spinner').removeClass('d-none');
+}
+
+export function bindFullPageSpinnerEvent() {
+  $('.full-page-spinner').each((index, element) => {
+    const $element = $(element);
+    if($element.is('a')) {
+      $element.on('click', showSpinner);
+    } else {
+      $element.closest('form').on('submit', showSpinner);
+    }
+  });
+}
