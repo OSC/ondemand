@@ -2,7 +2,7 @@
   <%- if app.role == "files" -%>
     <tr id="<%= row_id(app.url) %>">
       <td>
-      <div class="btn-group dropright">
+      <div class="btn-group dropend">
         <%= link_to app.links.first.url, class: 'btn btn-primary', target: '_blank' do %>
           <span title="FontAwesome icon specified: folder" aria-hidden="true" class="fas fa-folder fa-fw"></span> Files
         <% end %>

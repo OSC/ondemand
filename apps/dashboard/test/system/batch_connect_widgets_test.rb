@@ -71,4 +71,47 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       refute find("[data-bs-target='#batch_connect_session_context_path_path_selector']", visible: :hidden).visible?
     end
   end
+
+  test 'data-label-* allows select options to dynamically change the label of another form element' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small', data-label-cores: 'Number of Cores (1-4)']
+              - ['medium', 'medium', data-label-cores: 'Number of Cores (1-8)']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            required: true
+            value: 1
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='batch_connect_session_context_cores']")
+      assert_equal label.text, "Number of Cores (1-4)"
+
+      select('medium', from: 'batch_connect_session_context_node_type')
+
+      label = find("label[for='batch_connect_session_context_cores']")
+      assert_equal label.text, "Number of Cores (1-8)"
+    end
+  end
 end

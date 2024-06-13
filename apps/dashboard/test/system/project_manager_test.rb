@@ -253,7 +253,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       HEREDOC
 
       success_message = I18n.t('dashboard.jobs_scripts_created')
-      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
 
       launcher_path = project_launcher_path(project_id, script_id)
@@ -304,7 +304,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       HEREDOC
 
       success_message = I18n.t('dashboard.jobs_scripts_created')
-      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
     end
   end
@@ -475,7 +475,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         .returns(['', 'some error message', exit_failure])
 
       click_on 'Launch'
-      assert_selector('.alert-danger', text: "×\nClose\nsome error message")
+      assert_selector('.alert-danger', text: "Close\nsome error message")
       assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
     end
   end
@@ -552,7 +552,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
-      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
       # note that bc_num_hours has default, min & max
@@ -639,7 +639,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
-      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
       expected_yml = <<~HEREDOC
@@ -708,19 +708,19 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'cant create script when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant show script when project is invalid' do
     visit project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant edit script when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant show invalid script' do
@@ -728,7 +728,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
+      assert_selector('.alert-danger', text: "Close\nCannot find script 1")
     end
   end
 
@@ -737,7 +737,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit edit_project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
+      assert_selector('.alert-danger', text: "Close\nCannot find script 1")
     end
   end
 

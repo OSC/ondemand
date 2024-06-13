@@ -48,7 +48,7 @@ class CustomHelpNavigationTest < ActionDispatch::IntegrationTest
 
     # Check custom 'Help Menu'
     menu_items = dropdown_list('Help Menu')
-    assert_equal true, menu_items.first['class'].include?('dropdown-menu-right')
+    assert_equal true, menu_items.first['class'].include?('dropdown-menu-end')
     menu_links = css_select(menu_items, 'a')
     assert_equal 2, menu_links.size
     # Check first expected link
@@ -64,7 +64,7 @@ class CustomHelpNavigationTest < ActionDispatch::IntegrationTest
 
     # Check custom 'Docs Menu'
     menu_items = dropdown_list('Docs Menu')
-    assert_equal true, menu_items.first['class'].include?('dropdown-menu-right')
+    assert_equal true, menu_items.first['class'].include?('dropdown-menu-end')
     menu_links = css_select(menu_items, 'a')
     assert_equal 1, menu_links.size
     # Check first expected link

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Parent ActiveModel class for transfer files.
 class Transfer
   include ActiveModel::Model
@@ -9,19 +11,17 @@ class Transfer
   attr_writer :percent
 
   def percent
-    (status && status.completed?) ? 100 : (@percent || 0)
+    status&.completed? ? 100 : (@percent || 0)
   end
 
-  attr_accessor :exit_status, :stderr
-
-  attr_accessor :pid
+  attr_accessor :exit_status, :stderr, :pid
 
   # files could either be an array of strings or an array of hashes (string=>string)
   attr_accessor :action, :files
 
-  REMOVE_ACTION = 'rm'.freeze
-  COPY_ACTION   = 'cp'.freeze
-  MOVE_ACTION   = 'mv'.freeze
+  REMOVE_ACTION = 'rm'
+  COPY_ACTION   = 'cp'
+  MOVE_ACTION   = 'mv'
 
   class << self
     def transfers
@@ -29,7 +29,7 @@ class Transfer
     end
 
     def find(id)
-      transfers.find {|t| t.id == id }
+      transfers.find { |t| t.id == id }
     end
   end
 
@@ -57,12 +57,13 @@ class Transfer
   def action_title
     t = status&.queued? ? 'waiting to ' : ''
 
-    if action == 'mv'
-      t + 'move files'
-    elsif action == 'rm'
-      t + 'remove files'
-    elsif action == 'cp'
-      t + 'copy files'
+    case action
+    when 'mv'
+      "#{t}move files"
+    when 'rm'
+      "#{t}remove files"
+    when 'cp'
+      "#{t}copy files"
     else
       t + "#{action} files"
     end
@@ -81,7 +82,7 @@ class Transfer
     unless persisted?
       # HACK: we use the id as a dom id as well, so it is beneficial to have this be compatible HTML ID
       # if the id doesn't start with a letter, it can cause problems with Bootstrap 4 sometimes
-      self.id = 't' + SecureRandom.uuid
+      self.id = "t#{SecureRandom.uuid}"
       self.status = OodCore::Job::Status.new(state: :queued)
       self.created_at = Time.now.to_i
 
@@ -90,13 +91,11 @@ class Transfer
   end
 
   def cancelable?
-    pid && ! completed?
+    pid && !completed?
   end
 
   def cancel
-    if status.running? && pid
-      Process.kill("TERM", pid)
-    end
+    Process.kill('TERM', pid) if status.running? && pid
   end
 
   def steps
@@ -104,7 +103,7 @@ class Transfer
   end
 
   def persisted?
-    ! id.nil?
+    !id.nil?
   end
 
   def command_str
@@ -112,7 +111,7 @@ class Transfer
   end
 
   def update_percent(step)
-    self.percent = steps == 0 ? 100 : (100.0*((step).to_f/steps)).to_i
+    self.percent = steps.zero? ? 100 : (100.0 * (step.to_f / steps)).to_i
   end
 
   def perform_later
@@ -138,6 +137,6 @@ class Transfer
   end
 
   def success?
-    self.exit_status.nil? ? false : self.exit_status == 0
+    exit_status.nil? ? false : exit_status.zero?
   end
 end

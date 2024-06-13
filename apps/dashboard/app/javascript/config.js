@@ -79,6 +79,11 @@ export function bcIndexUrl() {
   return cfgData['bcIndexUrl'];
 }
 
+export function statusPollDelay() {
+  const cfgData = configData();
+  return Number(cfgData['statusPollDelay']);
+}
+
 export function statusIndexUrl() {
   const cfgData = configData();
   return cfgData['statusIndexUrl'];

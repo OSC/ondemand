@@ -4,7 +4,7 @@
       <i class="fas fa-code" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_develop_title') %></span><span class="caret"></span>
     </a>
 
-    <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, 'dropdown-menu-right') %>" role="menu">
+    <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, 'dropdown-menu-end') %>" role="menu">
       <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
       <%= nav_link(t('dashboard.nav_develop_docs'), "book", Configuration.developer_docs_url, new_tab: true) %>
       <%= nav_link(products_title(:dev), "cog", products_path(type: "dev")) %>

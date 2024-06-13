@@ -54,7 +54,7 @@
             <%= render partial: 'layouts/nav/user' %>
             <%= render partial: 'layouts/nav/log_out' %>
           <% else %>
-            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
+            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-end' }%>
           <% end %>
         </div>
       </ul>
@@ -77,8 +77,7 @@
 
     <div id="js-alert-danger-template" class="d-none" aria-hidden="true">
       <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
           <span class="sr-only">Close</span>
         </button>
         ALERT_MSG
@@ -87,8 +86,7 @@
 
     <% if alert %>
       <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
           <span class="sr-only">Close</span>
         </button>
         <%= alert %>
@@ -96,9 +94,8 @@
     <% end %>
 
     <% if notice %>
-      <div class="alert alert-success" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-          <span aria-hidden="true">&times;</span>
+      <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
           <span class="sr-only">Close</span>
         </button>
         <%= notice %>
