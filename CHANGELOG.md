@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+correctly reset Capybara before these tests (#3607)\
+Adds dynamic labels to form with data-label-* (#3598)\
+Replaces dropdown-menu-right with dropdown-menu-end (#3594)\
+Adds ability to filter modules w/ string or regex (#3574)\
+Degrade gracefully when scheduler is not Slurm (#3589)\
+Fix flash button after upgrade to Bootstrap 5 (#3592)\
+Verify app is a ruby app before running setup-production script (#3573)\
+Fixes to the active sessions widget after the introduction of the Turbo Stream libraries (#3546)\
+Added saved settings widget (#3545)\
+replace dropright with dropend (#3601)\
+lint a random file (#3599)\
+update changelog (#3600)
 Systemstatus poll config (#3595)\
 change data-target to data-bs-target (#3596)\
 Rename system status app (#3593)\
