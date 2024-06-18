@@ -24,12 +24,17 @@
 // get in the way
 // $navbar-height: 20px;
 
+nav.navbar {
+  padding: 0.5rem 1rem;
+}
+
 // styles to make a logo fill the navbar height if using a logo for the navbar title
 .navbar-brand.navbar-brand-logo {
   padding: 0px;
 }
 
 a.navbar-brand.navbar-brand-logo {
+  display: inline-block;
   height: 2em;
 }
 
