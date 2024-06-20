@@ -3,7 +3,6 @@ class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
   include UserSettingStore
 
-  # GET /batch_connect/<app_token>/session_contexts/new (returns Array)
   def new
     set_app
     set_render_format
@@ -105,12 +104,12 @@ class BatchConnect::SessionContextsController < ApplicationController
 
   private
 
-    # Set the app from the token (Returns BatchConnect::App
+    # Set the app from the token
     def set_app
       @app = BatchConnect::App.from_token params[:token]
     end
 
-    # Set list of app lists for navigation (Returns OodAppGroup | NavBar::NavItemDecorator)
+    # Set list of app lists for navigation
     def set_app_groups
       @sys_app_groups = bc_sys_app_groups
       @usr_app_groups = bc_usr_app_groups
@@ -133,7 +132,7 @@ class BatchConnect::SessionContextsController < ApplicationController
       @render_format = @app.clusters.first.job_config[:adapter] unless @app.clusters.empty?
     end
 
-    # Set the rendering format for displaying attributes (Returns Hash)
+    # Set the rendering format for displaying attributes
     def set_prefill_templates
       @prefill_templates ||= bc_templates(@app.token)
     end
@@ -149,7 +148,8 @@ class BatchConnect::SessionContextsController < ApplicationController
       params.require(:batch_connect_session_context).permit(@session_context.attributes.keys) if params[:batch_connect_session_context].present?
     end
 
-    # Store session context into a cache file (Returns Pathname)
+    # Store session context into a cache file
+    # @return [Pathname] the cachefile path
     def cache_file
       BatchConnect::Session.cache_root.tap do |p|
         p.mkpath unless p.exist?
