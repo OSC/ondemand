@@ -3,7 +3,6 @@ class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
   include UserSettingStore
 
-  # GET /batch_connect/<app_token>/session_contexts/new
   def new
     set_app
     set_render_format
@@ -150,6 +149,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
 
     # Store session context into a cache file
+    # @return [Pathname] the cachefile path
     def cache_file
       BatchConnect::Session.cache_root.tap do |p|
         p.mkpath unless p.exist?
