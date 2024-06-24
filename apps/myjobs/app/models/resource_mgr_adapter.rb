@@ -5,6 +5,9 @@
 
 # OodJob errors will be caught and re-raised as PBS::Error objects
 class ResourceMgrAdapter
+
+  include SanitizedEnv
+
   attr_reader :workflow
 
   def initialize(workflow)
@@ -38,7 +41,9 @@ class ResourceMgrAdapter
       job_array_request: workflow.job_array_request.presence,
       copy_environment:  workflow.copy_environment.eql?('1') ? true : false
     )
-    adapter(cluster).submit(script, **depends_on)
+    ClimateControl.modify(sanitized_env) do
+      adapter(cluster).submit(script, **depends_on)
+    end
   rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
