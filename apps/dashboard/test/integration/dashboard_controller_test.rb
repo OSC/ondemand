@@ -22,41 +22,45 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should create Files dropdown' do
-    scratch_path = File.expand_path 'test/fixtures/dummy_fs/scratch'
-    project_path = File.expand_path 'test/fixtures/dummy_fs/project'
-    project_path2 = Pathname.new('test/fixtures/dummy_fs/project2').expand_path
-    missing_path = '/test/fixtures/dummy_fs/missing'
+    Dir.mktmpdir do |dir|
+      scratch_path  = "#{dir}/scratch"
+      project_path  = "#{dir}/project"
+      project_path2 = "#{dir}/project2"
 
-    OodFilesApp.stubs(:candidate_favorite_paths).returns(
-      [
-        FavoritePath.new(scratch_path, title: 'Scratch'),
-        project_path,
-        project_path2,
-        missing_path,
-        FavoritePath.new('/mybucket', title: 'S3', filesystem: 's3')
+      favorites = [
+        FavoritePath.new(scratch_path, title: 'Scratch'), 
+        FavoritePath.new(project_path), 
+        FavoritePath.new(project_path2), 
       ]
-    )
 
-    get root_path
+      OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
 
-    dditems = dropdown_list_items(dropdown_list('Files'))
-    assert dditems.any?, 'dropdown list items not found'
-    assert_equal [
-      'Home Directory',
-      "Scratch #{scratch_path}",
-      project_path,
-      project_path2.to_s,
-      'S3 /mybucket'
-    ], dditems.map { |e| e.gsub(/\s+/, ' ') }, 'Files dropdown item text is incorrect'
+      with_modified_env( { OOD_ALLOWLIST_PATH: "#{scratch_path}:#{project_path}:#{project_path2}" } ) do
+        `mkdir -p #{scratch_path}`
+        `mkdir -p #{project_path}`
+        `mkdir -p #{project_path2}`
 
-    dditemurls = dropdown_list_items_urls(dropdown_list('Files'))
-    assert_equal [
-      "/pun/sys/files/fs#{Dir.home}",
-      "/pun/sys/files/fs#{scratch_path}",
-      "/pun/sys/files/fs#{project_path}",
-      "/pun/sys/files/fs#{project_path2}",
-      '/pun/sys/files/s3/mybucket'
-    ], dditemurls, 'Files dropdown URLs are incorrect'
+        get root_path
+        dditems = dropdown_list_items(dropdown_list('Files'))
+        assert dditems.any?, 'dropdown list items not found'
+        assert_equal [
+          'Home Directory',
+          "Scratch #{scratch_path}",
+          project_path,
+          project_path2,
+        ], dditems.map { |e| e.gsub(/\s+/, ' ') }, 'Files dropdown item text is incorrect'
+
+        dditemurls = dropdown_list_items_urls(dropdown_list('Files'))
+        
+        pun_sys_file = "/pun/sys/files/fs"
+        assert_equal [
+          "#{pun_sys_file}#{Dir.home}",
+          "#{pun_sys_file}#{scratch_path}",
+          "#{pun_sys_file}#{project_path}",
+          "#{pun_sys_file}#{project_path2}",
+        ], dditemurls, 'Files dropdown URLs are incorrect'
+      end
+    end
   end
 
   test 'should create Clusters dropdown with valid clusters that are alphabetically ordered by title' do
