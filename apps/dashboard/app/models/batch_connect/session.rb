@@ -4,6 +4,7 @@ module BatchConnect
   class Session
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
+    include SanitizedEnv
 
     # This class describes the object that is bound to the ERB template file
     # when it is rendered
@@ -309,7 +310,9 @@ module BatchConnect
       job_script_options_file.write(JSON.pretty_generate(options))
 
       # Submit job script
-      self.job_id = adapter.submit script(content: content, options: options)
+      ClimateControl.modify(sanitized_env) do
+        self.job_id = adapter.submit script(content: content, options: options)
+      end
       db_file.write(to_json, perm: 0o0600)
       true
     rescue => e   # rescue from all standard exceptions (app never crashes)
