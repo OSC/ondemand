@@ -22,7 +22,6 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'pry'
-  gem 'climate_control', '~> 0.2'
   gem 'timecop', '~> 0.9'
 end
 
@@ -56,6 +55,7 @@ gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'zip_kit', '~> 6.2'
 gem 'rss', '~> 0.2'
+gem 'climate_control', '~> 0.2'
 
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
