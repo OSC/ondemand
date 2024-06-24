@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bump braces from 3.0.2 to 3.0.3 in /apps/dashboard (#3610)\
+Bump rexml from 3.2.6 to 3.3.0 in /apps/dashboard (#3620)\
+Bump ws from 8.16.0 to 8.17.1 in /apps/shell (#3616)\
+lint a random file (#3617)\
+Navbar logo and padding fixes after Bootstrp5 upgrade (#3615)\
+Fixes to the session card header color after Bootstrap5 upgrade (#3602)\
+Fixed full page spinner for interactive sessions actions after Turbo Stream update (#3606)\
+Improvements to the saved settings menu look and feel after Bootstrap5 upgrade (#3608)\
+update job table for bootstrap 5 (#3613)\
+Changelog Update (#3612)\
+lint a random file (#3609)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
