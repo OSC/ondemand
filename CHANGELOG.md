@@ -6,17 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Systemstatus poll config (#3595)\
-change data-target to data-bs-target (#3596)\
-Rename system status app (#3593)\
-Update Bootstrap 5 Buttons (#3586)\
-refractor systemstatus polling (#3587)\
-Bump rexml from 3.2.6 to 3.2.8 in /apps/myjobs (#3558)\
-rm package-lock.json (#3579)\
-Update Changelog (#3585)\
-lint a random file (#3583)
 
 ### Added
+- BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
+- BatchConnect form auto_modules directive can now filter by string or regex in [3574](https://github.com/OSC/ondemand/pull/3574).
+- Saved settings widget in [#3545](https://github.com/OSC/ondemand/pull/3545).
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
 - NoVNC compression & quality have configurable defaults in [3380](https://github.com/OSC/ondemand/pull/3380).
 - Added `bc_sessions_poll_delay` in favor of hidden environment variable POLL_DELAY in [3421](https://github.com/OSC/ondemand/pull/3421).

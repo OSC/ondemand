@@ -23,7 +23,7 @@
     "minimist": "^1.2.6",
     "node-notifier": "^8.0.1",
     "node-pty": "^1.0.0",
-    "ws": ">=7.4.6"
+    "ws": ">=8.17.1"
   },
   "private": true,
   "resolutions": {

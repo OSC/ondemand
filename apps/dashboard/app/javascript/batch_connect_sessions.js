@@ -1,6 +1,7 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
+import { bindFullPageSpinnerEvent } from './utils';
 import { pollAndReplace } from './turbo_shim';
 
 function settingKey(id) {
@@ -34,16 +35,7 @@ window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
 jQuery(function (){
-  function showSpinner() {
-    $('body').addClass('modal-open');
-    $('#full-page-spinner').removeClass('d-none');
-  }
-
   if ($('#batch_connect_sessions').length) {
-    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions");
+    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", bindFullPageSpinnerEvent);
   }
-
-  $('button.relaunch').each((index, element) => {
-    $(element).on('click', showSpinner);
-  });
 });

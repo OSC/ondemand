@@ -1,5 +1,8 @@
 <%- saved_settings = all_saved_settings -%>
 <%- unless saved_settings.empty? -%>
+<%- content_for :head do -%>
+  <%= javascript_include_tag('batch_connect_settings', nonce: true) %>
+<%- end -%>
 <div class="settings-widget">
   <h3><%= t('dashboard.saved_settings_title') %></h3>
   <div class="row">

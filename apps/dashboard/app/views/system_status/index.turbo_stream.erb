@@ -23,15 +23,15 @@
             <table class="table mb-0">
               <thead>
                 <tr>
-                  <th scope="col" class="border-top-0">Jobs Running</th>
-                  <th scope="col" class="border-top-0">Jobs Queued</th>
+                  <th scope="col">Jobs Running</th>
+                  <th scope="col">Jobs Queued</th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr>
-                  <td><%= active_jobs(job_adapter) %></td>
-                  <td><%= queued_jobs(job_adapter) %></td>
+                  <td class="border-bottom-0"><%= active_jobs(job_adapter) %></td>
+                  <td class="border-bottom-0"><%= queued_jobs(job_adapter) %></td>
                 </tr>
               </tbody>
             </table>
