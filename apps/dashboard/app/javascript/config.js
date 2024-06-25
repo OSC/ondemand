@@ -34,7 +34,7 @@ export function rootPath(){
     return rootPath;
   } else {
     // remove the trailing / from /pun/sys/dashboard/
-    return rootPath.substring(0, p.length-1)
+    return rootPath.substring(0, rootPath.length-1)
   }
 }
 
