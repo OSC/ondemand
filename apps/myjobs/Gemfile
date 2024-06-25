@@ -39,7 +39,6 @@ group :development, :test do
   gem 'byebug'
   gem 'rails-controller-testing'
   gem 'mocha', '~> 2.1'
-  gem 'climate_control', '~> 0.2'
   gem 'timecop', '~> 0.9'
 end
 
@@ -63,6 +62,8 @@ gem "js-routes", "~> 1.2.4"
 gem 'osc_machete_rails', '~> 2.1.2'
 gem 'pbs', '~> 2.2.1'
 gem 'ood_appkit', '~> 2.0'
+
+gem 'climate_control', '~> 0.2'
 
 # we have to lock rdoc because 6.4 depends on psych 4.0 which breaks with
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
