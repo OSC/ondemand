@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<div class="row my-2">
+<div class="my-2">
   <a id="new-dir-btn" class="btn btn-outline-dark" href="<%= files_path(fs: 'fs', filepath: @project.directory ) %>">
     <i class="fas fa-folder-open" aria-hidden="true"></i>
     <%= t('dashboard.project') %> <%= t('dashboard.directory') %>
@@ -31,7 +31,7 @@
 </div>
 
 <div class="row mb-3">
-  <div class="col-2">
+  <div class="col-md-2">
     <div class="list-group">
       <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
           data-bs-toggle="collapse" data-bs-target="#launcher_list"
@@ -56,7 +56,7 @@
       </a>
     </div>
   </div>
-  <div class="col-8">
+  <div class="col-md-8">
     <%= render(partial: 'job_details', collection: @project.jobs, as: :job) %>
   </div>
 </div>
