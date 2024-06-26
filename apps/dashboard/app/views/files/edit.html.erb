@@ -1,5 +1,8 @@
-
-<pre id="editor" data-path="<%= @path %>" data-api="<%= OodAppkit.files.api(path: @path, fs: @filesystem) %>"><%= @content %></pre>
+<div class="d-flex flex-row flex-grow-1">
+  <div class="flex-sm-column">
+  </div>
+  <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= OodAppkit.files.api(path: @path, fs: @filesystem) %>"><%= @content %></pre>
+</div>
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace/1.2.6/ace.js" %>" type="text/javascript" charset="utf-8"></script>
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace/1.2.6/ext-modelist.js" %>" type="text/javascript" charset="utf-8"></script>
