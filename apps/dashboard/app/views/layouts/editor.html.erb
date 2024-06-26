@@ -1,22 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+<%
+content_for :head do
+  javascript_include_tag 'editor', nonce: true
+end
+%>
 
-  <title><%= "File Editor - #{@user_configuration.dashboard_title}" %><%= @path.nil? ? "" : " - #{@path.basename.to_s}" %></title>
-  <%= favicon %>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <%= javascript_include_tag 'application', nonce: true %>
-  <%= javascript_include_tag 'editor', nonce: true %>
-  <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all', rel: 'preload stylesheet', as: 'style', type: 'text/css' %>
-  <%= render partial: '/layouts/nav/styles', locals: { bg_color: @user_configuration.brand_bg_color, link_active_color:  @user_configuration.brand_link_active_bg_color } %>
-
-  <%= csrf_meta_tags %>
-
-  <%= render partial: 'layouts/config' %>
-</head>
-<body class="d-flex h-100">
+<%= render template: "layouts/application", locals: { layout_container_class: 'container-fluid' } %>
 
 <header>
   <!-- navbar  -->
@@ -255,37 +243,3 @@
       </div><!-- /.navbar-collapse -->
   </nav>
 </header>
-
-<div class="flex-grow-1 mb-n5" role="main">
-
-  <% if alert %>
-      <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
-        </button>
-        <%= alert %>
-      </div>
-  <% end %>
-
-  <% if notice %>
-      <div class="alert alert-success alert-dismissible role="alert">
-        <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
-        </button>
-        <%= notice %>
-      </div>
-  <% end %>
-
-  <%= yield %>
-
-</div><!-- /.container -->
-
-<footer>
-  <div class="container">
-    <hr>
-    <p>&copy; Ohio Supercomputer Center <%= DateTime.now.year %></p>
-  </div>
-</footer>
-
-</body>
-</html>
