@@ -1,14 +1,11 @@
 <div class="d-flex flex-row flex-grow-1">
-  <div class="flex-sm-column">
-    <button class="rounded ms-1 mt-1 px-2 py-1 border border-white text-nowrap" id="save-button">
-      <i class="fas fa-save pe-2" aria-hidden="true"></i>
-      <span>Save</span>
-    </button>
+  <div class="flex-sm-column card mx-2">
+    <div class="card-header">
+      <p id="editor-filename" class="m-0 navbar-text flex-grow-1 ms-2 overflow-hidden"><%= @path %></p>
+    </div>
 
-    <p id="editor-filename" class="m-0 navbar-text flex-grow-1 ms-2 overflow-hidden"><%= @path %></p>
-
-    <ul class="navbar-nav">
-      <li class="hidden-xs hidden-sm hidden-md px-2 form-group form-inline m-0">
+    <ul class="list-group list-group-flush border-bottom-0">
+      <li class="list-group-item hidden-xs hidden-sm hidden-md px-2 form-group form-inline m-0">
         <label class="control-label navbar-text px-1" for="keybindings">Key Bindings</label>
         <select class="form-control input-xs" id="keybindings">
           <option value="default">Default</option>
@@ -16,7 +13,7 @@
           <option value="ace/keyboard/emacs">Emacs</option>
         </select>
       </li>
-      <li class="hidden-xs px-2 form-group form-inline m-0">
+      <li class="list-group-item hidden-xs px-2 form-group form-inline m-0">
         <label class="control-label hidden-sm hidden-md navbar-text px-1" for="fontsize">Font Size</label>
         <select class="form-control input-xs" id="fontsize">
           <option value="8px">8px</option>
@@ -38,7 +35,7 @@
           <option value="72px">72px</option>
         </select>
       </li>
-      <li class="hidden-xs px-2 form-group form-inline m-0">
+      <li class="list-group-item hidden-xs px-2 form-group form-inline m-0">
         <label class="control-label hidden-sm hidden-md navbar-text px-1" for="mode">Mode</label>
         <select class="form-control input-xs" id="mode">
           <option value="abap">ABAP</option>
@@ -173,7 +170,7 @@
           <option value="django">Django</option>
         </select>
       </li>
-      <li class="hidden-xs px-2 form-group form-inline px-1 m-0">
+      <li class="list-group-item hidden-xs px-2 form-group form-inline px-1 m-0">
         <label class="control-label hidden-sm hidden-md px-1 navbar-text" for="theme">Theme</label>
         <select class="form-control input-xs" id="theme">
           <optgroup label="Bright">
@@ -216,13 +213,24 @@
           </optgroup>
         </select>
       </li>
-      <li class="hidden-xs px-2 form-group form-inline m-0">
+      <li class="list-group-item hidden-xs px-2 form-group form-inline m-0 border-bottom-0">
         <label class="control-label hidden-md hidden-lg navbar-text px-1" for="wordwrap">Wrap</label>
         <div class="form-group">
           <input type="checkbox" id="wordwrap" value="">
         </div>
       </li>
     </ul>
+
+    <div class="card-body border-0"></div>
+
+    <div class="card-footer">
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" id="save-button">
+          <i class="fas fa-save pe-2" aria-hidden="true"></i>
+          <span>Save</span>
+        </button>
+      </div>
+    </div>
   </div>
   <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= OodAppkit.files.api(path: @path, fs: @filesystem) %>"><%= @content %></pre>
 </div>
