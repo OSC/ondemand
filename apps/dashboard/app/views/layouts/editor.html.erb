@@ -2,6 +2,10 @@
 content_for :head do
   javascript_include_tag 'editor', nonce: true
 end
+
+content_for :title do
+  "File Editor - #{@user_configuration.dashboard_title}" + (@path.nil? ? "" : " - #{@path.basename.to_s}")
+end
 %>
 
 <%= render template: "layouts/application", locals: { layout_container_class: 'container-fluid d-flex flex-column' } %>
