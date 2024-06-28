@@ -9,62 +9,6 @@ let uppy = null;
 
 jQuery(function() {
 
-  class EmptyDirCreator extends BasePlugin {
-    constructor (uppy, opts){
-      super(uppy, opts)
-      this.id = this.opts.id || 'EmptyDirUploaderCatcher';
-      this.type = 'acquirer';
-
-      this.empty_dirs = [];
-      this.last_entries = [];
-
-      this.handleRootDrop = this.handleRootDrop.bind(this);
-      this.createEmptyDirs = this.createEmptyDirs.bind(this);
-
-      this.uppy = uppy;
-    }
-
-
-
-    handleRootDrop (e) {
-      // from https://github.com/transloadit/uppy/blob/7ce58beeb620df3df0640cb369f5d71e3d3f751f/packages/%40uppy/utils/src/getDroppedFiles/index.js
-      if (e.dataTransfer.items && e.dataTransfer.items[0] && 'webkitGetAsEntry' in e.dataTransfer.items[0]) {
-        // toArray https://github.com/transloadit/uppy/blob/7ce58beeb620df3df0640cb369f5d71e3d3f751f/packages/%40uppy/utils/src/toArray.js#L4
-        let items = Array.prototype.slice.call(e.dataTransfer.items || [], 0);
-        let entries = items.map(i => i.webkitGetAsEntry()).filter(i => i);
-
-        return Promise.all(entries.map(i => getEmptyDirs(i))).then((dirs) => {
-          this.empty_dirs = this.empty_dirs.concat(_.flattenDeep(dirs));
-
-        });
-      }
-      //else we don't have access to directory information
-    }
-
-    createEmptyDirs (ids) {
-      if(! this.uppy.getState().error){ // avoid creating empty dirs if error occurred during upload
-
-        //TODO: error checking and reporting
-        return Promise.all(this.empty_dirs.map((d) => {
-          // "fullPath" should actually be the path relative to the current directory
-          let filename = _.trimStart(d.fullPath, '/');
-
-          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
-          //TODO: parse json response verify if there was an error creating directory and handle error
-
-        })).then(() => this.empty_dirs = []);
-      }
-    }
-
-    install () {
-      this.uppy.addPostProcessor(this.createEmptyDirs);
-    }
-
-    uninstall () {
-      this.uppy.removePostProcessor(this.createEmptyDirs);
-    }
-  }
-
   uppy = new Uppy({
     restrictions: {
       maxFileSize: maxFileSize(),
@@ -73,7 +17,6 @@ jQuery(function() {
     locale: uppyLocale(),
   });
   
-  uppy.use(EmptyDirCreator);
   uppy.use(Dashboard, {
     trigger: '#upload-btn',
     fileManagerSelectionType: 'both',
@@ -85,6 +28,7 @@ jQuery(function() {
     onRequestCloseModal: () => closeAndResetUppyModal(uppy),
     note: 'Empty directories will be included in the upload only when a directory upload is initiated via drag and drop. This is because the File and Directory Entries API is available only on a drop event, not during an input change event.'
   });
+
   uppy.use(XHRUpload, {
     withCredentials: true,
     fieldName: 'file',
@@ -145,28 +89,6 @@ jQuery(function() {
 function closeAndResetUppyModal(uppy){
   uppy.getPlugin('Dashboard').closeModal();
   uppy.reset();
-}
-
-function getEmptyDirs(entry){
-  return new Promise((resolve) => {
-    if(entry.isFile){
-      resolve([]);
-    }
-    else{
-      // getFilesAndDirectoriesFromDirectory has no return value, so turn this into a promise
-      getFilesAndDirectoriesFromDirectory(entry.createReader(), [], function(error){ console.error(error)}, {
-        onSuccess: (entries) => {
-          if(entries.length == 0){
-            // this is an empty directory
-            resolve([entry]);
-          }
-          else{
-            Promise.all(entries.map(e => getEmptyDirs(e))).then((dirs) => resolve(_.flattenDeep(dirs)));
-          }
-        }
-      })
-    }
-  });
 }
 
 function updateEndpoint() {
