@@ -41,6 +41,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
 - Cynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
 
+## [3.1.7] - 06-25-2024
+
+### Security
+
+- Jobs will now be submitted after sanitizing the envionment in
+  [3628](https://github.com/OSC/ondemand/pull/3628).  This prevents
+  the leaking of sensitive environment variables to the job when `copy_environment`
+  is used.
+
+### Fixed
+- OIDCRedirectURI is always relative in [3548](https://github.com/OSC/ondemand/pull/3548).
+- Dynamic batch connect applications now accept fields with numbers in them in [3548](https://github.com/OSC/ondemand/pull/3548).
+- The dashboard no longer sets logo image width to 100% in
+  [3632](https://github.com/OSC/ondemand/pull/3632).
+
+### Changed
+- `nginx` has been updated to `1.24.0` from `1.22.1` in
+  [3548](https://github.com/OSC/ondemand/pull/3548).
+- `passenger` has been updated to `6.0.20` from `6.0.17` in
+  [3548](https://github.com/OSC/ondemand/pull/3548).
+
+### Added
+
+- `ood_portal.yml` now has the configuration `http_redirect_host` to specify
+  the host to redirect to when upgrading from http to https in
+  [3548](https://github.com/OSC/ondemand/pull/3548).
+
 ## [3.1.4] - 04-01-2024
 
 ### Fixed
@@ -1360,6 +1387,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - From 1.3.7 - 1.4.2 updated app versions
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7
 [3.1.4]: https://github.com/OSC/ondemand/compare/v3.1.1...v3.1.4
 [3.1.1]: https://github.com/OSC/ondemand/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/OSC/ondemand/compare/v3.0.3...v3.1.0
