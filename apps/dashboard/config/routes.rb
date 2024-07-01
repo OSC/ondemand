@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   if Configuration.can_access_projects?
     resources :projects do
       root 'projects#index'
+      get '/jobs/:cluster/:jobid' => 'projects#job_details', :defaults => { :format => 'turbo_stream' }, :as => 'job_details'
+
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
@@ -99,8 +101,6 @@ Rails.application.routes.draw do
   end
 
   get '/system-status', to: 'system_status#index', as: 'system_status' if Configuration.can_access_system_status?
-
-  get '/jobs/info/:cluster/:id' => 'jobs#info', :defaults => { :format => 'json' }, :as => 'jobs_info'
 
   post 'settings', :to => 'settings#update'
 

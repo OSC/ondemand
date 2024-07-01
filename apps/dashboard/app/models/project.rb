@@ -192,6 +192,13 @@ class Project
     end
   end
 
+  def jobs
+    launchers = Launcher.all(directory)
+    launchers.map do |launcher|
+      launcher.jobs
+    end.flatten
+  end
+
   private
   
   def update_attrs(attributes)

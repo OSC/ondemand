@@ -7,41 +7,47 @@
 
 <div class="row">
 
-  <%= button_to(
-    submit_project_launcher_path(@project.id, launcher.id),
-    class: 'btn btn-success me-1 d-flex',
-    title: 'Launch script with cached or default values',
-    disabled: disabled,
-    params: launcher.quick_launch_params,
-    id: "launch_#{launcher.id}"
-  ) do
-  %>
-    <i class="fa fa-play"></i>
-  <%- end %>
-
-  <%= link_to(
-    project_launcher_path(@project.id, launcher.id),
-    class: "btn btn-success me-1 d-flex #{disabled_class}",
-    id: "show_#{launcher.id}"
+  <div class="col">
+    <%= button_to(
+      submit_project_launcher_path(@project.id, launcher.id),
+      class: 'btn btn-success',
+      title: 'Launch script with cached or default values',
+      disabled: disabled,
+      params: launcher.quick_launch_params,
+      id: "launch_#{launcher.id}"
     ) do
-  %>
-    <i class="fa fa-bars"></i>
-  <%- end -%>
+    %>
+      <i class="fa fa-play"></i>
+    <%- end %>
+  </div>
 
-  <%= link_to(
-    edit_project_launcher_path(@project.id, launcher.id),
-    class: "btn btn-primary #{disabled_class} me-1 d-flex",
-    id: "edit_#{launcher.id}",
-    title: edit_title) do
-  %>
-    <i class="fa fa-pencil"></i>
-  <%- end %>
+  <div class="col">
+    <%= link_to(
+      project_launcher_path(@project.id, launcher.id),
+      class: "btn btn-success #{disabled_class}",
+      id: "show_#{launcher.id}"
+      ) do
+    %>
+      <i class="fa fa-bars"></i>
+    <%- end -%>
+  </div>
 
-  <div class="ms-auto">
+  <div class="col">
+    <%= link_to(
+      edit_project_launcher_path(@project.id, launcher.id),
+      class: "btn btn-primary #{disabled_class}",
+      id: "edit_#{launcher.id}",
+      title: edit_title) do
+    %>
+      <i class="fa fa-pencil"></i>
+    <%- end %>
+  </div>
+
+  <div class="col">
     <%= button_to(
       project_launcher_path(@project.id, launcher.id),
       id: "delete_#{launcher.id}",
-      class: "btn btn-danger d-flex justify-content-end",
+      class: "btn btn-danger",
       title: delete_title,
       data: { confirm: I18n.t('dashboard.jobs_scripts_delete_script_confirmation') },
       method: :delete) do

@@ -1,0 +1,12 @@
+
+<%- 
+  id = "job_#{job.cluster}_#{job.id}"
+-%>
+
+<turbo-stream action="replace" target="<%= id %>">
+  <template>
+    <div>
+      <%= job.id %> is currently <%= job.status.to_s %>.
+    </div>
+    </template>
+</turbo-stream>

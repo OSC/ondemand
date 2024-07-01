@@ -2,6 +2,7 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
+
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
@@ -80,8 +81,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-
-
   # DELETE /projects/:id
   def destroy
     project_id = params[:id]
@@ -97,6 +96,17 @@ class ProjectsController < ApplicationController
     else
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
     end
+  end
+
+  # GET /projects/:project_id/jobs/:cluster/:jobid
+  def job_details
+    cluster_str = job_details_params[:cluster].to_s
+    cluster = OodAppkit.clusters[cluster_str.to_sym]
+    render(:status => 404) if cluster.nil?
+
+    job_info = cluster.job_adapter.info(job_details_params[:jobid].to_s)
+    hpc_job = HpcJob.from_core_info(info: job_info, cluster: cluster_str)
+    render(partial: 'job_details', locals: { job: hpc_job })
   end
 
   private
@@ -130,5 +140,9 @@ class ProjectsController < ApplicationController
 
   def new_project_params
     params.permit(:template, :icon, :name, :directory)
+  end
+
+  def job_details_params
+    params.permit(:project_id, :cluster, :jobid)
   end
 end
