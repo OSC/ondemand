@@ -1,4 +1,5 @@
-import { Uppy, BasePlugin } from '@uppy/core'
+import Uppy from '@uppy/core'
+import BasePlugin from '@uppy/core/lib/BasePlugin'
 import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
@@ -74,6 +75,7 @@ jQuery(function() {
   });
   
   uppy.use(EmptyDirCreator);
+
   uppy.use(Dashboard, {
     trigger: '#upload-btn',
     fileManagerSelectionType: 'both',
@@ -85,6 +87,7 @@ jQuery(function() {
     onRequestCloseModal: () => closeAndResetUppyModal(uppy),
     note: 'Empty directories will be included in the upload only when a directory upload is initiated via drag and drop. This is because the File and Directory Entries API is available only on a drop event, not during an input change event.'
   });
+
   uppy.use(XHRUpload, {
     withCredentials: true,
     fieldName: 'file',
