@@ -1,4 +1,5 @@
-import { Uppy, BasePlugin } from '@uppy/core'
+import Uppy from '@uppy/core'
+import BasePlugin from '@uppy/core/lib/BasePlugin'
 import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
