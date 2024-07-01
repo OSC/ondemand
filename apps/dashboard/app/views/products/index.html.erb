@@ -8,7 +8,7 @@
   <%= link_to 'New App', new_product_path(type: @type), class: 'btn btn-default' %>
   <span class="float-end">
     <%= link_to 'Launch Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product_class.router.base_path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
-    <%= link_to 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    <%= conditional_button Configuration.can_access_files?, 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
   </span>
 </p>
 

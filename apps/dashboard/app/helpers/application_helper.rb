@@ -89,7 +89,7 @@ module ApplicationHelper
   # Buttons that can be disabled, used to disable file and shell buttons when the user does not have access.
   def conditional_button(enabled, name, url, html_options = {})
     unless enabled
-      html_options[:class] += ' disabled'
+      html_options[:class] = "#{html_options[:class]} disabled"
       html_options['aria-disabled'] = 'true'
     end
 
