@@ -41,6 +41,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
 - Cynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
 
+### Security
+
+- Jobs will now be submitted after sanitizing the envionment in
+  [3627](https://github.com/OSC/ondemand/pull/3627).  This prevents
+  the leaking of sensitive environment variables to the job when `copy_environment`
+  is used.
+
 ## [3.1.7] - 06-25-2024
 
 ### Security
