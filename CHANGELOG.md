@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add 3.1.7 to changelog (#3649)\
+lint a random file (#3648)\
+Fixed _config partial when system-status app is not enabled (#3647)\
+climate_control needs to be production gem (#3640)\
+lint a random file (#3635)\
+cleanup the environment before submitting jobs (#3627)\
+lint a random file (#3623)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
