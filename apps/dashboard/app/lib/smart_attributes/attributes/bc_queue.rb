@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module SmartAttributes
   class AttributeFactory
     # Build this attribute object with defined options
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCQueue] the attribute object
     def self.build_bc_queue(opts = {})
-      Attributes::BcQueue.new("bc_queue", opts)
+      Attributes::BcQueue.new('bc_queue', opts)
     end
   end
 
@@ -13,7 +15,7 @@ module SmartAttributes
       # Type of form widget used for this attribute
       # @return [String] widget type
       def widget
-        "text_field"
+        'text_field'
       end
 
       # Form label for this attribute
@@ -21,11 +23,11 @@ module SmartAttributes
       # @return [String] form label
       def label(fmt: nil)
         str = opts[:label] || case fmt
-        when "slurm"
-          "Partition"
-        else
-          "Queue"
-        end
+                              when 'slurm'
+                                'Partition'
+                              else
+                                'Queue'
+                              end
         str.to_s
       end
 
