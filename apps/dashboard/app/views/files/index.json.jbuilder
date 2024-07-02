@@ -12,7 +12,7 @@ json.files @files do |f|
   json.name f[:name]
 
   json.url files_path(@filesystem, @path.join(f[:name]).to_s)
-  json.download_url files_path(@filesystem, @path.join(f[:name]).to_s, download: '1') # FIXME: should change for directory
+  json.download_url files_path(@filesystem, @path.join(f[:name]).to_s, download: '1') if f[:downloadable]
   json.edit_url OodAppkit.editor.edit(path: @path.join(f[:name]).to_s, fs: @filesystem).to_s
 
   json.size f[:size]
