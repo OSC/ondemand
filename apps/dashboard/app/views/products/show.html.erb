@@ -72,7 +72,7 @@
     <%= command_btn(title: "Rebuild App", key: "rebuild_passenger_rails_app", display: "RAILS_ENV=production bundle install --path=vendor/bundle && RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt", help: "Performs Bundle Install, Precompile Assets, and Restart App", color: "primary") if @type == :usr && @product.passenger_rails_app? %>
   </div><!-- /.col-md-2 -->
   <div class="d-grid gap-2 col-md-2 col-xs-6 mb-auto">
-    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    <%= conditional_button Configuration.can_access_shell?, 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
     <%= conditional_button Configuration.can_access_files?, 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
   </div><!-- /.col-md-2 -->
 
