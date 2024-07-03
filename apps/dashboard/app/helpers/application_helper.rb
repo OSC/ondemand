@@ -86,16 +86,6 @@ module ApplicationHelper
     end
   end
 
-  # Buttons that can be disabled, used to disable file and shell buttons when the user does not have access.
-  def conditional_button(enabled, name, url, html_options = {})
-    unless enabled
-      html_options[:class] = "#{html_options[:class]} disabled"
-      html_options['aria-disabled'] = 'true'
-    end
-
-    link_to(name, url, html_options)
-  end
-
   # Creates the list of links to add to the help menu
   def help_links
     help_items = ["restart"] + @user_configuration.profile_links + @user_configuration.help_menu

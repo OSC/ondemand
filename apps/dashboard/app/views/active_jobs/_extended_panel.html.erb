@@ -38,9 +38,11 @@
     <% end %>
     <div class="card-body">
       <% if CurrentUser.name == data.username %>
-          <%= conditional_button Configuration.can_access_files?, "#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-black", :target => "_blank", :style => "margin: 10px;" if data.file_explorer_url %>
-        <% if Configuration.ood_bc_ssh_to_compute_node %>
-          <%= conditional_button Configuration.can_access_shell?, "#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-black", :target => "_blank", :style => "margin: 10px;" if data.shell_url %>
+        <% if Configuration.can_access_files? %>
+          <%= link_to "#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-black", :target => "_blank", :style => "margin: 10px;" if data.file_explorer_url %>
+        <% end %>
+        <% if Configuration.ood_bc_ssh_to_compute_node && Configuration.can_access_shell? %>
+          <%= link_to "#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-black", :target => "_blank", :style => "margin: 10px;" if data.shell_url %>
         <% end %>
           <%= link_to "#{fa_icon("trash", classes: nil)} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-outline-danger pull-right", :style => "margin: 10px;", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" } %>
       <% end %>
