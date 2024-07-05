@@ -1,10 +1,10 @@
-<h3><%= @motd.title %></h3>
+<h2><%= @motd.title %></h2>
 
 <% if @motd.messages.each do |m| %>
 
   <hr>
   <div class="motd">
-    <h4 class="motd_title"><%= m.date %> - <%= m.title %></h4>
+    <h3 class="motd_title"><%= m.date %> - <%= m.title %></h3>
     <div class="motd_body"><p><%=raw markdown( m.body ) %></p></div>
   </div>
 
