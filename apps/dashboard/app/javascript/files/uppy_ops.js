@@ -57,6 +57,14 @@ jQuery(function() {
       }
     }
 
+    mount(target, plugin) {
+      return true
+    }
+
+    unmount() {
+      return true
+    }
+  
     install () {
       this.uppy.addPostProcessor(this.createEmptyDirs);
     }
@@ -147,7 +155,9 @@ jQuery(function() {
 
 function closeAndResetUppyModal(uppy){
   uppy.getPlugin('Dashboard').closeModal();
-  uppy.reset();
+  uppy.getFiles().forEach(file => {
+    uppy.removeFile(file.id);
+  });
 }
 
 function getEmptyDirs(entry){
@@ -157,7 +167,7 @@ function getEmptyDirs(entry){
     }
     else{
       // getFilesAndDirectoriesFromDirectory has no return value, so turn this into a promise
-      getFilesAndDirectoriesFromDirectory(entry.createReader(), [], function(error){ console.error(error)}, {
+      let getFilesAndDirectoriesFromDirectory = (entry.createReader(), [], function(error){ console.error(error)}, {
         onSuccess: (entries) => {
           if(entries.length == 0){
             // this is an empty directory
