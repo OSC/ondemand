@@ -1,10 +1,10 @@
-<h3><%= @motd.title %></h3>
+<h2><%= @motd.title %></h2>
 <hr />
 <% if @motd.content %>
   <% @motd.content.items.each do |item| %>
     <div>
       <%= content_tag(:strong, item.pubDate.strftime("%m-%d-%Y")) if item.pubDate %>
-      <h4><a href="<%= item.link %>"><%= item.title %></a></h4>
+      <h3><a href="<%= item.link %>"><%= item.title %></a></h3>
       <%= render_motd_rss_item(item) %>
       <hr />
     </div>
