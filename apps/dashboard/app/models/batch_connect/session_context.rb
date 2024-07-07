@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BatchConnect
   # The context of a given batch connect session. It encapsulates all the paramters
   # available from the app and the choices made by the user.
@@ -7,9 +9,7 @@ module BatchConnect
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
-
     attr_accessor :app_specific_cache_setting
-
 
     # Attributes used for serialization
     # @return [Hash{String => String, nil}] attributes to be serialized
@@ -18,9 +18,9 @@ module BatchConnect
     end
 
     def attributes=(params = {})
-      params.each do |attr, value|
-        self.public_send("#{attr}=", value) if self.respond_to?("#{attr}=")
-      end if params
+      params&.each do |attr, value|
+        public_send("#{attr}=", value) if respond_to?("#{attr}=")
+      end
     end
 
     # @param attributes [Array<Attribute>] list of attribute objects
@@ -49,7 +49,7 @@ module BatchConnect
     # @param block an optional block for the call
     def method_missing(method_name, *arguments, &block)
       if /^(?<id>[^=]+)(?<assign>=)?$/ =~ method_name.to_s && attribute = self[id]
-        assign ? attribute.send("value=", *arguments) : attribute.value
+        assign ? attribute.send('value=', *arguments) : attribute.value
       else
         super
       end
@@ -60,51 +60,53 @@ module BatchConnect
     # @return [Boolean]
     def respond_to_missing?(method_name, include_private = false)
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
-   end
-   
-   def update_with_cache(cache)
-      self.attributes = cache.select { |k,v| self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)  }
-   end 
+    end
 
-  def to_h
-    Hash[*map { |a| [a.id.to_sym, a.value] }.flatten]
-  end
+    def update_with_cache(cache)
+      self.attributes = cache.select do |k, _v|
+        self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)
+      end
+    end
 
-  def to_openstruct(addons: {})
-    context_attrs = to_h
-    illegal_attrs = OpenStruct.new.methods & context_attrs.keys
+    def to_h
+      Hash[*map { |a| [a.id.to_sym, a.value] }.flatten]
+    end
 
-    raise ArgumentError, "#{illegal_attrs.inspect} are keywords that cannot be used as names for form items" unless illegal_attrs.empty?
+    def to_openstruct(addons: {})
+      context_attrs = to_h
+      illegal_attrs = OpenStruct.new.methods & context_attrs.keys
 
-    OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
-  end
+      unless illegal_attrs.empty?
+        raise ArgumentError,
+              "#{illegal_attrs.inspect} are keywords that cannot be used as names for form items"
+      end
 
-   private
-    
-    FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
-    
+      OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
+    end
+
+    private
+
+    FALSE_VALUES = [false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO'].freeze
+
     # Returns false if value is among the FALSE_VALUES set
-    # @param value the value to check 
+    # @param value the value to check
     # @return [Boolean]
     def to_bool(value)
-     ! FALSE_VALUES.include?(value)
+      !FALSE_VALUES.include?(value)
     end
-    
 
     # @return [Boolean]
     def app_specific_cache_enabled?
-       if @app_specific_cache_setting.nil?
-          global_cache_enabled?
-       else
-          to_bool(@app_specific_cache_setting)
-       end
-    end
-      
-  
-    # @return [Boolean]   
-    def global_cache_enabled? 
-      Configuration.batch_connect_global_cache_enabled?
+      if @app_specific_cache_setting.nil?
+        global_cache_enabled?
+      else
+        to_bool(@app_specific_cache_setting)
+      end
     end
 
+    # @return [Boolean]
+    def global_cache_enabled?
+      Configuration.batch_connect_global_cache_enabled?
+    end
   end
 end
