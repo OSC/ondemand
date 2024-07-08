@@ -39,7 +39,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The path_selector can now inheret configurations in [3375](https://github.com/OSC/ondemand/pull/3375).
 - The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
 - data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
-- Cynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
+- Dynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
+- File and shell buttons will no longer appear when apps are unavailable in [3655](https://github.com/OSC/ondemand/pull/3655).
+- Downloads can once again be estimated in [3653](https://github.com/OSC/ondemand/pull/3653).
 
 ### Security
 
