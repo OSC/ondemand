@@ -1,4 +1,5 @@
-import { Uppy, BasePlugin } from '@uppy/core'
+import Uppy from '@uppy/core'
+import BasePlugin from '@uppy/core/lib/BasePlugin'
 import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
@@ -56,6 +57,14 @@ jQuery(function() {
       }
     }
 
+    mount(target, plugin) {
+      return true
+    }
+
+    unmount() {
+      return true
+    }
+  
     install () {
       this.uppy.addPostProcessor(this.createEmptyDirs);
     }
@@ -74,6 +83,7 @@ jQuery(function() {
   });
   
   uppy.use(EmptyDirCreator);
+
   uppy.use(Dashboard, {
     trigger: '#upload-btn',
     fileManagerSelectionType: 'both',
@@ -85,6 +95,7 @@ jQuery(function() {
     onRequestCloseModal: () => closeAndResetUppyModal(uppy),
     note: 'Empty directories will be included in the upload only when a directory upload is initiated via drag and drop. This is because the File and Directory Entries API is available only on a drop event, not during an input change event.'
   });
+
   uppy.use(XHRUpload, {
     withCredentials: true,
     fieldName: 'file',
@@ -144,7 +155,9 @@ jQuery(function() {
 
 function closeAndResetUppyModal(uppy){
   uppy.getPlugin('Dashboard').closeModal();
-  uppy.reset();
+  uppy.getFiles().forEach(file => {
+    uppy.removeFile(file.id);
+  });
 }
 
 function getEmptyDirs(entry){
@@ -154,7 +167,7 @@ function getEmptyDirs(entry){
     }
     else{
       // getFilesAndDirectoriesFromDirectory has no return value, so turn this into a promise
-      getFilesAndDirectoriesFromDirectory(entry.createReader(), [], function(error){ console.error(error)}, {
+      let getFilesAndDirectoriesFromDirectory = (entry.createReader(), [], function(error){ console.error(error)}, {
         onSuccess: (entries) => {
           if(entries.length == 0){
             // this is an empty directory

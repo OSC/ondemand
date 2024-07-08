@@ -253,6 +253,8 @@ class FilesController < ApplicationController
   def send_posix_file
     type = Files.mime_type_by_extension(@path).presence || PosixFile.new(@path).mime_type
 
+    response.set_header 'Content-Length', @path.stat.size
+
     # svgs aren't safe to view until we update our CSP
     if download? || type.to_s == 'image/svg+xml'
       type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'

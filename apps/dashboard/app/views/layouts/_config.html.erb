@@ -2,7 +2,7 @@
 <div hidden id="ood_config"
   data-max-file-size="<%= Configuration.file_upload_max %>"
   data-transfers-path="<%= transfers_path(format: "json") if respond_to?(:transfers_path) %>"
-  data-jobs-info-path="<%= jobs_info_path('delme', 'delme').gsub(/[\/]*delme[\/]*/,'') %>"
+  data-root-path="<%= root_path %>"
   data-uppy-locale="<%= I18n.t('dashboard.uppy', :default => {}).to_json %>"
   data-bc-dynamic-js="<%= Configuration.bc_dynamic_js? %>"
   data-xdmod-url="<%= Configuration.xdmod_host %>"
@@ -10,5 +10,5 @@
   data-bc-poll-delay="<%= Configuration.bc_sessions_poll_delay %>"
   data-bc-index-url="<%= batch_connect_sessions_path %>"
   data-status-poll-delay="<%= Configuration.status_poll_delay %>"
-  data-status-index-url="<%= system_status_path %>"
+  data-status-index-url="<%= system_status_path if respond_to?(:system_status_path) %>"
 ></div>
