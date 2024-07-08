@@ -31,15 +31,16 @@ class RemoteFile
     # owner, mode and dev are not defined for remote files, leaving them empty
     files.map do |file|
       {
-        id:         file['Path'],
-        name:       file['Name'],
-        size:       file['IsDir'] ? nil : file['Size'],
-        human_size: human_size(file),
-        directory:  file['IsDir'],
-        date:       DateTime.parse(file['ModTime']).to_time.to_i,
-        owner:      '',
-        mode:       '',
-        dev:        0
+        id:           file['Path'],
+        name:         file['Name'],
+        size:         file['IsDir'] ? nil : file['Size'],
+        human_size:   human_size(file),
+        directory:    file['IsDir'],
+        date:         DateTime.parse(file['ModTime']).to_time.to_i,
+        owner:        '',
+        mode:         '',
+        dev:          0,
+        downloadable: true
       }
     end.select do |stats|
       valid_encoding = stats[:name].to_s.valid_encoding?
