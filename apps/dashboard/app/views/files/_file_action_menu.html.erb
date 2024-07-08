@@ -14,7 +14,9 @@
       {{/if}}
       <li><a href="#" class="rename-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-font" aria-hidden="true"></i> Rename</a></li>
       <%- if Configuration.download_enabled? -%>
+      {{#if data.download_url}}
       <li><a href="{{data.download_url}}" class="download-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-download" aria-hidden="true"></i> Download</a></li>
+      {{/if}}
       <%- end -%>
       <li class="dropdown-divider mt-4"></li>
       <li><a href="#" class="delete-file dropdown-item text-danger" data-row-index="{{row_index}}"><i class="fas fa-trash" aria-hidden="true"></i> Delete</a></li>
