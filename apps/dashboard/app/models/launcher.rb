@@ -196,23 +196,8 @@ class Launcher
     nil
   end
 
-  def most_recent_job_id
-    most_recent_job['id']
-  end
-
-  def most_recent_job_cluster
-    most_recent_job['cluster']
-  end
-
   def active_jobs
     @active_jobs ||= jobs.reject { |job| job.completed? }
-  end
-
-  def job_cluster(id)
-    job = jobs.select { |job| job['id'] == id }.first
-    return nil if job.nil?
-
-    job['cluster']
   end
 
   def jobs

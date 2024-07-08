@@ -11,9 +11,10 @@ class HpcJob < OodCore::Job::Info
     end
   end
 
-  def initialize(cluster: nil, **args)
-    @cluster = cluster
-    super(**args.deep_symbolize_keys)
+  def initialize(**args)
+    args = args.deep_symbolize_keys
+    @cluster = args[:cluster]
+    super(**args)
   end
 
   def completed?
