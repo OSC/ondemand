@@ -3,7 +3,7 @@
 # The Controller for user level settings /dashboard/settings.
 class SettingsController < ApplicationController
   include UserSettingStore
-  ALLOWED_SETTINGS = [:profile].freeze
+  ALLOWED_SETTINGS = [:profile, { announcements: {} }].freeze
 
   def update
     new_settings = read_settings(settings_param)
@@ -24,7 +24,10 @@ class SettingsController < ApplicationController
 
   def read_settings(params)
     {}.tap do |settings|
-      params&.each { |key, value| settings[key] = value }
+      params&.each do |key, value|
+        value = value.to_h if value.is_a?(ActionController::Parameters)
+        settings[key] = value
+      end
     end
   end
 end

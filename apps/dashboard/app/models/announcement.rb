@@ -2,6 +2,7 @@
 
 # Announcements show up on the dashboard to convey a message to users.
 class Announcement
+  include UserSettingStore
   # List of valid announcement types
   TYPES = [:warning, :info, :success, :danger].freeze
 
@@ -31,10 +32,36 @@ class Announcement
     msg.blank? ? nil : msg
   end
 
+  def button_text
+    opts.fetch(:button_text, I18n.t('dashboard.announcements_button_text')).to_s
+  end
+
   # Whether this is a valid announcement
   # @return [Boolean] whether it is valid
   def valid?
-    !!msg
+    return false unless msg
+
+    return false if dismissible? && !id
+
+    true
+  end
+
+  def completed?
+    dismissible? && user_settings.dig(:announcements, id.to_sym)
+  end
+
+  def dismissible?
+    required? || opts.fetch(:dismissible, false)
+  end
+
+  def required?
+    opts.fetch(:required, false)
+  end
+
+  def id
+    default_id = @path.basename.to_s if @path
+    # default_id = Digest::SHA1.hexdigest(@path.basename.to_s) if @path
+    opts.fetch(:id, default_id)
   end
 
   private

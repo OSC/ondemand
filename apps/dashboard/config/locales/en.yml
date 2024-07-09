@@ -261,6 +261,8 @@ en:
 
     settings_updated: "Settings updated"
 
+    announcements_button_text: "OK"
+
     bc_saved_settings:
       title: "Saved Settings"
       no_settings_title: "You have no saved settings."
