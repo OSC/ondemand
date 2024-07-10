@@ -150,6 +150,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
 
     # Store session context into a cache file
+    # @return [Pathname] the cachefile path
     def cache_file
       BatchConnect::Session.cache_root.tap do |p|
         p.mkpath unless p.exist?
