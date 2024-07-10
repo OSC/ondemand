@@ -3,6 +3,7 @@ class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
   include UserSettingStore
 
+  # GET /batch_connect/<app_token>/session_contexts/new
   def new
     set_app
     set_render_format
