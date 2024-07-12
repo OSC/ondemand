@@ -20,7 +20,11 @@ class OodFilesApp
   # returns an array of other paths provided as shortcuts to the user
   def favorite_paths
     @favorite_paths ||= candidate_favorite_paths.select do |p|
-      p.remote? || p.path.directory? && p.path.readable? && p.path.executable?
+      if p.remote?
+        true
+      else
+        AllowlistPolicy.default.permitted?(p.path) && p.path.directory? && p.path.readable? && p.path.executable?
+      end
     end
   end
 end

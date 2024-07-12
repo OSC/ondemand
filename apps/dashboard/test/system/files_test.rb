@@ -582,6 +582,24 @@ class FilesTest < ApplicationSystemTestCase
     File.delete(zip_file) if File.exist?(zip_file)
   end
 
+  test 'favorite paths outside allowlist do not show up' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed_dir"
+      not_allowed_dir    = "#{dir}/not_allowed_dir"
+      with_modified_env( { OOD_ALLOWLIST_PATH: allowed_dir } ) do
+        `mkdir -p #{allowed_dir}`
+        `touch #{allowed_dir}/test_file.txt`
+        `mkdir -p #{not_allowed_dir}`
+        `touch #{not_allowed_dir}/test_file.txt`
+        favorites = [FavoritePath.new(allowed_dir), FavoritePath.new(not_allowed_dir)]
+        OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
+
+        visit files_url(dir)
+        assert_selector('#favorites li', count: 2)
+      end
+    end
+  end
+
   test 'handles files with non utf-8 characters' do
     Dir.mktmpdir do |dir|
       prefix = [255, 1, 2, 3].pack('C*')
