@@ -1,13 +1,15 @@
 <% @announcements.select(&:valid?).reject(&:completed?).each do |announcement| %>
-  <div class="alert alert-<%= announcement.type %> announcement" role="alert">
-    <%= raw OodAppkit.markdown.render(announcement.msg) %>
+  <div id="announcement-<%=announcement.id%>" class="alert alert-<%= announcement.type %> announcement" role="alert">
+    <div class="announcement-body"><%= raw OodAppkit.markdown.render(announcement.msg) %></div>
     <% if announcement.dismissible? %>
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <%=
           button_to(
-            settings_path("settings[announcements][#{announcement.id}]" => 'completed'),
+            settings_path,
             method: :post,
-            class: "btn btn-#{announcement.type} me-md-2"
+            form_class: 'announcement-form',
+            class: "btn btn-#{announcement.type} me-md-2 announcement-button",
+            params: { settings: { announcement: announcement.id } }
           ) do
             announcement.button_text
           end

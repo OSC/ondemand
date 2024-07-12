@@ -12,45 +12,101 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     @headers = { 'X-CSRF-Token' => @token }
   end
 
-  test "should save user_settings when posting settings data" do
-    data = {
-      settings: {
-        profile: "test_profile"
-      }
-    }
-    Dir.mktmpdir {|temp_data_dir|
+  test 'should save and override profile settings when posting profile' do
+    Dir.mktmpdir do |temp_data_dir|
       Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: {} }
 
+      data[:settings][:profile] = 'first_profile'
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal "test_profile", TestUserSettings.new.user_settings[:profile]
-    }
+      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
+      assert_equal 'first_profile', TestUserSettings.new.user_settings[:profile]
+
+      data[:settings][:profile] = 'override_profile'
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
+      assert_equal 'override_profile', TestUserSettings.new.user_settings[:profile]
+    end
   end
 
-  test "should not save user settings when no data" do
-    data = { settings: {} }
-
-    Dir.mktmpdir {|temp_data_dir|
+  test 'should allow empty or nil profile settings when posting profile' do
+    Dir.mktmpdir do |temp_data_dir|
       Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: {} }
+
+      data[:settings][:profile] = ''
       post settings_path, params: data, headers: @headers
       assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
+      assert_equal '', TestUserSettings.new.user_settings[:profile]
+
+      data[:settings][:profile] = nil
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
       assert_nil TestUserSettings.new.user_settings[:profile]
-    }
+    end
+  end
+
+  test 'should save announcement settings and allow multiple announcements when posting announcement' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: {} }
+
+      data[:settings][:announcement] = 'announcement_id'
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_announcements_updated'), flash[:notice]
+      assert_not_nil TestUserSettings.new.user_settings[:announcements][:announcement_id]
+
+      data[:settings][:announcement] = 'other_announcement_id'
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_announcements_updated'), flash[:notice]
+      assert_not_nil TestUserSettings.new.user_settings[:announcements][:announcement_id]
+      assert_not_nil TestUserSettings.new.user_settings[:announcements][:other_announcement_id]
+    end
+  end
+
+  test 'should not save user_settings when no data' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: {} }
+
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_invalid_request'), flash[:alert]
+      assert_nil TestUserSettings.new.user_settings[:profile]
+    end
   end
 
   test "should not save user_settings when parameters are outside the settings namespace" do
-    data = { profile: "root_value" }
-
-    Dir.mktmpdir {|temp_data_dir|
+    Dir.mktmpdir do |temp_data_dir|
       Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { profile: "root_value" }
+
       post settings_path, params: data, headers: @headers
       assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_invalid_request'), flash[:alert]
       assert_nil TestUserSettings.new.user_settings[:profile]
-    }
+    end
+  end
+
+  test 'should not save user_settings when parameters are not in the allowed list' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: { not_allowed: 'root_value' } }
+
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_invalid_request'), flash[:alert]
+      assert_nil TestUserSettings.new.user_settings[:profile]
+    end
   end
 
   class TestUserSettings
     include UserSettingStore
   end
-
 end
