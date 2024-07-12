@@ -52,10 +52,7 @@ class SettingsController < ApplicationController
 
   def read_settings(params)
     {}.tap do |settings|
-      params&.each do |key, value|
-        value = value.to_h if value.is_a?(ActionController::Parameters)
-        settings[key] = value
-      end
+      params&.each { |key, value| settings[key] = value }
     end
   end
 end
