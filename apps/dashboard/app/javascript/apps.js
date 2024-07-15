@@ -1,11 +1,11 @@
 'use strict';
 
-import { configData } from './config.js';
+import { appsDatatablePageLength } from './config.js';
 
 jQuery(function() {
-  const cfgData = configData();
+  const pageLength = appsDatatablePageLength();
   $('#all-apps-table').DataTable({
     stateSave: false,
-    pageLength: cfgData['appsDatatablePageLength']
+    pageLength: pageLength
   });
 });
