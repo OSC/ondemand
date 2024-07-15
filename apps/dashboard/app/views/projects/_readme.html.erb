@@ -1,0 +1,5 @@
+<% if File.exist?("#{@project.directory}/README.md") %>
+    <p><%= File.read("#{@project.directory}/README.md") %></p>
+<% elsif File.exist?("#{@project.directory}/README.txt") %>
+    <p><%= File.read("#{@project.directory}/README.txt") %></p>
+<% end %>
