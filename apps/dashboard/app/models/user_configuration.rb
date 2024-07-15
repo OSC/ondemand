@@ -77,7 +77,10 @@ class UserConfiguration
     # Custom pages configuration property
     ConfigurationProperty.property(name: :custom_pages, default_value: {}),
     # Support ticket configuration property
-    ConfigurationProperty.property(name: :support_ticket, default_value: {})
+    ConfigurationProperty.property(name: :support_ticket, default_value: {}),
+
+    # Datatables configuration for the apps pages
+    ConfigurationProperty.property(name: :apps_datatable, default_value: {})
   ].freeze
 
   def initialize(request_hostname: nil)
