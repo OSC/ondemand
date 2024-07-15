@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fix favorites to consult allowlist (#3526)\
+Add return type comments (#3619)\
+Bump ws from 7.5.9 to 8.18.0 in /apps/shell (#3665)\
+initial pass to make projects#show dynamic (#3534)\
+hide download buttons for certain files (#3654)\
+Ws packages upgrade (#3663)\
+Use dashboard navbar in the file editor (#3646)\
+Update Changelog (#3661)\
+lint a random file (#3660)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
