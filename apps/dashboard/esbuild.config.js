@@ -37,6 +37,22 @@ const prepPlugin = {
   },
 }
 
+
+const preactSrcResolvePlugin = {
+  name: 'preactSrcResolve',
+  setup(build) {
+    // Redirect all paths starting with "images/" to "./public/images/"
+    build.onResolve({ filter: /preact/ }, args => {
+      const basePath = `${__dirname}/node_modules/preact`;
+      if (args.path == 'preact') {
+        return { path: `${basePath}/src/index.js` }
+      } else if(args.path == 'preact/hooks') {
+        return { path: `${basePath}/hooks/src/index.js` }
+      }
+    })
+  },
+}
+
 esbuild.build({
   entryPoints: entryPoints,
   bundle: true,
@@ -44,7 +60,7 @@ esbuild.build({
   format: 'esm',
   outdir: buildDir,
   external: ['fs'],
-  plugins: [prepPlugin],
+  plugins: [prepPlugin, preactSrcResolvePlugin],
   minify: process.env.RAILS_ENV == 'production' ? true : false,
 }).catch((e) => console.error(e.message));
 
