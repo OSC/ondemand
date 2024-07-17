@@ -59,9 +59,9 @@
   <div class="col-md-8">
     <%= render(partial: 'job_details', collection: @project.jobs, as: :job) %>
   </div>
-  <% unless @project.readme_path.nil? %>
-    <div class="col-md-8">
-      <%= render(partial: 'readme') %>
-    </div>
-  <% end %>
 </div>
+<% unless @project.readme_path.nil? %>
+  <div class="card my-2 px-3 pt-2">
+    <%= render(partial: 'readme') %>
+  </div>
+<% end %>
