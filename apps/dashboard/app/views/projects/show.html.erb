@@ -59,7 +59,7 @@
   <div class="col-md-8">
     <%= render(partial: 'job_details', collection: @project.jobs, as: :job) %>
   </div>
-  <% unless @project.readme.nil? %>
+  <% unless @project.readme_path.nil? %>
     <div class="col-md-8">
       <%= render(partial: 'readme') %>
     </div>
