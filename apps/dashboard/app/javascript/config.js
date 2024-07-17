@@ -91,5 +91,5 @@ export function statusIndexUrl() {
 
 export function appsDatatablePageLength() {
   const cfgData = configData();
-  return cfgData['appsDatatablePageLength'];
+  return parseInt(cfgData['appsDatatablePageLength']);
 }
