@@ -1,5 +1,7 @@
 <% if File.exist?("#{@project.directory}/README.md") %>
     <p><%= File.read("#{@project.directory}/README.md") %></p>
 <% elsif File.exist?("#{@project.directory}/README.txt") %>
-    <p><%= File.read("#{@project.directory}/README.txt") %></p>
+    <% File.readlines("#{@project.directory}/README.txt").each do |line| %>
+        <p><%= line %></p>
+    <% end %>
 <% end %>
