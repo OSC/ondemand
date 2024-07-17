@@ -199,6 +199,18 @@ class Project
     end.flatten
   end
 
+  def readme
+    md_readme = "#{directory}/README.md"
+    txt_readme = "#{directory}/README.txt"
+    if File.exist?(md_readme) && File.readable?(md_readme)
+      readme = md_readme
+    elsif File.exist?(txt_readme) && File.readable?(txt_readme)
+      readme = txt_readme
+    end
+    
+    readme
+  end
+
   private
   
   def update_attrs(attributes)
