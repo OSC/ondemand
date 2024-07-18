@@ -9,7 +9,7 @@
             method: :post,
             form_class: 'announcement-form',
             class: "btn btn-#{announcement.type} me-md-2 announcement-button",
-            params: { settings: { announcement: announcement.id } }
+            params: { settings: { announcements: { announcement.id => Time.now.localtime.strftime('%Y-%m-%d %H:%M:%S') } } }
           ) do
             announcement.button_text
           end

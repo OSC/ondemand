@@ -20,13 +20,13 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
       data[:settings][:profile] = 'first_profile'
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
       assert_equal 'first_profile', TestUserSettings.new.user_settings[:profile]
 
       data[:settings][:profile] = 'override_profile'
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
       assert_equal 'override_profile', TestUserSettings.new.user_settings[:profile]
     end
   end
@@ -39,13 +39,13 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
       data[:settings][:profile] = ''
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
       assert_equal '', TestUserSettings.new.user_settings[:profile]
 
       data[:settings][:profile] = nil
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_profile_updated'), flash[:notice]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
       assert_nil TestUserSettings.new.user_settings[:profile]
     end
   end
@@ -55,18 +55,19 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
       Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
       data = { settings: {} }
 
-      data[:settings][:announcement] = 'announcement_id'
+      value =  Time.now.localtime.strftime('%Y-%m-%d %H:%M:%S')
+      data[:settings] = { announcements: { 'announcement_id' => value } }
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_announcements_updated'), flash[:notice]
-      assert_not_nil TestUserSettings.new.user_settings[:announcements][:announcement_id]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_equal value, TestUserSettings.new.user_settings[:announcements][:announcement_id]
 
-      data[:settings][:announcement] = 'other_announcement_id'
+      data[:settings] = { announcements: { 'other_announcement_id' => value } }
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_announcements_updated'), flash[:notice]
-      assert_not_nil TestUserSettings.new.user_settings[:announcements][:announcement_id]
-      assert_not_nil TestUserSettings.new.user_settings[:announcements][:other_announcement_id]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_equal value, TestUserSettings.new.user_settings[:announcements][:announcement_id]
+      assert_equal value, TestUserSettings.new.user_settings[:announcements][:other_announcement_id]
     end
   end
 
@@ -77,8 +78,8 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
 
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_invalid_request'), flash[:alert]
-      assert_nil TestUserSettings.new.user_settings[:profile]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_empty TestUserSettings.new.user_settings
     end
   end
 
@@ -89,8 +90,8 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
 
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_invalid_request'), flash[:alert]
-      assert_nil TestUserSettings.new.user_settings[:profile]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_empty TestUserSettings.new.user_settings
     end
   end
 
@@ -101,8 +102,8 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
 
       post settings_path, params: data, headers: @headers
       assert_response :redirect
-      assert_equal I18n.t('dashboard.settings_invalid_request'), flash[:alert]
-      assert_nil TestUserSettings.new.user_settings[:profile]
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_empty TestUserSettings.new.user_settings
     end
   end
 
