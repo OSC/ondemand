@@ -1,7 +1,0 @@
-<% if File.extname(@project.readme_path) == '.md' %>
-    <%= project_markdown(@project.readme) %>
-<% elsif File.extname(@project.readme_path) == '.txt' %>
-    <% @project.readme.each_line do |line| %>
-        <p><%= line %></p>
-    <% end %>
-<% end %>
