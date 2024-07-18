@@ -88,3 +88,8 @@ export function statusIndexUrl() {
   const cfgData = configData();
   return cfgData['statusIndexUrl'];
 }
+
+export function appsDatatablePageLength() {
+  const cfgData = configData();
+  return parseInt(cfgData['appsDatatablePageLength']);
+}
