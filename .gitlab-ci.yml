@@ -34,7 +34,7 @@ build-nightly:
       # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
         OOD_PACKAGING_ARCH: [x86_64]
-  timeout: 3h
+  timeout: 4h
   artifacts:
     paths:
       - dist
@@ -62,7 +62,7 @@ build:
       # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
         OOD_PACKAGING_ARCH: [x86_64]
-  timeout: 3h
+  timeout: 4h
   artifacts:
     paths:
       - dist
