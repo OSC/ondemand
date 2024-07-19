@@ -65,6 +65,7 @@ class ProductsController < ApplicationController
     @product = Product.find(@type, params[:name])
 
     respond_to do |format|
+      add_icon_uri
       if @product.update(product_params)
         format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
@@ -143,5 +144,11 @@ class ProductsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
       params.require(:product).permit! if params[:product]
+    end
+
+      # Add icon URI as it is not provided by the user
+    def add_icon_uri
+      icon = product_params[:icon]
+      params[:product][:icon] = icon =~ /(fa[bsrl]?):\/\/(.*)/ || icon.nil? || icon.empty? ? icon : "fas://#{icon}"
     end
 end

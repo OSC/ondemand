@@ -62,6 +62,8 @@ class ProjectsController < ApplicationController
       return
     end
 
+    add_icon_uri
+
     if @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
@@ -73,6 +75,9 @@ class ProjectsController < ApplicationController
 
   # POST /projects
   def create
+    add_icon_uri
+
+    Rails.logger.info("Icon is #{project_params[:icon]}")
     @project = Project.new(project_params)
 
     if @project.save
@@ -130,6 +135,12 @@ class ProjectsController < ApplicationController
     else
       []
     end
+  end
+
+  # Add icon URI as it is not provided by the user
+  def add_icon_uri
+    icon = project_params[:icon]
+    params[:project][:icon] = icon =~ /(fa[bsrl]?):\/\/(.*)/ || icon.nil? || icon.empty? ? icon : "fas://#{icon}"
   end
 
   def project_params
