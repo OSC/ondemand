@@ -63,11 +63,7 @@
 
   <div class="<%= local_assigns[:layout_container_class] || 'container-md' %> content mt-4" role="main">
 
-    <% @announcements.select(&:valid?).each do |announcement| %>
-      <div class="alert alert-<%= announcement.type %> announcement" role="alert">
-        <%= raw OodAppkit.markdown.render(announcement.msg) %>
-      </div>
-    <% end %>
+    <%= render "layouts/announcements" %>
 
     <%= render "layouts/browser_warning" %>
 

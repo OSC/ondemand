@@ -1,0 +1,5 @@
+type: danger
+msg: This is yaml
+id: yml_id
+dismissible: true
+required: true

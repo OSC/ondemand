@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
   before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group, :set_custom_navigation
+  before_action :check_required_announcements
+
+  def check_required_announcements
+    return if instance_of?(SettingsController)
+
+    render inline: '', layout: :default if @announcements.select(&:required?).reject(&:completed?).any?
+  end
 
   def set_user
     @user = CurrentUser
