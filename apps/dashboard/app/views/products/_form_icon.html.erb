@@ -18,12 +18,12 @@
       <%= fa_icon("cog", fa_style: "fas", id: "product_icon") %>
     </p>
     <div class="alert alert-warning">
-      <small>There is no icon specified for this app. Default is fas://cog.</small>
+      <small>There is no icon specified for this app. Default is cog.</small>
     </div>
   <% end %>
   <div class="field" id="icon_select_list">
-    <%= f.text_field :icon, placeholder: "fas://cog", id: "product_icon_select",
-        help: 'Use the list of icons below to choose from' %>
+    <%= f.text_field :icon, placeholder: "cog", id: "product_icon_select",
+        help: 'Use the list of icons below to choose from', value: product.app.manifest.icon.sub('fas://', '')  %>
 
 
     <div class="card">
