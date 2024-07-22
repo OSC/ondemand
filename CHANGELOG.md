@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Added dismissible and required features to announcements (#3667)\
+Increase timeout as Ubuntu 24.04 arm64 builds are slow (#3681)\
+move ace dependency to yarn (#3629)\
+Added configurable default number of apps to show in the apps table (#3672)\
+Support Ubuntu 24.04 (#3676)\
+exclude vim swp files from rsync (#3677)\
+Added 404 JSON reponse to projects.show method (#3674)\
+Update Changelog (#3671)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
