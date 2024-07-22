@@ -23,12 +23,13 @@ class ProjectsTest < ActiveSupport::TestCase
       assert_not project.errors[:name].empty?
 
       invalid_directory = Project.dataroot
-      project = Project.new({ name: 'test', icon: 'invalid_format', directory: invalid_directory.to_s,
+      invalid_icon = 'invalid_format'
+      project = Project.new({ name: 'test', icon: invalid_icon, directory: invalid_directory.to_s,
 template: '/invalid/template' })
 
       assert_not project.save
-      assert_equal 3, project.errors.size
-      assert_not project.errors[:icon].empty?
+      assert_equal 2, project.errors.size
+      assert_not_equal invalid_icon, project.icon 
       assert_not project.errors[:directory].empty?
       assert_not project.errors[:template].empty?
     end
