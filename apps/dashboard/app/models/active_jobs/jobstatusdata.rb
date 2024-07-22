@@ -117,7 +117,7 @@ module ActiveJobs
       attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
       attributes.push Attribute.new "Total CPUs", info.native[:cpus]
       attributes.push Attribute.new "Time Limit", info.native[:time_limit]
-      attributes.push Attribute.new "Time Used", info.native[:time_used]
+      attributes.push Attribute.new "Time Used", self.walltime_used
       attributes.push Attribute.new "Start Time", safe_parse_time(info.native[:start_time])
       attributes.push Attribute.new "End Time", safe_parse_time(info.native[:end_time])
       attributes.push Attribute.new "Memory", info.native[:min_memory]
