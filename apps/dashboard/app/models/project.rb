@@ -4,6 +4,8 @@
 class Project
   include ActiveModel::Model
   include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
+  include IconWithUri
 
   class << self
     def lookup_file
@@ -73,6 +75,8 @@ class Project
   validate :project_directory_invalid, on: [:create, :update]
   validate :project_directory_exist, on: [:create]
   validate :project_template_invalid, on: [:create]
+
+  before_validation :add_icon_uri
 
   def initialize(attributes = {})
     @id = attributes[:id]

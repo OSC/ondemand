@@ -2,7 +2,6 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
-  include IconConcern
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
@@ -62,7 +61,6 @@ class ProjectsController < ApplicationController
       return
     end
 
-    params[:project][:icon] = icon_with_uri(params[:project][:icon])
     if @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
@@ -74,7 +72,6 @@ class ProjectsController < ApplicationController
 
   # POST /projects
   def create
-    params[:project][:icon] = icon_with_uri(params[:project][:icon])
     @project = Project.new(project_params)
 
     if @project.save
