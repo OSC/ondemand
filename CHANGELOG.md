@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Added dismissible and required features to announcements (#3667)\
-Increase timeout as Ubuntu 24.04 arm64 builds are slow (#3681)\
-move ace dependency to yarn (#3629)\
-Added configurable default number of apps to show in the apps table (#3672)\
-Support Ubuntu 24.04 (#3676)\
-exclude vim swp files from rsync (#3677)\
-Added 404 JSON reponse to projects.show method (#3674)\
-Update Changelog (#3671)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -29,6 +21,8 @@ Update Changelog (#3671)
 - The project manager can now define default launcher fields in [3488](https://github.com/OSC/ondemand/pull/3488).
 - The feature to show the project size is now configurable in [3531](https://github.com/OSC/ondemand/pull/3531).
 - The dashboard now has a system status page in [3549](https://github.com/OSC/ondemand/pull/3549).
+- Support for Ubuntu 24.04 in [3676](https://github.com/OSC/ondemand/pull/3676).
+- Added configurable default number of apps to show in the apps table in [3672](https://github.com/OSC/ondemand/pull/3672).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -42,6 +36,8 @@ Update Changelog (#3671)
 - Passenger and NGINX have been updated 6.0.20 and 1.24.0 respectively in [3535](https://github.com/OSC/ondemand/pull/3535).
 - The dashboard now uses Bootstrap 5 in [3541](https://github.com/OSC/ondemand/pull/3541).
 - The file editor now uses the default layout in [3646](https://github.com/OSC/ondemand/pull/3646).
+- Announcemnts are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
+- Ace is now a yarn dependency in [3629](https://github.com/OSC/ondemand/pull/3629).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
