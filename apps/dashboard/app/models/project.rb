@@ -200,24 +200,8 @@ class Project
   end
 
   def readme_path
-    md_readme = "#{directory}/README.md"
-    return md_readme if File.exist?(md_readme) && File.readable?(md_readme)
-
-    txt_readme = "#{directory}/README.txt"
-    return txt_readme if File.exist?(txt_readme) && File.readable?(txt_readme)
-  end
-
-  def readme
-    file_content = File.read(readme_path)
-
-    if File.extname(readme_path) == '.md'
-      markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-      return markdown.render(file_content).html_safe
-    elsif File.extname(readme_path) == '.txt'
-      return file_content.lines.map do |line|
-        "<p>#{line}</p>"
-      end.join.html_safe
-    end
+    file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
+    File.readable?(file) ? file : nil
   end
 
   private

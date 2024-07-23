@@ -67,7 +67,7 @@
       <%= File.basename(@project.readme_path) %>
     </div>
     <div class="card-body collapse show" id="readme">
-      <%= @project.readme %>
+      <%= render_readme(@project.readme_path)  %>
     </div>
   </div>
 <% end %>
