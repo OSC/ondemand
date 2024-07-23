@@ -219,9 +219,9 @@ description: 'updated', template: '/some/path' })
       project = create_project(projects_path)
 
       assert_not project.update({ name: nil, icon: nil })
-      assert_equal 2, project.errors.size
+      assert_equal 1, project.errors.size
       assert_not project.errors[:name].empty?
-      assert_not project.errors[:icon].empty?
+      assert_equal 'fas://cog', project.icon
     end
   end
 
