@@ -26,7 +26,7 @@ build-nightly:
       - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el9, debian-12]
+      - OOD_PACKAGING_DIST: [el9, debian-12, ubuntu-24.04]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
       - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04]
@@ -34,7 +34,7 @@ build-nightly:
       # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
         OOD_PACKAGING_ARCH: [x86_64]
-  timeout: 3h
+  timeout: 4h
   artifacts:
     paths:
       - dist
@@ -54,7 +54,7 @@ build:
       - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el9, debian-12]
+      - OOD_PACKAGING_DIST: [el9, debian-12, ubuntu-24.04]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
       - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04]
@@ -62,7 +62,7 @@ build:
       # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
         OOD_PACKAGING_ARCH: [x86_64]
-  timeout: 3h
+  timeout: 4h
   artifacts:
     paths:
       - dist

@@ -260,6 +260,10 @@ en:
     jobs_scripts_fixed_field: "Fixed Value"
 
     settings_updated: "Settings updated"
+    settings_invalid_request: "Invalid settings submitted"
+
+    announcements_required_button: "Accept"
+    announcements_dismissible_button: "OK"
 
     bc_saved_settings:
       title: "Saved Settings"

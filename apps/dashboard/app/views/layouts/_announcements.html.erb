@@ -1,0 +1,20 @@
+<% @announcements.select(&:valid?).reject(&:completed?).each do |announcement| %>
+  <div id="announcement-<%=announcement.id%>" class="alert alert-<%= announcement.type %> announcement" role="alert">
+    <div class="announcement-body"><%= raw OodAppkit.markdown.render(announcement.msg) %></div>
+    <% if announcement.dismissible? %>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <%=
+          button_to(
+            settings_path,
+            method: :post,
+            form_class: 'announcement-form',
+            class: "btn btn-#{announcement.type} me-md-2 announcement-button",
+            params: { settings: { announcements: { announcement.id => Time.now.localtime.strftime('%Y-%m-%d %H:%M:%S') } } }
+          ) do
+            announcement.button_text
+          end
+        %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -69,6 +69,8 @@ end
 
 def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
+  when 'ubuntu-24.04'
+    'noble'
   when 'ubuntu-22.04'
     'jammy'
   when 'ubuntu-20.04'
@@ -174,7 +176,7 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
-    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.1-#{codename}_all.deb"
+    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.2-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
@@ -226,7 +228,7 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  if host_inventory['platform'] == 'debian'
+  if host_inventory['platform'] == 'debian' || host_inventory['platform_version'] == '24.04'
     install_packages(['python3', 'python3-flask'])
   else
     install_packages(['python3', 'python3-pip'])

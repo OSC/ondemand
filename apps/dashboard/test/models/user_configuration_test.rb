@@ -79,6 +79,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       interactive_apps_menu: [],
       custom_pages: {},
       support_ticket: {},
+      apps_datatable: { page_length: 10 },
     }
 
     # ensure all properties are tested
