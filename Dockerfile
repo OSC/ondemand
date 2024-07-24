@@ -29,7 +29,6 @@ RUN dnf -y update && \
         ondemand-apache \
         ondemand-ruby \
         ondemand-nodejs \
-        ondemand-python \
         ondemand-dex \
         ondemand-passenger \
         ondemand-nginx && \
@@ -39,7 +38,7 @@ RUN mkdir -p /opt/ood
 RUN mkdir -p /var/www/ood/{apps,public,discover}
 RUN mkdir -p /var/www/ood/apps/{sys,dev,usr}
 
-COPY docker/launch-ood      /opt/ood/launch
+COPY packaging/container/launch-ood /opt/ood/launch
 COPY mod_ood_proxy          /opt/ood/mod_ood_proxy
 COPY nginx_stage            /opt/ood/nginx_stage
 COPY ood-portal-generator   /opt/ood/ood-portal-generator
