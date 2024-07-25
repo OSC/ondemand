@@ -37,12 +37,17 @@ const prepPlugin = {
   },
 }
 
-// don't package minified javascript
+// We can run into conflicts if we use the minified
+// version of some dependencies. So this plugin ensures
+// that we compile the source code of a given dependency
+// instead of the minified version.
+//
+// See https://github.com/OSC/ondemand/issues/3688 for more information.
 const minifiedSrcResolvePlugin = {
   name: 'minifiedSrcResolvePlugin',
   setup(build) {
-    // Redirect all paths starting with "images/" to "./public/images/"
-  build.onResolve({ filter: /preact|exifr.*/ }, args => {
+
+    build.onResolve({ filter: /preact|exifr.*/ }, args => {
 
       const preactBase = `${__dirname}/node_modules/preact`;
       const lookup = {
