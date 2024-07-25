@@ -34,7 +34,7 @@ function picked(event) {
 
 function updateIcon(icon) {
   $(`#${ICON_SHOW_ID}`).attr("class", `fas fa-${icon} fa-fw app-icon`);
-  $(`#${ICON_SELECT_ID}`).val(`fas://${icon}`);
+  $(`#${ICON_SELECT_ID}`).val(`${icon}`);
 }
 
 function populateList() {
@@ -55,12 +55,8 @@ function addSearch(){
   $(`#${ICON_SELECT_ID}`).on('input change', (event) => {
     const currentValue = event.target.value;
 
-    // template picked and set value or copy & pasted full icon uri
-    if(currentValue.startsWith('fas://')) {
-      updateIcon(currentValue.replace('fas://', ''));
-    } else {
-      searchIcons(event);
-    }
+    updateIcon(currentValue);
+    searchIcons(event);
   });
 }
 

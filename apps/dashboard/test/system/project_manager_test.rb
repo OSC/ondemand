@@ -175,7 +175,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 'my-test-project', find('#project_name').value
       assert_equal "#{dir}/projects/#{project_id}", find('#project_directory').value
       assert_equal 'test-description', find('#project_description').value
-      assert_equal 'fas://arrow-right', find('#product_icon_select').value
+      assert_equal 'arrow-right', find('#product_icon_select').value
       assert_selector '.btn.btn-default', text: 'Back'
     end
   end

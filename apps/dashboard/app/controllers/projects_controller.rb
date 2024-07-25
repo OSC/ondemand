@@ -2,7 +2,6 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
-
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
