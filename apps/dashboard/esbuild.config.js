@@ -37,17 +37,24 @@ const prepPlugin = {
   },
 }
 
-
-const preactSrcResolvePlugin = {
-  name: 'preactSrcResolve',
+// don't package minified javascript
+const minifiedSrcResolvePlugin = {
+  name: 'minifiedSrcResolvePlugin',
   setup(build) {
     // Redirect all paths starting with "images/" to "./public/images/"
-    build.onResolve({ filter: /preact/ }, args => {
-      const basePath = `${__dirname}/node_modules/preact`;
-      if (args.path == 'preact') {
-        return { path: `${basePath}/src/index.js` }
-      } else if(args.path == 'preact/hooks') {
-        return { path: `${basePath}/hooks/src/index.js` }
+  build.onResolve({ filter: /preact|exifr.*/ }, args => {
+
+      const preactBase = `${__dirname}/node_modules/preact`;
+      const lookup = {
+        'preact': `${preactBase}/src/index.js`,
+        'preact/hooks': `${preactBase}/hooks/src/index.js`,
+        'exifr/dist/mini.esm.mjs': `${__dirname}/node_modules/exifr/src/bundles/mini.mjs`,
+      }
+
+      for (const [key, value] of Object.entries(lookup)) {
+        if(args.path == key) {
+          return { path: value }
+        }
       }
     })
   },
@@ -60,7 +67,7 @@ esbuild.build({
   format: 'esm',
   outdir: buildDir,
   external: ['fs'],
-  plugins: [prepPlugin, preactSrcResolvePlugin],
+  plugins: [prepPlugin, minifiedSrcResolvePlugin],
   minify: process.env.RAILS_ENV == 'production' ? true : false,
 }).catch((e) => console.error(e.message));
 
