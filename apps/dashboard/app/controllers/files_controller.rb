@@ -52,7 +52,7 @@ class FilesController < ApplicationController
                                         end
 
           if can_download
-            zipname = "#{@path.basename.to_s.gsub('"', '\"')}.zip"
+            zipname = "#{@path.basename}.zip"
             response.set_header 'Content-Disposition', "attachment; filename=\"#{zipname}\""
             response.set_header 'Content-Type', 'application/zip'
             response.set_header 'Last-Modified', Time.now.httpdate
