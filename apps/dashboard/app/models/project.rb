@@ -203,6 +203,11 @@ class Project
     end.flatten
   end
 
+  def readme_path
+    file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
+    File.readable?(file) ? file : nil
+  end
+
   private
   
   def update_attrs(attributes)

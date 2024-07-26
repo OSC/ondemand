@@ -60,3 +60,14 @@
     <%= render(partial: 'job_details', collection: @project.jobs, as: :job) %>
   </div>
 </div>
+<% unless @project.readme_path.nil? %>
+  <div class="card">
+    <div class="card-header">
+      <button class="btn btn-default fa fa-chevron-right" type="button" data-bs-toggle="collapse" data-bs-target="#readme" aria-expanded="true" aria-controls="readme"></button>
+      <%= File.basename(@project.readme_path) %>
+    </div>
+    <div class="card-body collapse show" id="readme">
+      <%= render_readme(@project.readme_path)  %>
+    </div>
+  </div>
+<% end %>
