@@ -90,6 +90,15 @@
     namespace-emitter "^2.0.1"
     p-retry "^6.1.0"
 
+"@uppy/companion-client@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@uppy/companion-client/-/companion-client-4.0.0.tgz#99a1a60bf472dd9b30f2dbdfeb7f5b2f10be1de5"
+  integrity sha512-U12JcWApKRgs11ahJo/WJSOlfUNdH24mxGxrQv+x35Y/rLTG62Te9QsHGD0vFa2zSSVrIUm47sHxeqFJfOo9VA==
+  dependencies:
+    "@uppy/utils" "^6.0.0"
+    namespace-emitter "^2.0.1"
+    p-retry "^6.1.0"
+
 "@uppy/compressor@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@uppy/compressor/-/compressor-1.1.4.tgz#6c246650344446b5df1101759a98ee07f8e132ee"
@@ -115,6 +124,20 @@
     nanoid "^4.0.0"
     preact "^10.5.13"
 
+"@uppy/core@^4.0":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-4.0.1.tgz#92bcfd173074ef828ee0c1c9b107c048e9d765bb"
+  integrity sha512-qrWyjvGGrYWJKIrCwLiPrQPl1Pq+TWk+qA3sattxHm1qhqTUjeogkY1HK6wUOq9+kTJe9Fhxfk/mRmcNC5aJkA==
+  dependencies:
+    "@transloadit/prettier-bytes" "^0.3.4"
+    "@uppy/store-default" "^4.0.0"
+    "@uppy/utils" "^6.0.0"
+    lodash "^4.17.21"
+    mime-match "^1.0.2"
+    namespace-emitter "^2.0.1"
+    nanoid "^5.0.0"
+    preact "^10.5.13"
+
 "@uppy/dashboard@^3.9.0":
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/@uppy/dashboard/-/dashboard-3.9.0.tgz#56439053492a30148376b38b989f74ff89a2434d"
@@ -132,6 +155,24 @@
     memoize-one "^6.0.0"
     nanoid "^4.0.0"
     preact "^10.5.13"
+
+"@uppy/dashboard@^4.0":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@uppy/dashboard/-/dashboard-4.0.1.tgz#762d402dbc08e93adc8f12d31bcaa62368e23b25"
+  integrity sha512-VODcGB6LnuA+GgN1tq48oqts1EcMRSuh4jy2MuytVJk3x1yvsbtE9L6ROX3AAs9r0WTnMYqqhjRk4oocFyenEQ==
+  dependencies:
+    "@transloadit/prettier-bytes" "^0.3.4"
+    "@uppy/informer" "^4.0.0"
+    "@uppy/provider-views" "^4.0.0"
+    "@uppy/status-bar" "^4.0.0"
+    "@uppy/thumbnail-generator" "^4.0.0"
+    "@uppy/utils" "^6.0.0"
+    classnames "^2.2.6"
+    lodash "^4.17.21"
+    memoize-one "^6.0.0"
+    nanoid "^5.0.0"
+    preact "^10.5.13"
+    shallow-equal "^3.0.0"
 
 "@uppy/drag-drop@^3.1.0":
   version "3.1.0"
@@ -229,6 +270,14 @@
     "@uppy/utils" "^5.7.4"
     preact "^10.5.13"
 
+"@uppy/informer@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@uppy/informer/-/informer-4.0.0.tgz#6753eeb25a61f8de37049c7f53f3e149ef9fa3d3"
+  integrity sha512-xIiN7vJuBeOtzkPvECCXonGk7Z0hBktKSeq76/LZ2o7HYyDOhC2DdX8g0EBKM1i3TLTp93JVKERXCyuupLKETQ==
+  dependencies:
+    "@uppy/utils" "^6.0.0"
+    preact "^10.5.13"
+
 "@uppy/instagram@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@uppy/instagram/-/instagram-3.3.1.tgz#ecf2845248515ba7534081d1ceb1f653feda5b20"
@@ -266,6 +315,17 @@
     classnames "^2.2.6"
     nanoid "^4.0.0"
     p-queue "^7.3.4"
+    preact "^10.5.13"
+
+"@uppy/provider-views@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@uppy/provider-views/-/provider-views-4.0.0.tgz#9f98c24d425429c739d67c9f0d6d2d56ead28c16"
+  integrity sha512-sFRPofSuPQ6pgECi0YR1Ml2eEhyIqaIGKwg8XjzhcfVT1POB5B/evQ/ocYJgZyZ2qb1TAKyzeBRbiSH+2C2Uaw==
+  dependencies:
+    "@uppy/utils" "^6.0.0"
+    classnames "^2.2.6"
+    nanoid "^5.0.0"
+    p-queue "^8.0.0"
     preact "^10.5.13"
 
 "@uppy/redux-dev-tools@^3.0.3":
@@ -308,10 +368,25 @@
     classnames "^2.2.6"
     preact "^10.5.13"
 
+"@uppy/status-bar@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@uppy/status-bar/-/status-bar-4.0.0.tgz#84495a48f32c9bc2c1ccc01bc4cb1acccdeaedd7"
+  integrity sha512-r5b83zsuH1A9Gdx3MCS0EE5k+/K9AYP4JNO0EBSe956gGm76JOfvkNtedIe4Vv49lZVEB4QztzC1bbkHg5TOdw==
+  dependencies:
+    "@transloadit/prettier-bytes" "^0.3.4"
+    "@uppy/utils" "^6.0.0"
+    classnames "^2.2.6"
+    preact "^10.5.13"
+
 "@uppy/store-default@^3.2.2":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@uppy/store-default/-/store-default-3.2.2.tgz#19ef59ea9a427372b21395fd4c842e193b9a9dde"
   integrity sha512-OiSgT++Jj4nLK0N9WTeod3UNjCH81OXE5BcMJCd9oWzl2d0xPNq2T/E9Y6O72XVd+6Y7+tf5vZlPElutfMB3KQ==
+
+"@uppy/store-default@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@uppy/store-default/-/store-default-4.0.0.tgz#814bd5e2670abf00ca9ec2d5b66752350c4e3bf0"
+  integrity sha512-iUB2C7+6NkXoCh8xp06pyn1xeMtQgRuX9F2ahhrXDwNsD6mwKa5wgsJSnnlmXLD6fKVkfne55dLMalJ1pSIr2Q==
 
 "@uppy/store-redux@^3.0.7":
   version "3.0.7"
@@ -326,6 +401,14 @@
   integrity sha512-tDKK/cukC0CrM0F/OlHFmvpGGUq+Db4YfakhIGPKtT7ZO8aWOiIu5JIvaYUnKRxGq3RGsk4zhkxYXuoxVzzsGA==
   dependencies:
     "@uppy/utils" "^5.7.5"
+    exifr "^7.0.0"
+
+"@uppy/thumbnail-generator@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@uppy/thumbnail-generator/-/thumbnail-generator-4.0.0.tgz#0fb339aa4a55d3ed991e6a342594167f39006944"
+  integrity sha512-nwgRO/LHLzUqzyB1TDl6g8LNmqtkswXpvRNcPij0gOrPTTWjGY6ULv+ywXYiF5baWF2aGS+K62jJSUGBWonx0w==
+  dependencies:
+    "@uppy/utils" "^6.0.0"
     exifr "^7.0.0"
 
 "@uppy/transloadit@^3.8.0":
@@ -376,6 +459,14 @@
     lodash "^4.17.21"
     preact "^10.5.13"
 
+"@uppy/utils@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@uppy/utils/-/utils-6.0.0.tgz#a59867318f4b387ca0e671399b957748a812c12e"
+  integrity sha512-24mvEYlt189setvd0z8l3LJRxiq+W8UAZ3lCHRP1Qzq6rSdd/cVaTiIgV+0ZvNnZMmiEKeKdEcfFG3VeGvE3dg==
+  dependencies:
+    lodash "^4.17.21"
+    preact "^10.5.13"
+
 "@uppy/webcam@^3.4.2":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@uppy/webcam/-/webcam-3.4.2.tgz#b057eec75cea1e8b30503c46f8bc68b86222fec8"
@@ -392,6 +483,14 @@
   dependencies:
     "@uppy/companion-client" "^3.8.1"
     "@uppy/utils" "^5.9.0"
+
+"@uppy/xhr-upload@^4.0":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@uppy/xhr-upload/-/xhr-upload-4.0.2.tgz#d41f14e69de7fbacda57bb1c45694b3fbf8f5517"
+  integrity sha512-7f25Zo+yz1qUn3EKQdgRfbAsjtZZaGz+3UdgjPYXEIb/tt5iHNElMyq01HLEYiwytfsKfgk2fdsbqoueTABK1w==
+  dependencies:
+    "@uppy/companion-client" "^4.0.0"
+    "@uppy/utils" "^6.0.0"
 
 "@uppy/zoom@^2.3.1":
   version "2.3.1"
@@ -805,11 +904,6 @@ is-stream@^2.0.0:
   resolved "https://registry.yarnpkg.com/is-stream/-/is-stream-2.0.1.tgz#fac1e3d53b97ad5a9d0ae9cef2389f5810a5c077"
   integrity sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==
 
-jquery-ujs@^1.2.2:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.3.tgz#dcac6026ab7268e5ee41faf9d31c997cd4ddd603"
-  integrity sha512-59wvfx5vcCTHMeQT1/OwFiAj+UffLIwjRIoXdpO7Z7BCFGepzq9T9oLVeoItjTqjoXfUrHJvV7QU6pUR+UzOoA==
-
 "jquery@1.8 - 4", jquery@>=1.7, jquery@^3.5.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
@@ -902,6 +996,11 @@ nanoid@^4.0.0:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-4.0.2.tgz#140b3c5003959adbebf521c170f282c5e7f9fb9e"
   integrity sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==
 
+nanoid@^5.0.0:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.0.7.tgz#6452e8c5a816861fd9d2b898399f7e5fd6944cc6"
+  integrity sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==
+
 neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
@@ -927,6 +1026,14 @@ p-queue@^7.3.4:
     eventemitter3 "^5.0.1"
     p-timeout "^5.0.2"
 
+p-queue@^8.0.0:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/p-queue/-/p-queue-8.0.1.tgz#718b7f83836922ef213ddec263ff4223ce70bef8"
+  integrity sha512-NXzu9aQJTAzbBqOt2hwsR63ea7yvxJc0PwN/zobNAudYfb1B7R08SzB4TsLeSbUCuG467NhnoT0oO6w1qRO+BA==
+  dependencies:
+    eventemitter3 "^5.0.1"
+    p-timeout "^6.1.2"
+
 p-retry@^6.1.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/p-retry/-/p-retry-6.2.0.tgz#8d6df01af298750009691ce2f9b3ad2d5968f3bd"
@@ -940,6 +1047,11 @@ p-timeout@^5.0.2:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-5.1.0.tgz#b3c691cf4415138ce2d9cfe071dba11f0fee085b"
   integrity sha512-auFDyzzzGZZZdHz3BtET9VEz0SE/uMEAx7uWfGPucfzEwwe/xH0iVeZibQmANYE/hp9T2+UUZT5m+BKyrDp3Ew==
+
+p-timeout@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-6.1.2.tgz#22b8d8a78abf5e103030211c5fc6dee1166a6aa5"
+  integrity sha512-UbD77BuZ9Bc9aABo74gfXhNvzC9Tx7SxtHSh1fxvx3jTLLYvmVhiQZZrJzqqU0jKbN32kb5VOKiLEQI/3bIjgQ==
 
 picomatch@^2.0.4, picomatch@^2.2.1:
   version "2.3.1"
@@ -1005,6 +1117,11 @@ select@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
   integrity sha512-OwpTSOfy6xSs1+pwcNrv0RBMOzI39Lp3qQKUTPVVPRjCdNa5JH/oPRiqsesIskK8TVgmRiHwO4KXlV2Li9dANA==
+
+shallow-equal@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/shallow-equal/-/shallow-equal-3.1.0.tgz#e7a54bac629c7f248eff6c2f5b63122ba4320bec"
+  integrity sha512-pfVOw8QZIXpMbhBWvzBISicvToTiM5WBF1EeAUZDDSb5Dt29yl4AYbyywbJFSEsRUMr7gJaxqCdr4L3tQf9wVg==
 
 signal-exit@^3.0.2:
   version "3.0.7"
