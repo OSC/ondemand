@@ -8,10 +8,10 @@ module ProjectsHelper
     if File.extname(readme_location) == '.md'
       markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
       markdown_html = markdown.render(file_content).html_safe
-      return sanitize(markdown_html)
+      sanitize(markdown_html)
     elsif File.extname(readme_location) == '.txt'
       # simple_format sanitizes its output
-      return simple_format(file_content)
+      simple_format(file_content)
     end
   end
 end
