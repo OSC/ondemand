@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 # The Controller for user level settings /dashboard/settings.
+# Current supported settings: profile, announcement
 class SettingsController < ApplicationController
   include UserSettingStore
-  ALLOWED_SETTINGS = [:profile].freeze
+  ALLOWED_SETTINGS = [:profile, { announcements: {} }].freeze
 
   def update
     new_settings = read_settings(settings_param)
@@ -23,8 +24,6 @@ class SettingsController < ApplicationController
   end
 
   def read_settings(params)
-    {}.tap do |settings|
-      params&.each { |key, value| settings[key] = value }
-    end
+    params.to_h
   end
 end

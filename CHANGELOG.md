@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The project manager can now define default launcher fields in [3488](https://github.com/OSC/ondemand/pull/3488).
 - The feature to show the project size is now configurable in [3531](https://github.com/OSC/ondemand/pull/3531).
 - The dashboard now has a system status page in [3549](https://github.com/OSC/ondemand/pull/3549).
+- Support for Ubuntu 24.04 in [3676](https://github.com/OSC/ondemand/pull/3676).
+- Added configurable default number of apps to show in the apps table in [3672](https://github.com/OSC/ondemand/pull/3672).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -33,6 +35,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The http to https redirect host is now configurable in [3515](https://github.com/OSC/ondemand/pull/3515).
 - Passenger and NGINX have been updated 6.0.20 and 1.24.0 respectively in [3535](https://github.com/OSC/ondemand/pull/3535).
 - The dashboard now uses Bootstrap 5 in [3541](https://github.com/OSC/ondemand/pull/3541).
+- The file editor now uses the default layout in [3646](https://github.com/OSC/ondemand/pull/3646).
+- Announcemnts are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
+- Ace is now a yarn dependency in [3629](https://github.com/OSC/ondemand/pull/3629).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -42,6 +47,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Dynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
 - File and shell buttons will no longer appear when apps are unavailable in [3655](https://github.com/OSC/ondemand/pull/3655).
 - Downloads can once again be estimated in [3653](https://github.com/OSC/ondemand/pull/3653).
+- Download buttons will now be hidden for certain files like pipes in [3654](https://github.com/OSC/ondemand/pull/3654).
+- Favorite file paths now consult the Allowlist in [3526](https://github.com/OSC/ondemand/pull/3526).
 
 ### Security
 

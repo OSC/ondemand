@@ -2,13 +2,16 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
-
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
     if @project.nil?
-      redirect_to(projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
+      respond_to do |format|
+        message = I18n.t('dashboard.jobs_project_not_found', project_id: project_id)
+        format.html { redirect_to(projects_path, alert: message) }
+        format.json { render json: { message: message }, status: :not_found }
+      end
     else
       @scripts = Launcher.all(@project.directory)
       @valid_project = Launcher.clusters?

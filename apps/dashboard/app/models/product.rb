@@ -3,6 +3,7 @@
 # interact with. Products are what app developers interact with.
 class Product
   include ActiveModel::Model
+  include IconWithUri
 
   delegate :passenger_rack_app?, :passenger_rails_app?, :passenger_app?, :can_run_bundle_install?, to: :app
 
@@ -163,6 +164,9 @@ class Product
     @description = attributes[:description] if attributes[:description]
     @icon = attributes[:icon] if attributes[:icon]
     @git_remote = attributes[:git_remote] if attributes[:git_remote]
+
+    add_icon_uri
+
     if self.valid?
       write_manifest
       set_git_remote
