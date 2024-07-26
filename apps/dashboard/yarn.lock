@@ -202,11 +202,6 @@ clipboard@^2.0.8:
     select "^1.1.2"
     tiny-emitter "^2.0.0"
 
-data-confirm-modal@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/data-confirm-modal/-/data-confirm-modal-1.6.2.tgz#81fc8ea298cfd9311d066915d1710b3cfa57d96b"
-  integrity sha512-UYYgx8hS65X8Y336YRp1x6A5Gfkhh4iYkLq5jw7oS++hTcq/3yO8JOrbfHvvr7qqqQxBSPRyvUXnFEFIr4ja4w==
-
 datatables.net-bs4@^1.10.24, datatables.net-bs4@^1.13.0:
   version "1.13.11"
   resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.11.tgz#b31b9006f1901746e6c835925523608bd0a29025"
