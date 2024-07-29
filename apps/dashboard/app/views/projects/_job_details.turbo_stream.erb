@@ -5,8 +5,10 @@
 
 <turbo-stream action="replace" target="<%= id %>">
   <template>
-    <div>
-      <%= job.id %> is currently <%= job.status.to_s %>.
-    </div>
+    <button class="badge bg-primary rounded-pill border-0 btn">
+      <span>
+        <%= job.id %> <%= job.status.to_s %>
+      </span>
+    </button>
     </template>
 </turbo-stream>
