@@ -115,9 +115,9 @@ class QuotaTest < ActiveSupport::TestCase
   end
 
   test "loading fixtures from URL" do
-    quota_file = Pathname.new "#{Rails.root}/test/fixtures/quota.json"
+    quota_file = Pathname.new("#{Rails.root}/test/fixtures/quota.json").read
     # stub open with an object you can call read on
-    Quota.stubs(:open).with("https://url/to/quota.json").returns(quota_file)
+    Net::HTTP.stubs(:get).returns(quota_file)
     quotas = Quota.find("https://url/to/quota.json", 'efranz')
 
     assert_equal 4, quotas.count, "Should have found 4 quotas. The json file specifies 2 quota hashes, for 4 quotas - 2 file and 2 block quotas"
@@ -129,7 +129,7 @@ class QuotaTest < ActiveSupport::TestCase
   end
 
   test "handle error loading URL" do
-    Quota.stubs(:open).with("https://url/to/quota.json").raises(StandardError, "404 file not found")
+    Net::HTTP.stubs(:get).raises(StandardError, "404 file not found")
     quotas = Quota.find("https://url/to/quota.json", 'efranz')
 
     assert_equal [], quotas, "Should have handled exception and returned 0 quotas"
