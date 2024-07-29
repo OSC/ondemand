@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+pm respond to README (#3678)\
+Provide URI for icons instead of requiring the user to provide them. (#3682)\
+Do not automate build of Ubuntu 24.04 aarch64 (#3689)\
+Update Changelog (#3684)\
+Fix slurm walltime (#3670)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
