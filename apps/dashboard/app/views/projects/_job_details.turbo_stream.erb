@@ -2,8 +2,8 @@
 <%- 
   id = "job_#{job.cluster}_#{job.id}"
   data = {
-    :cluster => job.cluster,
-    :gpus => job.gpus
+    :Cluster => job.cluster,
+    :Gpus => job.gpus
   }
 -%>
 
@@ -16,11 +16,11 @@
     </button>
     <div class="collapse" id="<%= id %>Data">
       <div class="card card-body col-md-4">
-        <table>
-          <% data.each do |k, v| %>
+        <table class="table table-bordered m-0">
+          <% data.each do |name, value| %>
             <tr>
-              <td><%= k %></td>
-              <td><%= v %></td>
+              <td><strong><%= name %></strong></td>
+              <td><%= value %></td>
             </tr>
           <% end %>
         </table>
