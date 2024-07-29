@@ -110,4 +110,40 @@ module ApplicationHelper
       { src: File.join(@user_configuration.public_url, js_file_src), type: js_file_type }
     end.compact
   end
+
+  # Assigns text corresponding to a job status
+  def status_text(status)
+    case status
+    when 'completed'
+      'Completed'
+    when 'running'
+      'Running'
+    when 'queued'
+      'Queued'
+    when 'qued_held'
+      'Hold'
+    when 'suspended'
+      'Suspend'
+    else
+      'Undetermined'
+    end
+  end
+
+  # Assigns a bootstrap class corresponding to the status of a job
+  def status_class(status)
+    case status
+    when 'completed'
+      'bg-success'
+    when 'running'
+      'bg-primary'
+    when 'queued'
+      'bg-info'
+    when 'queued_held'
+      'bg-warning'
+    when 'suspended'
+      'bg-warning'
+    else
+      'bg-secondary'
+    end
+  end
 end

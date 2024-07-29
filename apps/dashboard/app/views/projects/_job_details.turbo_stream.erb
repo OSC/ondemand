@@ -1,14 +1,30 @@
 
 <%- 
   id = "job_#{job.cluster}_#{job.id}"
+  data = {
+    :cluster => job.cluster,
+    :gpus => job.gpus
+  }
 -%>
 
 <turbo-stream action="replace" target="<%= id %>">
   <template>
-    <button class="badge bg-primary rounded-pill border-0 btn">
+    <button class="badge <%= status_class(job.status.to_s) %> rounded-pill border-0 btn" type="button" data-bs-toggle="collapse" data-bs-target="#<%= id %>Data">
       <span>
-        <%= job.id %> <%= job.status.to_s %>
+        <%= job.id %> <%= status_text(job.status.to_s) %>
       </span>
     </button>
+    <div class="collapse" id="<%= id %>Data">
+      <div class="card card-body col-md-4">
+        <table>
+          <% data.each do |k, v| %>
+            <tr>
+              <td><%= k %></td>
+              <td><%= v %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
     </template>
 </turbo-stream>
