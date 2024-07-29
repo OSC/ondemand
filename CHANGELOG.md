@@ -6,11 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-pm respond to README (#3678)\
-Provide URI for icons instead of requiring the user to provide them. (#3682)\
-Do not automate build of Ubuntu 24.04 aarch64 (#3689)\
-Update Changelog (#3684)\
-Fix slurm walltime (#3670)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -43,6 +38,7 @@ Fix slurm walltime (#3670)
 - The file editor now uses the default layout in [3646](https://github.com/OSC/ondemand/pull/3646).
 - Announcemnts are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
 - Ace is now a yarn dependency in [3629](https://github.com/OSC/ondemand/pull/3629).
+- Pages now expect a string instead of a URI for icons in [3682](https://github.com/OSC/ondemand/pull/3682).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
