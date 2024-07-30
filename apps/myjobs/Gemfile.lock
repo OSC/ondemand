@@ -171,7 +171,7 @@ GEM
       rails (>= 5.0.0)
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
-    public_suffix (6.0.1)
+    public_suffix (5.1.1)
     racc (1.8.1)
     rack (2.2.9)
     rack-test (2.1.0)
@@ -280,6 +280,7 @@ DEPENDENCIES
   ood_appkit (~> 2.0)
   osc_machete_rails (~> 2.1.2)
   pbs (~> 2.2.1)
+  public_suffix (~> 5.0, < 6.0)
   rails (= 7.0.8.1)
   rails-controller-testing
   rdoc (= 6.3.4.1)
