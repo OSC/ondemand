@@ -26,13 +26,14 @@ group :development, :test do
 end
 
 group :test do
-
   # FIXME: capybara locked due to ruby 2.7 support.
   gem 'capybara', '~> 3.39', '< 3.40'
+
   # lock selenium as it doesn't work on ubuntu 22.04
   # https://github.com/SeleniumHQ/selenium/issues/11291
   gem "selenium-webdriver", '4.5.0'
   gem "webrick"
+  gem 'mocha', '~> 2.1'
 end
 
 group :development do
@@ -52,7 +53,6 @@ gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
 gem 'bootstrap_form', '5.0'
-gem 'mocha', '~> 2.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
