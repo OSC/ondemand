@@ -209,6 +209,15 @@ class Launcher
     end
   end
 
+  # When a job is requested, update before returning
+  def job_from_id(job_id, cluster)
+    job = jobs.detect { |j| j.cluster == cluster && j.id == job_id }
+    unless job.nil? || job.status.to_s == 'completed'
+      update_job_log(job_id, cluster)
+    end
+    job
+  end
+
   def create_default_script
     return false if Launcher.scripts?(project_dir) || default_script_path.exist?
 
@@ -311,7 +320,14 @@ class Launcher
     adapter = adapter(cluster).job_adapter
     info = adapter.info(job_id)
     job = HpcJob.from_core_info(info: info, cluster: cluster)
-    new_jobs = (jobs + [job.to_h]).map(&:to_h)
+    existing_jobs = jobs
+    idx = existing_jobs.index { |j| j.id == job_id && j.cluster == cluster }
+    if idx.nil?
+      new_jobs = (jobs + [job.to_h]).map(&:to_h)
+    else
+      new_jobs = existing_jobs.map(&:to_h)
+      new_jobs[idx] = new_jobs[idx].merge(job.to_h) { |key, old_val, new_val| new_val.nil? ? old_val : new_val } 
+    end
 
     File.write(job_log_file.to_s, new_jobs.to_yaml)
   end

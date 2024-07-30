@@ -203,6 +203,14 @@ class Project
     end.flatten
   end
 
+  def job_from_id(job_id, cluster)
+    launchers = Launcher.all(directory)
+    launchers.each do |launcher|
+      job = launcher.job_from_id(job_id, cluster)
+      return job unless job.nil?
+    end
+  end
+
   def readme_path
     file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
     File.readable?(file) ? file : nil
