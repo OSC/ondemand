@@ -179,8 +179,6 @@ GEM
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
     ood_support (0.0.5)
-    pbs (2.2.1)
-      ffi (~> 1.9, >= 1.9.6)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -312,7 +310,6 @@ DEPENDENCIES
   ood_appkit (~> 2.1.0)
   ood_core (~> 0.24)
   ood_support (~> 0.0.2)
-  pbs (~> 2.2.1)
   pry
   public_suffix (~> 5.0, < 6.0)
   rails (= 7.0.8.1)
