@@ -59,6 +59,7 @@ gem 'local_time', '~> 1.0.3'
 gem 'zip_kit', '~> 6.2'
 gem 'rss', '~> 0.2'
 gem 'climate_control', '~> 0.2'
+gem 'rest-client', '~> 2.0'
 
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
@@ -71,7 +72,6 @@ gem 'sprockets-rails', '>= 2.0.0'
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 2.1.0'
 gem 'ood_core', '~> 0.24'
-gem 'rest-client', '~> 2.0'
 
 # gems to include in ondemand-gems repo for status apps to use
 gem "sinatra", require: false
