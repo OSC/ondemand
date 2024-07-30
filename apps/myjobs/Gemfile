@@ -69,7 +69,8 @@ gem 'climate_control', '~> 0.2'
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
 gem 'rdoc', '6.3.4.1'
 
-# lock nokogiri & net-imap to versions that are compatible with ruby 2.7.0
-# Ubuntu 20.04 uses.
+# lock gems to versions that are compatible with ruby 2.7.0,
+# which Ubuntu 20.04 uses.
 gem 'nokogiri', '~> 1.15', '< 1.16'
 gem 'net-imap', '~> 0.3', '< 0.4'
+gem 'public_suffix', '~> 5.0', '< 6.0'
