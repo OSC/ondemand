@@ -211,11 +211,11 @@ class Launcher
 
   # When a job is requested, update before returning
   def job_from_id(job_id, cluster)
-    job = jobs.detect { |j| j.cluster == cluster && j.id == job_id }
+    job = stored_job_from_id(job_id, cluster)
     unless job.nil? || job.status.to_s == 'completed'
       update_job_log(job_id, cluster)
     end
-    job
+    stored_job_from_id(job_id, cluster)
   end
 
   def create_default_script
@@ -316,17 +316,22 @@ class Launcher
     end.reverse.first.to_h
   end
 
+  def stored_job_from_id(job_id, cluster)
+    jobs.detect { |j| j.id == job_id && j.cluster == cluster }
+  end
+
   def update_job_log(job_id, cluster)
     adapter = adapter(cluster).job_adapter
     info = adapter.info(job_id)
     job = HpcJob.from_core_info(info: info, cluster: cluster)
     existing_jobs = jobs
-    idx = existing_jobs.index { |j| j.id == job_id && j.cluster == cluster }
-    if idx.nil?
+    stored_job = stored_job_from_id(job_id, cluster)
+    if stored_job.nil?
       new_jobs = (jobs + [job.to_h]).map(&:to_h)
     else
       new_jobs = existing_jobs.map(&:to_h)
-      new_jobs[idx] = new_jobs[idx].merge(job.to_h) { |key, old_val, new_val| new_val.nil? ? old_val : new_val } 
+      idx = existing_jobs.index(stored_job)
+      new_jobs[idx].merge!(job.to_h) { |key, old_val, new_val| new_val.nil? ? old_val : new_val } 
     end
 
     File.write(job_log_file.to_s, new_jobs.to_yaml)
