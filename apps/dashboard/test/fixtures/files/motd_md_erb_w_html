@@ -1,0 +1,3 @@
+# Some Markdown file
+
+<script>var msg = 'this was a <%= 'script' %>';</script>
