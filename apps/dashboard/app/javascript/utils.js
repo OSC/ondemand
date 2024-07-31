@@ -56,3 +56,27 @@ export function bindFullPageSpinnerEvent() {
     }
   });
 }
+
+// open links in javascript and display an alert
+export function openLinkInJs(event) {
+  event.preventDefault();
+  const href = event.target.href;
+
+  // do nothing if there's no href.
+  if(href == null){
+    return;
+  }
+
+  if(window.open(href) == null) {
+    // link was not opened in new window, so display error msg to user
+    const html = document.getElementById('js-alert-danger-template').innerHTML;
+    const msg = "This link is configured to open in a new window, but it doesn't seem to have opened. " +
+          "Please disable your popup blocker for this page and try again.";
+
+    // replace message in alert and add to main div of layout
+    const mainDiv = document.querySelectorAll('div[role="main"]')[0];
+    const alertDiv = document.createElement('div');
+    alertDiv.innerHTML = html.split("ALERT_MSG").join(msg);
+    mainDiv.prepend(alertDiv);
+  }
+}
