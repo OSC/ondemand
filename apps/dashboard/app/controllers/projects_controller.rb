@@ -103,7 +103,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/:project_id/jobs/:cluster/:jobid
   def job_details
-    project = Project.find(params[:project_id])
+    project = Project.find(job_details_params[:project_id])
     cluster_str = job_details_params[:cluster].to_s
     cluster = OodAppkit.clusters[cluster_str.to_sym]
     render(:status => 404) if cluster.nil?
