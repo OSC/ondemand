@@ -26,6 +26,10 @@ const newFieldData = {
   auto_environment_variable: {
     label: 'Environment Variable',
     help: 'Add an environment variable.'
+  },
+  auto_cores: {
+    label: 'Cores',
+    help: 'How many cores the job will run on.'
   }
 }
 
