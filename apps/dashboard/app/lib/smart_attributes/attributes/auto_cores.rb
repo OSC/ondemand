@@ -32,8 +32,13 @@ module SmartAttributes
         # Submission hash describing how to submit this attribute
         # @param fmt [String, nil] formatting of hash
         # @return [Hash] submission hash
-        def submit(*)
-          { }
+        def submit(fmt: nil)
+          cores = value.blank? ? 1 : value.to_i
+          native =  case fmt
+                    when 'slurm'
+                      ['-n', cores]
+                    end
+          native ? { script: { native: native } } : {}
         end
       end
     end
