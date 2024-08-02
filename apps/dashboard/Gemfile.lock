@@ -174,8 +174,8 @@ GEM
       ood_core (~> 0.1)
       rails (>= 6.0.0)
       redcarpet (~> 3.2)
-    ood_core (0.25.0)
-      ffi (~> 1.9, >= 1.9.6)
+    ood_core (0.26.1)
+      ffi (~> 1.16.3)
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
     ood_support (0.0.5)
@@ -234,7 +234,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.3.0)
+    rexml (3.3.2)
       strscan
     rss (0.3.0)
       rexml

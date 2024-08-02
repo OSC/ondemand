@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The file editor now uses the default layout in [3646](https://github.com/OSC/ondemand/pull/3646).
 - Announcemnts are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
 - Ace is now a yarn dependency in [3629](https://github.com/OSC/ondemand/pull/3629).
+- Pages now expect a string instead of a URI for icons in [3682](https://github.com/OSC/ondemand/pull/3682).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
