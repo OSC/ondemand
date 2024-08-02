@@ -28,29 +28,25 @@ module ProjectsHelper
         when 'job_owner'
           account_info['Job Owner'] = value
         when 'accounting_id'
-          account_info['Accounting ID'] = value
+          account_info['Account'] = value
         when 'submission_time'
           status_info['Submission Time'] = value
         when 'dispatch_time'
           status_info['Dispatch Time'] = value
         when 'wallclock_time'
-          status_info['Time Running'] = value
+          status_info['Time Used'] = value
         when 'wallclock_limit'
-          status_info['Time Limit'] = value
-        when 'cpu_time'
-          status_info['CPU Time'] = value
+          status_info['Time Remaining'] = value - job.wallclock_time
         when 'cluster'
           job_info['Cluster'] = value
         when 'queue_name'
           job_info['Queue Name'] = value
         when 'procs'
-          job_info['Procs'] = value
+          job_info['CPUs'] = value
         when 'allocated_nodes'
           job_info['Allocated Nodes'] = value unless value.empty?
         when 'gpus'
           job_info['GPUs'] = value
-        when 'cpus'
-          job_info['CPUs'] = value
         when 'nodes'
           job_info['Nodes'] = value
         when 'min_memory'
@@ -61,6 +57,10 @@ module ProjectsHelper
       end
     end
 
-    [account_info, status_info, job_info]
+    {
+      'Account Information': account_info,
+      'Job Status': status_info,
+      'Job Information': job_info
+    }
   end
 end
