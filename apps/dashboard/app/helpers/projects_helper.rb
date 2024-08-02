@@ -14,4 +14,53 @@ module ProjectsHelper
       simple_format(file_content)
     end
   end
+
+  # Organizes job information in a manner that is easily displayed
+  def readable_job_data(job)
+    account_info = {}
+    status_info = {}
+    job_info = {}
+    job.to_h.each do |key, value|
+      unless value.nil?
+        case key
+        when 'job_name'
+          account_info['Job Name'] = value
+        when 'job_owner'
+          account_info['Job Owner'] = value
+        when 'accounting_id'
+          account_info['Accounting ID'] = value
+        when 'submission_time'
+          status_info['Submission Time'] = value
+        when 'dispatch_time'
+          status_info['Dispatch Time'] = value
+        when 'wallclock_time'
+          status_info['Time Running'] = value
+        when 'wallclock_limit'
+          status_info['Time Limit'] = value
+        when 'cpu_time'
+          status_info['CPU Time'] = value
+        when 'cluster'
+          job_info['Cluster'] = value
+        when 'queue_name'
+          job_info['Queue Name'] = value
+        when 'procs'
+          job_info['Procs'] = value
+        when 'allocated_nodes'
+          job_info['Allocated Nodes'] = value unless value.empty?
+        when 'gpus'
+          job_info['GPUs'] = value
+        when 'cpus'
+          job_info['CPUs'] = value
+        when 'nodes'
+          job_info['Nodes'] = value
+        when 'min_memory'
+          job_info['Minimum Memory'] = value
+        when 'tasks'
+          job_info['Tasks'] = value unless value.empty?
+        end
+      end
+    end
+
+    [account_info, status_info, job_info]
+  end
 end
