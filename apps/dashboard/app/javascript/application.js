@@ -29,9 +29,6 @@ import { createPopper } from '@popperjs/core';
 // Import Bootstrap 5
 import 'bootstrap/dist/js/bootstrap';
 
-// FIXME: confim modals don't work in esbuild.
-// import 'data-confirm-modal';
-
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
 window.$ = jQuery;

@@ -74,5 +74,8 @@ esbuild.build({
   external: ['fs'],
   plugins: [prepPlugin, minifiedSrcResolvePlugin],
   minify: process.env.RAILS_ENV == 'production' ? true : false,
-}).catch((e) => console.error(e.message));
+}).catch((e) => { 
+  console.error(e.message);
+  process.exit(1);
+});
 
