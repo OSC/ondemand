@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import {xdmodUrl, analyticsPath} from './config';
 import {today, startOfYear, thirtyDaysAgo} from './utils';
+import { jobsPanel } from './xdmod/jobs';
 import Handlebars from 'handlebars';
 
 const jobsPageLimit = 10;
@@ -35,15 +36,15 @@ const jobHelpers = {
            minutes.toString().padStart(2, "0") + ":" +
            seconds.toString().padStart(2, "0");
   },
-  date: function(){
+  date: function(job){
     // month/day
-    let d = new Date(this.start_time_ts*1000),
+    let d = new Date(job.start_time_ts*1000),
         month = d.getMonth()+1,
         day = d.getUTCDate();
 
     return `${month}/${day}`;
   },
-  job_url: function(){ return `${xdmodUrl()}/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid`;  },
+  job_url: function(id){ return `${xdmodUrl()}/#job_viewer?action=show&realm=SUPREMM&jobref=${id}`;  },
   cpu_label: function(cpu){
     let value = (parseFloat(cpu)*100).toFixed(1),
         label = "N/A";
@@ -202,10 +203,11 @@ const jobPanelId = 'jobsPanelDiv';
 const jobEfficiencyPanelId = 'jobsEfficiencyReportPanelDiv';
 const coreEfficiencyPanelId = 'coreHoursEfficiencyReportPanelDiv';
 
-function renderJobs(context){
-  const templateSource = $('#jobs-template').html();
-  const template = Handlebars.compile(templateSource);
-  $(`#${jobPanelId}`).html(template(context, { helpers: jobHelpers }));
+function renderJobs(context) {
+  const panel = document.getElementById(jobPanelId);
+  const jobs = jobsPanel(context, jobHelpers);
+
+  panel.replaceChildren(jobs);
 }
 
 function renderJobsEfficiency(context) {
@@ -295,4 +297,7 @@ function createEfficiencyWidgets() {
 jQuery(() => {
   createJobsWidget();
   createEfficiencyWidgets();
+
+  // initialize the panels
+  renderJobs({ loading: true });
 });
