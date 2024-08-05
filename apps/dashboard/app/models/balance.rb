@@ -2,6 +2,8 @@ require 'open-uri'
 
 # This describes file or project balances for a given user.
 class Balance
+  extend UriReader
+
   class InvalidBalanceFile < StandardError; end
 
   attr_reader :user, :project, :value, :project_type, :unit, :updated_at
@@ -12,7 +14,8 @@ class Balance
     #
     # KeyError and JSON::ParserErrors shall be non-fatal errors
     def find(balance_path, user)
-      raw = open(balance_path).read
+      raw = read_uri(balance_path)
+
       raise InvalidBalanceFile.new("No content returned when attempting to read balance file") if raw.nil? || raw.empty?
 
       # Attempt to parse raw JSON into an object

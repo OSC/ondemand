@@ -91,9 +91,9 @@ class BalanceTest < ActiveSupport::TestCase
   end
 
   test "loading fixtures from URL" do
-    balance_file = Pathname.new "#{Rails.root}/test/fixtures/balance.json"
+    balance_file = Pathname.new("#{Rails.root}/test/fixtures/balance.json").read
     # stub open with an object you can call read on
-    Balance.stubs(:open).with("https://url/to/balance.json").returns(balance_file)
+    Net::HTTP.stubs(:get).returns(balance_file)
     balances = Balance.find("https://url/to/balance.json", 'tdockendorf')
 
     assert_equal 1, balances.count
@@ -101,7 +101,7 @@ class BalanceTest < ActiveSupport::TestCase
   end
 
   test "handle error loading URL" do
-    Balance.stubs(:open).with("https://url/to/balance.json").raises(StandardError, "404 file not found")
+    Net::HTTP.stubs(:get).raises(StandardError, "404 file not found")
     balances = Balance.find("https://url/to/balance.json", 'tdockendorf')
 
     assert_equal [], balances, "Should have handled exception and returned 0 balances"
