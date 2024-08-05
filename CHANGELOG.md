@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+PM job state management (#3702)\
+Update ood core (#3704)\
+lint a random file (#3705)\
+turn dashboard.js into a module (#3698)\
+markdown_erb needs to sanitize html too (#3675)\
+lint a random file (#3703)\
+Update Changelog (#3696)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
