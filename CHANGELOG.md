@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-PM job state management (#3702)\
-Update ood core (#3704)\
-lint a random file (#3705)\
-turn dashboard.js into a module (#3698)\
-markdown_erb needs to sanitize html too (#3675)\
-lint a random file (#3703)\
-Update Changelog (#3696)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -46,6 +39,8 @@ Update Changelog (#3696)
 - Announcemnts are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
 - Ace is now a yarn dependency in [3629](https://github.com/OSC/ondemand/pull/3629).
 - Pages now expect a string instead of a URI for icons in [3682](https://github.com/OSC/ondemand/pull/3682).
+- MOTD format markdown_erb will also sanitize html and respond to the motd_render_html configuration
+  in [3675](https://github.com/OSC/ondemand/pull/3675).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
