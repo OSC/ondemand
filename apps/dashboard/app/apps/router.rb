@@ -32,7 +32,16 @@ class Router
     tokens_key = ActiveSupport::Cache.expand_cache_key(tokens)
     return @pinned_apps[tokens_key] if @pinned_apps.key?(tokens_key)
 
-    @pinned_apps[tokens_key] = tokens.to_a.each_with_object([]) do |token, pinned_apps|
+    # Attempt to parse YAML data
+    begin
+      parsed_tokens = YAML.safe_load(tokens)
+      parsed_tokens = [parsed_tokens] unless parsed_tokens.is_a?(Array)
+    rescue Psych::SyntaxError
+      # If YAML parsing fails, treat tokens as a single-element array
+      parsed_tokens = [tokens]
+    end
+
+    @pinned_apps[tokens_key] = parsed_tokens.to_a.each_with_object([]) do |token, pinned_apps|
       pinned_apps.concat pinned_apps_from_token(token, all_apps)
     end.uniq do |app|
       app.token.to_s
