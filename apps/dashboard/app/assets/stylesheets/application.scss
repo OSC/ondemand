@@ -178,4 +178,5 @@ small.form-text {
 @import "projects";
 @import "scripts";
 @import "common";
-@import "uppy/dist/uppy.min";
+@import "@uppy/core/dist/style";
+@import "@uppy/dashboard/dist/style";

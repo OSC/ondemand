@@ -20,7 +20,9 @@
     "sass": "^1.50.0",
     "sweetalert2": "10.16.9",
     "ace-code": "^1.35.0",
-    "uppy": "^3.27.0"
+    "@uppy/core": "^4.0",
+    "@uppy/dashboard": "^4.0",
+    "@uppy/xhr-upload": "^4.0"
   },
   "scripts": {
     "build": "node esbuild.config.js",
