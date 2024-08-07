@@ -941,9 +941,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('i.fa-atom').click
       input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
 
-      project_id = URI.parse(current_url).path.split('/').last
-
-      # note that we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
+      # NOTE: we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
       # from the template.
       Open3
         .stubs(:capture3)
@@ -956,6 +954,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       find("#launch_8woi7ghd").click
       assert_selector('.alert-success', text: 'job-id-123')
+
+      # sleep here because this test can error with Errno::ENOTEMPTY: Directory not empty @ dir_s_rmdir
+      # something still has a hold on these files.
+      sleep 2
     end
   end
 end
