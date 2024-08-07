@@ -67,7 +67,7 @@ class PosixFile
   end
 
   def downloadable?
-    file? && readable?
+    (direcory? || file?) && readable?
   end
 
   def human_size
