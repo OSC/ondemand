@@ -11,13 +11,16 @@ class Quota
   # for number_to_human_size & number_to_human
   include ActionView::Helpers::NumberHelper
 
+  extend UriReader
+
   class << self
 
     # Get quota objects only for requested user in JSON file(s)
     #
     # KeyError and JSON::ParserErrors shall be non-fatal errors
     def find(quota_path, user)
-      raw = open(quota_path).read
+      raw = read_uri(quota_path)
+
       raise InvalidQuotaFile.new("No content returned when attempting to read quota file") if raw.nil? || raw.empty?
 
       # Attempt to parse raw JSON into an object
