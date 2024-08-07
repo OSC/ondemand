@@ -3,7 +3,8 @@ class PosixFile
 
   attr_reader :path, :stat
 
-  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, :realpath, :pipe?, :readable?, :file?, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
+  delegate :directory?, :realpath, :readable?, :file?, to: :path
 
   # include to give us number_to_human_size
   include ActionView::Helpers::NumberHelper
