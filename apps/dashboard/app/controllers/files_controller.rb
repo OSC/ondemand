@@ -52,9 +52,7 @@ class FilesController < ApplicationController
                                         end
 
           if can_download
-            zipname = "#{@path.basename.to_s.gsub('"', '\"')}.zip"
-            response.set_header 'Content-Disposition', "attachment; filename=\"#{zipname}\""
-            response.set_header 'Content-Type', 'application/zip'
+            zipname = "#{@path.basename}.zip"
             response.set_header 'Last-Modified', Time.now.httpdate
             response.sending_file = true
             response.cache_control[:public] ||= false
@@ -62,7 +60,7 @@ class FilesController < ApplicationController
             zip_headers = ZipKit::OutputEnumerator.new.streaming_http_headers
             response.headers.merge!(zip_headers)
 
-            send_stream(filename: zipname) do |stream|
+            send_stream(filename: zipname, disposition: 'attachment', type: :zip) do |stream|
               ZipKit::Streamer.open(stream) do |zip|
                 @path.files_to_zip.each do |file|
                   next unless File.readable?(file.realpath)
