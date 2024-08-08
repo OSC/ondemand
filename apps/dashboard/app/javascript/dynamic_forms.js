@@ -467,7 +467,7 @@ function updateVisibility(event, changeId) {
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
-  if(hide === undefined && !initializing) {
+  if((hide === false) || (hide === undefined && !initializing)) {
     changeElement.show();
   }else if(hide === true) {
     changeElement.hide();
