@@ -217,7 +217,10 @@ class WorkflowsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def workflow_params
-    params.require(:workflow).permit!
+    params.require(:workflow).permit(
+      :name, :batch_host, :script_name, :staging_template_dir,
+      :account, :job_array_request, :copy_environment
+    )
   end
 
   def update_jobs
