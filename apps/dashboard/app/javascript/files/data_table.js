@@ -176,8 +176,6 @@ class DataTable {
         return this._table;
     }
 
-    sizeUnits = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
     toHumanSize(number) {
       if(number === null) {
         return '-';
