@@ -56,7 +56,6 @@ class PosixFile
       id:           "dev-#{stat.dev}-inode-#{stat.ino}",
       name:         basename,
       size:         directory? ? nil : stat.size,
-      human_size:   human_size,
       directory:    directory?,
       date:         stat.mtime.to_i,
       owner:        PosixFile.username_from_cache(stat.uid),
