@@ -251,7 +251,7 @@ class Workflow < ApplicationRecord
 
     #FIXME: we should add to osc_machete a job directory missing exception
     if ! staged_dir.directory?
-      errors[:base] << "Job directory is missing: #{staged_dir.to_s}"
+      errors.add(:base, message: "Job directory is missing: #{staged_dir.to_s}")
     else
       render_mustache_files(staged_dir, template_view)
       after_stage(staged_dir)
@@ -278,7 +278,7 @@ class Workflow < ApplicationRecord
     true
   rescue PBS::Error => e
     msg = "An error occurred when trying to stop jobs for simulation #{id}: #{e.message}"
-    errors[:base] << msg
+    errors.add(:base, message: msg)
     Rails.logger.error(msg)
 
     false
@@ -294,14 +294,14 @@ class Workflow < ApplicationRecord
     stop_machete_jobs(jobs)
 
     msg = "A OSC::Machete::Job::ScriptMissingError occurred when submitting jobs for simulation #{id}: #{e.message}"
-    errors[:base] << msg
+    errors.add(:base, message: msg)
     Rails.logger.error(msg)
     false
   rescue PBS::Error => e
     stop_machete_jobs(jobs)
 
     msg = "An error occurred when submitting jobs for simulation #{id}: #{e.message}"
-    errors[:base] << msg
+    errors.add(:base, message: msg)
     Rails.logger.error(msg)
 
     false
@@ -316,7 +316,7 @@ class Workflow < ApplicationRecord
         job.delete
       rescue PBS::Error
         msg = "An error occurred when deleting a job from the batch system with pbsid: #{job.pbsid} and message: #{e.message}"
-        errors[:base] << msg
+        errors.add(:base, message: msg)
         Rails.logger.error(msg)
       end
     end
@@ -346,7 +346,7 @@ class Workflow < ApplicationRecord
       begin
         stage
       rescue
-        self.errors[:base] << "Cannot stage job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists."
+        self.errors.add(:base, message: "Cannot stage job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists.")
         return false
       end
     end
