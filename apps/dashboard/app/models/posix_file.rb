@@ -53,15 +53,15 @@ class PosixFile
     return { name: basename } if stat.nil?
 
     {
-      id:         "dev-#{stat.dev}-inode-#{stat.ino}",
-      name:       basename,
-      size:       directory? ? nil : stat.size,
-      human_size: human_size,
-      directory:  directory?,
-      date:       stat.mtime.to_i,
-      owner:      PosixFile.username_from_cache(stat.uid),
-      mode:       stat.mode,
-      dev:        stat.dev
+      id:           "dev-#{stat.dev}-inode-#{stat.ino}",
+      name:         basename,
+      size:         directory? ? nil : stat.size,
+      directory:    directory?,
+      date:         stat.mtime.to_i,
+      owner:        PosixFile.username_from_cache(stat.uid),
+      mode:         stat.mode,
+      dev:          stat.dev,
+      downloadable: !pipe? && readable?
     }
   end
 

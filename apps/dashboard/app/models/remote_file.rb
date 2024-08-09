@@ -31,29 +31,21 @@ class RemoteFile
     # owner, mode and dev are not defined for remote files, leaving them empty
     files.map do |file|
       {
-        id:         file['Path'],
-        name:       file['Name'],
-        size:       file['IsDir'] ? nil : file['Size'],
-        human_size: human_size(file),
-        directory:  file['IsDir'],
-        date:       DateTime.parse(file['ModTime']).to_time.to_i,
-        owner:      '',
-        mode:       '',
-        dev:        0
+        id:           file['Path'],
+        name:         file['Name'],
+        size:         file['IsDir'] ? nil : file['Size'],
+        directory:    file['IsDir'],
+        date:         DateTime.parse(file['ModTime']).to_time.to_i,
+        owner:        '',
+        mode:         '',
+        dev:          0,
+        downloadable: true
       }
     end.select do |stats|
       valid_encoding = stats[:name].to_s.valid_encoding?
       Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid_encoding
       valid_encoding
     end.sort_by { |p| p[:directory] ? 0 : 1 }
-  end
-
-  def human_size(file)
-    if file['IsDir']
-      '-'
-    else
-      ::ApplicationController.helpers.number_to_human_size(file['Size'], precision: 3)
-    end
   end
 
   def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
