@@ -7,7 +7,15 @@ module SmartAttributes
       # @param opts [Hash] attribute's options
       # @return [Attributes::AutoGroups] the attribute object
       def self.build_auto_cores(opts = {})
-        Attributes::AutoCores.new('auto_cores', opts)
+        maximum = 1
+        Configuration.job_clusters.each do |cluster|
+          max_procs = cluster.job_adapter.nodes.max { |a, b| a.procs <=> b.procs }.procs
+          maximum = maximum > max_procs ? maximum : max_procs
+        end
+        static_opts = {
+          max: maximum
+        }.merge(opts)
+        Attributes::AutoCores.new('auto_cores', static_opts)
       end
     end
   
@@ -34,11 +42,7 @@ module SmartAttributes
         # @return [Hash] submission hash
         def submit(fmt: nil)
           cores = value.blank? ? 1 : value.to_i
-          native =  case fmt
-                    when 'slurm'
-                      ['-n', cores]
-                    end
-          native ? { script: { native: native } } : {}
+          { script: { cores: cores } }
         end
       end
     end
