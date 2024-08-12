@@ -5,22 +5,19 @@
 
 <turbo-stream action="replace" target="<%= id %>">
   <template>
-    <button class="badge <%= status_class(job.status.to_s) %> rounded-pill border-0 btn" type="button" data-bs-toggle="collapse" data-bs-target="#<%= id %>Data">
+    <button class="badge <%= status_class(job.status.to_s) %> rounded-pill border-0 btn" type="button" data-bs-toggle="collapse" data-bs-target="#<%= id %>_data">
       <span>
         <%= job.id %> <%= status_text(job.status.to_s) %>
       </span>
     </button>
-    <div class="collapse" id="<%= id %>Data">
+    <div class="collapse" id="<%= id %>_data">
       <div class="card card-body">
-        <% readable_job_data(job).each do |category_name, category| %>
-          <table class="table table-bordered table-sm m-0 mb-2">
-            <thead><%= category_name %></thead>
-            <% category.each do |name, value| %>
-              <tr>
-                <td><strong><%= name %></strong></td>
-                <td><%= value %></td>
-              </tr>
-            <% end %>
+        <table class="table table-bordered table-sm m-0 mb-2">
+          <% job.to_human_display.each do |name, value| %>
+            <tr>
+              <td><strong><%= name %></strong></td>
+              <td><%= value %></td>
+            </tr>
           <% end %>
         </table>
       </div>
