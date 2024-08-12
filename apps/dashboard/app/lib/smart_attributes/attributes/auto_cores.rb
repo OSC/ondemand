@@ -3,7 +3,7 @@
 module SmartAttributes
     class AttributeFactory
       # Build this attribute object. No options are used as this Attribute
-      # is meant to be dynamically generated from the users' unix groups
+      # is meant to be dynamically generated
       # @param opts [Hash] attribute's options
       # @return [Attributes::AutoGroups] the attribute object
       def self.build_auto_cores(opts = {})
@@ -38,9 +38,8 @@ module SmartAttributes
         end
   
         # Submission hash describing how to submit this attribute
-        # @param fmt [String, nil] formatting of hash
         # @return [Hash] submission hash
-        def submit(fmt: nil)
+        def submit()
           cores = value.blank? ? 1 : value.to_i
           { script: { cores: cores } }
         end
