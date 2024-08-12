@@ -6,20 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-attempt to fix flaky test (#3721)\
-fix adding to errors after rails upgrade (#3722)\
-convert data to human sizes on the client (#3723)\
-just supply zipname and have rails format it (#3694)\
-Bump rexml from 3.2.8 to 3.3.3 (#3708)\
-lint a random file (#3719)\
-render xdmod jobs in plain js (#3706)\
-fix some JS dependencies (#3695)\
-add an esbuild plugin for minified dependencies (#3693)\
-use File.read here instead of open (#3699)\
-Bump rexml from 3.3.2 to 3.3.3 in /apps/myjobs (#3715)\
-Update Changelog (#3712)\
-attempt to update ruby libs (#3701)\
-lint a random file (#3711)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -55,6 +41,10 @@ lint a random file (#3711)
 - Pages now expect a string instead of a URI for icons in [3682](https://github.com/OSC/ondemand/pull/3682).
 - MOTD format markdown_erb will also sanitize html and respond to the motd_render_html configuration
   in [3675](https://github.com/OSC/ondemand/pull/3675).
+- The files api no longer reponds with human_sizs. Instead this is converted to human sizes in
+  javascript on the client in [3723](https://github.com/OSC/ondemand/pull/3723).
+- XDMoD jobs panel uses plain js now in [3706](https://github.com/OSC/ondemand/pull/3706).
+- Esbuild now has a plugin for to use source code for minified dependencies in [3693](https://github.com/OSC/ondemand/pull/3693).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
