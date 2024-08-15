@@ -7,16 +7,15 @@ function set_reverse_proxy(r, conn)
   -- find protocol used by parsing the request headers
   local protocol = (r.headers_in['Upgrade'] and "ws://" or "http://")
 
-  -- setup request to use mod_proxy for the reverse proxy
-  r.handler = "proxy-server"
-  r.proxyreq = apache2.PROXYREQ_REVERSE
 
   -- define reverse proxy destination using connection object
   if conn.socket then
-    r.filename = "proxy:unix:" .. conn.socket .. "|" .. protocol .. "localhost" .. conn.uri
+    r.handler = "proxy:unix:" .. conn.socket .. "|" .. protocol .. "localhost"
   else
-    r.filename = "proxy:" .. protocol .. conn.server .. conn.uri
+    r.handler = "proxy:" .. protocol .. conn.server
   end
+
+  r.filename = conn.uri
 
   -- include useful information for the backend server
 
