@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Pages now expect a string instead of a URI for icons in [3682](https://github.com/OSC/ondemand/pull/3682).
 - MOTD format markdown_erb will also sanitize html and respond to the motd_render_html configuration
   in [3675](https://github.com/OSC/ondemand/pull/3675).
+- The files api no longer reponds with human_sizs. Instead this is converted to human sizes in
+  javascript on the client in [3723](https://github.com/OSC/ondemand/pull/3723).
+- XDMoD jobs panel uses plain js now in [3706](https://github.com/OSC/ondemand/pull/3706).
+- Esbuild now has a plugin for to use source code for minified dependencies in [3693](https://github.com/OSC/ondemand/pull/3693).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
