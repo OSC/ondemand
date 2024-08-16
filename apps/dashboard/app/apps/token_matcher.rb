@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 # This class matches apps configuration tokens to a given OodApp.
 # Tokens can either be strings that are globs like 'sys/*', specific apps like
 # 'sys/jupyter' or 'sys/bc_desktop/pitzer' for subapps. They can also be hashes
 # Hashes can be known attributes like category, subcategory, type to filter off
 # of those. And/or they can be arbitrary key value pairs to filter off of OodApp#metadata.
 class TokenMatcher
-
   attr_reader :matchers, :token
 
   # @param [String, Hash] token the token to match apps against
@@ -12,9 +13,10 @@ class TokenMatcher
     @matchers = []
     @token = token
 
-    if token.is_a?(String)
+    case token
+    when String
       matchers.append('glob_match?')
-    elsif token.is_a?(Hash)
+    when Hash
       matchers.append('same_type?') unless token[:type].nil?
       matchers.append('same_category?') unless token[:category].nil?
       matchers.append('same_subcategory?') unless token[:subcategory].nil?
@@ -37,14 +39,14 @@ class TokenMatcher
     # find sys/bc_desktop/pitzer from sys/bc_desktop
     # adding trailing slash to avoid token matching apps with same prefix
     # eg: sys/bc_jupyter matching sys/bc_jupyter_osc
-    sub_app_match = app.token.start_with?(File.join(token, "")) unless token.empty?
+    sub_app_match = app.token.start_with?(File.join(token, '')) unless token.empty?
 
     glob_match || sub_app_match
   end
 
   def token_has_metadata?
     token.to_h.reject do |k, _|
-      %i[type category subcategory].include?(k)
+      [:type, :category, :subcategory].include?(k)
     end.any?
   end
 
