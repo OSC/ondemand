@@ -4,20 +4,20 @@ require_relative 'rake_helper'
 
 directory INSTALL_ROOT.to_s
 
-desc "Install OnDemand"
+desc 'Install OnDemand'
 task :install => 'install:all'
 
 namespace :install do
   include RakeHelper
 
-  desc "Install OnDemand infrastructure"
+  desc 'Install OnDemand infrastructure'
   task :infrastructure => [INSTALL_ROOT] do
     infrastructure.each do |infra|
       sh "cp -r #{infra.name} #{INSTALL_ROOT}/"
     end
   end
 
-  desc "Install OnDemand apps"
+  desc 'Install OnDemand apps'
   task :apps => [INSTALL_ROOT] do
     sh "cp -r #{APPS_DIR} #{INSTALL_ROOT}/"
   end
@@ -34,6 +34,6 @@ namespace :install do
     end
   end
 
-  desc "Install OnDemand infrastructure and apps"
+  desc 'Install OnDemand infrastructure and apps'
   task :all => [:infrastructure, :apps, 'infrastructure:files']
 end
