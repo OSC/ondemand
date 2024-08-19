@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Update Changelog (#3725)\
-lint a random file (#3732)\
-only permit certain fields (#3710)\
-dynamic bc also respond to hide: false (#3720)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -27,6 +23,7 @@ dynamic bc also respond to hide: false (#3720)
 - The dashboard now has a system status page in [3549](https://github.com/OSC/ondemand/pull/3549).
 - Support for Ubuntu 24.04 in [3676](https://github.com/OSC/ondemand/pull/3676).
 - Added configurable default number of apps to show in the apps table in [3672](https://github.com/OSC/ondemand/pull/3672).
+- data-hide attributes now respond to `false` setting in [3720](https://github.com/OSC/ondemand/pull/3720).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
