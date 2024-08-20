@@ -5,6 +5,7 @@ import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import { maxFileSize, csrfToken, uppyLocale } from '../config.js';
+import { fileOps } from './file_ops.js';
 
 let uppy = null;
 
@@ -113,6 +114,7 @@ jQuery(function() {
 
   uppy.on('complete', (result) => {
     if(result.successful.length > 0){
+      result.successful.forEach(handleUploadSuccess);
       reloadTable();
     }
   });
@@ -190,5 +192,17 @@ function updateEndpoint() {
 
 function reloadTable() {
   $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable,{});
+}
+
+// Uploads may return the status of a transfer for remote uploads.
+function handleUploadSuccess(result) {
+  // These extra checks might not be needed.
+  const body = result?.response?.body;
+  if (!body || !(typeof body === "object" && !Array.isArray(body) && body !== null)) {
+    return;
+  }
+  if (Object.keys(body).length > 0 && !body.completed) {
+    fileOps.reportTransfer(body);
+  }
 }
 
