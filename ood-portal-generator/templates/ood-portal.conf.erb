@@ -101,6 +101,9 @@ Listen <%= addr_port %>
   RewriteCond <%= @public_root %>/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
   RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/.*$
+  <%- if @dex_uri && @dex_enabled -%>
+  RewriteCond %{REQUEST_URI} !<%= @dex_uri %>.*$
+  <%- end -%>
   <%- @maintenance_ip_allowlist.each do |ip| -%>
   RewriteCond %{REMOTE_ADDR} !^<%= escape_ip(ip) %>
   <%- end -%>
