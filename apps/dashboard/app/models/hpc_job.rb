@@ -26,4 +26,8 @@ class HpcJob < OodCore::Job::Info
                        status:          status.to_s,
                        allocated_nodes: [] }).deep_stringify_keys
   end
+
+  def to_human_display
+    to_h.transform_keys { |k| k.humanize }.compact_blank
+  end
 end
