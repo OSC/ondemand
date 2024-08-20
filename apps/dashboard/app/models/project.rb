@@ -6,6 +6,7 @@ class Project
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
   include IconWithUri
+  extend JobLogger
 
   class << self
     def lookup_file
@@ -197,18 +198,22 @@ class Project
   end
 
   def jobs
-    launchers = Launcher.all(directory)
-    launchers.map do |launcher|
-      launcher.jobs
-    end.flatten
+    Project.jobs(directory)
   end
 
-  def job_from_id(job_id, cluster)
-    launchers = Launcher.all(directory)
-    launchers.each do |launcher|
-      job = launcher.job_from_id(job_id, cluster)
-      return job unless job.nil?
-    end
+  def job(job_id, cluster)
+    cached_job = jobs.detect { |j| j.id == job_id && j.cluster == cluster }
+    return cached_job if cached_job.completed?
+
+    active_job = adapter(cluster).info(job_id)
+    active_job = HpcJob.new(**active_job.to_h)
+    Project.upsert_job!(directory, active_job)
+    active_job
+  end
+
+  def adapter(cluster_id)
+    cluster = OodAppkit.clusters[cluster_id] || raise(StandardError, "Job specifies nonexistent '#{cluster_id}' cluster id.")
+    cluster.job_adapter
   end
 
   def readme_path

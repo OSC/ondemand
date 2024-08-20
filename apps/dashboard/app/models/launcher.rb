@@ -2,6 +2,7 @@
 
 class Launcher
   include ActiveModel::Model
+  include JobLogger
 
   class ClusterNotFound < StandardError; end
 
@@ -196,28 +197,6 @@ class Launcher
     nil
   end
 
-  def active_jobs
-    @active_jobs ||= jobs.reject { |job| job.completed? }
-  end
-
-  def jobs
-    @jobs ||= begin
-      data = YAML.safe_load(File.read(job_log_file.to_s), permitted_classes: [Time]).to_a
-      data.map do |job_data|
-        HpcJob.new(**job_data)
-      end
-    end
-  end
-
-  # When a job is requested, update before returning
-  def job_from_id(job_id, cluster)
-    job = stored_job_from_id(job_id, cluster)
-    unless job.nil? || job.status.to_s == 'completed'
-      update_job_log(job_id, cluster)
-    end
-    stored_job_from_id(job_id, cluster)
-  end
-
   def create_default_script
     return false if Launcher.scripts?(project_dir) || default_script_path.exist?
 
@@ -310,37 +289,12 @@ class Launcher
     end
   end
 
-  def most_recent_job
-    jobs.sort_by do |data|
-      data['submit_time']
-    end.reverse.first.to_h
-  end
-
-  def stored_job_from_id(job_id, cluster)
-    jobs.detect { |j| j.id == job_id && j.cluster == cluster }
-  end
-
   def update_job_log(job_id, cluster)
     adapter = adapter(cluster).job_adapter
     info = adapter.info(job_id)
     job = HpcJob.from_core_info(info: info, cluster: cluster)
-    existing_jobs = jobs
-    stored_job = stored_job_from_id(job_id, cluster)
-    if stored_job.nil?
-      new_jobs = (jobs + [job.to_h]).map(&:to_h)
-    else
-      new_jobs = existing_jobs.map(&:to_h)
-      idx = existing_jobs.index(stored_job)
-      new_jobs[idx].merge!(job.to_h) { |key, old_val, new_val| new_val.nil? ? old_val : new_val } 
-    end
 
-    File.write(job_log_file.to_s, new_jobs.to_yaml)
-  end
-
-  def job_log_file
-    @job_log_file ||= Pathname.new(File.join(Launcher.script_path(project_dir, id), "job_history.log")).tap do |path|
-      FileUtils.touch(path.to_s)
-    end
+    upsert_job!(project_dir, job)
   end
 
   def submit_opts(options, render_format)

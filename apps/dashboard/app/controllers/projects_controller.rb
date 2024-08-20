@@ -108,7 +108,7 @@ class ProjectsController < ApplicationController
     cluster = OodAppkit.clusters[cluster_str.to_sym]
     render(:status => 404) if cluster.nil?
 
-    hpc_job = project.job_from_id(job_details_params[:jobid].to_s, cluster_str)
+    hpc_job = project.job(job_details_params[:jobid].to_s, cluster_str)
 
     render(partial: 'job_details', locals: { job: hpc_job })
   end
