@@ -132,6 +132,7 @@ class RemoteTransfer < Transfer
     errors.add :base, e.message
   ensure
     self.status = OodCore::Job::Status.new(state: :completed)
+    tempfile&.close(true)
   end
 
   def from
