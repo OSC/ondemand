@@ -337,15 +337,16 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       script_id = setup_script(project_id)
       project_dir = File.join(dir, 'projects', project_id)
-      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+      script_dir = File.join(ondemand_dir, 'scripts', script_id)
 
       # ASSERT SCRIPT DIRECTORY IS CREATED
       assert_equal true, File.directory?(script_dir)
 
-      expected_script_files = ["#{script_dir}/form.yml", "#{script_dir}/job_history.log"]
+      expected_script_files = ["#{script_dir}/form.yml", "#{ondemand_dir}/job_log.yml"]
       # ASSERT EXPECTED SCRIPT FILES
       expected_script_files.each do |file_path|
-        assert_equal true, File.exist?(file_path)
+        assert_equal true, File.exist?(file_path), "#{file_path} does not exist"
       end
 
       accept_confirm do
@@ -363,7 +364,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       script_id = setup_script(project_id)
       project_dir = File.join(dir, 'projects', project_id)
-      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
       add_account(project_id, script_id)
 
       launcher_path = project_launcher_path(project_id, script_id)
@@ -374,7 +375,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
       assert_equal 'pzs0715', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
-      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
       select('owens', from: 'launcher_auto_batch_clusters')
       select('pas2051', from: 'launcher_auto_accounts')
@@ -391,7 +392,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
-      jobs = YAML.safe_load(File.read("#{script_dir}/job_history.log"), permitted_classes: [Time])
+      jobs = YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"), permitted_classes: [Time])
 
       assert_equal(1, jobs.size)
       assert_equal('job-id-123', jobs[0]['id'])
@@ -404,7 +405,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       script_id = setup_script(project_id)
       project_dir = File.join(dir, 'projects', project_id)
-      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
       add_account(project_id, script_id, save: false)
 
       click_on('Add new option')
@@ -421,7 +422,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
       assert_equal 'pzs0715', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
-      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
       select('owens', from: 'launcher_auto_batch_clusters')
       select('pas2051', from: 'launcher_auto_accounts')
@@ -439,7 +440,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
-      jobs = YAML.safe_load(File.read("#{script_dir}/job_history.log"), permitted_classes: [Time])
+      jobs = YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"), permitted_classes: [Time])
 
       assert_equal(1, jobs.size)
       assert_equal('job-id-123', jobs[0]['id'])
@@ -451,7 +452,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       script_id = setup_script(project_id)
       project_dir = File.join(dir, 'projects', project_id)
-      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
       add_account(project_id, script_id)
 
       launcher_path = project_launcher_path(project_id, script_id)
@@ -462,7 +463,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
       assert_equal 'pzs0715', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
-      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
       select('owens', from: 'launcher_auto_batch_clusters')
       select('pas2051', from: 'launcher_auto_accounts')
@@ -476,7 +477,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-danger', text: "Close\nsome error message")
-      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
     end
   end
 
