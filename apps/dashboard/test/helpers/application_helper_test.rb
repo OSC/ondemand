@@ -116,7 +116,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
 
-  test "icon_tag should should render icon tag for known icon schemas" do
+  test 'icon_tag should should render icon tag for known icon schemas' do
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     ['fa', 'fas', 'far', 'fab', 'fal'].each do |icon_schema|
       image_uri = URI("#{icon_schema}://icon_name")
@@ -128,7 +128,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
 
-  test "icon_tag should should render image tag prefixing relative_url_root if image URI does not start with public_url" do
+  test 'icon_tag should should render image tag prefixing relative_url_root if image URI does not start with public_url' do
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     config.stubs(:relative_url_root).returns('/prefix')
     image_uri = URI('/path/to/image.png')
@@ -140,7 +140,7 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal '/prefix/path/to/image.png', image_html['src']
   end
 
-  test "icon_tag should should render image tag without prefixing relative_url_root if image URI starts with public_url" do
+  test 'icon_tag should should render image tag without prefixing relative_url_root if image URI starts with public_url' do
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     config.stubs(:relative_url_root).returns('/prefix')
     image_uri = URI('/public/path/image.png')
