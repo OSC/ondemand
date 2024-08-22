@@ -38,7 +38,7 @@ function pun_proxy_handler(r)
   local conn = {}
   conn.user = user
   conn.socket = pun_socket_root .. "/" .. user .. "/passenger.sock"
-  conn.uri = r.unparsed_uri
+  conn.uri = r.uri
 
   -- start up PUN if socket doesn't exist
   local err = nil
