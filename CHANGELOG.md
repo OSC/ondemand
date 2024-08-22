@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The dashboard now has a system status page in [3549](https://github.com/OSC/ondemand/pull/3549).
 - Support for Ubuntu 24.04 in [3676](https://github.com/OSC/ondemand/pull/3676).
 - Added configurable default number of apps to show in the apps table in [3672](https://github.com/OSC/ondemand/pull/3672).
+- data-hide attributes now respond to `false` setting in [3720](https://github.com/OSC/ondemand/pull/3720).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
