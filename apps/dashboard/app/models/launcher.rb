@@ -143,7 +143,7 @@ class Launcher
   end
 
   def save
-    @id = Launcher.next_id if @id.nil?
+    @id = Launcher.next_id if @id.nil? || !@id.to_s.match?(/^\w{8}$/)
     @created_at = Time.now.to_i if @created_at.nil?
     script_path = Launcher.script_path(project_dir, id)
     script_path.mkpath unless script_path.exist?
