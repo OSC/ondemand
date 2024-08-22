@@ -79,6 +79,16 @@ class AnnouncementsTest < ActiveSupport::TestCase
     assert_equal 0, announcements.select(&:valid?).count
   end
 
+  test 'should create announcement for syntax error' do
+    f = Tempfile.open(['announcement', '.yml'])
+    f.write('<%- end %>')
+    f.close
+
+    Rails.logger.expects(:warn).with(regexp_matches(/Syntax error in announcement file/))
+    announcement = Announcements.all(f.path).first
+    assert_equal(:warning, announcement.type)
+  end
+
   test 'should create invalid announcement for invalid yaml file' do
     f = Tempfile.open(['announcement', '.yml'])
     f.write %(INVALID: YAML\nINVALID YAML)
