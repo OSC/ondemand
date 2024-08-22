@@ -1,11 +1,11 @@
 <div class="row">
   <div class="col-md-12">
-    <div class="float-right">
+    <div class="float-end">
       <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span id="selected-filter-label"></span> <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-right">
+        <ul class="dropdown-menu dropdown-menu-end">
           <% filters.each do |filter| %>
             <%= '<li class="divider"></li>'.html_safe if filter == filters.last %>
             <li id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');">
@@ -16,10 +16,10 @@
       </div>
 
         <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span id="selected-cluster-label"></span> <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-right">
+        <ul class="dropdown-menu dropdown-menu-end">
           <% OODClusters.sort_by {|cluster| cluster.metadata.title || cluster.id.to_s.titleize }.each do |cluster| %>
               <li id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');">
                 <a class="dropdown-item" href="#"><%= cluster.metadata.title || cluster.id.to_s.titleize %></a>

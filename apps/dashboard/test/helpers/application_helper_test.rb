@@ -39,63 +39,81 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   test 'custom_css_paths should prepend public_url to all custom css file paths' do
-    @user_configuration = stub(:custom_css_files => ['/test.css'], :public_url => Pathname.new('/public'))
+    stub_files(:custom_css_files, ['/test.css'])
     assert_equal ['/public/test.css'], custom_css_paths
 
-    @user_configuration = stub(:custom_css_files => ['test.css'], :public_url => Pathname.new('/public'))
+    stub_files(:custom_css_files, ['test.css'])
     assert_equal ['/public/test.css'], custom_css_paths
 
-    @user_configuration = stub(:custom_css_files => ['/custom/css/test.css'], :public_url => Pathname.new('/public'))
+    stub_files(:custom_css_files, ['/custom/css/test.css'])
     assert_equal ['/public/custom/css/test.css'], custom_css_paths
 
-    @user_configuration = stub(:custom_css_files => ['custom/css/test.css'], :public_url => Pathname.new('/public'))
+    stub_files(:custom_css_files, ['custom/css/test.css'])
     assert_equal ['/public/custom/css/test.css'], custom_css_paths
   end
 
   test 'custom_css_paths should should handle nil and empty file paths' do
-    @user_configuration = stub(:custom_css_files => ['/test.css', nil, 'other.css'],
-                               :public_url       => Pathname.new('/public'))
+    stub_files(:custom_css_files, ['/test.css', nil, 'other.css'])
     assert_equal ['/public/test.css', '/public/other.css'], custom_css_paths
 
-    @user_configuration = stub(:custom_css_files => [nil], :public_url => Pathname.new('/public'))
+    stub_files(:custom_css_files, [nil])
     assert_equal [], custom_css_paths
 
-    @user_configuration = stub(:custom_css_files => ['/test.css', '', 'other.css'],
-                               :public_url       => Pathname.new('/public'))
+    stub_files(:custom_css_files, ['/test.css', '', 'other.css'])
     assert_equal ['/public/test.css', '/public/other.css'], custom_css_paths
 
-    @user_configuration = stub(:custom_css_files => [''], :public_url => Pathname.new('/public'))
+    stub_files(:custom_css_files, [''])
     assert_equal [], custom_css_paths
   end
 
   test 'custom_javascript_paths should prepend public_url to all js file paths' do
-    @user_configuration = stub(:custom_javascript_files => ['/test.js'], :public_url => Pathname.new('/public'))
-    assert_equal ['/public/test.js'], custom_javascript_paths
+    stub_files(:custom_javascript_files, ['/test.js'])
+    assert_equal expected_js_paths(['/public/test.js']), custom_javascript_paths
 
-    @user_configuration = stub(:custom_javascript_files => ['test.js'], :public_url => Pathname.new('/public'))
-    assert_equal ['/public/test.js'], custom_javascript_paths
+    stub_files(:custom_javascript_files, ['test.js'])
+    assert_equal expected_js_paths(['/public/test.js']), custom_javascript_paths
 
-    @user_configuration = stub(:custom_javascript_files => ['/custom/js/test.js'], :public_url => Pathname.new('/public'))
-    assert_equal ['/public/custom/js/test.js'], custom_javascript_paths
+    stub_files(:custom_javascript_files, ['/custom/js/test.js'])
+    assert_equal expected_js_paths(['/public/custom/js/test.js']), custom_javascript_paths
 
-    @user_configuration = stub(:custom_javascript_files => ['custom/js/test.js'], :public_url => Pathname.new('/public'))
-    assert_equal ['/public/custom/js/test.js'], custom_javascript_paths
+    stub_files(:custom_javascript_files, ['custom/js/test.js'])
+    assert_equal expected_js_paths(['/public/custom/js/test.js']), custom_javascript_paths
   end
 
-  test 'custom_javascript_paths should should handle nil and empty file paths' do
-    @user_configuration = stub(:custom_javascript_files => ['/test.js', nil, 'other.js'],
-                               :public_url       => Pathname.new('/public'))
-    assert_equal ['/public/test.js', '/public/other.js'], custom_javascript_paths
+  test 'custom_javascript_paths should handle nil and empty file paths' do
+    stub_files(:custom_javascript_files, ['/test.js', nil, 'other.js'])
+    assert_equal expected_js_paths(['/public/test.js', '/public/other.js']), custom_javascript_paths
 
-    @user_configuration = stub(:custom_javascript_files => [nil], :public_url => Pathname.new('/public'))
+    stub_files(:custom_javascript_files, [nil])
+    assert_equal expected_js_paths([]), custom_javascript_paths
+
+    stub_files(:custom_javascript_files, ['/test.js', '', 'other.js'])
+    assert_equal expected_js_paths(['/public/test.js', '/public/other.js']), custom_javascript_paths
+
+    stub_files(:custom_javascript_files, [''])
+    assert_equal expected_js_paths([]), custom_javascript_paths
+  end
+
+  test 'custom_javascript_paths should handle hash config with src and type' do
+    stub_files(:custom_javascript_files, [{ src: '/test.js', type: 'module' }])
+    assert_equal expected_js_paths(['/public/test.js'], type: 'module'), custom_javascript_paths
+
+    stub_files(:custom_javascript_files, [{ src: '/test.js' }])
+    assert_equal expected_js_paths(['/public/test.js'], type: ''), custom_javascript_paths
+
+    stub_files(:custom_javascript_files, [{ type: 'module' }])
     assert_equal [], custom_javascript_paths
+  end
 
-    @user_configuration = stub(:custom_javascript_files => ['/test.js', '', 'other.js'],
-                               :public_url       => Pathname.new('/public'))
-    assert_equal ['/public/test.js', '/public/other.js'], custom_javascript_paths
+  def stub_files(type, file_config)
+    public_url = Pathname.new('/public')
+    @user_configuration = stub(type => file_config, :public_url => public_url)
+  end
 
-    @user_configuration = stub(:custom_javascript_files => [''], :public_url => Pathname.new('/public'))
-    assert_equal [], custom_javascript_paths
+  def expected_js_paths(js_file_config, type: '')
+    js_file_config.map do |item|
+      { src: item, type: type }
+    end
   end
 
   test "icon_tag should should render icon tag for known icon schemas" do

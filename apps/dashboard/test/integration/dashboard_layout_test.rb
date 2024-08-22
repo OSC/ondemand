@@ -97,7 +97,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row', 1
     assert_select 'div.row > div.col-md-12', 1
     assert_select 'div.row > div.col-md-12 > div.motd', 3
-    assert_select 'div.row > div.col-md-12 > div.motd > h4', 3
+    assert_select 'div.row > div.col-md-12 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-12 > div.motd > div.motd_body', 3
   end
 
@@ -128,7 +128,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row', 1
     assert_select 'div.row > div.col-md-8', 1
     assert_select 'div.row > div.col-md-8 > div.motd', 3
-    assert_select 'div.row > div.col-md-8 > div.motd > h4', 3
+    assert_select 'div.row > div.col-md-8 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-8 > div.motd > div.motd_body', 3
 
     assert_select 'div.row > div.col-md-4', 1
@@ -166,7 +166,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     assert_select 'div.row > div.col-md-4', 1
     assert_select 'div.row > div.col-md-4 > div.motd', 3
-    assert_select 'div.row > div.col-md-4 > div.motd > h4', 3
+    assert_select 'div.row > div.col-md-4 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-4 > div.motd > div.motd_body', 3
 
     assert_select pinned_app_row_css_query('8'), 4
@@ -221,7 +221,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row', 3 # one extra row because pinned_apps makes rows for every 'group'
     assert_select 'div.row > div.col-md-8', 1
     assert_select 'div.row > div.col-md-8 > div.motd', 3
-    assert_select 'div.row > div.col-md-8 > div.motd > h4', 3
+    assert_select 'div.row > div.col-md-8 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-8 > div.motd > div.motd_body', 3
 
     assert_select 'div.row > div.col-md-4', 1
@@ -299,7 +299,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-6', 2
 
     assert_select 'div.row > div.col-md-6 > div.motd', 3
-    assert_select 'div.row > div.col-md-6 > div.motd > h4', 3
+    assert_select 'div.row > div.col-md-6 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-6 > div.motd > div.motd_body', 3
 
     assert_select 'div.row > div.col-md-6 > #my-test-partial', 1

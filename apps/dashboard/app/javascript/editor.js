@@ -1,5 +1,7 @@
 'use strict';
 
+import ace from 'ace-code/esm-resolver';
+
 const KEY_PREFIX = "ood_editor_store_";
 
 function normalizeKey(key) {

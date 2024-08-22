@@ -1,6 +1,21 @@
 <%
   edit_project_action = action_name != "new" && action_name != "create"
+
+  path_selector_id = "project_directory_path_selector"
+
+  path_selector_locals = {
+    path_selector_id: path_selector_id,
+    show_files: false,
+    show_hidden: false,
+    initial_directory: CurrentUser.home,
+    table_id: "#{path_selector_id}_table",
+    breadcrumb_id: "#{path_selector_id}_breadcrumb",
+    button_id: "#{path_selector_id}_button",
+    input_field_id: 'project_directory',
+    favorites: false
+  }
 %>
+
 <div class='card'>
 <h5 class='card-header'>Project Details</h5>
   <div class='card-group'>
@@ -13,9 +28,19 @@
           </div>
 
           <div class="field">
-            <%= form.text_field :directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
-                                readonly: edit_project_action, help: edit_project_action ? '' : I18n.t('dashboard.jobs_project_directory_help_html', root_directory: Project.dataroot.to_s).html_safe %>
+            <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
+                                readonly: edit_project_action,
+                                required: false,
+                                help: edit_project_action ? '' : I18n.t('dashboard.jobs_project_directory_help_html', root_directory: Project.dataroot.to_s).html_safe,
+                                data: { 'path-selector': true })%>
+
+            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+              Select Path
+            </button>
+
+            <%= render(partial: 'shared/path_selector_table', locals: path_selector_locals ) %>
           </div>
+
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
@@ -33,7 +58,7 @@
         <div class="col">
           <div class="field">
           <%= javascript_include_tag 'icon_picker', nonce: true %>
-          <%= form.text_field :icon, placeholder: "fas://cog", id: "product_icon_select" %>
+          <%= form.text_field :icon, placeholder: "cog", id: "product_icon_select", value: @project.icon_class %>
             <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
               <% icon = $2; style = $1 %>
               <p class="text-center">

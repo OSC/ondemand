@@ -23,11 +23,13 @@ class ProjectsTest < ActiveSupport::TestCase
       assert_not project.errors[:name].empty?
 
       invalid_directory = Project.dataroot
-      project = Project.new({ name: 'test', icon: 'invalid_format', directory: invalid_directory.to_s, template: '/invalid/template' })
+      invalid_icon = 'invalid_format'
+      project = Project.new({ name: 'test', icon: invalid_icon, directory: invalid_directory.to_s,
+template: '/invalid/template' })
 
       assert_not project.save
-      assert_equal 3, project.errors.size
-      assert_not project.errors[:icon].empty?
+      assert_equal 2, project.errors.size
+      assert_not_equal invalid_icon, project.icon 
       assert_not project.errors[:directory].empty?
       assert_not project.errors[:template].empty?
     end
@@ -37,7 +39,8 @@ class ProjectsTest < ActiveSupport::TestCase
     stub_du
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      existing_project = create_project(projects_path, name: 'Existing Project', description: 'Existing Description', icon: 'fas://existing')
+      existing_project = create_project(projects_path, name: 'Existing Project', description: 'Existing Description',
+icon: 'fas://existing')
 
       new_project = Project.new({ directory: existing_project.directory })
 
@@ -68,7 +71,8 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       project_id = Project.next_id
-      project = create_project(projects_path, id: project_id, name: 'MyLocalName', description: 'MyLocalDescription', icon: 'fas://test')
+      project = create_project(projects_path, id: project_id, name: 'MyLocalName', description: 'MyLocalDescription',
+icon: 'fas://test')
 
       assert project.errors.inspect
       assert Dir.entries("#{projects_path}/projects").include?(project_id)
@@ -77,7 +81,7 @@ class ProjectsTest < ActiveSupport::TestCase
       assert_equal "#{projects_path}/projects/#{project_id}", project.directory
       assert_equal 'MyLocalDescription', project.description
       assert_equal 'fas://test', project.icon
-      assert_equal 2097152, project.size
+      assert_equal 2_097_152, project.size
     end
   end
 
@@ -197,7 +201,8 @@ class ProjectsTest < ActiveSupport::TestCase
       old_id = project.id
       old_directory = project.directory
 
-      assert project.update({ id: 'updated', name: 'updated', icon: 'fas://updated', directory: '/updated', description: 'updated', template: '/some/path' })
+      assert project.update({ id: 'updated', name: 'updated', icon: 'fas://updated', directory: '/updated',
+description: 'updated', template: '/some/path' })
       assert_equal 'updated', project.name
       assert_equal 'fas://updated', project.icon
       assert_equal 'updated', project.description
@@ -214,9 +219,9 @@ class ProjectsTest < ActiveSupport::TestCase
       project = create_project(projects_path)
 
       assert_not project.update({ name: nil, icon: nil })
-      assert_equal 2, project.errors.size
+      assert_equal 1, project.errors.size
       assert_not project.errors[:name].empty?
-      assert_not project.errors[:icon].empty?
+      assert_equal 'fas://cog', project.icon
     end
   end
 
@@ -228,5 +233,4 @@ class ProjectsTest < ActiveSupport::TestCase
 
     project
   end
-
 end

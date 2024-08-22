@@ -27,9 +27,15 @@ export function transfersPath() {
   return transfersPath;
 }
 
-export function jobsInfoPath(){
+export function rootPath(){
   const cfgData = configData();
-  return cfgData['jobsInfoPath'];
+  const rootPath = cfgData['rootPath'];
+  if(rootPath == '/') {
+    return rootPath;
+  } else {
+    // remove the trailing / from /pun/sys/dashboard/
+    return rootPath.substring(0, rootPath.length-1)
+  }
 }
 
 export function csrfToken() {
@@ -61,4 +67,29 @@ export function analyticsPath(type){
   const cfgData = configData();
   const basePath = cfgData['baseAnalyticsPath']
   return `${basePath}/${type}`;
+}
+
+export function bcPollDelay() {
+  const cfgData = configData();
+  return Number(cfgData['bcPollDelay']);
+}
+
+export function bcIndexUrl() {
+  const cfgData = configData();
+  return cfgData['bcIndexUrl'];
+}
+
+export function statusPollDelay() {
+  const cfgData = configData();
+  return Number(cfgData['statusPollDelay']);
+}
+
+export function statusIndexUrl() {
+  const cfgData = configData();
+  return cfgData['statusIndexUrl'];
+}
+
+export function appsDatatablePageLength() {
+  const cfgData = configData();
+  return parseInt(cfgData['appsDatatablePageLength']);
 }

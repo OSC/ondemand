@@ -1,5 +1,9 @@
 <% content_for :title, t('dashboard.bc_saved_settings.title') %>
 
+<%- content_for :head do -%>
+  <%= javascript_include_tag('batch_connect_settings', nonce: true) %>
+<%- end -%>
+
 <%= render partial: 'batch_connect/shared/breadcrumb',
 locals: {
   links: [
@@ -33,60 +37,41 @@ locals: {
     %>
   </div>
   <div id="bc-saved-settings" class="col-md-9">
-    <div id="settings-card" class="card mb-4">
+    <div id="settings-card" class="list-group card mb-4">
       <div class="card-heading">
         <div class="h5 card-header overflow-auto">
-          <div class="float-right">
-              <%
-                if @settings.app.valid?
-                  params = @settings.values.map{|name, value| ["batch_connect_session_context[#{name}]", value]}.to_h
-                  title = t('dashboard.bc_saved_settings.launch_title', app_title: @settings.app.title, settings_name: @settings.name)
-              %>
-              <%=
-                button_to(
-                  batch_connect_session_contexts_path(token: @settings.token),
-                  method: :post,
-                  class: %w[btn btn-warning full-page-spinner],
-                  form_class: %w[d-inline],
-                  title: title,
-                  'aria-label': title,
-                  data: { toggle: "tooltip", placement: "left" },
-                  params: params
-                ) do
-                  "#{fa_icon('play', classes: nil)} <span aria-hidden='true'>#{t('dashboard.bc_saved_settings.launch_label')}</span>".html_safe
-                end
-              %>
-              <span class="card-text"> | </span>
-            <% end %>
-            <%
-              title = t('dashboard.bc_saved_settings.delete_title', settings_name: @settings.name)
-            %>
-            <%=
-              button_to(
-                batch_connect_setting_path(token: @settings.token, id: @settings.name),
-                method: :delete,
-                class: %w[btn btn-danger full-page-spinner],
-                form_class: %w[d-inline],
-                title: title,
-                'aria-label': title,
-                data: { confirm: t('dashboard.bc_saved_settings.delete_confirm'), toggle: "tooltip", placement: "left"}
-              ) do
-                "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.bc_saved_settings.delete_label')}</span>".html_safe
-              end
-            %>
+          <div class="float-end">
+            <%= render partial: 'batch_connect/settings/action_buttons', locals:{ settings: @settings } %>
           </div>
 
-          <span class="d-block card-text"><%= @settings.name %></span>
-          <span class="small"><%= @settings.app.title %></span>
+          <span id="settings-name" class="d-block card-text"><%= @settings.name %></span>
         </div>
       </div>
 
-      <p class="list-group-item header"><%= t('dashboard.bc_saved_settings.settings_values_label') %></p>
+      <p id="settings-app" class="list-group-item header"><%= @settings.app.title %></p>
       <div class="card-body">
+        <div class="float-end">
+          <%
+            title = t('dashboard.bc_saved_settings.delete_title', settings_name: @settings.name)
+          %>
+          <%=
+            button_to(
+              batch_connect_setting_path(token: @settings.token, id: @settings.name),
+              id: 'delete-saved-settings-button',
+              method: :delete,
+              class: %w[btn btn-danger full-page-spinner],
+              title: title,
+              'aria-label': title,
+              data: { confirm: t('dashboard.bc_saved_settings.delete_confirm'), toggle: "tooltip", placement: "left"}
+            ) do
+              "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.delete')}</span>".html_safe
+            end
+          %>
+        </div>
         <% @settings.app.attributes.each do |attribute| %>
           <p>
             <strong><%= attribute.label %>:</strong>
-            <%= @settings.values[attribute.id.to_sym] %>
+            <span><%= @settings.values[attribute.id.to_sym] %></span>
           </p>
         <% end %>
       </div>

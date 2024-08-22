@@ -96,6 +96,7 @@ en:
     batch_connect_form_prefill_error: "Oops... Something is wrong with your template"
     batch_connect_form_reset_resolution: "Reset Resolution"
     batch_connect_form_save: "Save settings"
+    batch_connect_form_save_submit: "Save settings and close"
     batch_connect_form_save_new_template: "save new settings"
     batch_connect_form_select_template: "select saved settings"
     batch_connect_form_template_name_label: "setting name"
@@ -211,6 +212,8 @@ en:
 
     recently_used_apps_title: 'Recently Used Apps'
 
+    saved_settings_title: 'Saved Settings'
+
     files_download_not_enabled: "Downloading files is not enabled on this server."
     files_directory_download_error_modal_title: "Directory too large to download"
     files_directory_download_unauthorized: "You can only download a directory as zip that you have read and execute access to"
@@ -237,6 +240,9 @@ en:
     jobs_project_description_placeholder: "Project description"
     jobs_create_blank_project: "Create a new project"
     jobs_create_template_project: "Create a new project from a template"
+    jobs_new_launcher: "New Launcher"
+    jobs_launchers: "Launchers"
+
 
     jobs_project_validation_error: "Invalid Request. Please review the errors below"
     jobs_project_save_error: "Cannot save manifest to %{path}"
@@ -254,14 +260,18 @@ en:
     jobs_scripts_fixed_field: "Fixed Value"
 
     settings_updated: "Settings updated"
+    settings_invalid_request: "Invalid settings submitted"
+
+    announcements_required_button: "Accept"
+    announcements_dismissible_button: "OK"
 
     bc_saved_settings:
       title: "Saved Settings"
       no_settings_title: "You have no saved settings."
       missing_settings: "Selected saved settings not found."
-      launch_label: "Launch"
       launch_title: "Launch %{app_title} with %{settings_name} parameters"
-      delete_label: "Delete"
+      edit_title: "Edit %{settings_name} saved settings"
+      saved_message: "%{settings_name} settings saved"
       delete_title: "Delete %{settings_name} saved settings"
       delete_confirm: "Are you sure?"
       deleted_message: "Saved settings %{settings_name} deleted."
@@ -303,6 +313,7 @@ en:
     delete: "Delete"
     edit: "Edit"
     show: "Show"
+    launch: "Launch"
     project: "Project"
     directory: "Directory"
     close: "Close"

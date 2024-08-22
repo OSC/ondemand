@@ -74,8 +74,8 @@ Requires:        python3
 Requires:        rclone
 %endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.22.1-1.p6.0.17.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.0.17-1.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.24.0-1.p6.0.20.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.0.20-1.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}
@@ -174,6 +174,7 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mv %{buildroot}/opt/ood/apps/shell %{buildroot}%{_localstatedir}/www/ood/apps/sys/shell
 %__mv %{buildroot}/opt/ood/apps/files %{buildroot}%{_localstatedir}/www/ood/apps/sys/files
 %__mv %{buildroot}/opt/ood/apps/projects %{buildroot}%{_localstatedir}/www/ood/apps/sys/projects
+%__mv %{buildroot}/opt/ood/apps/system-status %{buildroot}%{_localstatedir}/www/ood/apps/sys/system-status
 %__mv %{buildroot}/opt/ood/apps/file-editor %{buildroot}%{_localstatedir}/www/ood/apps/sys/file-editor
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
@@ -286,6 +287,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/projects
 %dir %attr(700, root, root) %{_localstatedir}/www/ood/apps/sys/projects
 %{_localstatedir}/www/ood/apps/sys/projects/manifest.yml
+%{_localstatedir}/www/ood/apps/sys/system-status
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
 %exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
 

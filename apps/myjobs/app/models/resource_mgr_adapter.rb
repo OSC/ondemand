@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 # Class that implements the same interface as OSC::Machete::TorqueHelper
 # but uses ood_job gem to interface with resource managers
 
 # OodJob errors will be caught and re-raised as PBS::Error objects
 class ResourceMgrAdapter
+
+  include SanitizedEnv
 
   attr_reader :workflow
 
@@ -25,17 +29,21 @@ class ResourceMgrAdapter
     # the current directory is now the job directory
     # current_directory but script_path is a STRING and relative
     script_path = Pathname.new(script_path)
-    raise OSC::Machete::Job::ScriptMissingError, "#{script_path} does not exist or cannot be read" unless script_path.file? && script_path.readable?
+    unless script_path.file? && script_path.readable?
+      raise OSC::Machete::Job::ScriptMissingError,
+            "#{script_path} does not exist or cannot be read"
+    end
 
     cluster = cluster_for_host_id(host)
     script = OodCore::Job::Script.new(
-      content: script_path.read,
-      accounting_id: account_string,
+      content:           script_path.read,
+      accounting_id:     account_string,
       job_array_request: workflow.job_array_request.presence,
-      copy_environment: workflow.copy_environment.eql?("1") ? true : false
+      copy_environment:  workflow.copy_environment.eql?('1') ? true : false
     )
-    adapter(cluster).submit( script, **depends_on)
-
+    ClimateControl.modify(sanitized_env) do
+      adapter(cluster).submit(script, **depends_on)
+    end
   rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
@@ -46,7 +54,6 @@ class ResourceMgrAdapter
 
     # convert OodJobStatus to OSC::Machete::Status
     status_for_ood_job_status(status)
-
   rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
@@ -54,7 +61,6 @@ class ResourceMgrAdapter
   def qdel(id, host: nil)
     cluster = cluster_for_host_id(host)
     adapter(cluster).delete(id)
-
   rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
@@ -62,7 +68,7 @@ class ResourceMgrAdapter
   private
 
   def cluster_for_host_id(host)
-    raise PBS::Error, "host nil" if host.nil?
+    raise PBS::Error, 'host nil' if host.nil?
     raise PBS::Error, "host is invalid value: #{host}" unless OODClusters[host.to_sym]
 
     OODClusters[host.to_sym]
@@ -78,18 +84,18 @@ class ResourceMgrAdapter
   # @return [OSC::Machete::Status] An OSC::Machete object representing the status
   def status_for_ood_job_status(status)
     case status.to_sym
-      when :completed
-        OSC::Machete::Status.passed
-      when :queued
-        OSC::Machete::Status.queued
-      when :queued_held
-        OSC::Machete::Status.held
-      when :suspended
-        OSC::Machete::Status.suspended
-      when :running
-        OSC::Machete::Status.running
-      else
-        OSC::Machete::Status.undetermined
+    when :completed
+      OSC::Machete::Status.passed
+    when :queued
+      OSC::Machete::Status.queued
+    when :queued_held
+      OSC::Machete::Status.held
+    when :suspended
+      OSC::Machete::Status.suspended
+    when :running
+      OSC::Machete::Status.running
+    else
+      OSC::Machete::Status.undetermined
     end
   end
 end

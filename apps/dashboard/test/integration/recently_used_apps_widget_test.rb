@@ -29,7 +29,7 @@ class RecentlyUsedAppsWidgetTest < ActionDispatch::IntegrationTest
                    'Should display the widget title'
     end
 
-    assert_select "div[data-toggle='launcher-button']", 1
+    assert_select "div[data-bs-toggle='launcher-button']", 1
     assert_select 'form.button_to', 1
     assert_select 'form.button_to button p.app-title', text: 'Recently Used Sys'
   end
@@ -37,7 +37,7 @@ class RecentlyUsedAppsWidgetTest < ActionDispatch::IntegrationTest
   test 'recently used apps should render the a launcher with a form with the application cached values' do
     get '/'
 
-    assert_select "div[data-toggle='launcher-button']", 1
+    assert_select "div[data-bs-toggle='launcher-button']", 1
 
     assert_select 'form.button_to' do |elements|
       assert_equal 1, elements.size

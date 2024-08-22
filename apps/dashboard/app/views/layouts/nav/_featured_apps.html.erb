@@ -1,7 +1,7 @@
 <% if @featured_group.present? %>
   <% group = @featured_group %>
   <li class="nav-item dropdown" role="none">
-    <a role="menuitem" href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menuitem" title="<%= group.title %>"><%= group.title %><span class="caret"></span></a>
+    <a role="menuitem" href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menuitem" title="<%= group.title %>"><%= group.title %><span class="caret"></span></a>
 
     <ul class="dropdown-menu" role="menu" title="<%= group.title %>">
       <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory, nav_limit: group.nav_limit).each_with_index do |g, index| %>
@@ -21,7 +21,7 @@
               %>
                 <%= icon_tag(link.icon_uri) %> <%=link.title %>
                 <% if link.subtitle.present? %>
-                  <%= content_tag(:small, link.subtitle, class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline ml-2') %>
+                  <%= content_tag(:small, link.subtitle, class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline ms-2') %>
                 <% end %>
               <% end %>
             </li>

@@ -1,5 +1,62 @@
 #saved-settings-menu {
+  i.app-icon {
+    font-size: 12px;
+  }
+
   .saved-settings-list .app-icon {
     color: rgba(0, 0, 0, 0.25);
   }
+
+  .saved-settings-list .list-group-item {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+  }
+
+  .saved-settings-list:last-child .list-group-item:last-child {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom: none;
+  }
 }
+
+div.settings-widget {
+  span.list-group-item {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  span.list-group-item a {
+    box-shadow: none;
+  }
+
+  .small {
+    font-size: 0.8rem;
+  }
+
+  img.app-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  i.app-icon {
+    height: unset;
+    font-size: 18px;
+    margin-top: 2px;
+    margin-right: 5px;
+  }
+
+  .header {
+    height: 38px;
+  }
+
+  .saved-settings-toggle {
+    font-size: 0.75rem;
+  }
+
+  .saved-settings-toggle:focus {
+    box-shadow: none;
+  }
+}
+

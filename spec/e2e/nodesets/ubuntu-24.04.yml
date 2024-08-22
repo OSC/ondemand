@@ -1,0 +1,36 @@
+HOSTS:
+  ubuntu2404:
+    roles:
+      - agent
+    platform: ubuntu-24.04-amd64
+    hypervisor : docker
+    image: ubuntu:24.04
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
+      - 'apt-get install -y wget net-tools locales apt-transport-https ca-certificates iproute2'
+      - 'locale-gen en_US.UTF-8'
+    docker_env:
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+      - DEBIAN_FRONTEND=noninteractive
+    docker_container_name: 'ondemand-ubuntu2404'
+    docker_port_bindings:
+      22/tcp:
+        - HostPort: '2222'
+          HostIp: '127.0.0.1'
+      8080/tcp:
+        - HostPort: '8080'
+          HostIp: '0.0.0.0'
+      5556/tcp:
+        - HostPort: '5556'
+          HostIp: '0.0.0.0'
+CONFIG:
+  log_level: debug
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
+

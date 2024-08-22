@@ -7,7 +7,11 @@ class ProjectsController < ApplicationController
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
     if @project.nil?
-      redirect_to(projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
+      respond_to do |format|
+        message = I18n.t('dashboard.jobs_project_not_found', project_id: project_id)
+        format.html { redirect_to(projects_path, alert: message) }
+        format.json { render json: { message: message }, status: :not_found }
+      end
     else
       @scripts = Launcher.all(@project.directory)
       @valid_project = Launcher.clusters?
@@ -80,8 +84,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-
-
   # DELETE /projects/:id
   def destroy
     project_id = params[:id]
@@ -97,6 +99,18 @@ class ProjectsController < ApplicationController
     else
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
     end
+  end
+
+  # GET /projects/:project_id/jobs/:cluster/:jobid
+  def job_details
+    project = Project.find(job_details_params[:project_id])
+    cluster_str = job_details_params[:cluster].to_s
+    cluster = OodAppkit.clusters[cluster_str.to_sym]
+    render(:status => 404) if cluster.nil?
+
+    hpc_job = project.job_from_id(job_details_params[:jobid].to_s, cluster_str)
+
+    render(partial: 'job_details', locals: { job: hpc_job })
   end
 
   private
@@ -130,5 +144,9 @@ class ProjectsController < ApplicationController
 
   def new_project_params
     params.permit(:template, :icon, :name, :directory)
+  end
+
+  def job_details_params
+    params.permit(:project_id, :cluster, :jobid)
   end
 end

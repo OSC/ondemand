@@ -11,5 +11,7 @@
     <%= create_widget(f, attrib, format: nil, hide_fixed: false) %>
   <% end %>
 
-  <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
+  <div class="d-grid gap-2">
+    <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary" %>
+  </div>
 <% end %>

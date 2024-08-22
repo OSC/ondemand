@@ -46,8 +46,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
     find('#launcher_title').set('the script title')
     click_on 'Save'
 
-    script_element = all('#launcher_list a').first
-    script_element[:id].gsub('show_', '')
+    script_element = all('#launcher_list div.list-group-item').first
+    script_element[:id].gsub('launcher_', '')
   end
 
   def add_account(project_id, script_id, save: true)
@@ -73,6 +73,13 @@ class ProjectManagerTest < ApplicationSystemTestCase
     click_on(I18n.t('dashboard.add'))
     fill_in('launcher_bc_num_hours', with: 1)
     click_on(I18n.t('dashboard.save'))
+  end
+
+  def add_auto_environment_variable(project_id, script_id, save: true)
+    # now add 'auto_environment_variable'
+    click_on('Add new option')
+    select('Environment Variable', from: 'add_new_field_select')
+    click_on(I18n.t('dashboard.add'))
   end
 
   test 'create a new project on fs and display the table entry' do
@@ -168,7 +175,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 'my-test-project', find('#project_name').value
       assert_equal "#{dir}/projects/#{project_id}", find('#project_directory').value
       assert_equal 'test-description', find('#project_description').value
-      assert_equal 'fas://arrow-right', find('#product_icon_select').value
+      assert_equal 'arrow-right', find('#product_icon_select').value
       assert_selector '.btn.btn-default', text: 'Back'
     end
   end
@@ -246,12 +253,59 @@ class ProjectManagerTest < ApplicationSystemTestCase
       HEREDOC
 
       success_message = I18n.t('dashboard.jobs_scripts_created')
-      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
 
       launcher_path = project_launcher_path(project_id, script_id)
       find("[href='#{launcher_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
+    end
+  end
+
+  test 'creates new laucher with default items' do
+    Dir.mktmpdir do |dir|
+      Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+
+      # note that bc_num_hours is in this YAML.
+      expected_yml = <<~HEREDOC
+        ---
+        title: the script title
+        created_at: #{@expected_now}
+        form:
+        - auto_batch_clusters
+        - auto_scripts
+        - bc_num_hours
+        attributes:
+          auto_batch_clusters:
+            options:
+            - oakley
+            - owens
+            label: Cluster
+            help: ''
+            required: false
+          auto_scripts:
+            options:
+            - - my_cool_script.sh
+              - "#{dir}/projects/#{project_id}/my_cool_script.sh"
+            - - my_cooler_script.bash
+              - "#{dir}/projects/#{project_id}/my_cooler_script.bash"
+            directory: "#{dir}/projects/#{project_id}"
+            label: Script
+            help: ''
+            required: false
+          bc_num_hours:
+            min: 1
+            step: 1
+            label: Number of hours
+            help: ''
+            required: true
+      HEREDOC
+
+      success_message = I18n.t('dashboard.jobs_scripts_created')
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
     end
   end
 
@@ -337,10 +391,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
-      assert_equal [{ 'id'          => 'job-id-123',
-                      'submit_time' => @expected_now,
-                      'cluster'     => 'owens' }],
-                   YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      jobs = YAML.safe_load(File.read("#{script_dir}/job_history.log"), permitted_classes: [Time])
+
+      assert_equal(1, jobs.size)
+      assert_equal('job-id-123', jobs[0]['id'])
     end
   end
 
@@ -385,10 +439,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
-      assert_equal [{ 'id'          => 'job-id-123',
-                      'submit_time' => @expected_now,
-                      'cluster'     => 'owens' }],
-                   YAML.safe_load(File.read("#{script_dir}/job_history.log"))
+      jobs = YAML.safe_load(File.read("#{script_dir}/job_history.log"), permitted_classes: [Time])
+
+      assert_equal(1, jobs.size)
+      assert_equal('job-id-123', jobs[0]['id'])
     end
   end
 
@@ -421,7 +475,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         .returns(['', 'some error message', exit_failure])
 
       click_on 'Launch'
-      assert_selector('.alert-danger', text: "×\nClose\nsome error message")
+      assert_selector('.alert-danger', text: "Close\nsome error message")
       assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
     end
   end
@@ -442,7 +496,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       actual_new_options = page.all("##{new_field_id} option").map(&:value).to_set
       expected_new_options = [
         'bc_num_hours', 'auto_queues', 'bc_num_slots',
-        'auto_accounts', 'auto_job_name'
+        'auto_accounts', 'auto_job_name', 'auto_environment_variable'
       ].to_set
       assert_equal expected_new_options, actual_new_options
     end
@@ -459,7 +513,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[href='#{edit_launcher_path}']").click
 
       # only shows 'cluster' & 'auto_scripts'
-      assert_equal 2, page.all('.form-group').size
+      assert_equal 2, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       select('oakley', from: 'launcher_auto_batch_clusters')
@@ -473,7 +527,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[href='#{script_edit_path}']").click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
-      assert_equal 3, page.all('.form-group').size
+      assert_equal 3, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       assert_not_nil find('#launcher_bc_num_hours')
@@ -486,10 +540,19 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#launcher_bc_num_hours_fixed').click
       find('#save_launcher_bc_num_hours').click
 
+      # add auto_environment_variable
+      add_auto_environment_variable(project_id, script_id)
+      find('#edit_launcher_auto_environment_variable').click
+
+      find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
+      find("#launcher_auto_environment_variable_SOME_VARIABLE").fill_in(with: 'some_value')
+
+      find('#save_launcher_auto_environment_variable').click
+
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
-      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
       # note that bc_num_hours has default, min & max
@@ -501,6 +564,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         - auto_scripts
         - auto_batch_clusters
         - bc_num_hours
+        - auto_environment_variable_SOME_VARIABLE
         attributes:
           auto_scripts:
             options:
@@ -530,6 +594,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
             label: Number of hours
             help: ''
             required: true
+          auto_environment_variable_SOME_VARIABLE:
+            value: some_value
+            label: 'Environment Variable: SOME_VARIABLE'
+            help: ''
+            required: false
       HEREDOC
 
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
@@ -550,7 +619,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       edit_launcher_path = edit_project_launcher_path(project_id, script_id)
       find("[href='#{edit_launcher_path}']").click
       # puts page.body
-      assert_equal 4, page.all('.form-group').size
+      assert_equal 4, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       assert_not_nil find('#launcher_bc_num_hours')
@@ -559,7 +628,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # remove bc num hours and it's not in the form
       find('#remove_launcher_bc_num_hours').click
-      assert_equal 3, page.all('.form-group').size
+      assert_equal 3, page.all('.editable-form-field').size
       assert_not_nil find('#launcher_auto_batch_clusters')
       assert_not_nil find('#launcher_auto_scripts')
       assert_not_nil find('#launcher_auto_accounts')
@@ -570,7 +639,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
-      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
+      assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
       expected_yml = <<~HEREDOC
@@ -639,19 +708,19 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'cant create script when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant show script when project is invalid' do
     visit project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant edit script when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
   test 'cant show invalid script' do
@@ -659,7 +728,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
+      assert_selector('.alert-danger', text: "Close\nCannot find script 1")
     end
   end
 
@@ -668,7 +737,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit edit_project_launcher_path(project_id, '1')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
+      assert_selector('.alert-danger', text: "Close\nCannot find script 1")
     end
   end
 
@@ -872,9 +941,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('i.fa-atom').click
       input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
 
-      project_id = URI.parse(current_url).path.split('/').last
-
-      # note that we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
+      # NOTE: we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
       # from the template.
       Open3
         .stubs(:capture3)
@@ -885,8 +952,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
-      click_on I18n.t('dashboard.batch_connect_form_launch')
+      find("#launch_8woi7ghd").click
       assert_selector('.alert-success', text: 'job-id-123')
+
+      # sleep here because this test can error with Errno::ENOTEMPTY: Directory not empty @ dir_s_rmdir
+      # something still has a hold on these files.
+      sleep 2
     end
   end
 end

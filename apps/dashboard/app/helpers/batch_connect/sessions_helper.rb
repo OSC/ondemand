@@ -96,7 +96,7 @@ module BatchConnect::SessionsHelper
     button_to(
       batch_connect_session_contexts_path(token: batch_connect_app.token),
       method: :post,
-      class: %w[btn px-1 py-0 btn-outline-dark relaunch],
+      class: %w[btn px-1 py-0 btn-outline-dark relaunch full-page-spinner],
       form_class: %w[d-inline relaunch],
       title: title,
       'aria-label': title,
@@ -112,7 +112,7 @@ module BatchConnect::SessionsHelper
     button_to(
       new_batch_connect_session_context_path(token: session.token),
       method: :get,
-      class: %w[btn px-1 py-0 btn-outline-dark],
+      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner],
       form_class: %w[d-inline edit-session],
       title: title,
       'aria-label': title,
@@ -136,7 +136,7 @@ module BatchConnect::SessionsHelper
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
-      class: "btn btn-danger float-right btn-delete",
+      class: "btn btn-danger float-end btn-delete",
       title: title,
       'aria-label': title,
       data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
@@ -150,7 +150,7 @@ module BatchConnect::SessionsHelper
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
-      class: "btn btn-danger float-right btn-cancel",
+      class: "btn btn-danger float-end btn-cancel",
       title: title,
       'aria-label': title,
       data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom" }

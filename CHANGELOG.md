@@ -8,21 +8,109 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
+- BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
+- BatchConnect form auto_modules directive can now filter by string or regex in [3574](https://github.com/OSC/ondemand/pull/3574).
+- Saved settings widget in [#3545](https://github.com/OSC/ondemand/pull/3545).
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
 - NoVNC compression & quality have configurable defaults in [3380](https://github.com/OSC/ondemand/pull/3380).
 - Added `bc_sessions_poll_delay` in favor of hidden environment variable POLL_DELAY in [3421](https://github.com/OSC/ondemand/pull/3421).
 - BatchConnect applications now write out `completed_at` attributes in [3424](https://github.com/OSC/ondemand/pull/3424).
+- Added module support for custom javascript files in [3499](https://github.com/OSC/ondemand/pull/3499).
+- Added the turbo-rails gem and refactored BatchConnect::Sessions#index to use it in [3509](https://github.com/OSC/ondemand/pull/3509).
+- Added support to edit saved settings from the details view in [3498](https://github.com/OSC/ondemand/pull/3498).
+- The project manager can now define default launcher fields in [3488](https://github.com/OSC/ondemand/pull/3488).
+- The feature to show the project size is now configurable in [3531](https://github.com/OSC/ondemand/pull/3531).
+- The dashboard now has a system status page in [3549](https://github.com/OSC/ondemand/pull/3549).
+- Support for Ubuntu 24.04 in [3676](https://github.com/OSC/ondemand/pull/3676).
+- Added configurable default number of apps to show in the apps table in [3672](https://github.com/OSC/ondemand/pull/3672).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
 - The dashboard has been upgraded to rails 7.0 in [3353](https://github.com/OSC/ondemand/pull/3353).
 - Myjobs has been upgraded to rails 7.0 in [3404](https://github.com/OSC/ondemand/pull/3404).
 - ActionController::Live has been re-enabled in the file app in [3441](https://github.com/OSC/ondemand/pull/3441).
+- use relative OIDCRedirectURI in [3448](https://github.com/OSC/ondemand/pull/3448).
+- Removes NavConfig class & Replaces its use [3475](https://github.com/OSC/ondemand/pull/3475).
+- nginx_stage now uses ps to count sessions instead of lsof in [3511](https://github.com/OSC/ondemand/pull/3511).
+- The http to https redirect host is now configurable in [3515](https://github.com/OSC/ondemand/pull/3515).
+- Passenger and NGINX have been updated 6.0.20 and 1.24.0 respectively in [3535](https://github.com/OSC/ondemand/pull/3535).
+- The dashboard now uses Bootstrap 5 in [3541](https://github.com/OSC/ondemand/pull/3541).
+- The file editor now uses the default layout in [3646](https://github.com/OSC/ondemand/pull/3646).
+- Announcemnts are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
+- Ace is now a yarn dependency in [3629](https://github.com/OSC/ondemand/pull/3629).
+- Pages now expect a string instead of a URI for icons in [3682](https://github.com/OSC/ondemand/pull/3682).
+- MOTD format markdown_erb will also sanitize html and respond to the motd_render_html configuration
+  in [3675](https://github.com/OSC/ondemand/pull/3675).
+- The files api no longer reponds with human_sizs. Instead this is converted to human sizes in
+  javascript on the client in [3723](https://github.com/OSC/ondemand/pull/3723).
+- XDMoD jobs panel uses plain js now in [3706](https://github.com/OSC/ondemand/pull/3706).
+- Esbuild now has a plugin for to use source code for minified dependencies in [3693](https://github.com/OSC/ondemand/pull/3693).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
 - The path_selector can now inheret configurations in [3375](https://github.com/OSC/ondemand/pull/3375).
 - The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
+- data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
+- Dynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
+- File and shell buttons will no longer appear when apps are unavailable in [3655](https://github.com/OSC/ondemand/pull/3655).
+- Downloads can once again be estimated in [3653](https://github.com/OSC/ondemand/pull/3653).
+- Download buttons will now be hidden for certain files like pipes in [3654](https://github.com/OSC/ondemand/pull/3654).
+- Favorite file paths now consult the Allowlist in [3526](https://github.com/OSC/ondemand/pull/3526).
+
+### Security
+
+- Jobs will now be submitted after sanitizing the envionment in
+  [3627](https://github.com/OSC/ondemand/pull/3627).  This prevents
+  the leaking of sensitive environment variables to the job when `copy_environment`
+  is used.
+
+## [3.1.7] - 06-25-2024
+
+### Security
+
+- Jobs will now be submitted after sanitizing the envionment in
+  [3628](https://github.com/OSC/ondemand/pull/3628).  This prevents
+  the leaking of sensitive environment variables to the job when `copy_environment`
+  is used.
+
+### Fixed
+- OIDCRedirectURI is always relative in [3548](https://github.com/OSC/ondemand/pull/3548).
+- Dynamic batch connect applications now accept fields with numbers in them in [3548](https://github.com/OSC/ondemand/pull/3548).
+- The dashboard no longer sets logo image width to 100% in
+  [3632](https://github.com/OSC/ondemand/pull/3632).
+
+### Changed
+- `nginx` has been updated to `1.24.0` from `1.22.1` in
+  [3548](https://github.com/OSC/ondemand/pull/3548).
+- `passenger` has been updated to `6.0.20` from `6.0.17` in
+  [3548](https://github.com/OSC/ondemand/pull/3548).
+
+### Added
+
+- `ood_portal.yml` now has the configuration `http_redirect_host` to specify
+  the host to redirect to when upgrading from http to https in
+  [3548](https://github.com/OSC/ondemand/pull/3548).
+
+## [3.1.4] - 04-01-2024
+
+### Fixed
+- The path_selector now responds to labels and can be hidden in in [3467](https://github.com/OSC/ondemand/pull/3467).
+- Pinned app icons are now centered correctly in [3374](https://github.com/OSC/ondemand/pull/3374).
+
+### Added
+- ood_core now sends heartbeats to noVNC connections to keep them alive in [3467](https://github.com/OSC/ondemand/pull/3467).
+- Batch connect jobs now serialize `completed_at` attributes in [3467](https://github.com/OSC/ondemand/pull/3467).
+
+### Security
+- The files app now uses ActionController::Live to support streaming large files in [3467](https://github.com/OSC/ondemand/pull/3467)
+  preventing out of memory exceptions.
+- The regular expression for mime types has been updated in [3482](https://github.com/OSC/ondemand/pull/3482).
+
+## [3.1.1] - 02-12-2024
+
+### Fixed
+
+- Host field in the cards are only rendered when the job is running in [3365](https://github.com/OSC/ondemand/pull/3365).
 
 ## [3.1.0] - 02-08-2024
 
@@ -1322,6 +1410,9 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - From 1.3.7 - 1.4.2 updated app versions
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7
+[3.1.4]: https://github.com/OSC/ondemand/compare/v3.1.1...v3.1.4
+[3.1.1]: https://github.com/OSC/ondemand/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/OSC/ondemand/compare/v3.0.3...v3.1.0
 [3.0.3]: https://github.com/OSC/ondemand/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/OSC/ondemand/compare/v3.0.1...v3.0.2

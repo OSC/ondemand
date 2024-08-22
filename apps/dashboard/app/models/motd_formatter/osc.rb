@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module MotdFormatter
   # Utility class for rendering MOTD files in the OSC format.
   class Osc
-
     attr_reader :content, :title
 
     # Parse the MOTD in OSC style
@@ -9,17 +10,15 @@ module MotdFormatter
     #
     # @param [MotdFile] motd_file an MotdFile object that contains a URI path to a message of the day in OSC format
     def initialize(motd_file)
-      motd_file = MotdFile.new unless motd_file
+      motd_file ||= MotdFile.new
       @title = motd_file.title
       @content = motd_file.content
     end
 
     Message = Struct.new :date, :title, :body do
       def self.from(str)
-        if str =~ /(\d+[-\/\.]\d+[-\/\.]\d+)\n--- ([ \S ]*)\n(.*)/m
-          Message.new(Date.parse($1), $2, $3)
-        else
-          nil
+        if str =~ %r{(\d+[-/.]\d+[-/.]\d+)\n--- ([ \S ]*)\n(.*)}m
+          Message.new(Date.parse(Regexp.last_match(1)), Regexp.last_match(2), Regexp.last_match(3))
         end
       rescue ArgumentError => e
         Rails.logger.warn("MOTD message poorly formatted: #{e} => #{e.message}")
@@ -29,7 +28,7 @@ module MotdFormatter
     end
 
     def to_partial_path
-      "dashboard/motd_osc"
+      'dashboard/motd_osc'
     end
 
     # since this actually splits the file content into separate messages
@@ -37,8 +36,8 @@ module MotdFormatter
     def messages
       if content
         # get array of sections which are delimited by a row of ******
-        sections = content.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
-        return sections.map { |s| Message.from(s) }.compact.sort_by {|s| s.date }.reverse
+        sections = content.split(/^\*+$/).map(&:strip).reject(&:empty?)
+        sections.map { |s| Message.from(s) }.compact.sort_by(&:date).reverse
       else
         []
       end

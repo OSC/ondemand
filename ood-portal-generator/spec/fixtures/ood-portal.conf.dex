@@ -53,6 +53,7 @@
   RewriteCond /var/www/ood/public/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
   RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
+  RewriteCond %{REQUEST_URI} !/dex.*$
   RewriteRule ^.*$ /public/maintenance/index.html [R=302,L]
 
   TraceEnable off
@@ -64,7 +65,7 @@
   OIDCProviderMetadataURL http://example.com/dex/.well-known/openid-configuration
   OIDCClientID example.com
   OIDCClientSecret 83bc78b7-6f5e-4010-9d80-22f328aa6550
-  OIDCRedirectURI http://example.com/oidc
+  OIDCRedirectURI /oidc
   OIDCRemoteUserClaim email
   OIDCScope "openid profile email"
   OIDCCryptoPassphrase 0caaf24ab1a0c33440c06afe99df986365b0781f

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 
-desc "Lint OnDemand"
+desc 'Lint OnDemand'
 task :lint => 'lint:all'
 
 namespace :lint do
@@ -8,17 +10,17 @@ namespace :lint do
   include RakeHelper
 
   DEFAULT_PATTERNS = [
-    "apps/**/*.rb",
-    "lib/**/*.rb",
-    "nginx_stage/**/*.rb",
-    "ood-portal-generator/**/*.rb",
-    "spec/**/*.rb",
-  ]
+    'apps/**/*.rb',
+    'lib/**/*.rb',
+    'nginx_stage/**/*.rb',
+    'ood-portal-generator/**/*.rb',
+    'spec/**/*.rb'
+  ].freeze
 
   begin
     require 'rubocop/rake_task'
     RuboCop::RakeTask.new(:rubocop, [:path]) do |t, args|
-      t.options = ["--config=#{PROJ_DIR.join(".rubocop.yml")}"]
+      t.options = ["--config=#{PROJ_DIR.join('.rubocop.yml')}"]
       t.patterns = args[:path].nil? ? DEFAULT_PATTERNS : [args[:path]]
     end
   rescue LoadError
@@ -26,7 +28,7 @@ namespace :lint do
 
   begin
     require 'rubocop/rake_task'
-    RuboCop::RakeTask.new(:random) do |t, args|
+    RuboCop::RakeTask.new(:random) do |t, _args|
       all_files = Dir.glob(DEFAULT_PATTERNS).reject { |f| f.include?('vendor/bundle') }
       one_file = all_files[Random.rand(all_files.size)]
 
@@ -36,7 +38,7 @@ namespace :lint do
   rescue LoadError
   end
 
-  desc "Setup .rubocop.yml files"
+  desc 'Setup .rubocop.yml files'
   task :setup do
     source = PROJ_DIR.join('.rubocop.yml')
     (ruby_apps + infrastructure).each do |app|

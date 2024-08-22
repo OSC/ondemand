@@ -1,0 +1,13 @@
+---
+batch_connect_templates:
+  sys/bc_paraview:
+    account memory:
+      cluster: memory
+      bc_num_hours: '10'
+      bc_account: helper_memory
+      bc_vnc_resolution: 800x600
+    account cpu:
+      cluster: cpu
+      bc_num_hours: '1'
+      bc_account: helper_cpu
+      bc_vnc_resolution: 1080x800

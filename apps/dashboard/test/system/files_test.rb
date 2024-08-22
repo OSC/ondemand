@@ -7,6 +7,9 @@ class FilesTest < ApplicationSystemTestCase
   def setup
     FileUtils.rm_rf(DOWNLOAD_DIRECTORY.to_s)
     FileUtils.mkdir_p(DOWNLOAD_DIRECTORY.to_s)
+
+    # we want to clear the console logs from any previous test.
+    Capybara.current_session.quit
   end
 
   test "visiting files app doesn't raise js errors" do
@@ -579,6 +582,24 @@ class FilesTest < ApplicationSystemTestCase
     File.delete(zip_file) if File.exist?(zip_file)
   end
 
+  test 'favorite paths outside allowlist do not show up' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed_dir"
+      not_allowed_dir    = "#{dir}/not_allowed_dir"
+      with_modified_env( { OOD_ALLOWLIST_PATH: allowed_dir } ) do
+        `mkdir -p #{allowed_dir}`
+        `touch #{allowed_dir}/test_file.txt`
+        `mkdir -p #{not_allowed_dir}`
+        `touch #{not_allowed_dir}/test_file.txt`
+        favorites = [FavoritePath.new(allowed_dir), FavoritePath.new(not_allowed_dir)]
+        OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
+
+        visit files_url(dir)
+        assert_selector('#favorites li', count: 2)
+      end
+    end
+  end
+
   test 'handles files with non utf-8 characters' do
     Dir.mktmpdir do |dir|
       prefix = [255, 1, 2, 3].pack('C*')
@@ -591,6 +612,34 @@ class FilesTest < ApplicationSystemTestCase
       # only 1 file and it's the good one.
       assert_selector('tbody a', count: 1)
       find('tbody a', exact_text: 'good_file.txt')
+    end
+  end
+
+  test 'files that are not downloadable' do
+    Dir.mktmpdir do |dir|
+      cant_read = 'cant_read.txt'
+      fifo = 'fifo'
+
+      `touch #{dir}/#{cant_read}`
+      `chmod 000 #{dir}/#{cant_read}`
+      `mkfifo #{dir}/#{fifo}`
+
+      visit files_url(dir)
+
+      fifo_row = find('tbody a', exact_text: fifo).ancestor('tr')
+      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+
+      fifo_row.find('button.dropdown-toggle').click
+      fifo_links = fifo_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      cant_read_row.find('button.dropdown-toggle').click
+      cant_read_links = cant_read_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      # NOTE: download is not an expected link.
+      expected_links = ['View', 'Edit', 'Rename', 'Delete']
+
+      assert_equal(expected_links, fifo_links)
+      assert_equal(expected_links, cant_read_links)
     end
   end
 end

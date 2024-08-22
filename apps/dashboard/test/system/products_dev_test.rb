@@ -21,7 +21,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Launch Shell route is correct' do
-    find('span', class: 'float-right').find('.btn', text: 'Launch Shell')
+    find('span', class: 'float-end').find('.btn', text: 'Launch Shell')
     has_link?('/pun/sys/shell/ssh')
   end
 

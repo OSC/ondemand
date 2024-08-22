@@ -21,4 +21,5 @@ module SmartAttributes
   require 'smart_attributes/attributes/bc_queue'
   require 'smart_attributes/attributes/bc_vnc_idle'
   require 'smart_attributes/attributes/bc_vnc_resolution'
+  require 'smart_attributes/attributes/auto_environment_variable'
 end

@@ -61,27 +61,7 @@ module ActiveJobsHelper
   end
 
   def status_label(status)
-    case status
-    when "completed"
-      label = "Completed"
-      labelclass = "badge-success"
-    when "running"
-      label = "Running"
-      labelclass = "badge-primary"
-    when "queued"
-      label = "Queued"
-      labelclass = "badge-info"
-    when "queued_held"
-      label = "Hold"
-      labelclass = "badge-warning"
-    when "suspended"
-      label = "Suspend"
-      labelclass = "badge-warning"
-    else
-      label = "Undetermined"
-      labelclass = "badge-secondary"
-    end
-    "<span class='badge #{labelclass}'>#{label}</span>".html_safe
+    "<span class='badge #{status_class(status)}'>#{status_text(status)}</span>".html_safe
   end
 
   def filters

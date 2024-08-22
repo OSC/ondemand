@@ -18,12 +18,14 @@ const minMaxHandlerCache = [];
 const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
+const labelHandlerCache = {};
 
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
+const labelLookup = {};
 
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
@@ -100,7 +102,8 @@ function snakeCaseWords(str) {
       snakeCase += c.toLowerCase();
     } else if(c == c.toUpperCase() && isNaN(c)) {
       const nextIsUpper = (index + 1 !== str.length) ? str[index + 1] === str[index + 1].toUpperCase() : true;
-      if (str[index-1] === '_' || nextIsUpper) {
+      const nextIsNum = !isNaN(str[index + 1]);
+      if ((str[index-1] === '_' || nextIsUpper) && !nextIsNum) {
         snakeCase += c.toLowerCase();
       } else {
         snakeCase += `_${c.toLowerCase()}`;
@@ -154,6 +157,8 @@ function makeChangeHandlers(prefix){
                 addSetHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('hide')) {
                 addHideHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('label')) {
+                addLabelHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -197,7 +202,36 @@ function addHideHandler(optionId, option, key, configValue) {
   }
 
   updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
+};
+
+function newLabel(changeElement, key) {
+  const selectedOptionLabelIndex = changeElement[0].selectedIndex;
+  const selectedOptionLabel = changeElement[0].options[selectedOptionLabelIndex];
+  return selectedOptionLabel.dataset[key];
+};
+
+function updateLabel(changeId, changeElement, key) {
+  $(`label[for="${changeId}"]`)[0].innerHTML = newLabel(changeElement, key);
 }
+
+function addLabelHandler(optionId, option, key, configValue) {
+  const changeId = idFromToken(key.replace(/^label/, ''));
+  const changeElement = $(`#${optionId}`);
+
+  if(labelLookup[optionId] === undefined) labelLookup[optionId] = new Table(changeId, undefined);
+  const table = labelLookup[optionId];
+  table.put(changeId, option, configValue);
+
+  if(labelHandlerCache[optionId] === undefined) labelHandlerCache[optionId] = [];
+
+  if(!labelHandlerCache[optionId].includes(changeId)) {
+    changeElement.on('change', (event) => {
+      updateLabel(changeId, changeElement, key);
+    });
+  };
+
+  updateLabel(changeId, changeElement, key);
+};
 
 /**
  *
@@ -415,9 +449,17 @@ function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   let changeElement = undefined;
+  
   $(`#${changeId}`).parents().each(function(_i, parent) {
-    if(parent.classList.contains('form-group')) {
-      changeElement = $(parent);
+    var classListValues = parent.classList.values();
+    for (const val of classListValues) {
+      // TODO: Using 'mb-3' here because 'form-group' was removed
+      // from Bootstrap 5 and replaced with 'mb-3' - however, this
+      // is a grid class which could (??) apply to parent elements
+      // in unpredictable parts of the chain - test for & resolve
+      if (val.match('mb-3')) {
+        changeElement = $(parent);
+      }
     }
   });
 
@@ -425,7 +467,7 @@ function updateVisibility(event, changeId) {
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
-  if(hide === undefined && !initializing) {
+  if((hide === false) || (hide === undefined && !initializing)) {
     changeElement.show();
   }else if(hide === true) {
     changeElement.hide();

@@ -2,17 +2,17 @@
 export function cssBadgeForState(state){
   switch (state) {
     case 'completed':
-      return 'badge-success';
+      return 'bg-success';
     case 'running':
-      return 'badge-primary'
+      return 'bg-primary'
     case 'queued':
-      return 'badge-info';
+      return 'bg-info';
     case 'queued_held':
-      return 'badge-warning';
+      return 'bg-warning';
     case 'suspended':
-      return 'badge-warning';
+      return 'bg-warning';
     default:
-      return 'badge-warning';
+      return 'bg-warning';
   }
 }
 
@@ -39,4 +39,44 @@ export function thirtyDaysAgo() {
 export function today() {
   const now = new Date();
   return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+}
+
+function showSpinner() {
+  $('body').addClass('modal-open');
+  $('#full-page-spinner').removeClass('d-none');
+}
+
+export function bindFullPageSpinnerEvent() {
+  $('.full-page-spinner').each((index, element) => {
+    const $element = $(element);
+    if($element.is('a')) {
+      $element.on('click', showSpinner);
+    } else {
+      $element.closest('form').on('submit', showSpinner);
+    }
+  });
+}
+
+// open links in javascript and display an alert
+export function openLinkInJs(event) {
+  event.preventDefault();
+  const href = event.target.href;
+
+  // do nothing if there's no href.
+  if(href == null){
+    return;
+  }
+
+  if(window.open(href) == null) {
+    // link was not opened in new window, so display error msg to user
+    const html = document.getElementById('js-alert-danger-template').innerHTML;
+    const msg = "This link is configured to open in a new window, but it doesn't seem to have opened. " +
+          "Please disable your popup blocker for this page and try again.";
+
+    // replace message in alert and add to main div of layout
+    const mainDiv = document.querySelectorAll('div[role="main"]')[0];
+    const alertDiv = document.createElement('div');
+    alertDiv.innerHTML = html.split("ALERT_MSG").join(msg);
+    mainDiv.prepend(alertDiv);
+  }
 }

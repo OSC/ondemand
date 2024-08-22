@@ -3,14 +3,14 @@
 let newFieldTemplate = undefined;
 
 const newFieldData = {
-  "bc_num_hours": {
+  bc_num_hours: {
     label: "Hours",
     help: "How long the job can run for.",
   },
   auto_queues: {
     label: "Queues",
     help: "Which queue the job will submit too.",
-  },
+  }, 
   auto_accounts: {
     label: "Account",
     help: "The account the job will be submitted with."
@@ -22,6 +22,10 @@ const newFieldData = {
   bc_num_slots: {
     label: "Nodes",
     help: "How many nodes the job will run on."
+  },
+  auto_environment_variable: {
+    label: 'Environment Variable',
+    help: 'Add an environment variable.'
   }
 }
 
@@ -147,9 +151,27 @@ function addInProgressField(event) {
   justAdded.find('[data-fixed-toggler]')
            .on('click', (event) => { toggleFixedField(event) });
 
+  justAdded.find('[data-auto-environment-variable="name"]')
+           .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
+}
+
+function updateAutoEnvironmentVariable(event) {
+  var aev_name = event.target.value;
+  const labelString = event.target.dataset.labelString;
+  var input_field = event.target.parentElement.children[2].children[1];
+
+  input_field.removeAttribute('readonly');
+  input_field.id = `launcher_auto_environment_variable_${aev_name}`;
+  input_field.name = `launcher[auto_environment_variable_${aev_name}]`;
+
+  if (labelString.match(/Environment(&#32;|\s)Variable/)) {
+    var label_field = event.target.parentElement.children[2].children[0];
+    label_field.innerHTML = `Environment Variable: ${aev_name}`;
+  }
 }
 
 function fixExcludeBasedOnSelect(selectElement) {
@@ -337,6 +359,9 @@ jQuery(() => {
 
   $('[data-fixed-toggler]')
       .on('click', (event) => { toggleFixedField(event) });
+
+  $('[data-auto-environment-variable="name"]')
+      .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
 
   initSelectFields();
   initFixedFields();

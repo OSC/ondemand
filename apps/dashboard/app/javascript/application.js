@@ -23,14 +23,11 @@ import 'datatables.net-plugins/api/processing().mjs';
 
 import Rails from '@rails/ujs';
 
-// Import popper.js for Bootstrap 4
-import Popper from 'popper.js';
+// Import @popperjs/core for Bootstrap 5
+import { createPopper } from '@popperjs/core';
 
-// Import Bootstrap 4
+// Import Bootstrap 5
 import 'bootstrap/dist/js/bootstrap';
-
-// FIXME: confim modals don't work in esbuild.
-// import 'data-confirm-modal';
 
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;

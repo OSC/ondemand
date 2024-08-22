@@ -176,6 +176,15 @@ class DataTable {
         return this._table;
     }
 
+    toHumanSize(number) {
+      if(number === null) {
+        return '-';
+      } else {
+        const unitIndex = number == 0 ? 0 : Math.floor(Math.log(number) / Math.log(1000));
+        return `${((number / Math.pow(1000, unitIndex)).toFixed(2))} ${['B', 'kB', 'MB', 'GB', 'TB', 'PB'][unitIndex]}`;
+      }
+    }
+
     loadDataTable() {
         this._table = $(CONTENTID).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
@@ -205,7 +214,7 @@ class DataTable {
             //
             // put breadcrmbs below filter!!!
             dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-                "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-right'><'transfers-status'>>>>" +
+                "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-end'><'transfers-status'>>>>" +
                 "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
             columns: [
                 {
@@ -219,7 +228,7 @@ class DataTable {
                 {
                     data: 'size',
                     render: (data, type, row, meta) => {
-                        return type == "display" ? row.human_size : data;
+                        return type == "display" ? this.toHumanSize(row.size) : data;
                     }
                 }, // human_size
                 {

@@ -24,7 +24,7 @@ jobs:
           - os: ubuntu-latest
             ruby: "3.1.2"
             bundler: "2.3.7"
-          # Test versions from Amazon Linux 2023
+          # Test versions from Amazon Linux 2023 and Ubuntu 24.04
           - os: ubuntu-latest
             ruby: "3.2.2"
             bundler: "2.4.10"
@@ -99,8 +99,7 @@ jobs:
       - name: Get ondemand token
         id: token
         run: |
-           TOKEN_NAME=$(kubectl describe serviceaccount ondemand -n ondemand | grep Tokens | awk '{ print $2 }')
-           TOKEN=$(kubectl describe secret $TOKEN_NAME -n ondemand | grep "token:" | awk '{ print $2 }')
+           TOKEN=$(kubectl create token ondemand --namespace=ondemand)
            echo "ondemand=${TOKEN}" >> $GITHUB_OUTPUT
       - name: Setup kubectl
         run: |
@@ -122,6 +121,7 @@ jobs:
           - amzn2023
           - ubuntu-20.04
           - ubuntu-22.04
+          - ubuntu-24.04
           - debian-12
         arch:
           - x86_64

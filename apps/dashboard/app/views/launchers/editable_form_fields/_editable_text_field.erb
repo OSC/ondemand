@@ -3,6 +3,15 @@
 -%>
 
 <div class="editable-form-field">
+<% if field_id.match?('auto_environment_variable') %>
+  <label>Name</label>
+  <input class="form-control edit-field"
+       type="text"
+       data-auto-environment-variable="name"
+       data-label-string=<%= attrib.original_label.gsub(' ', '&#32;').force_encoding('utf-8') %>
+       value=<%= attrib.id.gsub(/auto_environment_variable_?/, '') %>
+  >
+<% end %>
   <%=  create_widget(form, attrib, format: format, hide_fixed: false) %>
 
   <div class="d-none edit-group mb-3">

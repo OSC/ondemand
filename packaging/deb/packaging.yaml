@@ -2,3 +2,7 @@
 debian-12:
   extra_depends:
     - npm
+ubuntu-24.04:
+  extra_depends:
+    - python3-setuptools
+    - npm

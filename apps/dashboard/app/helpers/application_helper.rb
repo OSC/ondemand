@@ -101,8 +101,49 @@ module ApplicationHelper
 
   # Creates the custom JS paths based on user configuration and the public URL
   def custom_javascript_paths
-    @user_configuration.custom_javascript_files.map do |js_file|
-      js_file.to_s.empty? ? nil : File.join(@user_configuration.public_url, js_file)
+    @user_configuration.custom_javascript_files.map do |js_file_config|
+      js_file_src = js_file_config.is_a?(Hash) ? js_file_config[:src].to_s : js_file_config.to_s
+      js_file_type = js_file_config.is_a?(Hash) ? js_file_config[:type].to_s : ''
+
+      next if js_file_src.empty?
+
+      { src: File.join(@user_configuration.public_url, js_file_src), type: js_file_type }
     end.compact
+  end
+
+  # Assigns text corresponding to a job status
+  def status_text(status)
+    case status
+    when 'completed'
+      'Completed'
+    when 'running'
+      'Running'
+    when 'queued'
+      'Queued'
+    when 'qued_held'
+      'Hold'
+    when 'suspended'
+      'Suspend'
+    else
+      'Undetermined'
+    end
+  end
+
+  # Assigns a bootstrap class corresponding to the status of a job
+  def status_class(status)
+    case status
+    when 'completed'
+      'bg-success'
+    when 'running'
+      'bg-primary'
+    when 'queued'
+      'bg-info'
+    when 'queued_held'
+      'bg-warning'
+    when 'suspended'
+      'bg-warning'
+    else
+      'bg-secondary'
+    end
   end
 end

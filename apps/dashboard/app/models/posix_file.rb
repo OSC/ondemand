@@ -3,7 +3,7 @@ class PosixFile
 
   attr_reader :path, :stat
 
-  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, :realpath, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, :realpath, :pipe?, :readable?, to: :path
 
   # include to give us number_to_human_size
   include ActionView::Helpers::NumberHelper
@@ -53,15 +53,15 @@ class PosixFile
     return { name: basename } if stat.nil?
 
     {
-      id:         "dev-#{stat.dev}-inode-#{stat.ino}",
-      name:       basename,
-      size:       directory? ? nil : stat.size,
-      human_size: human_size,
-      directory:  directory?,
-      date:       stat.mtime.to_i,
-      owner:      PosixFile.username_from_cache(stat.uid),
-      mode:       stat.mode,
-      dev:        stat.dev
+      id:           "dev-#{stat.dev}-inode-#{stat.ino}",
+      name:         basename,
+      size:         directory? ? nil : stat.size,
+      directory:    directory?,
+      date:         stat.mtime.to_i,
+      owner:        PosixFile.username_from_cache(stat.uid),
+      mode:         stat.mode,
+      dev:          stat.dev,
+      downloadable: !pipe? && readable?
     }
   end
 
@@ -201,7 +201,7 @@ class PosixFile
     # > this is not be considered an error that affects the exit status.
     #
     # so instead we validate it against a regex that match mimetypes
-    raise "not valid mimetype: #{type}" unless type =~ /^\w+\/[-+\.\w]+$/
+    raise "not valid mimetype: #{type}" unless type =~ /\A\w+\/[-+\.\w]+\z/
 
     # if you touch a file and it is empty, the mime type is "inode/x-empty"
     # but in our interaction with the file we would treat this as "text/plain"

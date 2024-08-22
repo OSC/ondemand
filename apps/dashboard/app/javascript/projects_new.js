@@ -1,7 +1,10 @@
 'use strict';
 
+import { attachPathSelectors }  from './path_selector/path_selector';
+
 jQuery(function() {
   $("#project_template").on('change', (event) => templateChange(event));
+  attachPathSelectors();
 });
 
 function templateChange(event) {

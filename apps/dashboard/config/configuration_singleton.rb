@@ -53,6 +53,7 @@ class ConfigurationSingleton
       :motd_render_html             => false,
       :upload_enabled               => true,
       :download_enabled             => true,
+      :project_size_enabled         => true,
     }.freeze
   end
 
@@ -209,6 +210,10 @@ class ConfigurationSingleton
     config.fetch(:globus_endpoints, nil)
   end
 
+  def launcher_default_items
+    config.fetch(:launcher_default_items, []).to_a
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
@@ -315,6 +320,14 @@ class ConfigurationSingleton
     can_access_core_app? 'projects'
   end
 
+  def can_access_system_status?
+    can_access_core_app? 'system-status'
+  end
+
+  def can_access_shell?
+    can_access_core_app? 'shell'
+  end
+
   # Maximum file upload size that nginx will allow from clients in bytes
   #
   # @example No maximum upload size supplied.
@@ -366,6 +379,14 @@ class ConfigurationSingleton
 
     ood_bc_card_time_int = ood_bc_card_time.to_i
     (ood_bc_card_time_int < 0) ? 0 : ood_bc_card_time_int
+  end
+
+  # Returns the number of milliseconds to wait between calls to the system status page
+  # The default is 30s and the minimum is 10s.
+  def status_poll_delay
+    status_poll_delay = ENV['STATUS_POLL_DELAY']
+    status_poll_delay_int = status_poll_delay.nil? ? config.fetch(:status_delay, '30000').to_i : status_poll_delay.to_i
+    status_poll_delay_int < 10_000 ? 10_000 : status_poll_delay_int
   end
 
   # Returns the number of milliseconds to wait between calls to the BatchConnect Sessions resource

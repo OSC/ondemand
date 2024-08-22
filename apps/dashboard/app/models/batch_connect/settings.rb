@@ -22,7 +22,7 @@ module BatchConnect
         outdated = true unless values.key?(attribute.id.to_sym)
       end
       # CHECK IF THERE ARE OLD VALUES NO LONGER IN THE APP ATTRIBUTES STILL IN THE VALUES HASH
-      values.each do |attribute_id, _|
+      values.each_key do |attribute_id|
         outdated = true if app.attributes.select { |attribute| attribute.id.to_sym == attribute_id }.empty?
       end
 

@@ -674,6 +674,18 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'display: none;', find_option_style('classroom_size', 'large')
   end
 
+  test 'can hide fields with numbers and characters' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults - gpus_num_v100 is hidden on page load.
+    assert_equal('any', find_value('node_type'))
+    refute(find("##{bc_ele_id('gpus_num_v100')}", visible: false).visible?)
+
+    # select gpu and now it's shown.
+    select('gpu', from: bc_ele_id('node_type'))
+    assert(find("##{bc_ele_id('gpus_num_v100')}").visible?)
+  end
+
   test 'options can check and uncheck' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -1361,7 +1373,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       click_on('Select Path')
 
       # shows the OodFilesApp.candidate_favorite_paths favorites
-      favorites = all('#favorites li', wait: 30)
+      sleep 3
+      favorites = get_favorites
       assert_equal(2, favorites.size)
       assert_equal('/tmp', favorites[0].text.strip)
       assert_equal('/var', favorites[1].text.strip)
@@ -1396,7 +1409,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       click_on('Select Path')
 
       # favorites that have been configured in yml
-      favorites = all('#favorites li', wait: 30)
+      sleep 3
+      favorites = get_favorites
       assert_equal(2, favorites.size)
       assert_equal('/fs/ess', favorites[0].text.strip)
       assert_equal('/fs/scratch', favorites[1].text.strip)
@@ -1433,12 +1447,21 @@ class BatchConnectTest < ApplicationSystemTestCase
       click_on('Select Path')
 
       # no favorites show up
-      favorites = all('#favorites li', wait: 30)
+      sleep 3
+      favorites = get_favorites
       assert_equal(0, favorites.size)
     end
   end
 
-  test 'saves settings as a template' do
+  def get_favorites
+    # For debugging flaky tests
+    favorites = all('#favorites li', wait: 30)
+    # puts "FAVORITES: "
+    # puts favorites.map{|i| i['innerHTML']}.join('')
+    favorites
+  end
+
+  test 'launches and saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
         Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
@@ -1461,6 +1484,34 @@ class BatchConnectTest < ApplicationSystemTestCase
         click_on('Save')
 
         click_on('Launch', wait: 30)
+        expected = output_fixture('user_settings/simple_bc_test.yml')
+        actual = File.read("#{dir}/settings.yml")
+
+        assert_equal(expected, actual)
+      end
+    end
+  end
+
+  test 'saves settings as a template' do
+    with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
+      Dir.mktmpdir do |dir|
+        Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
+        BatchConnect::Session.any_instance.expects(:save).never
+        OodCore::Job::Adapters::Slurm.any_instance.expects(:info).never
+
+        visit new_batch_connect_session_context_url('sys/bc_paraview')
+
+        fill_in(bc_ele_id('bc_num_hours'), with: 5)
+        fill_in(bc_ele_id('bc_account'), with: 'abc123')
+        fill_in('bc_vnc_resolution_x_field', with: '500')
+        fill_in('bc_vnc_resolution_y_field', with: '600')
+
+        check('batch_connect_session_save_template')
+        fill_in('modal_input_template_new_name', with: 'test template')
+        sleep 5 # modal needs to sleep?
+        click_on('Save')
+
+        click_on('Save settings and close', wait: 30)
         expected = output_fixture('user_settings/simple_bc_test.yml')
         actual = File.read("#{dir}/settings.yml")
 

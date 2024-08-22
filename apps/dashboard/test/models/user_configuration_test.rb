@@ -79,6 +79,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       interactive_apps_menu: [],
       custom_pages: {},
       support_ticket: {},
+      apps_datatable: { page_length: 10 },
     }
 
     # ensure all properties are tested
@@ -177,12 +178,11 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 
-  test "filter_nav_categories? should return default value NavConfig.categories_whitelist? when categories is not set in config" do
+  test "filter_nav_categories? should return false when nav_categories is nil" do
     Configuration.stubs(:config).returns({})
-    NavConfig.stubs(:categories_whitelist?).returns(false)
     assert_equal false, UserConfiguration.new.filter_nav_categories?
 
-    NavConfig.stubs(:categories_whitelist?).returns(true)
+    Configuration.stubs(:config).returns({nav_categories: []})
     assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 

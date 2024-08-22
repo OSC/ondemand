@@ -1,0 +1,48 @@
+<%- saved_settings = all_saved_settings -%>
+<%- unless saved_settings.empty? -%>
+<%- content_for :head do -%>
+  <%= javascript_include_tag('batch_connect_settings', nonce: true) %>
+<%- end -%>
+<div class="settings-widget">
+  <h3><%= t('dashboard.saved_settings_title') %></h3>
+  <div class="row">
+  <% saved_settings.each_with_index do |settings, index| %>
+    <%- batch_connect_app = settings.app -%>
+    <%- link = batch_connect_app.link -%>
+    <%- tile_data = link.tile -%>
+    <%- icon_uri = URI(tile_data.fetch(:icon, link.icon_uri).to_s) -%>
+    <%- toggle_id = "saved-settings-#{index}" -%>
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-heading">
+          <div class="h5 card-header overflow-auto">
+            <div class="float-end">
+              <%= render partial: 'batch_connect/settings/action_buttons', locals:{ settings: settings } %>
+            </div>
+            <a class="saved-settings-show" href="<%= batch_connect_setting_path(token: settings.token, id: settings.name) %>">
+              <span class="card-text"><%= settings.name %></span>
+            </a>
+          </div>
+          <span class="list-group-item header d-flex align-items-center pl-0">
+            <a href="#" class="btn px-1 py-0 saved-settings-toggle" data-bs-toggle="collapse" data-bs-target="#<%= toggle_id %>"><%= fa_icon('plus', classes: nil) %></a>
+            <%= icon_tag(icon_uri) unless icon_uri.to_s.blank? %>
+            <%= settings.app.title %>
+          </span>
+        </div>
+
+        <div id="<%= toggle_id %>" class="card-body collapse">
+          <% settings.app.attributes.each do |attribute| %>
+            <p>
+              <strong><%= attribute.label %>:</strong>
+              <span><%= settings.values[attribute.id.to_sym] %></span>
+            </p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  </div>
+</div>
+
+<%= render partial: 'batch_connect/shared/full_page_spinner' %>
+<% end %>

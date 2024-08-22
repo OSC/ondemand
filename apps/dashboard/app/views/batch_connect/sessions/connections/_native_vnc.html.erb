@@ -3,15 +3,15 @@
 
 <% if browser.platform == :windows %>
 
-  <%= render partial: 'batch_connect/sessions/connections/native_vnc_windows.html.erb', :locals => { :connect => connect, :localport => localport } %>
+  <%= render partial: 'batch_connect/sessions/connections/native_vnc_windows', :locals => { :connect => connect, :localport => localport } %>
 
 <% elsif browser.platform == :mac %>
 
-  <%= render partial: 'batch_connect/sessions/connections/native_vnc_mac.html.erb', :locals => { :connect => connect, :localport => localport } %>
+  <%= render partial: 'batch_connect/sessions/connections/native_vnc_mac', :locals => { :connect => connect, :localport => localport } %>
 
 <% elsif browser.platform == :linux %>
 
-  <%= render partial: 'batch_connect/sessions/connections/native_vnc_linux.html.erb', :locals => { :connect => connect, :localport => localport } %>
+  <%= render partial: 'batch_connect/sessions/connections/native_vnc_linux', :locals => { :connect => connect, :localport => localport } %>
 
 <% else %>
   We do not currently support documentation for connecting to a VNC session

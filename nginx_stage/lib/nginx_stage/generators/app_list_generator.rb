@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NginxStage
   # This generator lists all staged apps with app configs.
   class AppListGenerator < Generator

@@ -5,8 +5,8 @@
   <%= favicon %>
 
   <%= javascript_include_tag 'application', nonce: true %>
-  <% custom_javascript_paths.each do |path| %>
-    <script src="<%= path %>" nonce="<%= content_security_policy_nonce %>"></script>
+  <% custom_javascript_paths.each do |custom_file_config| %>
+    <script src="<%= custom_file_config[:src] %>" type="<%= custom_file_config[:type] %>" nonce="<%= content_security_policy_nonce %>"></script>
   <% end %>
   <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all', rel: 'preload stylesheet', as: 'style', type: 'text/css' %>
   <%= render partial: '/layouts/nav/styles', locals: { bg_color: @user_configuration.brand_bg_color, link_active_color:  @user_configuration.brand_link_active_bg_color } %>
@@ -31,7 +31,7 @@
       <ul class="navbar-nav w-100 align-items-center" role="menubar">
         <%= render partial: 'layouts/nav/logo' %>
       
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -46,7 +46,7 @@
           <% end %>
 
           <!-- add some space between nav_bar and help_menu -->
-          <div class="ml-auto"></div>
+          <div class="ms-auto"></div>
 
           <% if @help_bar.empty? %>
             <%= render partial: 'layouts/nav/develop_dropdown' %>
@@ -54,7 +54,7 @@
             <%= render partial: 'layouts/nav/user' %>
             <%= render partial: 'layouts/nav/log_out' %>
           <% else %>
-            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
+            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-end' }%>
           <% end %>
         </div>
       </ul>
@@ -63,11 +63,7 @@
 
   <div class="<%= local_assigns[:layout_container_class] || 'container-md' %> content mt-4" role="main">
 
-    <% @announcements.select(&:valid?).each do |announcement| %>
-      <div class="alert alert-<%= announcement.type %> announcement" role="alert">
-        <%= raw OodAppkit.markdown.render(announcement.msg) %>
-      </div>
-    <% end %>
+    <%= render "layouts/announcements" %>
 
     <%= render "layouts/browser_warning" %>
 
@@ -77,8 +73,7 @@
 
     <div id="js-alert-danger-template" class="d-none" aria-hidden="true">
       <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
           <span class="sr-only">Close</span>
         </button>
         ALERT_MSG
@@ -87,8 +82,7 @@
 
     <% if alert %>
       <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
           <span class="sr-only">Close</span>
         </button>
         <%= alert %>
@@ -96,9 +90,8 @@
     <% end %>
 
     <% if notice %>
-      <div class="alert alert-success" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-          <span aria-hidden="true">&times;</span>
+      <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
           <span class="sr-only">Close</span>
         </button>
         <%= notice %>

@@ -4,6 +4,8 @@
 class Project
   include ActiveModel::Model
   include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
+  include IconWithUri
 
   class << self
     def lookup_file
@@ -73,6 +75,8 @@ class Project
   validate :project_directory_invalid, on: [:create, :update]
   validate :project_directory_exist, on: [:create]
   validate :project_template_invalid, on: [:create]
+
+  before_validation :add_icon_uri
 
   def initialize(attributes = {})
     @id = attributes[:id]
@@ -190,6 +194,26 @@ class Project
       o, e, s = Open3.capture3('timeout', "#{Configuration.project_size_timeout}s", 'du', '-s', '-b', project_dataroot.to_s)
       o.split('/')[0].to_i
     end
+  end
+
+  def jobs
+    launchers = Launcher.all(directory)
+    launchers.map do |launcher|
+      launcher.jobs
+    end.flatten
+  end
+
+  def job_from_id(job_id, cluster)
+    launchers = Launcher.all(directory)
+    launchers.each do |launcher|
+      job = launcher.job_from_id(job_id, cluster)
+      return job unless job.nil?
+    end
+  end
+
+  def readme_path
+    file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
+    File.readable?(file) ? file : nil
   end
 
   private

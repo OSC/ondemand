@@ -1,0 +1,4 @@
+type: danger
+msg: This is the announcement.
+id: view_id
+dismissible: true

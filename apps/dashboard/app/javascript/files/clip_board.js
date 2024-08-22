@@ -53,7 +53,7 @@ jQuery(function () {
       };
 
       $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-      $(CONTENTID).trigger(EVENTNAME.clearClipbaord, eventData);
+      $(CONTENTID).trigger(EVENTNAME.clearClipboard, eventData);
 
     } else {
       clipBoard.updateClipboardFromSelection(options.selection);

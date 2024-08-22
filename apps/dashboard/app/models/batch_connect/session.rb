@@ -4,6 +4,7 @@ module BatchConnect
   class Session
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
+    include SanitizedEnv
 
     # This class describes the object that is bound to the ERB template file
     # when it is rendered
@@ -277,7 +278,7 @@ module BatchConnect
       staged_root.tap { |p| FileUtils.mkdir_p(p.to_s, mode: 0o0700) unless p.exist? }
 
       # Sync the template files over
-      oe, s = Open3.capture2e('rsync', '-rlpv', '--exclude', '*.erb', "#{root}/", staged_root.to_s)
+      oe, s = Open3.capture2e('rsync', '-rlpv', '--exclude', '.*.swp', '--exclude', '*.erb', "#{root}/", staged_root.to_s)
       raise oe unless s.success?
 
       # Output user submitted context attributes for debugging purposes
@@ -309,7 +310,9 @@ module BatchConnect
       job_script_options_file.write(JSON.pretty_generate(options))
 
       # Submit job script
-      self.job_id = adapter.submit script(content: content, options: options)
+      ClimateControl.modify(sanitized_env) do
+        self.job_id = adapter.submit script(content: content, options: options)
+      end
       db_file.write(to_json, perm: 0o0600)
       true
     rescue => e   # rescue from all standard exceptions (app never crashes)

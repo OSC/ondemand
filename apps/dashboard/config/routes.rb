@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   if Configuration.can_access_projects?
     resources :projects do
       root 'projects#index'
+      get '/jobs/:cluster/:jobid' => 'projects#job_details', :defaults => { :format => 'turbo_stream' }, :as => 'job_details'
+
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
@@ -50,6 +52,9 @@ Rails.application.routes.draw do
     scope '*token', constraints: { token: %r{((usr/[^/]+)|dev|sys)/[^/]+(/[^/]+)?} } do
       resources :settings, only: [:show, :destroy]
       resources :session_contexts, only: [:new, :create]
+      get "session_contexts/edit_settings/:id", to: "session_contexts#edit_settings", as: 'edit_settings'
+      post "session_contexts/save_settings", to: "session_contexts#save_settings", as: 'save_settings'
+
       root 'session_contexts#new'
     end
   end
@@ -95,7 +100,7 @@ Rails.application.routes.draw do
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end
 
-  get '/jobs/info/:cluster/:id' => 'jobs#info', :defaults => { :format => 'json' }, :as => 'jobs_info'
+  get '/system-status', to: 'system_status#index', as: 'system_status' if Configuration.can_access_system_status?
 
   post 'settings', :to => 'settings#update'
 

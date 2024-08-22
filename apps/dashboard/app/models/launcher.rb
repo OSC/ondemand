@@ -70,6 +70,8 @@ class Launcher
     }
 
     add_required_fields(**sm_opts)
+    # add defaults if it's a brand new launcher with only title and directory.
+    add_default_fields(**sm_opts) if opts.size <= 2
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
@@ -194,12 +196,26 @@ class Launcher
     nil
   end
 
-  def most_recent_job_id
-    most_recent_job['id']
+  def active_jobs
+    @active_jobs ||= jobs.reject { |job| job.completed? }
   end
 
-  def most_recent_job_cluster
-    most_recent_job['cluster']
+  def jobs
+    @jobs ||= begin
+      data = YAML.safe_load(File.read(job_log_file.to_s), permitted_classes: [Time]).to_a
+      data.map do |job_data|
+        HpcJob.new(**job_data)
+      end
+    end
+  end
+
+  # When a job is requested, update before returning
+  def job_from_id(job_id, cluster)
+    job = stored_job_from_id(job_id, cluster)
+    unless job.nil? || job.status.to_s == 'completed'
+      update_job_log(job_id, cluster)
+    end
+    stored_job_from_id(job_id, cluster)
   end
 
   def create_default_script
@@ -295,23 +311,30 @@ class Launcher
   end
 
   def most_recent_job
-    job_data.sort_by do |data|
+    jobs.sort_by do |data|
       data['submit_time']
     end.reverse.first.to_h
   end
 
-  def update_job_log(job_id, cluster)
-    new_job_data = job_data + [{
-      'id'          => job_id,
-      'submit_time' => Time.now.to_i,
-      'cluster'     => cluster.to_s
-    }]
-
-    File.write(job_log_file.to_s, new_job_data.to_yaml)
+  def stored_job_from_id(job_id, cluster)
+    jobs.detect { |j| j.id == job_id && j.cluster == cluster }
   end
 
-  def job_data
-    @job_data ||= YAML.safe_load(File.read(job_log_file.to_s)).to_a
+  def update_job_log(job_id, cluster)
+    adapter = adapter(cluster).job_adapter
+    info = adapter.info(job_id)
+    job = HpcJob.from_core_info(info: info, cluster: cluster)
+    existing_jobs = jobs
+    stored_job = stored_job_from_id(job_id, cluster)
+    if stored_job.nil?
+      new_jobs = (jobs + [job.to_h]).map(&:to_h)
+    else
+      new_jobs = existing_jobs.map(&:to_h)
+      idx = existing_jobs.index(stored_job)
+      new_jobs[idx].merge!(job.to_h) { |key, old_val, new_val| new_val.nil? ? old_val : new_val } 
+    end
+
+    File.write(job_log_file.to_s, new_jobs.to_yaml)
   end
 
   def job_log_file
@@ -336,6 +359,12 @@ class Launcher
   def add_required_fields(form: [], attributes: {})
     add_cluster_to_form(form: form, attributes: attributes)
     add_script_to_form(form: form, attributes: attributes)
+  end
+
+  def add_default_fields(form: [], **_args)
+    Configuration.launcher_default_items.each do |default_item|
+      form << default_item unless form.include?(default_item)
+    end
   end
 
   def add_script_to_form(form: [], attributes: {})

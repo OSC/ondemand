@@ -169,11 +169,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_link('/apps/show/pseudofun'), 1
     assert_select pinned_app_link('/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
 
-    assert_select 'h3', 2
-    assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
+    assert_select 'h2', 2
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h2')[1].text
 
     assert_select "div[class='motd']", 3
-    assert_select "h4[class='motd_title']", 3
+    assert_select "h3[class='motd_title']", 3
   end
 
   test 'shows pinned apps when XDMOD is present' do
@@ -238,11 +238,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_link('/apps/show/pseudofun'), 1
     assert_select pinned_app_link('/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
 
-    assert_select 'h3', 2
-    assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
+    assert_select 'h2', 2
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h2')[1].text
 
     assert_select "div[class='motd']", 3
-    assert_select "h4[class='motd_title']", 3
+    assert_select "h3[class='motd_title']", 3
 
     assert_select "div[class='xdmod']", 2
     assert_select "div[id='jobsEfficiencyReportPanelDiv']", 1
@@ -262,11 +262,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'h3', 1
-    assert_equal I18n.t('dashboard.motd_title'), css_select('h3').text
+    assert_select 'h2', 1
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h2').text
 
     assert_select "div[class='motd']", 3
-    assert_select "h4[class='motd_title']", 3
+    assert_select "h3[class='motd_title']", 3
   end
 
   test 'still shows XDMOD when no pinned apps' do
@@ -301,11 +301,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'h3', 1
-    assert_equal I18n.t('dashboard.motd_title'), css_select('h3').text
+    assert_select 'h2', 1
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h2').text
 
     assert_select "div[class='motd']", 3
-    assert_select "h4[class='motd_title']", 3
+    assert_select "h3[class='motd_title']", 3
 
     assert_select "div[class='xdmod']", 2
     assert_select "div[id='jobsEfficiencyReportPanelDiv']", 1
@@ -329,10 +329,10 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h4[class='apps-section-header-blue']", 2
+    assert_select "h3[class='apps-section-header-blue']", 2
     assert_select pinned_app_links, 3
-    assert_equal 'Gateway Apps', css_select("h4[class='apps-section-header-blue']")[0].text
-    assert_equal 'Interactive Apps', css_select("h4[class='apps-section-header-blue']")[1].text
+    assert_equal 'Gateway Apps', css_select("h3[class='apps-section-header-blue']")[0].text
+    assert_equal 'Interactive Apps', css_select("h3[class='apps-section-header-blue']")[1].text
   end
 
   test 'groups the apps by sub-categories' do
@@ -351,10 +351,10 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h4[class='apps-section-header-blue']", 2
+    assert_select "h3[class='apps-section-header-blue']", 2
     assert_select pinned_app_links, 3
-    assert_equal 'Apps', css_select("h4[class='apps-section-header-blue']")[0].text
-    assert_equal 'Biomedical Informatics', css_select("h4[class='apps-section-header-blue']")[1].text
+    assert_equal 'Apps', css_select("h3[class='apps-section-header-blue']")[0].text
+    assert_equal 'Biomedical Informatics', css_select("h3[class='apps-section-header-blue']")[1].text
   end
 
   test 'still shows ungroupable apps' do
@@ -373,9 +373,9 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h4[class='apps-section-header-blue']", 1
+    assert_select "h3[class='apps-section-header-blue']", 1
     assert_select pinned_app_links, 3
-    assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[0].text
+    assert_equal I18n.t('dashboard.not_grouped'), css_select("h3[class='apps-section-header-blue']")[0].text
   end
 
   test 'group by metadata fields works' do
@@ -394,11 +394,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h4[class='apps-section-header-blue']", 3
+    assert_select "h3[class='apps-section-header-blue']", 3
     assert_select pinned_app_links, 3
-    assert_equal 'go erLANG python', css_select("h4[class='apps-section-header-blue']")[0].text
-    assert_equal 'python julia R Ruby', css_select("h4[class='apps-section-header-blue']")[1].text
-    assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[2].text
+    assert_equal 'go erLANG python', css_select("h3[class='apps-section-header-blue']")[0].text
+    assert_equal 'python julia R Ruby', css_select("h3[class='apps-section-header-blue']")[1].text
+    assert_equal I18n.t('dashboard.not_grouped'), css_select("h3[class='apps-section-header-blue']")[2].text
   end
 
   test 'shows only the shared apps that have been configured' do
@@ -418,12 +418,12 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_links, 1
     assert_select pinned_app_link('/apps/show/my_shared_app/usr/me'), 1
 
-    assert_select 'h3', 1
-    assert css_select('h3')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
+    assert_select 'h2', 1
+    assert css_select('h2')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
 
     # no MOTD or xdmod
     assert_select "div[class='motd']", 0
-    assert_select "h4[class='motd_title']", 0
+    assert_select "h3[class='motd_title']", 0
     assert_select "div[class='xdmod']", 0
   end
 
@@ -458,12 +458,12 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_link('/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
     assert_select pinned_app_link('/batch_connect/sys/bc_paraview/session_contexts/new'), 1
 
-    assert_select 'h3', 1
-    assert css_select('h3')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
+    assert_select 'h2', 1
+    assert css_select('h2')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
 
     # no MOTD or xdmod
     assert_select "div[class='motd']", 0
-    assert_select "h4[class='motd_title']", 0
+    assert_select "h3[class='motd_title']", 0
     assert_select "div[class='xdmod']", 0
   end
 

@@ -37,7 +37,7 @@ First, you'll need to clone this repository and make a symlink.
 
 ```text
 mkdir -p ~/ondemand/dev
-git clone https://github.com/OSC/ondemand.git ~/ondemand/src
+git clone git@github.com:OSC/ondemand.git ~/ondemand/src
 cd ~/ondemand/dev
 ln -s ../src/apps/dashboard
 ```

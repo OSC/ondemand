@@ -39,7 +39,6 @@ group :development, :test do
   gem 'byebug'
   gem 'rails-controller-testing'
   gem 'mocha', '~> 2.1'
-  gem 'climate_control', '~> 0.2'
   gem 'timecop', '~> 0.9'
 end
 
@@ -64,11 +63,14 @@ gem 'osc_machete_rails', '~> 2.1.2'
 gem 'pbs', '~> 2.2.1'
 gem 'ood_appkit', '~> 2.0'
 
+gem 'climate_control', '~> 0.2'
+
 # we have to lock rdoc because 6.4 depends on psych 4.0 which breaks with
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
 gem 'rdoc', '6.3.4.1'
 
-# lock nokogiri & net-imap to versions that are compatible with ruby 2.7.0
-# Ubuntu 20.04 uses.
+# lock gems to versions that are compatible with ruby 2.7.0,
+# which Ubuntu 20.04 uses.
 gem 'nokogiri', '~> 1.15', '< 1.16'
 gem 'net-imap', '~> 0.3', '< 0.4'
+gem 'public_suffix', '~> 5.0', '< 6.0'

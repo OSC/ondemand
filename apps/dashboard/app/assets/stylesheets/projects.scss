@@ -26,3 +26,15 @@
 .job-info .job-info-description{
   display: block;
 }
+
+.list-toggler[aria-expanded="false"] span::after {
+  content: "▲";
+  font-size: 1.4em;
+  float: right;
+}
+
+.list-toggler[aria-expanded="true"] span::after {
+  content: "▼";
+  font-size: 1.4em;
+  float: right;
+}
