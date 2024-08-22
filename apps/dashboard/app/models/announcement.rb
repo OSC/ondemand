@@ -55,7 +55,7 @@ class Announcement
   rescue SyntaxError => e # Syntax errors
     Rails.logger.warn "Syntax error in announcement file '#{@path}': #{e.message}. Please check the file for proper syntax."
     @opts = {}
-  rescue => e # Other exceptions
+  rescue StandardError => e # Other exceptions
     Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
     @opts = {}
   end
