@@ -31,7 +31,25 @@ function pollForJobInfo(element) {
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
     .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
     .then((r) => r.text())
-    .then((html) => replaceHTML(element.id, html))
+    .then((html) => {
+      // if the job panel is currently open by the user, make the new
+      // html open as well.
+      const currentData = element.querySelector(`#${element.id}_data`);
+      let currentlyOpen = false;
+
+      if(currentData != null) {
+        currentlyOpen = currentData.classList.contains('show');
+      }
+
+      if(currentlyOpen) {
+        const responseElement = new DOMParser().parseFromString(html, "text/xml");
+        const dataDiv = responseElement.querySelector(`#${element.id}_data`);
+        dataDiv.classList.add('show');
+        html = (new XMLSerializer()).serializeToString(responseElement);
+      }
+
+      replaceHTML(element.id, html)
+    })
     .then(setTimeout(pollForJobInfo, 30000, element))
     .catch((err) => {
       console.log('Cannot not retrive job details due to error:');
