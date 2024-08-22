@@ -8,7 +8,10 @@
 <%= bootstrap_form_for(@script, url: submit_project_launcher_path) do |f| %>
   <% @script.smart_attributes.each do |attrib| %>
     <%# TODO generate render_format %>
-    <%= create_widget(f, attrib, format: nil, hide_fixed: false) %>
+    <%= create_widget(f, attrib, format: nil) %>
+    <% if attrib.fixed? %>
+      <%= f.hidden_field(attrib.id, attrib.field_options) %>
+    <% end %>
   <% end %>
 
   <div class="d-grid gap-2">
