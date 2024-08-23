@@ -57,11 +57,16 @@ class Launcher
     end
   end
 
+  ID_REX = /\A\w{8}\Z/.freeze
+
+  validates(:id, format: { with: ID_REX, allow_blank: true, message: :format }, on: [:save])
+  validates(:id, format: { with: ID_REX, message: :format }, on: [:update])
+
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
 
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
-    @id = opts[:id]
+    @id = opts[:id] if opts[:id].to_s.empty? || opts[:id].to_s.match?(ID_REX)
     @title = opts[:title].to_s
     @created_at = opts[:created_at]
     sm_opts = {
@@ -143,7 +148,7 @@ class Launcher
   end
 
   def save
-    @id = Launcher.next_id if @id.nil? || !@id.to_s.match?(/^\w{8}$/)
+    @id = Launcher.next_id if @id.nil? || !@id.to_s.match?(ID_REX)
     @created_at = Time.now.to_i if @created_at.nil?
     script_path = Launcher.script_path(project_dir, id)
     script_path.mkpath unless script_path.exist?

@@ -18,10 +18,10 @@ class LauncherTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      target = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
+      target = Launcher.new({ project_dir: projects_path.to_s, id: '12345678', title: 'Test Script' })
 
       assert target.save
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
+      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
     end
   end
 
@@ -29,13 +29,13 @@ class LauncherTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      target = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
+      target = Launcher.new({ project_dir: projects_path.to_s, id: '12345678', title: 'Test Script' })
 
       assert target.save
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
+      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
 
       assert target.destroy
-      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
+      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
     end
   end
 
@@ -55,16 +55,16 @@ class LauncherTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      script = Launcher.new({ project_dir: projects_path.to_s, id: 1234, title: 'Test Script' })
+      script = Launcher.new({ project_dir: projects_path.to_s, id: '12345678', title: 'Test Script' })
       assert script.save
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
+      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
 
-      target = Launcher.new({ project_dir: projects_path.to_s, id: 33, title: 'Not saved' })
-      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33')
+      target = Launcher.new({ project_dir: projects_path.to_s, id: '33333333', title: 'Not saved' })
+      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33333333')
 
       assert target.destroy
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
-      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33')
+      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
+      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33333333')
     end
   end
 
@@ -88,6 +88,15 @@ class LauncherTest < ActiveSupport::TestCase
       OodAppkit.stubs(:dataroot).returns(projects_path)
 
       assert_equal false, Launcher.scripts?(projects_path)
+    end
+  end
+
+  test 'launchers will not assign wrong id' do
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
+      launcher = Launcher.new({ project_dir: projects_path.to_s, id: '1234', title: 'Test Script' })
+      assert_nil(launcher.id)
     end
   end
 
