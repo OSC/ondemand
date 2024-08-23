@@ -2,7 +2,6 @@
 
 module SmartAttributes
   class AttributeFactory
-
     # Build this attribute object. Must specify a valid directory in opts
     #
     # @param opts [Hash] attribute's options
@@ -18,8 +17,7 @@ module SmartAttributes
       # Defaults to ondemand/[dev,sys]/projects
       # @return [String] attribute value
       def value
-        env = Rails.env.production? ? 'sys' : 'dev'
-        opts[:value] || "ondemand/#{env}/projects"
+        job_name(opts[:value] || 'Project Manager Job')
       end
 
       def widget
@@ -35,6 +33,15 @@ module SmartAttributes
       # @return [Hash] submission hash
       def submit(*)
         { script: { job_name: value } }
+      end
+
+      def job_name(name)
+        [
+          ENV['OOD_PORTAL'], # the OOD portal id
+          ENV['RAILS_RELATIVE_URL_ROOT'].to_s.sub(%r{^/[^/]+/}, ''), # the OOD app
+          'project-manager',
+          name # the user supplied job name
+        ].reject(&:blank?).join('/')
       end
     end
   end
