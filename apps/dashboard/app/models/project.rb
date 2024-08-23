@@ -205,10 +205,10 @@ class Project
     cached_job = jobs.detect { |j| j.id == job_id && j.cluster == cluster }
     return cached_job if cached_job.completed?
 
-    active_job = adapter(cluster).info(job_id)
-    active_job = HpcJob.new(**active_job.to_h)
-    Project.upsert_job!(directory, active_job)
-    active_job
+    info = adapter(cluster).info(job_id)
+    job = HpcJob.from_core_info(info: info, cluster: cluster)
+    Project.upsert_job!(directory, job)
+    job
   end
 
   def adapter(cluster_id)
