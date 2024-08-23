@@ -35,6 +35,7 @@ module SmartAttributes
         { script: { job_name: value } }
       end
 
+      # TODO: need to sanitize the job name for some schedulers
       def job_name(name)
         [
           ENV['OOD_PORTAL'], # the OOD portal id
