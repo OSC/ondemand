@@ -178,11 +178,11 @@ class Launcher
   end
 
   def submit(options)
-    cluster_id = if options.has_key?(:auto_batch_clusters)
-      options[:auto_batch_clusters]
-    else
-      smart_attributes.find { |sm| sm.id == 'auto_batch_clusters' }.value.to_sym
-    end
+    cluster_id =  if options.has_key?(:auto_batch_clusters)
+                    options[:auto_batch_clusters]
+                  else
+                    smart_attributes.find { |sm| sm.id == 'auto_batch_clusters' }.value.to_sym
+                  end
     adapter = adapter(cluster_id).job_adapter
 
     render_format = adapter.class.name.split('::').last.downcase
