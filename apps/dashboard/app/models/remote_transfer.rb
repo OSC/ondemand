@@ -43,7 +43,7 @@ class RemoteTransfer < Transfer
     end
   end
 
-  attr_accessor :src_remote, :dest_remote, :filesizes, :transferred
+  attr_accessor :src_remote, :dest_remote, :tempfile, :filesizes, :transferred
 
   class << self
     def transfers
@@ -51,7 +51,7 @@ class RemoteTransfer < Transfer
       Transfer.transfers
     end
 
-    def build(action:, files:, src_remote:, dest_remote:)
+    def build(action:, files:, src_remote:, dest_remote:, tempfile: nil)
       if files.is_a?(Array)
         # rm action will want to provide an array of files
         # so if it is an Array we convert it to a hash:
@@ -59,8 +59,7 @@ class RemoteTransfer < Transfer
         # convert [a1, a2, a3] to {a1 => nil, a2 => nil, a3 => nil}
         files = Hash[files.map { |f| [f, nil] }].with_indifferent_access
       end
-
-      self.new(action: action, files: files, src_remote: src_remote, dest_remote: dest_remote)
+      self.new(action: action, files: files, src_remote: src_remote, dest_remote: dest_remote, tempfile: tempfile)
     end
   end
 
@@ -133,6 +132,7 @@ class RemoteTransfer < Transfer
     errors.add :base, e.message
   ensure
     self.status = OodCore::Job::Status.new(state: :completed)
+    tempfile&.close(true)
   end
 
   def from

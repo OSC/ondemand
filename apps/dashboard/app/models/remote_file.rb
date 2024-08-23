@@ -77,8 +77,15 @@ class RemoteFile
   end
 
   def handle_upload(tempfile)
-    # FIXME: upload to the remote asynchronously
-    RcloneUtil.moveto(remote, path, tempfile.path)
+    # Start a transfer that moves the Rack tempfile to the remote.
+    transfer = RemoteTransfer.build(
+      action: "mv",
+      files: { tempfile.path => path.to_s },
+      src_remote: RcloneUtil::LOCAL_FS_NAME,
+      dest_remote: remote,
+      tempfile: tempfile
+    )
+    transfer.tap(&:perform_later)
   end
 
   def mime_type
