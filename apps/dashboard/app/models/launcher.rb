@@ -178,7 +178,13 @@ class Launcher
   end
 
   def submit(options)
-    adapter = adapter(options[:auto_batch_clusters]).job_adapter
+    cluster_id =  if options.has_key?(:auto_batch_clusters)
+                    options[:auto_batch_clusters]
+                  else
+                    smart_attributes.find { |sm| sm.id == 'auto_batch_clusters' }.value.to_sym
+                  end
+    adapter = adapter(cluster_id).job_adapter
+
     render_format = adapter.class.name.split('::').last.downcase
 
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
@@ -186,7 +192,7 @@ class Launcher
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
     end
-    update_job_log(job_id, options[:auto_batch_clusters].to_s)
+    update_job_log(job_id, cluster_id.to_s)
     write_job_options_to_cache(options)
 
     job_id
@@ -345,7 +351,7 @@ class Launcher
 
   def submit_opts(options, render_format)
     smart_attributes.map do |sm|
-      sm.value = options[sm.id.to_sym]
+      sm.value = options[sm.id.to_sym] unless sm.fixed?
       sm
     end.map do |sm|
       sm.submit(fmt: render_format)
