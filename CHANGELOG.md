@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update myjobs to use rails 7.0 defaults (#3735)\
+update to use rails 7 defaults (#3734)\
+find chrome version and automatically dl the right driver (#3726)\
+Hide fixed attributes (#3745)\
+Fix large remote file uploads (#3739)\
+Bump rexml from 3.3.2 to 3.3.6 in /apps/dashboard (#3747)\
+adds error messages for syntax errors (#3486)\
+upgrade uppy to 4.0 (#3717)\
+Update Changelog (#3738)\
+fixes #3728 with solution provided by httpd devs (#3730)\
+lint a random file (#3742)\
+More job details in pm (#3700)\
+account for /dex (dex_uri) when enabling maintenance mode (#3736)\
+lint a random file (#3737)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
