@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   javascript on the client in [3723](https://github.com/OSC/ondemand/pull/3723).
 - XDMoD jobs panel uses plain js now in [3706](https://github.com/OSC/ondemand/pull/3706).
 - Esbuild now has a plugin for to use source code for minified dependencies in [3693](https://github.com/OSC/ondemand/pull/3693).
+- Remote file uploads now move the tempfile asychronously in [3739](https://github.com/OSC/ondemand/pull/3739).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -57,6 +58,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Downloads can once again be estimated in [3653](https://github.com/OSC/ondemand/pull/3653).
 - Download buttons will now be hidden for certain files like pipes in [3654](https://github.com/OSC/ondemand/pull/3654).
 - Favorite file paths now consult the Allowlist in [3526](https://github.com/OSC/ondemand/pull/3526).
+- The ood_portal.conf now accounts for /dex (dex_uri) when enabling maintenance mode in [3736](https://github.com/OSC/ondemand/pull/3736).
+- mod_ood_proxy now correctly proxies for httpd 2.4.62 in [3728](https://github.com/OSC/ondemand/pull/3728).
 
 ### Security
 
