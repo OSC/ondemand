@@ -31,7 +31,7 @@ module SmartAttributes
   
         # Submission hash describing how to submit this attribute
         # @return [Hash] submission hash
-        def submit()
+        def submit(*)
           cores = value.blank? ? 1 : value.to_i
           { script: { cores: cores } }
         end
