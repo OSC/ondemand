@@ -6,20 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update myjobs to use rails 7.0 defaults (#3735)\
-update to use rails 7 defaults (#3734)\
-find chrome version and automatically dl the right driver (#3726)\
-Hide fixed attributes (#3745)\
-Fix large remote file uploads (#3739)\
-Bump rexml from 3.3.2 to 3.3.6 in /apps/dashboard (#3747)\
-adds error messages for syntax errors (#3486)\
-upgrade uppy to 4.0 (#3717)\
-Update Changelog (#3738)\
-fixes #3728 with solution provided by httpd devs (#3730)\
-lint a random file (#3742)\
-More job details in pm (#3700)\
-account for /dex (dex_uri) when enabling maintenance mode (#3736)\
-lint a random file (#3737)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -60,6 +46,7 @@ lint a random file (#3737)
   javascript on the client in [3723](https://github.com/OSC/ondemand/pull/3723).
 - XDMoD jobs panel uses plain js now in [3706](https://github.com/OSC/ondemand/pull/3706).
 - Esbuild now has a plugin for to use source code for minified dependencies in [3693](https://github.com/OSC/ondemand/pull/3693).
+- Remote file uploads now move the tempfile asychronously in [3739](https://github.com/OSC/ondemand/pull/3739).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -71,6 +58,8 @@ lint a random file (#3737)
 - Downloads can once again be estimated in [3653](https://github.com/OSC/ondemand/pull/3653).
 - Download buttons will now be hidden for certain files like pipes in [3654](https://github.com/OSC/ondemand/pull/3654).
 - Favorite file paths now consult the Allowlist in [3526](https://github.com/OSC/ondemand/pull/3526).
+- The ood_portal.conf now accounts for /dex (dex_uri) when enabling maintenance mode in [3736](https://github.com/OSC/ondemand/pull/3736).
+- mod_ood_proxy now correctly proxies for httpd 2.4.62 in [3728](https://github.com/OSC/ondemand/pull/3728).
 
 ### Security
 
