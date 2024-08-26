@@ -429,7 +429,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-J', 'my cool job name', '-A', 'pas2051', '--export',
+        .with({}, 'sbatch', '-J', 'project-manager/my cool job name', '-A', 'pas2051', '--export',
                   'NONE', '--parsable', '-M', 'owens',
               stdin_data: "hostname\n")
         .returns(['job-id-123', '', exit_success])
