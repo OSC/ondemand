@@ -10,7 +10,7 @@
         <%= job.id %> <%= status_text(job.status.to_s) %>
       </span>
     </button>
-    <div class="collapse" id="<%= id %>_data">
+    <div class="collapse col-md-4" id="<%= id %>_data">
       <div class="card card-body">
         <table class="table table-bordered table-sm m-0 mb-2">
           <% job.to_human_display.each do |name, value| %>
