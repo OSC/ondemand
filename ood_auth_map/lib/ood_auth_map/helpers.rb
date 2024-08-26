@@ -9,7 +9,7 @@ class OodAuthMap
       # @param auth_user [String] authenticated username
       # @return [String, nil] mapped user name or {nil} if no match
       def parse_mapfile(file, auth_user)
-        parse_file(file, %r[^"#{Regexp.quote auth_user}" (\w+)$])
+        parse_file(file, %r[^"#{Regexp.quote auth_user}" ([\w.-@]+)$])
       end
 
       # Parse a file using a given regular expression pattern and output the
