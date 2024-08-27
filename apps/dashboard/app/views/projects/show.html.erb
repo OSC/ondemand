@@ -57,7 +57,15 @@
     </div>
   </div>
   <div class="col-md-8">
-    <%= render(partial: 'job_details', collection: @project.jobs, as: :job) %>
+    <div class="row">
+      <h2 class="h3 d-flex justify-content-center">Active Jobs</h2>
+      <%= render(partial: 'job_details', collection: @project.jobs, as: :job) %>
+    </div>
+
+    <div class="row">
+      <h2 class="h3 d-flex justify-content-center">Completed Jobs</h2>
+      <div id="completed_jobs"></div>
+    </div>
   </div>
 </div>
 <% unless @project.readme_path.nil? %>

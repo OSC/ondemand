@@ -49,7 +49,12 @@ function pollForJobInfo(element) {
       }
 
       const jobStatus = responseElement.dataset['jobStatus'];
-      replaceHTML(element.id, responseElement.outerHTML);
+      if(jobStatus === 'completed') {
+        moveCompletedPanel(element.id, responseElement.outerHTML);
+      } else {
+        replaceHTML(element.id, responseElement.outerHTML);
+      }
+
       return jobStatus;
     })
     .then((status) => {
@@ -69,6 +74,20 @@ function stringToHtml(html) {
   return template.content.firstChild;
 }
 
+function moveCompletedPanel(id, newHTML) {
+  const oldElement = document.getElementById(id);
+  if(oldElement !== null) {
+    oldElement.remove();
+  }
+
+  const div = document.createElement('div');
+  div.id = id;
+
+  const row = document.getElementById('completed_jobs');
+  row.appendChild(div);
+
+  replaceHTML(id, newHTML);
+}
 
 function updateProjectSize(element) {
   const UNDETERMINED = 'Undetermined Size';
