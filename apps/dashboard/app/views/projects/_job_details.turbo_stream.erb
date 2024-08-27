@@ -3,7 +3,7 @@
   id = "job_#{job.cluster}_#{job.id}"
 -%>
 
-<turbo-stream action="replace" target="<%= id %>">
+<turbo-stream action="replace" target="<%= id %>" data-job-status="<%= job.status %>">
   <template>
     <button class="badge <%= status_class(job.status.to_s) %> rounded-pill border-0 btn" type="button" data-bs-toggle="collapse" data-bs-target="#<%= id %>_data">
       <span>

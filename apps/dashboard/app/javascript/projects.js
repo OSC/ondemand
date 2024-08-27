@@ -36,27 +36,38 @@ function pollForJobInfo(element) {
       // html open as well.
       const currentData = element.querySelector(`#${element.id}_data`);
       let currentlyOpen = false;
+      const responseElement = stringToHtml(html);
 
       if(currentData != null) {
         currentlyOpen = currentData.classList.contains('show');
       }
 
+      // if it's currently open keep it open.
       if(currentlyOpen) {
-        const responseElement = new DOMParser().parseFromString(html, "text/xml");
         const dataDiv = responseElement.querySelector(`#${element.id}_data`);
         dataDiv.classList.add('show');
-        html = (new XMLSerializer()).serializeToString(responseElement);
       }
 
-      replaceHTML(element.id, html)
+      const jobStatus = responseElement.dataset['jobStatus'];
+      replaceHTML(element.id, responseElement.outerHTML);
+      return jobStatus;
     })
-    .then(setTimeout(pollForJobInfo, 30000, element))
+    .then((status) => {
+      if(status != 'completed') {
+        setTimeout(pollForJobInfo, 30000, element);
+      }
+    })
     .catch((err) => {
       console.log('Cannot not retrive job details due to error:');
       console.log(err);
     });
 }
 
+function stringToHtml(html) {
+  const template = document.createElement('template');
+  template.innerHTML = html.trim();
+  return template.content.firstChild;
+}
 
 
 function updateProjectSize(element) {
