@@ -3,7 +3,7 @@
   data-current-directory="<%= @path %>"
   data-current-directory-url="<%= files_path(@filesystem, @path) %>"
   data-current-directory-updatead-at="<%= Time.now.to_i %>"
-  data-currect-files-path="<%= files_path(@filesystem, '/') %>"
+  data-current-files-path="<%= files_path(@filesystem, '/') %>"
   data-current-filesystem="<%= @filesystem %>"
   data-download-error-title="<%= t('dashboard.files_directory_download_error_modal_title') %>"
   data-current-files-upload-path="<%= url_for(fs: @filesystem, action: 'upload') if Configuration.upload_enabled? %>"
