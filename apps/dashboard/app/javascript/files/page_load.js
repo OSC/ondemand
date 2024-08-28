@@ -17,4 +17,3 @@ export function setPageLoadState() {
     currentFilesystem: data['currentFilesystem']
   }, null);
 }
-
