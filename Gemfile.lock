@@ -106,7 +106,7 @@ GEM
     rake (13.0.6)
     regexp_parser (2.1.1)
     require_all (3.0.0)
-    rexml (3.3.3)
+    rexml (3.3.6)
       strscan
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
