@@ -387,6 +387,8 @@ class FilesTest < ApplicationSystemTestCase
 
     find('#goto-btn').click
     find('#swal2-input').set(Rails.root.join("app"))
+    page.save_screenshot('screen.png', full: true)
+    # File.write('delme.html', page.body)
     find('.swal2-confirm').click
     find('tbody a', exact_text: 'helpers')
     find('tbody a', exact_text: 'controllers')
@@ -615,7 +617,7 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
-  test 'files that are not downloadable' do
+  test 'unreadable files and fifos are not downloadable' do
     Dir.mktmpdir do |dir|
       cant_read = 'cant_read.txt'
       fifo = 'fifo'
@@ -641,5 +643,18 @@ class FilesTest < ApplicationSystemTestCase
       assert_equal(expected_links, fifo_links)
       assert_equal(expected_links, cant_read_links)
     end
+  end
+
+  test 'block devices are not downloadable' do
+    visit files_url('/dev')
+
+    null_row = find('tbody a', exact_text: 'null').ancestor('tr')
+    null_row.find('button.dropdown-toggle').click
+    null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+    # NOTE: download is not an expected link.
+    expected_links = ['View', 'Edit', 'Rename', 'Delete']
+
+    assert_equal(expected_links, null_links)
   end
 end
