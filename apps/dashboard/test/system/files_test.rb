@@ -387,8 +387,6 @@ class FilesTest < ApplicationSystemTestCase
 
     find('#goto-btn').click
     find('#swal2-input').set(Rails.root.join("app"))
-    page.save_screenshot('screen.png', full: true)
-    # File.write('delme.html', page.body)
     find('.swal2-confirm').click
     find('tbody a', exact_text: 'helpers')
     find('tbody a', exact_text: 'controllers')
