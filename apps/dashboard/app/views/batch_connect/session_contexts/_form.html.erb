@@ -1,5 +1,5 @@
 
-<%= OodAppkit.markdown.render(@app.form_header).html_safe %>
+<%= sanitize OodAppkit.markdown.render(@app.form_header) %>
 
 <%= render "prefill_templates" if Configuration.bc_saved_settings? %>
 
