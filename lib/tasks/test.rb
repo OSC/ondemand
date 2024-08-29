@@ -12,7 +12,7 @@ namespace :test do
 
   testing = {
     'ood-portal-generator': 'spec',
-    'nginx_stage':          'spec',
+    'nginx_stage':          ['spec', 'test'],
     'apps/dashboard':       'test',
     'apps/myjobs':          'test'
   }
@@ -41,7 +41,11 @@ namespace :test do
     testing.each_pair do |app, task|
       chdir PROJ_DIR.join(app.to_s) do
         Bundler.with_unbundled_env do
-          sh "bundle exec rake #{task}"
+          if task.is_a?(Array)
+            task.each { |subtask| sh "bundle exec rake #{subtask}" }
+          else
+            sh "bundle exec rake #{task}"
+          end
         end
       end
     end

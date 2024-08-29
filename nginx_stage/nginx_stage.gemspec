@@ -24,4 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 13.0.1"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "climate_control"
+  spec.add_development_dependency "minitest"
+  spec.add_development_dependency "mocha"
 end
