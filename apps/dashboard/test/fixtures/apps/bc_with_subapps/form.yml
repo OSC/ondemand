@@ -1,5 +1,6 @@
 ---
 description: BC with sub apps description
+form_header: BC with sub apps form header
 
 attributes:
   desktop: "mate"

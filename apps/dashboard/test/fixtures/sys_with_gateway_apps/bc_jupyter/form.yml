@@ -5,6 +5,10 @@ cluster:
   - "oakley"
 description: |
   This is a test jupyter app.
+form_header: |
+  <div id="form_header_supports_html">
+    This is Markdown with [a link](https://openondemand.org).
+  <div>
 attributes:
   mode:
     widget: "radio"

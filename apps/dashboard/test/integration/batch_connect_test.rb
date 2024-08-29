@@ -109,4 +109,11 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       assert_equal 'edit_name', css_select('input[name="template_name"]').first['value']
     end
   end
+
+  test 'form header is rendered correctly' do
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    header_link = css_select('div[id="form_header_supports_html"]>a').first
+    assert_equal 'a link', header_link.text
+    assert_equal 'https://openondemand.org', header_link['href']
+  end
 end
