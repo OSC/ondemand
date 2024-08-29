@@ -3,7 +3,8 @@ class PosixFile
 
   attr_reader :path, :stat
 
-  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, :realpath, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
+  delegate :directory?, :realpath, :readable?, :file?, to: :path
 
   # include to give us number_to_human_size
   include ActionView::Helpers::NumberHelper
@@ -61,8 +62,12 @@ class PosixFile
       owner:        PosixFile.username_from_cache(stat.uid),
       mode:         stat.mode,
       dev:          stat.dev,
-      downloadable: !pipe? && readable?
+      downloadable: downloadable?
     }
+  end
+
+  def downloadable?
+    (directory? || file?) && readable?
   end
 
   def human_size

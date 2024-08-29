@@ -593,4 +593,45 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'good_file.txt')
     end
   end
+
+  test 'unreadable files and fifos are not downloadable' do
+    Dir.mktmpdir do |dir|
+      cant_read = 'cant_read.txt'
+      fifo = 'fifo'
+
+      `touch #{dir}/#{cant_read}`
+      `chmod 000 #{dir}/#{cant_read}`
+      `mkfifo #{dir}/#{fifo}`
+
+      visit files_url(dir)
+
+      fifo_row = find('tbody a', exact_text: fifo).ancestor('tr')
+      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+
+      fifo_row.find('button.dropdown-toggle').click
+      fifo_links = fifo_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      cant_read_row.find('button.dropdown-toggle').click
+      cant_read_links = cant_read_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      # NOTE: download is not an expected link.
+      expected_links = ['View', 'Edit', 'Rename', 'Delete']
+
+      assert_equal(expected_links, fifo_links)
+      assert_equal(expected_links, cant_read_links)
+    end
+  end
+
+  test 'block devices are not downloadable' do
+    visit files_url('/dev')
+
+    null_row = find('tbody a', exact_text: 'null').ancestor('tr')
+    null_row.find('button.dropdown-toggle').click
+    null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+    # NOTE: download is not an expected link.
+    expected_links = ['View', 'Edit', 'Rename', 'Delete']
+
+    assert_equal(expected_links, null_links)
+  end
 end
