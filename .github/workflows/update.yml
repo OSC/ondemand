@@ -12,8 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["2.7.1"]
-        bundler: ["2.1.4"]
+        ruby: ["3"]
     runs-on: ${{ matrix.os }}
     name: Update Dependencies
 
@@ -21,11 +20,10 @@ jobs:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v3
 
-      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+      - name: Setup Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: ${{ matrix.bundler }}
 
       - name: Cache dependencies
         uses: actions/cache@v3
