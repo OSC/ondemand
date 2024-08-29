@@ -6,9 +6,9 @@ cluster:
 description: |
   This is a test jupyter app.
 form_header: |
-  <div id="form_header_supports_html">
+  <span class="form_header_supports_some_html">
     This is Markdown with [a link](https://openondemand.org).
-  <div>
+  </span>
 attributes:
   mode:
     widget: "radio"
