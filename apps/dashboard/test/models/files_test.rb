@@ -117,4 +117,44 @@ class FilesTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test 'unreadable files are not downloadable' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'foo.text')
+      FileUtils.touch(file)
+      # make sure file is not readable, a condition of PosixFile#downloadable?
+      FileUtils.chmod(0o0333, file)
+
+      refute(PosixFile.new(file).downloadable?)
+    end
+  end
+
+  test 'fifo pipes are not downloadable' do
+    Dir.mktmpdir do |dir|
+      file = "#{dir}/test.fifo"
+      `mkfifo #{file}`
+
+      refute(PosixFile.new(file).downloadable?)
+    end
+  end
+
+  test 'block devices are not downloadable' do
+    block_dev = Dir.children('/dev').map do |p|
+                  Pathname.new("/dev/#{p}")
+                end.select(&:blockdev?).first
+
+    assert(block_dev.exist?)
+    assert(block_dev.blockdev?)
+    refute(PosixFile.new(block_dev.to_s).downloadable?)
+  end
+
+  test 'character devices are not downloadable' do
+    char_dev = Dir.children('/dev').map do |p|
+                 Pathname.new("/dev/#{p}")
+               end.select(&:chardev?).first
+
+    assert(char_dev.exist?)
+    assert(char_dev.chardev?)
+    refute(PosixFile.new(char_dev.to_s).downloadable?)
+  end
 end
