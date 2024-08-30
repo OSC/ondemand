@@ -643,6 +643,19 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'block devices are not downloadable' do
+    visit files_url('/dev')
+
+    null_row = find('tbody a', exact_text: 'null').ancestor('tr')
+    null_row.find('button.dropdown-toggle').click
+    null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+    # NOTE: download is not an expected link.
+    expected_links = ['View', 'Edit', 'Rename', 'Delete']
+
+    assert_equal(expected_links, null_links)
+  end
+
   test 'allowlist errors flash' do
     with_modified_env({ OOD_ALLOWLIST_PATH: Rails.root.to_s }) do
       visit(files_url(Rails.root))
@@ -660,19 +673,6 @@ class FilesTest < ApplicationSystemTestCase
 
       alert_text = find('.alert > span').text
       assert_equal('/etc does not have an ancestor directory specified in ALLOWLIST_PATH', alert_text)
-    end
-
-    test 'block devices are not downloadable' do
-      visit files_url('/dev')
-
-      null_row = find('tbody a', exact_text: 'null').ancestor('tr')
-      null_row.find('button.dropdown-toggle').click
-      null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
-
-      # NOTE: download is not an expected link.
-      expected_links = ['View', 'Edit', 'Rename', 'Delete']
-
-      assert_equal(expected_links, null_links)
     end
   end
 end
