@@ -13,8 +13,9 @@ module SmartAttributes
   
     module Attributes
       class AutoCores < Attribute
-        def opts
-          @opts.reverse_merge(min: 1, step: 1)
+        def initialize(id, opts)
+          super(id, opts)
+          @opts = @opts.reverse_merge(min: 1, step: 1)
         end
 
         def widget
