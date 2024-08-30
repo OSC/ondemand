@@ -36,28 +36,58 @@ function pollForJobInfo(element) {
       // html open as well.
       const currentData = element.querySelector(`#${element.id}_data`);
       let currentlyOpen = false;
+      const responseElement = stringToHtml(html);
 
       if(currentData != null) {
         currentlyOpen = currentData.classList.contains('show');
       }
 
+      // if it's currently open keep it open.
       if(currentlyOpen) {
-        const responseElement = new DOMParser().parseFromString(html, "text/xml");
         const dataDiv = responseElement.querySelector(`#${element.id}_data`);
         dataDiv.classList.add('show');
-        html = (new XMLSerializer()).serializeToString(responseElement);
       }
 
-      replaceHTML(element.id, html)
+      const jobStatus = responseElement.dataset['jobStatus'];
+      if(jobStatus === 'completed') {
+        moveCompletedPanel(element.id, responseElement.outerHTML);
+      } else {
+        replaceHTML(element.id, responseElement.outerHTML);
+      }
+
+      return jobStatus;
     })
-    .then(setTimeout(pollForJobInfo, 30000, element))
+    .then((status) => {
+      if(status != 'completed') {
+        setTimeout(pollForJobInfo, 30000, element);
+      }
+    })
     .catch((err) => {
       console.log('Cannot not retrive job details due to error:');
       console.log(err);
     });
 }
 
+function stringToHtml(html) {
+  const template = document.createElement('template');
+  template.innerHTML = html.trim();
+  return template.content.firstChild;
+}
 
+function moveCompletedPanel(id, newHTML) {
+  const oldElement = document.getElementById(id);
+  if(oldElement !== null) {
+    oldElement.remove();
+  }
+
+  const div = document.createElement('div');
+  div.id = id;
+
+  const row = document.getElementById('completed_jobs');
+  row.appendChild(div);
+
+  replaceHTML(id, newHTML);
+}
 
 function updateProjectSize(element) {
   const UNDETERMINED = 'Undetermined Size';

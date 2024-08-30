@@ -201,6 +201,14 @@ class Project
     Project.jobs(directory)
   end
 
+  def active_jobs
+    jobs.reject(&:completed?)
+  end
+
+  def completed_jobs
+    jobs.select(&:completed?)
+  end
+
   def job(job_id, cluster)
     cached_job = jobs.detect { |j| j.id == job_id && j.cluster == cluster }
     return cached_job if cached_job.completed?

@@ -133,6 +133,10 @@ module BatchConnect
       ood_app.metadata.merge(form_config.fetch(:metadata, {}))
     end
 
+    def form_header
+      form_config.fetch(:form_header, '')
+    end
+
     def ssh_allow?
       form_config[:ssh_allow]
     end
