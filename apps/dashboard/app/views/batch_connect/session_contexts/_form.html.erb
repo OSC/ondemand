@@ -1,4 +1,6 @@
 
+<%= sanitize OodAppkit.markdown.render(@app.form_header) %>
+
 <%= render "prefill_templates" if Configuration.bc_saved_settings? %>
 
 <%= bootstrap_form_for(@session_context, html: { autocomplete: "off" }) do |f| %>

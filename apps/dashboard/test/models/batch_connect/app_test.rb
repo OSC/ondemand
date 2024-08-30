@@ -295,7 +295,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     end
   end
 
-  test 'subapps can override title, description, icon, caption, category, subcategory, and metadata from form' do
+  test 'subapps can override title, description, icon, caption, category, subcategory, metadata and form_header from form' do
     r = PathRouter.new('test/fixtures/apps/bc_with_subapps/')
     app = BatchConnect::App.new(router: r)
     sub_apps = app.sub_app_list
@@ -304,6 +304,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     # Oakley uses defaults
     assert_equal'Desktops: Oakley', sub_apps[0].title
     assert_equal'BC with sub apps description', sub_apps[0].description
+    assert_equal'BC with sub apps form header', sub_apps[0].form_header
     assert_equal'fa://desktop', sub_apps[0].icon_uri
     assert_equal'Interactive Apps', sub_apps[0].category
     assert_equal'Desktops', sub_apps[0].subcategory
@@ -319,6 +320,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     # Owens uses overrides
     assert_equal'Owens Desktop', sub_apps[1].title
     assert_equal'Owens Description', sub_apps[1].description
+    assert_equal'Owens Form Header', sub_apps[1].form_header
     assert_equal'fa://clock', sub_apps[1].icon_uri
     assert_equal'Interactive Apps Overridden', sub_apps[1].category
     assert_equal'Desktops Overridden', sub_apps[1].subcategory
