@@ -223,7 +223,9 @@ class Launcher
   private
 
   def self.script_path(root_dir, script_id)
-    Pathname.new(File.join(Launcher.scripts_dir(root_dir), script_id.to_s))
+    path = File.join(Launcher.scripts_dir(root_dir), script_id.to_s)
+    path = ActiveStorage::Filename.new(path).sanitized
+    Pathname.new(path)
   end
 
   def default_script_path
