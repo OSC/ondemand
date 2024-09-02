@@ -40,6 +40,13 @@ module BatchConnect
     # @yield [SmartAttribute::Attribute] Gives the next attribute object in the
     #   list
     def each(&block)
+      @attributes.select(&:serialize?).each(&block)
+    end
+
+    # For a block {|attribute| ...}
+    # @yield [SmartAttribute::Attribute] Gives the next attribute object in the
+    #   list. Includes non-serializable attributes.
+    def each_form_attribute(&block)
       @attributes.each(&block)
     end
 

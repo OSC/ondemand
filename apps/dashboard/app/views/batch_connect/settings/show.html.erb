@@ -68,7 +68,7 @@ locals: {
             end
           %>
         </div>
-        <% @settings.app.attributes.select(&:serialize?).each do |attribute| %>
+        <% @settings.app.build_session_context.each do |attribute| %>
           <p>
             <strong><%= attribute.label %>:</strong>
             <span><%= @settings.values[attribute.id.to_sym] %></span>
