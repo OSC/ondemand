@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+allow auto_cores to be fixed (#3768)\
+Add support for interactive app form descriptions (#3763)\
+Bump rexml from 3.3.3 to 3.3.6 (#3765)\
+fix downloadable? to account for other file types (#3718)\
+allow auto_job_name to be fixed (#3750)\
+update dependencies (#3766)\
+add minitest to nginx_stage and refactor one test suite (#3754)\
+pm - completed and active jobs (#3760)\
+account for more than just \\w for usernames (#3753)\
+rm _inline_js.html.erb and mv functionality to pure js (#3762)\
+ensure launcher id matches a regex (#3746)\
+update the update workflow (#3757)\
+small fixups for job details panel (#3744)\
+Auto cores (#3727)\
+refactor how jobs are logged in the project manager (#3740)\
+Update Changelog (#3752)\
+lint a random file (#3751)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
