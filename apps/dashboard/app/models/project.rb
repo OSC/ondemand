@@ -85,7 +85,7 @@ class Project
     update_attrs(attributes)
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
-    @template = sanitize_path(attributes[:template])
+    @template = sanitized_path(attributes[:template])
 
     return if new_record?
 
