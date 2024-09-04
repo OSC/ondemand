@@ -6,6 +6,7 @@ class Project
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
   include IconWithUri
+  include PathSanitizer
   extend JobLogger
 
   class << self
@@ -84,7 +85,7 @@ class Project
     update_attrs(attributes)
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
-    @template = attributes[:template]
+    @template = sanitize_path(attributes[:template])
 
     return if new_record?
 
