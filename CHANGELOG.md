@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for Ubuntu 24.04 in [3676](https://github.com/OSC/ondemand/pull/3676).
 - Added configurable default number of apps to show in the apps table in [3672](https://github.com/OSC/ondemand/pull/3672).
 - data-hide attributes now respond to `false` setting in [3720](https://github.com/OSC/ondemand/pull/3720).
+- auto_cores smart attribute has been added in [3727](https://github.com/OSC/ondemand/pull/3727).
+- Batch connect apps now respond to form_header to display a header in [3763](https://github.com/OSC/ondemand/pull/3763).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -60,6 +62,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Favorite file paths now consult the Allowlist in [3526](https://github.com/OSC/ondemand/pull/3526).
 - The ood_portal.conf now accounts for /dex (dex_uri) when enabling maintenance mode in [3736](https://github.com/OSC/ondemand/pull/3736).
 - mod_ood_proxy now correctly proxies for httpd 2.4.62 in [3728](https://github.com/OSC/ondemand/pull/3728).
+- ood_auth_map now accounts for more than just \w for usernames in [3753](https://github.com/OSC/ondemand/pull/3753).
+- Pipes and fifos no longer show as downloadable in [3718](https://github.com/OSC/ondemand/pull/3718).
 
 ### Security
 
