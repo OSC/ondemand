@@ -1,4 +1,5 @@
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { alert } from '../alert';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 
 export {EVENTNAME};
@@ -16,7 +17,7 @@ let sweetAlert = null;
 jQuery(function() {
   sweetAlert = new SweetAlert();
   $(CONTENTID).on(EVENTNAME.showError, function(e,options) {
-    sweetAlert.alertError(options.title, options.message);
+    alert(options.message);
   });
 
   $(CONTENTID).on(EVENTNAME.showPrompt, function(e,options) {
