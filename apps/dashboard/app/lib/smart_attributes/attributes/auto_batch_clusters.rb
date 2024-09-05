@@ -10,8 +10,6 @@ module SmartAttributes
     def self.build_auto_batch_clusters(opts = {})
       options = cluster_options
 
-      Rails.logger.info("Cluster options: #{options}")
-
       static_opts = {
         options: options
       }.merge(opts.without(:options).to_h)
