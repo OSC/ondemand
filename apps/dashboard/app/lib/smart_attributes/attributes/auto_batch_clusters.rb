@@ -24,7 +24,7 @@ module SmartAttributes
         cluster_string = cluster.id.to_s
         max_cores = cluster.job_adapter.nodes.max { |a, b| a.procs <=> b.procs }.procs
         [cluster_string, cluster_string, {'data-max-auto-cores': max_cores}]
-      end.sort
+      end.sort_by { |option| option[0] }
     end
 
     def self.batch_clusters
