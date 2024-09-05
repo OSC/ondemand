@@ -10,9 +10,7 @@ class Launcher
 
   class << self
     def scripts_dir(project_dir)
-      Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
-        path.mkpath unless path.exist?
-      end
+      Pathname.new("#{project_dir}/.ondemand/scripts")
     end
 
     def find(id, project_dir)
