@@ -297,8 +297,10 @@ class Project
 
   def project_template_invalid
     # This validation is to prevent the template directory being manipulated in the form.
-    if !template.blank? && Project.templates.map { |template| template.directory.to_s }.exclude?(template.to_s)
-      errors.add(:template, :invalid)
-    end
+    return if template.blank?
+
+    template_path = Pathname.new(template)
+    errors.add(:template, :invalid) if Project.templates.map { |t| t.directory.to_s }.exclude?(template.to_s)
+    errors.add(:template, :invalid) unless template_path.exist? && template_path.readable?
   end
 end
