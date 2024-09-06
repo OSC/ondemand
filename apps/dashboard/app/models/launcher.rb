@@ -335,9 +335,12 @@ class Launcher
   def add_script_to_form(form: [], attributes: {})
     form << 'auto_scripts' unless form.include?('auto_scripts')
 
-    attributes[:auto_scripts] = {
-      directory: project_dir
-    }
+    dir = { directory: project_dir }
+    attributes[:auto_scripts] = if attributes[:auto_scripts]
+      attributes[:auto_scripts].merge(dir)
+    else
+      dir
+    end
   end
 
   def add_cluster_to_form(form: [], attributes: {})
