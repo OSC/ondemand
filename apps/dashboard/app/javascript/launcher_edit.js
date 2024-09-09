@@ -164,39 +164,36 @@ function addInProgressField(event) {
 }
 
 function updateAutoEnvironmentVariable(event) {
-  var aev_name = event.target.value;
+  const aev_name = event.target.value;
   const labelString = event.target.dataset.labelString;
   const idString = `launcher_auto_environment_variable_${aev_name}`;
   const nameString = `launcher[auto_environment_variable_${aev_name}]`;
-  var input_field = event.target.parentElement.children[2].children[1];
+  const input_field = event.target.parentElement.children[2].children[1];
+  const oldId = input_field.id;
 
   input_field.removeAttribute('readonly');
   input_field.id = idString;
   input_field.name = nameString;
 
   if (labelString.match(/Environment(&#32;|\s)Variable/)) {
-    var label_field = event.target.parentElement.children[2].children[0];
+    const label_field = event.target.parentElement.children[2].children[0];
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
 
   // Update the checkbox so that environment variables can be fixed when created
-  let fixedBoxGroup = event.target.parentElement.children[3].children[0].children[0];
-
-  let checkbox = fixedBoxGroup.children[0];
+  const fixedBoxGroup = event.target.parentElement.querySelector('.list-group-item');
+  const checkbox = fixedBoxGroup.querySelector("input[type='checkbox']");
   checkbox.id = `${idString}_fixed`;
   checkbox.name = `launcher[auto_environment_variable_${aev_name}_fixed]`;
   checkbox.setAttribute('data-fixed-toggler', idString);
 
   // Update hidden field if attribute is already fixed, otherwise just update label
-  let labelIndex = 2;
   if(fixedBoxGroup.children.length == 3) {
-    let hiddenField = fixedBoxGroup.children[1];
+    const hiddenField = fixedBoxGroup.querySelector("input[type='hidden']");
     hiddenField.name = nameString;
-  } else {
-    labelIndex = 1;
   }
 
-  let fixedLabel = fixedBoxGroup.children[labelIndex];
+  const fixedLabel = fixedBoxGroup.querySelector('label');
   fixedLabel.setAttribute('for', `${idString}_fixed`);
 }
 
