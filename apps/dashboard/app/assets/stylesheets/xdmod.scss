@@ -1,0 +1,20 @@
+/** Job Analytics **/
+#jobsPanelDiv {
+  .hiddenRow {
+    padding: 0 !important;
+  }
+
+  i.app-icon {
+    width: 0.9rem;
+    height: 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  tr[aria-expanded=true] .closed {
+    display: none;
+  }
+
+  tr[aria-expanded=false] .open {
+    display: none;
+  }
+}

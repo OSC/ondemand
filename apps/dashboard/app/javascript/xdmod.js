@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import {xdmodUrl, analyticsPath} from './config';
 import {today, startOfYear, thirtyDaysAgo} from './utils';
-import { jobsPanel } from './xdmod/jobs';
+import { jobsPanel, jobAnalyticsTable } from './xdmod/jobs';
 import Handlebars from 'handlebars';
 
 const jobsPageLimit = 10;
@@ -45,18 +45,18 @@ const jobHelpers = {
     return `${month}/${day}`;
   },
   job_url: function(id){ return `${xdmodUrl()}/#job_viewer?action=show&realm=SUPREMM&jobref=${id}`;  },
-  cpu_label: function(cpu){
-    let value = (parseFloat(cpu)*100).toFixed(1),
-        label = "N/A";
+  efficiency_label: function(efficiencyValue, inverse = false){
+    const value = (parseFloat(efficiencyValue)*100).toFixed(1);
+    let label = "N/A";
 
     if(! isNaN(value)){
       let severity = "warning";
 
-      if(cpu > 0.74){
-        severity = "success";
+      if(efficiencyValue > 0.74){
+        severity = inverse ? "danger" : "success";
       }
-      else if(cpu < 0.25){
-        severity = "danger";
+      else if(efficiencyValue < 0.25){
+        severity = inverse ? "success" : "danger";
       }
 
       label = `<span class="badge bg-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
@@ -177,6 +177,14 @@ function jobsUrl(user){
   return url;
 }
 
+function jobAnalyticsUrl(jobId){
+  let url = new URL(`${xdmodUrl()}/rest/v1.0/warehouse/search/jobs/analytics`);
+  url.searchParams.set('_dc', Date.now());
+  url.searchParams.set('realm', 'SUPREMM');
+  url.searchParams.set('jobid', jobId);
+  return url;
+}
+
 function aggregateDataUrl(user){
   var url = new URL(`${xdmodUrl()}/rest/v1/warehouse/aggregatedata`);
   url.searchParams.set('_dc', Date.now());
@@ -210,6 +218,11 @@ function renderJobs(context) {
   panel.replaceChildren(jobs);
 }
 
+function renderJobAnalytics(jobAnalytics, containerId) {
+  const analyticsTable = jobAnalyticsTable(jobAnalytics, jobHelpers)
+  $(containerId).html(analyticsTable);
+}
+
 function renderJobsEfficiency(context) {
   const newConext = _.merge(context, {unit: "jobs", unit_title: "Jobs"});
   const templateSource = $('#job-efficiency-template').html();
@@ -239,11 +252,22 @@ function createJobsWidget() {
       console.error(error);
       renderJobs({error: error});
 
-      // error - report back for analytics purposes
-      const analyticsUrl = new URL(analyticsPath('xdmod_jobs_widget_error'), document.location);
-      analyticsUrl.searchParams.append('error', error);
-      fetch(analyticsUrl);
+      reportError('xdmod_jobs_widget_error', error);
     });
+}
+
+function addAnalyticsToJob(jobId) {
+  const analyticsContainer = `#details_${jobId}`;
+  fetch(jobAnalyticsUrl(jobId), { credentials: 'include' })
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+      .then(response => response.json())
+      .then((data) => renderJobAnalytics(data, analyticsContainer))
+      .catch((error) => {
+        console.error(error);
+        renderJobAnalytics({error: error}, analyticsContainer);
+
+        reportError('xdmod_jobs_analytics_widget_error', error);
+      });
 }
 
 function createEfficiencyWidgets() {
@@ -287,11 +311,15 @@ function createEfficiencyWidgets() {
     renderJobsEfficiency({error: error});
     renderCoreHoursEfficiency({error: error});
 
-    // error - report back for analytics purposes
-    const analyticsUrl = new URL(analyticsPath('xdmod_jobs_widget_error'), document.location);
-    analyticsUrl.searchParams.append('error', error);
-    fetch(analyticsUrl);
+    reportError('xdmod_jobs_widget_error', error);
   });
+}
+
+function reportError(path, error) {
+  // error - report back for analytics purposes
+  const analyticsUrl = new URL(analyticsPath(path), document.location);
+  analyticsUrl.searchParams.append('error', error);
+  fetch(analyticsUrl);
 }
 
 jQuery(() => {
@@ -300,4 +328,9 @@ jQuery(() => {
 
   // initialize the panels
   renderJobs({ loading: true });
+
+  $('#jobsPanelDiv').on('click', 'tr[data-xdmod-jobid][aria-expanded="true"]', function(event) {
+    const jobId = event.currentTarget.getAttribute("data-xdmod-jobid");
+    addAnalyticsToJob(jobId)
+  });
 });
