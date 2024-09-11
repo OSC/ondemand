@@ -17,4 +17,17 @@
   tr[aria-expanded=false] .open {
     display: none;
   }
+
+  .job-analytics {
+    padding: 0.50rem 0.25rem;
+
+    span {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+  }
 }

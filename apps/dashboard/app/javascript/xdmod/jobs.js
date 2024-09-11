@@ -9,7 +9,7 @@ export function jobsPanel(context, helpers){
   return div;
 }
 
-export function jobAnalyticsTable(context, jobHelpers) {
+export function jobAnalyticsHtml(context, jobHelpers) {
   if(context.error !== undefined) {
     return errorBody(context.error, jobHelpers);
   }
@@ -21,10 +21,12 @@ export function jobAnalyticsTable(context, jobHelpers) {
   const cpuEfficiency = jobHelpers.efficiency_label(dataByKey['CPU User']?.value, false)
   const memEfficiency = jobHelpers.efficiency_label(dataByKey['Memory Headroom']?.value, true)
   const walltimeEfficiency = jobHelpers.efficiency_label(dataByKey['Walltime Accuracy']?.value, false)
-  const analyticsContent = `<td>${cpuEfficiency}</td>
-                            <td>${memEfficiency}</td>
-                            <td>${walltimeEfficiency}</td>`;
-  return analyticsTable(analyticsContent);
+  const analyticsContent = `<div class="job-analytics">
+                                <span><strong>CPU:</strong> ${cpuEfficiency}</span>
+                                <span><strong>Mem:</strong> ${memEfficiency}</span>
+                                <span><strong>Walltime:</strong> ${walltimeEfficiency}</span>
+                            </div>`;
+  return analyticsContent
 }
 
 function card(context, helpers) {
@@ -96,6 +98,7 @@ function table(context, helpers) {
   tableElement.classList.add('table', 'table-sm', 'table-striped', 'table-condensed');
 
   const thead = document.createElement('thead');
+  // Empty th to accommodate for the job analytics button
   thead.innerHTML = '<tr> \
                       <th></th> \
                       <th>ID</th> \
@@ -173,36 +176,18 @@ function tableRows(context, helpers) {
 
     // Add job analytics placeholder
     const analyticsRow = document.createElement('tr');
-    const analyticsData = analyticsTable('<td colspan="3">LOADING...</td>')
     analyticsRow.innerHTML = `
       <td colspan="4" class="hiddenRow">
         <div class="collapse" id="details_${job.jobid}">
-          ${analyticsData}
+          <div class="job-analytics">
+            <span>LOADING...</span>
+          </div>
         </div>
       </td>`;
     rows.push(analyticsRow);
   });
 
   return rows;
-}
-
-function analyticsTable(analyticsContent) {
-  const analyticsTable = `
-      <table class="table table-sm table-condensed">
-        <thead>
-        <tr>
-          <th>CPU</th>
-          <th>Mem</th>
-          <th>Walltime</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          ${analyticsContent}
-        </tr>
-        </tbody>
-      </table>`;
-  return analyticsTable;
 }
 
 function jobLink(url, id){

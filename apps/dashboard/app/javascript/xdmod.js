@@ -2,12 +2,13 @@
 import _ from 'lodash';
 import {xdmodUrl, analyticsPath} from './config';
 import {today, startOfYear, thirtyDaysAgo} from './utils';
-import { jobsPanel, jobAnalyticsTable } from './xdmod/jobs';
+import { jobsPanel, jobAnalyticsHtml } from './xdmod/jobs';
 import Handlebars from 'handlebars';
 
 const jobsPageLimit = 10;
 
 const jobHelpers = {
+  realm: 'Jobs',
   title: function(){
     return "Recently Completed Jobs";
   },
@@ -44,7 +45,7 @@ const jobHelpers = {
 
     return `${month}/${day}`;
   },
-  job_url: function(id){ return `${xdmodUrl()}/#job_viewer?action=show&realm=SUPREMM&jobref=${id}`;  },
+  job_url: function(id){ return `${xdmodUrl()}/#job_viewer?action=show&realm=${this.realm}&jobref=${id}`;  },
   efficiency_label: function(efficiencyValue, inverse = false){
     const value = (parseFloat(efficiencyValue)*100).toFixed(1);
     let label = "N/A";
@@ -153,6 +154,7 @@ var promiseLoggedIntoXDMoD = (function(){
       })
       .then((user_data) => {
         if(user_data && user_data.success && user_data.results && user_data.results.person_id){
+          jobHelpers.realm = user_data.results.raw_data_allowed_realms?.includes('SUPREMM') ? 'SUPREMM' : 'Jobs';
           return Promise.resolve(user_data);
         }
         else{
@@ -169,7 +171,7 @@ function jobsUrl(user){
   url.searchParams.set('_dc', Date.now());
   url.searchParams.set('start_date', thirtyDaysAgo());
   url.searchParams.set('end_date', today());
-  url.searchParams.set('realm', user?.results?.raw_data_allowed_realms?.includes('SUPREMM') ? 'SUPREMM' : 'Jobs');
+  url.searchParams.set('realm', jobHelpers.realm);
   url.searchParams.set('limit', jobsPageLimit);
   url.searchParams.set('start', 0);
   url.searchParams.set('verbose', true);
@@ -180,7 +182,7 @@ function jobsUrl(user){
 function jobAnalyticsUrl(jobId){
   let url = new URL(`${xdmodUrl()}/rest/v1.0/warehouse/search/jobs/analytics`);
   url.searchParams.set('_dc', Date.now());
-  url.searchParams.set('realm', 'SUPREMM');
+  url.searchParams.set('realm', jobHelpers.realm);
   url.searchParams.set('jobid', jobId);
   return url;
 }
@@ -219,8 +221,8 @@ function renderJobs(context) {
 }
 
 function renderJobAnalytics(jobAnalytics, containerId) {
-  const analyticsTable = jobAnalyticsTable(jobAnalytics, jobHelpers)
-  $(containerId).html(analyticsTable);
+  const analyticsHtml = jobAnalyticsHtml(jobAnalytics, jobHelpers)
+  $(containerId).html(analyticsHtml);
 }
 
 function renderJobsEfficiency(context) {
@@ -329,7 +331,7 @@ jQuery(() => {
   // initialize the panels
   renderJobs({ loading: true });
 
-  $('#jobsPanelDiv').on('click', 'tr[data-xdmod-jobid][aria-expanded="true"]', function(event) {
+  $(`#${jobPanelId}`).on('click', 'tr[data-xdmod-jobid][aria-expanded="true"]', function(event) {
     const jobId = event.currentTarget.getAttribute("data-xdmod-jobid");
     addAnalyticsToJob(jobId)
   });
