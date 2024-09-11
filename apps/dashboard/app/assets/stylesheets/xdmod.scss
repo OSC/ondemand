@@ -19,12 +19,9 @@
   }
 
   .job-analytics {
-    padding: 0.50rem 0.25rem;
-
-    span {
-      padding-left: 8px;
-      padding-right: 8px;
-    }
+    display: flex;
+    justify-content: space-between;
+    padding: 0.50rem 0.5rem;
 
     strong {
       font-weight: 600;
