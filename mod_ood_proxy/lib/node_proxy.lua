@@ -34,7 +34,13 @@ function node_proxy_handler(r)
   local conn = {}
   conn.user = user
   conn.server = host .. ":" .. port
-  conn.uri = uri and (r.args and (uri .. "?" .. r.args) or uri) or r.uri
+  -- conn.uri = uri and (r.args and (uri .. "?" .. r.args) or uri) or r.uri
+  if uri == nil or uri == '' then
+     --uri = '/'
+     -- uri = "/" .. r.uri:match("^/[^/]+/[^/]+/[^/]+/(.+)$")
+     uri = r.uri
+  end
+  conn.uri = uri
 
   -- last ditch effort to ensure that the uri is at least something
   -- because the request-line of an HTTP request _has_ to have something for a URL
