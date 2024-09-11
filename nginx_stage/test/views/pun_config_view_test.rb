@@ -8,7 +8,7 @@ class PunConfigViewTest < Minitest::Test
     '/test'
   end
 
-  def test_something
+  def test_restart_confirmation_view
     expected = File.read('test/fixtures/restart_confirmation.html')
     assert_equal(expected, restart_confirmation)
   end
