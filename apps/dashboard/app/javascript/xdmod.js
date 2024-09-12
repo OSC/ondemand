@@ -85,12 +85,12 @@ var efficiencyHelpers = {
   }
 };
 
-function promiseLoginToXDMoD(xdmodUrl){
+function promiseLoginToXDMoD(){
   return new Promise(function(resolve, reject){
 
     var promise_to_receive_message_from_iframe = new Promise(function(resolve, reject){
       window.addEventListener("message", function(event){
-        if (event.origin !== xdmodUrl){
+        if (event.origin !== xdmodUrl()){
           console.log('Received message from untrusted origin, discarding');
           return;
         }
@@ -107,8 +107,8 @@ function promiseLoginToXDMoD(xdmodUrl){
       }, false);
     });
 
-    fetch(xdmodUrl + '/rest/auth/idpredirect?returnTo=%2Fgui%2Fgeneral%2Flogin.php')
-      .then(response => response.ok ? Promise.resolve(response) : Promise.reject())
+    fetch(xdmodUrl() + '/rest/auth/idpredirect?returnTo=%2Fgui%2Fgeneral%2Flogin.php')
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error('Login failed: IDP redirect failed')))
       .then(response => response.json())
       .then(function(data){
         return new Promise(function(resolve, reject){
@@ -280,7 +280,7 @@ function createEfficiencyWidgets() {
     return;
   }
 
-  promiseLoggedIntoXDMoD(xdmodUrl)
+  promiseLoggedIntoXDMoD()
   .then((user_data) => fetch(aggregateDataUrl(user_data), { credentials: 'include' }))
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())
