@@ -33,11 +33,12 @@ module NginxStage
     # @param user [String] the user name defining this object
     # @raise [ArgumentError] if user or primary group doesn't exist on local system
     def initialize(user)
-      @passwd = Etc.getpwnam user.to_s
+      user_is_uid = (user[0].to_i and user.to_i > 0)
+      @passwd = (user_is_uid) ? Etc.getpwuid(user.to_i) : Etc.getpwnam(user)
       @group = Etc.getgrgid gid
       @groups = get_groups
 
-      if name.to_s != user.to_s
+      if not user_is_uid and (name.to_s != user.to_s)
         err_msg = <<~HEREDOC
           Username '#{user}' is being mapped to '#{name}' in SSSD and they don't match.
           Users with domain names cannot be mapped correctly. If '#{name}' still has the
