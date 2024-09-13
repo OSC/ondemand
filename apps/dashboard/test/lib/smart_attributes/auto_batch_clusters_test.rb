@@ -3,6 +3,9 @@
 require 'test_helper'
 
 class SmartAttributes::AutoBatchClustersTest < ActiveSupport::TestCase
+  def setup
+    stub_sinfo
+  end
 
   def fixture_dir
     'test/fixtures/config/clusters.d'
@@ -45,10 +48,10 @@ class SmartAttributes::AutoBatchClustersTest < ActiveSupport::TestCase
 
     assert_instance_of SmartAttributes::Attributes::AutoBatchClusters, attribute
     assert_equal(4, attribute.select_choices.length)
-    assert_equal('oakley', attribute.select_choices[0])
-    assert_equal('owens', attribute.select_choices[1])
-    assert_equal('quick', attribute.select_choices[2])
-    assert_equal('ruby', attribute.select_choices[3])
+    assert_equal('oakley', attribute.select_choices[0].first)
+    assert_equal('owens', attribute.select_choices[1].first)
+    assert_equal('quick', attribute.select_choices[2].first)
+    assert_equal('ruby', attribute.select_choices[3].first)
   end
 
   test 'widget is select' do

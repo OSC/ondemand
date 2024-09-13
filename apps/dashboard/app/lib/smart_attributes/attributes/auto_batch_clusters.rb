@@ -25,7 +25,7 @@ module SmartAttributes
       # Defaults to first cluster in the options
       # @return [String] attribute value
       def value
-        (opts[:value] || opts[:options].first).to_s
+        (opts[:value] || opts[:options].first.first).to_s
       end
 
       def widget
