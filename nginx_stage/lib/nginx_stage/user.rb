@@ -33,22 +33,32 @@ module NginxStage
     # @param user [String] the user name defining this object
     # @raise [ArgumentError] if user or primary group doesn't exist on local system
     def initialize(user)
-      user_is_uid = (user[0].to_i and user.to_i > 0)
-      @passwd = (user_is_uid) ? Etc.getpwuid(user.to_i) : Etc.getpwnam(user)
+      # "123user".to_i.to_s (123) != "123user".to_s
+      # "user123".to_i.to_s (0) != "user123".to_s
+      # "user".to_i.to_s (0) != "user".to_s
+      # "123".to_i.to_s (123) == "123".to_s
+      if user.to_i.to_s == user.to_s
+        # The user is composed of all numbers, (numeric string), test if it is a uid
+        @passwd = Etc.getpwuid(user.to_i) rescue nil
+      end
+
+      # Variable is not set, so the user is a string
+      if not @passwd
+        @passwd = Etc.getpwnam(user)
+        if name.to_s != user.to_s
+          err_msg = <<~HEREDOC
+            Username '#{user}' is being mapped to '#{name}' in SSSD and they don't match.
+            Users with domain names cannot be mapped correctly. If '#{name}' still has the
+            domain in it you'll need to set SSSD's full_name_format to '%1$s'.
+  
+            See https://github.com/OSC/ondemand/issues/1759 for more details.
+          HEREDOC
+
+          raise StandardError, err_msg
+        end
+      end
       @group = Etc.getgrgid gid
       @groups = get_groups
-
-      if not user_is_uid and (name.to_s != user.to_s)
-        err_msg = <<~HEREDOC
-          Username '#{user}' is being mapped to '#{name}' in SSSD and they don't match.
-          Users with domain names cannot be mapped correctly. If '#{name}' still has the
-          domain in it you'll need to set SSSD's full_name_format to '%1$s'.
-
-          See https://github.com/OSC/ondemand/issues/1759 for more details.
-        HEREDOC
-
-        raise StandardError, err_msg
-      end
     end
 
     # User's primary group name
@@ -80,7 +90,12 @@ module NginxStage
       # Use `id` to get list of groups as the /etc/group file can give
       # erroneous results
       def get_groups
-        `id -nG #{name}`.split(' ')
+        # Group names can contain spaces, prevent "domain users" people from being added to the "users" group
+        # We retrieve IDs and convert to names
+        `id -G #{name}`.split(' ').map(&:to_i).map do |gid|
+            # Rescue: sometimes GID are added to user but don't "actually" exist (rare)
+            Etc.getgrgid(gid).name rescue gid
+        end
       end
   end
 end
