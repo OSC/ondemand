@@ -19,9 +19,8 @@ function map(r, user_map_match, user_map_cmd, remote_user)
 
   -- if sys_user is a number, then it's the uid, so convert to username
   if tonumber(sys_user) then
-    local handle = io.popen("id -un " .. sys_user)
-    sys_user = handle:read()
-    handle:close()
+    local pwd = require "posix.pwd"
+    sys_user = pwd.getpwuid(tonumber(sys_user)).pw_name
   end
 
   time_user_map = (r:clock() - now)/1000.0
