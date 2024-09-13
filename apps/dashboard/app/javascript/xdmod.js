@@ -1,8 +1,8 @@
 
 import _ from 'lodash';
 import {xdmodUrl, analyticsPath} from './config';
-import {today, startOfYear, thirtyDaysAgo} from './utils';
-import { jobsPanel, jobAnalyticsHtml } from './xdmod/jobs';
+import {today, startOfYear, thirtyDaysAgo, reportErrorForAnalytics} from './utils';
+import { jobsPanel } from './xdmod/jobs';
 import Handlebars from 'handlebars';
 
 const jobsPageLimit = 10;
@@ -179,14 +179,6 @@ function jobsUrl(user){
   return url;
 }
 
-function jobAnalyticsUrl(jobId){
-  let url = new URL(`${xdmodUrl()}/rest/v1.0/warehouse/search/jobs/analytics`);
-  url.searchParams.set('_dc', Date.now());
-  url.searchParams.set('realm', jobHelpers.realm);
-  url.searchParams.set('jobid', jobId);
-  return url;
-}
-
 function aggregateDataUrl(user){
   var url = new URL(`${xdmodUrl()}/rest/v1/warehouse/aggregatedata`);
   url.searchParams.set('_dc', Date.now());
@@ -220,11 +212,6 @@ function renderJobs(context) {
   panel.replaceChildren(jobs);
 }
 
-function renderJobAnalytics(jobAnalytics, containerId) {
-  const analyticsHtml = jobAnalyticsHtml(jobAnalytics, jobHelpers)
-  $(containerId).html(analyticsHtml);
-}
-
 function renderJobsEfficiency(context) {
   const newConext = _.merge(context, {unit: "jobs", unit_title: "Jobs"});
   const templateSource = $('#job-efficiency-template').html();
@@ -254,7 +241,7 @@ function createJobsWidget() {
       console.error(error);
       renderJobs({error: error});
 
-      reportError('xdmod_jobs_widget_error', error);
+      reportErrorForAnalytics('xdmod_jobs_widget_error', error);
     });
 }
 
@@ -268,7 +255,7 @@ function addAnalyticsToJob(jobId) {
         console.error(error);
         renderJobAnalytics({error: error}, analyticsContainer);
 
-        reportError('xdmod_jobs_analytics_widget_error', error);
+        reportErrorForAnalytics('xdmod_jobs_analytics_widget_error', error);
       });
 }
 
@@ -313,15 +300,8 @@ function createEfficiencyWidgets() {
     renderJobsEfficiency({error: error});
     renderCoreHoursEfficiency({error: error});
 
-    reportError('xdmod_jobs_widget_error', error);
+    reportErrorForAnalytics('xdmod_jobs_widget_error', error);
   });
-}
-
-function reportError(path, error) {
-  // error - report back for analytics purposes
-  const analyticsUrl = new URL(analyticsPath(path), document.location);
-  analyticsUrl.searchParams.append('error', error);
-  fetch(analyticsUrl);
 }
 
 jQuery(() => {
@@ -330,9 +310,4 @@ jQuery(() => {
 
   // initialize the panels
   renderJobs({ loading: true });
-
-  $(`#${jobPanelId}`).on('click', 'tr[data-xdmod-jobid][aria-expanded="true"]', function(event) {
-    const jobId = event.currentTarget.getAttribute("data-xdmod-jobid");
-    addAnalyticsToJob(jobId)
-  });
 });

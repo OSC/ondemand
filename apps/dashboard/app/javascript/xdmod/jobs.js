@@ -1,5 +1,7 @@
 'use strict';
 
+import {reportErrorForAnalytics} from '../utils';
+
 export function jobsPanel(context, helpers){
   const div = document.createElement('div');
   div.classList.add('xdmod');
@@ -7,26 +9,6 @@ export function jobsPanel(context, helpers){
   div.append(card(context, helpers));
 
   return div;
-}
-
-export function jobAnalyticsHtml(context, jobHelpers) {
-  if(context.error !== undefined) {
-    return errorBody(context.error, jobHelpers);
-  }
-
-  const dataByKey = context.data.reduce((acc, obj) => {
-    acc[obj.key] = obj;
-    return acc;
-  }, {});
-  const cpuEfficiency = jobHelpers.efficiency_label(dataByKey['CPU User']?.value, false)
-  const memEfficiency = jobHelpers.efficiency_label(dataByKey['Memory Headroom']?.value, true)
-  const walltimeEfficiency = jobHelpers.efficiency_label(dataByKey['Walltime Accuracy']?.value, false)
-  const analyticsContent = `<div class="job-analytics">
-                                <span><strong>CPU:</strong> ${cpuEfficiency}</span>
-                                <span><strong>Mem:</strong> ${memEfficiency}</span>
-                                <span><strong>Walltime:</strong> ${walltimeEfficiency}</span>
-                            </div>`;
-  return analyticsContent
 }
 
 function card(context, helpers) {
@@ -140,6 +122,11 @@ function tableRows(context, helpers) {
     tr.setAttribute('data-bs-target', `#details_${job.jobid}`);
     tr.setAttribute('aria-expanded', 'false');
 
+    tr.addEventListener('click', function(event) {
+      const jobId = event.currentTarget.getAttribute("data-xdmod-jobid");
+      getJobAnalytics(jobId, helpers)
+    }, { once: true });
+
     // Job analytics collapse icons
     const td0 = document.createElement('td');
     td0.innerHTML = `
@@ -212,4 +199,49 @@ function noDataRow() {
   tr.append(td);
 
   return tr;
+}
+
+function renderJobAnalytics(context, containerId, helpers) {
+  if(context.error !== undefined) {
+    const errorMessage = errorBody(context.error, helpers);
+    document.getElementById(containerId).replaceChildren(errorMessage);
+    return;
+  }
+
+  const dataByKey = context.data.reduce((acc, obj) => {
+    acc[obj.key] = obj;
+    return acc;
+  }, {});
+  const cpuEfficiency = helpers.efficiency_label(dataByKey['CPU User']?.value, false)
+  const memEfficiency = helpers.efficiency_label(dataByKey['Memory Headroom']?.value, true)
+  const walltimeEfficiency = helpers.efficiency_label(dataByKey['Walltime Accuracy']?.value, false)
+  const div = document.createElement('div');
+  div.classList.add('job-analytics');
+  div.innerHTML = `<span><strong>CPU:</strong> ${cpuEfficiency}</span>
+                   <span><strong>Mem:</strong> ${memEfficiency}</span>
+                   <span><strong>Walltime:</strong> ${walltimeEfficiency}</span>`;
+
+  document.getElementById(containerId).replaceChildren(div);
+}
+
+function jobAnalyticsUrl(jobId, helpers){
+  let url = new URL(`${helpers.xdmod_url()}/rest/v1.0/warehouse/search/jobs/analytics`);
+  url.searchParams.set('_dc', Date.now());
+  url.searchParams.set('realm', helpers.realm);
+  url.searchParams.set('jobid', jobId);
+  return url;
+}
+
+function getJobAnalytics(jobId, helpers) {
+  const analyticsContainer = `details_${jobId}`;
+  fetch(jobAnalyticsUrl(jobId, helpers), { credentials: 'include' })
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+      .then(response => response.json())
+      .then((data) => renderJobAnalytics(data, analyticsContainer, helpers))
+      .catch((error) => {
+        console.error(error);
+        renderJobAnalytics({error: error}, analyticsContainer, helpers);
+
+        reportErrorForAnalytics('xdmod_jobs_analytics_widget_error', error);
+      });
 }
