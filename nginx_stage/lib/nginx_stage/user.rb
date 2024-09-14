@@ -33,17 +33,18 @@ module NginxStage
     # @param user [String] the user name defining this object
     # @raise [ArgumentError] if user or primary group doesn't exist on local system
     def initialize(user)
-      # "123user".to_i.to_s (123) != "123user".to_s
-      # "user123".to_i.to_s (0) != "user123".to_s
-      # "user".to_i.to_s (0) != "user".to_s
-      # "123".to_i.to_s (123) == "123".to_s
-      if user.to_i.to_s == user.to_s
-        # The user is composed of all numbers, (numeric string), test if it is a uid
+      # See if user is all numbers (potentially uid), regexp is 8% faster than integer conversion
+      # Benchmark: 0.13 microseconds per call (1M cycles)
+      if user.match?(/\A\d+\z/)
+        # The user is composed of all numbers, (numeric string)
+        #  10 microseconds per call if it matches
+        # 203 microseconds per call if it doesn't match (only happens if username is all numbers but not a uid)
         @passwd = Etc.getpwuid(user.to_i) rescue nil
       end
 
       # Variable is not set, so the user is a string
       if not @passwd
+        # Benchmark: 13 microseconds per call (1M cycles)
         @passwd = Etc.getpwnam(user)
         if name.to_s != user.to_s
           err_msg = <<~HEREDOC
