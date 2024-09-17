@@ -27,6 +27,7 @@ const EVENTNAME = {
 
 
 let fileOps = null;
+export {fileOps};
 
 jQuery(function() {
   fileOps = new FileOps();  

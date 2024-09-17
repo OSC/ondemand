@@ -154,9 +154,16 @@ class FilesController < ApplicationController
     parse_path(upload_path)
     validate_path!
 
-    @path.handle_upload(params[:file].tempfile)
+    # Need to remove the tempfile from list of Rack tempfiles to prevent it
+    # being cleaned up once request completes since Rclone uses the files.
+    request.env[Rack::RACK_TEMPFILES].reject! { |f| f.path == params[:file].tempfile.path } unless posix_file?
 
-    render json: {}
+    @transfer = @path.handle_upload(params[:file].tempfile)
+    if @transfer
+      render "transfers/show"
+    else
+      render json: {}
+    end
   rescue AllowlistPolicy::Forbidden => e
     render json: { error_message: e.message }, status: :forbidden
   rescue Errno::EACCES => e
