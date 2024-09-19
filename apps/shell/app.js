@@ -78,6 +78,9 @@ if (process.env.OOD_SSHHOST_ALLOWLIST){
   host_allowlist = Array.from(new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':')));
 }
 
+// default is 8 hours.
+const wsTimeout = (process.env.OOD_SHELL_WS_TIMEOUT_MS || 28800000)
+
 let hosts = helpers.definedHosts();
 let default_sshhost = hosts['default'];
 hosts['hosts'].forEach((host) => {
@@ -146,6 +149,7 @@ wss.on('connection', function connection (ws, req) {
       cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   
   ws.isAlive = true;
+  ws.startedAt = Date.now();
   
   console.log('Connection established');
 
@@ -200,7 +204,10 @@ wss.on('connection', function connection (ws, req) {
 
 const interval = setInterval(function ping() {
   wss.clients.forEach(function each(ws) {
-    if (ws.isAlive === false) return ws.terminate();
+    const timeUsed = Date.now() - ws.startedAt;
+    if (ws.isAlive === false || timeUsed > wsTimeout) {
+      return ws.terminate();
+    }
 
     ws.isAlive = false;
     ws.ping();
