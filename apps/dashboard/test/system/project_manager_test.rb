@@ -955,11 +955,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       find("#launch_8woi7ghd").click
 
+      assert_selector('.alert-success', text: 'job-id-123')
+
       # sleep here because this test can error with Errno::ENOTEMPTY: Directory not empty @ dir_s_rmdir
       # something still has a hold on these files.
       sleep 2
-
-      assert_selector('.alert-success', text: 'job-id-123')
     end
   end
 end
