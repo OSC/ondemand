@@ -340,10 +340,17 @@ class Launcher
 
     dir = { directory: project_dir }
     attributes[:auto_scripts] = if attributes[:auto_scripts]
-      attributes[:auto_scripts].merge(dir)
-    else
-      dir
-    end
+                                  attributes[:auto_scripts].merge(dir)
+                                else
+                                  dir
+                                end
+
+    # Delete 'value' if it does not exist in the available options
+    # so that projects created from templates don't point to another
+    # user's script
+    script_value = attributes[:auto_scripts]['value']
+    script_options = attributes[:auto_scripts]['options']
+    attributes[:auto_scripts].delete('value') if script_options.none? { |opt| opt.include?(script_value) }
   end
 
   def add_cluster_to_form(form: [], attributes: {})
