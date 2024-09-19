@@ -10,9 +10,7 @@ class Launcher
 
   class << self
     def scripts_dir(project_dir)
-      Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
-        path.mkpath unless path.exist?
-      end
+      Pathname.new("#{project_dir}/.ondemand/scripts")
     end
 
     def find(id, project_dir)
@@ -60,14 +58,13 @@ class Launcher
 
   ID_REX = /\A\w{8}\Z/.freeze
 
-  validates(:id, format: { with: ID_REX, allow_blank: true, message: :format }, on: [:save])
-  validates(:id, format: { with: ID_REX, message: :format }, on: [:update])
+  validates(:id, format: { with: ID_REX, message: "ID does not match #{Launcher::ID_REX.inspect}" }, on: [:save])
 
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
 
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
-    @id = opts[:id] if opts[:id].to_s.empty? || opts[:id].to_s.match?(ID_REX)
+    @id = opts[:id].to_s.match?(ID_REX) ? opts[:id].to_s : Launcher.next_id
     @title = opts[:title].to_s
     @created_at = opts[:created_at]
     sm_opts = {
@@ -149,9 +146,11 @@ class Launcher
   end
 
   def save
-    @id = Launcher.next_id if @id.nil? || !@id.to_s.match?(ID_REX)
+    return false unless valid?(:save)
+
     @created_at = Time.now.to_i if @created_at.nil?
     script_path = Launcher.script_path(project_dir, id)
+
     script_path.mkpath unless script_path.exist?
     File.write(Launcher.script_form_file(script_path), to_yaml)
 
@@ -223,6 +222,10 @@ class Launcher
   private
 
   def self.script_path(root_dir, script_id)
+    unless script_id.to_s.match?(ID_REX)
+      raise(StandardError, "#{script_id} is invalid. Does not match #{ID_REX.inspect}")
+    end
+
     Pathname.new(File.join(Launcher.scripts_dir(root_dir), script_id.to_s))
   end
 

@@ -727,18 +727,18 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'cant show invalid script' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      visit project_launcher_path(project_id, '1')
+      visit project_launcher_path(project_id, '12345678')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "Close\nCannot find script 1")
+      assert_selector('.alert-danger', text: "Close\nCannot find script 12345678")
     end
   end
 
   test 'cant edit invalid script' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      visit edit_project_launcher_path(project_id, '1')
+      visit edit_project_launcher_path(project_id, '12345678')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "Close\nCannot find script 1")
+      assert_selector('.alert-danger', text: "Close\nCannot find script 12345678")
     end
   end
 
