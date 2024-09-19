@@ -3,6 +3,10 @@
 require 'test_helper'
 
 class LauncherTest < ActiveSupport::TestCase
+  def setup
+    stub_sinfo
+  end
+
   test 'supported field postfix' do
     target = Launcher.new({ project_dir: '/path/project', id: 1234, title: 'Test Script' })
     refute target.send('attribute_parameter?', nil)

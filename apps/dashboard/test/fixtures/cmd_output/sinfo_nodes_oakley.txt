@@ -1,0 +1,644 @@
+40p001140core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c03
+40p001240core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c03
+40p005540core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c14
+40p008340core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c07
+40p009040core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c09
+40p009140core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c09
+40p009240core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c09
+40p009340core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c10
+40p010140core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c12
+40p010240core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c12
+40p010340core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c12
+40p010440core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c12
+40p017440core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c02
+40p001040core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c03
+40p001740core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c05
+40p003940core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c10
+40p004440core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c11
+40p007040core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c04
+40p007140core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c04
+40p008140core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c07
+40p008940core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c09
+40p009840core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c11
+40p012440core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c03
+40p012840core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c04
+40p013040core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c05
+40p013440core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c06
+48p052248core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c06
+40p000140core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c01
+40p000540core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c02
+40p001340core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c04
+40p003140core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c08
+40p004940core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c13
+40p005240core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c13
+40p005640core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c14
+40p006140core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c02
+40p006940core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c04
+40p008640core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c08
+40p008840core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c08
+40p009640core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c10
+40p011940core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,pitzer-rack03-c02
+40p012340core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c03
+40p013140core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c05
+40p013840core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c07
+40p014040core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c07
+40p014140core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c08
+40p014240core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c08
+40p014340core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c08
+40p014740core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c09
+40p014840core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c09
+40p015040core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c10
+40p016240core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c13
+40p016440core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c13
+40p017140core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c01
+40p017240core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c01
+40p017340core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c02
+40p017640core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c02
+40p017840core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c03
+40p019340core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c07
+40p019740core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c08
+40p019840core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c08
+40p022840core,r740,gpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,v100
+40p022940core,r740,gpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,v100
+40p023140core,r740,gpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,v100
+40p023340core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p023440core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p023740core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p023840core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p023940core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+80p025780core,r940,hugemem,eth-pitzer-rack06h1,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack05
+80p025880core,r940,hugemem,eth-pitzer-rack06h1,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack05
+80p025980core,r940,hugemem,eth-pitzer-rack06h1,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack05
+80p026080core,r940,hugemem,eth-pitzer-rack06h1,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack05
+48p030448core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p030548core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p030648core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p030848core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p030948core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p031148core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p031248core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p031348core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p031548core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack09,v100-32g
+48p031648core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack09,v100-32g
+48p031748core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack09,v100-32g
+48p050848core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c02
+48p050948core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c03
+48p051048core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c03
+48p051148core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c03
+48p051248core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c03
+48p051348core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c04
+48p051448core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c04
+48p052148core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c06
+48p052748core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c07
+48p053848core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c10
+48p054148core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c11
+48p057248core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c03
+48p057348core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c04
+48p057448core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c04
+48p057548core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c04
+48p057648core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c04
+48p057948core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c05
+48p059448core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c09
+48p059548core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c09
+48p059648core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c09
+48p059748core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c10
+48p059848core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c10
+48p061248core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c13
+48p061648core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c14
+48p062148core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c01
+48p062248core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c01
+48p062348core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c01
+48p062448core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c01
+48p062548core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c02
+48p062648core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c02
+48p062848core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c02
+48p063148core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c03
+48p063548core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c04
+48p063648core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c04
+48p063848core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c05
+48p063948core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c05
+48p064348core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c06
+48p065648core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c09
+48p067048core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c13
+48p067448core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c14
+48p068248core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c01
+48p068348core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c01
+48p068448core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c01
+48p068648core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c02
+48p070348core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c06
+48p072748core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c12
+48p073848core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c15
+48p073948core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c15
+48p074148core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c01
+48p075548core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c04
+48p077048core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c08
+48p078648core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c12
+48p078748core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c12
+48p078948core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c13
+48p079048core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c13
+48p079148core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c13
+48p079248core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c13
+48p090348core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c11
+48p090448core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c11
+48p090548core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c12
+48p090648core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c12
+48p090748core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c12
+48p090848core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c12
+48p090948core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c13
+48p091048core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c13
+48p091148core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c13
+48p091248core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c13
+40p000240core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c01
+40p000340core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c01
+40p000440core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c01
+40p000640core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c02
+40p000740core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c02
+40p000840core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,pitzer-rack01-c02
+40p001440core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c04
+40p002240core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c06
+40p002440core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c06
+40p002540core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c07
+40p003740core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c10
+40p004540core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c12
+40p004840core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c12
+40p005040core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c13
+40p005340core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c14
+40p005740core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c01
+40p006040core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c01
+40p006240core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c02
+40p009440core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c10
+40p009540core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c10
+40p009740core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c11
+40p010040core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c11
+40p010540core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c13
+40p010840core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c13
+40p010940core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c14
+40p011540core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,pitzer-rack03-c01
+40p011640core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,pitzer-rack03-c01
+40p012040core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,pitzer-rack03-c02
+40p012140core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c03
+40p012940core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c05
+40p013540core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c06
+40p013640core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c06
+40p013940core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c07
+40p014440core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c08
+40p014540core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c09
+40p014640core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c09
+40p014940core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c10
+40p015140core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c10
+40p015240core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c10
+40p015540core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c11
+40p015640core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c11
+40p015740core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c12
+40p016040core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c12
+40p016140core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c13
+40p016340core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c13
+40p016640core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c14
+40p016740core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c14
+40p016940core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c01
+40p017040core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c01
+40p017740core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c03
+40p017940core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c03
+40p019440core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c07
+40p019540core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c07
+40p019640core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c07
+40p022540core,r740,gpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack01,v100
+40p022740core,r740,gpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,v100
+40p023040core,r740,gpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,v100
+40p023240core,r740,gpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,v100
+40p023540core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p023640core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+48p030748core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p031048core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p031448core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack08,v100-32g
+48p035148core,expansion,exp,c4140,gpu,eth-pitzer-rack09h1,ib-i4l1s24,ib-i4,pitzer-rack08,v100-quad
+48p035248core,expansion,exp,c4140,gpu,eth-pitzer-rack09h1,ib-i4l1s24,ib-i4,pitzer-rack09,v100-quad
+48p050148core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c01
+48p050248core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c01
+48p050348core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c01
+48p050448core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c01
+48p050548core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c02
+48p050648core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c02
+48p050748core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s14,ib-i4,pitzer-rack11,pitzer-rack11-c02
+48p051548core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c04
+48p051648core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c04
+48p051748core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c05
+48p051848core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c05
+48p051948core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c05
+48p052048core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c05
+48p052348core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c06
+48p052448core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c06
+48p052548core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c07
+48p052648core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c07
+48p052848core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c07
+48p052948core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c08
+48p053048core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c08
+48p053148core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c08
+48p053248core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c08
+48p053348core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c09
+48p053448core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c09
+48p053548core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c09
+48p053648core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s16,ib-i4,pitzer-rack11,pitzer-rack11-c09
+48p053748core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c10
+48p053948core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c10
+48p054048core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c10
+48p054248core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c11
+48p054348core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c11
+48p054448core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c11
+48p054548core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c12
+48p054648core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c12
+48p054748core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c12
+48p054848core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c12
+48p054948core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c13
+48p055048core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c13
+48p055148core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c13
+48p055248core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c13
+48p055348core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c14
+48p055448core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c14
+48p055548core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c14
+48p055648core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c14
+48p055748core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c15
+48p055848core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c15
+48p055948core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c15
+48p056048core,expansion,exp,c6420,cpu,eth-pitzer-rack11h1,ib-i4l1s15,ib-i4,pitzer-rack11,pitzer-rack11-c15
+48p056148core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c01
+48p056248core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c01
+48p057148core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c03
+48p057748core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c05
+48p057848core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c05
+48p058048core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c05
+48p058148core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c06
+48p058248core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c06
+48p058348core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c06
+48p058448core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c06
+48p058548core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c07
+48p058648core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c07
+48p058748core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c07
+48p058848core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c07
+48p058948core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c08
+48p059048core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c08
+48p059148core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c08
+48p059248core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c08
+48p059348core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s18,ib-i4,pitzer-rack12,pitzer-rack12-c09
+48p060148core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c11
+48p060248core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c11
+48p060348core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c11
+48p060448core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c11
+48p060548core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c12
+48p060648core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c12
+48p060748core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c12
+48p060848core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c12
+48p060948core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c13
+48p061048core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c13
+48p061148core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c13
+48p061348core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c14
+48p061448core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c14
+48p061548core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c14
+48p061748core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c15
+48p061848core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c15
+48p061948core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c15
+48p062048core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c15
+48p062948core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c03
+48p063048core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c03
+48p063748core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c05
+48p064048core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c05
+48p064148core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c06
+48p064248core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c06
+48p064448core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c06
+48p064548core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c07
+48p064648core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c07
+48p064748core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c07
+48p064848core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c07
+48p064948core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c08
+48p065048core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c08
+48p065148core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c08
+48p065248core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c08
+48p065348core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c09
+48p065448core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c09
+48p065548core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c09
+48p065748core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c10
+48p065848core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c10
+48p065948core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c10
+48p066048core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c10
+48p066148core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c11
+48p066248core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c11
+48p066348core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c11
+48p066448core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c11
+48p066548core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c12
+48p066648core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c12
+48p066748core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c12
+48p066848core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c12
+48p066948core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c13
+48p067148core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c13
+48p067248core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c13
+48p067348core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c14
+48p067548core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c14
+48p067648core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c14
+48p067748core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c15
+48p067848core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c15
+48p067948core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c15
+48p068048core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s20,ib-i4,pitzer-rack13,pitzer-rack13-c15
+48p068148core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c01
+48p068548core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c02
+48p068748core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c02
+48p068848core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c02
+48p068948core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c03
+48p069048core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c03
+48p069748core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c05
+48p069848core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c05
+48p069948core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c05
+48p070048core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c05
+48p070148core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c06
+48p070248core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c06
+48p070448core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c06
+48p070548core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c07
+48p070648core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c07
+48p070748core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c07
+48p070848core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c07
+48p070948core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c08
+48p071048core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c08
+48p071148core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c08
+48p071248core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c08
+48p071348core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c09
+48p071448core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c09
+48p071548core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c09
+48p071648core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c09
+48p071748core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c10
+48p071848core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c10
+48p071948core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c10
+48p072048core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c10
+48p072148core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c11
+48p072248core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c11
+48p072348core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c11
+48p072448core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c11
+48p072548core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c12
+48p072648core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c12
+48p072848core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c12
+48p072948core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c13
+48p073048core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c13
+48p073148core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c13
+48p073248core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c13
+48p073348core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c14
+48p073448core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c14
+48p073548core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c14
+48p073648core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c14
+48p073748core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c15
+48p074048core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s22,ib-i4,pitzer-rack14,pitzer-rack14-c15
+48p074248core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c01
+48p074348core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c01
+48p074448core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c01
+48p074548core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c02
+48p074648core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c02
+48p074748core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c02
+48p074848core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c02
+48p074948core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c03
+48p075048core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c03
+48p075148core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c03
+48p075248core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s24,ib-i4,pitzer-rack15,pitzer-rack15-c03
+48p075348core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c04
+48p075448core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c04
+48p075648core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c04
+48p075748core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c05
+48p075848core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c05
+48p075948core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c05
+48p076048core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c05
+48p076148core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c06
+48p076248core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c06
+48p076348core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c06
+48p076448core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c06
+48p076548core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c07
+48p076648core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c07
+48p076748core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c07
+48p076848core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c07
+48p076948core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c08
+48p077148core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c08
+48p077248core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c08
+48p077348core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c09
+48p077448core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c09
+48p077548core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c09
+48p077648core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s26,ib-i4,pitzer-rack15,pitzer-rack15-c09
+48p077748core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c10
+48p077848core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c10
+48p077948core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c10
+48p078048core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c10
+48p078148core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c11
+48p078248core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c11
+48p078348core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c11
+48p078448core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c11
+48p078548core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c12
+48p078848core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c12
+48p090148core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c11
+48p090248core,expansion,exp,c6420,largemem,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c11
+40p000940core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c03
+40p001540core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c04
+40p001640core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c04
+40p001840core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c05
+40p002040core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c05
+40p002140core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c06
+40p002340core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c06
+40p002640core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c07
+40p002740core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c07
+40p002840core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c07
+40p002940core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c08
+40p003040core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c08
+40p003240core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s02,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c08
+40p003340core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c09
+40p003440core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c09
+40p003540core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c09
+40p003640core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c09
+40p003840core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c10
+40p004340core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c11
+40p004640core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c12
+40p004740core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c12
+40p005440core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c14
+40p005840core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c01
+40p005940core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c01
+40p007240core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c04
+40p007840core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c06
+40p007940core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c06
+40p008040core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c06
+40p008240core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c07
+40p008440core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c07
+40p008740core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c08
+40p009940core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c11
+40p010640core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c13
+40p011040core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c14
+40p011140core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c14
+40p011240core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s06,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c14
+40p011340core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,pitzer-rack03-c01
+40p011440core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,pitzer-rack03-c01
+40p011840core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack03,pitzer-rack03-c02
+40p012240core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c03
+40p012540core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c04
+40p012640core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c04
+40p012740core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c04
+40p013240core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c05
+40p015340core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c11
+40p015440core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c11
+40p015840core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c12
+40p015940core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c12
+40p016540core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c14
+40p016840core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s08,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c14
+40p017540core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s01,ib-i4,eth-pitzer-rack05b1,pitzer-rack04,pitzer-rack04-c02
+48p056348core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c01
+48p056448core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c01
+48p056548core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c02
+48p056648core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c02
+48p056748core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c02
+48p056848core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c02
+48p056948core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c03
+48p057048core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s14,ib-i4,pitzer-rack12,pitzer-rack12-c03
+48p059948core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c10
+48p060048core,expansion,exp,c6420,cpu,eth-pitzer-rack12h1,ib-i4l1s17,ib-i4,pitzer-rack12,pitzer-rack12-c10
+48p062748core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c02
+48p063248core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s19,ib-i4,pitzer-rack13,pitzer-rack13-c03
+48p063348core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c04
+48p063448core,expansion,exp,c6420,cpu,eth-pitzer-rack13h1,ib-i4l1s21,ib-i4,pitzer-rack13,pitzer-rack13-c04
+48p069148core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c03
+48p069248core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s19,ib-i4,pitzer-rack14,pitzer-rack14-c03
+48p069348core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c04
+48p069448core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c04
+48p069548core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c04
+48p069648core,expansion,exp,c6420,cpu,eth-pitzer-rack14h1,ib-i4l1s23,ib-i4,pitzer-rack14,pitzer-rack14-c04
+40p021240core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c11
+40p021740core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c13
+40p020840core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c10
+40p020940core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c11
+40p021040core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c11
+40p021140core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c11
+40p021340core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c12
+40p021440core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c12
+40p021540core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c12
+40p021640core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c12
+40p021840core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c13
+40p022040core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c13
+40p022340core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c14
+40p022440core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c14
+48p081348core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c04
+48p079348core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c14
+48p079448core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c14
+48p079548core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c14
+48p079648core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c14
+48p079748core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c15
+48p079848core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c15
+48p079948core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c15
+48p080048core,expansion,exp,c6420,cpu,eth-pitzer-rack15h1,ib-i4l1s25,ib-i4,pitzer-rack15,pitzer-rack15-c15
+48p080148core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s24,ib-i4,pitzer-rack16,pitzer-rack16-c01
+48p080248core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s24,ib-i4,pitzer-rack16,pitzer-rack16-c01
+48p080348core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s24,ib-i4,pitzer-rack16,pitzer-rack16-c01
+48p080448core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s24,ib-i4,pitzer-rack16,pitzer-rack16-c01
+48p080548core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c02
+48p080648core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c02
+48p080748core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c02
+48p080848core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c02
+48p080948core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c03
+48p081048core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c03
+48p081148core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c03
+48p081248core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c03
+48p081448core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c04
+48p081548core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c04
+48p081648core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c04
+48p081748core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c05
+48p081848core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c05
+48p081948core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c05
+48p082048core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c05
+48p082148core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c06
+48p082248core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c06
+48p082348core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c06
+48p082448core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c06
+48p082548core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c07
+48p082648core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c07
+48p082748core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c07
+48p082848core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s28,ib-i4,pitzer-rack16,pitzer-rack16-c07
+48p082948core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c08
+48p083048core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c08
+48p083148core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c08
+48p083248core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c08
+48p083348core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c09
+48p083448core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c09
+48p083548core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c09
+48p083648core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c09
+48p083748core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c10
+48p083848core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c10
+48p083948core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c10
+48p084048core,expansion,exp,c6420,cpu,eth-pitzer-rack16h1,ib-i4l1s27,ib-i4,pitzer-rack16,pitzer-rack16-c10
+48p031848core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack09,v100-32g
+48p031948core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack09,v100-32g
+40p008540core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c08
+40p013340core,c6420,cpu,eth-pitzer-rack03h1,ib-i4l1s07,ib-i4,eth-pitzer-rack03b1,pitzer-rack03,pitzer-rack03-c06
+40p021940core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c13
+40p004040core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c10
+40p004140core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c11
+40p004240core,c6420,cpu,eth-pitzer-rack01h1,ib-i4l1s03,ib-i4,eth-pitzer-rack01b1,pitzer-rack01,pitzer-rack01-c11
+40p006340core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c02
+40p006440core,c6420,cpu,eth-pitzer-rack03h2,ib-i4l1s04,ib-i4,eth-pitzer-rack05b1,pitzer-rack02,pitzer-rack02-c02
+40p006540core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c03
+40p006640core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c03
+40p006840core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c03
+40p007340core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c05
+40p007440core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c05
+40p007540core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c05
+40p007640core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c05
+40p007740core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c06
+40p019940core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c08
+40p020040core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c08
+40p020140core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c09
+40p020240core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c09
+40p020340core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c09
+40p020440core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c09
+40p020540core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c10
+40p020640core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c10
+40p020740core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s10,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c10
+40p006740core,c6420,cpu,eth-pitzer-rack02h1,ib-i4l1s05,ib-i4,eth-pitzer-rack02b1,pitzer-rack02,pitzer-rack02-c03
+40p024940core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p025040core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p025440core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p025540core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p024040core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p024140core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p024240core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p024340core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p024440core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack06,v100
+40p024540core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p024640core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p024740core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p024840core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p025140core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p025240core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p025640core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+40p025340core,r740,gpu,eth-pitzer-rack06h1,ib-i4l1s11,ib-i4,eth-pitzer-rack06b1,pitzer-rack07,v100
+48p032048core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack09,v100-32g
+48p032648core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack09,v100-32g
+48p032748core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack09,v100-32g
+48p033748core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033948core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p034248core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p032148core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack09,v100-32g
+48p032248core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack09,v100-32g
+48p032348core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack09,v100-32g
+48p032448core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack09,v100-32g
+48p032548core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack09,v100-32g
+48p032848core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s12,ib-i4,pitzer-rack09,v100-32g
+48p032948core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033048core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033848core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p034048core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033148core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033248core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033348core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033448core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033548core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p033648core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p034148core,expansion,exp,r740,gpu,eth-pitzer-rack09h1,ib-i4l1s13,ib-i4,pitzer-rack10,v100-32g
+48p035348core,expansion,exp,c4140,gpu,eth-pitzer-rack09h1,ib-i4l1s24,ib-i4,pitzer-rack09,v100-quad
+48p035448core,expansion,exp,c4140,gpu,eth-pitzer-rack09h1,ib-i4l1s24,ib-i4,pitzer-rack10,v100-quad
+40p018140core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c04
+40p018240core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c04
+40p018340core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c04
+40p018440core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c04
+40p018540core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c05
+40p018640core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c05
+40p018740core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c05
+40p018840core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c05
+40p018940core,c6420,cpu,eth-pitzer-rack04h1,ib-i4l1s09,ib-i4,eth-pitzer-rack04b1,pitzer-rack04,pitzer-rack04-c06
+40p100140core,r740,gpu,eth-pitzer-rack03h2,ib-i3l2s03,ib-i3,eth-pitzer-rack06b1,pitzer-rack07,v100,quick
