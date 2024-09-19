@@ -236,8 +236,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
         attributes:
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-auto-cores-max: 80
+            - - owens
+              - owens
+              - data-auto-cores-max: 48
             label: Cluster
             help: ''
             required: false
@@ -281,8 +285,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
         attributes:
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-auto-cores-max: 80
+            - - owens
+              - owens
+              - data-auto-cores-max: 48
             label: Cluster
             help: ''
             required: false
@@ -581,8 +589,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: false
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-auto-cores-max: 80
+            - - owens
+              - owens
+              - data-auto-cores-max: 48
             value: oakley
             label: Cluster
             help: ''
@@ -683,8 +695,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: false
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-auto-cores-max: 80
+            - - owens
+              - owens
+              - data-auto-cores-max: 48
             value: oakley
             label: Cluster
             help: ''
