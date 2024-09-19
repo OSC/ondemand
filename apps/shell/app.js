@@ -79,7 +79,7 @@ if (process.env.OOD_SSHHOST_ALLOWLIST){
 }
 
 // default is 8 hours.
-const wsTimeout = (process.env.OOD_SHELL_WS_TIMEOUT_MS || 28800000)
+const wsTimeout = (process.env.OOD_SHELL_WS_TIMEOUT_MS || 28800000);
 
 let hosts = helpers.definedHosts();
 let default_sshhost = hosts['default'];
