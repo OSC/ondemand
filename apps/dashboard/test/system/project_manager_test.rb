@@ -238,10 +238,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
             options:
             - - oakley
               - oakley
-              - data-auto-cores-max: 80
+              - data-max-auto-cores: 80
             - - owens
               - owens
-              - data-auto-cores-max: 48
+              - data-max-auto-cores: 48
             label: Cluster
             help: ''
             required: false
@@ -287,10 +287,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
             options:
             - - oakley
               - oakley
-              - data-auto-cores-max: 80
+              - data-max-auto-cores: 80
             - - owens
               - owens
-              - data-auto-cores-max: 48
+              - data-max-auto-cores: 48
             label: Cluster
             help: ''
             required: false
@@ -591,10 +591,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
             options:
             - - oakley
               - oakley
-              - data-auto-cores-max: 80
+              - data-max-auto-cores: 80
             - - owens
               - owens
-              - data-auto-cores-max: 48
+              - data-max-auto-cores: 48
             value: oakley
             label: Cluster
             help: ''
@@ -697,10 +697,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
             options:
             - - oakley
               - oakley
-              - data-auto-cores-max: 80
+              - data-max-auto-cores: 80
             - - owens
               - owens
-              - data-auto-cores-max: 48
+              - data-max-auto-cores: 48
             value: oakley
             label: Cluster
             help: ''
