@@ -95,12 +95,16 @@ class LauncherTest < ActiveSupport::TestCase
     end
   end
 
-  test 'launchers will not assign wrong id' do
+  test 'launchers will re-assign wrong id' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      launcher = Launcher.new({ project_dir: projects_path.to_s, id: '1234', title: 'Test Script' })
-      assert_nil(launcher.id)
+      bad_id = '1234'
+      launcher = Launcher.new({ project_dir: projects_path.to_s, id: bad_id, title: 'Test Script' })
+
+      assert(launcher.id.to_s.match?(Launcher::ID_REX))
+      refute(bad_id.match?(Launcher::ID_REX))
+      refute(bad_id.to_s == launcher.id)
     end
   end
 
@@ -132,6 +136,25 @@ class LauncherTest < ActiveSupport::TestCase
 
       assert_equal false, created_script
       assert_equal false, Pathname(File.join(projects_path, 'hello_world.sh')).exist?
+    end
+  end
+
+  test 'will not save even if id is resest' do
+    Dir.mktmpdir do |tmp|
+      bad_id = '1234'
+      launcher = Launcher.new({ project_dir: tmp.to_s, id: bad_id, title: 'Default Script' })
+
+      # initializer reset the id, but we can reset it
+      refute(launcher.id.to_s == bad_id.to_s)
+      launcher.instance_variable_set('@id', bad_id)
+      assert_equal(launcher.id, bad_id)
+      assert(launcher.errors.size, 0)
+
+      # now try to save it, and it fails
+      refute(launcher.save)
+      assert(launcher.errors.size, 1)
+      assert_equal(launcher.errors.full_messages[0], "Id ID does not match #{Launcher::ID_REX.inspect}")
+      refute(Dir.exist?(Launcher.scripts_dir(tmp).to_s))
     end
   end
 end

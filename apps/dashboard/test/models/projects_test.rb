@@ -28,10 +28,12 @@ class ProjectsTest < ActiveSupport::TestCase
 template: '/invalid/template' })
 
       assert_not project.save
-      assert_equal 2, project.errors.size
+      assert_equal 3, project.errors.size
       assert_not_equal invalid_icon, project.icon 
       assert_not project.errors[:directory].empty?
       assert_not project.errors[:template].empty?
+      assert_equal(1, project.errors[:directory].size)
+      assert_equal(2, project.errors[:template].size)
     end
   end
 

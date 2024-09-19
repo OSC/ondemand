@@ -655,4 +655,24 @@ class FilesTest < ApplicationSystemTestCase
 
     assert_equal(expected_links, null_links)
   end
+
+  test 'allowlist errors flash' do
+    with_modified_env({ OOD_ALLOWLIST_PATH: Rails.root.to_s }) do
+      visit(files_url(Rails.root))
+
+      alerts = all('.alert')
+      assert(alerts.empty?)
+
+      find('#goto-btn').click
+      find('#swal2-input').set('/etc')
+      find('.swal2-confirm').click
+
+      alerts = all('.alert')
+      refute(alerts.empty?)
+      assert_equal(1, alerts.size)
+
+      alert_text = find('.alert > span').text
+      assert_equal('/etc does not have an ancestor directory specified in ALLOWLIST_PATH', alert_text)
+    end
+  end
 end
