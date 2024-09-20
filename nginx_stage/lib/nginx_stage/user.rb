@@ -39,11 +39,15 @@ module NginxStage
         # The user is composed of all numbers, (numeric string)
         #  10 microseconds per call if it matches
         # 203 microseconds per call if it doesn't match (only happens if username is all numbers but not a uid)
-        @passwd = Etc.getpwuid(user.to_i) rescue nil
+        begin
+          @passwd = Etc.getpwuid(user.to_i)
+        rescue ArgumentError
+          # We got a number as a username but we failed the lookup, fallthrough to the string lookup
+        end
       end
 
       # Variable is not set, so the user is a string
-      if not @passwd
+      unless @passwd
         # Benchmark: 13 microseconds per call (1M cycles)
         @passwd = Etc.getpwnam(user)
         if name.to_s != user.to_s
@@ -92,10 +96,14 @@ module NginxStage
       # erroneous results
       def get_groups
         # Group names can contain spaces, prevent "domain users" people from being added to the "users" group
-        # We retrieve IDs and convert to names
+        # We retrieve GIDs and convert to names (or GID)
         `id -G #{name}`.split(' ').map(&:to_i).map do |gid|
-            # Rescue: sometimes GID are added to user but don't "actually" exist (rare)
-            Etc.getgrgid(gid).name rescue gid
+          begin
+            Etc.getgrgid(gid).name
+          rescue ArgumentError
+            # Still return the GID as a string if the group doesn't exist
+            gid.to_s
+          end
         end
       end
   end
