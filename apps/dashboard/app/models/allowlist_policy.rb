@@ -82,9 +82,7 @@ class AllowlistPolicy
     # Expand both paths to evaluate any potential ".." components to be able to compare them as strings.
     p = parent.expand_path.to_s
     c = child.expand_path.to_s
-    # Child path shorter than parent => not a child.
-    return false if c.size < p.size
-    # Child path is same as parent path, or has additional components after parent path (has "/" after parent path).
-    c[0...p.size] == p && (c.size == p.size || c[p.size] == "/")
+    # Child path if it is same as parent path, or has additional components after "/".
+    c.start_with?(p) && (c.size == p.size || c[p.size] == "/")
   end
 end
