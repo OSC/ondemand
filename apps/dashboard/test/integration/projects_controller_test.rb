@@ -6,6 +6,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     OodAppkit.stubs(:dataroot).returns(Rails.root.join('test/fixtures/projects'))
     Configuration.stubs(:jobs_app_alpha?).returns(true)
     Rails.application.reload_routes!
+    stub_sinfo
   end
 
   test "should get index" do
