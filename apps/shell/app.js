@@ -78,8 +78,9 @@ if (process.env.OOD_SSHHOST_ALLOWLIST){
   host_allowlist = Array.from(new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':')));
 }
 
-// default is 8 hours.
-const wsTimeout = (process.env.OOD_SHELL_WS_TIMEOUT_MS || 28800000)
+const inactiveTimeout = (process.env.OOD_SHELL_INACTIVE_TIMEOUT_MS || 300000);
+const maxShellTime = (process.env.OOD_SHELL_MAX_DURATION_MS || 3600000);
+const pingPongEnabled = process.env.OOD_SHELL_PING_PONG ? true : false;
 
 let hosts = helpers.definedHosts();
 let default_sshhost = hosts['default'];
@@ -150,6 +151,7 @@ wss.on('connection', function connection (ws, req) {
   
   ws.isAlive = true;
   ws.startedAt = Date.now();
+  ws.lastActivity = Date.now();
   
   console.log('Connection established');
 
@@ -179,6 +181,7 @@ wss.on('connection', function connection (ws, req) {
       ws.send(data, function (error) {
         if (error) console.log('Send error: ' + error.message);
       });
+      ws.lastActivity = Date.now();
     });
 
     term.onExit(function (_exitData) {
@@ -187,12 +190,16 @@ wss.on('connection', function connection (ws, req) {
 
     ws.on('message', function (msg) {
       msg = JSON.parse(msg);
-      if (msg.input)  term.write(msg.input);
+      if (msg.input)  {
+        term.write(msg.input);
+        this.lastActivity = Date.now();
+      }
       if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
     });
 
     ws.on('close', function () {
       term.end();
+      this.isAlive = false;
       console.log('Closed terminal: ' + term.pid);
     });
 
@@ -205,12 +212,15 @@ wss.on('connection', function connection (ws, req) {
 const interval = setInterval(function ping() {
   wss.clients.forEach(function each(ws) {
     const timeUsed = Date.now() - ws.startedAt;
-    if (ws.isAlive === false || timeUsed > wsTimeout) {
+    const inactiveFor = Date.now() - ws.lastActivity;
+    if (ws.isAlive === false || inactiveFor > inactiveTimeout || timeUsed > maxShellTime) {
       return ws.terminate();
     }
 
-    ws.isAlive = false;
-    ws.ping();
+    if(pingPongEnabled) {
+      ws.isAlive = false;
+      ws.ping();
+    }
   });
 }, 30000);
 
