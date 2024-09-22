@@ -157,7 +157,7 @@ class FilesController < ApplicationController
 
     @transfer = @path.handle_upload(params[:file].tempfile)
     if @transfer
-      render "transfers/show"
+      render 'transfers/show'
     else
       render json: {}
     end
