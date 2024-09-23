@@ -25,6 +25,8 @@ module SmartAttributes
         if respond_to?(build_method)
           send(build_method, opts)
         else
+          # date_field will throw an error if the value is an empty string.
+          opts[:value] = Date.today if opts[:widget] == 'date_field' && opts[:value].to_s.empty?
           Attribute.new(id, opts)
         end
       end
