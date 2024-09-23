@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+more shell ping/pong work (#3810)\
+Optimize allowlist handling (#3804)\
+stub sfino here for test reliability (#3809)\
+timeout connections after some configurable time (#3805)\
+Clusters set auto_cores max (#3778)\
+Merge pull request #3796 from osc-bot/osc-bot/random-linted-file\
+add test for restart_confirmation (#3781)\
+upgrade to rails 7.0.8.4 (#3783)\
+fix this test after last 2 merges (#3792)\
+lint a random file
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
