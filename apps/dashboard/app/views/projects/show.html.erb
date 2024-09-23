@@ -64,8 +64,12 @@
 
     <div class="row">
       <h2 class="h3 d-flex justify-content-center">Completed Jobs</h2>
-      <div id="completed_jobs">
-        <%= render(partial: 'job_details_content', collection: @project.completed_jobs, as: :job) %>
+      <div id="completed_jobs" class="row">
+        <%- @project.completed_jobs.each do |job| -%>
+        <div class="col-md-4" id="<%= "job_#{job.cluster}_#{job.id}" %>">
+          <%= render(partial: 'job_details_content', locals: { job: job }) %>
+        </div>
+        <%- end -%>
       </div>
     </div>
   </div>
