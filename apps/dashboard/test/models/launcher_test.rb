@@ -3,6 +3,10 @@
 require 'test_helper'
 
 class LauncherTest < ActiveSupport::TestCase
+  def setup
+    stub_sinfo
+  end
+
   test 'supported field postfix' do
     target = Launcher.new({ project_dir: '/path/project', id: 1234, title: 'Test Script' })
     refute target.send('attribute_parameter?', nil)
@@ -150,7 +154,7 @@ class LauncherTest < ActiveSupport::TestCase
       refute(launcher.save)
       assert(launcher.errors.size, 1)
       assert_equal(launcher.errors.full_messages[0], "Id ID does not match #{Launcher::ID_REX.inspect}")
-      assert(Dir.empty?(Launcher.scripts_dir(tmp).to_s))
+      refute(Dir.exist?(Launcher.scripts_dir(tmp).to_s))
     end
   end
 end

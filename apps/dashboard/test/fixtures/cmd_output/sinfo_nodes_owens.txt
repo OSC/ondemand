@@ -1,0 +1,816 @@
+28o0004c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c01
+28o0009c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c03
+28o0028c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c07
+28o0031c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c08
+28o0056c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c14
+28o0060c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c15
+28o0075c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c01
+28o0077c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c02
+28o0136c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c16
+28o0138c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c17
+28o0146c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c01
+28o0148c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c01
+28o0149c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c02
+28o0152c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c02
+28o0154c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c03
+28o0155c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c03
+28o0165c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c06
+28o0196c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c13
+28o0201c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c15
+28o0209c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c17
+28o0237c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c06
+28o0244c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c07
+28o0266c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c13
+28o0274c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c15
+28o0285c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c18
+28o0290c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c01
+28o0310c6320,cpu,eth-owens-rack05h2,ib-i1l1s12,ib-i1,5,5-c06
+28o0325c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c10
+28o0328c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c10
+28o0332c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c11
+28o0346c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c15
+28o0349c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c16
+28o0357c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c18
+28o0365c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c02
+28o0369c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c03
+28o0373c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c04
+28o0375c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c04
+28o0378c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c05
+28o0383c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c06
+28o0384c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c06
+28o0388c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c07
+28o0389c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c08
+28o0390c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c08
+28o0391c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c08
+28o0393c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c09
+28o0414c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c14
+28o0419c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c15
+28o0420c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c15
+28o0422c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c16
+28o0423c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c16
+28o0424c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c16
+28o0430c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c18
+28o0435c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c01
+28o0436c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c01
+28o0438c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c02
+28o0440c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c02
+28o0441c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c03
+28o0443c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c03
+28o0445c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c04
+28o0448c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c04
+28o0452c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c05
+28o0455c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c06
+28o0464c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c08
+28o0465c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c09
+28o0468c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c09
+28o0470c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c10
+28o0477c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c12
+28o0485c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c14
+28o0488c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c14
+28o0490c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c15
+28o0492c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c15
+28o0502c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c18
+28o0504c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c18
+28o0505c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c01
+28o0507c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c01
+28o0508c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c01
+28o0512c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c02
+28o0514c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c03
+28o0515c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c03
+28o0516c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c03
+28o0517c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c04
+28o0518c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c04
+28o0528c6320,cpu,eth-owens-rack08h2,ib-i1l1s20,ib-i1,8,8-c06
+28o0530c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c07
+28o0532c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c07
+28o0533c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c08
+28o0534c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c08
+28o0537c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c09
+28o0539c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c09
+28o0540c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c09
+28o0542c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c10
+28o0544c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c10
+28o0546c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c11
+28o0548c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c11
+28o0550c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c12
+28o0552c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c12
+28o0556c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c13
+28o0557c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c14
+28o0560c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c14
+28o0561c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c15
+28o0563c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c15
+28o0565c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c16
+28o0567c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c16
+28o0571c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c17
+28o0572c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c17
+28o0574c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c18
+28o0575c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c18
+28o0577c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c01
+28o0579c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c01
+28o0586c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c03
+28o0588c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c03
+28o0590c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c04
+28o0596c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c05
+28o0598c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c06
+28o0600c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c06
+28o0601c6320,cpu,eth-owens-rack09h1,ib-i1l1s22,ib-i1,9,9-c07
+28o0604c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c07
+28o0605c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c08
+28o0607c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c08
+28o0609c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c09
+28o0610c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c09
+28o0612c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c09
+28o0613c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c10
+28o0614c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c10
+28o0615c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c10
+28o0616c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c10
+28o0618c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c11
+28o0619c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c11
+28o0620c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c11
+28o0621c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c12
+28o0624c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c12
+28o0626c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c13
+28o0627c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c13
+28o0628c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c13
+28o0629c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c14
+28o0630c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c14
+28o0631c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c14
+28o0632c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c14
+28o0634c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c15
+28o0635c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c15
+28o0636c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c15
+28o0637c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c16
+28o0638c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c16
+28o0639c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c16
+28o0643c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c17
+28o0645c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c18
+28o0003c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c01
+28o0005c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c02
+28o0006c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c02
+28o0007c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c02
+28o0008c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c02
+28o0010c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c03
+28o0011c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c03
+28o0013c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c04
+28o0014c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c04
+28o0015c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c04
+28o0016c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c04
+28o0017c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c05
+28o0018c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c05
+28o0019c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c05
+28o0020c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c05
+28o0021c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c06
+28o0022c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c06
+28o0023c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c06
+28o0024c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c06
+28o0025c6320,cpu,eth-owens-rack01h1,ib-i1l1s01,ib-i1,1,1-c07
+28o0026c6320,cpu,eth-owens-rack01h1,ib-i1l1s01,ib-i1,1,1-c07
+28o0027c6320,cpu,eth-owens-rack01h1,ib-i1l1s01,ib-i1,1,1-c07
+28o0032c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c08
+28o0033c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c09
+28o0034c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c09
+28o0035c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c09
+28o0036c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c09
+28o0037c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c10
+28o0038c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c10
+28o0039c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c10
+28o0040c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c10
+28o0041c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c11
+28o0042c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c11
+28o0043c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c11
+28o0044c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c11
+28o0045c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c12
+28o0046c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c12
+28o0047c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c12
+28o0048c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c12
+28o0049c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c13
+28o0051c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c13
+28o0052c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c13
+28o0053c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c14
+28o0054c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c14
+28o0055c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c14
+28o0057c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c15
+28o0058c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c15
+28o0059c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c15
+28o0061c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c16
+28o0062c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c16
+28o0063c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c16
+28o0064c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c16
+28o0065c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c17
+28o0066c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c17
+28o0067c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c17
+28o0068c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c17
+28o0069c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c18
+28o0070c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c18
+28o0071c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c18
+28o0072c6320,cpu,eth-owens-rack01h1,ib-i1l1s03,ib-i1,1,1-c18
+28o0073c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c01
+28o0074c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c01
+28o0076c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c01
+28o0078c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c02
+28o0079c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c02
+28o0080c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c02
+28o0081c6320,cpu,eth-owens-rack02h1,ib-i1l1s03,ib-i1,2,2-c03
+28o0082c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c03
+28o0084c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c03
+28o0085c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c04
+28o0086c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c04
+28o0088c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c04
+28o0089c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c05
+28o0090c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c05
+28o0091c6320,cpu,eth-owens-rack02h1,ib-i1l1s04,ib-i1,2,2-c05
+28o0092c6320,cpu,eth-owens-rack02h1,ib-i1l1s04,ib-i1,2,2-c05
+28o0093c6320,cpu,eth-owens-rack02h1,ib-i1l1s04,ib-i1,2,2-c06
+28o0094c6320,cpu,eth-owens-rack02h1,ib-i1l1s04,ib-i1,2,2-c06
+28o0095c6320,cpu,eth-owens-rack02h1,ib-i1l1s04,ib-i1,2,2-c06
+28o0096c6320,cpu,eth-owens-rack02h1,ib-i1l1s04,ib-i1,2,2-c06
+28o0097c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c07
+28o0098c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c07
+28o0099c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c07
+28o0101c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c08
+28o0102c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c08
+28o0103c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c08
+28o0104c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c08
+28o0105c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c09
+28o0106c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c09
+28o0107c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c09
+28o0108c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c09
+28o0109c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c10
+28o0110c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c10
+28o0111c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c10
+28o0112c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c10
+28o0113c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c11
+28o0114c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c11
+28o0115c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c11
+28o0116c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c11
+28o0117c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c12
+28o0118c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c12
+28o0119c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c12
+28o0120c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c12
+28o0121c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c13
+28o0122c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c13
+28o0123c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c13
+28o0124c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c13
+28o0125c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c14
+28o0126c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c14
+28o0127c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c14
+28o0128c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c14
+28o0129c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c15
+28o0130c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c15
+28o0131c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c15
+28o0132c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c15
+28o0133c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c16
+28o0134c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c16
+28o0135c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c16
+28o0137c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c17
+28o0139c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c17
+28o0140c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c17
+28o0141c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c18
+28o0142c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c18
+28o0143c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c18
+28o0144c6320,cpu,eth-owens-rack02h2,ib-i1l1s05,ib-i1,2,2-c18
+28o0145c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c01
+28o0147c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c01
+28o0153c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c03
+28o0156c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c03
+28o0157c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c04
+28o0158c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c04
+28o0159c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c04
+28o0160c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c04
+28o0161c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c05
+28o0162c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c05
+28o0163c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c05
+28o0164c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c05
+28o0166c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c06
+28o0167c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c06
+28o0168c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c06
+28o0169c6320,cpu,eth-owens-rack03h1,ib-i1l1s06,ib-i1,3,3-c07
+28o0170c6320,cpu,eth-owens-rack03h1,ib-i1l1s06,ib-i1,3,3-c07
+28o0171c6320,cpu,eth-owens-rack03h1,ib-i1l1s06,ib-i1,3,3-c07
+28o0172c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c07
+28o0173c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c08
+28o0174c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c08
+28o0175c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c08
+28o0176c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c08
+28o0177c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c09
+28o0178c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c09
+28o0179c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c09
+28o0180c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c09
+28o0181c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c10
+28o0182c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c10
+28o0183c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c10
+28o0185c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c11
+28o0186c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c11
+28o0187c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c11
+28o0188c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c11
+28o0189c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c12
+28o0190c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c12
+28o0191c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c12
+28o0192c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c12
+28o0193c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c13
+28o0194c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c13
+28o0195c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c13
+28o0197c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c14
+28o0198c6320,cpu,eth-owens-rack03h1,ib-i1l1s07,ib-i1,3,3-c14
+28o0199c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c14
+28o0200c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c14
+28o0202c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c15
+28o0206c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c16
+28o0207c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c16
+28o0208c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c16
+28o0210c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c17
+28o0211c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c17
+28o0212c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c17
+28o0213c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c18
+28o0214c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c18
+28o0215c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c18
+28o0216c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c18
+28o0217c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c01
+28o0218c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c01
+28o0219c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c01
+28o0220c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c01
+28o0221c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c02
+28o0222c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c02
+28o0223c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c02
+28o0224c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c02
+28o0225c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c03
+28o0226c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c03
+28o0227c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c03
+28o0228c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c03
+28o0230c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c04
+28o0231c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c04
+28o0232c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c04
+28o0233c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c05
+28o0234c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c05
+28o0235c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c05
+28o0236c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c05
+28o0238c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c06
+28o0239c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c06
+28o0240c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c06
+28o0241c6320,cpu,eth-owens-rack04h1,ib-i1l1s09,ib-i1,4,4-c07
+28o0242c6320,cpu,eth-owens-rack04h1,ib-i1l1s09,ib-i1,4,4-c07
+28o0243c6320,cpu,eth-owens-rack04h1,ib-i1l1s09,ib-i1,4,4-c07
+28o0245c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c08
+28o0246c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c08
+28o0247c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c08
+28o0254c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c10
+28o0255c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c10
+28o0256c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c10
+28o0257c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c11
+28o0258c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c11
+28o0259c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c11
+28o0260c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c11
+28o0261c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c12
+28o0265c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c13
+28o0268c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c13
+28o0269c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c14
+28o0270c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c14
+28o0271c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c14
+28o0272c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c14
+28o0273c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c15
+28o0275c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c15
+28o0276c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c15
+28o0277c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c16
+28o0278c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c16
+28o0286c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c18
+28o0288c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c18
+28o0291c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c01
+28o0292c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c01
+28o0293c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c02
+28o0294c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c02
+28o0295c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c02
+28o0296c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c02
+28o0297c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c03
+28o0301c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c04
+28o0302c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c04
+28o0303c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c04
+28o0304c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c04
+28o0305c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c05
+28o0306c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c05
+28o0307c6320,cpu,eth-owens-rack05h2,ib-i1l1s12,ib-i1,5,5-c05
+28o0308c6320,cpu,eth-owens-rack05h2,ib-i1l1s12,ib-i1,5,5-c05
+28o0309c6320,cpu,eth-owens-rack05h2,ib-i1l1s12,ib-i1,5,5-c06
+28o0311c6320,cpu,eth-owens-rack05h2,ib-i1l1s12,ib-i1,5,5-c06
+28o0312c6320,cpu,eth-owens-rack05h2,ib-i1l1s12,ib-i1,5,5-c06
+28o0313c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c07
+28o0314c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c07
+28o0315c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c07
+28o0316c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c07
+28o0317c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c08
+28o0318c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c08
+28o0319c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c08
+28o0320c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c08
+28o0321c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c09
+28o0322c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c09
+28o0323c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c09
+28o0324c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c09
+28o0326c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c10
+28o0327c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c10
+28o0329c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c11
+28o0333c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c12
+28o0334c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c12
+28o0339c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c13
+28o0342c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c14
+28o0343c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c14
+28o0345c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c15
+28o0347c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c15
+28o0348c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c15
+28o0350c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c16
+28o0354c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c17
+28o0355c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c17
+28o0356c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c17
+28o0362c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c01
+28o0363c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c01
+28o0364c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c01
+28o0366c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c02
+28o0367c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c02
+28o0368c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c02
+28o0370c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c03
+28o0371c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c03
+28o0372c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c03
+28o0374c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c04
+28o0376c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c04
+28o0377c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c05
+28o0379c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c05
+28o0380c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c05
+28o0381c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c06
+28o0382c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c06
+28o0385c6320,cpu,eth-owens-rack06h1,ib-i1l1s14,ib-i1,6,6-c07
+28o0386c6320,cpu,eth-owens-rack06h1,ib-i1l1s14,ib-i1,6,6-c07
+28o0387c6320,cpu,eth-owens-rack06h1,ib-i1l1s14,ib-i1,6,6-c07
+28o0392c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c08
+28o0394c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c09
+28o0395c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c09
+28o0396c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c09
+28o0397c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c10
+28o0398c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c10
+28o0399c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c10
+28o0401c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c11
+28o0402c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c11
+28o0403c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c11
+28o0404c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c11
+28o0405c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c12
+28o0406c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c12
+28o0407c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c12
+28o0408c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c12
+28o0409c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c13
+28o0410c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c13
+28o0411c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c13
+28o0412c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c13
+28o0413c6320,cpu,eth-owens-rack06h1,ib-i1l1s15,ib-i1,6,6-c14
+28o0415c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c14
+28o0416c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c14
+28o0417c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c15
+28o0418c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c15
+28o0421c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c16
+28o0425c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c17
+28o0426c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c17
+28o0427c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c17
+28o0434c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c01
+28o0437c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c02
+28o0439c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c02
+28o0442c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c03
+28o0451c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c05
+28o0453c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c06
+28o0454c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c06
+28o0456c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c06
+28o0457c6320,cpu,eth-owens-rack07h1,ib-i1l1s17,ib-i1,7,7-c07
+28o0459c6320,cpu,eth-owens-rack07h1,ib-i1l1s17,ib-i1,7,7-c07
+28o0460c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c07
+28o0461c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c08
+28o0462c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c08
+28o0463c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c08
+28o0466c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c09
+28o0467c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c09
+28o0474c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c11
+28o0475c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c11
+28o0476c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c11
+28o0478c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c12
+28o0479c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c12
+28o0480c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c12
+28o0481c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c13
+28o0482c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c13
+28o0483c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c13
+28o0484c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c13
+28o0486c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c14
+28o0487c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c14
+28o0489c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c15
+28o0491c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c15
+28o0493c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c16
+28o0494c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c16
+28o0495c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c16
+28o0496c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c16
+28o0497c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c17
+28o0498c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c17
+28o0499c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c17
+28o0501c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c18
+28o0503c6320,cpu,eth-owens-rack07h1,ib-i1l1s19,ib-i1,7,7-c18
+28o0510c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c02
+28o0521c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c05
+28o0522c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c05
+28o0523c6320,cpu,eth-owens-rack08h2,ib-i1l1s20,ib-i1,8,8-c05
+28o0526c6320,cpu,eth-owens-rack08h2,ib-i1l1s20,ib-i1,8,8-c06
+28o0529c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c07
+28o0541c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c10
+28o0543c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c10
+28o0545c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c11
+28o0547c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c11
+28o0549c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c12
+28o0551c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c12
+28o0553c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c13
+28o0554c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c13
+28o0555c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c13
+28o0558c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c14
+28o0559c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c14
+28o0562c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c15
+28o0564c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c15
+28o0566c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c16
+28o0568c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c16
+28o0569c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c17
+28o0570c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c17
+28o0573c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c18
+28o0576c6320,cpu,eth-owens-rack08h3,ib-i1l1s21,ib-i1,8,8-c18
+28o0578c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c01
+28o0580c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c01
+28o0581c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c02
+28o0582c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c02
+28o0583c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c02
+28o0584c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c02
+28o0585c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c03
+28o0587c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c03
+28o0589c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c04
+28o0591c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c04
+28o0592c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c04
+28o0593c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c05
+28o0594c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c05
+28o0595c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c05
+28o0597c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c06
+28o0599c6320,cpu,eth-owens-rack08h1,ib-i1l1s22,ib-i1,9,9-c06
+28o0602c6320,cpu,eth-owens-rack09h1,ib-i1l1s22,ib-i1,9,9-c07
+28o0603c6320,cpu,eth-owens-rack09h1,ib-i1l1s22,ib-i1,9,9-c07
+28o0606c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c08
+28o0608c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c08
+28o0611c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c09
+28o0617c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c11
+28o0622c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c12
+28o0623c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c12
+28o0625c6320,cpu,eth-owens-rack09h1,ib-i1l1s23,ib-i1,9,9-c13
+28o0633c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c15
+28o0640c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c16
+28o0641c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c17
+28o0642c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c17
+28o0644c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c17
+28o0646c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c18
+28o0647c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c18
+28o0648c6320,cpu,eth-owens-rack09h1,ib-i1l1s24,ib-i1,9,9-c18
+28o0001c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c01
+28o0002c6320,cpu,eth-owens-rack02h1,ib-i1l1s01,ib-i1,1,1-c01
+28o0029c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c08
+28o0030c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c08
+28o0050c6320,cpu,eth-owens-rack01h1,ib-i1l1s02,ib-i1,1,1-c13
+28o0083c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c03
+28o0087c6320,cpu,eth-owens-rack02h1,ib-i1l1s08,ib-i1,2,2-c04
+28o0100c6320,cpu,eth-owens-rack02h2,ib-i1l1s04,ib-i1,2,2-c07
+28o0150c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c02
+28o0151c6320,cpu,eth-owens-rack05h2,ib-i1l1s06,ib-i1,3,3-c02
+28o0203c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c15
+28o0204c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c15
+28o0205c6320,cpu,eth-owens-rack03h1,ib-i1l1s08,ib-i1,3,3-c16
+28o0229c6320,cpu,eth-owens-rack05h1,ib-i1l1s09,ib-i1,4,4-c04
+28o0248c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c08
+28o0249c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c09
+28o0250c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c09
+28o0251c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c09
+28o0252c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c09
+28o0253c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c10
+28o0263c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c12
+28o0264c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c12
+28o0267c6320,cpu,eth-owens-rack04h1,ib-i1l1s10,ib-i1,4,4-c13
+28o0279c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c16
+28o0280c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c16
+28o0281c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c17
+28o0282c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c17
+28o0283c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c17
+28o0284c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c17
+28o0287c6320,cpu,eth-owens-rack04h1,ib-i1l1s11,ib-i1,4,4-c18
+28o0289c6320,cpu,eth-owens-rack05h2,ib-i1l1s11,ib-i1,5,5-c01
+28o0298c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c03
+28o0299c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c03
+28o0300c6320,cpu,eth-owens-rack05h2,ib-i1l1s16,ib-i1,5,5-c03
+28o0330c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c11
+28o0331c6320,cpu,eth-owens-rack05h3,ib-i1l1s12,ib-i1,5,5-c11
+28o0335c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c12
+28o0336c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c12
+28o0337c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c13
+28o0338c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c13
+28o0340c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c13
+28o0341c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c14
+28o0344c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c14
+28o0351c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c16
+28o0352c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c16
+28o0353c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c17
+28o0358c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c18
+28o0359c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c18
+28o0360c6320,cpu,eth-owens-rack05h3,ib-i1l1s13,ib-i1,5,5-c18
+28o0361c6320,cpu,eth-owens-rack05h1,ib-i1l1s14,ib-i1,6,6-c01
+28o0428c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c17
+28o0429c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c18
+28o0431c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c18
+28o0432c6320,cpu,eth-owens-rack06h1,ib-i1l1s16,ib-i1,6,6-c18
+28o0433c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c01
+28o0444c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c03
+28o0446c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c04
+28o0447c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c04
+28o0449c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c05
+28o0450c6320,cpu,eth-owens-rack08h2,ib-i1l1s17,ib-i1,7,7-c05
+28o0469c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c10
+28o0471c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c10
+28o0472c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c10
+28o0473c6320,cpu,eth-owens-rack07h1,ib-i1l1s18,ib-i1,7,7-c11
+28o0506c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c01
+28o0509c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c02
+28o0511c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c02
+28o0513c6320,cpu,eth-owens-rack08h2,ib-i1l1s19,ib-i1,8,8-c03
+28o0519c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c04
+28o0520c6320,cpu,eth-owens-rack08h2,ib-i1l1s24,ib-i1,8,8-c04
+28o0524c6320,cpu,eth-owens-rack08h2,ib-i1l1s20,ib-i1,8,8-c05
+28o0525c6320,cpu,eth-owens-rack08h2,ib-i1l1s20,ib-i1,8,8-c06
+28o0527c6320,cpu,eth-owens-rack08h2,ib-i1l1s20,ib-i1,8,8-c06
+28o0531c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c07
+28o0535c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c08
+28o0536c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c08
+28o0538c6320,cpu,eth-owens-rack08h3,ib-i1l1s20,ib-i1,8,8-c09
+28o0740r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0802r730,gpu,eth-owens-rack19h1,ib-i2l1s03,ib-i2,eth-owens-rack16h1,18,p100
+28o0767r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0680r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0748r730,gpu,eth-owens-rack15h1,ib-i2l1s05,ib-i2,15,p100
+28o0749r730,gpu,eth-owens-rack15h1,ib-i2l1s05,ib-i2,15,p100
+28o0750r730,gpu,eth-owens-rack15h1,ib-i2l1s05,ib-i2,15,p100
+28o0768r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0770r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0771r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0772r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0779r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0780r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0782r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0783r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0785r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0786r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0787r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0790r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0791r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0792r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0796r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0797r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0798r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0799r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0800r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0801r730,gpu,eth-owens-rack17h1,ib-i2l1s03,ib-i2,eth-owens-rack16h1,18,p100
+28o0803r730,gpu,eth-owens-rack19h1,ib-i2l1s03,ib-i2,eth-owens-rack16h1,18,p100
+28o0804r730,gpu,eth-owens-rack19h1,ib-i2l1s03,ib-i2,eth-owens-rack17h1,18,p100
+28o0805r730,gpu,eth-owens-rack19h1,ib-i2l1s06,ib-i2,19,p100
+28o0806r730,gpu,eth-owens-rack19h1,ib-i2l1s06,ib-i2,19,p100
+28o0649r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0652r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0653r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0654r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0655r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0656r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0657r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0658r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0659r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0661r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0662r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0663r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0664r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0665r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0668r730,gpu,eth-owens-rack11h1,ib-i2l1s03,ib-i2,11,p100
+28o0674r730,gpu,eth-owens-rack11h1,ib-i2l1s02,ib-i2,11,p100
+28o0678r730,gpu,eth-owens-rack11h1,ib-i2l1s02,ib-i2,11,p100
+28o0679r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0681r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0686r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0688r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0689r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0690r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0691r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0692r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0694r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0698r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0705r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0706r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0709r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0714r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0715r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0716r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0722r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0724r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0725r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0726r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0727r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0728r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0729r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0730r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0731r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0732r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0733r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0737r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0738r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0739r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0741r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0742r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0743r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0744r730,gpu,eth-owens-rack15h1,ib-i2l1s06,ib-i2,15,p100
+28o0745r730,gpu,eth-owens-rack15h1,ib-i2l1s06,ib-i2,15,p100
+28o0746r730,gpu,eth-owens-rack15h1,ib-i2l1s06,ib-i2,15,p100
+28o0751r730,gpu,eth-owens-rack15h1,ib-i2l1s05,ib-i2,15,p100
+28o0753r730,gpu,eth-owens-rack15h1,ib-i2l1s05,ib-i2,15,p100
+28o0754r730,gpu,eth-owens-rack15h1,ib-i2l1s05,ib-i2,15,p100
+28o0755r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0756r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0757r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0760r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0761r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0762r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0765r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0769r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0773r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0774r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0775r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0776r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0777r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0778r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0781r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0784r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0788r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0789r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0793r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0794r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0795r730,gpu,eth-owens-rack17h1,ib-i2l1s06,ib-i2,17,p100
+28o0650r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0651r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0666r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0667r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,10,p100
+28o0669r730,gpu,eth-owens-rack11h1,ib-i2l1s03,ib-i2,11,p100
+28o0670r730,gpu,eth-owens-rack11h1,ib-i2l1s03,ib-i2,11,p100
+28o0671r730,gpu,eth-owens-rack11h1,ib-i2l1s03,ib-i2,11,p100
+28o0672r730,gpu,eth-owens-rack11h1,ib-i2l1s02,ib-i2,11,p100
+28o0673r730,gpu,eth-owens-rack11h1,ib-i2l1s02,ib-i2,11,p100
+28o0675r730,gpu,eth-owens-rack11h1,ib-i2l1s02,ib-i2,11,p100
+28o0676r730,gpu,eth-owens-rack11h1,ib-i2l1s02,ib-i2,11,p100
+28o0677r730,gpu,eth-owens-rack11h1,ib-i2l1s02,ib-i2,11,p100
+28o0682r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0683r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0684r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0685r730,gpu,eth-owens-rack11h1,ib-i2l1s01,ib-i2,11,p100
+28o0693r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0695r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0696r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0697r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0699r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0700r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0701r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0703r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0704r730,gpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12,p100
+28o0707r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0708r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0710r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0711r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0712r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0713r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0717r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0718r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0719r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0720r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0721r730,gpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13,p100
+28o0734r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0735r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0736r730,gpu,eth-owens-rack14h1,ib-i2l1s04,ib-i2,14,p100
+28o0747r730,gpu,eth-owens-rack15h1,ib-i2l1s06,ib-i2,15,p100
+28o0752r730,gpu,eth-owens-rack15h1,ib-i2l1s05,ib-i2,15,p100
+28o0758r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0759r730,gpu,eth-owens-rack15h1,ib-i2l1s04,ib-i2,15,p100
+28o0763r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0764r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+28o0766r730,gpu,eth-owens-rack16h1,ib-i2l1s05,ib-i2,16,p100
+48o0810r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,18
+48o0812r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,18
+48o0813r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,18
+48o0814r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,18
+48o0815r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,18
+48o0816r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,18
+48o0817r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+48o0818r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+48o0819r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+48o0820r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+48o0821r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+48o0823r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+48o0824r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+48o0809r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,eth-owens-rack17h1,18
+48o0811r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,18
+48o0822r930,hugemem,eth-owens-rack19h1,ib-i2l1s07,ib-i2,19
+28o0723r730,cpu,eth-owens-rack13h1,ib-i2l1s03,ib-i2,13
+28o0702r730,cpu,eth-owens-rack12h1,ib-i2l1s02,ib-i2,12
+28o0807r730,gpu,eth-owens-rack19h1,ib-i2l1s06,ib-i2,19,p100,quick
+28o0808r730,gpu,eth-owens-rack19h1,ib-i2l1s06,ib-i2,19,p100,quick
