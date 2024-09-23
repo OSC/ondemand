@@ -9,7 +9,7 @@
 #
 
 if [[ -x "${PWD}/bin/ruby" ]]; then
-  exec "${PWD}/bin/ruby" "$@"
+  exec "${PWD}"/bin/ruby "$@"
 else
   exec ruby "$@"
 fi

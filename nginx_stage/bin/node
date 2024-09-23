@@ -9,7 +9,7 @@
 #
 
 if [[ -x "${PWD}/bin/node" ]]; then
-  exec "${PWD}/bin/node" "$@"
+  exec "${PWD}"/bin/node "$@"
 else
   exec node "$@"
 fi

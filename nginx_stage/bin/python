@@ -9,7 +9,7 @@
 #
 
 if [[ -x "${PWD}/bin/python" ]]; then
-  exec "${PWD}/bin/python" "$@"
+  exec "${PWD}"/bin/python "$@"
 else
   exec python "$@"
 fi
