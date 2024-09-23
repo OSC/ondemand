@@ -29,11 +29,9 @@ module SmartAttributes
     end
 
     def self.default_value(initial_opts, script_opts)
-      if initial_opts[:value] && script_opts && script_opts.none? { |opt| opt.include?(initial_opts[:value]) }
-        initial_opts.delete(:value)
-      end
+      return nil if !initial_opts[:value] || script_opts.empty?
 
-      return nil if !initial_opts[:value] && script_opts.empty?
+      initial_opts.delete(:value) if script_opts&.none? { |opt| opt.include?(initial_opts[:value]) }
 
       (initial_opts[:value] || script_opts.first.last).to_s
     end
