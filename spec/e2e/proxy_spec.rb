@@ -102,7 +102,16 @@ describe 'Node and Rnode proxies' do
   end
 
   it 'correctly passes query parameters to node URIs' do
-    browser.goto "#{ctr_base_url}/node/localhost/5001/one/with-query-params?artist=the beatles&album=let it be"
+    url = "#{ctr_base_url}/node/localhost/5001/one/with-query-params?artist=the beatles&album=let it be"
+    browser.goto(url)
+    expect(browser.url).to eq(url)
+    expect(browser.div(id: 'test-div').present?).to be true
+  end
+
+  it 'correctly passes query parameters to rnode URIs' do
+    url = "#{ctr_base_url}/rnode/localhost/5000/one/with-query-params?artist=the beatles&album=let it be"
+    browser.goto(url)
+    expect(browser.url).to eq(url)
     expect(browser.div(id: 'test-div').present?).to be true
   end
 
