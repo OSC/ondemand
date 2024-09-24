@@ -101,6 +101,11 @@ describe 'Node and Rnode proxies' do
     expect(browser.div(id: 'test-div').present?).to be true
   end
 
+  it 'correctly passes query parameters to node URIs' do
+    browser.goto "#{ctr_base_url}/node/localhost/5001/one/with-query-params?artist=the beatles&album=let it be"
+    expect(browser.div(id: 'test-div').present?).to be true
+  end
+
   it '/nginx/init needs a redirect' do
     url = "#{ctr_base_url}/nginx/init"
     browser.goto url
