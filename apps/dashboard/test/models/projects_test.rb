@@ -134,7 +134,7 @@ icon: 'fas://test')
   test 'creates manifest.yml in .ondemand config directory' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      project = create_project(projects_path)
+      project = create_project(projects_path, id: "test-#{Project.next_id}")
 
       assert project.errors.inspect
       assert_equal "#{projects_path}/projects/#{project.id}", project.directory.to_s
@@ -172,7 +172,8 @@ icon: 'fas://test')
   test 'update project manifest.yml file' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      project = create_project(projects_path)
+
+      project = create_project(projects_path, id: "test-#{Project.next_id}")
 
       name          = 'test-project-2'
       description   = 'my test project'
