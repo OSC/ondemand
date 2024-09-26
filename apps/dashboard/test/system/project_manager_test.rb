@@ -10,6 +10,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     stub_sacctmgr
     stub_scontrol
     stub_du
+    stub_sinfo
 
     # Stub Time.now for created_at field
     @expected_now = 1_679_943_564
@@ -235,8 +236,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
         attributes:
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-max-auto-cores: 80
+            - - owens
+              - owens
+              - data-max-auto-cores: 48
             label: Cluster
             help: ''
             required: false
@@ -280,8 +285,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
         attributes:
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-max-auto-cores: 80
+            - - owens
+              - owens
+              - data-max-auto-cores: 48
             label: Cluster
             help: ''
             required: false
@@ -580,8 +589,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: false
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-max-auto-cores: 80
+            - - owens
+              - owens
+              - data-max-auto-cores: 48
             value: oakley
             label: Cluster
             help: ''
@@ -682,8 +695,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: false
           auto_batch_clusters:
             options:
-            - oakley
-            - owens
+            - - oakley
+              - oakley
+              - data-max-auto-cores: 80
+            - - owens
+              - owens
+              - data-max-auto-cores: 48
             value: oakley
             label: Cluster
             help: ''

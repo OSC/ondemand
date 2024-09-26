@@ -17,10 +17,11 @@ class AllowlistPolicy
   # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
+    return true if allowlist.blank?
     real_path = real_expanded_path(path.to_s)
     key = path_to_key(real_path)
     Rails.cache.fetch(key) do
-      allowlist.blank? || allowlist.any? { |parent| child?(Pathname.new(parent), real_path) }
+      allowlist.any? { |parent| child?(Pathname.new(parent), real_path) }
     end
   end
 
@@ -71,19 +72,17 @@ class AllowlistPolicy
     Pathname.new(path).expand_path
   end
 
-  # Determine if child is a subpath of parent
-  #
-  # If the relative path from the child to the supposed parent includes '..'
-  # then child is not a subpath of parent
+  # Determine if child is a subpath of parent.
+  # This does not access the filesystem, so symlinks should be evaluated before this.
   #
   # @param parent [Pathname]
   # @param child [Pathname]
   # @return Boolean
   def child?(parent, child)
-    !child.expand_path.relative_path_from(
-      parent.expand_path
-    ).each_filename.to_a.include?(
-      '..'
-    )
+    # Expand both paths to evaluate any potential ".." components to be able to compare them as strings.
+    p = parent.expand_path.to_s
+    c = child.expand_path.to_s
+    # Child path if it is same as parent path, or has additional components after "/".
+    c.start_with?(p) && (c.size == p.size || c[p.size] == "/")
   end
 end

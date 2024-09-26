@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - data-hide attributes now respond to `false` setting in [3720](https://github.com/OSC/ondemand/pull/3720).
 - auto_cores smart attribute has been added in [3727](https://github.com/OSC/ondemand/pull/3727).
 - Batch connect apps now respond to form_header to display a header in [3763](https://github.com/OSC/ondemand/pull/3763).
+- auto_clusters now set maximums for auto_cores in [3778](https://github.com/OSC/ondemand/pull/3778).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -50,6 +51,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Esbuild now has a plugin for to use source code for minified dependencies in [3693](https://github.com/OSC/ondemand/pull/3693).
 - Remote file uploads now move the tempfile asychronously in [3739](https://github.com/OSC/ondemand/pull/3739).
 - Modals no longer pop up for some errors in the files app in [3769](https://github.com/OSC/ondemand/pull/3769).
+- The shell app now has configurations for ping ponging. Ping pongs are disabled by default, will only ping pong
+  for a certain duration after inactivity and the connections will close altogether after a certian duration regardless
+  of activity in [3805](https://github.com/OSC/ondemand/pull/3805) and [3810](https://github.com/OSC/ondemand/pull/3810).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -66,6 +70,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   and [3776](https://github.com/OSC/ondemand/pull/3776).
 - ood_auth_map now accounts for more than just \w for usernames in [3753](https://github.com/OSC/ondemand/pull/3753).
 - Pipes and fifos no longer show as downloadable in [3718](https://github.com/OSC/ondemand/pull/3718).
+- Allowlist compuations have been optimized in [3804](https://github.com/OSC/ondemand/pull/3804).
 
 ### Security
 

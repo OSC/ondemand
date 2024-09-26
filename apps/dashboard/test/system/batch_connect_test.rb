@@ -1519,4 +1519,31 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test 'date_fields correctly initialize when empty' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - date
+        attributes:
+          date:
+            widget: 'date_field'
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      value = find('#batch_connect_session_context_date').value
+      assert_equal(Date.today.to_s, value)
+    end
+  end
 end
