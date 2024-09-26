@@ -57,10 +57,15 @@ namespace :test do
 
   desc 'Run shellcheck'
   task :shellcheck do
-    sh 'shellcheck -x ood-portal-generator/sbin/update_ood_portal'
-    sh 'shellcheck -x nginx_stage/sbin/nginx_stage'
-    sh 'shellcheck nginx_stage/sbin/update_nginx_stage'
-    sh 'shellcheck hooks/k8s-bootstrap/*.sh'
+    [
+      ['-x', 'ood-portal-generator/sbin/update_ood_portal'],
+      ['-x', 'nginx_stage/sbin/nginx_stage'],
+      ['nginx_stage/sbin/update_nginx_stage'],
+      ['hooks/k8s-bootstrap/*.sh'],
+      ['nginx_stage/bin/*']
+    ].each do |args|
+      sh "shellcheck #{args.join(' ')}"
+    end
   end
 
   begin
