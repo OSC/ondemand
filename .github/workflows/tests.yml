@@ -50,7 +50,7 @@ jobs:
       - name: Setup os dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install rclone apt-get install libsqlite3-dev
+          sudo apt-get install -y rclone libsqlite3-dev
 
       - name: Setup Bundler
         run: |
