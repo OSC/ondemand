@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update express to 4.20.0 (#3829)\
+evaluate script tags when replacing html (#3826)\
+add lang wrappers to shellcheck (#3822)\
+update webrick (#3820)\
+Allow UID to be returned by the mapper script. (#3795)\
+lint a random file (#3828)\
+Update Changelog (#3812)\
+Account for empty datefield (#3817)\
+restructure a little to get a better layout (#3793)\
+lint a random file (#3811)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
