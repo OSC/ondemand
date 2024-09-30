@@ -47,14 +47,16 @@ jobs:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-1
 
+      - name: Setup os dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone libsqlite3-dev
+
       - name: Setup Bundler
         run: |
           bundle config path ~/vendor/bundle
           bundle install
           gem install rake
-
-      - name: Setup rclone
-        run: sudo apt-get update && sudo apt-get install rclone
 
       - name: Run unit tests
         run: bundle exec rake test:unit
