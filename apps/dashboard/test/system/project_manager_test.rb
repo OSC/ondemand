@@ -582,8 +582,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
               - "#{dir}/projects/#{project_id}/my_cool_script.sh"
             - - my_cooler_script.bash
               - "#{dir}/projects/#{project_id}/my_cooler_script.bash"
-            directory: "#{dir}/projects/#{project_id}"
             value: "#{dir}/projects/#{project_id}/my_cool_script.sh"
+            directory: "#{dir}/projects/#{project_id}"
             label: Script
             help: ''
             required: false
@@ -688,8 +688,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
               - "#{dir}/projects/#{project_id}/my_cool_script.sh"
             - - my_cooler_script.bash
               - "#{dir}/projects/#{project_id}/my_cooler_script.bash"
-            directory: "#{dir}/projects/#{project_id}"
             value: "#{dir}/projects/#{project_id}/my_cool_script.sh"
+            directory: "#{dir}/projects/#{project_id}"
             label: Script
             help: ''
             required: false
