@@ -166,35 +166,16 @@ function addInProgressField(event) {
 function updateAutoEnvironmentVariable(event) {
   const aev_name = event.target.value;
   const labelString = event.target.dataset.labelString;
-  const idString = `launcher_auto_environment_variable_${aev_name}`;
-  const nameString = `launcher[auto_environment_variable_${aev_name}]`;
-  const input_field = event.target.parentElement.children[2].children[1];
-  const oldId = input_field.id;
+  var input_field = event.target.parentElement.children[2].children[1];
 
   input_field.removeAttribute('readonly');
-  input_field.id = idString;
-  input_field.name = nameString;
+  input_field.id = `launcher_auto_environment_variable_${aev_name}`;
+  input_field.name = `launcher[auto_environment_variable_${aev_name}]`;
 
   if (labelString.match(/Environment(&#32;|\s)Variable/)) {
     const label_field = event.target.parentElement.children[2].children[0];
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
-
-  // Update the checkbox so that environment variables can be fixed when created
-  const fixedBoxGroup = event.target.parentElement.querySelector('.list-group-item');
-  const checkbox = fixedBoxGroup.querySelector("input[type='checkbox']");
-  checkbox.id = `${idString}_fixed`;
-  checkbox.name = `launcher[auto_environment_variable_${aev_name}_fixed]`;
-  checkbox.setAttribute('data-fixed-toggler', idString);
-
-  // Update hidden field if attribute is already fixed, otherwise just update label
-  if(fixedBoxGroup.children.length == 3) {
-    const hiddenField = fixedBoxGroup.querySelector("input[type='hidden']");
-    hiddenField.name = nameString;
-  }
-
-  const fixedLabel = fixedBoxGroup.querySelector('label');
-  fixedLabel.setAttribute('for', `${idString}_fixed`);
 }
 
 function fixExcludeBasedOnSelect(selectElement) {
