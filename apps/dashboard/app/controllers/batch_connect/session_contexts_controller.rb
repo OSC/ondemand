@@ -46,7 +46,7 @@ module BatchConnect
       @session = BatchConnect::Session.new
       respond_to do |format|
         if @session.save(app: @app, context: @session_context, format: @render_format)
-          cache_file.write(@session_context.to_json) # save context to cache file
+          cache_file.write(@session_context.to_openstruct.to_h.to_json) # save context to cache file
           save_template
           # We need to set the prefill templates only after storing the new one
           # so that the new one is included / updated in the list
