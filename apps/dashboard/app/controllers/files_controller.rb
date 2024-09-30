@@ -156,7 +156,7 @@ class FilesController < ApplicationController
     request.env[Rack::RACK_TEMPFILES].reject! { |f| f.path == params[:file].tempfile.path } unless posix_file?
 
     @transfer = @path.handle_upload(params[:file].tempfile)
-    if @transfer
+    if @transfer.kind_of?(Transfer)
       render 'transfers/show'
     else
       render json: {}
