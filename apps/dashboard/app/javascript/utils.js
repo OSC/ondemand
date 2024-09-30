@@ -80,3 +80,25 @@ export function openLinkInJs(event) {
     mainDiv.prepend(alertDiv);
   }
 }
+
+// Helper method to set an element's innerHTML property
+// and evaluate any <script> tags that may exist within it.
+// Just setting innerHTML of an html element does not re-evaluate
+// the <script> tags that it may hold.
+export function setInnerHTML(element, html) {
+  element.innerHTML = html;
+  const scripts = Array.from(element.querySelectorAll("script"));
+
+  scripts.forEach(currentElement => {
+    const newElement = document.createElement("script");
+
+    Array.from(currentElement.attributes).forEach( attr => {
+      newElement.setAttribute(attr.name, attr.value);
+    });
+
+    const scriptText = document.createTextNode(currentElement.innerHTML);
+    newElement.appendChild(scriptText);
+
+    currentElement.parentNode.replaceChild(newElement, currentElement);
+  });
+}

@@ -5,6 +5,8 @@
   this shim until we enable it.
 */
 
+import { setInnerHTML } from './utils';
+
 export function replaceHTML(id, html) {
   const ele = document.getElementById(id);
 
@@ -16,7 +18,7 @@ export function replaceHTML(id, html) {
     const newHTML = tmp.querySelector('template').innerHTML;
     tmp.remove();
 
-    ele.innerHTML = newHTML;
+    setInnerHTML(ele, newHTML);
   }
 }
 

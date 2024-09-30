@@ -1546,4 +1546,47 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal(Date.today.to_s, value)
     end
   end
+
+  # Using attributes like 'filter' gets confused with Enumerable api
+  # by the same name. So this test ensures things like that get serialized correctly.
+  # see https://github.com/OSC/ondemand/issues/3604
+  test 'filter is cached correctly' do
+    Dir.mktmpdir do |dir|
+      # output_dir = Pathname.new("#{dir}/output").tap { |p| FileUtils.mkdir_p(p.to_s) }
+      cache_file = Pathname.new("#{dir}/cache_file.json")
+
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      BatchConnect::Session.any_instance.stubs(:save).returns(true)
+      BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
+      # BatchConnect::Session.any_instance.stubs(:staged_root).returns(output_dir)
+      BatchConnect::SessionContextsController.any_instance.stubs(:cache_file).returns(cache_file)
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - filter
+        attributes:
+          filter:
+            widget: select
+            options:
+            - ["A"]
+            - ["B"]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+      id = bc_ele_id('filter')
+      value = find("##{id}").value
+      assert_equal('A', value)
+
+      click_on('Launch')
+      visit(new_batch_connect_session_context_url('sys/app'))
+      cache_data = YAML.safe_load(File.read(cache_file.to_s)).to_h
+      assert_equal('A', value)
+      assert_equal({ 'cluster' => 'owens', 'filter' => 'A' }, cache_data)
+    end
+  end
 end
