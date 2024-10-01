@@ -8,7 +8,7 @@ module SmartAttributes
     def self.build_global_attribute(opts = {})
       id = opts.delete('key').to_s
 
-      config = Configuration.global_attribute(id)
+      config = Configuration.global_bc_form_item(id)
 
       # this behaves like a normal Attribute if there's no actual configuration for it.
       config = opts if config.nil? || config.empty?
