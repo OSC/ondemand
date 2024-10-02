@@ -114,4 +114,72 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal label.text, "Number of Cores (1-8)"
     end
   end
+
+  test 'global_bc_form_items work correctly' do
+    Dir.mktmpdir do |dir|
+      app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }
+      Configuration.stubs(:config).returns({ 
+        global_bc_form_items: {
+          global_queues: {
+            widget: 'select',
+            label: 'Special Queues',
+            options: [
+              ['A', 'a'],
+              ['B', 'b'],
+              ['C', 'c']
+            ]
+          }
+        }
+      })
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_queues
+      HEREDOC
+
+      make_bc_app(app_dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget = find("##{bc_ele_id('global_queues')}")
+      options = find_all_options('global_queues', nil)
+      label = find("[for='#{bc_ele_id('global_queues')}']")
+
+      assert_equal('select', widget.tag_name)
+      assert_equal(['a', 'b', 'c'], options.map(&:value))
+      assert_equal(['A', 'B', 'C'], options.map(&:text))
+
+      assert_equal('Special Queues', label.text)
+    end
+  end
+
+  test 'global_bc_form_items default correctly' do
+    Dir.mktmpdir do |dir|
+      app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }
+
+      # no configuration for 'global_queues'
+      Configuration.stubs(:config).returns({})
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_queues
+      HEREDOC
+
+      make_bc_app(app_dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget = find("##{bc_ele_id('global_queues')}")
+      label = find("[for='#{bc_ele_id('global_queues')}']")
+
+      # not a select widget, it's a text input with the default label
+      assert_equal('input', widget.tag_name)
+      assert_equal('text', widget[:type])
+      assert_equal('Global Queues', label.text)
+    end
+  end
 end
