@@ -185,8 +185,6 @@ class PosixFile
           error = I18n.t('dashboard.files_directory_size_calculation_error')
         elsif size.to_i > download_directory_size_limit
           error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
-        elsif size.to_i == 0
-          error = I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path.to_s}")
         else
           can_download = true
         end
