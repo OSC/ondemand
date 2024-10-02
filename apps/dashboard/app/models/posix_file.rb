@@ -168,7 +168,7 @@ class PosixFile
       if s.exitstatus == 124
         error = I18n.t('dashboard.files_directory_size_calculation_timeout')
       elsif ! s.success?
-        error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s, error: e)
+        error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s.exitstatus, error: e)
       else
         # Example output from: du -cbs $path
         #

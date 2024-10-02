@@ -36,20 +36,20 @@ class FilesTest < ActiveSupport::TestCase
 
   test "can_download_as_zip handles erroneous output from du" do
     Dir.mktmpdir do |dir|
-      path = Pathname.new(dir)
-      Open3.stubs(:capture3).returns(["blarg \n 28d", "", exit_success])
+      error_msg = 'some failure message'
+      Open3.stubs(:capture3).returns(["blarg \n 28d", error_msg, exit_failure])
+      result = PosixFile.new(dir).can_download_as_zip?
 
-      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], PosixFile.new(dir).can_download_as_zip?
+      assert_equal([false, I18n.t('dashboard.files_directory_size_unknown', exit_code: '1', error: error_msg)], result)
     end 
   end
 
   test "can_download_as_zip handles files sizes of 0" do
     Dir.mktmpdir do |dir|
-      path = Pathname.new(dir)
       Open3.stubs(:capture3).returns(["0 /dev
         0 total", "", exit_success])
 
-      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], PosixFile.new(dir).can_download_as_zip?
+      assert_equal [true, nil], PosixFile.new(dir).can_download_as_zip?
     end 
   end
 
