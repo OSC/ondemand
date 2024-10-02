@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - auto_cores smart attribute has been added in [3727](https://github.com/OSC/ondemand/pull/3727).
 - Batch connect apps now respond to form_header to display a header in [3763](https://github.com/OSC/ondemand/pull/3763).
 - auto_clusters now set maximums for auto_cores in [3778](https://github.com/OSC/ondemand/pull/3778).
+- UIDs can now be returned by the mapper script in [3795](https://github.com/OSC/ondemand/pull/3795).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -71,6 +72,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - ood_auth_map now accounts for more than just \w for usernames in [3753](https://github.com/OSC/ondemand/pull/3753).
 - Pipes and fifos no longer show as downloadable in [3718](https://github.com/OSC/ondemand/pull/3718).
 - Allowlist compuations have been optimized in [3804](https://github.com/OSC/ondemand/pull/3804).
+- data_field widgets now initialize their value to today in [3817](https://github.com/OSC/ondemand/pull/3817).
 
 ### Security
 
