@@ -164,7 +164,7 @@ function addInProgressField(event) {
 }
 
 function updateAutoEnvironmentVariable(event) {
-  var aev_name = event.target.value;
+  const aev_name = event.target.value;
   const labelString = event.target.dataset.labelString;
   var input_field = event.target.parentElement.children[2].children[1];
 
@@ -173,7 +173,7 @@ function updateAutoEnvironmentVariable(event) {
   input_field.name = `launcher[auto_environment_variable_${aev_name}]`;
 
   if (labelString.match(/Environment(&#32;|\s)Variable/)) {
-    var label_field = event.target.parentElement.children[2].children[0];
+    const label_field = event.target.parentElement.children[2].children[0];
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
 }

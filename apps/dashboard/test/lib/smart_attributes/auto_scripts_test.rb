@@ -9,7 +9,7 @@ class SmartAttributes::AutoScriptsTest < ActiveSupport::TestCase
   end
 
   test 'can correctly set the value when scripts directory is configured' do
-    value = '/test/script/executable.sh'
+    value = "#{fixture_dir}/script4.slurm"
     attribute = SmartAttributes::AttributeFactory.build('auto_scripts', { directory: fixture_dir, value: value })
 
     assert_instance_of SmartAttributes::Attributes::AutoScripts, attribute
@@ -56,5 +56,13 @@ class SmartAttributes::AutoScriptsTest < ActiveSupport::TestCase
 
     assert_instance_of SmartAttributes::Attributes::AutoScripts, attribute
     assert_equal('select', File.basename(attribute.widget))
+  end
+
+  test 'correctly sets value when previous value is invalid' do
+    value = '/test/invalid/script.sh'
+    attribute = SmartAttributes::AttributeFactory.build('auto_scripts', { directory: fixture_dir, value: value })
+
+    assert_instance_of SmartAttributes::Attributes::AutoScripts, attribute
+    assert_equal(attribute.select_choices[0].last, attribute.value)
   end
 end

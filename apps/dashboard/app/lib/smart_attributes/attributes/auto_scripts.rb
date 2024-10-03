@@ -13,8 +13,9 @@ module SmartAttributes
       options = script_options_from_directory(dir)
 
       static_opts = {
-        options: options
-      }.merge(opts.without(:options).to_h)
+        options: options,
+        value:   default_script_value(opts[:value], options)
+      }.merge(opts.without(:options, :value).to_h)
 
       Attributes::AutoScripts.new('auto_scripts', static_opts)
     end
@@ -25,6 +26,16 @@ module SmartAttributes
       Dir.glob("#{dir}/*.{#{AUTO_SCRIPT_EXTENSIONS.join(',')}}").map do |file|
         [File.basename(file), file]
       end.sort_by(&:first)
+    end
+
+    def self.default_script_value(default, scripts)
+      if !default || scripts.empty?
+        nil
+      elsif scripts.none? { |s| s[0] == File.basename(default) }
+        scripts.first[1].to_s
+      else
+        scripts.select { |s| s[0] == File.basename(default) }.first[1]
+      end
     end
   end
 
