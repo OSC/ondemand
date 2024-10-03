@@ -14,7 +14,7 @@ module SmartAttributes
 
       static_opts = {
         options: options,
-        value:   default_script_value(opts, options)
+        value:   default_script_value(opts[:value], options)
       }.merge(opts.without(:options, :value).to_h)
 
       Attributes::AutoScripts.new('auto_scripts', static_opts)
@@ -28,18 +28,14 @@ module SmartAttributes
       end.sort_by(&:first)
     end
 
-    def self.default_script_value(initial_opts, script_opts)
-      return nil if !initial_opts[:value] || script_opts.empty?
-
-      # Replace directory if the script is present in correct directory, otherwise delete value
-      valid_opt = script_opts.select { |opt| opt.first == File.basename(initial_opts[:value]) }.first
-      if valid_opt
-        initial_opts[:value] = valid_opt.last
-      elsif script_opts&.none? { |opt| opt.include?(initial_opts[:value]) }
-        initial_opts.delete(:value)
+    def self.default_script_value(default, scripts)
+      if !default || scripts.empty?
+        nil
+      elsif scripts.none? { |s| s[0] == File.basename(default) }
+        scripts.first[1].to_s
+      else
+        scripts.select { |s| s[0] == File.basename(default) }.first[1]
       end
-
-      (initial_opts[:value] || script_opts.first.last).to_s
     end
   end
 
