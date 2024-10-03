@@ -34,11 +34,11 @@ function node_proxy_handler(r)
   local conn = {}
   conn.user = user
   conn.server = host .. ":" .. port
-  conn.uri = uri or r.uri or '/'
+  conn.uri = uri and (r.args and (uri .. "?" .. r.args) or uri) or r.uri
 
   -- last ditch effort to ensure that the uri is at least something
   -- because the request-line of an HTTP request _has_ to have something for a URL
-  if conn.uri == '' then
+  if conn.uri == nil or conn.uri == '' then
     conn.uri = '/'
   end
 
