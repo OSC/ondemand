@@ -11,6 +11,7 @@
   </button>
   <div class="collapse" id="<%= id %>_data">
     <div class="card card-body">
+      <%= top_buttons(job.status.to_s) %>
       <table class="table table-bordered table-sm m-0 mb-2">
         <% job.to_human_display.each do |name, value| %>
           <tr>
@@ -19,6 +20,7 @@
           </tr>
         <% end %>
       </table>
+      <%= render(partial: 'projects/buttons/bottom_buttons') %>
     </div>
   </div>
 </div>

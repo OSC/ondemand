@@ -14,4 +14,14 @@ module ProjectsHelper
       simple_format(file_content)
     end
   end
+
+  def top_buttons(status)
+    return if status == 'completed'
+
+    render(partial: "projects/buttons/#{button_category(status)}_buttons")
+  end
+
+  def button_category(status)
+    status
+  end
 end
