@@ -345,6 +345,8 @@ function initSelect(selectElement) {
       enableAddOption(configItem);
     }
   });
+
+  enableOrDisableLastOption(selectOptionsConfig[0].parentElement);
 }
 
 
