@@ -17,6 +17,7 @@
       <%- 
         choice = parse_select_data(select_data)
         disabled = attrib.exclude_select_choices.include?(choice)
+        last_option = attrib.exclude_select_choices.length + 1 == attrib.select_choices(hide_excludable: false).length
         li_classes = disabled ? 'list-group-item list-group-item-danger text-strike' : 'list-group-item'
         add_id = "#{field_id}_add_#{choice}"
         remove_id = "#{field_id}_remove_#{choice}"
@@ -34,7 +35,7 @@
 
         <button class="btn btn-warning float-end" type="button" id="<%= remove_id %>"
           data-select-toggler="remove" data-select-id="<%= field_id %>"
-          <%= disabled ? 'disabled="true"'.html_safe : nil %> >
+          <%= disabled || last_option ? 'disabled="true"'.html_safe : nil %> >
           <%= t('dashboard.remove') %>
         </button>
 
