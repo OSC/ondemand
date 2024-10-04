@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class HpcModuleTest < ActiveSupport::TestCase
-
   # owens.json and oakley.json in this directory are from real clusters
   # (oakley is actually pitzer) from the time this was written.
   def fixture_dir
