@@ -472,8 +472,8 @@ module BatchConnect
                                }
                              else
                                {
-                                 value: clusters.first.id.to_s,
-                                 fixed: true
+                                 value:  clusters.first.id.to_s,
+                                 widget: 'hidden_field'
                                }
                              end
     end
