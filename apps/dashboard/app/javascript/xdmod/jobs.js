@@ -82,10 +82,11 @@ function table(context, helpers) {
   const thead = document.createElement('thead');
   // Empty th to accommodate for the job analytics button
   thead.innerHTML = '<tr> \
-                      <th></th> \
-                      <th>ID</th> \
-                      <th>Name</th> \
-                      <th>Date</th> \
+                      <th class="sr-only">Analytics Toggle</th> \
+                      <th class="id">ID</th> \
+                      <th class="name">Name</th> \
+                      <th class="date">Date</th> \
+                      <th class="sr-only">Analytics</th> \
                     </tr>';
 
   const tbody = document.createElement('tbody');
@@ -122,11 +123,6 @@ function tableRows(context, helpers) {
     tr.setAttribute('data-bs-target', `#details_${job.jobid}`);
     tr.setAttribute('aria-expanded', 'false');
 
-    tr.addEventListener('click', function(event) {
-      const jobId = event.currentTarget.getAttribute("data-xdmod-jobid");
-      getJobAnalytics(jobId, helpers)
-    }, { once: true });
-
     // Job analytics collapse icons
     const td0 = document.createElement('td');
     td0.innerHTML = `
@@ -157,21 +153,19 @@ function tableRows(context, helpers) {
     // const td4 = document.createElement('td');
     // td4.innerHTML = helpers.efficiency_label(job.cpu_user);
 
-    tr.append(td0, td1, td2, td3);
+    // Add job analytics placeholder
+    const td4 = document.createElement('td');
+    td4.id = `details_${job.jobid}`;
+    td4.classList.add('job-analytics', 'collapse');
+    td4.innerHTML = '<div class="job-analytics-content"><span>LOADING...</span></div>'
+    // Call JobAnalytics API after the collapse is fully open to avoid awkward animation.
+    td4.addEventListener('shown.bs.collapse', function(event) {
+      getJobAnalytics(job, helpers);
+    }, { once: true });
+
+    tr.append(td0, td1, td2, td3, td4);
 
     rows.push(tr);
-
-    // Add job analytics placeholder
-    const analyticsRow = document.createElement('tr');
-    analyticsRow.innerHTML = `
-      <td colspan="4" class="hiddenRow">
-        <div class="collapse" id="details_${job.jobid}">
-          <div class="job-analytics">
-            <span>LOADING...</span>
-          </div>
-        </div>
-      </td>`;
-    rows.push(analyticsRow);
   });
 
   return rows;
@@ -201,25 +195,31 @@ function noDataRow() {
   return tr;
 }
 
-function renderJobAnalytics(context, containerId, helpers) {
-  if(context.error !== undefined) {
-    const errorMessage = errorBody(context.error, helpers);
-    document.getElementById(containerId).replaceChildren(errorMessage);
+function renderJobAnalytics(analyticsData, jobData, containerId, helpers) {
+  if(analyticsData.error !== undefined) {
+    const errorMessage = errorBody(analyticsData.error, helpers);
+    const analyticsContainer = document.getElementById(containerId);
+    analyticsContainer.closest('tr').classList.add('error');
+    analyticsContainer.replaceChildren(errorMessage);
     return;
   }
 
-  const dataByKey = context.data.reduce((acc, obj) => {
+  // Index Job analytics data by analytics key
+  const dataByKey = analyticsData.data.reduce((acc, obj) => {
     acc[obj.key] = obj;
     return acc;
   }, {});
-  const cpuEfficiency = helpers.efficiency_label(dataByKey['CPU User']?.value, false)
-  const memEfficiency = helpers.efficiency_label(dataByKey['Memory Headroom']?.value, true)
-  const walltimeEfficiency = helpers.efficiency_label(dataByKey['Walltime Accuracy']?.value, false)
+
+  // Default to jobData form the job search results.
+  // As the Jobs realm might not have any analytics metrics.
+  const cpuEfficiency = dataByKey['CPU User']?.value || jobData.cpu_user;
+  const memEfficiency = dataByKey['Memory Headroom']?.value;
+  const walltimeEfficiency = dataByKey['Walltime Accuracy']?.value || jobData.walltime_accuracy;
   const div = document.createElement('div');
-  div.classList.add('job-analytics');
-  div.innerHTML = `<span><strong>CPU:</strong> ${cpuEfficiency}</span>
-                   <span><strong>Mem:</strong> ${memEfficiency}</span>
-                   <span><strong>Walltime:</strong> ${walltimeEfficiency}</span>`;
+  div.classList.add('job-analytics-content');
+  div.innerHTML = `<span><strong>CPU:</strong> ${helpers.efficiency_label(cpuEfficiency, false)}</span>
+                   <span><strong>Mem:</strong> ${helpers.efficiency_label(memEfficiency, true)}</span>
+                   <span><strong>Walltime:</strong> ${helpers.efficiency_label(walltimeEfficiency, false)}</span>`;
 
   document.getElementById(containerId).replaceChildren(div);
 }
@@ -232,15 +232,15 @@ function jobAnalyticsUrl(jobId, helpers){
   return url;
 }
 
-function getJobAnalytics(jobId, helpers) {
-  const analyticsContainer = `details_${jobId}`;
-  fetch(jobAnalyticsUrl(jobId, helpers), { credentials: 'include' })
+function getJobAnalytics(jobData, helpers) {
+  const analyticsContainer = `details_${jobData.jobid}`;
+  fetch(jobAnalyticsUrl(jobData.jobid, helpers), { credentials: 'include' })
       .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
       .then(response => response.json())
-      .then((data) => renderJobAnalytics(data, analyticsContainer, helpers))
+      .then((data) => renderJobAnalytics(data, jobData, analyticsContainer, helpers))
       .catch((error) => {
         console.error(error);
-        renderJobAnalytics({error: error}, analyticsContainer, helpers);
+        renderJobAnalytics({error: error}, jobData, analyticsContainer, helpers);
 
         reportErrorForAnalytics('xdmod_jobs_analytics_widget_error', error);
       });

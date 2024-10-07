@@ -10,6 +10,10 @@
     font-size: 0.9rem;
   }
 
+  tr {
+    position: relative;
+  }
+
   tr[aria-expanded=true] .closed {
     display: none;
   }
@@ -18,17 +22,38 @@
     display: none;
   }
 
-  .job-analytics {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.75rem 0.5rem;
+  tr[aria-expanded=true] td:not(.job-analytics) {
+    padding-bottom: 45px;
+  }
 
-    strong {
-      font-weight: 600;
-    }
+  tr.error[aria-expanded=true] td:not(.job-analytics) {
+    padding-bottom: 200px;
+  }
 
-    .badge {
-      vertical-align: 1px;
+  tr.error td.job-analytics {
+    border-bottom: none;
+  }
+
+  td.job-analytics {
+    position: absolute;
+    top: 35px;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 0;
+
+    div.job-analytics-content {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0.5rem;
+
+      strong {
+        font-weight: 600;
+      }
+
+      .badge {
+        vertical-align: 1px;
+      }
     }
   }
 }
