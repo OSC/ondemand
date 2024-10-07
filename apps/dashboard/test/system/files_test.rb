@@ -507,11 +507,11 @@ class FilesTest < ApplicationSystemTestCase
       dir_to_dl = "#{dir}/test_dir"
       `mkdir -p #{dir_to_dl}/first_level_dir`
       `mkdir #{dir_to_dl}/.first_level_hidden_dir`
-      `touch #{dir_to_dl}/real_file`
-      `touch #{dir_to_dl}/first_level_dir/.second_level_hidden_file`
-      `touch #{dir_to_dl}/first_level_dir/second_level_real_file`
-      `touch #{dir_to_dl}/.first_level_hidden_dir/.another_second_level_hidden_file`
-      `touch #{dir_to_dl}/.first_level_hidden_dir/another_second_level_real_file`
+      `echo 'abc123' > #{dir_to_dl}/real_file`
+      `echo 'abc123' > #{dir_to_dl}/first_level_dir/.second_level_hidden_file`
+      `echo 'abc123' > #{dir_to_dl}/first_level_dir/second_level_real_file`
+      `echo 'abc123' > #{dir_to_dl}/.first_level_hidden_dir/.another_second_level_hidden_file`
+      `echo 'abc123' > #{dir_to_dl}/.first_level_hidden_dir/another_second_level_real_file`
 
       visit files_url(dir)
       find('tbody a', exact_text: 'test_dir').ancestor('tr').click
