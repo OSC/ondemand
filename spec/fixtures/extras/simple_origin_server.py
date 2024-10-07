@@ -21,6 +21,17 @@ def one_level_relative_redirect():
 def one_level_down():
     return "<html><body><div id='test-div'>A very simple page for testing</div></body></html>"
 
+@app.route("/one/with-query-params")
+def one_level_down_with_query_params():
+    artist = request.args.get('artist')
+    album = request.args.get('album')
+    print("artist: {} album: {}".format(artist, album))
+
+    if artist is None or album is None:
+        return 'You need to supply artist and album query parameters.', 404
+    else:
+        return one_level_down()
+
 @app.route("/simple-redirect")
 def simple_redirect():
     return redirect(url_for('app.simple_page'), code=302)
