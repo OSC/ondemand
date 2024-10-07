@@ -152,9 +152,10 @@ class PosixFile
     File.chmod(mode, path.to_s)
 
     begin
-      path.chown(nil, path.parent.stat.gid) if path.parent.setgid?
+      gid = path.parent.stat.gid
+      path.chown(nil, gid) if path.parent.setgid?
     rescue StandardError => e
-      Rails.logger.info("cannot chown #{path} because of error: #{e}")
+      Rails.logger.info("Cannot change group ownership of #{path} to #{gid} because of error: #{e}")
     end
 
     nil
