@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#3843)\
+allow empty directories to be downloaded (#3841)\
+Launcher save fixed attributes (#3784)\
+Update node_proxy.lua - Fix for interactive apps not working (#3791)\
+Update Changelog (#3837)\
+Check if handle_upload returns a Transfer (#3838)\
+lint a random file (#3836)\
+fix test ci (#3832)\
+Enumerable safe cachefile serialization (#3819)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
