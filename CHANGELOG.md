@@ -6,15 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#3843)\
-allow empty directories to be downloaded (#3841)\
-Launcher save fixed attributes (#3784)\
-Update node_proxy.lua - Fix for interactive apps not working (#3791)\
-Update Changelog (#3837)\
-Check if handle_upload returns a Transfer (#3838)\
-lint a random file (#3836)\
-fix test ci (#3832)\
-Enumerable safe cachefile serialization (#3819)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -64,6 +55,7 @@ Enumerable safe cachefile serialization (#3819)
 - The shell app now has configurations for ping ponging. Ping pongs are disabled by default, will only ping pong
   for a certain duration after inactivity and the connections will close altogether after a certian duration regardless
   of activity in [3805](https://github.com/OSC/ondemand/pull/3805) and [3810](https://github.com/OSC/ondemand/pull/3810).
+- Empty directories can now be downloaded in [3841](https://github.com/OSC/ondemand/pull/3841).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -76,12 +68,13 @@ Enumerable safe cachefile serialization (#3819)
 - Download buttons will now be hidden for certain files like pipes in [3654](https://github.com/OSC/ondemand/pull/3654).
 - Favorite file paths now consult the Allowlist in [3526](https://github.com/OSC/ondemand/pull/3526).
 - The ood_portal.conf now accounts for /dex (dex_uri) when enabling maintenance mode in [3736](https://github.com/OSC/ondemand/pull/3736).
-- mod_ood_proxy now correctly proxies for httpd 2.4.62 in [3728](https://github.com/OSC/ondemand/pull/3728)
-  and [3776](https://github.com/OSC/ondemand/pull/3776).
+- mod_ood_proxy now correctly proxies for httpd 2.4.62 in [3728](https://github.com/OSC/ondemand/pull/3728),
+  [3776](https://github.com/OSC/ondemand/pull/3776) and [3791](https://github.com/OSC/ondemand/pull/3791).
 - ood_auth_map now accounts for more than just \w for usernames in [3753](https://github.com/OSC/ondemand/pull/3753).
 - Pipes and fifos no longer show as downloadable in [3718](https://github.com/OSC/ondemand/pull/3718).
 - Allowlist compuations have been optimized in [3804](https://github.com/OSC/ondemand/pull/3804).
 - data_field widgets now initialize their value to today in [3817](https://github.com/OSC/ondemand/pull/3817).
+- Batch Connect cache files now correct serialize in [3819](https://github.com/OSC/ondemand/pull/3819).
 
 ### Security
 
