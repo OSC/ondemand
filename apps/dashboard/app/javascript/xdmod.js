@@ -245,20 +245,6 @@ function createJobsWidget() {
     });
 }
 
-function addAnalyticsToJob(jobId) {
-  const analyticsContainer = `#details_${jobId}`;
-  fetch(jobAnalyticsUrl(jobId), { credentials: 'include' })
-      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
-      .then(response => response.json())
-      .then((data) => renderJobAnalytics(data, analyticsContainer))
-      .catch((error) => {
-        console.error(error);
-        renderJobAnalytics({error: error}, analyticsContainer);
-
-        reportErrorForAnalytics('xdmod_jobs_analytics_widget_error', error);
-      });
-}
-
 function createEfficiencyWidgets() {
   const jobPanel = $(`#${jobEfficiencyPanelId}`);
   const corePanel = $(`#${coreEfficiencyPanelId}`);
