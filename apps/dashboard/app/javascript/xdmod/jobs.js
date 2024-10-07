@@ -157,7 +157,7 @@ function tableRows(context, helpers) {
     const td4 = document.createElement('td');
     td4.id = `details_${job.jobid}`;
     td4.classList.add('job-analytics', 'collapse');
-    td4.innerHTML = '<div class="job-analytics-content"><span>LOADING...</span></div>'
+    td4.innerHTML = '<div class="job-analytics-content"><span>LOADING...</span></div>';
     // Call JobAnalytics API after the collapse is fully open to avoid awkward animation.
     td4.addEventListener('shown.bs.collapse', function(event) {
       getJobAnalytics(job, helpers);
