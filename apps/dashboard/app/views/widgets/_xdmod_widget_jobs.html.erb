@@ -1,59 +1,6 @@
 <%=  javascript_include_tag 'xdmod', nonce: true %>
 
 <div class="xdmod">
+  <%# This XDMoD widget is rendered using Javascript %>
   <div id="jobsPanelDiv"></div>
-
-  <script id="jobs-template" type="text/x-handlebars-template">
-    <div class="card mt-3">
-
-      <div class="card-header">
-        <a href="{{xdmod_url}}" class="float-end">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
-        <h3>{{title}} - {{date_range}}</h3>
-      </div>
-
-      {{#if error}}
-        <div class="card-body">
-          <div class="alert alert-danger mb-0">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
-        </div>
-      {{else}}
-      {{#if loading}}
-        <div class="card-body">
-          <p class="card-text">LOADING...</p>
-        </div>
-      {{else}}
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-sm table-striped table-condensed">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Date</th>
-                  <th>CPU</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each results}}
-                <tr title="{{job_name}} - {{local_job_id}}">
-                  <td class="text-nowrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
-                  <td class="overflow-hidden d-inline-block text-truncate mw-150px">{{job_name}}</td>
-                  <td>{{date}}</td>
-                  <td>{{cpu_label cpu_user}}</td>
-                </tr>
-                {{else}}
-                <tr><td colspan="7">No data available.</td></tr>
-                {{/each}}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card-footer">
-          Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your Open XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
-        </div>
-        {{/if}}
-      {{/if}}
-    </div>
-  </script>
-
 </div>

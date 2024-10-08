@@ -1,0 +1,59 @@
+/** Job Analytics **/
+#jobsPanelDiv {
+  .hiddenRow {
+    padding: 0 !important;
+  }
+
+  i.app-icon {
+    width: 0.9rem;
+    height: 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  tr {
+    position: relative;
+  }
+
+  tr[aria-expanded=true] .closed {
+    display: none;
+  }
+
+  tr[aria-expanded=false] .open {
+    display: none;
+  }
+
+  tr[aria-expanded=true] td:not(.job-analytics) {
+    padding-bottom: 45px;
+  }
+
+  tr.error[aria-expanded=true] td:not(.job-analytics) {
+    padding-bottom: 200px;
+  }
+
+  tr.error td.job-analytics {
+    border-bottom: none;
+  }
+
+  td.job-analytics {
+    position: absolute;
+    top: 35px;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 0;
+
+    div.job-analytics-content {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0.5rem;
+
+      strong {
+        font-weight: 600;
+      }
+
+      .badge {
+        vertical-align: 1px;
+      }
+    }
+  }
+}

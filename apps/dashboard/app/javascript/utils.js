@@ -1,3 +1,4 @@
+import {analyticsPath} from "./config";
 
 export function cssBadgeForState(state){
   switch (state) {
@@ -101,4 +102,13 @@ export function setInnerHTML(element, html) {
 
     currentElement.parentNode.replaceChild(newElement, currentElement);
   });
+}
+
+// Helper method to report errors from the front end via AJAX
+export function reportErrorForAnalytics(path, error) {
+  // error - report back for analytics purposes
+  const analyticsUrl = new URL(analyticsPath(path), document.location);
+  analyticsUrl.searchParams.append('error', error);
+  // Fire and Forget
+  fetch(analyticsUrl);
 }
