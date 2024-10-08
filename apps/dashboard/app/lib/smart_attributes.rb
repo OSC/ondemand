@@ -23,4 +23,5 @@ module SmartAttributes
   require 'smart_attributes/attributes/bc_vnc_resolution'
   require 'smart_attributes/attributes/auto_environment_variable'
   require 'smart_attributes/attributes/auto_cores'
+  require 'smart_attributes/attributes/global_attribute'
 end
