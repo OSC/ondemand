@@ -151,7 +151,14 @@ class PosixFile
     FileUtils.mv tempfile, path.to_s
     File.chmod(mode, path.to_s)
 
-    path.chown(nil, path.parent.stat.gid) if path.parent.setgid?
+    begin
+      gid = path.parent.stat.gid
+      path.chown(nil, gid) if path.parent.setgid?
+    rescue StandardError => e
+      Rails.logger.info("Cannot change group ownership of #{path} to #{gid} because of error: #{e}")
+    end
+
+    nil
   end
 
   def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
