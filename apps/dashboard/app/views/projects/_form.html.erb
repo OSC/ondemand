@@ -17,9 +17,10 @@
 %>
 
 <div class='card'>
-<h5 class='card-header'>Project Details</h5>
+<h5 class='card-header h4'>Project Details</h5>
+  <%= render(partial: "template_select", locals: { form: form, templates: @templates}) %>
   <div class='card-group'>
-      <div class='card'>
+    <div class='card'>
       <div class='card-body'>
         <div class="col">
           <div class="field">
@@ -44,12 +45,6 @@
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
-
-          <%- unless @templates.to_a.empty? -%>
-          <div class="field">
-            <%= form.select(:template, @templates) %>
-          </div>
-          <%- end -%>
         </div>
       </div>
       </div>
