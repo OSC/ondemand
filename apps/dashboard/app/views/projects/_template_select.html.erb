@@ -1,0 +1,11 @@
+  <div class='card-group'>
+    <div class='card'>
+      <div class='card-body'>
+        <%- unless templates.to_a.empty? -%>
+          <div class="field h4">
+            <%= form.select(:template, templates) %>
+          </div>
+        <%- end -%>
+      </div>
+    </div>
+  </div>
