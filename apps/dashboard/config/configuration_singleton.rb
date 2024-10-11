@@ -214,6 +214,13 @@ class ConfigurationSingleton
     config.fetch(:launcher_default_items, []).to_a
   end
 
+  def global_bc_form_item(key)
+    return nil if key.nil? || key.to_s.empty?
+
+    all = config.fetch(:global_bc_form_items, {}).to_h
+    all[key.to_sym]
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
