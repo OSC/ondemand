@@ -116,7 +116,7 @@ class ProjectsController < ApplicationController
   private
 
   def templates
-    templates = Project.templates.map do |project|
+    Project.templates.map do |project|
       label = project.title
       data = {
         'data-description' => project.description,
