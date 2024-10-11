@@ -124,9 +124,6 @@ class ProjectsController < ApplicationController
       }
       [label, project.directory, data]
     end
-
-    return templates if templates.size.positive?
-    return []
   end
 
   def project_params
