@@ -17,69 +17,71 @@
 %>
 
 <div class='card'>
-  <div class='card-header'>
-    <%= form.select(:template, @templates, { prompt: "--- select template ---" }, required: true, label_class: "h4")%>
-  </div>
-    <div class='card-group'>
-      <div class='card'>
-        <div class='card-body'>
-          <div class="col">
-            <div class="field">
-              <%= form.text_field :name, placeholder: I18n.t('dashboard.jobs_project_name_placeholder'),
-                      help: I18n.t('dashboard.jobs_project_name_validation') %>
-            </div>
-
-            <div class="field">
-              <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
-                                  readonly: edit_project_action,
-                                  required: false,
-                                  help: edit_project_action ? '' : I18n.t('dashboard.jobs_project_directory_help_html', root_directory: Project.dataroot.to_s).html_safe,
-                                  data: { 'path-selector': true })%>
-
-              <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
-                Select Path
-              </button>
-
-              <%= render(partial: 'shared/path_selector_table', locals: path_selector_locals ) %>
-            </div>
-
-            <div class="field">
-              <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
-            </div>
+  <%- unless @templates.to_a.empty? -%>
+    <div class='card-header'>
+      <%= form.select(:template, @templates, { prompt: "--- select template ---" }, required: true, label_class: "h4")%>
+    </div>
+  <%- end -%>
+  <div class='card-group'>
+    <div class='card'>
+      <div class='card-body'>
+        <div class="col">
+          <div class="field">
+            <%= form.text_field :name, placeholder: I18n.t('dashboard.jobs_project_name_placeholder'),
+                    help: I18n.t('dashboard.jobs_project_name_validation') %>
           </div>
-        </div>
-        </div>
-        <div class="card">
-        <div class='card-body'>
-          <div class="col">
-            <div class="field">
-            <%= javascript_include_tag 'icon_picker', nonce: true %>
-            <%= form.text_field :icon, placeholder: "cog", id: "product_icon_select", value: @project.icon_class %>
-              <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
-                <% icon = $2; style = $1 %>
-                <p class="text-center">
-                  <%= fa_icon(icon, fa_style: style, id: "product_icon")  %>
-                </p>
-              <% else %>
-                <p class="text-center">
-                  <%= fa_icon("cog", fa_style: "fas", id: "product_icon") %>
-                </p>
-              <% end %>
-                <ul id="icon_picker_list">
-                </ul>
-            </div>
+
+          <div class="field">
+            <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
+                                readonly: edit_project_action,
+                                required: false,
+                                help: edit_project_action ? '' : I18n.t('dashboard.jobs_project_directory_help_html', root_directory: Project.dataroot.to_s).html_safe,
+                                data: { 'path-selector': true })%>
+
+            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+              Select Path
+            </button>
+
+            <%= render(partial: 'shared/path_selector_table', locals: path_selector_locals ) %>
           </div>
-        </div>
+
+          <div class="field">
+            <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
+          </div>
         </div>
       </div>
+      </div>
+      <div class="card">
+      <div class='card-body'>
+        <div class="col">
+          <div class="field">
+          <%= javascript_include_tag 'icon_picker', nonce: true %>
+          <%= form.text_field :icon, placeholder: "cog", id: "product_icon_select", value: @project.icon_class %>
+            <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
+              <% icon = $2; style = $1 %>
+              <p class="text-center">
+                <%= fa_icon(icon, fa_style: style, id: "product_icon")  %>
+              </p>
+            <% else %>
+              <p class="text-center">
+                <%= fa_icon("cog", fa_style: "fas", id: "product_icon") %>
+              </p>
+            <% end %>
+              <ul id="icon_picker_list">
+              </ul>
+          </div>
+        </div>
+      </div>
+      </div>
     </div>
-    <br>
-    <p>
-      <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save project', id: 'submit_form_button' %>
-      <%= form.button 'Reset', type: :reset, class: 'btn btn-default', id: 'reset_button', 
-      title: 'Clear form fields' %>
-      <%= link_to 'Back', projects_path, class: 'btn btn-default', 
-      title: 'Return to projects page' %>
-    </p>
+  </div>
+  <br>
+  <p>
+    <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save project', id: 'submit_form_button' %>
+    <%= form.button 'Reset', type: :reset, class: 'btn btn-default', id: 'reset_button', 
+    title: 'Clear form fields' %>
+    <%= link_to 'Back', projects_path, class: 'btn btn-default', 
+    title: 'Return to projects page' %>
+  </p>
 </div>
 
