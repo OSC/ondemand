@@ -17,9 +17,9 @@
 %>
 
 <div class='card'>
-<h2 class='card-header'>Project Details</h2>
-  <%= render(partial: "template_select", locals: { form: form, templates: @templates}) %>
-  <div id='project_form'>
+  <div class='card-header'>
+    <%= form.select(:template, @templates, { prompt: "--- select template ---" }, required: true, label_class: "h4")%>
+  </div>
     <div class='card-group'>
       <div class='card'>
         <div class='card-body'>
@@ -81,6 +81,5 @@
       <%= link_to 'Back', projects_path, class: 'btn btn-default', 
       title: 'Return to projects page' %>
     </p>
-  </div>
 </div>
 

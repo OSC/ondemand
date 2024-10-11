@@ -125,11 +125,8 @@ class ProjectsController < ApplicationController
       [label, project.directory, data]
     end
 
-    if templates.size.positive?
-      templates.prepend(['', '', { 'data-description': '', 'data-icon': '' }])
-    else
-      []
-    end
+    return templates if templates.size.positive?
+    return []
   end
 
   def project_params
