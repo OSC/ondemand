@@ -147,7 +147,7 @@ class Project
     File.write(Project.lookup_file, new_table.to_yaml)
     true
   rescue StandardError => e
-    errors.add(operation, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
+    errors.add(operation, "Cannot update lookup file with error #{e.class}:#{e.message}")
     false
   end
 
@@ -156,7 +156,7 @@ class Project
     File.write(Project.lookup_file, new_table.to_yaml)
     true
   rescue StandardError => e
-    errors.add(:update, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
+    errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
     false
   end
 
@@ -278,7 +278,9 @@ class Project
 
   def rsync_args
     [
-      'rsync', '-rltp', '--exclude', 'scripts/*',
+      'rsync', '-rltp',
+      '--exclude', 'scripts/*',
+      '--exclude', '.ondemand/job_log.yml',
       "#{template}/", project_dataroot.to_s
     ]
   end
