@@ -280,12 +280,6 @@ function enableOrDisableSelectOption(event) {
   const optionToToggle = selectOptions.filter(opt => opt.text == choice)[0];
   const selectOptionsEnabled = selectOptions.filter(opt => !opt.disabled);
 
-  if(selectOptionsEnabled.length <= 1 && toggleAction == 'remove') {
-    alert("Cannot remove the last option available")
-    event.target.disabled = false;
-    return
-  }
-
   if(toggleAction == 'add') {
     enableRemoveOption(li);
     removeFromExcludeInput(excludeId, choice);
@@ -299,6 +293,28 @@ function enableOrDisableSelectOption(event) {
       // if we can remove, there is always another option
       selectOptionsEnabled.filter(opt => opt.text !== choice)[0].selected = true;
     }
+  }
+  enableOrDisableLastOption(li.parentElement);
+}
+
+function enableOrDisableLastOption(optionsOl) {
+  const optionLis = Array.from(optionsOl.children);
+
+  const optionsEnabled = Array.from(optionLis.filter((child) => {
+    return !child.classList.contains('text-strike');
+  }));
+
+  if(optionsEnabled.length > 1) {
+    // Make sure there are no options that have both the add and remove button disabled
+    const bothButtonsDisabled = optionsEnabled.filter((option) => {
+      return option.querySelectorAll('button:disabled').length == 2;
+    });
+    for(const option of bothButtonsDisabled) {
+      enableRemoveOption(option);
+    }
+  } else {
+    // Disable the remove button on the last option
+    enableRemoveOption(optionsEnabled[0], true);
   }
 }
 
@@ -351,6 +367,8 @@ function initSelect(selectElement) {
       enableAddOption(configItem);
     }
   });
+
+  enableOrDisableLastOption(selectOptionsConfig[0].parentElement);
 }
 
 
