@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect apps now respond to form_header to display a header in [3763](https://github.com/OSC/ondemand/pull/3763).
 - auto_clusters now set maximums for auto_cores in [3778](https://github.com/OSC/ondemand/pull/3778).
 - UIDs can now be returned by the mapper script in [3795](https://github.com/OSC/ondemand/pull/3795).
+- XDMoD jobs widget now shows CPU, Memory and walltime in [3789](https://github.com/OSC/ondemand/pull/3789).
+- Global batch connect form items can now be defined in ondemand.d files in [3840](https://github.com/OSC/ondemand/pull/3840).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -75,6 +77,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allowlist compuations have been optimized in [3804](https://github.com/OSC/ondemand/pull/3804).
 - data_field widgets now initialize their value to today in [3817](https://github.com/OSC/ondemand/pull/3817).
 - Batch Connect cache files now correct serialize in [3819](https://github.com/OSC/ondemand/pull/3819).
+- Uploads always succeed even when the chown operation afterwards fails in [3856](https://github.com/OSC/ondemand/pull/3856).
 
 ### Security
 
