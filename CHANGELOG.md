@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Creating a project from template no longer copies  or (#3866)\
+Global form items (#3840)\
+lint a random file (#3864)\
+update fixed checkbox when environment variable changes (#3842)\
+Added XDMoD analytics metrics to jobs widget (#3789)\
+rescue chown in case it fails (#3856)\
+Update Changelog (#3848)\
+Add e2e proxy tests for query parameters. (#3827)\
+lint a random file (#3847)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
