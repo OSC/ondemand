@@ -182,4 +182,36 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal('Global Queues', label.text)
     end
   end
+
+  test 'forms correctly deal with capitalized ids' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        form:
+          - switcher
+          - Eastern_City
+          - Western_City
+        attributes:
+          switcher:
+            widget: 'select'
+            options:
+              - ["east", data-hide-Western-City: true]
+              - ["west", data-hide-Eastern-City: true]
+      HEREDOC
+
+      make_bc_app(dir, form)
+
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # select east, and west is no longer visible. Also note that the id is lowercase.
+      select('east', from: bc_ele_id('switcher'))
+      assert(find("##{bc_ele_id('eastern_city')}").visible?)
+      refute(find("##{bc_ele_id('western_city')}", visible: false).visible?)
+
+      # select west, and now ease is no longer visible
+      select('west', from: bc_ele_id('switcher'))
+      assert(find("##{bc_ele_id('western_city')}").visible?)
+      refute(find("##{bc_ele_id('eastern_city')}", visible: false).visible?)
+    end
+  end
 end

@@ -15,7 +15,7 @@ module SmartAttributes
     # @param id [#to_s] id of attribute
     # @param opts [#to_h] options for attribute
     def initialize(id, opts = {})
-      @id   = id.to_s
+      @id   = id.to_s.downcase
       @opts = opts.to_h.symbolize_keys
     end
 
