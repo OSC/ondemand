@@ -245,12 +245,16 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                                   {
                                     columns: [
                                       {
-                                        width:   6,
+                                        width:   4,
                                         widgets: 'this_widget_doesnt_exist'
                                       },
                                       {
-                                        width:   6,
+                                        width:   4,
                                         widgets: 'syntax_error'
+                                      },
+                                      {
+                                        width:   4,
+                                        widgets: 'load_error'
                                       }
                                     ]
                                   }
@@ -263,12 +267,13 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     end
 
     assert_select 'div.row', 1
-    assert_select 'div.row > div.col-md-6', 2
+    assert_select 'div.row > div.col-md-4', 3
 
-    error_widgets = css_select('div.row > div.col-md-6 > div.alert.alert-danger.card > div.card-body')
-    assert_equal 2, error_widgets.size
+    error_widgets = css_select('div.row > div.col-md-4 > div.alert.alert-danger.card > div.card-body')
+    assert_equal 3, error_widgets.size
     assert_equal true, %r{Missing partial widgets/_this_widget_doesnt_exist}.match?(error_widgets[0].text)
     assert_equal true, /undefined method `woops!'/.match?(error_widgets[1].text)
+    assert_equal true, /cannot load such file -- the_missing_gem/.match?(error_widgets[2].text)
   end
 
   test 'should render brand new widgets with shipped widgets' do

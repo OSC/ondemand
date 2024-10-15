@@ -42,11 +42,19 @@ module DashboardHelper
     begin
       render partial: "widgets/#{widget}"
     rescue SyntaxError, StandardError => e
-      render partial: 'shared/widget_error', locals: { error: e, widget: widget.to_s }
+      render_error_widget(e, widget.to_s)
+      # rubocop:disable Lint/RescueException - because these can throw all sorts of errors.
+    rescue Exception => e
+      # rubocop:enable Lint/RescueException
+      render_error_widget(e, widget.to_s)
     end
   end
 
   private
+
+  def render_error_widget(error, widget_name)
+    render(partial: 'shared/widget_error', locals: { error: error, widget: widget_name })
+  end
 
   def default_dashboard_layout
     if xdmod?
