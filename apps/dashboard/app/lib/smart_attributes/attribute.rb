@@ -179,8 +179,8 @@ module SmartAttributes
         # and let nils fall through and get caught in validate!
         if entry.is_a?(Array)
           entry
-        elsif entry.is_a?(String)
-          [entry, entry]
+        elsif entry.is_a?(String) || entry.is_a?(Symbol)
+          [entry.to_s, entry.to_s]
         end
       end
     end
