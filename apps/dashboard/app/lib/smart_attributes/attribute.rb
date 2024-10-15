@@ -174,6 +174,9 @@ module SmartAttributes
         else
           false
         end
+      end.map do |entry|
+        # always cast to array so other layers can try .first & .second for labels and values.
+        entry.is_a?(Array) ? entry : [entry, entry]
       end
     end
 

@@ -214,4 +214,43 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       refute(find("##{bc_ele_id('eastern_city')}", visible: false).visible?)
     end
   end
+
+  test 'radio_buttons accept scalar and array options' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - scalar
+          - vector
+        attributes:
+          scalar:
+            widget: radio_button
+            options:
+              - one
+              - two
+          vector:
+            widget: radio_button
+            options:
+              - [Three, three]
+              - [Four, four]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # values are all lowercase
+      assert_equal('one', find("##{bc_ele_id('scalar_one')}").value)
+      assert_equal('two', find("##{bc_ele_id('scalar_two')}").value)
+      assert_equal('three', find("##{bc_ele_id('vector_three')}").value)
+      assert_equal('four', find("##{bc_ele_id('vector_four')}").value)
+
+      # one and two's labels are lowercase, but Three and Four have uppercase labels.
+      assert_equal('one', find("[for='#{bc_ele_id('scalar_one')}']").text)
+      assert_equal('two', find("[for='#{bc_ele_id('scalar_two')}']").text)
+      assert_equal('Three', find("[for='#{bc_ele_id('vector_three')}']").text)
+      assert_equal('Four', find("[for='#{bc_ele_id('vector_four')}']").text)
+    end
+  end
 end
