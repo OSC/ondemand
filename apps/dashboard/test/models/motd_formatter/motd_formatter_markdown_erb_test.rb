@@ -51,5 +51,38 @@ class MotdFormatterMarkdownErbTest < ActiveSupport::TestCase
 
     assert_not_nil formatted_motd.content
   end
+
+  test 'content is html safe by default' do
+    path = "#{Rails.root}/test/fixtures/files/motd_md_erb_w_html"
+    motd = MotdFile.new(path)
+    formatted_motd = MotdFormatterMarkdownErb.new(motd)
+    content = formatted_motd.content
+
+    expected_content = "<h1>Some Markdown file</h1>\n" \
+    "\n" \
+    "var msg = 'this was a script';\n"
+
+    assert_not_nil(content)
+    assert_equal(expected_content, content)
+  end
+
+  # this test is very similar to above, but the content
+  # has a <script> tag still in it.
+  test 'content can contain html if configured' do
+    Configuration.stubs(:motd_render_html).returns(true)
+
+    path = "#{Rails.root}/test/fixtures/files/motd_md_erb_w_html"
+    motd = MotdFile.new(path)
+    formatted_motd = MotdFormatterMarkdownErb.new(motd)
+    content = formatted_motd.content
+
+    expected_content = "<h1>Some Markdown file</h1>\n" \
+    "\n" \
+    "<script>var msg = 'this was a script';</script>\n"
+
+    assert_not_nil(content)
+    assert_equal(expected_content, content)
+  end
+
 end
 

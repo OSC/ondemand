@@ -1,9 +1,6 @@
 module MotdFormatter
   # Utility class for rendering Markdown MOTD files.
-  class Markdown
-
-    include ActionView::Helpers::SanitizeHelper
-
+  class Markdown < BaseFormatter
     attr_reader :content, :title
 
     # @param [MotdFile] motd_file an MotdFile object that contains a URI path to a message of the day in OSC format
@@ -16,14 +13,6 @@ module MotdFormatter
 
     def to_partial_path
       "dashboard/motd_markdown"
-    end
-
-    def safe_content(content)
-      if Configuration.motd_render_html?
-        content.html_safe
-      else
-        sanitize(content)
-      end
     end
   end
 end
