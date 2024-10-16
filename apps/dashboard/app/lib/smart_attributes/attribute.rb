@@ -68,6 +68,10 @@ module SmartAttributes
       (opts[:widget] || 'text_field').to_s
     end
 
+    def serialize?
+      !!opts.fetch(:serialize, widget != "markdown")
+    end
+
     # Form label for this attribute
     # @param fmt [String, nil] formatting of form label
     # @return [String] form label

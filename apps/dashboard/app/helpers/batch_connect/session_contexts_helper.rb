@@ -35,6 +35,8 @@ module BatchConnect::SessionContextsHelper
       end
     when 'file_attachments'
       render :partial => "batch_connect/session_contexts/file_attachments", :locals => { form: form, attrib: attrib, field_options: field_options }
+    when 'markdown'
+      OodAppkit.markdown.render(attrib.value.to_s).html_safe
     else
       form.send widget, attrib.id, all_options
     end
