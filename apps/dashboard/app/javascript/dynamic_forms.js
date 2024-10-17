@@ -93,10 +93,13 @@ function mountainCaseWords(str) {
 function snakeCaseWords(str) {
   if(str === undefined) return undefined;
 
-  const rex = /([A-Z]{1}[a-z]*[0-9]*)/g;
+  // find all the captial case words and if none are found, we'll just bascially
+  // return the same string.
+  const rex = /([A-Z]{1}[a-z]*[0-9]*)|.+/g;
   const words = str.match(rex);
 
-  return words.map(word => word.toLowerCase()).join('_');
+  // filter out emtpy matches to avoid having a _ at the end.
+  return words.filter(word => word != '').map(word => word.toLowerCase()).join('_');
 }
 
 /**
