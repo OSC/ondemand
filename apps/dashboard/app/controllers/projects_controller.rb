@@ -119,6 +119,7 @@ class ProjectsController < ApplicationController
     cluster_str = job_details_params[:cluster].to_s
 
     project.remove_logged_job(job_details_params[:jobid].to_s, cluster_str)
+    redirect_to project_path(job_details_params[:project_id])
   end
 
   private

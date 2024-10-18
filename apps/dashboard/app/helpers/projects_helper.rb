@@ -15,6 +15,13 @@ module ProjectsHelper
     end
   end
 
+  def bottom_buttons(status)
+    return unless status == 'completed'
+
+    locals = { project_id: @project.id, id: job.id, cluster: job.cluster }
+    render(partial: 'projects/buttons/bottom_buttons', locals: locals)
+  end
+
   def top_buttons(status)
     return if status == 'completed'
 
