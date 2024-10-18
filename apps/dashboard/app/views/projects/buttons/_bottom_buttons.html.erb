@@ -1,5 +1,7 @@
 <div class="d-flex flex-row mx-2 mt-2">
-  <button class="btn btn-danger ms-auto" type="button">
-    <span>Delete</span>
-  </button>
+  <%= button_to(
+    'Delete',
+    project_delete_job_path(project_id: project_id, cluster: cluster.to_sym, jobid: id),
+    method: :delete
+  ) %>
 </div>

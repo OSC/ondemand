@@ -113,6 +113,14 @@ class ProjectsController < ApplicationController
     render(partial: 'job_details', locals: { job: hpc_job })
   end
 
+  # DELETE /projects/:project_id/jobs/:cluster/:jobid
+  def delete_job
+    project = Project.find(job_details_params[:project_id])
+    cluster_str = job_details_params[:cluster].to_s
+
+    project.remove_logged_job(job_details_params[:jobid].to_s, cluster_str)
+  end
+
   private
 
   def templates

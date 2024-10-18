@@ -20,7 +20,7 @@
           </tr>
         <% end %>
       </table>
-      <%= render(partial: 'projects/buttons/bottom_buttons') %>
+      <%= render(partial: 'projects/buttons/bottom_buttons', locals: { project_id: @project.id, id: job.id, cluster: job.cluster }) %>
     </div>
   </div>
 </div>
