@@ -45,7 +45,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-2
+          key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-1
 
       - name: Setup os dependencies
         run: |
