@@ -1,8 +1,12 @@
-<div class="d-flex flex-row mb-2 mx-2">
-  <button class="btn btn-info" type="button">
-    <span>Hold</span>
-  </button>
-  <button class="btn btn-danger ms-auto" type="button">
-    <span>Stop</span>
-  </button>
-</div>
+<%= button_to(
+  'Stop',
+  project_stop_job_path(project_id: project_id, cluster: cluster, jobid: id),
+  method: :patch,
+  class: 'btn btn-danger'
+) %>
+<%= button_to(
+  'Hold',
+  project_hold_job_path(project_id: project_id, cluster: cluster, jobid: id),
+  method: :patch,
+  class: 'btn btn-info mx-2'
+) %>
