@@ -214,4 +214,33 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       refute(find("##{bc_ele_id('eastern_city')}", visible: false).visible?)
     end
   end
+
+  test 'weird ids like aa_b_cc work' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        form:
+        - aa
+        - aa_b_cc
+        attributes:
+          aa:
+            widget: select
+            options:
+              - [ "foo", "foo",	data-hide-aa-b-cc: true]
+              - ['bar', 'bar']
+          aa_b_cc:
+            widget: text_field
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # foo is default, so aa_b_cc should be hidden
+      assert('foo', find("##{bc_ele_id('aa')}").value)
+      refute(find("##{bc_ele_id('aa_b_cc')}", visible: false).visible?)
+
+      # select bar, and now aa_b_cc is available.
+      select('bar', from: bc_ele_id('aa'))
+      assert(find("##{bc_ele_id('aa_b_cc')}").visible?)
+    end
+  end
 end
