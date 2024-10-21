@@ -37,12 +37,12 @@ module SmartAttributes
 
       # TODO: need to sanitize the job name for some schedulers
       def job_name(name)
-        [
+        formatted_prefix = [
           ENV['OOD_PORTAL'], # the OOD portal id
           ENV['RAILS_RELATIVE_URL_ROOT'].to_s.sub(%r{^/[^/]+/}, ''), # the OOD app
-          'project-manager',
-          name # the user supplied job name
+          'project-manager'
         ].reject(&:blank?).join('/')
+        name.include?(formatted_prefix) ? name : "#{formatted_prefix}/#{name}"
       end
     end
   end
