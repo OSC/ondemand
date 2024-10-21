@@ -14,7 +14,7 @@ module BatchConnect
     # Attributes used for serialization
     # @return [Hash{String => String, nil}] attributes to be serialized
     def attributes
-      @attributes.reject(&:fixed?).map { |a| [a.id.to_s, nil] }.to_h
+      @attributes.reject(&:fixed?).select(&:serialize?).map { |a| [a.id.to_s, nil] }.to_h
     end
 
     def attributes=(params = {})
@@ -40,6 +40,13 @@ module BatchConnect
     # @yield [SmartAttribute::Attribute] Gives the next attribute object in the
     #   list
     def each(&block)
+      @attributes.select(&:serialize?).each(&block)
+    end
+
+    # For a block {|attribute| ...}
+    # @yield [SmartAttribute::Attribute] Gives the next attribute object in the
+    #   list. Includes non-serializable attributes.
+    def each_form_attribute(&block)
       @attributes.each(&block)
     end
 
@@ -69,7 +76,7 @@ module BatchConnect
     end
 
     def to_h
-      Hash[*map { |a| [a.id.to_sym, a.value] }.flatten]
+      Hash[*select(&:serialize?).map { |a| [a.id.to_sym, a.value] }.flatten]
     end
 
     def to_openstruct(addons: {})
