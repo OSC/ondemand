@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update ci needs sqlite devel package too (#3870)\
-rescue Exceptions in dashboard widgets (#3873)\
-update rails (#3877)\
-lint a random file (#3874)\
-Normalize bc keys (#3867)\
-3391 emphasize template select (#3863)\
-script#edit don't allow user to remove last option (#3844)\
-fix the update CI by updating manually (#3865)\
-Update Changelog (#3869)\
-lint a random file (#3868)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -68,6 +58,7 @@ lint a random file (#3868)
   for a certain duration after inactivity and the connections will close altogether after a certian duration regardless
   of activity in [3805](https://github.com/OSC/ondemand/pull/3805) and [3810](https://github.com/OSC/ondemand/pull/3810).
 - Empty directories can now be downloaded in [3841](https://github.com/OSC/ondemand/pull/3841).
+- Batch Connect applications always lowercase ids for normalization for dynamic javascript in [3867](https://github.com/OSC/ondemand/pull/3867).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -88,6 +79,7 @@ lint a random file (#3868)
 - data_field widgets now initialize their value to today in [3817](https://github.com/OSC/ondemand/pull/3817).
 - Batch Connect cache files now correct serialize in [3819](https://github.com/OSC/ondemand/pull/3819).
 - Uploads always succeed even when the chown operation afterwards fails in [3856](https://github.com/OSC/ondemand/pull/3856).
+- Exceptions in dashboard widgets are correct rescued in [3873](https://github.com/OSC/ondemand/pull/3873).
 
 ### Security
 
