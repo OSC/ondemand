@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   for a certain duration after inactivity and the connections will close altogether after a certian duration regardless
   of activity in [3805](https://github.com/OSC/ondemand/pull/3805) and [3810](https://github.com/OSC/ondemand/pull/3810).
 - Empty directories can now be downloaded in [3841](https://github.com/OSC/ondemand/pull/3841).
+- Batch Connect applications always lowercase ids for normalization for dynamic javascript in [3867](https://github.com/OSC/ondemand/pull/3867).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -78,6 +79,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - data_field widgets now initialize their value to today in [3817](https://github.com/OSC/ondemand/pull/3817).
 - Batch Connect cache files now correct serialize in [3819](https://github.com/OSC/ondemand/pull/3819).
 - Uploads always succeed even when the chown operation afterwards fails in [3856](https://github.com/OSC/ondemand/pull/3856).
+- Exceptions in dashboard widgets are correct rescued in [3873](https://github.com/OSC/ondemand/pull/3873).
 
 ### Security
 
