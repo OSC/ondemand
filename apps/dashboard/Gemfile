@@ -47,6 +47,7 @@ gem 'nokogiri', '~> 1.15', '< 1.16'
 gem 'net-imap', '~> 0.3', '< 0.4'
 gem 'public_suffix', '~> 5.0', '< 6.0'
 gem 'turbo-rails', '2.0.7'
+gem 'zeitwerk', '2.6.18'
 
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
