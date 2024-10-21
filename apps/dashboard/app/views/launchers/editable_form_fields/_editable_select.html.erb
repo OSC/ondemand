@@ -25,20 +25,25 @@
 
       <li class="<%= li_classes %>">
 
-        <button class="btn btn-info float-start" type="button" id="<%= add_id %>"
-          data-select-toggler="add" data-select-id="<%= field_id %>"
-          <%= disabled ? nil : 'disabled="true"' %> >
-          <%= t('dashboard.add') %>
-        </button>
+        <span data-select-value><strong><%= choice %></strong></span>
+        <br/>
+        <div class="row">
+          <div class="col">          
+            <button class="btn btn-info float-start w-100" type="button" id="<%= add_id %>"
+              data-select-toggler="add" data-select-id="<%= field_id %>"
+              <%= disabled ? nil : 'disabled="true"' %> >
+              <%= t('dashboard.add') %>
+            </button>
+          </div>
 
-        <span data-select-value><%= choice %></span>
-
-        <button class="btn btn-warning float-end" type="button" id="<%= remove_id %>"
-          data-select-toggler="remove" data-select-id="<%= field_id %>"
-          <%= disabled || last_option ? 'disabled="true"'.html_safe : nil %> >
-          <%= t('dashboard.remove') %>
-        </button>
-
+          <div class="col">
+            <button class="btn btn-warning float-end w-100" type="button" id="<%= remove_id %>"
+              data-select-toggler="remove" data-select-id="<%= field_id %>"
+              <%= disabled || last_option ? 'disabled="true"'.html_safe : nil %> >
+              <%= t('dashboard.remove') %>
+            </button>
+          </div>
+        </div>
       </li>
       <%- end -%>
     </ol>
