@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update ci needs sqlite devel package too (#3870)\
+rescue Exceptions in dashboard widgets (#3873)\
+update rails (#3877)\
+lint a random file (#3874)\
+Normalize bc keys (#3867)\
+3391 emphasize template select (#3863)\
+script#edit don't allow user to remove last option (#3844)\
+fix the update CI by updating manually (#3865)\
+Update Changelog (#3869)\
+lint a random file (#3868)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
