@@ -12,7 +12,7 @@
 
     <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
-    <ol class="list-group list-group-flush text-center col-md-4 mb-3">
+    <ol class="list-group text-center col-md-4 mb-3">
       <%- attrib.select_choices(hide_excludable: false).each do |select_data| %>
         <%- 
           choice = parse_select_data(select_data)
