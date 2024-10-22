@@ -1,4 +1,4 @@
-<%-
+6<%-
   field_id = "#{form.object_name}_#{attrib.id}"
   exclude_id = "#{field_id}_exclude"
   exclude_name = "#{form.object_name}[#{attrib.id}_exclude]"
@@ -25,7 +25,7 @@
 
         <li class="<%= li_classes %>">
 
-          <span data-select-value><%= choice %></span><br/>
+          <span data-select-value class="text-break"><%= choice %></span><br/>
 
           <button class="btn btn-info float-start w-45" type="button" id="<%= add_id %>"
             data-select-toggler="add" data-select-id="<%= field_id %>"
