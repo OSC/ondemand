@@ -79,11 +79,11 @@ class ActiveJobsController < ApplicationController
       ActiveJobs::Jobstatusdata.new(data, cluster, true)
 
     rescue OodCore::JobAdapterError
-      OpenStruct.new(name: jobid, error: "No job details because job has already left the queue." , status: status_label("completed") )
+      OpenStruct.new(name: jobid, error: "No job details because job has already left the queue." , status: "completed" )
     rescue => e
       Rails.logger.info("#{e}:#{e.message}")
       Rails.logger.info(e.backtrace.join("\n"))
-      OpenStruct.new(name: jobid, error: "No job details available.\n" + e.backtrace.to_s, status: status_label("") )
+      OpenStruct.new(name: jobid, error: "No job details available.\n" + e.backtrace.to_s, status: "" )
     end
   end
 
