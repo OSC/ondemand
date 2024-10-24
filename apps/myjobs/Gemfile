@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8.4'
+gem 'rails', '7.0.8.5'
 # Use sqlite3 as the database for Active Record
 # Note that the version has been fixed due to an incompatibilty
 # https://github.com/rails/rails/issues/35153
@@ -74,3 +74,4 @@ gem 'rdoc', '6.3.4.1'
 gem 'nokogiri', '~> 1.15', '< 1.16'
 gem 'net-imap', '~> 0.3', '< 0.4'
 gem 'public_suffix', '~> 5.0', '< 6.0'
+gem 'zeitwerk', '2.6.18'
