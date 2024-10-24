@@ -17,7 +17,7 @@ module SmartAttributes
       # Defaults to ondemand/[dev,sys]/projects
       # @return [String] attribute value
       def value
-        job_name(opts[:value] || 'Project Manager Job')
+        opts[:value] || 'Project Manager Job'
       end
 
       def widget
@@ -32,17 +32,17 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(*)
-        { script: { job_name: value } }
+        { script: { job_name: job_name(value) } }
       end
 
       # TODO: need to sanitize the job name for some schedulers
       def job_name(name)
-        formatted_prefix = [
+        [
           ENV['OOD_PORTAL'], # the OOD portal id
           ENV['RAILS_RELATIVE_URL_ROOT'].to_s.sub(%r{^/[^/]+/}, ''), # the OOD app
-          'project-manager'
+          'project-manager',
+          name # the user supplied job name
         ].reject(&:blank?).join('/')
-        name.include?(formatted_prefix) ? name : "#{formatted_prefix}/#{name}"
       end
     end
   end
