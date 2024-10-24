@@ -6,7 +6,7 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::AutoOutputDirectory] the attribute object
     def self.build_auto_output_directory(opts = {})
-
+      Attributes::AutoOutputDirectory.new('auto_output_directory', opts)
     end
     def self.default_directory_value(default)
       
