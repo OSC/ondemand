@@ -7,7 +7,6 @@ module ActiveJobs
   # @author Brian L. McMichael
   # @version 0.0.1
   class Jobstatusdata
-    include ActiveJobsHelper
     attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
 
     Attribute = Struct.new(:name, :value)
@@ -28,7 +27,7 @@ module ActiveJobs
       self.jobname = info.job_name
       self.username = info.job_owner
       self.account = info.accounting_id || ''
-      self.status = status_label(info.status.state.to_s)
+      self.status = info.status.state.to_s
       self.cluster = cluster.id.to_s
       self.cluster_title = cluster.metadata.title ||  cluster.id.to_s.titleize
       self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
