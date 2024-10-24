@@ -120,7 +120,7 @@ module ApplicationHelper
       'Running'
     when 'queued'
       'Queued'
-    when 'qued_held'
+    when 'queued_held'
       'Hold'
     when 'suspended'
       'Suspend'

@@ -110,7 +110,27 @@ class ProjectsController < ApplicationController
 
     hpc_job = project.job(job_details_params[:jobid].to_s, cluster_str)
 
+    @project = project
     render(partial: 'job_details', locals: { job: hpc_job })
+  end
+
+  # DELETE /projects/:project_id/jobs/:cluster/:jobid
+  def delete_job
+    project = Project.find(job_details_params[:project_id])
+    cluster_str = job_details_params[:cluster].to_s
+
+    project.remove_logged_job(job_details_params[:jobid].to_s, cluster_str)
+    redirect_to project_path(job_details_params[:project_id])
+  end
+
+  # PATCH /projects/:project_id/jobs/:cluster/:jobid/stop
+  def stop_job
+    cluster_str = job_details_params[:cluster].to_s
+    cluster = OodAppkit.clusters[cluster_str.to_sym]
+
+    cluster.job_adapter.delete(job_details_params[:jobid].to_s)
+
+    redirect_to project_path(job_details_params[:project_id])
   end
 
   private
