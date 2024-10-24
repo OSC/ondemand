@@ -22,6 +22,13 @@ module ProjectsHelper
   end
 
   def button_category(status)
-    status
+    case status
+    when 'queued_held'
+      'held'
+    when 'suspended'
+      'held'
+    else
+      status
+    end
   end
 end

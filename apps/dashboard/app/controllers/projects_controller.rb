@@ -123,14 +123,14 @@ class ProjectsController < ApplicationController
     redirect_to project_path(job_details_params[:project_id])
   end
 
-  # PATCH /projects/:project_id/jobs/:cluster/:jobid/hold
-  def hold_job
-
-  end
-
   # PATCH /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
+    cluster_str = job_details_params[:cluster].to_s
+    cluster = OodAppkit.clusters[cluster_str.to_sym]
 
+    cluster.job_adapter.delete(job_details_params[:jobid].to_s)
+
+    redirect_to project_path(job_details_params[:project_id])
   end
 
   private
