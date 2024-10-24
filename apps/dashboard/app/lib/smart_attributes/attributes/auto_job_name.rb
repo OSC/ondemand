@@ -17,7 +17,7 @@ module SmartAttributes
       # Defaults to ondemand/[dev,sys]/projects
       # @return [String] attribute value
       def value
-        job_name(opts[:value] || 'Project Manager Job')
+        opts[:value] || 'Project Manager Job'
       end
 
       def widget
@@ -32,7 +32,7 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(*)
-        { script: { job_name: value } }
+        { script: { job_name: job_name(value) } }
       end
 
       # TODO: need to sanitize the job name for some schedulers
