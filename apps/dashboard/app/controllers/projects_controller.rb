@@ -128,7 +128,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # PATCH /projects/:project_id/jobs/:cluster/:jobid/stop
+  # POST /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
     cluster_str = job_details_params[:cluster].to_s
     cluster = OodAppkit.clusters[cluster_str.to_sym]

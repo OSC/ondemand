@@ -1,6 +1,6 @@
 <%= button_to(
   'Stop',
   project_stop_job_path(project_id: project_id, cluster: cluster, jobid: id),
-  method: :patch,
+  method: :post,
   class: 'btn btn-danger'
 ) %>
