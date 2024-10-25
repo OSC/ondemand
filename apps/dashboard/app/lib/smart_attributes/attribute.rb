@@ -174,6 +174,14 @@ module SmartAttributes
         else
           false
         end
+      end.map do |entry|
+        # always cast to array so other layers can try .first & .second for labels and values.
+        # and let nils fall through and get caught in validate!
+        if entry.is_a?(Array)
+          entry
+        elsif entry.is_a?(String) || entry.is_a?(Symbol)
+          [entry.to_s, entry.to_s]
+        end
       end
     end
 
