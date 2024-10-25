@@ -282,4 +282,38 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal('Four', find("[for='#{bc_ele_id('vector_four')}']").text)
     end
   end
+
+  test 'auto modules something' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+        form = <<~HEREDOC
+          cluster: owens
+          form:
+          - auto_modules_R
+          - module_hider
+          attributes:
+            module_hider:
+              widget: select
+              options:
+                - ['show', 'show']
+                - ['hide', 'hide',	data-hide-auto-modules-r: true]
+        HEREDOC
+
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        # just to be sure auto_modules_r actually populates with module options
+        assert_equal(20, find_all_options('auto_modules_r', nil).size)
+        assert(find("##{bc_ele_id('auto_modules_r')}").visible?)
+
+        # select hide and auto_modules_r isn't visible anymore.
+        select('hide', from: bc_ele_id('module_hider'))
+        refute(find("##{bc_ele_id('auto_modules_r')}", visible: :hidden).visible?)
+
+        # select show and it's back.
+        select('show', from: bc_ele_id('module_hider'))
+        assert(find("##{bc_ele_id('auto_modules_r')}").visible?)
+      end
+    end
+  end
 end
