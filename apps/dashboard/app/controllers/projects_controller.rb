@@ -118,9 +118,14 @@ class ProjectsController < ApplicationController
   def delete_job
     project = Project.find(job_details_params[:project_id])
     cluster_str = job_details_params[:cluster].to_s
+    hpc_job = project.job(job_details_params[:jobid].to_s, cluster_str)
 
-    project.remove_logged_job(job_details_params[:jobid].to_s, cluster_str)
-    redirect_to project_path(job_details_params[:project_id])
+    if hpc_job.status.to_s == 'completed'
+      redirect_to project_path(job_details_params[:project_id]) if hpc_job.status.to_s == 'completed'
+    else
+      project.remove_logged_job(job_details_params[:jobid].to_s, cluster_str)
+      redirect_to project_path(job_details_params[:project_id])
+    end
   end
 
   # PATCH /projects/:project_id/jobs/:cluster/:jobid/stop
