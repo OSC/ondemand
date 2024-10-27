@@ -143,7 +143,7 @@ bundle config set --global force_ruby_platform true
 %ifarch ppc64le
 bundle config set --global force_ruby_platform true
 %endif
-BUNDLE_WITHOUT='test package' bundle install
+BUNDLE_WITHOUT='doc test package development' bundle install
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache
 rm -rf apps/*/node_modules/.cache
