@@ -106,8 +106,7 @@ GEM
     rake (13.0.6)
     regexp_parser (2.1.1)
     require_all (3.0.0)
-    rexml (3.3.6)
-      strscan
+    rexml (3.3.9)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -160,7 +159,6 @@ GEM
       net-telnet (= 0.1.1)
       sfl
     stringify-hash (0.0.2)
-    strscan (3.1.0)
     thor (1.2.1)
     unicode-display_width (2.1.0)
     vmfloaty (1.5.0)
