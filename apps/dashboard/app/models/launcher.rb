@@ -193,7 +193,6 @@ class Launcher
     render_format = adapter.class.name.split('::').last.downcase
 
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
-    Rails.logger.debug("Submitting with script: #{job_script.inspect}")
 
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
