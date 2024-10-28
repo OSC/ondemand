@@ -193,6 +193,7 @@ class Launcher
     render_format = adapter.class.name.split('::').last.downcase
 
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
+    Rails.logger.debug("Submitting with script: #{job_script.inspect}")
 
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
@@ -317,7 +318,13 @@ class Launcher
       sm
     end.map do |sm|
       sm.submit(fmt: render_format)
-    end.reduce(&:deep_merge)[:script]
+    end.reduce(&:deep_merge)[:script].merge(
+      # force some values for scripts like the 'workdir'. We could use auto
+      # attributes, but this is not optional and not variable.
+      {
+        workdir: project_dir.to_s
+      }
+    )
   end
 
   def adapter(cluster_id)
