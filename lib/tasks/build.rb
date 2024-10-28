@@ -10,7 +10,7 @@ namespace :build do
   task :gems do
     bundle_args = ['--jobs 4', '--retry 2']
     bundle_args << '--path vendor/bundle' if VENDOR_BUNDLE
-    bundle_env = "BUNDLE_WITHOUT='doc'" if PASSENGER_APP_ENV == 'production'
+    bundle_env = "BUNDLE_WITHOUT='doc test package development'" if PASSENGER_APP_ENV == 'production'
 
     apps.each do |a|
       next unless a.ruby_app?
