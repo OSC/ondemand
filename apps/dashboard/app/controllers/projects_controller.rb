@@ -111,31 +111,44 @@ class ProjectsController < ApplicationController
     hpc_job = project.job(job_details_params[:jobid].to_s, cluster_str)
 
     @project = project
+    
     render(partial: 'job_details', locals: { job: hpc_job })
   end
 
   # DELETE /projects/:project_id/jobs/:cluster/:jobid
   def delete_job
-    project = Project.find(job_details_params[:project_id])
-    cluster_str = job_details_params[:cluster].to_s
-    hpc_job = project.job(job_details_params[:jobid].to_s, cluster_str)
+    @project = Project.find(job_details_params[:project_id])
 
-    if hpc_job.status.to_s == 'completed'
-      redirect_to project_path(job_details_params[:project_id]) if hpc_job.status.to_s == 'completed'
-    else
-      project.remove_logged_job(job_details_params[:jobid].to_s, cluster_str)
-      redirect_to project_path(job_details_params[:project_id])
-    end
+    cluster_str = job_details_params[:cluster].to_s
+
+    @project.remove_logged_job(job_details_params[:jobid].to_s, cluster_str)
+
+    @valid_project = Launcher.clusters?
+    @valid_scripts = Launcher.scripts?(@project.directory)
+    @scripts = Launcher.all(@project.directory)
+
+    render :show
   end
 
   # POST /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
+    @project = Project.find(job_details_params[:project_id])
     cluster_str = job_details_params[:cluster].to_s
     cluster = OodAppkit.clusters[cluster_str.to_sym]
 
-    cluster.job_adapter.delete(job_details_params[:jobid].to_s)
+    hpc_job = @project.job(job_details_params[:jobid].to_s, cluster_str)
 
-    redirect_to project_path(job_details_params[:project_id])
+    begin
+      cluster.job_adapter.delete(job_details_params[:jobid].to_s) unless hpc_job.status.to_s == 'completed'
+    rescue StandardError => e
+      flash.now[:alert] = I18n.t('dashboard.jobs_project_generic_error', error: e.message.to_s)
+    end
+
+    @valid_project = Launcher.clusters?
+    @valid_scripts = Launcher.scripts?(@project.directory)
+    @scripts = Launcher.all(@project.directory)
+
+    render :show
   end
 
   private
