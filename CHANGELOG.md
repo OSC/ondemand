@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update dependencies (#3886)\
+always cast select_options to an array (#3872)\
+3436 clean-up PM launcher editable_select interface (#3889)\
+Add job name prefix just before job submit. (#3887)\
+Fixed ActiveJobsHelper dependency on ApplicationHelper (#3892)\
+Use latest ood_packaging gem (#3896)\
+greatly simplify snakeCaseWords (#3881)\
+lock zeitwerk to 2.6.18 for ruby < 3.2 support. (#3890)\
+lint a random file (#3891)\
+Update Changelog (#3885)\
+Project card buttons are now side by side. All cards on project index are clickable anywhere within their borders. (#3888)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
