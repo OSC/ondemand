@@ -16,8 +16,12 @@ module SmartAttributes
       # Value of auto_output_directory attribute
       # Defaults to first script path in the project
       # @return [String] attribute value
-      def value
-        directory_name(opts[:value] || 'Default Output Directory')
+      def error_path_value
+        "#{opts[:value]}/%j-output.log" || 'Default Output Directory'
+      end
+      
+      def output_path_value
+        "#{opts[:value]}/%j-error.log" || 'Default Output Directory'
       end
 
       def widget
@@ -32,17 +36,9 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(*)
-        { script: { directory_name: value } }
+        { script: { output_path: output_path_value, error_path: error_path_value } }
       end
 
-      def directory_name(dir)
-        [
-          ENV['OOD_PORTAL'], # the OOD portal id
-          ENV['RAILS_RELATIVE_URL_ROOT'].to_s.sub(%r{^/[^/]+/}, ''), # the OOD app
-          'project-manager',
-          dir # the user supplied directory name
-        ].reject(&:blank?).join('/')
-      end
     end
   end
 end
