@@ -15,8 +15,8 @@ module ProjectsHelper
     end
   end
 
-  def job_details_buttons(status, job)
-    locals = { project_id: @project&.id, id: job&.id, cluster: job&.cluster }
+  def job_details_buttons(status, job, project)
+    locals = { project_id: project.id, id: job.id, cluster: job.cluster }
     button_partial = button_category(status)
     render(partial: "projects/buttons/#{button_category(status)}_buttons", locals: locals) unless button_partial.nil?
   end

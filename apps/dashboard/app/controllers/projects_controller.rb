@@ -111,8 +111,8 @@ class ProjectsController < ApplicationController
     hpc_job = project.job(job_details_params[:jobid].to_s, cluster_str)
 
     @project = project
-    
-    render(partial: 'job_details', locals: { job: hpc_job })
+
+    render(partial: 'job_details', locals: { job: hpc_job, project: @project })
   end
 
   # DELETE /projects/:project_id/jobs/:cluster/:jobid
