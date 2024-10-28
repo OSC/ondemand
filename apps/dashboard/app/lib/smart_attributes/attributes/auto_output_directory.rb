@@ -16,12 +16,8 @@ module SmartAttributes
       # Value of auto_output_directory attribute
       # Defaults to first script path in the project
       # @return [String] attribute value
-      def error_path_value
-        "#{opts[:value]}/%j-output.log" || 'Default Output Directory'
-      end
-      
-      def output_path_value
-        "#{opts[:value]}/%j-error.log" || 'Default Output Directory'
+      def value
+        opts[:value] || 'Default Output Directory'
       end
 
       def widget
@@ -32,13 +28,26 @@ module SmartAttributes
         (opts[:label] || 'Output Directory').to_s
       end
 
+      def output_directory_hash
+        { output_path: output_path_value, error_path: error_path_value  }
+      end
+
       # Submission hash describing how to submit this attribute
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(*)
-        { script: { output_path: output_path_value, error_path: error_path_value } }
+        opts[:value] ? { script: output_directory_hash } : nil
       end
 
+      private
+
+      def error_path_value
+        "#{opts[:value]}/%j-error.log"
+      end
+      
+      def output_path_value
+        "#{opts[:value]}/%j-output.log"
+      end
     end
   end
 end

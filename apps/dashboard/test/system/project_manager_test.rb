@@ -456,6 +456,55 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  # super similar to test above, only it adds auto_output_directory
+  test 'submitting a script with output directory' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+      add_account(project_id, script_id, save: false)
+
+      click_on('Add new option')
+      select('Log Output Directory', from: 'add_new_field_select')
+      click_on(I18n.t('dashboard.add'))
+      fill_in('launcher_auto_output_directory', with: 'output_extravaganza')
+      click_on(I18n.t('dashboard.save'))
+
+      launcher_path = project_launcher_path(project_id, script_id)
+      find("[href='#{launcher_path}'].btn-success").click
+      assert_selector('h1', text: 'the script title', count: 1)
+
+      # assert defaults
+      assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
+      assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
+
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas2051', from: 'launcher_auto_accounts')
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
+
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-o', 'output_extravaganza/job-id-123-output.log',
+                  '-e', 'output_extravaganza/job-id-123-error.log' '-A', 'pas2051',
+                  '--export', 'NONE', '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      click_on 'Launch'
+      assert_selector('.alert-success', text: 'job-id-123')
+      jobs = YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"), permitted_classes: [Time])
+
+      assert_equal(1, jobs.size)
+      assert_equal('job-id-123', jobs[0]['id'])
+    end
+  end
+
   test 'submitting a script with auto attributes that fails' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
@@ -506,7 +555,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       actual_new_options = page.all("##{new_field_id} option").map(&:value).to_set
       expected_new_options = [
         'bc_num_hours', 'auto_queues', 'bc_num_slots', 'auto_cores',
-        'auto_accounts', 'auto_job_name', 'auto_environment_variable'
+        'auto_accounts', 'auto_job_name', 'auto_environment_variable',
+        'auto_output_directory'
       ].to_set
       assert_equal expected_new_options, actual_new_options
     end
