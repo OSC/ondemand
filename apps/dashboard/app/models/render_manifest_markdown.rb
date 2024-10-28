@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'redcarpet'
 # require './dashboard_router'
 
@@ -8,31 +10,31 @@ class RenderManifestMarkdown < Redcarpet::Render::HTML
 
   def self.extensions
     {
-      autolink: true,
-      tables: true,
-      strikethrough: true,
+      autolink:           true,
+      tables:             true,
+      strikethrough:      true,
       fenced_code_blocks: true,
-      no_intra_emphasis: true
+      no_intra_emphasis:  true
     }
   end
 
   def self.renderer
-    @markdown ||= Redcarpet::Markdown.new(self, self.extensions)
+    @markdown ||= Redcarpet::Markdown.new(self, extensions)
   end
 
   def self.renderer_for_disabled_apps
-    @markdown_disabled = Redcarpet::Markdown.new(self.new(no_links: true), self.extensions);
+    @markdown_disabled = Redcarpet::Markdown.new(new(no_links: true), extensions)
   end
 
   # override to customize the default renderer options
-  def initialize(opts={})
+  def initialize(opts = {})
     super opts.merge(escape_html: true)
 
     @no_links = opts.fetch(:no_links, false)
   end
 
   # open link in new window
-  def link(link, title, content)
+  def link(link, _title, content)
     if no_links
       content
     else
@@ -49,4 +51,3 @@ class RenderManifestMarkdown < Redcarpet::Render::HTML
     end
   end
 end
-
