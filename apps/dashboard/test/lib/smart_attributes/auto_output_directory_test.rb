@@ -26,6 +26,7 @@ module SmartAttributes
         attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
 
         assert_equal('output_extravaganza', attribute.value.to_s)
+        assert_equal({ output_path: "output_extravaganza/%j-output.log", error_path: "output_extravaganza/%j-error.log"}, attribute.output_directory_hash )
       end
     end
   end
