@@ -38,7 +38,7 @@ module SmartAttributes
         }
         attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
 
-        assert_equal('job_output', attribute.value.to_s)
+        assert_equal(nil, attribute.value)
         assert_equal(nil, attribute.output_path_value )
       end
     end
@@ -51,7 +51,7 @@ module SmartAttributes
         }
         attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
 
-        assert_equal('job_output', attribute.value.to_s)
+        assert_equal(nil, attribute.value)
         assert_equal(nil, attribute.output_path_value )
       end
     end
