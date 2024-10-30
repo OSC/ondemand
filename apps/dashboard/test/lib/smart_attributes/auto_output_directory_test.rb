@@ -17,7 +17,7 @@ module SmartAttributes
       }
     end
 
-    test 'correctly sets the value' do
+    test 'correctly sets the user supplied value' do
       with_modified_env(dynamic_env) do
         options = {
           value: 'output_extravaganza',
@@ -26,7 +26,33 @@ module SmartAttributes
         attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
 
         assert_equal('output_extravaganza', attribute.value.to_s)
-        assert_equal({ output_path: "output_extravaganza/%j-output.log", error_path: "output_extravaganza/%j-error.log"}, attribute.output_directory_hash )
+        assert_equal("output_extravaganza/%j-output.log", attribute.output_path_value )
+      end
+    end
+
+    test 'correctly sets the default value in place of empty string' do
+      with_modified_env(dynamic_env) do
+        options = {
+          value: '',
+          label: 'Output Directory'
+        }
+        attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
+
+        assert_equal('job_output', attribute.value.to_s)
+        assert_equal(nil, attribute.output_path_value )
+      end
+    end
+
+    test 'correctly sets the default value in place of nil string' do
+      with_modified_env(dynamic_env) do
+        options = {
+          value: nil,
+          label: 'Output Directory'
+        }
+        attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
+
+        assert_equal('job_output', attribute.value.to_s)
+        assert_equal(nil, attribute.output_path_value )
       end
     end
   end
