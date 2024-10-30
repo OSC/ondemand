@@ -25,8 +25,7 @@ module SmartAttributes
         }
         attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
 
-        assert_equal('output_extravaganza', attribute.value.to_s)
-        assert_equal("output_extravaganza/%j-output.log", attribute.output_path_value )
+        assert_equal('output_extravaganza', attribute.value)
       end
     end
 
@@ -39,7 +38,6 @@ module SmartAttributes
         attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
 
         assert_equal(nil, attribute.value)
-        assert_equal(nil, attribute.output_path_value )
       end
     end
 
@@ -52,7 +50,6 @@ module SmartAttributes
         attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
 
         assert_equal(nil, attribute.value)
-        assert_equal(nil, attribute.output_path_value )
       end
     end
   end

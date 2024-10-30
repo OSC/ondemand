@@ -13,9 +13,6 @@ module SmartAttributes
 
   module Attributes
     class AutoOutputDirectory < Attribute
-      OUTPUT_LOG_SUFFIX = "/%j-output.log"
-      
-
       # Value of auto_output_directory attribute
       # Defaults to first script path in the project
       # @return [String] attribute value
@@ -31,15 +28,11 @@ module SmartAttributes
         (opts[:label] || 'Output Directory').to_s
       end
 
-      def output_path_value
-        return "#{value}#{OUTPUT_LOG_SUFFIX}" if value
-      end
-
       # Submission hash describing how to submit this attribute
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(*)
-        { script: { output_path: output_path_value }}
+        { script: { output_path: value } }
       end
     end
   end
