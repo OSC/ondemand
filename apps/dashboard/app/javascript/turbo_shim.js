@@ -28,9 +28,9 @@ export function pollAndReplace(url, delay, id, callback) {
     .then((response) => {
       if(response.status == 200) {
         return Promise.resolve(response);
-      }else if(response.status == 401){
+      } else if(response.status == 401) {
         return Promise.reject("This page cannot update becase you are no longer authenticated. Please refresh the page to log back in.")
-      }else{
+      } else {
         return Promise.reject(response.text());
       }
     })
