@@ -263,7 +263,7 @@ class Project
   # that point to the _new_ project directory, not the template's directory.
   # This creates them _and_ serializes them to yml in the new directory.
   def save_new_scripts
-    dir = Launcher.scripts_dir(template)
+    dir = Launcher.launchers_dir(template)
     Dir.glob("#{dir}/*/form.yml").map do |script_yml|
       Launcher.from_yaml(script_yml, project_dataroot)
     end.map do |script|
