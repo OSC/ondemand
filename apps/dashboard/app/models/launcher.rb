@@ -317,13 +317,7 @@ class Launcher
       sm
     end.map do |sm|
       sm.submit(fmt: render_format)
-    end.reduce(&:deep_merge)[:script].merge(
-      # force some values for scripts like the 'workdir'. We could use auto
-      # attributes, but this is not optional and not variable.
-      {
-        workdir: project_dir.to_s
-      }
-    )
+    end.reduce(&:deep_merge)[:script]
   end
 
   def adapter(cluster_id)
