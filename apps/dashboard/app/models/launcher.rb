@@ -10,7 +10,7 @@ class Launcher
 
   class << self
     def launchers_dir(project_dir)
-      Pathname.new("#{project_dir}/.ondemand/scripts")
+      Pathname.new("#{project_dir}/.ondemand/launchers")
     end
 
     def find(id, project_dir)
