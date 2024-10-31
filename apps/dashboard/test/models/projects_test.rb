@@ -143,7 +143,7 @@ icon: 'fas://test')
       project = create_project(projects_path, template: template_dir)
       
       assert Dir.glob(cache_json_path).present? && 
-        Dir.glob("#{project.directory}/.ondemand/scripts/*/cache.json").empty?
+        Dir.glob("#{project.directory}/.ondemand/launchers/*/cache.json").empty?
       assert Dir.glob(job_log_path).present? &&
         Dir.glob("#{project.directory}/.ondemand/*").exclude?("#{project.directory}/.ondemand/job_log.yml")
     end
