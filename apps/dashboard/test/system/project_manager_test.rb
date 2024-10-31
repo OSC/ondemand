@@ -392,7 +392,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+        .with({}, 'sbatch', '-D', project_dir, '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
               stdin_data: "hostname\n")
         .returns(['job-id-123', '', exit_success])
 
@@ -439,8 +439,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-J', 'project-manager/my cool job name', '-A', 'pas2051', '--export',
-                  'NONE', '--parsable', '-M', 'owens',
+        .with({}, 'sbatch', '-D', project_dir,
+              '-J', 'project-manager/my cool job name', '-A', 'pas2051', '--export',
+              'NONE', '--parsable', '-M', 'owens',
               stdin_data: "hostname\n")
         .returns(['job-id-123', '', exit_success])
 
@@ -480,7 +481,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+        .with({}, 'sbatch', '-D', project_dir, '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
               stdin_data: "hostname\n")
         .returns(['', 'some error message', exit_failure])
 
@@ -959,11 +960,14 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('i.fa-atom').click
       input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
 
+      project_dir = Dir.children(dir).select { |p| Pathname.new("#{dir}/#{p}").directory? }.first
+      project_dir = "#{dir}/#{project_dir}"
+
       # NOTE: we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
       # from the template.
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-A', 'pzs1715', '--export', 'NONE', '--parsable', '-M', 'owens',
+        .with({}, 'sbatch', '-D', project_dir, '-A', 'pzs1715', '--export', 'NONE', '--parsable', '-M', 'owens',
               stdin_data: input_data)
         .returns(['job-id-123', '', exit_success])
 
