@@ -221,12 +221,12 @@ class Launcher
 
   private
 
-  def self.script_path(root_dir, script_id)
-    unless script_id.to_s.match?(ID_REX)
-      raise(StandardError, "#{script_id} is invalid. Does not match #{ID_REX.inspect}")
+  def self.script_path(root_dir, launcher_id)
+    unless launcher_id.to_s.match?(ID_REX)
+      raise(StandardError, "#{launcher_id} is invalid. Does not match #{ID_REX.inspect}")
     end
 
-    Pathname.new(File.join(Launcher.launchers_dir(root_dir), script_id.to_s))
+    Pathname.new(File.join(Launcher.launchers_dir(root_dir), launcher_id.to_s))
   end
 
   def default_script_path
