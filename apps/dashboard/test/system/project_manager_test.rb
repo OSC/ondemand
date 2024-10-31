@@ -259,7 +259,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       success_message = I18n.t('dashboard.jobs_scripts_created')
       assert_selector('.alert-success', text: "Close\n#{success_message}")
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{script_id}/form.yml"))
 
       launcher_path = project_launcher_path(project_id, script_id)
       find("[href='#{launcher_path}'].btn-success").click
@@ -314,7 +314,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       success_message = I18n.t('dashboard.jobs_scripts_created')
       assert_selector('.alert-success', text: "Close\n#{success_message}")
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{script_id}/form.yml"))
     end
   end
 
@@ -616,7 +616,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: false
       HEREDOC
 
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{script_id}/form.yml"))
     end
   end
 
@@ -708,7 +708,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: false
       HEREDOC
 
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{script_id}/form.yml"))
     end
   end
 
@@ -916,10 +916,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal(3, forms.size)
 
       script_id = '8woi7ghd'
-      orig_form = "#{Rails.root}/test/fixtures/projects/chemistry-5533/.ondemand/scripts/#{script_id}/form.yml"
+      orig_form = "#{Rails.root}/test/fixtures/projects/chemistry-5533/.ondemand/launchers/#{script_id}/form.yml"
       orig_form = YAML.safe_load(File.read(orig_form))
 
-      new_form = "#{abs_project_dir}/.ondemand/scripts/#{script_id}/form.yml"
+      new_form = "#{abs_project_dir}/.ondemand/launchers/#{script_id}/form.yml"
       new_form = YAML.safe_load(File.read(new_form))
 
       # 'form' & 'title' are the same

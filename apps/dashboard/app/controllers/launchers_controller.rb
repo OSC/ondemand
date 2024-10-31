@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The controller for apps pages /dashboard/projects/:project_id/scripts
+# The controller for apps pages /dashboard/projects/:project_id/launchers
 class LaunchersController < ApplicationController
 
   before_action :find_project
@@ -21,7 +21,7 @@ class LaunchersController < ApplicationController
     @script = Launcher.new(project_dir: @project.directory)
   end
 
-  # POST  /dashboard/projects/:project_id/scripts
+  # POST  /dashboard/projects/:project_id/launchers
   def create
     opts = { project_dir: @project.directory }.merge(create_script_params[:launcher])
     @script = Launcher.new(opts)
@@ -36,12 +36,12 @@ class LaunchersController < ApplicationController
     end
   end
 
-  # GET   /projects/:project_id/scripts/:id/edit
+  # GET   /projects/:project_id/launchers/:id/edit
   # edit
   def edit
   end
 
-  # DELETE /projects/:project_id/scripts/:id
+  # DELETE /projects/:project_id/launchers/:id
   def destroy
     if @script.destroy
       redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_deleted')
@@ -50,8 +50,8 @@ class LaunchersController < ApplicationController
     end
   end
 
-  # POST   /projects/:project_id/scripts/:id/save
-  # save the script after editing
+  # POST   /projects/:project_id/launchers/:id/save
+  # save the launcher after editing
   def save
     @script.update(save_script_params[:launcher])
 
@@ -62,7 +62,7 @@ class LaunchersController < ApplicationController
     end
   end
 
-  # POST   /projects/:project_id/scripts/:id/submit
+  # POST   /projects/:project_id/launchers/:id/submit
   # submit the job
   def submit
     opts = submit_script_params[:launcher].to_h.symbolize_keys

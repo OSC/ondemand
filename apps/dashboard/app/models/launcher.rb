@@ -9,8 +9,8 @@ class Launcher
   attr_reader :title, :id, :created_at, :project_dir, :smart_attributes
 
   class << self
-    def scripts_dir(project_dir)
-      Pathname.new("#{project_dir}/.ondemand/scripts")
+    def launchers_dir(project_dir)
+      Pathname.new("#{project_dir}/.ondemand/launchers")
     end
 
     def find(id, project_dir)
@@ -20,7 +20,7 @@ class Launcher
     end
 
     def all(project_dir)
-      Dir.glob("#{scripts_dir(project_dir).to_s}/*/form.yml").map do |file|
+      Dir.glob("#{launchers_dir(project_dir).to_s}/*/form.yml").map do |file|
         Launcher.from_yaml(file, project_dir)
       end.compact.sort_by do |s|
         s.created_at
@@ -226,7 +226,7 @@ class Launcher
       raise(StandardError, "#{script_id} is invalid. Does not match #{ID_REX.inspect}")
     end
 
-    Pathname.new(File.join(Launcher.scripts_dir(root_dir), script_id.to_s))
+    Pathname.new(File.join(Launcher.launchers_dir(root_dir), script_id.to_s))
   end
 
   def default_script_path
@@ -293,7 +293,7 @@ class Launcher
 
   def cached_values
     @cached_values ||= begin
-      cache_file_path = OodAppkit.dataroot.join(Launcher.scripts_dir("#{project_dir}"), "#{id}_opts.json")
+      cache_file_path = OodAppkit.dataroot.join(Launcher.launchers_dir("#{project_dir}"), "#{id}_opts.json")
       cache_file_content = File.read(cache_file_path) if cache_file_path.exist?
       
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
