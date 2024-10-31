@@ -61,11 +61,17 @@ export function bindFullPageSpinnerEvent() {
 // open links in javascript and display an alert
 export function openLinkInJs(event) {
   event.preventDefault();
-  const href = event.target.href;
+  let href = event.target.href;
 
-  // do nothing if there's no href.
-  if(href == null){
-    return;
+  // event.target could be a child of the anchor, so try that.
+  if(href == null) {
+    const closestAnchor = event.target.closest('a');
+    if(closestAnchor.hasChildNodes(event.target)) {
+      href = closestAnchor.href;
+    } else {
+      // event.target is not a child of an anhcor, so there's nothing to do.
+      return;
+    }
   }
 
   if(window.open(href) == null) {
