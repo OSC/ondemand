@@ -127,14 +127,14 @@ icon: 'fas://test')
       template_dir = File.join(tmp,'template')
       job_log_path = "#{template_dir}/.ondemand/job_log.yml"
       launcher_id = '50r4nd0m'
-      cache_json_path = "#{template_dir}/.ondemand/scripts/#{launcher_id}/cache.json"
+      cache_json_path = "#{template_dir}/.ondemand/launchers/#{launcher_id}/cache.json"
 
       file_content = <<~HEREDOC
         some multiline content
         echo 'multiline content'
         description: multiline content
       HEREDOC
-      Pathname.new("#{template_dir}/.ondemand/scripts/#{launcher_id}").mkpath
+      Pathname.new("#{template_dir}/.ondemand/launchers/#{launcher_id}").mkpath
       File.open(job_log_path, 'w') { |file| file.write(file_content) }
       File.open(cache_json_path, 'w') { |file| file.write(file_content) }
 
