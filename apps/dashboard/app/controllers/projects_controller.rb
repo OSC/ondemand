@@ -15,11 +15,11 @@ class ProjectsController < ApplicationController
     else
       @scripts = Launcher.all(@project.directory)
       @valid_project = Launcher.clusters?
-      @valid_scripts = Launcher.scripts?(@project.directory)
+      valid_scripts = Launcher.scripts?(@project.directory)
 
       alert_messages = []
       alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_clusters') unless @valid_project
-      alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_scripts') if @scripts.any? && !@valid_scripts
+      alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_scripts') if @scripts.any? && !valid_scripts
       flash.now[:alert] = alert_messages.join(' ') if alert_messages.any?
       respond_to do |format|
         format.html
