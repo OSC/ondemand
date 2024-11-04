@@ -4,7 +4,7 @@ require 'test_helper'
 require 'smart_attributes'
 
 module SmartAttributes
-  class AutoOutputDirectoryTest < ActiveSupport::TestCase
+  class AutoLogLocationTest < ActiveSupport::TestCase
     def setup
       stub_clusters
       stub_user
@@ -20,12 +20,12 @@ module SmartAttributes
     test 'correctly sets the user supplied value' do
       with_modified_env(dynamic_env) do
         options = {
-          value: 'output_extravaganza',
-          label: 'Output Directory'
+          value: 'logerrific_local',
+          label: 'Log Location'
         }
-        attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
+        attribute = SmartAttributes::AttributeFactory.build('auto_log_location', options)
 
-        assert_equal('output_extravaganza', attribute.value)
+        assert_equal('logerrific_local', attribute.value)
       end
     end
 
@@ -33,9 +33,9 @@ module SmartAttributes
       with_modified_env(dynamic_env) do
         options = {
           value: '',
-          label: 'Output Directory'
+          label: 'Log Location'
         }
-        attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
+        attribute = SmartAttributes::AttributeFactory.build('auto_log_location', options)
 
         assert_equal(nil, attribute.value)
       end
@@ -45,9 +45,9 @@ module SmartAttributes
       with_modified_env(dynamic_env) do
         options = {
           value: nil,
-          label: 'Output Directory'
+          label: 'Log Location'
         }
-        attribute = SmartAttributes::AttributeFactory.build('auto_output_directory', options)
+        attribute = SmartAttributes::AttributeFactory.build('auto_log_location', options)
 
         assert_equal(nil, attribute.value)
       end

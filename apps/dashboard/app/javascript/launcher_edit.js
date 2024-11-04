@@ -19,8 +19,8 @@ const newFieldData = {
     label: "Job Name",
     help: "The name the job will have."
   },
-  auto_output_directory: {
-    label: "Log Output Directory",
+  auto_log_location: {
+    label: "Log Location",
     help: "The destination of the job's log output."
   },
   bc_num_slots: {

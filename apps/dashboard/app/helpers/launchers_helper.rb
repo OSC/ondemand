@@ -70,8 +70,8 @@ module LaunchersHelper
     create_editable_widget(script_form_double, attrib)
   end
 
-  def auto_output_directory_template
-    attrib = SmartAttributes::AttributeFactory.build_auto_output_directory
+  def auto_log_location_template
+    attrib = SmartAttributes::AttributeFactory.build_auto_log_location
     create_editable_widget(script_form_double, attrib)
   end
   # We need a form builder to build the template divs. These are

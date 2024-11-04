@@ -5,15 +5,15 @@ module SmartAttributes
     # Build this attribute object. Must specify a valid directory in opts
     #
     # @param opts [Hash] attribute's options
-    # @return [Attributes::AutoOutputDirectory] the attribute object
-    def self.build_auto_output_directory(opts = {})
-      Attributes::AutoOutputDirectory.new('auto_output_directory', opts)
+    # @return [Attributes::AutoLogLocation] the attribute object
+    def self.build_auto_log_location(opts = {})
+      Attributes::AutoLogLocation.new('auto_log_location', opts)
     end
   end
 
   module Attributes
-    class AutoOutputDirectory < Attribute
-      # Value of auto_output_directory attribute
+    class AutoLogLocation < Attribute
+      # Value of auto_log_location attribute
       # Defaults to first script path in the project
       # @return [String] attribute value
       def value
@@ -25,7 +25,7 @@ module SmartAttributes
       end
 
       def label(*)
-        (opts[:label] || 'Output Directory').to_s
+        (opts[:label] || 'Log Location').to_s
       end
 
       # Submission hash describing how to submit this attribute
