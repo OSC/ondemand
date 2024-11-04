@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Rename scripts_dir to launchers_dir. (#3922)\
+apply search to select all (#3925)\
+create an alert div if pollAndReplace fails (#3915)\
+specify workdir when submitting batch jobs (#3913)\
+downcase auto modules so they are dynamic as well (#3905)\
+rename project#create_new_scripts to project#create_new_launchers (#3918)\
+Bump rexml from 3.3.6 to 3.3.9 (#3912)\
+Update Changelog (#3908)\
+lint a random file (#3907)\
+update dependencies (#3909)\
+Standardize which gems get installed during packaging (#3906)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
