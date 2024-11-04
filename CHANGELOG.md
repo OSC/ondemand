@@ -6,17 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Rename scripts_dir to launchers_dir. (#3922)\
-apply search to select all (#3925)\
-create an alert div if pollAndReplace fails (#3915)\
-specify workdir when submitting batch jobs (#3913)\
-downcase auto modules so they are dynamic as well (#3905)\
-rename project#create_new_scripts to project#create_new_launchers (#3918)\
-Bump rexml from 3.3.6 to 3.3.9 (#3912)\
-Update Changelog (#3908)\
-lint a random file (#3907)\
-update dependencies (#3909)\
-Standardize which gems get installed during packaging (#3906)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -70,7 +59,10 @@ Standardize which gems get installed during packaging (#3906)
   of activity in [3805](https://github.com/OSC/ondemand/pull/3805) and [3810](https://github.com/OSC/ondemand/pull/3810).
 - Empty directories can now be downloaded in [3841](https://github.com/OSC/ondemand/pull/3841).
 - Batch Connect applications always lowercase ids for normalization for dynamic javascript in [3867](https://github.com/OSC/ondemand/pull/3867).
+  - This includes auto modules in [3905](https://github.com/OSC/ondemand/pull/3905).
 - Batch connect applications always cast select_options to an array in [3872](https://github.com/OSC/ondemand/pull/3872).
+- test, package and development gems are no longer installed in production in [3906](https://github.com/OSC/ondemand/pull/3906).
+
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -92,6 +84,9 @@ Standardize which gems get installed during packaging (#3906)
 - Batch Connect cache files now correct serialize in [3819](https://github.com/OSC/ondemand/pull/3819).
 - Uploads always succeed even when the chown operation afterwards fails in [3856](https://github.com/OSC/ondemand/pull/3856).
 - Exceptions in dashboard widgets are correct rescued in [3873](https://github.com/OSC/ondemand/pull/3873).
+- Select all in the files app will only select the visible rows in [3925](https://github.com/OSC/ondemand/pull/3925).
+- Batch jobs now specify workdir, fixing issues with submit_host jobs in [3913](https://github.com/OSC/ondemand/pull/3913).
+- Javascript that queires for atch connect sessions will create an alert div and stop polling if it fails in [3915](https://github.com/OSC/ondemand/pull/3915).
 
 ### Security
 
