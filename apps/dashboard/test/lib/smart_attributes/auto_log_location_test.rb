@@ -20,12 +20,12 @@ module SmartAttributes
     test 'correctly sets the user supplied value' do
       with_modified_env(dynamic_env) do
         options = {
-          value: 'logerrific_local',
+          value: 'logerrific_locale',
           label: 'Log Location'
         }
         attribute = SmartAttributes::AttributeFactory.build('auto_log_location', options)
 
-        assert_equal('logerrific_local', attribute.value)
+        assert_equal('logerrific_locale', attribute.value)
       end
     end
 
