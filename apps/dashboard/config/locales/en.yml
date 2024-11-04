@@ -276,6 +276,11 @@ en:
       deleted_message: "Saved settings %{settings_name} deleted."
       settings_values_label: "Values"
       outdated_message: "%{app_title} parameters have changed since these settings were created."
+    
+    smart_attributes:
+      auto_log_location:
+        title: "Log Location"
+        description: "The location of the log file for this job."
 
     user_configuration:
       support_ticket_error: "support_ticket is misconfigured. \"email\" or \"rt_api\" sections are required in the configuration YAML."

@@ -16,7 +16,7 @@ const newFieldData = {
     help: "The account the job will be submitted with."
   },
   auto_job_name: {
-    label: "Job Name",
+    label: "Job Namqwqwe",
     help: "The name the job will have."
   },
   auto_log_location: {
