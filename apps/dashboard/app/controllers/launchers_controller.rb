@@ -15,7 +15,7 @@ class LaunchersController < ApplicationController
     :bc_num_slots, :bc_num_slots_fixed, :bc_num_slots_min, :bc_num_slots_max,
     :bc_num_hours, :bc_num_hours_fixed, :bc_num_hours_min, :bc_num_hours_max,
     :auto_job_name, :auto_job_name_fixed,
-    :auto_log_location, :auto_log_location_fixed, :auto_log_location_exclude
+    :auto_log_location, :auto_log_location_fixed
   ].freeze
 
   def new
