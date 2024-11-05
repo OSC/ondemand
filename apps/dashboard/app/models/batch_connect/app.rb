@@ -194,7 +194,12 @@ module BatchConnect
     end
 
     def preset?
-      valid? && attributes.all?(&:fixed?)
+      return false unless valid?
+      return true if attributes.all?(&:fixed?)
+
+      # clusters can be hidden field which is not fixed, so we have to account for that.
+      cluster = attributes.find { |a| a.id == 'cluster' }
+      attributes.reject { |a| a.id == 'cluster' }.all?(&:fixed?) && cluster.widget == 'hidden_field'
     end
 
     # Whether this is a valid app the user can use
@@ -472,8 +477,8 @@ module BatchConnect
                                }
                              else
                                {
-                                 value: clusters.first.id.to_s,
-                                 fixed: true
+                                 value:  clusters.first.id.to_s,
+                                 widget: 'hidden_field'
                                }
                              end
     end
