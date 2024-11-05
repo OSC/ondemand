@@ -140,10 +140,7 @@ zh-CN:
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
 
-    smart_attributes:
-      auto_log_location:
-        title: "日志位置"
-        description: "此作业的日志文件位置"
+    auto_log_location_title: "日志位置"
 
     # all_apps_table_app_column: "Name"
     # all_apps_table_category_column: "Category"

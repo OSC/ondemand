@@ -11,7 +11,4 @@ ja_JP:
     show: "見せる"
     # project: "Project"
     # directory: "Directory"
-    smart_attributes:
-      auto_log_location:
-        title: "ログの場所"
-        description: "このジョブのログ ファイルの場所"
+    auto_log_location_title: "ログの場所"
