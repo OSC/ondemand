@@ -25,7 +25,7 @@ class LauncherTest < ActiveSupport::TestCase
       target = Launcher.new({ project_dir: projects_path.to_s, id: '12345678', title: 'Test Script' })
 
       assert target.save
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
+      assert Dir.entries("#{projects_path}/.ondemand/launchers").include?('12345678')
     end
   end
 
@@ -36,10 +36,10 @@ class LauncherTest < ActiveSupport::TestCase
       target = Launcher.new({ project_dir: projects_path.to_s, id: '12345678', title: 'Test Script' })
 
       assert target.save
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
+      assert Dir.entries("#{projects_path}/.ondemand/launchers").include?('12345678')
 
       assert target.destroy
-      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
+      assert_not Dir.entries("#{projects_path}/.ondemand/launchers").include?('12345678')
     end
   end
 
@@ -61,14 +61,14 @@ class LauncherTest < ActiveSupport::TestCase
       OodAppkit.stubs(:dataroot).returns(projects_path)
       script = Launcher.new({ project_dir: projects_path.to_s, id: '12345678', title: 'Test Script' })
       assert script.save
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
+      assert Dir.entries("#{projects_path}/.ondemand/launchers").include?('12345678')
 
       target = Launcher.new({ project_dir: projects_path.to_s, id: '33333333', title: 'Not saved' })
-      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33333333')
+      assert_not Dir.entries("#{projects_path}/.ondemand/launchers").include?('33333333')
 
       assert target.destroy
-      assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('12345678')
-      assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33333333')
+      assert Dir.entries("#{projects_path}/.ondemand/launchers").include?('12345678')
+      assert_not Dir.entries("#{projects_path}/.ondemand/launchers").include?('33333333')
     end
   end
 
@@ -154,7 +154,7 @@ class LauncherTest < ActiveSupport::TestCase
       refute(launcher.save)
       assert(launcher.errors.size, 1)
       assert_equal(launcher.errors.full_messages[0], "Id ID does not match #{Launcher::ID_REX.inspect}")
-      refute(Dir.exist?(Launcher.scripts_dir(tmp).to_s))
+      refute(Dir.exist?(Launcher.launchers_dir(tmp).to_s))
     end
   end
 end

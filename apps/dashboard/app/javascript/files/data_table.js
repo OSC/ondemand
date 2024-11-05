@@ -61,7 +61,7 @@ jQuery(function () {
 
     $('#select_all').on('click', function() {
         if ($(this).is(":checked")) {
-            table.getTable().rows().select();
+            table.getTable().rows({ search: 'applied' }).select();
         } else {
             table.getTable().rows().deselect();
         }
