@@ -16,7 +16,7 @@
       id: "launch_#{launcher.id}"
     ) do
     %>
-      Launch
+      <%= I18n.t('dashboard.launch') %>
     <%- end %>
   </div>
 
@@ -27,7 +27,7 @@
       id: "show_#{launcher.id}"
       ) do
     %>
-      Options
+      <%= I18n.t('dashboard.show') %>
     <%- end -%>
 
   </div>
@@ -40,7 +40,7 @@
       id: "edit_#{launcher.id}",
       title: edit_title) do
     %>
-      Edit
+      <%= I18n.t('dashboard.edit') %>
     <%- end %>
   </div>
 
@@ -53,7 +53,7 @@
       data: { confirm: I18n.t('dashboard.jobs_scripts_delete_script_confirmation') },
       method: :delete) do
     %>
-      Delete
+      <%= I18n.t('dashboard.delete') %>
     <%- end -%>
   </div>
 </div>
