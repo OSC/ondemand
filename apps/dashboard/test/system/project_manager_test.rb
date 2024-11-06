@@ -821,7 +821,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#save_script_edit').click
       assert_current_path(project_path(project_id))
       launcher_path = project_launcher_path(project_id, launcher_id)
-      find("[href='#{launcher_path}'].btn-success").click
+      find("[href='#{launcher_path}'].btn-info").click
 
       # now let's check scripts#show and they should be back.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
