@@ -326,7 +326,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       add_account(project_id, launcher_id)
 
       launcher_path = project_launcher_path(project_id, launcher_id)
-      find("[href='#{launcher_path}'].btn-success").click
+      find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
@@ -377,7 +377,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       add_account(project_id, launcher_id)
 
       launcher_path = project_launcher_path(project_id, launcher_id)
-      find("[href='#{launcher_path}'].btn-success").click
+      find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -424,7 +424,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.save'))
 
       launcher_path = project_launcher_path(project_id, launcher_id)
-      find("[href='#{launcher_path}'].btn-success").click
+      find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -466,7 +466,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       add_account(project_id, launcher_id)
 
       launcher_path = project_launcher_path(project_id, launcher_id)
-      find("[href='#{launcher_path}'].btn-success").click
+      find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -793,7 +793,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#save_script_edit').click
       assert_current_path(project_path(project_id))
       launcher_path = project_launcher_path(project_id, launcher_id)
-      find("[href='#{launcher_path}'].btn-success").click
+      find("[href='#{launcher_path}'].btn-info").click
 
       # now let's check scripts#show to see if they've actually been excluded.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
