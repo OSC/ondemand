@@ -31,13 +31,62 @@
 </div>
 
 <div class="row mb-3">
-  <div class="col-md-2">
-    <%= render(partial: 'launchers', locals: { launchers: @scripts, project: @project }) %>
+  <div class="col-md-3">
+    <div class="list-group">
+      <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+          data-bs-toggle="collapse" data-bs-target="#launcher_list"
+          aria-expanded="true" aria-controls="launcher_list">
+        <span><%= t('dashboard.jobs_launchers') %></span>
+      </a>
+
+      <div id="launcher_list" class="collapse show">
+        <%- @scripts.each do |launcher| -%>
+        <div class="list-group-item list-group-item-action" id="launcher_<%= launcher.id %>">
+          <div class="row launcher-item">
+            <div class="col">
+              <%= launcher.title %>
+            </div>
+          </div>
+
+          <%= render(partial: 'launcher_buttons', locals: { launcher: launcher }) %>
+        </div>
+        <%- end -%>
+      </div>
+
+      <a class="list-group-item list-group-item-action text-info font-weight-bold"
+        href="<%= new_project_launcher_path(@project.id) %>">
+        <%= t('dashboard.jobs_new_launcher') %>
+      </a>
+    </div>
   </div>
-  <div class="col-md-8">
-    <%= render(partial: 'jobs', locals: { project: @project }) %>
+  
+  <div class="col-md-7">
+    <div class="row">
+      <h2 class="d-flex justify-content-center">Active Jobs</h2>
+      <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job) %>
+    </div>
+
+    <div class="row">
+      <h2 class="h3 d-flex justify-content-center">Completed Jobs</h2>
+      <div id="completed_jobs" class="row">
+        <%- @project.completed_jobs.each do |job| -%>
+        <div class="col-md-4" id="<%= "job_#{job.cluster}_#{job.id}" %>">
+          <%= render(partial: 'job_details_content', locals: { job: job }) %>
+        </div>
+        <%- end -%>
+      </div>
+    </div>
   </div>
 </div>
+
 <% unless @project.readme_path.nil? %>
-  <%= render(partial: 'readme', locals: { project: @project }) %>
+  <div class="card">
+    <div class="card-header">
+      <button class="btn btn-default fa fa-chevron-right" type="button" data-bs-toggle="collapse" data-bs-target="#readme" aria-expanded="true" aria-controls="readme"></button>
+      <%= File.basename(@project.readme_path) %>
+    </div>
+    <div class="card-body collapse show" id="readme">
+      <%= render_readme(@project.readme_path)  %>
+    </div>
+  </div>
 <% end %>
