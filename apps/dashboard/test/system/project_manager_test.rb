@@ -262,7 +262,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{launcher_id}/form.yml"))
 
       launcher_path = project_launcher_path(project_id, launcher_id)
-      find("[href='#{launcher_path}'].btn-success").click
+      find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the script title', count: 1)
     end
   end
