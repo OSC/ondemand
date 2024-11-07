@@ -188,7 +188,8 @@ module NginxStage
     rescue ArgumentError => e
       log = Syslog::Logger.new 'ood_nginx_stage'
       log.error "cannot create user #{v} because of error '#{e.message}'"
-    end
+      nil
+    end.compact
   end
 
   # Get a hash of all the staged app configs
