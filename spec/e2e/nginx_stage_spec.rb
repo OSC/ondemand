@@ -17,6 +17,8 @@ describe 'Nginx stage' do
       on hosts, 'mkdir /var/run/ondemand-nginx/deleted_user'
       on hosts, 'chmod 600 /var/run/ondemand-nginx/deleted_user'
       on hosts, 'echo -n 11111111 > /var/run/ondemand-nginx/deleted_user/passenger.pid'
+      on hosts, 'echo -n 11111111 > /var/lib/ondemand-nginx/config/puns/deleted_user.conf'
+      on hosts, 'echo -n 11111111 > /var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'
     end
 
     after(:all) do
@@ -31,7 +33,10 @@ describe 'Nginx stage' do
 
       # Note there's no error here about 'deleted_user'
       on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force' do
-        assert_equal stdout, "ood\n"
+        assert_equal stdout, "ood\ndeleted_user (disabled)\n"
+        refute(File.exists?('/var/run/ondemand-nginx/deleted_user'))
+        refute(File.exists?('/var/lib/ondemand-nginx/config/puns/deleted_user.conf'))
+        refute(File.exists?('/var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'))
       end
     end
   end
