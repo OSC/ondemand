@@ -79,6 +79,21 @@ module NginxStage
           $stderr.puts "#{$!.to_s}"
         end
       end
+
+      NginxStage.inactive_users.each do |u|
+        begin
+          puts "#{u} (disabled)"
+          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+
+          `kill -s TERM #{pid_path.pid}`
+          FileUtils.rm_rf(Pathname.new(pid_path.to_s).parent)
+          FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
+          FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
+
+        rescue StandardError => e
+          warn "Error trying to clean up disabled user #{u}: #{e.message}"
+        end
+      end
     end
 
     def cleanup_stale_files(pid_path, socket)
