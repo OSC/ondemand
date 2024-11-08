@@ -222,6 +222,8 @@ class Project
   def remove_logged_job(job_id, cluster)
     old_job = jobs.detect { |j| j.id == job_id && j.cluster == cluster }
     Project.delete_job!(directory, old_job)
+
+    jobs.none? { |j| j.id == job_id && j.cluster == cluster }
   end
 
   def adapter(cluster_id)
