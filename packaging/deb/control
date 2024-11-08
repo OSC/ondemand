@@ -16,7 +16,7 @@ Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends},
   ruby, apache2, sudo, lsof, lua-posix, tzdata, file,
   nodejs (>= 18.0), nodejs (<< 19.0),
-  ondemand-nginx (= 1.24.0.p6.0.20.ood3.1), ondemand-passenger (= 6.0.20.ood3.1)
+  ondemand-nginx (= 1.26.1.p6.0.23.ood4.0), ondemand-passenger (= 6.0.23.ood4.0)
 Recommends: rclone
 Description: Open OnDemand is an open source release of the Ohio SuperComputer Center's
   OnDemand platform to provide HPC access via a web browser, supporting web based file

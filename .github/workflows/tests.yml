@@ -20,7 +20,7 @@ jobs:
           - os: ubuntu-latest
             ruby: "3.0.2"
             bundler: "2.3.5"
-          # Test versions from RHEL8 & RHEL9
+          # Test versions from Debian 12
           - os: ubuntu-latest
             ruby: "3.1.2"
             bundler: "2.3.7"
@@ -28,6 +28,10 @@ jobs:
           - os: ubuntu-latest
             ruby: "3.2.2"
             bundler: "2.4.10"
+          # Test versions from RHEL8 & RHEL9
+          - os: ubuntu-latest
+            ruby: "3.3.5"
+            bundler: "2.5.16"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
@@ -129,7 +133,7 @@ jobs:
           - x86_64
           - aarch64
           - ppc64le
-        version: ["3.1"]
+        version: ["4.0"]
         exclude:
           # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023
