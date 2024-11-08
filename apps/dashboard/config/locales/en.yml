@@ -249,6 +249,10 @@ en:
     jobs_project_invalid_configuration_clusters: "An HPC cluster is required. Contact your administrator to add one to the system."
     jobs_project_invalid_configuration_scripts: "An executable script is required for your project. Upload a script using the file application."
 
+    jobs_project_job_stopped: "Successfully stopped job %{job_id}"
+    jobs_project_job_deleted: "Successfully deleted job %{job_id}"
+    jobs_project_job_not_deleted: "Cannot delete job %{job_id}"
+
     jobs_scripts_created: "Script successfully created!"
     jobs_scripts_default_created: "A 'hello_world.sh' was also added to this project."
     jobs_scripts_updated: "Script manifest updated!"
