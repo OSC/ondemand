@@ -9,6 +9,7 @@ stages:
   - deploy
 
 variables:
+  OOD_BUILD_REPO: '4.0'
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
   OOD_PACKAGING_DEBUG: 'true'
@@ -50,6 +51,8 @@ build:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH !~ /^(master|release_[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
+      variables:
+        VERSION: '$OOD_BUILD_REPO.0'
   script:
     - bundle exec rake package:build[$OOD_PACKAGING_DIST,$OOD_PACKAGING_ARCH]
   parallel:
