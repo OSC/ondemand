@@ -121,8 +121,8 @@ def bootstrap_repos
   case host_inventory['platform']
   when 'redhat'
     repos << 'epel-release'
-    on hosts, 'dnf -y module enable ruby:3.1'
-    on hosts, 'dnf -y module enable nodejs:18'
+    on hosts, 'dnf -y module enable ruby:3.3'
+    on hosts, 'dnf -y module enable nodejs:20'
   when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
   end
@@ -163,7 +163,7 @@ def ondemand_repo
 end
 
 def build_repo_version
-  ENV['OOD_BUILD_REPO'] || '3.1'
+  ENV['OOD_BUILD_REPO'] || '4.0'
 end
 
 def install_ondemand
@@ -176,7 +176,7 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
-    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.2-#{codename}_all.deb"
+    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
