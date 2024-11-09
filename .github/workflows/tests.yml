@@ -141,11 +141,14 @@ jobs:
           # Amazon 2023 doesn't have ppc64le containers
           - dist: amzn2023
             arch: ppc64le
-          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
+          # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
           - dist: ubuntu-20.04
             arch: ppc64le
-          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
           - dist: ubuntu-22.04
+            arch: ppc64le
+          - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: debian-12
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
