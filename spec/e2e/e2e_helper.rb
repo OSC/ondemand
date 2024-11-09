@@ -183,6 +183,10 @@ def install_ondemand
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end
+  if host_inventory['platform'] == 'amazon'
+    on hosts, 'alternatives --install /usr/bin/node node /usr/bin/node-20 1'
+    on hosts, 'alternatives --install /usr/bin/npm npm /usr/bin/npm-20 1'
+  end
   # Avoid 'update_ood_portal --rpm' so that --insecure can be used
   on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
   on hosts, 'systemctl daemon-reload'
