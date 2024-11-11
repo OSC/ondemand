@@ -80,18 +80,38 @@ module NginxStage
         end
       end
 
+      pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
         begin
           puts "#{u} (disabled)"
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
+          # Send a SIGTERM to the master nginx process to kill the PUN.
+          # 'nginx stop' won't work, since getpwnam(3) will cause an error.
           `kill -s TERM #{pid_path.pid}`
-          FileUtils.rm_rf(Pathname.new(pid_path.to_s).parent)
           FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
           FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
-
+          pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
+          pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
         rescue StandardError => e
           warn "Error trying to clean up disabled user #{u}: #{e.message}"
+        end
+      end
+
+      # Remove the PID path parent directories now that the nginx processes have
+      # had time to clean up their Passenger PID file and socket.
+      pid_parent_dirs_to_remove_later.each do |dir|
+        begin
+          begin
+            FileUtils.rmdir(dir)
+          rescue Errno::ENOTEMPTY
+            # Wait for a short time, while Nginx cleans up its PID file.
+            sleep(0.05)
+            # Then try again once.
+            FileUtils.rmdir(dir)
+          end
+        rescue StandardError => e
+          warn "Error trying to clean up the PID file directory of disabled user #{u}: #{e.message}"
         end
       end
     end
