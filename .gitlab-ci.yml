@@ -29,15 +29,11 @@ build-nightly:
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-      # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
-      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, debian-12]
+      # Ubuntu and Debian don't have way to get NodeJS 20+ on ppc64le
+      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, debian-12]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
-      # Ubuntu 24.04 on aarch64 is slow and will time out
-      - OOD_PACKAGING_DIST: [ubuntu-24.04]
-        OOD_PACKAGING_ARCH: [x86_64]
-      # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
-        OOD_PACKAGING_ARCH: [x86_64]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   timeout: 4h
   artifacts:
     paths:
@@ -62,15 +58,11 @@ build:
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-      # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
-      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, debian-12]
+      # Ubuntu and Debian don't have way to get NodeJS 20+ on ppc64le
+      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, debian-12]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
-      # Ubuntu 24.04 on aarch64 is slow and will time out
-      - OOD_PACKAGING_DIST: [ubuntu-24.04]
-        OOD_PACKAGING_ARCH: [x86_64]
-      # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
-        OOD_PACKAGING_ARCH: [x86_64]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   timeout: 4h
   artifacts:
     paths:
