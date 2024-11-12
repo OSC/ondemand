@@ -32,8 +32,9 @@ build-nightly:
       # Ubuntu and Debian don't have way to get NodeJS 20+ on ppc64le
       - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, debian-12]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
+      # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64]
+        OOD_PACKAGING_ARCH: [x86_64]
   timeout: 4h
   artifacts:
     paths:
@@ -61,8 +62,9 @@ build:
       # Ubuntu and Debian don't have way to get NodeJS 20+ on ppc64le
       - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, debian-12]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
+      # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64]
+        OOD_PACKAGING_ARCH: [x86_64]
   timeout: 4h
   artifacts:
     paths:
