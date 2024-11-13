@@ -20,7 +20,7 @@ jobs:
           - os: ubuntu-latest
             ruby: "3.0.2"
             bundler: "2.3.5"
-          # Test versions from RHEL8 & RHEL9
+          # Test versions from Debian 12
           - os: ubuntu-latest
             ruby: "3.1.2"
             bundler: "2.3.7"
@@ -28,6 +28,10 @@ jobs:
           - os: ubuntu-latest
             ruby: "3.2.2"
             bundler: "2.4.10"
+          # Test versions from RHEL8 & RHEL9
+          - os: ubuntu-latest
+            ruby: "3.3.5"
+            bundler: "2.5.16"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
@@ -129,7 +133,7 @@ jobs:
           - x86_64
           - aarch64
           - ppc64le
-        version: ["3.1"]
+        version: ["4.0"]
         exclude:
           # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023
@@ -137,11 +141,14 @@ jobs:
           # Amazon 2023 doesn't have ppc64le containers
           - dist: amzn2023
             arch: ppc64le
-          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
+          # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
           - dist: ubuntu-20.04
             arch: ppc64le
-          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
           - dist: ubuntu-22.04
+            arch: ppc64le
+          - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: debian-12
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
