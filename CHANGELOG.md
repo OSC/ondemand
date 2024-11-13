@@ -6,15 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Fix bc cards (#3941)\
-scroll when an alert happens (#3939)\
-clusters should be hidden, not fixed. (#3931)\
-account for this error and return nil (#3934)\
-Use ondemand-runtime 3.1.6 (#3935)\
-check for the closest anchor when trying to open a link (#3923)\
-better file editor layout (#3924)\
-Update Changelog (#3926)\
-update dependencies (#3927)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -71,7 +62,8 @@ update dependencies (#3927)
   - This includes auto modules in [3905](https://github.com/OSC/ondemand/pull/3905).
 - Batch connect applications always cast select_options to an array in [3872](https://github.com/OSC/ondemand/pull/3872).
 - test, package and development gems are no longer installed in production in [3906](https://github.com/OSC/ondemand/pull/3906).
-
+- A single cluster form item is now hidden, not fixed, allowing dynamic directives to work on single clusters in
+  [3931](https://github.com/OSC/ondemand/pull/3931).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
