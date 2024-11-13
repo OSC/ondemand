@@ -11,3 +11,4 @@ ja_JP:
     show: "見せる"
     # project: "Project"
     # directory: "Directory"
+    auto_log_location_title: "ログの場所"

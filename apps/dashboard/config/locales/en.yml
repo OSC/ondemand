@@ -276,6 +276,8 @@ en:
       deleted_message: "Saved settings %{settings_name} deleted."
       settings_values_label: "Values"
       outdated_message: "%{app_title} parameters have changed since these settings were created."
+    
+    auto_log_location_title: "Log Location"   
 
     user_configuration:
       support_ticket_error: "support_ticket is misconfigured. \"email\" or \"rt_api\" sections are required in the configuration YAML."
