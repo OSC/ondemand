@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 module NginxStage
@@ -27,9 +29,8 @@ module NginxStage
     # Delete the socket from the file system
     def delete
       @socket.delete
-    rescue
-      $stderr.puts "Unable to delete socket file at #{socket}"
+    rescue StandardError
+      warn "Unable to delete socket file at #{socket}"
     end
-
   end
 end
