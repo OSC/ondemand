@@ -103,7 +103,7 @@ module BatchConnect::SessionsHelper
       data: { toggle: "tooltip", placement: "left" },
       params: params
     ) do
-      "#{fa_icon('sync', classes: nil, title: '')}".html_safe
+      "#{fa_icon('sync', classes: nil, title: nil)}".html_safe
     end
   end
 
@@ -119,7 +119,7 @@ module BatchConnect::SessionsHelper
       data: { toggle: "tooltip", placement: "left" },
       params: {session_id: session.id}
     ) do
-      "#{fa_icon('pen', classes: nil, title: '')}".html_safe
+      "#{fa_icon('pen', classes: nil, title: nil)}".html_safe
     end
   end
 
