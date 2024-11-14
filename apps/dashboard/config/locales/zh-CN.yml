@@ -147,6 +147,8 @@ zh-CN:
     # all_apps_table_sub_category_column: "Sub Category"
 
     # unknown: "Unknown"
-    save: "保存"
-
+    delete: "删除"
+    edit: "编辑"
+    show: "显示" 
+    launch: "启动" 
     # development_apps_caption: "Sandbox App"

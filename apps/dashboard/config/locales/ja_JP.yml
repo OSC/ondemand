@@ -9,6 +9,7 @@ ja_JP:
     delete: "消す"
     edit: "編集する"
     show: "見せる"
+    launch: "起動する"
     # project: "Project"
     # directory: "Directory"
     auto_log_location_title: "ログの場所"
