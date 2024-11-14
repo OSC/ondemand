@@ -91,7 +91,7 @@ module BatchConnect::SessionsHelper
     return unless batch_connect_app.valid?
 
     user_context = session.user_context
-    params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, '')]}.to_h
+    params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, nil)]}.to_h.compact
     title = "#{t('dashboard.batch_connect_sessions_relaunch_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
     button_to(
       batch_connect_session_contexts_path(token: batch_connect_app.token),
