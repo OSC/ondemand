@@ -1,16 +1,4 @@
-# For Software Collections 2.0
+# Read the environment from /opt/ood/ondemand/enable
 #
-# 1. Read in environment variable SCL_PKGS which may be set in `sudo` call
-#    otherwise fallback to default software collection packages.
-#
-# 2. Check if Software Collections is installed, then source the defined
-#    package scripts.
-#
-SCL_PKGS=${SCL_PKGS:-"ondemand"}
-SCL_SOURCE="$(command -v scl_source)"
-DEB_SOURCE="/opt/ood/ondemand/enable"
-if [[ "${SCL_SOURCE}" ]]; then
-  source "${SCL_SOURCE}" enable ${SCL_PKGS}
-else
-  [[ -e "${DEB_SOURCE}" ]] && source "${DEB_SOURCE}" || :
-fi
+OOD_SOURCE="/opt/ood/ondemand/enable"
+[[ -e "${OOD_SOURCE}" ]] && source "${OOD_SOURCE}" || :

@@ -80,8 +80,6 @@ module OodPortalGenerator
 
         path = if OodPortalGenerator.debian?
                  '/etc/apache2/sites-available/ood-portal.conf'
-               elsif OodPortalGenerator.scl_apache?
-                 '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
                else
                  '/etc/httpd/conf.d/ood-portal.conf'
                end
@@ -95,8 +93,6 @@ module OodPortalGenerator
       def apache_services
         if OodPortalGenerator.debian?
           ['apache2']
-        elsif OodPortalGenerator.scl_apache?
-          ['httpd24-httpd']
         else
           ['httpd']
         end
