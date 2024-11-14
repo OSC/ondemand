@@ -260,12 +260,6 @@ module RakeHelper
                     end
   end
 
-  def scl_apache?
-    return true if el? && os_release['VERSION_ID'] =~ /^7/
-
-    false
-  end
-
   def el?
     return true if "#{os_release['ID']} #{os_release['ID_LIKE']}" =~ /(rhel|fedora)/
 
@@ -279,8 +273,6 @@ module RakeHelper
   end
 
   def apache_daemon
-    return '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper' if scl_apache?
-
     "/usr/sbin/#{apache_service}"
   end
 
@@ -298,7 +290,6 @@ module RakeHelper
 
   def apache_service
     return 'apache2' if debian?
-    return 'httpd24-httpd' if scl_apache?
 
     'httpd'
   end

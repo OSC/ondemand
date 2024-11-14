@@ -26,16 +26,6 @@ module OodPortalGenerator
       path
     end
 
-    def scl_apache?
-      return true if os_release_file.nil?
-      return false if debian?
-
-      env = Dotenv.parse(os_release_file)
-      return true if "#{env['ID']} #{env['ID_LIKE']}" =~ /(rhel|fedora)/ && env['VERSION_ID'] =~ /^7/
-
-      false
-    end
-
     def debian?
       return false if os_release_file.nil?
 
