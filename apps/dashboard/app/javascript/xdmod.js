@@ -291,9 +291,11 @@ function createEfficiencyWidgets() {
 }
 
 jQuery(() => {
-  createJobsWidget();
-  createEfficiencyWidgets();
-
   // initialize the panels
   renderJobs({ loading: true });
+  renderJobsEfficiency({nodata: true, msg: 'LOADING...'});
+  renderCoreHoursEfficiency({nodata: true, msg: 'LOADING...'});
+
+  createJobsWidget();
+  createEfficiencyWidgets();
 });
