@@ -93,27 +93,33 @@ module AccountCache
 
   def dynamic_qos
     Rails.cache.fetch('dynamic_qos', expires_in: 4.hours) do
-      accounts.map do |account|
+      qos_tuples = accounts.map do |account|
         account.qos.map do |qos|
           [account.name, account.cluster, qos]
         end
-      end.flatten(1).map do |tuple|
-        other_accounts = account_names.reject { |acct| acct == tuple[0] }
-        other_clusters = Configuration.job_clusters.reject { |c| c.id.to_s == tuple[1] }
+      end.flatten(1).group_by { |tuple| tuple[2] }
 
-        data = {}.tap do |hash|
-          other_clusters.each do |cluster|
-            hash["data-option-for-cluster-#{cluster.id}"] = false
-          end
+      clusters = Configuration.job_clusters.map { |c| c.id.to_s }
 
-          other_accounts.each do |account|
-            hash["data-option-for-auto-accounts-#{account}"] = false
-          end
+      unique_qos_names.map do |qos|
+        data = {}
+        account_tuples = qos_tuples[qos]
+
+        available_clusters = account_tuples.map { |tuple| tuple[1] }.uniq
+        unavailable_clusters = clusters.reject { |c| available_clusters.include?(c) }
+
+        unavailable_clusters.each do |cluster|
+          data["data-option-for-cluster-#{cluster}"] = false
         end
 
-        [
-          tuple[2], tuple[2], data
-        ]
+        available_accounts = account_tuples.map { |tuple| tuple[0] }.uniq
+        unavailable_accounts = account_names.reject { |c| available_accounts.include?(c) }
+
+        unavailable_accounts.each do |account|
+          data["data-option-for-auto-accounts-#{account}"] = false
+        end
+
+        [qos, qos, data]
       end
     end
   end
