@@ -16,6 +16,19 @@ module JobLogger
     JobLoggerHelper.write_log(directory, new_jobs)
   end
 
+  def delete_job!(directory, job)
+    existing_jobs = jobs(directory)
+    stored_job = existing_jobs.detect { |j| j.id == job.id && j.cluster == job.cluster }
+
+    return if stored_job.nil?
+
+    new_jobs = existing_jobs.map(&:to_h)
+    idx = existing_jobs.index(stored_job)
+    new_jobs.delete_at(idx)
+
+    JobLoggerHelper.write_log(directory, new_jobs)
+  end
+
   # def write_job_log!(directory, jobs)
   #   JobLoggerHelper.write_log!(directory, jobs)
   # endd

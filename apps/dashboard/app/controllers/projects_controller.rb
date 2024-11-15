@@ -110,7 +110,54 @@ class ProjectsController < ApplicationController
 
     hpc_job = project.job(job_details_params[:jobid].to_s, cluster_str)
 
-    render(partial: 'job_details', locals: { job: hpc_job })
+    @project = project
+
+    render(partial: 'job_details', locals: { job: hpc_job, project: @project })
+  end
+
+  # DELETE /projects/:project_id/jobs/:cluster/:jobid
+  def delete_job
+    @project = Project.find(job_details_params[:project_id])
+
+    cluster_str = job_details_params[:cluster].to_s
+
+    jobid = job_details_params[:jobid]
+
+    if @project.remove_logged_job(jobid.to_s, cluster_str)
+      redirect_to(
+        project_path(job_details_params[:project_id]),
+        notice: I18n.t('dashboard.jobs_project_job_deleted', job_id: jobid)
+      )
+    else
+      redirect_to(
+        project_path(job_details_params[:project_id]),
+        alert: I18n.t('dashboard.jobs_project_job_not_deleted', jobid: jobid)
+      )
+    end
+  end
+
+  # POST /projects/:project_id/jobs/:cluster/:jobid/stop
+  def stop_job
+    @project = Project.find(job_details_params[:project_id])
+    cluster_str = job_details_params[:cluster].to_s
+    cluster = OodAppkit.clusters[cluster_str.to_sym]
+
+    jobid = job_details_params[:jobid]
+
+    hpc_job = @project.job(jobid.to_s, cluster_str)
+
+    begin
+      cluster.job_adapter.delete(jobid.to_s) unless hpc_job.status.to_s == 'completed'
+      redirect_to(
+        project_path(job_details_params[:project_id]),
+        notice: I18n.t('dashboard.jobs_project_job_stopped', job_id: jobid)
+      )
+    rescue StandardError => e
+      redirect_to(
+        project_path(job_details_params[:project_id]),
+        alert: I18n.t('dashboard.jobs_project_generic_error', error: e.message.to_s)
+      )
+    end
   end
 
   private

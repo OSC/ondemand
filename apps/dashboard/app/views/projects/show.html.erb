@@ -62,8 +62,8 @@
   
   <div class="col-md-8">
     <div class="row">
-      <h2 class="d-flex justify-content-center">Active Jobs</h2>
-      <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job) %>
+      <h2 class="h3 d-flex justify-content-center">Active Jobs</h2>
+      <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job, locals: { project: @project }) %>
     </div>
 
     <div class="row">
@@ -71,7 +71,7 @@
       <div id="completed_jobs" class="row">
         <%- @project.completed_jobs.each do |job| -%>
         <div class="col-md-4" id="<%= "job_#{job.cluster}_#{job.id}" %>">
-          <%= render(partial: 'job_details_content', locals: { job: job }) %>
+          <%= render(partial: 'job_details_content', locals: { job: job, project: @project }) %>
         </div>
         <%- end -%>
       </div>

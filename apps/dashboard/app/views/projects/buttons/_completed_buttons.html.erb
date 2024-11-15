@@ -1,0 +1,7 @@
+<%= button_to(
+  'Delete',
+  project_delete_job_path(project_id: project_id, cluster: cluster, jobid: id),
+  method: :delete,
+  data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm') },
+  class: 'btn btn-danger'
+) %>

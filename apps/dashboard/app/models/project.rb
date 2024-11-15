@@ -219,6 +219,13 @@ class Project
     job
   end
 
+  def remove_logged_job(job_id, cluster)
+    old_job = jobs.detect { |j| j.id == job_id && j.cluster == cluster }
+    Project.delete_job!(directory, old_job)
+
+    jobs.none? { |j| j.id == job_id && j.cluster == cluster }
+  end
+
   def adapter(cluster_id)
     cluster = OodAppkit.clusters[cluster_id] || raise(StandardError, "Job specifies nonexistent '#{cluster_id}' cluster id.")
     cluster.job_adapter
@@ -230,7 +237,7 @@ class Project
   end
 
   private
-  
+
   def update_attrs(attributes)
     [:name, :description, :icon].each do |attribute|
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
