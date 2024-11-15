@@ -31,6 +31,11 @@ jobs:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
 
+      - name: Setup os dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev
+
       - name: Setup Bundler
         run: |
           bundle config path ~/vendor/bundle

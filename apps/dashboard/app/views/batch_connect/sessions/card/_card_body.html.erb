@@ -7,6 +7,8 @@
     <%= render_card_partial('id', session) %>
     <%= render_card_partial('support_ticket', session) if Configuration.support_ticket_enabled? %>
     <%= render_card_partial('display_choices', session) %>
+    <%= render_card_partial('custom_info_view', session) if session.app.session_info_view %>
+    <%= render_card_partial('completed_view', session) if session.app.session_completed_view &&  session.completed? %>
     <%= render_connection(session) %>
   </div>
 </div>

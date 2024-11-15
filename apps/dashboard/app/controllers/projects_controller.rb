@@ -163,19 +163,13 @@ class ProjectsController < ApplicationController
   private
 
   def templates
-    templates = Project.templates.map do |project|
+    Project.templates.map do |project|
       label = project.title
       data = {
         'data-description' => project.description,
         'data-icon'        => project.icon
       }
       [label, project.directory, data]
-    end
-
-    if templates.size.positive?
-      templates.prepend(['', '', { 'data-description': '', 'data-icon': '' }])
-    else
-      []
     end
   end
 

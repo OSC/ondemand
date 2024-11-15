@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}.5
+%define runtime_version %{major_version}.%{minor_version}.2
 %define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}" -q selinux-policy)
@@ -74,8 +74,8 @@ Requires:        python3
 Requires:        rclone
 %endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.24.0-1.p6.0.20.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.0.20-1.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.26.1-1.p6.0.23.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.0.23-1.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}
@@ -143,7 +143,7 @@ bundle config set --global force_ruby_platform true
 %ifarch ppc64le
 bundle config set --global force_ruby_platform true
 %endif
-BUNDLE_WITHOUT='test package' bundle install
+BUNDLE_WITHOUT='doc test package development' bundle install
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache
 rm -rf apps/*/node_modules/.cache

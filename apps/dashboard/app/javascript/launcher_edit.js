@@ -19,6 +19,10 @@ const newFieldData = {
     label: "Job Name",
     help: "The name the job will have."
   },
+  auto_log_location: {
+    label: "Log Location",
+    help: "The destination of the job's log output."
+  },
   bc_num_slots: {
     label: "Nodes",
     help: "How many nodes the job will run on."
@@ -166,16 +170,38 @@ function addInProgressField(event) {
 function updateAutoEnvironmentVariable(event) {
   const aev_name = event.target.value;
   const labelString = event.target.dataset.labelString;
+  const idString = `launcher_auto_environment_variable_${aev_name}`;
+  const nameString = `launcher[auto_environment_variable_${aev_name}]`;
   var input_field = event.target.parentElement.children[2].children[1];
 
   input_field.removeAttribute('readonly');
-  input_field.id = `launcher_auto_environment_variable_${aev_name}`;
-  input_field.name = `launcher[auto_environment_variable_${aev_name}]`;
+  input_field.id = idString;
+  input_field.name = nameString;
 
   if (labelString.match(/Environment(&#32;|\s)Variable/)) {
     const label_field = event.target.parentElement.children[2].children[0];
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
+
+  // Update the checkbox so that environment variables can be fixed when created
+  let fixedBoxGroup = event.target.parentElement.children[3].children[0].children[0];
+
+  let checkbox = fixedBoxGroup.children[0];
+  checkbox.id = `${idString}_fixed`;
+  checkbox.name = `launcher[auto_environment_variable_${aev_name}_fixed]`;
+  checkbox.setAttribute('data-fixed-toggler', idString);
+
+  // Update hidden field if attribute is already fixed, otherwise just update label
+  let labelIndex = 2;
+  if(fixedBoxGroup.children.length == 3) {
+    let hiddenField = fixedBoxGroup.children[1];
+    hiddenField.name = nameString;
+  } else {
+    labelIndex = 1;
+  }
+
+  let fixedLabel = fixedBoxGroup.children[labelIndex];
+  fixedLabel.setAttribute('for', `${idString}_fixed`);
 }
 
 function fixExcludeBasedOnSelect(selectElement) {
@@ -258,12 +284,6 @@ function enableOrDisableSelectOption(event) {
   const optionToToggle = selectOptions.filter(opt => opt.text == choice)[0];
   const selectOptionsEnabled = selectOptions.filter(opt => !opt.disabled);
 
-  if(selectOptionsEnabled.length <= 1 && toggleAction == 'remove') {
-    alert("Cannot remove the last option available")
-    event.target.disabled = false;
-    return
-  }
-
   if(toggleAction == 'add') {
     enableRemoveOption(li);
     removeFromExcludeInput(excludeId, choice);
@@ -277,6 +297,28 @@ function enableOrDisableSelectOption(event) {
       // if we can remove, there is always another option
       selectOptionsEnabled.filter(opt => opt.text !== choice)[0].selected = true;
     }
+  }
+  enableOrDisableLastOption(li.parentElement);
+}
+
+function enableOrDisableLastOption(optionsOl) {
+  const optionLis = Array.from(optionsOl.children);
+
+  const optionsEnabled = Array.from(optionLis.filter((child) => {
+    return !child.classList.contains('text-strike');
+  }));
+
+  if(optionsEnabled.length > 1) {
+    // Make sure there are no options that have both the add and remove button disabled
+    const bothButtonsDisabled = optionsEnabled.filter((option) => {
+      return option.querySelectorAll('button:disabled').length == 2;
+    });
+    for(const option of bothButtonsDisabled) {
+      enableRemoveOption(option);
+    }
+  } else {
+    // Disable the remove button on the last option
+    enableRemoveOption(optionsEnabled[0], true);
   }
 }
 
@@ -329,6 +371,8 @@ function initSelect(selectElement) {
       enableAddOption(configItem);
     }
   });
+
+  enableOrDisableLastOption(selectOptionsConfig[0].parentElement);
 }
 
 

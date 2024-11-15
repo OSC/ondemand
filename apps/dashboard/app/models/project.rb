@@ -147,7 +147,7 @@ class Project
     File.write(Project.lookup_file, new_table.to_yaml)
     true
   rescue StandardError => e
-    errors.add(operation, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
+    errors.add(operation, "Cannot update lookup file with error #{e.class}:#{e.message}")
     false
   end
 
@@ -156,7 +156,7 @@ class Project
     File.write(Project.lookup_file, new_table.to_yaml)
     true
   rescue StandardError => e
-    errors.add(:update, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
+    errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
     false
   end
 
@@ -260,7 +260,7 @@ class Project
     oe, s = Open3.capture2e(*rsync_args)
     raise oe unless s.success?
 
-    save_new_scripts
+    save_new_launchers
   rescue StandardError => e
     errors.add(:save, "Failed to sync template: #{e.message}")
     false
@@ -269,8 +269,8 @@ class Project
   # When copying a project from a template, we need new Launcher objects
   # that point to the _new_ project directory, not the template's directory.
   # This creates them _and_ serializes them to yml in the new directory.
-  def save_new_scripts
-    dir = Launcher.scripts_dir(template)
+  def save_new_launchers
+    dir = Launcher.launchers_dir(template)
     Dir.glob("#{dir}/*/form.yml").map do |script_yml|
       Launcher.from_yaml(script_yml, project_dataroot)
     end.map do |script|
@@ -285,7 +285,9 @@ class Project
 
   def rsync_args
     [
-      'rsync', '-rltp', '--exclude', 'scripts/*',
+      'rsync', '-rltp',
+      '--exclude', 'launchers/*',
+      '--exclude', '.ondemand/job_log.yml',
       "#{template}/", project_dataroot.to_s
     ]
   end

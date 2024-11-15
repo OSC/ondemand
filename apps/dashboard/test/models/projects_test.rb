@@ -122,6 +122,33 @@ icon: 'fas://test')
     end
   end
 
+  test 'create project with template does not copy project specific files' do
+    Dir.mktmpdir do |tmp|
+      template_dir = File.join(tmp,'template')
+      job_log_path = "#{template_dir}/.ondemand/job_log.yml"
+      launcher_id = '50r4nd0m'
+      cache_json_path = "#{template_dir}/.ondemand/launchers/#{launcher_id}/cache.json"
+
+      file_content = <<~HEREDOC
+        some multiline content
+        echo 'multiline content'
+        description: multiline content
+      HEREDOC
+      Pathname.new("#{template_dir}/.ondemand/launchers/#{launcher_id}").mkpath
+      File.open(job_log_path, 'w') { |file| file.write(file_content) }
+      File.open(cache_json_path, 'w') { |file| file.write(file_content) }
+
+      Configuration.stubs(:project_template_dir).returns(tmp)
+      projects_path = Pathname.new(tmp)
+      project = create_project(projects_path, template: template_dir)
+      
+      assert Dir.glob(cache_json_path).present? && 
+        Dir.glob("#{project.directory}/.ondemand/launchers/*/cache.json").empty?
+      assert Dir.glob(job_log_path).present? &&
+        Dir.glob("#{project.directory}/.ondemand/*").exclude?("#{project.directory}/.ondemand/job_log.yml")
+    end
+  end
+
   test 'creates .ondemand configuration directory' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
@@ -134,7 +161,7 @@ icon: 'fas://test')
   test 'creates manifest.yml in .ondemand config directory' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      project = create_project(projects_path)
+      project = create_project(projects_path, id: "test-#{Project.next_id}")
 
       assert project.errors.inspect
       assert_equal "#{projects_path}/projects/#{project.id}", project.directory.to_s
@@ -172,7 +199,8 @@ icon: 'fas://test')
   test 'update project manifest.yml file' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      project = create_project(projects_path)
+
+      project = create_project(projects_path, id: "test-#{Project.next_id}")
 
       name          = 'test-project-2'
       description   = 'my test project'

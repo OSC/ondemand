@@ -1,8 +1,18 @@
+
+<div id="editor-filename" class="text-center mb-2"><%= @path %></div>
+
 <div class="d-flex flex-row flex-grow-1">
-  <div class="flex-column col-3 card mx-2">
+  <div class="flex-column col-sm-1 card mx-2 text-center">
+
     <div class="card-header">
-      <p id="editor-filename" class="navbar-text m-0 ms-2"><%= @path %></p>
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" id="save-button">
+          <i class="fas fa-save pe-2" aria-hidden="true"></i>
+          <span>Save</span>
+        </button>
+      </div>
     </div>
+
 
     <ul class="list-group list-group-flush border-bottom-0">
       <li class="list-group-item hidden-xs hidden-sm hidden-md px-2 form-group form-inline m-0">
@@ -223,14 +233,6 @@
 
     <div class="card-body border-0"></div>
 
-    <div class="card-footer">
-      <div class="d-grid gap-2">
-        <button class="btn btn-primary" id="save-button">
-          <i class="fas fa-save pe-2" aria-hidden="true"></i>
-          <span>Save</span>
-        </button>
-      </div>
-    </div>
   </div>
   <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= OodAppkit.files.api(path: @path, fs: @filesystem) %>"><%= @content %></pre>
 </div>

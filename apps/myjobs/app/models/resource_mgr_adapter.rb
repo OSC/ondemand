@@ -37,6 +37,7 @@ class ResourceMgrAdapter
     cluster = cluster_for_host_id(host)
     script = OodCore::Job::Script.new(
       content:           script_path.read,
+      workdir:           script_path.parent.expand_path.to_s,
       accounting_id:     account_string,
       job_array_request: workflow.job_array_request.presence,
       copy_environment:  workflow.copy_environment.eql?('1') ? true : false

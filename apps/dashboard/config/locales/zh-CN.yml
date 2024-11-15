@@ -140,11 +140,15 @@ zh-CN:
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
 
+    auto_log_location_title: "日志位置"
+
     # all_apps_table_app_column: "Name"
     # all_apps_table_category_column: "Category"
     # all_apps_table_sub_category_column: "Sub Category"
 
     # unknown: "Unknown"
-    save: "保存"
-
+    delete: "删除"
+    edit: "编辑"
+    show: "显示" 
+    launch: "启动" 
     # development_apps_caption: "Sandbox App"

@@ -3,6 +3,7 @@ export function alert(message) {
   const div = alertDiv(message);
   const main = document.getElementById('main_container');
   main.prepend(div);
+  div.scrollIntoView({ behavior: 'smooth' });
 }
 
 function alertDiv(message) {

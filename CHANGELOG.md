@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect apps now respond to form_header to display a header in [3763](https://github.com/OSC/ondemand/pull/3763).
 - auto_clusters now set maximums for auto_cores in [3778](https://github.com/OSC/ondemand/pull/3778).
 - UIDs can now be returned by the mapper script in [3795](https://github.com/OSC/ondemand/pull/3795).
+- XDMoD jobs widget now shows CPU, Memory and walltime in [3789](https://github.com/OSC/ondemand/pull/3789).
+- Global batch connect form items can now be defined in ondemand.d files in [3840](https://github.com/OSC/ondemand/pull/3840).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -55,6 +57,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The shell app now has configurations for ping ponging. Ping pongs are disabled by default, will only ping pong
   for a certain duration after inactivity and the connections will close altogether after a certian duration regardless
   of activity in [3805](https://github.com/OSC/ondemand/pull/3805) and [3810](https://github.com/OSC/ondemand/pull/3810).
+- Empty directories can now be downloaded in [3841](https://github.com/OSC/ondemand/pull/3841).
+- Batch Connect applications always lowercase ids for normalization for dynamic javascript in [3867](https://github.com/OSC/ondemand/pull/3867).
+  - This includes auto modules in [3905](https://github.com/OSC/ondemand/pull/3905).
+- Batch connect applications always cast select_options to an array in [3872](https://github.com/OSC/ondemand/pull/3872).
+- test, package and development gems are no longer installed in production in [3906](https://github.com/OSC/ondemand/pull/3906).
+- A single cluster form item is now hidden, not fixed, allowing dynamic directives to work on single clusters in
+  [3931](https://github.com/OSC/ondemand/pull/3931).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -67,12 +76,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Download buttons will now be hidden for certain files like pipes in [3654](https://github.com/OSC/ondemand/pull/3654).
 - Favorite file paths now consult the Allowlist in [3526](https://github.com/OSC/ondemand/pull/3526).
 - The ood_portal.conf now accounts for /dex (dex_uri) when enabling maintenance mode in [3736](https://github.com/OSC/ondemand/pull/3736).
-- mod_ood_proxy now correctly proxies for httpd 2.4.62 in [3728](https://github.com/OSC/ondemand/pull/3728)
-  and [3776](https://github.com/OSC/ondemand/pull/3776).
+- mod_ood_proxy now correctly proxies for httpd 2.4.62 in [3728](https://github.com/OSC/ondemand/pull/3728),
+  [3776](https://github.com/OSC/ondemand/pull/3776) and [3791](https://github.com/OSC/ondemand/pull/3791).
 - ood_auth_map now accounts for more than just \w for usernames in [3753](https://github.com/OSC/ondemand/pull/3753).
 - Pipes and fifos no longer show as downloadable in [3718](https://github.com/OSC/ondemand/pull/3718).
 - Allowlist compuations have been optimized in [3804](https://github.com/OSC/ondemand/pull/3804).
 - data_field widgets now initialize their value to today in [3817](https://github.com/OSC/ondemand/pull/3817).
+- Batch Connect cache files now correct serialize in [3819](https://github.com/OSC/ondemand/pull/3819).
+- Uploads always succeed even when the chown operation afterwards fails in [3856](https://github.com/OSC/ondemand/pull/3856).
+- Exceptions in dashboard widgets are correct rescued in [3873](https://github.com/OSC/ondemand/pull/3873).
+- Select all in the files app will only select the visible rows in [3925](https://github.com/OSC/ondemand/pull/3925).
+- Batch jobs now specify workdir, fixing issues with submit_host jobs in [3913](https://github.com/OSC/ondemand/pull/3913).
+- Javascript that queires for atch connect sessions will create an alert div and stop polling if it fails in [3915](https://github.com/OSC/ondemand/pull/3915).
 
 ### Security
 

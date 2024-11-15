@@ -15,7 +15,7 @@ module SmartAttributes
     # @param id [#to_s] id of attribute
     # @param opts [#to_h] options for attribute
     def initialize(id, opts = {})
-      @id   = id.to_s
+      @id   = id.to_s.downcase
       @opts = opts.to_h.symbolize_keys
     end
 
@@ -173,6 +173,14 @@ module SmartAttributes
           exclude_select_choices.include?(option)
         else
           false
+        end
+      end.map do |entry|
+        # always cast to array so other layers can try .first & .second for labels and values.
+        # and let nils fall through and get caught in validate!
+        if entry.is_a?(Array)
+          entry
+        elsif entry.is_a?(String) || entry.is_a?(Symbol)
+          [entry.to_s, entry.to_s]
         end
       end
     end

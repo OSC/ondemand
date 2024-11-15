@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8.4'
+gem 'rails', '7.0.8.5'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -46,6 +46,8 @@ end
 gem 'nokogiri', '~> 1.15', '< 1.16'
 gem 'net-imap', '~> 0.3', '< 0.4'
 gem 'public_suffix', '~> 5.0', '< 6.0'
+gem 'turbo-rails', '2.0.7'
+gem 'zeitwerk', '2.6.18'
 
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
@@ -63,7 +65,6 @@ gem 'rest-client', '~> 2.0'
 
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
-gem 'turbo-rails', '~> 2.0'
 
 # should upgrade to propshaft - only have an issue with fontawesome icons
 gem 'sprockets-rails', '>= 2.0.0'

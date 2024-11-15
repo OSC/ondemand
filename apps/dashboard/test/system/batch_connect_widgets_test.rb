@@ -114,4 +114,206 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal label.text, "Number of Cores (1-8)"
     end
   end
+
+  test 'global_bc_form_items work correctly' do
+    Dir.mktmpdir do |dir|
+      app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }
+      Configuration.stubs(:config).returns({ 
+        global_bc_form_items: {
+          global_queues: {
+            widget: 'select',
+            label: 'Special Queues',
+            options: [
+              ['A', 'a'],
+              ['B', 'b'],
+              ['C', 'c']
+            ]
+          }
+        }
+      })
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_queues
+      HEREDOC
+
+      make_bc_app(app_dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget = find("##{bc_ele_id('global_queues')}")
+      options = find_all_options('global_queues', nil)
+      label = find("[for='#{bc_ele_id('global_queues')}']")
+
+      assert_equal('select', widget.tag_name)
+      assert_equal(['a', 'b', 'c'], options.map(&:value))
+      assert_equal(['A', 'B', 'C'], options.map(&:text))
+
+      assert_equal('Special Queues', label.text)
+    end
+  end
+
+  test 'global_bc_form_items default correctly' do
+    Dir.mktmpdir do |dir|
+      app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }
+
+      # no configuration for 'global_queues'
+      Configuration.stubs(:config).returns({})
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_queues
+      HEREDOC
+
+      make_bc_app(app_dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget = find("##{bc_ele_id('global_queues')}")
+      label = find("[for='#{bc_ele_id('global_queues')}']")
+
+      # not a select widget, it's a text input with the default label
+      assert_equal('input', widget.tag_name)
+      assert_equal('text', widget[:type])
+      assert_equal('Global Queues', label.text)
+    end
+  end
+
+  test 'forms correctly deal with capitalized ids' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        form:
+          - switcher
+          - Eastern_City
+          - Western_City
+        attributes:
+          switcher:
+            widget: 'select'
+            options:
+              - ["east", data-hide-Western-City: true]
+              - ["west", data-hide-Eastern-City: true]
+      HEREDOC
+
+      make_bc_app(dir, form)
+
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # select east, and west is no longer visible. Also note that the id is lowercase.
+      select('east', from: bc_ele_id('switcher'))
+      assert(find("##{bc_ele_id('eastern_city')}").visible?)
+      refute(find("##{bc_ele_id('western_city')}", visible: false).visible?)
+
+      # select west, and now ease is no longer visible
+      select('west', from: bc_ele_id('switcher'))
+      assert(find("##{bc_ele_id('western_city')}").visible?)
+      refute(find("##{bc_ele_id('eastern_city')}", visible: false).visible?)
+    end
+  end
+
+  test 'weird ids like aa_b_cc work' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        form:
+        - aa
+        - aa_b_cc
+        attributes:
+          aa:
+            widget: select
+            options:
+              - [ "foo", "foo",	data-hide-aa-b-cc: true]
+              - ['bar', 'bar']
+          aa_b_cc:
+            widget: text_field
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # foo is default, so aa_b_cc should be hidden
+      assert('foo', find("##{bc_ele_id('aa')}").value)
+      refute(find("##{bc_ele_id('aa_b_cc')}", visible: false).visible?)
+
+      # select bar, and now aa_b_cc is available.
+      select('bar', from: bc_ele_id('aa'))
+      assert(find("##{bc_ele_id('aa_b_cc')}").visible?)
+    end
+  end
+
+  test 'radio_buttons accept scalar and array options' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - scalar
+          - vector
+        attributes:
+          scalar:
+            widget: radio_button
+            options:
+              - one
+              - two
+          vector:
+            widget: radio_button
+            options:
+              - [Three, three]
+              - [Four, four]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # values are all lowercase
+      assert_equal('one', find("##{bc_ele_id('scalar_one')}").value)
+      assert_equal('two', find("##{bc_ele_id('scalar_two')}").value)
+      assert_equal('three', find("##{bc_ele_id('vector_three')}").value)
+      assert_equal('four', find("##{bc_ele_id('vector_four')}").value)
+
+      # one and two's labels are lowercase, but Three and Four have uppercase labels.
+      assert_equal('one', find("[for='#{bc_ele_id('scalar_one')}']").text)
+      assert_equal('two', find("[for='#{bc_ele_id('scalar_two')}']").text)
+      assert_equal('Three', find("[for='#{bc_ele_id('vector_three')}']").text)
+      assert_equal('Four', find("[for='#{bc_ele_id('vector_four')}']").text)
+    end
+  end
+
+  test 'auto modules something' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+        form = <<~HEREDOC
+          cluster: owens
+          form:
+          - auto_modules_R
+          - module_hider
+          attributes:
+            module_hider:
+              widget: select
+              options:
+                - ['show', 'show']
+                - ['hide', 'hide',	data-hide-auto-modules-r: true]
+        HEREDOC
+
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        # just to be sure auto_modules_r actually populates with module options
+        assert_equal(20, find_all_options('auto_modules_r', nil).size)
+        assert(find("##{bc_ele_id('auto_modules_r')}").visible?)
+
+        # select hide and auto_modules_r isn't visible anymore.
+        select('hide', from: bc_ele_id('module_hider'))
+        refute(find("##{bc_ele_id('auto_modules_r')}", visible: :hidden).visible?)
+
+        # select show and it's back.
+        select('show', from: bc_ele_id('module_hider'))
+        assert(find("##{bc_ele_id('auto_modules_r')}").visible?)
+      end
+    end
+  end
 end

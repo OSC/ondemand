@@ -76,7 +76,7 @@ module BatchConnect
     # Return parsed markdown from completed.{md, html}.erb
     # @return [String, nil] return HTML if no error while parsing, else return nil
     def render_completed_view
-      @render_completed_view ||= OodAppkit.markdown.render(ERB.new(self.app.session_completed_view, nil, "-").result(binding)).html_safe if self.app.session_completed_view
+      @render_completed_view ||= OodAppkit.markdown.render(ERB.new(self.app.session_completed_view, trim_mode: '-').result(binding)).html_safe if self.app.session_completed_view
     rescue => e
       @render_completed_view_error_message = "Error when rendering completed view: #{e.class} - #{e.message}"
       Rails.logger.error(@render_completed_view_error_message)
