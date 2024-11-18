@@ -134,7 +134,7 @@ GEM
     marcel (1.0.4)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.8)
     minitest (5.25.1)
     mocha (2.5.0)
       ruby2_keywords (>= 0.0.5)
