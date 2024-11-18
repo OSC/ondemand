@@ -6,17 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Pm job management (#3899)\
-#3902 fix-up launcher buttons list (#3938)\
-Initialize XDMoD panels (#3954)\
-Remove runtime dependency on SCL (#3952)\
-Fixed session card relaunch button configuration for fixed SmartAttributes (#3951)\
-Fixed tooltip or edit and re-launch buttons in the session card (#3950)\
-3414 launcher editable log location support (#3911)\
-Update Changelog (#3947)\
-lint a random file (#3946)\
-Bootstrap OnDemand 4.0 dependencies (#3945)\
-update dependencies (#3948)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
@@ -75,6 +64,7 @@ update dependencies (#3948)
 - test, package and development gems are no longer installed in production in [3906](https://github.com/OSC/ondemand/pull/3906).
 - A single cluster form item is now hidden, not fixed, allowing dynamic directives to work on single clusters in
   [3931](https://github.com/OSC/ondemand/pull/3931).
+- OnDemand packages no longer relies on scl at runtime in [3952](https://github.com/OSC/ondemand/pull/3952).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
