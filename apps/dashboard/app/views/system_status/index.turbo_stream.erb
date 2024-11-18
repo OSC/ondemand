@@ -9,12 +9,13 @@
 
           <% components_status(job_adapter).each do |current_status| %>
             <div class="container py-2">
-              <div><%= current_status[:message] %></div>
+              <span><%= current_status[:message] %></span>
 
               <% if valid_percent?(current_status[:percent]) %>
                 <div class="progress">
-                  <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"><%= current_status[:percent] %> in use</div>
+                  <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"></div>
                 </div>
+                <span class="text-muted"><%= current_status[:percent] %> in use</span>
               <% end %>
             </div>
           <% end %>
