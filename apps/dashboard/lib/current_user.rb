@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'etc'
+
 # The CurrentUser class represents the current user on the system from Etc.
 # It has a name, a home directory, gid, uid and so on.
 #
