@@ -13,7 +13,7 @@
 
               <% if valid_percent?(current_status[:percent]) %>
                 <div class="progress">
-                  <div class="progress-bar" role="progressbar" style="width: <%= current_status[:percent] %>"></div>
+                  <div class="progress-bar w-<%= current_status[:percent].to_i %>" role="progressbar"></div>
                 </div>
                 <span class="text-muted"><%= current_status[:percent] %> in use</span>
               <% end %>
