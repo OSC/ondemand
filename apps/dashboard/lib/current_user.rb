@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'etc'
+require 'singleton'
+require 'active_support/core_ext/module/delegation'
 
 # The CurrentUser class represents the current user on the system from Etc.
 # It has a name, a home directory, gid, uid and so on.
