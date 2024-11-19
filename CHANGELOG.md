@@ -64,6 +64,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - test, package and development gems are no longer installed in production in [3906](https://github.com/OSC/ondemand/pull/3906).
 - A single cluster form item is now hidden, not fixed, allowing dynamic directives to work on single clusters in
   [3931](https://github.com/OSC/ondemand/pull/3931).
+- OnDemand packages no longer relies on scl at runtime in [3952](https://github.com/OSC/ondemand/pull/3952).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
