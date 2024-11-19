@@ -10,6 +10,7 @@ const EVENTNAME = {
 };
 
 const CONTENTID = '#directory-contents';
+const BUSYID = '#tloading-spinner';
 
 let table = null;
 
@@ -269,6 +270,9 @@ class DataTable {
     async reloadTable(url) {
         var request_url = url || history.state.currentDirectoryUrl;
 
+        $(CONTENTID).hide();
+        $(BUSYID).show();
+
         try {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
             const data = await this.dataFromJsonResponse(response);
@@ -297,7 +301,11 @@ class DataTable {
                         table.getTable().row(this.closest('tr')).deselect();
                     }
                 }
-            })
+            });
+
+            $(BUSYID).hide();
+            $(CONTENTID).show();
+
             return result;
         } catch (e) {
             const eventData = {
