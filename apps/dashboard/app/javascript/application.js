@@ -20,6 +20,7 @@ import 'datatables.net';
 import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-select/js/dataTables.select';
 import 'datatables.net-plugins/api/processing().mjs';
+import "@hotwired/turbo-rails"
 
 import Rails from '@rails/ujs';
 

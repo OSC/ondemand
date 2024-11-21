@@ -1,0 +1,21 @@
+<%= turbo_frame_tag "project_files" do %>
+  <table class="table table-striped table-condensed w-100">
+    <thead>
+      <tr>
+        <th>
+          <input type="checkbox" id="select_all" title="Select All"></input>
+        </th>
+        <th>Type<span aria-hidden="true"></span></th>
+        <th>Name<span aria-hidden="true"></span></th>
+        <th><span class="sr-only">Actions</span></th>
+        <th>Size<span aria-hidden="true"></span></th>
+        <th>Modified at<span aria-hidden="true"></span></th>
+        <th>Owner<span aria-hidden="true"></span></th>
+        <th>Mode<span aria-hidden="true"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+        <%= render partial: "files", locals: { project_id: project.id, path: path, files: files } %>
+    </tbody>
+  </table>
+<% end %>

@@ -3,6 +3,7 @@
 # The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
   include ActionController::Live
+  include Pathable
 
   before_action :strip_sendfile_headers, only: [:fs]
 
@@ -39,8 +40,8 @@ class FilesController < ApplicationController
           end
         end
 
-        # FIXME: below is a large block that should be moved to a model
-        # if moved to a model the exceptions can be handled there and
+        # FIXME: below is a large block that should be moved to a concern (Zipable, perhaps?)
+        # if moved to a concern the exceptions can be handled there and
         # then this code will be simpler to read
         # and we can avoid rescuing in a block so we can reintroduce
         # the block braces which is the Rails convention with the respond_to formats.
@@ -192,41 +193,16 @@ class FilesController < ApplicationController
     request.headers['HTTP_X_ACCEL_MAPPING'] = nil
   end
 
-  def normalized_path(path = params[:filepath])
-    Pathname.new("/#{path.to_s.chomp('/').delete_prefix('/')}")
+  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  def resolved_path
+    params[:filepath]
   end
-
-  def parse_path(path = params[:filepath], filesystem = params[:fs])
-    normal_path = normalized_path(path)
-    if filesystem == 'fs'
-      @path = PosixFile.new(normal_path)
-      @filesystem = 'fs'
-    elsif ::Configuration.remote_files_enabled? && filesystem != 'fs'
-      @path = RemoteFile.new(normal_path, filesystem)
-      @filesystem = filesystem
-    else
-      @path = PosixFile.new(normal_path)
-      @filesystem = filesystem
-      raise StandardError, I18n.t('dashboard.files_remote_disabled')
-    end
+  
+  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  def resolved_fs
+    params[:fs]
   end
-
-  def validate_path!
-    if posix_file?
-      AllowlistPolicy.default.validate!(@path)
-    elsif @path.remote_type.nil?
-      raise StandardError, "Remote #{@path.remote} does not exist"
-    elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == 'local' || @path.remote_type == 'alias')
-      # local and alias remotes would allow bypassing the AllowListPolicy
-      # TODO: Attempt to evaluate the path of them and validate?
-      raise StandardError, "Remotes of type #{@path.remote_type} are not allowed due to ALLOWLIST_PATH"
-    end
-  end
-
-  def posix_file?
-    @path.is_a?(PosixFile)
-  end
-
+  
   def download?
     params[:download]
   end

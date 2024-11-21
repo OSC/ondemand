@@ -15,6 +15,9 @@ Rails.application.routes.draw do
         post 'save', on: :member
       end
     end
+    if Configuration.can_access_files?
+      get 'projects/:project_id/files/*filepath' => 'projects#files', as: 'project_files'
+    end
   end
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes

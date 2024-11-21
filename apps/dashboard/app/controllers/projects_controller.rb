@@ -2,10 +2,17 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
+  include Pathable
+  
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
+    
+    parse_path
+    validate_path!
+    @files = @path.ls
+
     if @project.nil?
       respond_to do |format|
         message = I18n.t('dashboard.jobs_project_not_found', project_id: project_id)
@@ -26,6 +33,19 @@ class ProjectsController < ApplicationController
         format.json { render :show }
       end
     end
+  end
+  
+  # GET /projects/:project_id/files/*filepath
+  def files
+    @project = Project.find(files_params[:project_id])
+    parse_path(files_params[:filepath])
+    validate_path!
+    Rails.logger.debug("\n\n\n==============================================================")
+    Rails.logger.debug("ProjectsController#files: request: #{request.methods.sort}")
+    Rails.logger.debug("==============================================================\n\n\n")
+    @files = @path.ls
+
+    render(partial: 'projects/directory', locals: { project_id: @project.id, path: @path, files: @files })
   end
 
   # GET /projects
@@ -162,6 +182,16 @@ class ProjectsController < ApplicationController
 
   private
 
+  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  def resolved_path
+    @project&.directory.to_s
+  end
+
+  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  def resolved_fs
+    'fs'
+  end
+
   def templates
     Project.templates.map do |project|
       label = project.title
@@ -177,6 +207,10 @@ class ProjectsController < ApplicationController
     params
       .require(:project)
       .permit(:name, :directory, :description, :icon, :id, :template)
+  end
+
+  def files_params
+    params.permit(:project_id, :filepath)
   end
 
   def show_project_params
