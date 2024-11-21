@@ -1,5 +1,6 @@
 require 'pathname'
 require 'dotenv'
+require_relative '../lib/current_user'
 
 # Dashboard app specific configuration singleton definition
 # following the first proposal in:
