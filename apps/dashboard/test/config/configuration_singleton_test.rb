@@ -510,7 +510,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   test 'bc_sessions_poll_delay reads from config' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
-        sessions_config = { 'sessions_poll_delay' => '99999' }
+        sessions_config = { 'bc_sessions_poll_delay' => '99999' }
         File.open("#{dir}/sessions_config.yml", 'w+') { |f| f.write(sessions_config.to_yaml) }
 
         assert_equal(99_999, ConfigurationSingleton.new.bc_sessions_poll_delay)
@@ -521,6 +521,18 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   test "bc_sessions_poll_delay minimum value is 10_000" do
     with_modified_env('POLL_DELAY': '100') do
       assert_equal(10_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
+    end
+  end
+
+  test "bc_sessions_poll_delay respnods to new environment variable" do
+    with_modified_env('OOD_BC_SESSIONS_POLL_DELAY': '30000') do
+      assert_equal(30_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
+    end
+  end
+
+  test "bc_sessions_poll_delay's new variable has precedence over the old" do
+    with_modified_env('OOD_BC_SESSIONS_POLL_DELAY': '30000', POLL_DELAY: '40000') do
+      assert_equal(30_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
     end
   end
 end
