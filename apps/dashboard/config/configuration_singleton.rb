@@ -436,7 +436,10 @@ class ConfigurationSingleton
 
   def read_config
     files = Pathname.glob(config_directory.join("*.{yml,yaml,yml.erb,yaml.erb}"))
-    files.sort.each_with_object({}) do |f, conf|
+    files.sort.select do |f|
+      # only resond to root owned files in production.
+      rails_env == 'production' ? File.stat(f).uid.zero? : true
+    end.each_with_object({}) do |f, conf|
       begin
         content = ERB.new(f.read, trim_mode: "-").result(binding)
         yml = YAML.safe_load(content, aliases: true) || {}
