@@ -29,8 +29,8 @@ class LaunchersController < ApplicationController
     default_script_created = @launcher.create_default_script
 
     if @launcher.save
-      notice_messages = [I18n.t('dashboard.jobs_scripts_created')]
-      notice_messages << I18n.t('dashboard.jobs_scripts_default_created') if default_script_created
+      notice_messages = [I18n.t('dashboard.jobs_launchers_created')]
+      notice_messages << I18n.t('dashboard.jobs_launchers_default_created') if default_script_created
       redirect_to project_path(params[:project_id]), notice: notice_messages.join(' ')
     else
       redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
@@ -45,7 +45,7 @@ class LaunchersController < ApplicationController
   # DELETE /projects/:project_id/launchers/:id
   def destroy
     if @launcher.destroy
-      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_deleted')
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_launchers_deleted')
     else
       redirect_to project_path(params[:project_id]), alert: @launcher.errors[:destroy].last
     end
@@ -57,7 +57,7 @@ class LaunchersController < ApplicationController
     @launcher.update(save_launcher_params[:launcher])
 
     if @launcher.save
-      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_updated')
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_launchers_updated')
     else
       redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
     end
@@ -69,7 +69,7 @@ class LaunchersController < ApplicationController
     opts = submit_launcher_params[:launcher].to_h.symbolize_keys
 
     if (job_id = @launcher.submit(opts))
-      redirect_to(project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_submitted', job_id: job_id))
+      redirect_to(project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_launchers_submitted', job_id: job_id))
     else
       redirect_to(project_path(params[:project_id]), alert: @launcher.errors[:submit].last)
     end

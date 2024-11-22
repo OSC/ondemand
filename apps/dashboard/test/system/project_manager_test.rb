@@ -257,7 +257,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: false
       HEREDOC
 
-      success_message = I18n.t('dashboard.jobs_scripts_created')
+      success_message = I18n.t('dashboard.jobs_launchers_created')
       assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{launcher_id}/form.yml"))
 
@@ -312,7 +312,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             required: true
       HEREDOC
 
-      success_message = I18n.t('dashboard.jobs_scripts_created')
+      success_message = I18n.t('dashboard.jobs_launchers_created')
       assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{launcher_id}/form.yml"))
     end
@@ -563,7 +563,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
-      success_message = I18n.t('dashboard.jobs_scripts_updated')
+      success_message = I18n.t('dashboard.jobs_launchers_updated')
       assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
@@ -654,7 +654,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
-      success_message = I18n.t('dashboard.jobs_scripts_updated')
+      success_message = I18n.t('dashboard.jobs_launchers_updated')
       assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
