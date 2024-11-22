@@ -271,11 +271,11 @@ class Project
   # This creates them _and_ serializes them to yml in the new directory.
   def save_new_launchers
     dir = Launcher.launchers_dir(template)
-    Dir.glob("#{dir}/*/form.yml").map do |script_yml|
-      Launcher.from_yaml(script_yml, project_dataroot)
-    end.map do |script|
-      saved_successfully = script.save
-      errors.add(:save, script.errors.full_messages) unless saved_successfully
+    Dir.glob("#{dir}/*/form.yml").map do |launcher_yml|
+      Launcher.from_yaml(launcher_yml, project_dataroot)
+    end.map do |launcher|
+      saved_successfully = launcher.save
+      errors.add(:save, launcher.errors.full_messages) unless saved_successfully
 
       saved_successfully
     end.all? do |saved_successfully|

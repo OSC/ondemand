@@ -4,9 +4,9 @@
 class LaunchersController < ApplicationController
 
   before_action :find_project
-  before_action :find_script, only: [:show, :edit, :destroy, :submit, :save]
+  before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save]
 
-  SAVE_SCRIPT_KEYS = [
+  SAVE_LAUNCHER_KEYS = [
     :cluster, :auto_accounts, :auto_accounts_exclude, :auto_accounts_fixed,
     :auto_cores, :auto_cores_fixed, :auto_cores_min, :auto_cores_max,
     :auto_scripts, :auto_scripts_exclude, :auto_scripts_fixed,
@@ -19,21 +19,21 @@ class LaunchersController < ApplicationController
   ].freeze
 
   def new
-    @script = Launcher.new(project_dir: @project.directory)
+    @launcher = Launcher.new(project_dir: @project.directory)
   end
 
   # POST  /dashboard/projects/:project_id/launchers
   def create
-    opts = { project_dir: @project.directory }.merge(create_script_params[:launcher])
-    @script = Launcher.new(opts)
-    default_script_created = @script.create_default_script
+    opts = { project_dir: @project.directory }.merge(create_launcher_params[:launcher])
+    @launcher = Launcher.new(opts)
+    default_script_created = @launcher.create_default_script
 
-    if @script.save
+    if @launcher.save
       notice_messages = [I18n.t('dashboard.jobs_scripts_created')]
       notice_messages << I18n.t('dashboard.jobs_scripts_default_created') if default_script_created
       redirect_to project_path(params[:project_id]), notice: notice_messages.join(' ')
     else
-      redirect_to project_path(params[:project_id]), alert: @script.errors[:save].last
+      redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
     end
   end
 
@@ -44,69 +44,69 @@ class LaunchersController < ApplicationController
 
   # DELETE /projects/:project_id/launchers/:id
   def destroy
-    if @script.destroy
+    if @launcher.destroy
       redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_deleted')
     else
-      redirect_to project_path(params[:project_id]), alert: @script.errors[:destroy].last
+      redirect_to project_path(params[:project_id]), alert: @launcher.errors[:destroy].last
     end
   end
 
   # POST   /projects/:project_id/launchers/:id/save
   # save the launcher after editing
   def save
-    @script.update(save_script_params[:launcher])
+    @launcher.update(save_launcher_params[:launcher])
 
-    if @script.save
+    if @launcher.save
       redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_updated')
     else
-      redirect_to project_path(params[:project_id]), alert: @script.errors[:save].last
+      redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
     end
   end
 
   # POST   /projects/:project_id/launchers/:id/submit
   # submit the job
   def submit
-    opts = submit_script_params[:launcher].to_h.symbolize_keys
+    opts = submit_launcher_params[:launcher].to_h.symbolize_keys
 
-    if (job_id = @script.submit(opts))
+    if (job_id = @launcher.submit(opts))
       redirect_to(project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_submitted', job_id: job_id))
     else
-      redirect_to(project_path(params[:project_id]), alert: @script.errors[:submit].last)
+      redirect_to(project_path(params[:project_id]), alert: @launcher.errors[:submit].last)
     end
   end
 
   private
 
-  def find_script
-    @script = Launcher.find(show_script_params[:id], @project.directory)
-    redirect_to(project_path(@project.id), alert: "Cannot find script #{show_script_params[:id]}") if @script.nil?
+  def find_launcher
+    @launcher = Launcher.find(show_launcher_params[:id], @project.directory)
+    redirect_to(project_path(@project.id), alert: "Cannot find launcher #{show_launcher_params[:id]}") if @launcher.nil?
   end
 
-  def create_script_params
+  def create_launcher_params
     params.permit({ launcher: [:title] }, :project_id)
   end
 
-  def show_script_params
+  def show_launcher_params
     params.permit(:id, :project_id)
   end
 
-  def submit_script_params
-    keys = @script.smart_attributes.map { |sm| sm.id.to_s }
+  def submit_launcher_params
+    keys = @launcher.smart_attributes.map { |sm| sm.id.to_s }
     params.permit({ launcher: keys }, :project_id, :id)
   end
 
-  def save_script_params
+  def save_launcher_params
     auto_env_params = params[:launcher].keys.select do |k|
       k.match?('auto_environment_variable')
     end
-    
-    allowlist = SAVE_SCRIPT_KEYS + auto_env_params
+
+    allowlist = SAVE_LAUNCHER_KEYS + auto_env_params
 
     params.permit({ launcher: allowlist }, :project_id, :id)
   end
 
   def find_project
-    @project = Project.find(show_script_params[:project_id])
-    redirect_to(projects_path, alert: "Cannot find project: #{show_script_params[:project_id]}") if @project.nil?
+    @project = Project.find(show_launcher_params[:project_id])
+    redirect_to(projects_path, alert: "Cannot find project: #{show_launcher_params[:project_id]}") if @project.nil?
   end
 end
