@@ -791,7 +791,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         assert_equal('false', add_btn[:disabled])
       end
 
-      find('#save_script_edit').click
+      find('#save_launcher_edit').click
       assert_current_path(project_path(project_id))
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
@@ -819,7 +819,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         assert_equal('false', rm_btn[:disabled])
       end
 
-      find('#save_script_edit').click
+      find('#save_launcher_edit').click
       assert_current_path(project_path(project_id))
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
