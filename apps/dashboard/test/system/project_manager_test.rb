@@ -362,7 +362,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         find("#delete_#{launcher_id}").click
       end
 
-      assert_selector '.alert-success', text: 'Script successfully deleted!'
+      assert_selector '.alert-success', text: 'Launcher successfully deleted!'
       # ASSERT SCRIPT DIRECTORY IS DELETED
       assert_not File.directory? launcher_dir
     end
@@ -748,7 +748,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit project_launcher_path(project_id, '12345678')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "Close\nCannot find script 12345678")
+      assert_selector('.alert-danger', text: "Close\nCannot find launcher 12345678")
     end
   end
 
@@ -757,7 +757,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit edit_project_launcher_path(project_id, '12345678')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "Close\nCannot find script 12345678")
+      assert_selector('.alert-danger', text: "Close\nCannot find launcher 12345678")
     end
   end
 
