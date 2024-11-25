@@ -6,20 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Fixed support ticket javascript after updates to support Bootstrap 5 (#3975)\
-change this key slightly and an env variable (#3972)\
-only respond to root owned files (#3969)\
-ensure CurrentUser is available in ondemand.d files (#3967)\
-update changleog for 3.1.7 and 3.1.9 (#3971)\
-correct this env variable and the ondemand.d config key (#3970)\
-Update Changelog (#3961)\
-Update runtime dependency to require newer ruby-default-gems (#3968)\
-Move system-status percentage outside of status bar (#3964)\
-Module active jobs (#3957)\
-import files/index.js as a module to avoid minified collisions (#3959)\
-refactor qos (#3955)\
-lint a random file (#3960)\
-update dependencies (#3962)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
@@ -79,6 +65,7 @@ update dependencies (#3962)
 - A single cluster form item is now hidden, not fixed, allowing dynamic directives to work on single clusters in
   [3931](https://github.com/OSC/ondemand/pull/3931).
 - OnDemand packages no longer relies on scl at runtime in [3952](https://github.com/OSC/ondemand/pull/3952).
+- Only root owned ondemand.d files will be loaded in prodution in [3969](https://github.com/OSC/ondemand/pull/3969).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -103,6 +90,7 @@ update dependencies (#3962)
 - Select all in the files app will only select the visible rows in [3925](https://github.com/OSC/ondemand/pull/3925).
 - Batch jobs now specify workdir, fixing issues with submit_host jobs in [3913](https://github.com/OSC/ondemand/pull/3913).
 - Javascript that queires for atch connect sessions will create an alert div and stop polling if it fails in [3915](https://github.com/OSC/ondemand/pull/3915).
+- auto_qos correctly returns one option for each qos in [3955](https://github.com/OSC/ondemand/pull/3955).
 
 ### Security
 
