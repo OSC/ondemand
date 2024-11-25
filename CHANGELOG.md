@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fixed support ticket javascript after updates to support Bootstrap 5 (#3975)\
+change this key slightly and an env variable (#3972)\
+only respond to root owned files (#3969)\
+ensure CurrentUser is available in ondemand.d files (#3967)\
+update changleog for 3.1.7 and 3.1.9 (#3971)\
+correct this env variable and the ondemand.d config key (#3970)\
+Update Changelog (#3961)\
+Update runtime dependency to require newer ruby-default-gems (#3968)\
+Move system-status percentage outside of status bar (#3964)\
+Module active jobs (#3957)\
+import files/index.js as a module to avoid minified collisions (#3959)\
+refactor qos (#3955)\
+lint a random file (#3960)\
+update dependencies (#3962)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
