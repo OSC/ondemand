@@ -41,14 +41,14 @@ class ProjectManagerTest < ApplicationSystemTestCase
     project_id
   end
 
-  def setup_script(project_id)
+  def setup_launcher(project_id)
     visit project_path(project_id)
     click_on 'New Launcher'
-    find('#launcher_title').set('the script title')
+    find('#launcher_title').set('the launcher title')
     click_on 'Save'
 
-    script_element = all('#launcher_list div.list-group-item').first
-    script_element[:id].gsub('launcher_', '')
+    launcher_element = all('#launcher_list div.list-group-item').first
+    launcher_element[:id].gsub('launcher_', '')
   end
 
   def add_account(project_id, launcher_id, save: true)
@@ -221,14 +221,14 @@ class ProjectManagerTest < ApplicationSystemTestCase
     # TODO
   end
 
-  test 'creating and showing scripts' do
+  test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
 
       expected_yml = <<~HEREDOC
         ---
-        title: the script title
+        title: the launcher title
         created_at: #{@expected_now}
         form:
         - auto_batch_clusters
@@ -263,7 +263,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
-      assert_selector('h1', text: 'the script title', count: 1)
+      assert_selector('h1', text: 'the launcher title', count: 1)
     end
   end
 
@@ -271,12 +271,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
 
       # note that bc_num_hours is in this YAML.
       expected_yml = <<~HEREDOC
         ---
-        title: the script title
+        title: the launcher title
         created_at: #{@expected_now}
         form:
         - auto_batch_clusters
@@ -318,16 +318,16 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'showing scripts with auto attributes' do
+  test 'showing launchers with auto attributes' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       project_dir = File.join(dir, 'projects', project_id)
       add_account(project_id, launcher_id)
 
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
-      assert_selector('h1', text: 'the script title', count: 1)
+      assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
                            'pzs1117', 'pzs1118', 'pzs1124'].to_set
@@ -341,10 +341,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'deleting a script that succeeds' do
+  test 'deleting a launcher that succeeds' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       project_dir = File.join(dir, 'projects', project_id)
       ondemand_dir = File.join(project_dir, '.ondemand')
       launcher_dir = File.join(ondemand_dir, 'launchers', launcher_id)
@@ -371,14 +371,14 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'submitting a script with auto attributes that succeeds' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       project_dir = File.join(dir, 'projects', project_id)
       ondemand_dir = File.join(project_dir, '.ondemand')
       add_account(project_id, launcher_id)
 
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
-      assert_selector('h1', text: 'the script title', count: 1)
+      assert_selector('h1', text: 'the launcher title', count: 1)
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
@@ -412,7 +412,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'submitting a script with job name' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       project_dir = File.join(dir, 'projects', project_id)
       ondemand_dir = File.join(project_dir, '.ondemand')
       add_account(project_id, launcher_id, save: false)
@@ -425,7 +425,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
-      assert_selector('h1', text: 'the script title', count: 1)
+      assert_selector('h1', text: 'the launcher title', count: 1)
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
@@ -460,14 +460,14 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'submitting a script with auto attributes that fails' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       project_dir = File.join(dir, 'projects', project_id)
       ondemand_dir = File.join(project_dir, '.ondemand')
       add_account(project_id, launcher_id)
 
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
-      assert_selector('h1', text: 'the script title', count: 1)
+      assert_selector('h1', text: 'the launcher title', count: 1)
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
@@ -491,10 +491,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'editing scripts initializes correctly' do
+  test 'editing launchers initializes correctly' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
 
       visit project_path(project_id)
 
@@ -514,10 +514,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'adding new fields to scripts' do
+  test 'adding new fields to launchers' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
 
       visit project_path(project_id)
 
@@ -535,8 +535,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # add bc_num_hours
       add_bc_num_hours(project_id, launcher_id)
-      script_edit_path = edit_project_launcher_path(project_id, launcher_id)
-      find("[href='#{script_edit_path}']").click
+      launcher_edit_path = edit_project_launcher_path(project_id, launcher_id)
+      find("[href='#{launcher_edit_path}']").click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
       assert_equal 3, page.all('.editable-form-field').size
@@ -570,7 +570,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # note that bc_num_hours has default, min & max
       expected_yml = <<~HEREDOC
         ---
-        title: the script title
+        title: the launcher title
         created_at: #{@expected_now}
         form:
         - auto_scripts
@@ -621,10 +621,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'removing script fields' do
+  test 'removing launcher fields' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
 
       # add bc_num_hours
       add_bc_num_hours(project_id, launcher_id)
@@ -660,7 +660,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       expected_yml = <<~HEREDOC
         ---
-        title: the script title
+        title: the launcher title
         created_at: #{@expected_now}
         form:
         - auto_accounts
@@ -725,25 +725,25 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_selector('.alert-danger', text: 'Cannot find project 1')
   end
 
-  test 'cant create script when project is invalid' do
+  test 'cant create launcher when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
-  test 'cant show script when project is invalid' do
+  test 'cant show launcher when project is invalid' do
     visit project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
-  test 'cant edit script when project is invalid' do
+  test 'cant edit launcher when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
   end
 
-  test 'cant show invalid script' do
+  test 'cant show invalid launcher' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
       visit project_launcher_path(project_id, '12345678')
@@ -752,7 +752,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'cant edit invalid script' do
+  test 'cant edit invalid launcher' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
       visit edit_project_launcher_path(project_id, '12345678')
@@ -762,15 +762,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   # this test:
-  # creates a project & script with auto_accounts
-  # excludes some of the accounts from auto_accounts in script#edit
-  # asserts that they've actually been removed from script#show
-  # adds some of the accounts back in script#edit
-  # asserts that the _new_ list of excluded accounts have actually been removed from script#show
+  # creates a project & launcher with auto_accounts
+  # excludes some of the accounts from auto_accounts in launcher#edit
+  # asserts that they've actually been removed from launcher#show
+  # adds some of the accounts back in launcher#edit
+  # asserts that the _new_ list of excluded accounts have actually been removed from launcher#show
   test 'excluding and including select options' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       add_account(project_id, launcher_id)
 
       visit edit_project_launcher_path(project_id, launcher_id)
@@ -796,7 +796,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
 
-      # now let's check scripts#show to see if they've actually been excluded.
+      # now let's check launchers#show to see if they've actually been excluded.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
         assert(!show_account_options.include?(acct))
@@ -824,7 +824,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
 
-      # now let's check scripts#show and they should be back.
+      # now let's check launchers#show and they should be back.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
         assert(show_account_options.include?(acct))
@@ -835,7 +835,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'fixing select options' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       add_account(project_id, launcher_id)
 
       visit edit_project_launcher_path(project_id, launcher_id)
@@ -866,7 +866,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'excluding newly created options' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      launcher_id = setup_script(project_id)
+      launcher_id = setup_launcher(project_id)
       visit(edit_project_launcher_path(project_id, launcher_id))
 
       # now add 'auto_accounts'
