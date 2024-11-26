@@ -279,6 +279,9 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('#delete-btn').click
         find('button.swal2-confirm').click
 
+        # Allow time for file to be removed
+        sleep 1
+
         # verify app dir deleted according to UI
         assert_no_selector 'tbody a', exact_text: 'app', wait: 10
         assert_no_selector 'tbody a', exact_text: 'foo.txt', wait: 10
