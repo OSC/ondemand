@@ -20,16 +20,6 @@
   </div>
 </div>
 
-<div class="my-2">
-  <a id="new-dir-btn" class="btn btn-outline-dark" href="<%= files_path(fs: 'fs', filepath: @project.directory ) %>">
-    <i class="fas fa-folder-open" aria-hidden="true"></i>
-    <%= t('dashboard.project') %> <%= t('dashboard.directory') %>
-    <%- if Configuration.project_size_enabled -%>
-      <span data-bs-toggle="project" data-url="<%= project_path(@project.id) %>"></span>
-    <%- end -%>
-  </a>
-</div>
-
 <div class="row mb-3">
   <div class="col-md-2">
     <div class="list-group">
@@ -78,8 +68,8 @@
     </div>
   </div>
   <div class="col-md-6">
-    <h2 class="h3 d-flex justify-content-center"><%= "#{@project.name} (Project ID: #{@project.id})" %></h2>
-    <%= render partial: 'directory', locals: { project: @project, path: @path, files: @files } %>
+    <h2 class="h3 d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
+    <%= render partial: 'directory', locals: { project: @project, path: @path, files: @files, sorting_params: @sorting_params } %>
   </div>
 </div>
 

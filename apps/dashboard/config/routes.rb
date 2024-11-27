@@ -16,7 +16,8 @@ Rails.application.routes.draw do
       end
     end
     if Configuration.can_access_files?
-      get 'projects/:project_id/files/*filepath' => 'projects#files', as: 'project_files'
+      get 'projects/:project_id/directory' => 'projects#directory', as: 'project_directory'
+      get 'projects/:project_id/file' => 'projects#file', as: 'project_file'
     end
   end
 

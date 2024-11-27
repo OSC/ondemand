@@ -3,7 +3,7 @@
 # The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
   include ActionController::Live
-  include Pathable
+  include DirectoryUtilsConcern
 
   before_action :strip_sendfile_headers, only: [:fs]
 

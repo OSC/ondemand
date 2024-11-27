@@ -1,4 +1,12 @@
-module Pathable
+module DirectoryUtilsConcern
+  # Constants for sorting
+  ASCENDING = true
+  DESCENDING = false
+  # Constants for grouping
+  DIRECTORIES = true
+  FILES = false
+  DEFAULT_SORTING_PARAMS = { col: 'name', direction: ASCENDING, grouped?: true }
+
   extend ActiveSupport::Concern
 
   def normalized_path(path)
@@ -33,10 +41,41 @@ module Pathable
     end
   end
 
+  def set_sorting_params(parameters)
+    @sorting_params = {
+      col: parameters[:col],
+      direction: parameters[:direction],
+      grouped?: parameters[:grouped?]
+    }
+  end
+
+  def set_files
+    @files = @path.ls
+    @files = sort_by_column(@files, @sorting_params[:col], @sorting_params[:direction])
+    @files = group_by_type(@files) if @sorting_params[:grouped?]
+  end
+
+  def group_by_type(files)
+    directories = files.select { |file| file[:directory] } + files.select { |file| !file[:directory] }
+  end
+
+  def sort_by_column(files, column, direction)
+    col = column.to_sym
+    sorted_files = files.sort_by do |file|
+      if col == :size
+        file[col].to_i
+      else
+        file[col].to_s.downcase
+      end
+    end
+    return sorted_files if direction == ASCENDING
+    return sorted_files.reverse
+  end
+
   def posix_file?
     @path.is_a?(PosixFile)
   end
-
+  
   def resolved_path
     raise NoMethodError, "Must implement resolved_path in #{self.class.to_s} to use Pathable concern"
   end

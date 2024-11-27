@@ -2,7 +2,7 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
-  include Pathable
+  include DirectoryUtilsConcern
   
   # GET /projects/:id
   def show
@@ -11,8 +11,9 @@ class ProjectsController < ApplicationController
     
     parse_path
     validate_path!
-    @files = @path.ls
-
+    set_sorting_params(show_project_params[:sorting_params] || default_sorting_params)
+    set_files
+    
     if @project.nil?
       respond_to do |format|
         message = I18n.t('dashboard.jobs_project_not_found', project_id: project_id)
@@ -34,20 +35,41 @@ class ProjectsController < ApplicationController
       end
     end
   end
-  
-  # GET /projects/:project_id/files/*filepath
-  def files
-    @project = Project.find(files_params[:project_id])
-    parse_path(files_params[:filepath])
-    validate_path!
-    Rails.logger.debug("\n\n\n==============================================================")
-    Rails.logger.debug("ProjectsController#files: request: #{request.methods.sort}")
-    Rails.logger.debug("==============================================================\n\n\n")
-    @files = @path.ls
 
-    render(partial: 'projects/directory', locals: { project_id: @project.id, path: @path, files: @files })
+  # GET /projects/:project_id/files/*filepath
+  def directory
+    @project = Project.find(directory_params[:project_id])
+    parse_path("#{directory_params[:dir_path]}")
+    validate_path!
+    set_sorting_params(directory_params[:sorting_params] || DEFAULT_SORTING_PARAMS)
+    set_files
+    render( partial: 'projects/directory', 
+            locals: { project: @project,
+                      path: @path,
+                      files: @files,
+                      sorting_params: @sorting_params
+                    }
+    )
   end
 
+  def file
+    @project = Project.find(file_params[:project_id])
+    parse_path(file_params[:path])
+    validate_path!
+    @file = File.open(@path.to_s, "r") do |file|
+      file.read 
+    end
+
+    render( partial: 'projects/file',
+            locals: { 
+              project: @project,
+              path: @path,
+              file: @file,
+              sorting_params: file_params[:sorting_params]
+            }
+    )
+  end
+  
   # GET /projects
   def index
     @projects = Project.all
@@ -192,6 +214,10 @@ class ProjectsController < ApplicationController
     'fs'
   end
 
+  def default_sorting_params
+    DEFAULT_SORTING_PARAMS
+  end
+
   def templates
     Project.templates.map do |project|
       label = project.title
@@ -209,8 +235,12 @@ class ProjectsController < ApplicationController
       .permit(:name, :directory, :description, :icon, :id, :template)
   end
 
-  def files_params
-    params.permit(:project_id, :filepath)
+  def directory_params
+    params.permit(:project_id, :format, :dir_path, sorting_params: [:col, :direction, :grouped?])
+  end
+
+  def file_params
+    params.permit(:project_id, :format, :path, :sorting_params)
   end
 
   def show_project_params

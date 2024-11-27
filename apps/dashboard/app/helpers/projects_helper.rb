@@ -31,4 +31,93 @@ module ProjectsHelper
       status
     end
   end
+
+  def files_button
+    link_to(
+      ".../projects#{@path.to_s.split('projects')[1]}",
+      files_path(fs: 'fs', filepath: @path),
+      target: '_top',
+      class: 'link-light'
+      ).html_safe
+  end
+
+  # <a id="new-dir-btn" class="btn btn-outline-dark" href="<%= files_path(fs: 'fs', filepath: path ) %>">
+  # <i class="fas fa-folder-open" aria-hidden="true"></i>
+  # <%=  "Go To Files: .../projects#{@path.to_s.split('projects')[1]}" %>
+  # <%- if Configuration.project_size_enabled -%>
+  #   <span data-bs-toggle="project" data-url="<%= project_path(@project.id) %>"></span>
+  # <%- end -%>
+  # </a>
+
+  def project_size
+
+  end
+
+  # DRAFT: Remove if not needed
+  # def group_by_type_link
+  #   group_link_text = "#{@sorting_params[:grouped?] ? 'Ungroup' : 'Group'}"
+  #   group_link_title = @sorting_params[:grouped?] ? 'Ungroup results by type' : 'Group results by type'
+  #   link_to(
+  #     "Group",
+  #     target_path(@sorting_params[:col], !@sorting_params[:grouped?]),
+  #     title: "Group results by type",
+  #     class: "btn btn-1 btn-primary btn-hover btn-sm align-self-end ml-auto",
+  #     data: data_attributes
+  #   )
+  # end
+
+  def column_head_link(column)
+    link_to(
+      link_text(column),
+      target_path(column),
+      title: tool_tip, 
+      class: "text-dark",
+      data: data_attributes
+    )
+  end
+
+  def direction(column)
+    if column.to_s == @sorting_params[:col]
+      @sorting_params[:direction] == ascending ? descending : ascending
+    else
+      DirectoryUtilsConcern::ASCENDING
+    end
+  end
+
+  def link_text(column)
+    col_title = t("dashboard.#{column.to_s}")
+    if column.to_s == @sorting_params[:col]
+      "#{col_title} #{fa_icon( direction(column) == ascending ? 'sort-up' : 'sort-down', classes: 'fa-md')}".html_safe
+    else
+      "#{col_title} #{fa_icon('sort', classes: 'fa-md')}".html_safe
+    end
+  end
+
+  def target_path(column, grouped = @sorting_params[:grouped?])
+    project_directory_path(
+      { project_id: @project.id,
+        dir_path: @path.to_s,
+        sorting_params: { col: column,
+                          direction: direction(column),
+                          grouped?: grouped
+                        }
+      }
+    )
+  end
+
+  def tool_tip
+    "Show #{@path.basename} directory"
+  end
+
+  def data_attributes
+    { turbo_frame: 'project_directory' }
+  end
+
+  def ascending
+    DirectoryUtilsConcern::ASCENDING
+  end
+
+  def descending
+    DirectoryUtilsConcern::DESCENDING
+  end
 end

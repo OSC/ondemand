@@ -1,54 +1,73 @@
+  
+<%- unless path.to_s == project.directory.to_s -%>  
   <tr>
     <td>
-      <input type="checkbox" class="file-checkbox disabled" title="Select"></input>
+      <i class="fa fa-folder">
     </td>
     <td>
+      <strong>
+        <%= link_to(
+          "..",
+          project_directory_path(
+            project_id: project.id,
+            dir_path: "#{path.parent}",
+            sorting_params: sorting_params
+          ),
+          title: 'Show parent directory',
+          data: { turbo_frame: "project_directory" }
+        )
+      %>
+      </strong>
     </td>
-    <td>
-      <%= link_to("..", project_files_path(project_id: project_id, filepath: sanitize("#{path}/..")), data: { turbo_frame: "project_files" }) %>
-    </td>
-    <td></td>
     <td></td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
-  <% files.each do |file| %>
-    <tr>
-      <td>
-        <input type="checkbox" class="file-checkbox" data-file-id="<%= file[:id] %>" title="Select"></input>
-      </td>
-      <td>
-        <%= file[:type] %>
-      </td>
-      <td>
-        <%= link_to(file[:name], project_files_path(project_id: project_id, filepath: sanitize("#{path}/#{file[:name]}")), data: { turbo_frame: "project_files" }) %>
-      </td>
-      <td>
-        <span class="sr-only">Actions</span>
-        <div class="btn-group">
-          <button type="button" class="btn btn-outline-dark btn-sm" title="View file" data-file-id="<%= file[:id] %>">
-            <i class="fa fa-eye" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn btn-outline-dark btn-sm" title="Download file" data-file-id="<%= file[:id] %>">
-            <i class="fa fa-download" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn btn-outline-dark btn-sm" title="Delete file" data-file-id="<%= file[:id] %>">
-            <i class="fa fa-trash" aria-hidden="true"></i>
-          </button>
-        </div>
-      </td>
-      <td>
-        <%= file[:size] %>
-      </td>
-      <td>
-        <%= file[:modified_at] %>
-      </td>
-      <td>
-        <%= file[:owner] %>
-      </td>
-      <td>
-        <%= file[:mode] %>
-      </td>
-    </tr>
-  <%- end -%>
+<%- end -%>  
+<% files.each do |file| %>
+  <tr>
+    <td>
+      <i class="fa <%= file[:directory] ? 'fa-folder' : 'fa-file' %>">
+    </td>
+    <td>
+      <%- if file[:directory] -%>
+        <%= link_to(
+          file[:name], 
+          project_directory_path(
+            project_id: project.id,
+            dir_path: "#{path}/#{file[:name]}",
+            sorting_params: sorting_params
+          ),
+          title: "Show #{file[:name]} directory",
+          data: { turbo_frame: "project_directory" }
+        )
+        %>
+      <%- else -%>
+        <%= link_to(
+          file[:name], 
+          project_file_path(
+            project_id: project.id,
+            path: "#{path}/#{file[:name]}",
+            sorting_params: sorting_params
+          ),
+          title: "Show #{file[:name]}", 
+          data: { turbo_frame: "project_directory" }
+          )
+        %>
+      <%- end -%>
+    </td>
+    <td>
+      <%= file[:size] %>
+    </td>
+    <td>
+      <%= DateTime.parse(Time.at(file[:date]).to_s).strftime("%F %r") %>
+    </td>
+    <td>
+      <%= file[:owner] %>
+    </td>
+    <td>
+      <%= file[:mode] %>
+    </td>
+  </tr>
+<%- end -%>
