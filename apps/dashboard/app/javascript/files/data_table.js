@@ -10,6 +10,7 @@ const EVENTNAME = {
 };
 
 const CONTENTID = '#directory-contents';
+const SPINNERID = '#tloading_spinner';
 
 let table = null;
 
@@ -269,6 +270,8 @@ class DataTable {
     async reloadTable(url) {
         var request_url = url || history.state.currentDirectoryUrl;
 
+        this.toggleSpinner();
+
         try {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
             const data = await this.dataFromJsonResponse(response);
@@ -297,7 +300,10 @@ class DataTable {
                         table.getTable().row(this.closest('tr')).deselect();
                     }
                 }
-            })
+            });
+
+            this.toggleSpinner();
+
             return result;
         } catch (e) {
             const eventData = {
@@ -308,10 +314,17 @@ class DataTable {
             $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
 
             $('#open-in-terminal-btn').addClass('disabled');
+
+            this.toggleSpinner()
             
             // Removed this as it was causing a JS Error and there is no reprocution from removing it.
             // return await Promise.reject(e);
         }
+    }
+
+    toggleSpinner() {
+        document.querySelector(SPINNERID).classList.toggle('d-none');
+        document.querySelector(CONTENTID).classList.toggle('d-none');
     }
 
     updateDotFileVisibility() {
