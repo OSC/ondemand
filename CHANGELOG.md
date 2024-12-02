@@ -6,12 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Files busy signal (#3973)\
-Change "script" to "launcher" in variables (#3976)\
-change the PM's icon (#3963)\
-Update Changelog (#3977)\
-Fixed globus javascript variable declaration after files/index.js is loaded as module (#3979)\
-update dependencies (#3978)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
@@ -72,6 +66,7 @@ update dependencies (#3978)
   [3931](https://github.com/OSC/ondemand/pull/3931).
 - OnDemand packages no longer relies on scl at runtime in [3952](https://github.com/OSC/ondemand/pull/3952).
 - Only root owned ondemand.d files will be loaded in prodution in [3969](https://github.com/OSC/ondemand/pull/3969).
+- The files app will now create a spinner on the files table when making new requests in [3973](https://github.com/OSC/ondemand/pull/3973).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
