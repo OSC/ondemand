@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Files busy signal (#3973)\
+Change "script" to "launcher" in variables (#3976)\
+change the PM's icon (#3963)\
+Update Changelog (#3977)\
+Fixed globus javascript variable declaration after files/index.js is loaded as module (#3979)\
+update dependencies (#3978)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
