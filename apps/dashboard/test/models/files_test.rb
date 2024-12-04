@@ -53,6 +53,35 @@ class FilesTest < ActiveSupport::TestCase
     end 
   end
 
+  test "can_download_as_zip handles directory size within limit" do
+    Dir.mktmpdir do |dir|
+      file_size = 4096
+      file_path = File.join(dir, 'foo.txt')
+      File.open(file_path, 'w') do |f|
+        f.write('x' * file_size)
+      end
+      Open3.stubs(:capture3).returns(["#{file_size} #{file_path} #{file_size} total", "", exit_success])
+
+      assert_equal [true, nil], PosixFile.new(dir).can_download_as_zip?
+    end 
+  end
+
+  test "can_download_as_zip handles directory size exceeding limit" do
+    download_directory_size_limit = Configuration.file_download_dir_max
+    Dir.mktmpdir do |dir|
+      file_size = download_directory_size_limit + 1
+      file_path = File.join(dir, 'foo.txt')
+      File.open(file_path, 'w') do |f|
+        f.write('x' * file_size)
+      end
+      
+      Open3.stubs(:capture3).returns(["#{file_size} #{file_path} #{file_size} total", "", exit_success])
+      result = PosixFile.new(dir).can_download_as_zip?
+
+      assert_equal([false, I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)], result)
+    end 
+  end
+
   test "Ensuring PosixFile.username(uid) returns string" do
     assert_equal "9999999", PosixFile.username(9999999)
   end
