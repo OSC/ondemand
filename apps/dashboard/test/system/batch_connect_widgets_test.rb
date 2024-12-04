@@ -72,6 +72,34 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'path_selector can filter by file type matching an expression' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}"
+            data-target-file-pattern: \.py$
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+    end
+  end
+
   test 'data-label-* allows select options to dynamically change the label of another form element' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
