@@ -106,6 +106,8 @@ Rails.application.routes.draw do
 
   post 'settings', :to => 'settings#update'
 
+  match '/widgets/*widget_path', to: 'widgets#show', via: [:get, :post], as: 'widgets'
+
   # Support ticket routes
   if Configuration.support_ticket_enabled?
     get '/support', to: 'support_ticket#new'
