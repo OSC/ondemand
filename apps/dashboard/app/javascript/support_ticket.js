@@ -36,7 +36,7 @@ jQuery(function (){
     }
 
     function showAttachmentsError(message) {
-        const $attachmentsElement = $("[data-toggle='attachments-error']");
+        const $attachmentsElement = $("[data-bs-toggle='attachments-error']");
         $attachmentsElement.parent().addClass("has-error");
         $attachmentsElement.after(`<div class="help-block" id="attachments_error">${message}</div>`);
     }
@@ -76,14 +76,14 @@ jQuery(function (){
         `<div class="attachment-input" id="${newAttachmentContainerId}">
            <div class="form-control attachment-input-content">
               <label class="attachment-file-label" for="${newFileInputId}">No file selected</label>
-              <span class="attachment-delete" data-toggle="attachment-delete" data-attachment-container="${newAttachmentContainerId}" title="Delete attachment"><i class="fas fa-trash-alt"></i></span>
+              <span class="attachment-delete" data-bs-toggle="attachment-delete" data-attachment-container="${newAttachmentContainerId}" title="Delete attachment"><i class="fas fa-trash-alt"></i></span>
            </div>
            <input class="form-control"  type="file" name="support_ticket[attachments][]" id="${newFileInputId}">
         </div>`;
 
         attachmentPlacementCallback(newAttachment);
         $("input[type='file']").on("change", updateAttachmentContent);
-        $("[data-toggle='attachment-delete']").on("click", deleteAttachment);
+        $("[data-bs-toggle='attachment-delete']").on("click", deleteAttachment);
         return newAttachment;
     }
 
@@ -100,7 +100,7 @@ jQuery(function (){
     }
 
     $(function() {
-        $("[data-toggle='attachments-add']").on("click", addAttachment);
+        $("[data-bs-toggle='attachments-add']").on("click", addAttachment);
         $("#new_support_ticket").submit(validateForm);
     });
 

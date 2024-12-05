@@ -1,12 +1,12 @@
 
-<h1><%= @script.title %></h1>
+<h1><%= @launcher.title %></h1>
 
 <%= javascript_include_tag 'script_show', nonce: true %>
 
 <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default my-3',  title: 'Return to projects page' %>
 
-<%= bootstrap_form_for(@script, url: submit_project_launcher_path) do |f| %>
-  <% @script.smart_attributes.each do |attrib| %>
+<%= bootstrap_form_for(@launcher, url: submit_project_launcher_path) do |f| %>
+  <% @launcher.smart_attributes.each do |attrib| %>
     <%# TODO generate render_format %>
     <%= create_widget(f, attrib, format: nil) %>
   <% end %>

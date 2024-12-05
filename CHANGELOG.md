@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
-- BatchConnect form labels can now be made dynamic with data-label-* in [3498](https://github.com/OSC/ondemand/pull/3498).
+- BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
 - BatchConnect form auto_modules directive can now filter by string or regex in [3574](https://github.com/OSC/ondemand/pull/3574).
 - Saved settings widget in [#3545](https://github.com/OSC/ondemand/pull/3545).
 - BatchConnect cards can now edit and relaunch the session in [3358](https://github.com/OSC/ondemand/pull/3358).
@@ -64,6 +64,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - test, package and development gems are no longer installed in production in [3906](https://github.com/OSC/ondemand/pull/3906).
 - A single cluster form item is now hidden, not fixed, allowing dynamic directives to work on single clusters in
   [3931](https://github.com/OSC/ondemand/pull/3931).
+- OnDemand packages no longer relies on scl at runtime in [3952](https://github.com/OSC/ondemand/pull/3952).
+- Only root owned ondemand.d files will be loaded in prodution in [3969](https://github.com/OSC/ondemand/pull/3969).
+- The files app will now create a spinner on the files table when making new requests in [3973](https://github.com/OSC/ondemand/pull/3973).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -88,6 +91,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Select all in the files app will only select the visible rows in [3925](https://github.com/OSC/ondemand/pull/3925).
 - Batch jobs now specify workdir, fixing issues with submit_host jobs in [3913](https://github.com/OSC/ondemand/pull/3913).
 - Javascript that queires for atch connect sessions will create an alert div and stop polling if it fails in [3915](https://github.com/OSC/ondemand/pull/3915).
+- auto_qos correctly returns one option for each qos in [3955](https://github.com/OSC/ondemand/pull/3955).
 
 ### Security
 
@@ -95,6 +99,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [3627](https://github.com/OSC/ondemand/pull/3627).  This prevents
   the leaking of sensitive environment variables to the job when `copy_environment`
   is used.
+- The shell app now has several configurations to stop or extend ssh sessions. This is
+  a security issue becuase an ssh session can remain open long after the authentication
+  system has ended that session. I.e., it can go on forever. So, the shell app now
+  disables ping pong by default and has configurations for how long sessions can
+  exist with and without activity in [3810](https://github.com/OSC/ondemand/pull/3815)
+  and [3805](https://github.com/OSC/ondemand/pull/3805).
+
+## [3.1.10] - 11-07-2024
+
+### Fixed
+
+- Fixed Ubuntu 24.04 packaging issue in [3936](https://github.com/OSC/ondemand/pull/3936).
+- MOTD in `md.erb` format should also respond to sanitize_html in [3876](https://github.com/OSC/ondemand/pull/3876).
+
+## [3.1.9] - 10-08-2024
+
+### Fixed
+
+- Support for higher versions of httpd in [3779](https://github.com/OSC/ondemand/pull/3779) and [3852](https://github.com/OSC/ondemand/pull/3852).
+- `ood_auth_map` now accounts for more than just characters in [3779](https://github.com/OSC/ondemand/pull/3779).
+- Uploads always succeed even when the chown operation afterwards fails in [3861](https://github.com/OSC/ondemand/pull/3861).
+- The ood_portal.conf now accounts for /dex (dex_uri) when enabling maintenance mode in [3779](https://github.com/OSC/ondemand/pull/3779).
+
+### Security
+
+- The shell app now has several configurations to stop or extend ssh sessions. This is
+  a security issue becuase an ssh session can remain open long after the authentication
+  system has ended that session. I.e., it can go on forever. So, the shell app now
+  disables ping pong by default and has configurations for how long sessions can
+  exist with and without activity in [3815](https://github.com/OSC/ondemand/pull/3815).
 
 ## [3.1.7] - 06-25-2024
 
@@ -1442,6 +1476,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - From 1.3.7 - 1.4.2 updated app versions
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
+[3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9
 [3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7
 [3.1.4]: https://github.com/OSC/ondemand/compare/v3.1.1...v3.1.4
 [3.1.1]: https://github.com/OSC/ondemand/compare/v3.1.0...v3.1.1

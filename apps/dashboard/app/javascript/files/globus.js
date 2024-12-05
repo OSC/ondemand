@@ -27,8 +27,7 @@ export function getGlobusLink(directory) {
   if (info) {
     let origin_path = directory.replace(info.path, info.endpoint_path);
     origin_path = origin_path.replace("//", "/");
-    url = "https://app.globus.org/file-manager?origin_id=" + info.endpoint + "&origin_path=" + origin_path;
-    return url
+    return "https://app.globus.org/file-manager?origin_id=" + info.endpoint + "&origin_path=" + origin_path;
   }
 }
 

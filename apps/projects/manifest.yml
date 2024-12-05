@@ -1,9 +1,9 @@
 ---
 name: Projects
 description: |-
-  The Open OnDemand Jobs Composer App
+  The Open OnDemand Project Manager
 category: Jobs
-icon: fa://magic
+icon: fa://wrench
 role: projects
 url: projects
 new_window: false
