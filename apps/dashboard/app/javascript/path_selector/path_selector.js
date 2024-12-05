@@ -31,6 +31,7 @@ function getPathSelectorOptions(element) {
   options.inputFieldId        = element.dataset['inputFieldId'];
   options.showFiles           = element.dataset['showFiles'];
   options.showHidden          = element.dataset['showHidden'];
+  options.filePattern         = element.dataset['filePattern']
   options.modalId             = element.id;
 
   return options;

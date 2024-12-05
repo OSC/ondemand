@@ -12,6 +12,7 @@ export class PathSelectorTable {
   modalId             = undefined;
   showHidden          = undefined;
   showFiles           = undefined;
+  filePattern         = undefined;
 
   constructor(options) {
       this.tableId             = options.tableId;
@@ -23,6 +24,7 @@ export class PathSelectorTable {
       this.modalId             = options.modalId;
       this.showHidden          = options.showHidden === 'true';
       this.showFiles           = options.showFiles === 'true';
+      this.filePattern         = options.filePattern;
 
       this.initDataTable();
       this.reloadTable(this.initialUrl());
@@ -216,7 +218,16 @@ export class PathSelectorTable {
       } else if(isHidden) {
         return this.showHidden;
       } else if(isFile) {
-        return this.showFiles;
+        if (this.filePattern !== "") {
+          if (file.name.match(RegExp(this.filePattern))) {
+            return this.showFiles;
+          } else {
+            return false;
+          }
+        }
+        else {
+          return this.showFiles;
+        }
       } else {
         return true;
       }
