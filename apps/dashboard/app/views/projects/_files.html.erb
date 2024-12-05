@@ -1,0 +1,73 @@
+  
+<%- unless path.to_s == project.directory.to_s -%>  
+  <tr>
+    <td>
+      <i class="fa fa-folder">
+    </td>
+    <td>
+      <strong>
+        <%= link_to(
+          "..",
+          project_directory_path(
+            project_id: project.id,
+            dir_path: "#{path.parent}",
+            sorting_params: sorting_params
+          ),
+          title: 'Show parent directory',
+          data: { turbo_frame: "project_directory" }
+        )
+      %>
+      </strong>
+    </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+<%- end -%>  
+<% files.each do |file| %>
+  <tr>
+    <td>
+      <i class="fa <%= file[:directory] ? 'fa-folder' : 'fa-file' %>">
+    </td>
+    <td>
+      <%- if file[:directory] -%>
+        <%= link_to(
+          file[:name], 
+          project_directory_path(
+            project_id: project.id,
+            dir_path: "#{path}/#{file[:name]}",
+            sorting_params: sorting_params
+          ),
+          title: "Show #{file[:name]} directory",
+          data: { turbo_frame: "project_directory" }
+        )
+        %>
+      <%- else -%>
+        <%= link_to(
+          file[:name], 
+          project_file_path(
+            project_id: project.id,
+            path: "#{path}/#{file[:name]}",
+            sorting_params: sorting_params
+          ),
+          title: "Show #{file[:name]}", 
+          data: { turbo_frame: "project_directory" }
+          )
+        %>
+      <%- end -%>
+    </td>
+    <td>
+      <%= file[:size] %>
+    </td>
+    <td>
+      <%= DateTime.parse(Time.at(file[:date]).to_s).strftime("%F %r") %>
+    </td>
+    <td>
+      <%= file[:owner] %>
+    </td>
+    <td>
+      <%= file[:mode] %>
+    </td>
+  </tr>
+<%- end -%>

@@ -10,6 +10,15 @@ ja_JP:
     edit: "編集する"
     show: "見せる"
     launch: "起動する"
+    type: 'タイプ'
+    name: '名前'
+    size: "サイズ"
+    owner: "所有者"
+    date: "日付"
+    mode: "モード"
+    project: "プロジェクト"
+    directory: "ディレクトリ"
+
     # project: "Project"
     # directory: "Directory"
     auto_log_location_title: "ログの場所"
