@@ -46,5 +46,17 @@ module Dashboard
       config.autoload_paths << ::Configuration.config_root.join("lib").to_s
       config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
     end
+
+    # Enable installed plugins only if configured by administrator
+    plugins_dir = Pathname.new(::Configuration.plugins_directory)
+    if plugins_dir.directory?
+      plugins_dir.children.select(&:directory?).each do |installed_plugin|
+        next unless installed_plugin.readable?
+
+        config.paths["config/initializers"] << installed_plugin.join("initializers").to_s
+        config.autoload_paths << installed_plugin.join("lib").to_s
+        config.paths["app/views"].unshift installed_plugin.join("views").to_s
+      end
+    end
   end
 end
