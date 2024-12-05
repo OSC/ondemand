@@ -76,7 +76,7 @@ class ConfigurationSingleton
       :project_size_timeout           => '15',
       :novnc_default_compression      => '6',
       :novnc_default_quality          => '2',
-      :plugins_directory              => '/var/www/ood/apps/plugins'
+      :plugins_directory              => '/etc/ood/config/plugins'
     }.freeze
   end
 
