@@ -218,16 +218,7 @@ export class PathSelectorTable {
       } else if(isHidden) {
         return this.showHidden;
       } else if(isFile) {
-        if (this.filePattern !== "") {
-          if (file.name.match(RegExp(this.filePattern))) {
-            return this.showFiles;
-          } else {
-            return false;
-          }
-        }
-        else {
-          return this.showFiles;
-        }
+        return this.filteredByFilename(file);
       } else {
         return true;
       }
@@ -235,5 +226,18 @@ export class PathSelectorTable {
 
     data.files = filteredFiles;
     return data;
+  }
+
+  filteredByFilename(file) {
+    if (this.filePattern !== "") {
+      if (file.name.match(RegExp(this.filePattern))) {
+        return this.showFiles;
+      } else {
+        return false;
+      }
+    }
+    else {
+      return this.showFiles;
+    }
   }
 }
