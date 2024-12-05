@@ -39,11 +39,10 @@ module DirectoryUtilsConcern
   end
 
   def set_sorting_params(parameters)
-    Rails.logger.debug("Sorting params: #{parameters}")
     @sorting_params = {
-      col: parameters&.[](:col),
-      direction: !parameters&.[](:direction),
-      grouped?: parameters&.[](:grouped?)
+      col: parameters&.[](:col) || DEFAULT_SORTING_PARAMS[:col],
+      direction: !parameters&.[](:direction) || DEFAULT_SORTING_PARAMS[:direction],
+      grouped?: parameters&.[](:grouped?) || DEFAULT_SORTING_PARAMS[:grouped?]
     }
   end
 

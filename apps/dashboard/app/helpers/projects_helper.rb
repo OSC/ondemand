@@ -67,42 +67,26 @@ module ProjectsHelper
   # end
 
   def column_head_link(column, sorting_params)
-    a = link_to(
+    link_to(
       link_text(column, sorting_params),
       target_path(column, sorting_params),
       title: tool_tip, 
       class: "text-dark",
       data: data_attributes
     )
-
-      Rails.logger.debug("\n\n\n\n\n============== #{column} ===================")
-      Rails.logger.debug("Column head link: #{a}")
-      Rails.logger.debug("========================================\n\n\n\n\n")
-    a
   end
 
   def direction(column, sorting_params)
-    if column.to_s == sorting_params[:col].to_s
-      Rails.logger.debug("\n\n\n\n\n______________--------============-----------______________")
-      Rails.logger.debug("                     COLUMN: #{column}")
-      Rails.logger.debug("                     is #{column.to_s == sorting_params[:col] ? 'EQUAL' : 'NOT EQUAL'} to")
-      Rails.logger.debug("                     SP COL: #{sorting_params[:col]}")
-      Rails.logger.debug("                     RETURNING: descending") if column.to_s == sorting_params[:col].to_s && sorting_params[:direction] == ascending
-
-      Rails.logger.debug("--------------========____________===========--------------\n\n\n\n\n")
-    end
-    if column.to_s == sorting_params[:col].to_s
-      !sorting_params[:direction]
-    end
+    return !sorting_params[:direction] if column.to_s == sorting_params[:col].to_s
     ascending
   end
 
   def link_text(column, sorting_params)
     col_title = t("dashboard.#{column.to_s}")
     if column.to_s == sorting_params[:col]
-      "#{col_title} #{fa_icon( direction(column, sorting_params) == ascending ? 'sort-up' : 'sort-down', classes: 'fa-md')}".html_safe
+      "#{col_title} #{ fa_icon(direction(column, sorting_params) == ascending ? 'sort-up' : 'sort-down', classes: 'fa-md') }".html_safe
     else
-      "#{col_title} #{fa_icon('sort', classes: 'fa-md')}".html_safe
+      "#{col_title} #{ fa_icon('sort', classes: 'fa-md') }".html_safe
     end
   end
 

@@ -39,7 +39,6 @@ class ProjectsController < ApplicationController
     parse_path("#{directory_params[:dir_path]}")
     validate_path!
 
-    Rails.logger.debug("Sorting params: #{@sorting_params}")
     set_sorting_params(directory_params[:sorting_params] || DEFAULT_SORTING_PARAMS )
     set_files
     render( partial: 'projects/directory', 
