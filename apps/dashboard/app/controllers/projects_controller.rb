@@ -8,11 +8,8 @@ class ProjectsController < ApplicationController
   def show
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
-    
     parse_path
     validate_path!
-    set_sorting_params(show_project_params[:sorting_params] || default_sorting_params)
-    set_files
     
     if @project.nil?
       respond_to do |format|
@@ -41,7 +38,9 @@ class ProjectsController < ApplicationController
     @project = Project.find(directory_params[:project_id])
     parse_path("#{directory_params[:dir_path]}")
     validate_path!
-    set_sorting_params(directory_params[:sorting_params] || DEFAULT_SORTING_PARAMS)
+
+    Rails.logger.debug("Sorting params: #{@sorting_params}")
+    set_sorting_params(directory_params[:sorting_params] || DEFAULT_SORTING_PARAMS )
     set_files
     render( partial: 'projects/directory', 
             locals: { project: @project,
@@ -214,10 +213,6 @@ class ProjectsController < ApplicationController
     'fs'
   end
 
-  def default_sorting_params
-    DEFAULT_SORTING_PARAMS
-  end
-
   def templates
     Project.templates.map do |project|
       label = project.title
@@ -240,7 +235,7 @@ class ProjectsController < ApplicationController
   end
 
   def file_params
-    params.permit(:project_id, :format, :path, :sorting_params)
+    params.permit(:project_id, :format, :path, sorting_params: [:col, :direction, :grouped?])
   end
 
   def show_project_params

@@ -1,27 +1,25 @@
 <%= turbo_frame_tag "project_directory" do %>
-  <div class="border border-2 shadow p-3 mt-3 mb-5 bg-white rounded">
-    <div class="d-flex justify-content-left lead text-weight-800">
-      <strong>.../projects<%= @path.to_s.split('projects')[1] %></strong>
+  <div class="d-flex justify-content-left lead text-weight-800">
+    <strong>.../projects<%= @path.to_s.split('projects')[1] %></strong>
+  </div>
+  <table class="table table-striped table-condensed w-100 table-hover caption-right">
+    <thead>
+      <tr>
+        <th><%= t('dashboard.type') %></span></th>
+        <th><%= column_head_link(:name, sorting_params) %></th>
+        <th><%= column_head_link(:size, sorting_params) %></th>
+        <th><%= column_head_link(:date, sorting_params) %></th>
+        <th><%= column_head_link(:owner, sorting_params) %></th>
+        <th>Mode</th>
+      </tr>
+    </thead>
+    <tbody>
+        <%= render partial: "files", locals: { project: project, path: path, files: files, sorting_params: sorting_params } %>
+    </tbody>
+  </table>
+  <div class="row content-justied-center col-6 mx-auto">
+    <div class="btn btn-primary">
+      <span><i class="fa fa-folder-open"></i>&nbsp<%= files_button %></span>
     </div>
-    <table class="table table-striped table-condensed w-100 table-hover caption-right">
-      <caption>
-        <div class="my-2 btn btn-sm btn-primary">
-          <span><i class="fa fa-folder-open"></i>&nbsp<%= files_button %></span>
-        </div>
-      </caption>
-      <thead>
-        <tr>
-          <th><%= t('dashboard.type') %></span></th>
-          <th><%= column_head_link(:name) %></th>
-          <th><%= column_head_link(:size) %></th>
-          <th><%= column_head_link(:date) %></th>
-          <th><%= column_head_link(:owner) %></th>
-          <th>Mode</th>
-        </tr>
-      </thead>
-      <tbody>
-          <%= render partial: "files", locals: { project: project, path: path, files: files, sorting_params: sorting_params } %>
-      </tbody>
-    </table>
   </div>
 <% end %>

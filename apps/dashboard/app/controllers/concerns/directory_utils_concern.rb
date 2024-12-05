@@ -2,9 +2,6 @@ module DirectoryUtilsConcern
   # Constants for sorting
   ASCENDING = true
   DESCENDING = false
-  # Constants for grouping
-  DIRECTORIES = true
-  FILES = false
   DEFAULT_SORTING_PARAMS = { col: 'name', direction: ASCENDING, grouped?: true }
 
   extend ActiveSupport::Concern
@@ -42,10 +39,11 @@ module DirectoryUtilsConcern
   end
 
   def set_sorting_params(parameters)
+    Rails.logger.debug("Sorting params: #{parameters}")
     @sorting_params = {
-      col: parameters[:col],
-      direction: parameters[:direction],
-      grouped?: parameters[:grouped?]
+      col: parameters&.[](:col),
+      direction: !parameters&.[](:direction),
+      grouped?: parameters&.[](:grouped?)
     }
   end
 

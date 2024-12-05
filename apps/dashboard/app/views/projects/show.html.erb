@@ -8,7 +8,7 @@
 </div>
 
 <div class='row'>
-  <div class="col-2 align-self-center justify-content-center d-flex">
+  <div class="col-2 align-self-center justify-content-left d-flex">
     <%= link_to 'Back', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
   </div>
 
@@ -21,12 +21,12 @@
 </div>
 
 <div class="row mb-3">
-  <div class="col-md-2">
-    <div class="list-group">
+  <div class="col-md-2 mt-3">
+    <div class="list-group shadow bg-white rounded">
       <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
           data-bs-toggle="collapse" data-bs-target="#launcher_list"
           aria-expanded="true" aria-controls="launcher_list">
-        <span><%= t('dashboard.jobs_launchers') %></span>
+        <span class="lead fw-bolder"><%= t('dashboard.jobs_launchers') %></span>
       </a>
 
       <div id="launcher_list" class="collapse show">
@@ -51,25 +51,42 @@
   </div>
   
   <div class="col-md-4">
-    <div class="row">
-      <h2 class="h3 d-flex justify-content-center">Active Jobs</h2>
-      <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job, locals: { project: @project }) %>
-    </div>
+    <div class="border border-2 shadow p-3 mt-3 mb-5 bg-white rounded">
+      <div class="row">
+        <h2 class="lead fw-bolder d-flex justify-content-center">Active Jobs</h2>
+        <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job, locals: { project: @project }) %>
+      </div>
 
-    <div class="row">
-      <h2 class="h3 d-flex justify-content-center">Completed Jobs</h2>
-      <div id="completed_jobs" class="row">
-        <%- @project.completed_jobs.each do |job| -%>
-        <div class="col-md-4" id="<%= "job_#{job.cluster}_#{job.id}" %>">
-          <%= render(partial: 'job_details_content', locals: { job: job, project: @project }) %>
+      <div class="row">
+        <h2 class="lead fw-bolder d-flex justify-content-center">Completed Jobs</h2>
+        <div id="completed_jobs" class="row">
+          <%- @project.completed_jobs.each do |job| -%>
+          <div class="col-md-4" id="<%= "job_#{job.cluster}_#{job.id}" %>">
+            <%= render(partial: 'job_details_content', locals: { job: job, project: @project }) %>
+          </div>
+          <%- end -%>
         </div>
-        <%- end -%>
       </div>
     </div>
   </div>
   <div class="col-md-6">
-    <h2 class="h3 d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
-    <%= render partial: 'directory', locals: { project: @project, path: @path, files: @files, sorting_params: @sorting_params } %>
+    <div class="border border-2 shadow p-3 mt-3 mb-5 bg-white rounded">
+      <h2 class="lead fw-bolder d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
+      <hr>
+      <%= turbo_frame_tag "project_directory", 
+            src: project_directory_path(
+              project_id: @project.id,
+              dir_path: @path,
+              sorting_params: @sorting_params
+           ) do
+      %>
+        <div class="d-flex justify-content-center">
+          <div id="loading-icon" class="spinner-border rem-5" role="status">
+            <span class="sr-only">Loading...</span> 
+          </div>
+        </div>
+      <%- end -%>
+    </div>
   </div>
 </div>
 
