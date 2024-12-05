@@ -307,4 +307,16 @@ class DirectoryUtilsConcernTest < ActiveSupport::TestCase
     ], sorted_files
   end
 
+  # Tests for DirectoryUtilsConcern#posix_file?
+  test 'posix_file? returns true when @path is a PosixFile' do
+    path = PosixFile.new('/some/path')
+    @controller.instance_variable_set(:@path, path)
+    assert @controller.posix_file?
+  end
+
+  test 'posix_file? returns false when @path is a RemoteFile' do
+    path = RemoteFile.new('/some/path', 'remote_fs')
+    @controller.instance_variable_set(:@path, path)
+    refute @controller.posix_file?
+  end
 end
