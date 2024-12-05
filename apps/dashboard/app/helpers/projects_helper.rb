@@ -84,7 +84,7 @@ module ProjectsHelper
   def link_text(column, sorting_params)
     col_title = t("dashboard.#{column.to_s}")
     if column.to_s == sorting_params[:col]
-      "#{col_title} #{ fa_icon(direction(column, sorting_params) == ascending ? 'sort-up' : 'sort-down', classes: 'fa-md') }".html_safe
+      "#{col_title} #{ fa_icon(sorting_params[:direction] == ascending ? 'sort-up' : 'sort-down', classes: 'fa-md') }".html_safe
     else
       "#{col_title} #{ fa_icon('sort', classes: 'fa-md') }".html_safe
     end
@@ -96,7 +96,7 @@ module ProjectsHelper
         dir_path: @path.to_s,
         sorting_params: { col: column,
                           direction: direction(column, sorting_params),
-                          grouped?: sorting_params[:grouped]
+                          grouped?: sorting_params[:grouped] || ascending
                         }
       }
     )

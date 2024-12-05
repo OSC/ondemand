@@ -40,9 +40,9 @@ module DirectoryUtilsConcern
 
   def set_sorting_params(parameters)
     @sorting_params = {
-      col: parameters&.[](:col) || DEFAULT_SORTING_PARAMS[:col],
-      direction: !parameters&.[](:direction) || DEFAULT_SORTING_PARAMS[:direction],
-      grouped?: parameters&.[](:grouped?) || DEFAULT_SORTING_PARAMS[:grouped?]
+      col: parameters&.[](:col).nil? ? DEFAULT_SORTING_PARAMS[:col] : parameters[:col],
+      direction: parameters&.[](:direction).nil? ?  DEFAULT_SORTING_PARAMS[:direction] : parameters[:direction],
+      grouped?: parameters&.[](:grouped?).nil? ? DEFAULT_SORTING_PARAMS[:grouped?] : parameters[:grouped?]
     }
   end
 
@@ -59,7 +59,7 @@ module DirectoryUtilsConcern
   def sort_by_column(files, column, direction)
     col = column.to_sym
     sorted_files = files.sort_by do |file|
-      if col == :size
+      if col == :size || col == :date
         file[col].to_i
       else
         file[col].to_s.downcase
