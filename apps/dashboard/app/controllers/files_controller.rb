@@ -159,6 +159,7 @@ class FilesController < ApplicationController
 
 
     if @transfer.kind_of?(Transfer)
+      puts @transfer
       render 'transfers/show'
     else
       render json: {}
@@ -168,7 +169,6 @@ class FilesController < ApplicationController
   rescue Errno::EACCES => e
     render json: { error_message: e.message }, status: :forbidden
   rescue StandardError => e
-    puts e
     render json: { error_message: e.message }, status: :internal_server_error
   end
 
