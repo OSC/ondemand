@@ -101,7 +101,7 @@ GEM
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
     dalli (3.2.8)
-    date (3.4.1)
+    date (3.4.0)
     domain_name (0.6.20240107)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
@@ -127,7 +127,7 @@ GEM
       railties (>= 6.0.0)
     local_time (1.0.3)
       coffee-rails
-    logger (1.6.2)
+    logger (1.6.1)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -147,9 +147,10 @@ GEM
     mime-types (3.6.0)
       logger
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2024.1203)
+    mime-types-data (3.2024.1105)
     mini_mime (1.1.5)
-    minitest (5.25.4)
+    mini_portile2 (2.8.8)
+    minitest (5.25.2)
     mocha (2.6.1)
       ruby2_keywords (>= 0.0.5)
     multi_json (1.15.0)
@@ -166,7 +167,8 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.4)
-    nokogiri (1.15.7-x86_64-linux)
+    nokogiri (1.15.6)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     ood_appkit (2.1.4)
       addressable (~> 2.4)
@@ -182,8 +184,7 @@ GEM
     pry (0.15.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    psych (5.2.1)
-      date
+    psych (5.2.0)
       stringio
     public_suffix (5.1.1)
     racc (1.8.1)
@@ -211,9 +212,9 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.6.1)
+    rails-html-sanitizer (1.6.0)
       loofah (~> 2.21)
-      nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+      nokogiri (~> 1.14)
     railties (7.0.8.5)
       actionpack (= 7.0.8.5)
       activesupport (= 7.0.8.5)
@@ -274,7 +275,7 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    webrick (1.9.1)
+    webrick (1.9.0)
     websocket (1.2.11)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
@@ -285,7 +286,7 @@ GEM
     zip_kit (6.3.1)
 
 PLATFORMS
-  x86_64-linux
+  ruby
 
 DEPENDENCIES
   addressable (~> 2.4)
@@ -327,4 +328,4 @@ DEPENDENCIES
   zip_kit (~> 6.2)
 
 BUNDLED WITH
-   2.3.27
+   2.3.6
