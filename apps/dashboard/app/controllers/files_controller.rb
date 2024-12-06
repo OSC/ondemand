@@ -157,7 +157,7 @@ class FilesController < ApplicationController
 
     @transfer = @path.handle_upload(params[:file].tempfile)
 
-    puts "searching for the error location"
+
     if @transfer.kind_of?(Transfer)
       render 'transfers/show'
     else
@@ -168,6 +168,7 @@ class FilesController < ApplicationController
   rescue Errno::EACCES => e
     render json: { error_message: e.message }, status: :forbidden
   rescue StandardError => e
+    puts e
     render json: { error_message: e.message }, status: :internal_server_error
   end
 
