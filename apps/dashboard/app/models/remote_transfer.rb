@@ -58,7 +58,6 @@ class RemoteTransfer < Transfer
         #
         # convert [a1, a2, a3] to {a1 => nil, a2 => nil, a3 => nil}
         files = Hash[files.map { |f| [f, nil] }].with_indifferent_access
-        puts files
       end
       self.new(action: action, files: files, src_remote: src_remote, dest_remote: dest_remote, tempfile: tempfile)
     end
