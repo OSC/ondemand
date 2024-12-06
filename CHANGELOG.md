@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Update Changelog (#3983)\
+Bump rails-html-sanitizer from 1.6.0 to 1.6.1 in /apps/myjobs (#3985)\
+update dependencies (#3984)\
+lint a random file (#3982)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
