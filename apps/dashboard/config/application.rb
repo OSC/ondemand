@@ -52,6 +52,8 @@ module Dashboard
     if plugins_dir.directory?
       plugins_dir.children.select(&:directory?).each do |installed_plugin|
         next unless installed_plugin.readable?
+        # Ignore plugins not installed by admins - plugin directory should be owned by root
+        next if ::Configuration.rails_env_production? && !File.stat(installed_plugin.to_s).uid.zero?
 
         config.paths["config/initializers"] << installed_plugin.join("initializers").to_s
         config.autoload_paths << installed_plugin.join("lib").to_s

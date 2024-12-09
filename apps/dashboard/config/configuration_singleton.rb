@@ -428,6 +428,10 @@ class ConfigurationSingleton
     sources
   end
 
+  def rails_env_production?
+    rails_env == 'production'
+  end
+
   private
 
   def can_access_core_app?(name)
