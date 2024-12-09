@@ -319,7 +319,8 @@ class RemoteFilesTest < ApplicationSystemTestCase
         attach_file 'files[]', src_file, visible: false, match: :first
         find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
 
-        begin
+      # TODO: Investigate why this upload is failing the first time in the first place.
+       begin
           find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
         rescue
           find('#upload-btn').click
