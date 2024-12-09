@@ -159,7 +159,6 @@ class FilesController < ApplicationController
 
 
     if @transfer.kind_of?(Transfer)
-      puts @transfer
       render 'transfers/show'
     else
       render json: {}
