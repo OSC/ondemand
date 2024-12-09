@@ -535,4 +535,20 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       assert_equal(30_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
     end
   end
+
+  test "rails_env_production? should return true if production environment" do
+    with_modified_env(RAILS_ENV: 'production') do
+      assert ConfigurationSingleton.new.rails_env_production?
+    end
+  end
+
+  test "rails_env_production? should return false if development or test environment" do
+    with_modified_env(RAILS_ENV: 'development') do
+      refute ConfigurationSingleton.new.rails_env_production?
+    end
+
+    with_modified_env(RAILS_ENV: 'test') do
+      refute ConfigurationSingleton.new.rails_env_production?
+    end
+  end
 end
