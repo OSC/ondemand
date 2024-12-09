@@ -322,9 +322,11 @@ class RemoteFilesTest < ApplicationSystemTestCase
         begin
           find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
         rescue
+          find('#upload-btn').click
+          find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
           attach_file 'files[]', src_file, visible: false, match: :first
           find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-          
+
           find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
         end
       end
