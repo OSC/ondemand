@@ -2,10 +2,15 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
+  include DirectoryUtilsConcern
+  
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
+    parse_path
+    validate_path!
+    
     if @project.nil?
       respond_to do |format|
         message = I18n.t('dashboard.jobs_project_not_found', project_id: project_id)
@@ -28,6 +33,41 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # GET /projects/:project_id/files/*filepath
+  def directory
+    @project = Project.find(directory_params[:project_id])
+    parse_path("#{directory_params[:dir_path]}")
+    validate_path!
+
+    set_sorting_params(directory_params[:sorting_params] || DEFAULT_SORTING_PARAMS )
+    set_files
+    render( partial: 'projects/directory', 
+            locals: { project: @project,
+                      path: @path,
+                      files: @files,
+                      sorting_params: @sorting_params
+                    }
+    )
+  end
+
+  def file
+    @project = Project.find(file_params[:project_id])
+    parse_path(file_params[:path])
+    validate_path!
+    @file = File.open(@path.to_s, "r") do |file|
+      file.read 
+    end
+
+    render( partial: 'projects/file',
+            locals: { 
+              project: @project,
+              path: @path,
+              file: @file,
+              sorting_params: file_params[:sorting_params]
+            }
+    )
+  end
+  
   # GET /projects
   def index
     @projects = Project.all
@@ -162,6 +202,16 @@ class ProjectsController < ApplicationController
 
   private
 
+  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  def resolved_path
+    @project&.directory.to_s
+  end
+
+  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  def resolved_fs
+    'fs'
+  end
+
   def templates
     Project.templates.map do |project|
       label = project.title
@@ -177,6 +227,14 @@ class ProjectsController < ApplicationController
     params
       .require(:project)
       .permit(:name, :directory, :description, :icon, :id, :template)
+  end
+
+  def directory_params
+    params.permit(:project_id, :format, :dir_path, sorting_params: [:col, :direction, :grouped?])
+  end
+
+  def file_params
+    params.permit(:project_id, :format, :path, sorting_params: [:col, :direction, :grouped?])
   end
 
   def show_project_params

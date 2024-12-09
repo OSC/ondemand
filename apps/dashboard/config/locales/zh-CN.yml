@@ -151,4 +151,13 @@ zh-CN:
     edit: "编辑"
     show: "显示" 
     launch: "启动" 
+    type: "类型"
+    name: "名称"
+    size: "大小"
+    owner: "所有者"
+    date: "日期"
+    mode: "模式"
+    project: "项目"
+    directory: "目录"
+    
     # development_apps_caption: "Sandbox App"
