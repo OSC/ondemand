@@ -1,5 +1,6 @@
-module UserSettingStore
+# frozen_string_literal: true
 
+module UserSettingStore
   BC_TEMPLATES = :batch_connect_templates
 
   def user_settings
@@ -23,7 +24,7 @@ module UserSettingStore
     begin
       yml = YAML.safe_load(user_settings_path.read) || {}
       user_settings = yml.deep_symbolize_keys
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error("Can't read or parse settings file: #{user_settings_path} because of error #{e}")
     end
 
@@ -33,7 +34,7 @@ module UserSettingStore
   def save_user_settings
     # Ensure there is a directory to write the user settings file
     user_settings_path.dirname.tap { |p| p.mkpath unless p.exist? }
-    File.open(user_settings_path.to_s, "w") { |file| file.write(@user_settings.deep_stringify_keys.to_yaml) }
+    File.open(user_settings_path.to_s, 'w') { |file| file.write(@user_settings.deep_stringify_keys.to_yaml) }
   end
 
   def user_settings_path
