@@ -5,16 +5,16 @@
   <table class="table table-striped table-condensed w-100 table-hover caption-right">
     <thead>
       <tr>
-        <th><%= t('dashboard.type') %></span></th>
-        <th><%= column_head_link(:name, sorting_params) %></th>
-        <th><%= column_head_link(:size, sorting_params) %></th>
-        <th><%= column_head_link(:date, sorting_params) %></th>
-        <th><%= column_head_link(:owner, sorting_params) %></th>
-        <th>Mode</th>
+        <th><%= column_head_link(:type, sort_by, path, project.id) %></th>
+        <th><%= column_head_link(:name, sort_by, path, project.id) %></th>
+        <th><%= column_head_link(:size, sort_by, path, project.id) %></th>
+        <th><%= column_head_link(:date, sort_by, path, project.id) %></th>
+        <th><%= column_head_link(:owner, sort_by, path, project.id) %></th>
+        <th><%= column_head_link(:mode, sort_by, path, project.id) %></th>
       </tr>
     </thead>
     <tbody>
-        <%= render partial: "files", locals: { project: project, path: path, files: files, sorting_params: sorting_params } %>
+        <%= render partial: "files", locals: { project: project, path: path, files: files, sort_by: sort_by } %>
     </tbody>
   </table>
   <div class="row content-justied-center col-6 mx-auto">

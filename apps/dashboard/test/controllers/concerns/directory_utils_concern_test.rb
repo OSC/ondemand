@@ -17,10 +17,16 @@ class DirectoryUtilsConcernTest < ActiveSupport::TestCase
 
   def setup
     @controller = DummyController.new
-    @date4 = 2.hours.ago.to_i.to_s
-    @date3 = 2.days.ago.to_i.to_s
-    @date2 = 2.weeks.ago.to_i.to_s
     @date1 = 2.months.ago.to_i.to_s
+    @date2 = 2.weeks.ago.to_i.to_s
+    @date3 = 2.days.ago.to_i.to_s
+    @date4 = 2.hours.ago.to_i.to_s
+    @files = files = [
+      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 },
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 },
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 }
+    ]
   end
 
   # Tests for DirectoryUtilsConcern#normalized_path
@@ -171,141 +177,85 @@ class DirectoryUtilsConcernTest < ActiveSupport::TestCase
     assert_nothing_raised { @controller.validate_path! }
   end
 
-  # Tests for DirectoryUtilsConcern#sort_by_column
-  test 'set_sorting_params sets @sorting_params correctly with valid parameters' do
-    parameters = { col: 'name', direction: DirectoryUtilsConcern::ASCENDING, grouped?: true }
-    @controller.set_sorting_params(parameters)
-    expected_params = { col: 'name', direction: DirectoryUtilsConcern::ASCENDING, grouped?: true }
-    assert_equal expected_params, @controller.instance_variable_get(:@sorting_params)
-  end
-
-  test 'set_sorting_params sets @sorting_params correctly with descending sort direction' do
-    parameters = { col: 'name', direction: DirectoryUtilsConcern::DESCENDING, grouped?: true }
-    @controller.set_sorting_params(parameters)
-    expected_params = { col: 'name', direction: DirectoryUtilsConcern::DESCENDING, grouped?: true }
-    assert_equal expected_params, @controller.instance_variable_get(:@sorting_params)
-  end
-
-  test 'set_sorting_params sets @sorting_params with missing grouped? parameter' do
-    parameters = { col: 'size', direction: DirectoryUtilsConcern::DESCENDING }
-    @controller.set_sorting_params(parameters)
-    expected_params = { col: 'size', direction: DirectoryUtilsConcern::DESCENDING, grouped?: true }
-    assert_equal expected_params, @controller.instance_variable_get(:@sorting_params)
-  end
-
-  test 'set_sorting_params sets @sorting_params with missing direction parameter' do
-    parameters = { col: 'modified_at', grouped?: false }
-    @controller.set_sorting_params(parameters)
-    expected_params = { col: 'modified_at', direction: true, grouped?: false }
-    assert_equal expected_params, @controller.instance_variable_get(:@sorting_params)
-  end
-
-  test 'set_sorting_params sets @sorting_params with empty parameters' do
-    parameters = {}
-    @controller.set_sorting_params(parameters)
-    expected_params = { col: "name", direction: true, grouped?: true }
-    assert_equal expected_params, @controller.instance_variable_get(:@sorting_params)
-  end
-
   # Tests for DirectoryUtilsConcern#set_files
   test 'set_files sets @files correctly' do
     path = mock('PosixFile')
     path.stubs(:ls).returns([{ name: 'file1', directory: false }, { name: 'dir1', directory: true }])
     @controller.instance_variable_set(:@path, path)
-    @controller.instance_variable_set(:@sorting_params, { col: 'name', direction: true, grouped?: true })
+    @controller.instance_variable_set(:@sory_by, 'name')
 
-    @controller.set_files
+    @controller.set_files('name')
 
     files = @controller.instance_variable_get(:@files)
     assert_equal [{ name: 'dir1', directory: true }, { name: 'file1', directory: false }], files
   end
 
-  # Tests for DirectoryUtilsConcern#group_by_type
-  test 'group_by_type groups directories and files' do
-    files = [
-      { name: 'file1', directory: false },
-      { name: 'dir1', directory: true },
-      { name: 'file2', directory: false },
-      { name: 'dir2', directory: true }
-    ]
-    
-    grouped_files = @controller.group_by_type(files)
-    assert_equal [
-      { name: 'dir1', directory: true },
-      { name: 'dir2', directory: true },
-      { name: 'file1', directory: false },
-      { name: 'file2', directory: false }
-      ], grouped_files    
-  end
-
   # Tests for DirectoryUtilsConcern#sort_by_column
-  test 'sort_by_column sorts files by size' do
-    files = [
-      { name: 'file2', size: 100, owner: 'user1', date: @date1 },
-      { name: 'file3', size: 25, owner: 'user2', date: @date2 },
-      { name: 'file1', size: 50, owner: 'user2', date: @date3 },
-      { name: 'file4', size: 75, owner: 'user3', date: @date4 }
-    ]
-
-    sorted_files = @controller.sort_by_column(files, 'size', DirectoryUtilsConcern::ASCENDING)
+  test 'sort_by_column sorts by type' do
+    @files
+    sorted_files = @controller.sort_by_column(@files, 'type')
     assert_equal [
-      { name: 'file3', size: 25, owner: 'user2', date: @date2 },
-      { name: 'file1', size: 50, owner: 'user2', date: @date3 },
-      { name: 'file4', size: 75, owner: 'user3', date: @date4 },
-      { name: 'file2', size: 100, owner: 'user1', date: @date1 }
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 },
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 },
+      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 }
     ], sorted_files
   end
 
-  test 'sort_by_column sorts files by owner' do
-    files = [
-      { name: 'file3', size: 25, owner: 'user2', date: @date2 },
-      { name: 'file4', size: 75, owner: 'user3', date: @date4 },
-      { name: 'file2', size: 100, owner: 'user1', date: @date1 },
-      { name: 'file1', size: 50, owner: 'user2', date: @date3 }
-    ]
-
-    sorted_files = @controller.sort_by_column(files, 'owner', DirectoryUtilsConcern::ASCENDING)
+  test 'sort_by_column sorts by name' do
+    @files
+    sorted_files = @controller.sort_by_column(@files, 'name')
     assert_equal [
-      { name: 'file2', size: 100, owner: 'user1', date: @date1 },
-      { name: 'file3', size: 25, owner: 'user2', date: @date2 },
-      { name: 'file1', size: 50, owner: 'user2', date: @date3 },
-      { name: 'file4', size: 75, owner: 'user3', date: @date4 }
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 },
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 },
+      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 }
     ], sorted_files
   end
 
-  test 'sort_by_column sorts files by date' do
-    files = [
-      { name: 'file3', size: 75, owner: 'user3', date: @date3 },
-      { name: 'file4', size: 50, owner: 'user2', date: @date4 },
-      { name: 'file2', size: 100, owner: 'user1', date: @date2 },
-      { name: 'file1', size: 25, owner: 'user2', date: @date1 }
-    ]
-
-    sorted_files = @controller.sort_by_column(files, 'date', DirectoryUtilsConcern::ASCENDING)
+  test 'sort_by_column sorts by size' do
+    @files
+    sorted_files = @controller.sort_by_column(@files, 'size')
     assert_equal [
-      { name: 'file1', size: 25, owner: 'user2', date: @date1 },
-      { name: 'file2', size: 100, owner: 'user1', date: @date2 },
-      { name: 'file3', size: 75, owner: 'user3', date: @date3 },
-      { name: 'file4', size: 50, owner: 'user2', date: @date4 }
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 },
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 },
+      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 }
     ], sorted_files
   end
 
-  test 'sort_by_column sorts files by name' do
-    files = [
-      { name: 'file3', size: 25, owner: 'user2', date: @date1 },
-      { name: 'file1', size: 50, owner: 'user2', date: @date3 },
-      { name: 'file4', size: 75, owner: 'user3', date: @date4 },
-      { name: 'file2', size: 100, owner: 'user1', date: @date2 }
-    ]
-
-    sorted_files = @controller.sort_by_column(files, 'name', DirectoryUtilsConcern::ASCENDING)
+  test 'sort_by_column sorts by date' do
+    @files
+    sorted_files = @controller.sort_by_column(@files, 'date')
     assert_equal [
-      { name: 'file1', size: 50, owner: 'user2', date: @date3 },
-      { name: 'file2', size: 100, owner: 'user1', date: @date2 },
-      { name: 'file3', size: 25, owner: 'user2', date: @date1 },
-      { name: 'file4', size: 75, owner: 'user3', date: @date4 }
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 },
+      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 },
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 }
     ], sorted_files
   end
+
+  test 'sort_by_column sorts by owner' do
+    @files
+    sorted_files = @controller.sort_by_column(@files, 'owner')
+    assert_equal [
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 },
+      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 },
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 }
+    ], sorted_files
+  end
+
+  test 'sort_by_column sorts by mode' do
+    sorted_files = @controller.sort_by_column(@files, 'mode')
+    assert_equal [
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 },
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 },
+      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 }
+    ], sorted_files
+  end
+
 
   # Tests for DirectoryUtilsConcern#posix_file?
   test 'posix_file? returns true when @path is a PosixFile' do

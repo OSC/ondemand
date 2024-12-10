@@ -41,80 +41,33 @@ module ProjectsHelper
       ).html_safe
   end
 
-  # <a id="new-dir-btn" class="btn btn-outline-dark" href="<%= files_path(fs: 'fs', filepath: path ) %>">
-  # <i class="fas fa-folder-open" aria-hidden="true"></i>
-  # <%=  "Go To Files: .../projects#{@path.to_s.split('projects')[1]}" %>
-  # <%- if Configuration.project_size_enabled -%>
-  #   <span data-bs-toggle="project" data-url="<%= project_path(@project.id) %>"></span>
-  # <%- end -%>
-  # </a>
-
-  def project_size
-
-  end
-
-  # DRAFT: Remove if not needed
-  # def group_by_type_link
-  #   group_link_text = "#{@sorting_params[:grouped?] ? 'Ungroup' : 'Group'}"
-  #   group_link_title = @sorting_params[:grouped?] ? 'Ungroup results by type' : 'Group results by type'
-  #   link_to(
-  #     "Group",
-  #     target_path(@sorting_params[:col], !@sorting_params[:grouped?]),
-  #     title: "Group results by type",
-  #     class: "btn btn-1 btn-primary btn-hover btn-sm align-self-end ml-auto",
-  #     data: data_attributes
-  #   )
-  # end
-
-  def column_head_link(column, sorting_params)
+  def column_head_link(column, sort_by, path, project_id)
     link_to(
-      link_text(column, sorting_params),
-      target_path(column, sorting_params),
-      title: tool_tip, 
-      class: "text-dark",
-      data: data_attributes
+      header_text(column, sort_by),
+      target_path(column, path, project_id),
+      title: "Show #{path.basename} directory", 
+      class: classes(column, sort_by),
+      data: { turbo_frame: 'project_directory' }
     )
   end
 
-  def direction(column, sorting_params)
-    return !sorting_params[:direction] if column.to_s == sorting_params[:col].to_s
-    ascending
+  def header_text(column, sort_by)
+    "#{t("dashboard.#{column.to_s}")} #{fa_icon(column.to_s == sort_by.to_s ? 'sort-down' : 'sort', classes: 'fa-md')}".html_safe
   end
 
-  def link_text(column, sorting_params)
-    col_title = t("dashboard.#{column.to_s}")
-    if column.to_s == sorting_params[:col]
-      "#{col_title} #{ fa_icon(sorting_params[:direction] == ascending ? 'sort-up' : 'sort-down', classes: 'fa-md') }".html_safe
-    else
-      "#{col_title} #{ fa_icon('sort', classes: 'fa-md') }".html_safe
-    end
-  end
-
-  def target_path(column, sorting_params)
+  def target_path(column, path, project_id)
     project_directory_path(
-      { project_id: @project.id,
-        dir_path: @path.to_s,
-        sorting_params: { col: column,
-                          direction: direction(column, sorting_params),
-                          grouped?: sorting_params[:grouped] || ascending
-                        }
+      { project_id: project_id,
+        dir_path: path.to_s,
+        sort_by: column
       }
     )
   end
 
-  def tool_tip
-    "Show #{@path.basename} directory"
-  end
-
-  def data_attributes
-    { turbo_frame: 'project_directory' }
-  end
-
-  def ascending
-    DirectoryUtilsConcern::ASCENDING
-  end
-
-  def descending
-    DirectoryUtilsConcern::DESCENDING
+  def classes(column, sort_by)
+    Rails.logger.debug("column: #{column.to_s} == sort_by: #{sort_by.to_s} ? #{column.to_s == sort_by.to_s}")
+    classes = ['btn', 'btn-xs', 'btn-hover']
+    classes << (column.to_s == sort_by.to_s ? ['btn-primary'] : ['btn-outline-primary'])
+    classes.join(' ')
   end
 end

@@ -36,16 +36,15 @@ class ProjectsController < ApplicationController
   # GET /projects/:project_id/files/*filepath
   def directory
     @project = Project.find(directory_params[:project_id])
+    sort_by = directory_params[:sort_by] || :name
     parse_path("#{directory_params[:dir_path]}")
     validate_path!
-
-    set_sorting_params(directory_params[:sorting_params] || DEFAULT_SORTING_PARAMS )
-    set_files
+    set_files(sort_by)
     render( partial: 'projects/directory', 
             locals: { project: @project,
                       path: @path,
                       files: @files,
-                      sorting_params: @sorting_params
+                      sort_by: sort_by
                     }
     )
   end
@@ -63,7 +62,7 @@ class ProjectsController < ApplicationController
               project: @project,
               path: @path,
               file: @file,
-              sorting_params: file_params[:sorting_params]
+              sort_by: file_params[:sort_by]
             }
     )
   end
@@ -230,11 +229,11 @@ class ProjectsController < ApplicationController
   end
 
   def directory_params
-    params.permit(:project_id, :format, :dir_path, sorting_params: [:col, :direction, :grouped?])
+    params.permit(:project_id, :format, :dir_path, :sort_by)
   end
 
   def file_params
-    params.permit(:project_id, :format, :path, sorting_params: [:col, :direction, :grouped?])
+    params.permit(:project_id, :format, :path, :sort_by)
   end
 
   def show_project_params

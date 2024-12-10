@@ -11,7 +11,7 @@
           project_directory_path(
             project_id: project.id,
             dir_path: "#{path.parent}",
-            sorting_params: sorting_params
+            sort_by: sort_by
           ),
           title: 'Show parent directory',
           data: { turbo_frame: "project_directory" }
@@ -37,7 +37,7 @@
           project_directory_path(
             project_id: project.id,
             dir_path: "#{path}/#{file[:name]}",
-            sorting_params: sorting_params
+            sort_by: sort_by
           ),
           title: "Show #{file[:name]} directory",
           data: { turbo_frame: "project_directory" }
@@ -49,7 +49,7 @@
           project_file_path(
             project_id: project.id,
             path: "#{path}/#{file[:name]}",
-            sorting_params: sorting_params
+            sort_by: sort_by
           ),
           title: "Show #{file[:name]}", 
           data: { turbo_frame: "project_directory" }

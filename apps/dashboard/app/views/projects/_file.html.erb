@@ -3,7 +3,7 @@
     <div class="row">
       <div class="pl-2">
         <%= link_to("",
-            project_directory_path(project_id: @project.id, dir_path: "#{@path.parent}", sorting_params: @sorting_params),
+            project_directory_path(project_id: @project.id, dir_path: "#{@path.parent}", sort_by: @sort_by),
             class: 'fa fa-window-close align-self-start button buttom-sm text-danger',
             data: { turbo_frame: "project_directory" }
           )

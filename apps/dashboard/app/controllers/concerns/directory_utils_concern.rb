@@ -1,9 +1,4 @@
 module DirectoryUtilsConcern
-  # Constants for sorting
-  ASCENDING = true
-  DESCENDING = false
-  DEFAULT_SORTING_PARAMS = { col: 'name', direction: ASCENDING, grouped?: true }
-
   extend ActiveSupport::Concern
 
   def normalized_path(path)
@@ -38,35 +33,22 @@ module DirectoryUtilsConcern
     end
   end
 
-  def set_sorting_params(parameters)
-    @sorting_params = {
-      col: parameters&.[](:col).nil? ? DEFAULT_SORTING_PARAMS[:col] : parameters[:col],
-      direction: parameters&.[](:direction).nil? ?  DEFAULT_SORTING_PARAMS[:direction] : parameters[:direction],
-      grouped?: parameters&.[](:grouped?).nil? ? DEFAULT_SORTING_PARAMS[:grouped?] : parameters[:grouped?]
-    }
+  def set_files(sort_by)
+    @files = sort_by_column(@path.ls, sort_by)
   end
 
-  def set_files
-    @files = @path.ls
-    @files = sort_by_column(@files, @sorting_params[:col], @sorting_params[:direction])
-    @files = group_by_type(@files) if @sorting_params[:grouped?]
-  end
-
-  def group_by_type(files)
-    directories = files.select { |file| file[:directory] } + files.select { |file| !file[:directory] }
-  end
-
-  def sort_by_column(files, column, direction)
+  def sort_by_column(files, column)
     col = column.to_sym
     sorted_files = files.sort_by do |file|
-      if col == :size || col == :date
-        file[col].to_i
-      else
+      case col
+      when :name, :owner
         file[col].to_s.downcase
+      when :type
+        file[:directory] ? 0 : 1
+      else
+        file[col].to_i
       end
     end
-    return sorted_files if direction == ASCENDING
-    return sorted_files.reverse
   end
 
   def posix_file?
