@@ -74,8 +74,9 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :project_size_timeout           => '15',
-      :novnc_default_compression   => '6',
-      :novnc_default_quality       => '2'
+      :novnc_default_compression      => '6',
+      :novnc_default_quality          => '2',
+      :plugins_directory              => '/etc/ood/config/plugins'
     }.freeze
   end
 
@@ -425,6 +426,10 @@ class ConfigurationSingleton
     sources << xdmod_host if xdmod_integration_enabled?
 
     sources
+  end
+
+  def rails_env_production?
+    rails_env == 'production'
   end
 
   private
