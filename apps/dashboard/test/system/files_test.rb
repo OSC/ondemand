@@ -565,7 +565,7 @@ class FilesTest < ApplicationSystemTestCase
 
         sleep 5 # give it enough time to download
         assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
-
+        
         Dir.mktmpdir do |unzip_tmp_dir|
           `cd #{unzip_tmp_dir}; unzip #{zip_file}`
           assert(File.exist?("#{unzip_tmp_dir}/real_directory"))
@@ -654,6 +654,30 @@ class FilesTest < ApplicationSystemTestCase
     expected_links = ['View', 'Edit', 'Rename', 'Delete']
 
     assert_equal(expected_links, null_links)
+  end
+
+  test 'download button is disabled when non-downloadable item is checked' do
+    Dir.mktmpdir do |dir|
+      cant_read = 'cant_read.txt'
+      can_read = 'can_read.txt'
+
+      `touch #{dir}/#{can_read}`
+      `touch #{dir}/#{cant_read}`
+      `chmod 000 #{dir}/#{cant_read}`
+
+      visit files_url(dir)
+
+      can_read_row = find('tbody a', exact_text: can_read).ancestor('tr')
+      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+
+      can_read_row.find('input[type="checkbox"]').check
+
+      refute find("#download-btn").disabled?
+
+      cant_read_row.find('input[type="checkbox"]').check
+
+      assert find("#download-btn").disabled?
+    end
   end
 
   test 'allowlist errors flash' do
