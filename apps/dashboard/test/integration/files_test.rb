@@ -31,6 +31,31 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def download_and_test(filename, content_type)
+    Dir.mktmpdir do |tmpdir|
+      src_file = "test/fixtures/files/download/#{filename}"
+      dest_file = "#{tmpdir}/#{filename}"
+
+      put_file("#{files_path}/#{dest_file}", src_file)
+
+      get files_path(filepath: dest_file, download: true)
+
+      assert_equal response.headers["Content-Type"], content_type
+    end
+  end
+
+  test "can download file as text/plain" do 
+    download_and_test("test_text.txt", "text/plain")
+  end
+
+  test "can download file as image/png" do
+    download_and_test("osc-logo.png", "image/png")
+  end
+
+  test "can download file as application/x-yaml" do
+    download_and_test("test.yml", "application/x-yaml")
+  end
+
   test "can upload file with non-ASCII characters" do
     upload_and_test("funny_characters.sh")
   end
@@ -54,5 +79,4 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
   test "can upload file binary files as text/plain as application/octet-stream" do
     upload_and_test("hello-world-c", content_type: 'application/octet-stream')
   end
-
 end
