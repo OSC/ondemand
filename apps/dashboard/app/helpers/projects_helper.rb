@@ -31,4 +31,43 @@ module ProjectsHelper
       status
     end
   end
+
+  def files_button
+    link_to(
+      ".../projects#{@path.to_s.split('projects')[1]}",
+      files_path(fs: 'fs', filepath: @path),
+      target: '_top',
+      class: 'link-light'
+      ).html_safe
+  end
+
+  def column_head_link(column, sort_by, path, project_id)
+    link_to(
+      header_text(column, sort_by),
+      target_path(column, path, project_id),
+      title: "Show #{path.basename} directory", 
+      class: classes(column, sort_by),
+      data: { turbo_frame: 'project_directory' }
+    )
+  end
+
+  def header_text(column, sort_by)
+    "#{t("dashboard.#{column.to_s}")} #{fa_icon(column.to_s == sort_by.to_s ? 'sort-down' : 'sort', classes: 'fa-md')}".html_safe
+  end
+
+  def target_path(column, path, project_id)
+    project_directory_path(
+      { project_id: project_id,
+        dir_path: path.to_s,
+        sort_by: column
+      }
+    )
+  end
+
+  def classes(column, sort_by)
+    Rails.logger.debug("column: #{column.to_s} == sort_by: #{sort_by.to_s} ? #{column.to_s == sort_by.to_s}")
+    classes = ['btn', 'btn-xs', 'btn-hover']
+    classes << (column.to_s == sort_by.to_s ? ['btn-primary'] : ['btn-outline-primary'])
+    classes.join(' ')
+  end
 end
