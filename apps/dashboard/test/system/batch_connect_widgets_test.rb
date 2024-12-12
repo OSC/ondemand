@@ -112,6 +112,40 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'path_selector handles invalid regular expressions' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      
+      Tempfile.new("test.py", "#{Rails.root}/tmp")
+      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}/tmp"
+            show_files: true
+            file_pattern: \.doesn't(compile
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      accept_alert("The regular expression provided for this path selector did not compile!") do
+        visit new_batch_connect_session_context_url('sys/app')
+      end
+    end
+  end
+
   test 'data-label-* allows select options to dynamically change the label of another form element' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }

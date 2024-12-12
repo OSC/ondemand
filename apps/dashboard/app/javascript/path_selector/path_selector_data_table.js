@@ -230,10 +230,17 @@ export class PathSelectorTable {
 
   filteredByFilename(file) {
     if (this.filePattern !== "") {
-      if (file.name.match(RegExp(this.filePattern))) {
-        return this.showFiles;
-      } else {
-        return false;
+      try {
+        const regex = RegExp(this.filePattern)
+
+        if (file.name.match(regex)) {
+          return this.showFiles;
+        } else {
+          return false;
+        }
+
+      } catch (e) {
+        alert("The regular expression provided for this path selector did not compile");
       }
     }
     else {
