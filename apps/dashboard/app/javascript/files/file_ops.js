@@ -48,8 +48,10 @@ jQuery(function() {
   });
 
   $('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbox]', function (e) {
-    if (this.dataset['dlUrl'] == 'undefined') {
+    if (this.dataset['dlUrl'] == 'undefined' && this.checked) {
       $("#download-btn").attr('disabled', true);
+    } else if (this.dataset['dlUrl'] == 'undefined') {
+      $("#download-btn").attr('disabled', false);
     }
   });
   

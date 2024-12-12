@@ -680,6 +680,24 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'download button is re-enabled when non-downloadable item is unchecked' do
+    Dir.mktmpdir do |dir|
+      cant_read = 'cant_read.txt'
+
+      `touch #{dir}/#{cant_read}`
+      `chmod 000 #{dir}/#{cant_read}`
+
+      visit files_url(dir)
+
+      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+      cant_read_row.find('input[type="checkbox"]').check
+      assert find("#download-btn").disabled?
+
+      cant_read_row.find('input[type="checkbox"]').uncheck
+      refute find("#download-btn").disabled?
+    end
+  end
+
   test 'allowlist errors flash' do
     with_modified_env({ OOD_ALLOWLIST_PATH: Rails.root.to_s }) do
       visit(files_url(Rails.root))
