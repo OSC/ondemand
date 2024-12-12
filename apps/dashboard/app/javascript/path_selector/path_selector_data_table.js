@@ -209,6 +209,16 @@ export class PathSelectorTable {
 
   // filter the response from the files API to remove things like hidden files/directories
   filterFileResponse(data) {
+    let regex = undefined
+
+    try {
+      if (this.filePattern !== undefined) {
+        regex = RegExp(this.filePattern);
+      }
+    } catch {
+      alert("The regular expression provided for this path selector did not compile");
+    }
+
     const filteredFiles = data.files.filter((file) => {
       const isHidden = file.name.startsWith('.');
       const isFile = file.type == "f";
@@ -218,7 +228,7 @@ export class PathSelectorTable {
       } else if(isHidden) {
         return this.showHidden;
       } else if(isFile) {
-        return this.filteredByFilename(file);
+        return this.filteredByFilename(file, regex);
       } else {
         return true;
       }
@@ -228,19 +238,12 @@ export class PathSelectorTable {
     return data;
   }
 
-  filteredByFilename(file) {
-    if (this.filePattern !== "") {
-      try {
-        const regex = RegExp(this.filePattern)
-
-        if (file.name.match(regex)) {
-          return this.showFiles;
-        } else {
-          return false;
-        }
-
-      } catch (e) {
-        alert("The regular expression provided for this path selector did not compile");
+  filteredByFilename(file, regex) {
+    if (regex !== undefined) {
+      if (file.name.match(regex)) {
+        return this.showFiles;
+      } else {
+        return false;
       }
     }
     else {
