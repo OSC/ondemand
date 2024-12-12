@@ -698,6 +698,35 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'download button is NOT re-enabled until ALL non-downloadable files are unchecked' do
+    Dir.mktmpdir do |dir|
+      cant_read1 = 'cant_read1.txt'
+      cant_read2 = 'cant_read2.txt'
+
+      `touch #{dir}/#{cant_read1}`
+      `touch #{dir}/#{cant_read2}`
+      `chmod 000 #{dir}/#{cant_read1}`
+      `chmod 000 #{dir}/#{cant_read2}`
+
+      visit files_url(dir)
+
+      cant_read1_row = find('tbody a', exact_text: cant_read1).ancestor('tr')
+      cant_read2_row = find('tbody a', exact_text: cant_read2).ancestor('tr')
+
+      cant_read1_row.find('input[type="checkbox"]').check
+      assert find("#download-btn").disabled?
+
+      cant_read2_row.find('input[type="checkbox"]').check
+      assert find("#download-btn").disabled?
+
+      cant_read1_row.find('input[type="checkbox"]').uncheck
+      assert find("#download-btn").disabled?
+
+      cant_read2_row.find('input[type="checkbox"]').uncheck
+      refute find("#download-btn").disabled?
+    end
+  end
+
   test 'allowlist errors flash' do
     with_modified_env({ OOD_ALLOWLIST_PATH: Rails.root.to_s }) do
       visit(files_url(Rails.root))
