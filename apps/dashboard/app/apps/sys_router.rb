@@ -42,7 +42,7 @@ class SysRouter
   end
 
   def caption
-    "System Installed App"
+    I18n.t('dashboard.system_apps_caption')
   end
 
   def category
