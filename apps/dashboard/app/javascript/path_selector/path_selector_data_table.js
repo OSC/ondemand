@@ -84,7 +84,7 @@ export class PathSelectorTable {
   async reloadTable(url) {
     try {
       $(this.tableWrapper()).hide();
-      $('#loading-icon').show();
+      $(this).closest('.loading-icon').show();
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
@@ -104,7 +104,7 @@ export class PathSelectorTable {
   }
 
   resetTable() {
-    $('#loading-icon').hide();
+    $(this).closest(".loading-icon").hide();
     $(this.tableWrapper()).show();
     $('#forbidden-warning').addClass('d-none');
   }
