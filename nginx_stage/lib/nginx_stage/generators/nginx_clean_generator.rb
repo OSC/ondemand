@@ -106,7 +106,7 @@ module NginxStage
             FileUtils.rmdir(dir)
           rescue Errno::ENOTEMPTY
             # Wait for a short time, while Nginx cleans up its PID file.
-            sleep(0.05)
+            sleep(0.5)
             # Then try again once.
             FileUtils.rmdir(dir)
           end
