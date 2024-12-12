@@ -39,7 +39,7 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   # gem 'web-console', '~> 2.0'
-  gem 'i18n-tasks', '0.9.33'
+  gem 'i18n-tasks'
   #gem 'easy_translate'
   #gem 'ruby-openai'
 end
