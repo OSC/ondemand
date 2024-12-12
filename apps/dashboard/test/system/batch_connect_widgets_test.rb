@@ -140,7 +140,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       Pathname.new("#{dir}/app/").join('form.yml').write(form)
       base_id = 'batch_connect_session_context_path'
 
-      accept_alert("The regular expression provided for this path selector did not compile!") do
+      accept_alert("The regular expression provided for this path selector did not compile") do
         visit new_batch_connect_session_context_url('sys/app')
       end
     end
