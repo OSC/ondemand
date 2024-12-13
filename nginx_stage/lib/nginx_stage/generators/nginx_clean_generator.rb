@@ -111,7 +111,7 @@ module NginxStage
             FileUtils.rmdir(dir)
           end
         rescue StandardError => e
-          warn "Error trying to clean up the PID file #{dir} of disabled user: #{e.message}"
+          warn "Error trying to clean up the PID file directory '#{dir}' of disabled user: #{e.message}"
         end
       end
     end
