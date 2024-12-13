@@ -1,3 +1,4 @@
+import { alert } from '../alert';
 
 export class PathSelectorTable {
   _table = null;
