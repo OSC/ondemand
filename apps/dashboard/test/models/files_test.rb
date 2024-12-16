@@ -67,11 +67,11 @@ class FilesTest < ActiveSupport::TestCase
   test "can_download_as_zip handles directory size within limit" do
     download_directory_size_limit = Configuration.file_download_dir_max
     Dir.mktmpdir do |dir|
-      file_size = download_directory_size_limit
+      dir_size = download_directory_size_limit
       PosixFile.any_instance.stubs(:calculate_directory_size)
         .returns(download_directory_size_limit)
-      Open3.stubs(:capture3).returns(["#{file_size} #{dir} 
-        \n #{file_size} total", "", exit_success])
+      Open3.stubs(:capture3).returns(["#{dir_size} #{dir} 
+        \n #{dir_size} total", "", exit_success])
 
       assert_equal [true, nil], PosixFile.new(dir).can_download_as_zip?
     end 
@@ -80,11 +80,11 @@ class FilesTest < ActiveSupport::TestCase
   test "can_download_as_zip handles directory size exceeding limit" do
     download_directory_size_limit = Configuration.file_download_dir_max
     Dir.mktmpdir do |dir|
-      file_size = download_directory_size_limit + 1
+      dir_size = download_directory_size_limit + 1
       PosixFile.any_instance.stubs(:calculate_directory_size)
         .returns(download_directory_size_limit + 1)
-      Open3.stubs(:capture3).returns(["#{file_size} #{dir} 
-        \n #{file_size} total", "", exit_success])
+      Open3.stubs(:capture3).returns(["#{dir_size} #{dir} 
+        \n #{dir_size} total", "", exit_success])
       result = PosixFile.new(dir).can_download_as_zip?
       error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
 
