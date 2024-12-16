@@ -1,10 +1,12 @@
 # The router class for all development apps.
 class DevRouter
-  attr_reader :name, :owner
+  attr_reader :name, :owner, :caption, :category
 
   def initialize(name, owner=OodSupport::Process.user.name)
     @name = name.to_s
     @owner = owner
+    @caption = I18n.t('dashboard.development_apps_caption')
+    @category = "Sandbox Apps"
   end
 
   # Get array of apps for specified owner
@@ -34,14 +36,6 @@ class DevRouter
 
   def type
     :dev
-  end
-
-  def caption
-    I18n.t('dashboard.development_apps_caption')
-  end
-
-  def category
-    "Sandbox Apps"
   end
 
   def url
