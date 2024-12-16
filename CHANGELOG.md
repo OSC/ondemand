@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+3037 path select filename filter (#3992)\
+3666 disable dl btn when non dlable is checked files (#4008)\
+Fixes bug where icon shows up on 2nd path_selector on page (#4009)\
+update upload-artifact (#4007)\
+Adds three basic content-type dl tests (#4005)\
+lint a random file (#4002)\
+update dependencies (#3998)\
+lint a random file (#3996)\
+3994 - fixes remote files test (#3995)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
