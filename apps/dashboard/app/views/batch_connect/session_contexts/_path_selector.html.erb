@@ -6,6 +6,7 @@
   locals = {
     show_hidden: field_options.fetch(:show_hidden, false),
     show_files: field_options.fetch(:show_files, true),
+    file_pattern: field_options.fetch(:file_pattern, ''),
     initial_directory: field_options.fetch(:directory, CurrentUser.home),
     favorites: pathselector_favorites(field_options.try(:[], :favorites)),
 
