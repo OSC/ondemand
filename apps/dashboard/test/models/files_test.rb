@@ -39,8 +39,9 @@ class FilesTest < ActiveSupport::TestCase
       error_msg = 'some failure message'
       Open3.stubs(:capture3).returns(["blarg \n 28d", error_msg, exit_failure])
       result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_size_unknown', exit_code: '1', error: error_msg)
 
-      assert_equal([false, I18n.t('dashboard.files_directory_size_unknown', exit_code: '1', error: error_msg)], result)
+      assert_equal([false, error], result)
     end 
   end
 
@@ -60,7 +61,7 @@ class FilesTest < ActiveSupport::TestCase
       File.open(file_path, 'w') do |f|
         f.write('x' * file_size)
       end
-      Open3.stubs(:capture3).returns(["#{file_size} #{file_path} #{file_size} total", "", exit_success])
+      Open3.stubs(:capture3).returns(["#{file_size} #{file_path} \n #{file_size} total", "", exit_success])
 
       assert_equal [true, nil], PosixFile.new(dir).can_download_as_zip?
     end 
@@ -75,10 +76,11 @@ class FilesTest < ActiveSupport::TestCase
         f.write('x' * file_size)
       end
       
-      Open3.stubs(:capture3).returns(["#{file_size} #{file_path} #{file_size} total", "", exit_success])
+      Open3.stubs(:capture3).returns(["#{file_size} #{file_path} \n #{file_size} total", "", exit_success])
       result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
 
-      assert_equal([false, I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)], result)
+      assert_equal([false, error], result)
     end 
   end
 
