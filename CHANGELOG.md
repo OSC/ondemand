@@ -6,15 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-3037 path select filename filter (#3992)\
-3666 disable dl btn when non dlable is checked files (#4008)\
-Fixes bug where icon shows up on 2nd path_selector on page (#4009)\
-update upload-artifact (#4007)\
-Adds three basic content-type dl tests (#4005)\
-lint a random file (#4002)\
-update dependencies (#3998)\
-lint a random file (#3996)\
-3994 - fixes remote files test (#3995)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
@@ -39,6 +30,7 @@ lint a random file (#3996)\
 - UIDs can now be returned by the mapper script in [3795](https://github.com/OSC/ondemand/pull/3795).
 - XDMoD jobs widget now shows CPU, Memory and walltime in [3789](https://github.com/OSC/ondemand/pull/3789).
 - Global batch connect form items can now be defined in ondemand.d files in [3840](https://github.com/OSC/ondemand/pull/3840).
+- The path_selector widget now supports filtering results in [3992](https://github.com/OSC/ondemand/pull/3992).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -101,6 +93,8 @@ lint a random file (#3996)\
 - Batch jobs now specify workdir, fixing issues with submit_host jobs in [3913](https://github.com/OSC/ondemand/pull/3913).
 - Javascript that queires for atch connect sessions will create an alert div and stop polling if it fails in [3915](https://github.com/OSC/ondemand/pull/3915).
 - auto_qos correctly returns one option for each qos in [3955](https://github.com/OSC/ondemand/pull/3955).
+- The download button will now disable when users have selected non-downloadable files in [4008](https://github.com/OSC/ondemand/pull/4008)
+- Fixed a bug where the icon shows up on 2nd path_selector in [4009](https://github.com/OSC/ondemand/pull/4009).
 
 ### Security
 
