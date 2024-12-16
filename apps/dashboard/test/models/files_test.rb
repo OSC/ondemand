@@ -45,6 +45,16 @@ class FilesTest < ActiveSupport::TestCase
     end 
   end
 
+  test "can_download_as_zip handles unauthorized directory" do
+    Dir.mktmpdir do |dir|
+      FileUtils.chmod(0400, dir)  # No execute permission
+      result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_download_unauthorized')
+  
+      assert_equal([false, error], result)
+    end
+  end
+
   test "can_download_as_zip handles files sizes of 0" do
     Dir.mktmpdir do |dir|
       Open3.stubs(:capture3).returns(["0 /dev
