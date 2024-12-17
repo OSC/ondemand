@@ -55,6 +55,26 @@ class FilesTest < ActiveSupport::TestCase
     end
   end
 
+  test "can_download_as_zip handles directory size calculation timeout" do
+    Dir.mktmpdir do |dir|
+      Open3.stubs(:capture3).returns(["", "Timeout", exit_failure(124)])
+      result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_size_calculation_timeout')
+
+      assert_equal [false, error], result
+    end
+  end
+
+  test "can_download_as_zip handles directory size calculation error" do
+    Dir.mktmpdir do |dir|
+      Open3.stubs(:capture3).returns(["", "", exit_success])
+      result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_size_calculation_error')
+
+      assert_equal [false, error], result
+    end
+  end
+
   test "can_download_as_zip handles files sizes of 0" do
     Dir.mktmpdir do |dir|
       Open3.stubs(:capture3).returns(["0 /dev
