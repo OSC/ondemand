@@ -70,7 +70,7 @@
     </div>
   </div>
   <div class="col-md-6">
-    <div class="border border-2 shadow p-3 mt-3 mb-5 bg-white rounded">
+    <div id="directory_browser" class="border border-2 shadow p-3 mt-3 mb-5 bg-white rounded">
       <h2 class="lead fw-bolder d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
       <hr>
       <%= turbo_frame_tag "project_directory", 

@@ -2,9 +2,10 @@
 
 # Helpers for the projects page
 module ProjectsHelper
+  include ApplicationHelper
+  
   def render_readme(readme_location)
     file_content = File.read(readme_location)
-
     if File.extname(readme_location) == '.md'
       markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
       markdown_html = markdown.render(file_content).html_safe
@@ -32,10 +33,10 @@ module ProjectsHelper
     end
   end
 
-  def files_button
+  def files_button(path)
     link_to(
-      ".../projects#{@path.to_s.split('projects')[1]}",
-      files_path(fs: 'fs', filepath: @path),
+      ".../projects#{path.to_s.split('projects')[1]}",
+      files_path(fs: 'fs', filepath: path),
       target: '_top',
       class: 'link-light'
       ).html_safe
@@ -65,7 +66,6 @@ module ProjectsHelper
   end
 
   def classes(column, sort_by)
-    Rails.logger.debug("column: #{column.to_s} == sort_by: #{sort_by.to_s} ? #{column.to_s == sort_by.to_s}")
     classes = ['btn', 'btn-xs', 'btn-hover']
     classes << (column.to_s == sort_by.to_s ? ['btn-primary'] : ['btn-outline-primary'])
     classes.join(' ')

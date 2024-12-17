@@ -20,8 +20,12 @@ import 'datatables.net';
 import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-select/js/dataTables.select';
 import 'datatables.net-plugins/api/processing().mjs';
+
+// Enables hotwire Turbo Streams/Frames 
 import "@hotwired/turbo-rails"
 import { Turbo } from "@hotwired/turbo-rails"
+// Disables Turbo Drive on an app-wide basis to prevent eager-loading links on mouse-over (which is annoying)
+// Any links within a <turbo-stream> or <turbo-frame> tag will be eager-loaded as expected.
 Turbo.session.drive = false
 
 import Rails from '@rails/ujs';

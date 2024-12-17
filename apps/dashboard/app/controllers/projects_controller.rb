@@ -201,12 +201,14 @@ class ProjectsController < ApplicationController
 
   private
 
-  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
+  # This should represent a default value.
   def resolved_path
     @project&.directory.to_s
   end
 
-  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
+  # This should represent a default value.
   def resolved_fs
     'fs'
   end

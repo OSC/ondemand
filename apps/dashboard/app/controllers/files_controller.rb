@@ -195,12 +195,14 @@ class FilesController < ApplicationController
     request.headers['HTTP_X_ACCEL_MAPPING'] = nil
   end
 
-  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
+  # This should represent a default value.
   def resolved_path
     params[:filepath]
   end
   
-  # Required for use with Pathable concern (app/controllers/concerns/pathable.rb)
+  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
+  # This should represent a default value.
   def resolved_fs
     params[:fs]
   end

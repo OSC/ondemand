@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "project_directory" do %>
   <div class="d-flex justify-content-left lead text-weight-800">
-    <strong>.../projects<%= @path.to_s.split('projects')[1] %></strong>
+    <strong>.../projects<%= path.to_s.split('projects')[1] %></strong>
   </div>
   <table class="table table-striped table-condensed w-100 table-hover caption-right">
     <thead>
@@ -19,7 +19,7 @@
   </table>
   <div class="row content-justied-center col-6 mx-auto">
     <div class="btn btn-primary">
-      <span><i id="new-dir-btn" class="fa fa-folder-open"></i>&nbsp<%= files_button %></span>
+      <span><i id="new-dir-btn" class="fa fa-folder-open"></i>&nbsp<%= files_button(path) %></span>
     </div>
   </div>
 <% end %>

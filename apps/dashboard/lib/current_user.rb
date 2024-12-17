@@ -20,7 +20,6 @@ class CurrentUser
 
     alias_method :home, :dir
   end
-
   attr_reader :pwuid
   delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :pwuid
 
