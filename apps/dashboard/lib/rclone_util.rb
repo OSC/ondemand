@@ -160,6 +160,7 @@ class RcloneUtil
       full_path = remote_path(remote, path)
       # Move file src on the local filesystem to full_path on the remote
       o, e, s = rclone("moveto", src, full_path)
+
       if !s.success?
         raise RcloneError.new(s.exitstatus), "Error moving file: #{e}"
       end
@@ -302,6 +303,9 @@ class RcloneUtil
 
         o.close
         exit_status = t.value
+
+        puts exit_status unless exit_status.match?('exit 0')
+
         err = err_reader.value.to_s.strip
         if err.present? || !exit_status.success?
           raise RcloneError.new(exit_status.exitstatus), "Rclone exited with status #{exit_status.exitstatus}\n#{err}"

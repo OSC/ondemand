@@ -79,8 +79,4 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
   test "can upload file binary files as text/plain as application/octet-stream" do
     upload_and_test("hello-world-c", content_type: 'application/octet-stream')
   end
-
-  test "can upload hello_world.c (temp test)" do
-    upload_and_test("hello-world.c")
-  end
 end
