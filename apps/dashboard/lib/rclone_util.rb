@@ -305,6 +305,9 @@ class RcloneUtil
         exit_status = t.value
 
         err = err_reader.value.to_s.strip
+
+        puts err
+        
         if err.present? || !exit_status.success?
           raise RcloneError.new(exit_status.exitstatus), "Rclone exited with status #{exit_status.exitstatus}\n#{err}"
         end
