@@ -84,7 +84,8 @@ en:
       <pre>%{exception_message}</pre>
       <h4>Stack trace:</h4>
       <pre>%{exception_trace}</pre>
-    apps_system_apps_title: "System Apps"
+    apps_system_apps_title: "System Apps" # Not used anywhere
+    system_apps_caption: "System Installed App"
     
     shell_app_title: "%{cluster_title} Shell Access"
 
