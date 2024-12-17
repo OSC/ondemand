@@ -157,8 +157,6 @@ class FilesController < ApplicationController
 
     @transfer = @path.handle_upload(params[:file].tempfile)
 
-    puts "Transfer: #{@transfer}"
-
     if @transfer.kind_of?(Transfer)
       render 'transfers/show'
     else

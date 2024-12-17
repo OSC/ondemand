@@ -129,12 +129,12 @@ class RemoteTransfer < Transfer
       # TODO: catch more rclone specific errors here, i.e. if the access keys are invalid it would make
       # sense to not attempt to transfer the rest of the files
       errors.add :base, "Error when transferring #{src}: #{e.message}"
-      puts "Error when transferring #{src}: #{e.message}"
     end
   rescue => e
     errors.add :base, e.message
   ensure
     self.status = OodCore::Job::Status.new(state: :completed)
+    puts tempfile.path
     tempfile&.close(true)
   end
 
