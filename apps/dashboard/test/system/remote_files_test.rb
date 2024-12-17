@@ -315,7 +315,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('#upload-btn').click
         find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
 
-        src_file = 'test/fixtures/files/upload/hello-world-c'
+        src_file = 'test/fixtures/files/upload/hello-world.c'
         attach_file 'files[]', src_file, visible: false, match: :first
         find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
 
