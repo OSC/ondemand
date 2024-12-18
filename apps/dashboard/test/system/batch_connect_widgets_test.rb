@@ -177,6 +177,8 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       click_on 'Select Path'
 
+      sleep 1
+
       table_id = "batch_connect_session_context_path_path_selector_table"
       shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
 
