@@ -45,22 +45,22 @@
   integrity sha512-xzLEyKB50yqCUPUJkIsrVvoWNfFUbIZI+RspLWt8u+tIW/BetMBZtgV2LY/2o+tYH8dRvQ+eoPf3NdhQCcLE2w==
 
 "@uppy/companion-client@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@uppy/companion-client/-/companion-client-4.2.0.tgz#66e2cf8b8f848988033d7387d8794d34cb007cbb"
-  integrity sha512-txCA+BuoABe9Tr0Eozr76rp3TcJ0eL0kvf7GUO7bXZxs3GzpEENaTXwDDW2SKGgqjTAVaZdaCxR0lJ+m9CmXLw==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@uppy/companion-client/-/companion-client-4.3.0.tgz#c38e502c86b4c208c8bf5008a7a40eebb486ac89"
+  integrity sha512-S8Fs7KgLE8CEf225S/j28yZTMqVaqvmesX5mrd/I1H0dHzIoruLYC/3q3QnihGbQRxyobUpnBmo67o24+mAc7g==
   dependencies:
-    "@uppy/utils" "^6.0.5"
+    "@uppy/utils" "^6.0.6"
     namespace-emitter "^2.0.1"
     p-retry "^6.1.0"
 
 "@uppy/core@^4.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-4.3.0.tgz#21dda0c63602e19ead6da2c1f2f551052ae9e290"
-  integrity sha512-X1Jxa69xUQb9ismE0tfK8iEGvoR8ASMEdMoIusOImi3Yyg5QQF6de1v7W5JQXO0qk07HU672jo7xTkJvS0rFJg==
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-4.3.1.tgz#1ca0041616afc8a9bf34898c004fb3cde85fad68"
+  integrity sha512-vov6agqmZrbmkG6E5LpSGNOeVXP4u0pe3UXCqVBZvU+WPInA264d4+X7NUnD6cF/BHPfckbfKh+60Tm1A40VEg==
   dependencies:
     "@transloadit/prettier-bytes" "^0.3.4"
     "@uppy/store-default" "^4.1.2"
-    "@uppy/utils" "^6.0.5"
+    "@uppy/utils" "^6.0.6"
     lodash "^4.17.21"
     mime-match "^1.0.2"
     namespace-emitter "^2.0.1"
@@ -94,23 +94,23 @@
     preact "^10.5.13"
 
 "@uppy/provider-views@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@uppy/provider-views/-/provider-views-4.1.0.tgz#6238fa4f556ab8f07402f6ed6b354fb32324a49a"
-  integrity sha512-yf83rFffeViBQWARfB90C0JL3gJ9U+IxFFBvj9KU7qIPhJuo62Nku0SGIkcFE6O3VZSrFtq2jHSJriOUqovX/A==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@uppy/provider-views/-/provider-views-4.2.0.tgz#127407105b19f397e3105ee5914da374539a6f65"
+  integrity sha512-0em+bAUvcZFV4kHIq154LK1d53rDyiN6cfhXCBQSb65erLlaKX/rmsbiMzvy2/pOhcWltaGlQwVWIoS+tF1G1A==
   dependencies:
-    "@uppy/utils" "^6.0.5"
+    "@uppy/utils" "^6.0.6"
     classnames "^2.2.6"
     nanoid "^5.0.0"
     p-queue "^8.0.0"
     preact "^10.5.13"
 
 "@uppy/status-bar@^4.0.5":
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/@uppy/status-bar/-/status-bar-4.0.5.tgz#b098d21626a69161ba371f053ccfe3133d2484eb"
-  integrity sha512-XZUzebQfgFMvRK6n7arSnZ3uxwf/M2Adm75c/+Ge0oFMhzK419qLCkre3/NyUrA5dmMRqLDDpD46UDN3rei2hA==
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@uppy/status-bar/-/status-bar-4.0.6.tgz#e6663867d5ff57b4e48f7c9814625662ad811d94"
+  integrity sha512-FuRtew70hfCCQE4sJmMkMGsokIpoU9B4q78L2iF496y531oJ3chhaywgLZhKgIDub2Xiyj2gCPUREi7W3sbA5g==
   dependencies:
     "@transloadit/prettier-bytes" "^0.3.4"
-    "@uppy/utils" "^6.0.5"
+    "@uppy/utils" "^6.0.6"
     classnames "^2.2.6"
     preact "^10.5.13"
 
@@ -127,10 +127,10 @@
     "@uppy/utils" "^6.0.5"
     exifr "^7.0.0"
 
-"@uppy/utils@^6.0.5":
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/@uppy/utils/-/utils-6.0.5.tgz#ac289363ed457767dca72deead7914212bb4db9f"
-  integrity sha512-fRBrlynrsBOfuw1DF7vIpc1j0wrI5OPXNBY3e3zOKlpykrs1/HQfeMLFk3H6b7FzYtcFGeahJBYju4vEv+tdQA==
+"@uppy/utils@^6.0.5", "@uppy/utils@^6.0.6":
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/@uppy/utils/-/utils-6.0.6.tgz#c2fc4c6440d7ef8f23b7551c0283496ea0fb2825"
+  integrity sha512-7/4jrJTSEth7DKCOZiOEY3JWGTUlwV9Gnrtlp25yJvJ7HbOVQ0ToJUuDz9wCZJ3V2++zfj30JbvBynbOH40WxA==
   dependencies:
     lodash "^4.17.21"
     preact "^10.5.13"
@@ -144,9 +144,9 @@
     "@uppy/utils" "^6.0.5"
 
 ace-code@^1.35.0:
-  version "1.36.5"
-  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.36.5.tgz#d48727f4a6c05b09d7e4119cceb9f088c9caab34"
-  integrity sha512-DNdkKEHBMiAJowX5hE8GC/2zj0FLax9wD4TkKXgKQQgJ3U17x7aqkX2dplSa8e1vB3K8Zuib3wVntnIKWnSNUQ==
+  version "1.37.0"
+  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.37.0.tgz#0defe19b6ac8d353b6ec3b4eb28245fb0190f2cc"
+  integrity sha512-nJaeN/JH+Nq6hIWPBn/iExb+d3LerKXen95aUrO05S9fKvBnZYeXEkRgLhkQn0j5it/B/AoOZDyT1/St7TGfgw==
 
 anymatch@~3.1.2:
   version "3.1.3"
