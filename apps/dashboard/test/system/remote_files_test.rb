@@ -311,6 +311,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('tbody a', exact_text: 'foo').click
         # Need to wait until we're in the new directory before clicking upload
         assert_no_selector 'tbody a', exact_text: 'foo', wait: MAX_WAIT
+        sleep 1
 
         find('#upload-btn').click
         find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
@@ -319,6 +320,8 @@ class RemoteFilesTest < ApplicationSystemTestCase
         attach_file 'files[]', src_file, visible: false, match: :first
         find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
         find("#tloading_spinner")
+        sleep 1
+        assert_no_selector("#tloading_spinner")
         find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
       end
     end
