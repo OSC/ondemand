@@ -10,7 +10,7 @@ const EVENTNAME = {
 };
 
 const CONTENTID = '#directory-contents';
-const SPINNERID = '#tloading_spinner';
+// const SPINNERID = '#tloading_spinner';
 
 let table = null;
 
@@ -273,7 +273,7 @@ class DataTable {
     async reloadTable(url) {
         var request_url = url || history.state.currentDirectoryUrl;
 
-        this.toggleSpinner();
+        // this.toggleSpinner();
 
         try {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
@@ -305,7 +305,7 @@ class DataTable {
                 }
             });
 
-            this.toggleSpinner();
+            // this.toggleSpinner();
 
             return result;
         } catch (e) {
@@ -318,17 +318,17 @@ class DataTable {
 
             $('#open-in-terminal-btn').addClass('disabled');
 
-            this.toggleSpinner()
+            // this.toggleSpinner()
             
             // Removed this as it was causing a JS Error and there is no reprocution from removing it.
             // return await Promise.reject(e);
         }
     }
 
-    toggleSpinner() {
+    /* toggleSpinner() {
         document.querySelector(SPINNERID).classList.toggle('d-none');
         document.querySelector(CONTENTID).classList.toggle('d-none');
-    }
+    } */
 
     updateDotFileVisibility() {
         this.reloadTable();
