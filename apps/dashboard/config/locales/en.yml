@@ -69,6 +69,7 @@ en:
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
+    batch_connect_sessions_delete_hover: 删除会话
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: |
@@ -181,6 +182,7 @@ en:
     nav_develop_my_sandbox_apps_prod: My Shared Apps (Production)
     nav_develop_title: Develop
     nav_help_change_password: Change HPC Password
+    nav_help_custom: Nav help custom
     nav_help_docs: Online Documentation
     nav_help_support: Contact Support
     nav_help_support_ticket: Submit Support Ticket
@@ -245,6 +247,7 @@ en:
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
     unknown: Unknown
+    uppy: Uppy
     user_configuration:
       support_ticket_error: support_ticket is misconfigured. "email" or "rt_api" sections are required in the configuration YAML.
     welcome_html: |

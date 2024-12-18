@@ -1,6 +1,21 @@
 ---
 zh-CN:
+  activemodel:
+    errors:
+      messages:
+        format: "%{attribute} format invalid or missing"
+        invalid: "%{attribute} is invalid"
+        required: "%{attribute} is required"
+        used: "%{attribute} is already used"
   dashboard:
+    active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
+    active_sessions_title: Active interactive sessions
+    add: Add
+    all_apps_table_app_column: Name
+    all_apps_table_category_column: Category
+    all_apps_table_sub_category_column: Sub Category
+    announcements_dismissible_button: OK
+    announcements_required_button: Accept
     apps_setup_failure_html: |
       <h2>初始化此应用程序的数据时出现问题。</h2>
       <p class="lead">
@@ -20,27 +35,40 @@ zh-CN:
     balance_message: "%{units_balance} 是 %{value}"
     balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
     balance_warning_prefix_html: "%{units_balance} 警告"
+    batch_connect_apps_menu_title: Interactive Apps
+    batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
     batch_connect_form_choose_template_name: 选择模版名称
     batch_connect_form_data_root: 数据根目录
+    batch_connect_form_invalid: The form.yml has missing options in the %{id} form field.
     batch_connect_form_launch: 启动
     batch_connect_form_prefill: 使用模版预填写
     batch_connect_form_prefill_error: 诶呀，你的模版有问题
     batch_connect_form_reset_resolution: 重置分辨率
     batch_connect_form_save: 保存为模版
     batch_connect_form_save_new_template: 保存为一个新模版
+    batch_connect_form_save_submit: Save settings and close
     batch_connect_form_select_template: 选择一个模版
     batch_connect_form_session_data_html: "* 你可以通过%{data_link_tag}来获取会话数据%{title}。\n"
+    batch_connect_form_template_name_label: setting name
     batch_connect_form_type_new_name: 在这里输入你的新模版名称
     batch_connect_form_type_new_name_error: 请输入一个有效的名称以继续
+    batch_connect_invalid_form_array: "'form' element in form.yml is not an Array"
+    batch_connect_invalid_form_attributes: "'attributes' element in form.yml is not a Map"
+    batch_connect_missing_cluster: |
+      The cluster was never set. Either set it in form.yml.erb with `cluster` or `form.cluster` or
+      set `cluster` in submit.yml.erb.
     batch_connect_no_apps: 没有可用的互动应用程序。
     batch_connect_no_sessions: 您没有可运行的会话。
     batch_connect_sandbox: " [Sandbox]"
+    batch_connect_sessions_cancel_confirm: Are you sure?
+    batch_connect_sessions_cancel_title: Cancel
     batch_connect_sessions_data_html: '你可以通过%{data_link_tag}来获取会话数据%{title}。
 
 '
     batch_connect_sessions_delete_confirm: 你确定吗？
     batch_connect_sessions_delete_hover: 删除会话
     batch_connect_sessions_delete_title: 删除
+    batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: '如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
 
 '
@@ -48,18 +76,25 @@ zh-CN:
     batch_connect_sessions_errors_submission: 提交会话失败，出现以下错误：
     batch_connect_sessions_novnc_launch: 启动%{app_title}
     batch_connect_sessions_novnc_view_only: 只读 (共享链接)
+    batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.
+    batch_connect_sessions_relaunch_title: Relaunch
     batch_connect_sessions_staged_root: 暂存根目录
     batch_connect_sessions_stats_created_at: 创建于：
     batch_connect_sessions_stats_host: 主机：
     batch_connect_sessions_stats_session_id: 会话ID：
+    batch_connect_sessions_stats_support_ticket: Problems with this session?
+    batch_connect_sessions_stats_support_ticket_link_text: Submit support ticket
     batch_connect_sessions_stats_time_remaining: 剩余时间：
     batch_connect_sessions_stats_time_requested: 所需时间：
     batch_connect_sessions_stats_time_used: 使用时间：
     batch_connect_sessions_stats_undetermined_host: 未定
     batch_connect_sessions_status_bad: 你的会话出现问题。请与支持人员联系以获取更多信息。
+    batch_connect_sessions_status_blurb_cancel_failure: Failed to cancel session.
+    batch_connect_sessions_status_blurb_cancel_success: Session was successfully canceled.
     batch_connect_sessions_status_blurb_create_success: 会话已成功创建。
     batch_connect_sessions_status_blurb_delete_failure: 删除会话失败。
     batch_connect_sessions_status_blurb_delete_success: 会话已成功删除.
+    batch_connect_sessions_status_completed: For debugging purposes, this card will be retained for %{days} more days
     batch_connect_sessions_status_missing_connection: '此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。
 
 '
@@ -69,12 +104,73 @@ zh-CN:
     batch_connect_sessions_status_starting: '您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。
 
 '
+    batch_connect_sessions_word: Session
+    bc_saved_settings:
+      delete_confirm: Are you sure?
+      delete_title: Delete %{settings_name} saved settings
+      deleted_message: Saved settings %{settings_name} deleted.
+      edit_title: Edit %{settings_name} saved settings
+      launch_title: Launch %{app_title} with %{settings_name} parameters
+      missing_settings: Selected saved settings not found.
+      no_settings_title: You have no saved settings.
+      outdated_message: "%{app_title} parameters have changed since these settings were created."
+      saved_message: "%{settings_name} settings saved"
+      settings_values_label: Values
+      title: Saved Settings
     breadcrumbs_all_apps: 所有应用
     breadcrumbs_home: 主页
     breadcrumbs_my_sessions: 我的交互会话
+    breadcrumbs_support_ticket: Support Ticket
+    close: Close
+    custom_pages:
+      invalid: 'Invalid page code: %{page}. This page has not been configured'
     delete: 删除
+    development_apps_caption: Sandbox App
+    directory: Directory
     edit: 编辑
+    files_directory_download_error_modal_title: Directory too large to download
+    files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
+    files_directory_size_calculation_error: Timeout while trying to determine directory size.
+    files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
+    files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
+    files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_download_not_enabled: Downloading files is not enabled on this server.
+    files_remote_dir_not_created: Did not create directory %{path}
+    files_remote_disabled: Remote file support is not enabled
+    files_remote_empty_dir_unsupported: Remote does not support empty directories
+    files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    jobs_create_blank_project: Create a new project
+    jobs_create_template_project: Create a new project from a template
+    jobs_launchers: Launchers
+    jobs_launchers_created: Launcher successfully created!
+    jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
+    jobs_launchers_delete_script_confirmation: Delete all contents of launcher?
+    jobs_launchers_deleted: Launcher successfully deleted!
+    jobs_launchers_fixed_field: Fixed Value
+    jobs_launchers_not_found: Cannot find Launcher %{launcher_id}
+    jobs_launchers_submitted: Successfully submitted job %{job_id}.
+    jobs_launchers_updated: Launcher manifest updated!
+    jobs_new_launcher: New Launcher
+    jobs_project_created: Project successfully created!
+    jobs_project_delete_project_confirmation: Delete all contents of project directory?
+    jobs_project_deleted: Project successfully deleted!
+    jobs_project_description_placeholder: Project description
+    jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
+    jobs_project_directory_placeholder: Project directory absolute path
+    jobs_project_generic_error: 'There was an error processing your request: %{error}'
+    jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
+    jobs_project_invalid_configuration_scripts: An executable script is required for your project. Upload a script using the file application.
+    jobs_project_job_deleted: Successfully deleted job %{job_id}
+    jobs_project_job_not_deleted: Cannot delete job %{job_id}
+    jobs_project_job_stopped: Successfully stopped job %{job_id}
+    jobs_project_manifest_updated: Project manifest updated!
+    jobs_project_name_placeholder: Project name
+    jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
+    jobs_project_not_found: Cannot find project %{project_id}
+    jobs_project_save_error: Cannot save manifest to %{path}
+    jobs_project_validation_error: Invalid Request. Please review the errors below
     launch: 启动
+    motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: 每日信息
     nav_all_apps: 所有应用
     nav_develop_docs: 开发者文档
@@ -82,14 +178,22 @@ zh-CN:
     nav_develop_my_sandbox_apps_prod: 我的沙盒应用 (Production)
     nav_develop_title: 开发
     nav_help_change_password: 修改HPC密码
+    nav_help_custom: Nav help custom
     nav_help_docs: 帮助文档
     nav_help_support: 联系支持人员
+    nav_help_support_ticket: Submit Support Ticket
     nav_help_title: 帮助
     nav_help_two_factor: 配置双重身份验证
+    nav_limit_caption: showing %{subset_count} of %{total_count}
     nav_logout: 登出
     nav_restart_server: 重启网页服务器
     nav_sessions: 我的交互会话
     nav_user: 以用户名：%{username}登陆
+    not_grouped: Other Apps
+    pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
+    pinned_apps_category: Apps
+    pinned_apps_title: Pinned Apps
+    project: Project
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
     quota_block: 配额使用量%{used} 可用 %{available}
     quota_block_shared: "(您的配额%{used_exclusive} )"
@@ -97,9 +201,17 @@ zh-CN:
     quota_file_shared: "(您的文件配额%{used_exclusive})"
     quota_reload_message: 重新加载页面以查看更新的配额。 配额每5分钟更新一次。
     quota_warning_prefix_html: 配额限制警告
+    recently_used_apps_title: Recently Used Apps
+    remove: Remove
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
+    save: Save
+    saved_settings_title: Saved Settings
+    settings_invalid_request: Invalid settings submitted
+    settings_updated: Settings updated
+    shared_apps_caption: Shared by %{owner_title} (%{owner})
+    shared_apps_caption_short: Shared by %{owner}
     shared_apps_title: 共享应用
     sharing_catalog_msg_html: "<br>可以在%{catalog_link_tag}上查看可用应用程序的子集。\n"
     sharing_catalog_title: 应用目录
@@ -110,7 +222,30 @@ zh-CN:
     sharing_welcome_msg_html: |
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
+    shell_app_title: "%{cluster_title} Shell Access"
     show: 显示
+    support_ticket:
+      creation_success: 'Support ticket email sent to: %{to}'
+      generic_error: 'There was an error processing your request: %{error}'
+      header: Support Ticket
+      rt:
+        creation_success: 'Support ticket created in RequestTracker system. TicketId: %{ticket_id}'
+      title: Support Ticket
+      validation:
+        attachments_items: The %{id} are invalid. %{items} added, maximum number of attachments is %{max}
+        attachments_size: The %{id} are invalid. Maximum attachment size is %{max}
+        email: The %{id} format is invalid. Expected a valid email address
+        items:
+          attachments_js: No more attachments allowed
+        required: The %{id} is required
+        size:
+          attachments_js: Max attachment size is %{max}. Selected file size is %{size}
+      validation_error: Invalid Request. Please review the error messages below
+    system_apps_caption: System Installed App
+    unknown: Unknown
+    uppy: Uppy
+    user_configuration:
+      support_ticket_error: support_ticket is misconfigured. "email" or "rt_api" sections are required in the configuration YAML.
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
