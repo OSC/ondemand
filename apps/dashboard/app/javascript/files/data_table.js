@@ -273,7 +273,7 @@ class DataTable {
     async reloadTable(url) {
         var request_url = url || history.state.currentDirectoryUrl;
 
-        // this.toggleSpinner();
+        this.toggleSpinner();
 
         try {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
@@ -325,10 +325,10 @@ class DataTable {
         }
     }
 
-    /* toggleSpinner() {
+    toggleSpinner() {
         document.querySelector(SPINNERID).classList.toggle('d-none');
         document.querySelector(CONTENTID).classList.toggle('d-none');
-    } */
+    }
 
     updateDotFileVisibility() {
         this.reloadTable();
