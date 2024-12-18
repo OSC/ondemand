@@ -305,7 +305,7 @@ class DataTable {
                 }
             });
 
-            // this.toggleSpinner();
+            this.toggleSpinner();
 
             return result;
         } catch (e) {
@@ -318,7 +318,7 @@ class DataTable {
 
             $('#open-in-terminal-btn').addClass('disabled');
 
-            // this.toggleSpinner()
+            this.toggleSpinner()
             
             // Removed this as it was causing a JS Error and there is no reprocution from removing it.
             // return await Promise.reject(e);
