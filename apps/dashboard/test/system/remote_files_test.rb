@@ -318,8 +318,6 @@ class RemoteFilesTest < ApplicationSystemTestCase
         src_file = 'test/fixtures/files/upload/hello-world.c'
         attach_file 'files[]', src_file, visible: false, match: :first
         find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-
-        sleep 1
         find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
       end
     end
