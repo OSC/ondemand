@@ -431,4 +431,53 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test 'data-options-for-*' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - pitzer
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-pitzer: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # owens is selected, standard and gpu are both visible
+      select('owens', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal "gpu", options[1]["innerHTML"]
+
+      # pitzer is selected, gpu is not visible
+      select('pitzer', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+      
+      display_property = { "display" => "none" }
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal display_property, options[1].style('display')
+    end
+  end
 end
