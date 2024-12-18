@@ -10,7 +10,7 @@ const EVENTNAME = {
 };
 
 const CONTENTID = '#directory-contents';
-// const SPINNERID = '#tloading_spinner';
+const SPINNERID = '#tloading_spinner';
 
 let table = null;
 
