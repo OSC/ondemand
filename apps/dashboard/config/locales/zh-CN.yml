@@ -1,50 +1,6 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
-
+---
 zh-CN:
   dashboard:
-    # Site specific translations
-    batch_connect_sessions_status_bad: "你的会话出现问题。请与支持人员联系以获取更多信息。"
-    batch_connect_sessions_status_missing_connection: |
-      此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。
-    batch_connect_sessions_status_queued: |
-      由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。
-    nav_help_change_password: "修改HPC密码"
-    nav_help_docs: "帮助文档"
-    nav_help_support: "联系支持人员"
-    nav_help_two_factor: "配置双重身份验证"
-
-    quota_additional_message: "考虑删除或归档文件以释放磁盘空间。"
-    quota_reload_message: "重新加载页面以查看更新的配额。 配额每5分钟更新一次。"
-    quota_warning_prefix_html: "配额限制警告"
-
-    balance_additional_message: "考虑申请额外的 %{balanace_units}"
-    balance_reload_message_html: "重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}"
-    balance_warning_prefix_html: "%{units_balance} 警告"
-    balance_message: "%{units_balance} 是 %{value}"
-
-    welcome_html: |
-      %{logo_img_tag}
-      <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
-    # General translations
     apps_setup_failure_html: |
       <h2>初始化此应用程序的数据时出现问题。</h2>
       <p class="lead">
@@ -58,97 +14,103 @@ zh-CN:
       <pre>%{exception_message}</pre>
       <h4>堆栈跟踪：</h4>
       <pre>%{exception_trace}</pre>
-    apps_system_apps_title: "系统应用"
-
-    batch_connect_form_choose_template_name: "选择模版名称"
-    batch_connect_form_data_root: "数据根目录"
-    batch_connect_form_launch: "启动"
-    batch_connect_form_prefill: "使用模版预填写"
-    batch_connect_form_prefill_error: "诶呀，你的模版有问题"
-    batch_connect_form_reset_resolution: "重置分辨率"
-    batch_connect_form_save: "保存为模版"
-    batch_connect_form_save_new_template: "保存为一个新模版"
-    batch_connect_form_select_template: "选择一个模版"
-    batch_connect_form_session_data_html: |
-      * 你可以通过%{data_link_tag}来获取会话数据%{title}。
-    batch_connect_form_type_new_name: "在这里输入你的新模版名称"
-    batch_connect_form_type_new_name_error: "请输入一个有效的名称以继续"
-    batch_connect_no_apps: "没有可用的互动应用程序。"
-    batch_connect_no_sessions: "您没有可运行的会话。"
+    apps_system_apps_title: 系统应用
+    auto_log_location_title: 日志位置
+    balance_additional_message: 考虑申请额外的 %{balanace_units}
+    balance_message: "%{units_balance} 是 %{value}"
+    balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
+    balance_warning_prefix_html: "%{units_balance} 警告"
+    batch_connect_form_choose_template_name: 选择模版名称
+    batch_connect_form_data_root: 数据根目录
+    batch_connect_form_launch: 启动
+    batch_connect_form_prefill: 使用模版预填写
+    batch_connect_form_prefill_error: 诶呀，你的模版有问题
+    batch_connect_form_reset_resolution: 重置分辨率
+    batch_connect_form_save: 保存为模版
+    batch_connect_form_save_new_template: 保存为一个新模版
+    batch_connect_form_select_template: 选择一个模版
+    batch_connect_form_session_data_html: "* 你可以通过%{data_link_tag}来获取会话数据%{title}。\n"
+    batch_connect_form_type_new_name: 在这里输入你的新模版名称
+    batch_connect_form_type_new_name_error: 请输入一个有效的名称以继续
+    batch_connect_no_apps: 没有可用的互动应用程序。
+    batch_connect_no_sessions: 您没有可运行的会话。
     batch_connect_sandbox: " [Sandbox]"
-    batch_connect_sessions_data_html: |
-      你可以通过%{data_link_tag}来获取会话数据%{title}。
-    batch_connect_sessions_error_invalid_job_name_html: |
-      如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
-    batch_connect_sessions_delete_confirm: "你确定吗？"
-    batch_connect_sessions_delete_hover: "删除会话"
-    batch_connect_sessions_delete_title: "删除"
-    batch_connect_sessions_errors_staging: "无法调用模板，并显示以下错误："
-    batch_connect_sessions_errors_submission: "提交会话失败，出现以下错误："
-    batch_connect_sessions_novnc_launch: "启动%{app_title}"
-    batch_connect_sessions_novnc_view_only: "只读 (共享链接)"
-    batch_connect_sessions_staged_root: "暂存根目录"
-    batch_connect_sessions_stats_created_at: "创建于："
-    batch_connect_sessions_stats_host: "主机："
-    batch_connect_sessions_stats_session_id: "会话ID："
-    batch_connect_sessions_stats_time_remaining: "剩余时间："
-    batch_connect_sessions_stats_time_requested: "所需时间："
-    batch_connect_sessions_stats_time_used: "使用时间："
-    batch_connect_sessions_stats_undetermined_host: "未定"
-    batch_connect_sessions_status_blurb_create_success: "会话已成功创建。"
-    batch_connect_sessions_status_blurb_delete_failure: "删除会话失败。"
-    batch_connect_sessions_status_blurb_delete_success: "会话已成功删除."
-    batch_connect_sessions_status_starting: |
-      您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。
-    breadcrumbs_all_apps: "所有应用"
-    breadcrumbs_home: "主页"
-    breadcrumbs_my_sessions: "我的交互会话"
+    batch_connect_sessions_data_html: '你可以通过%{data_link_tag}来获取会话数据%{title}。
 
-    motd_title: "每日信息"
+'
+    batch_connect_sessions_delete_confirm: 你确定吗？
+    batch_connect_sessions_delete_hover: 删除会话
+    batch_connect_sessions_delete_title: 删除
+    batch_connect_sessions_error_invalid_job_name_html: '如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
 
-    nav_all_apps: "所有应用"
-    nav_develop_docs: "开发者文档"
-    nav_develop_my_sandbox_apps_dev: "我的沙盒应用 (Development)"
-    nav_develop_my_sandbox_apps_prod: "我的沙盒应用 (Production)"
-    nav_develop_title: "开发"
-    nav_help_title: "帮助"
-    nav_logout: "登出"
-    nav_restart_server: "重启网页服务器"
-    nav_sessions: "我的交互会话"  # Note duplication with breadcrumbs_my_sessions
-    nav_user: "以用户名：%{username}登陆"
+'
+    batch_connect_sessions_errors_staging: 无法调用模板，并显示以下错误：
+    batch_connect_sessions_errors_submission: 提交会话失败，出现以下错误：
+    batch_connect_sessions_novnc_launch: 启动%{app_title}
+    batch_connect_sessions_novnc_view_only: 只读 (共享链接)
+    batch_connect_sessions_staged_root: 暂存根目录
+    batch_connect_sessions_stats_created_at: 创建于：
+    batch_connect_sessions_stats_host: 主机：
+    batch_connect_sessions_stats_session_id: 会话ID：
+    batch_connect_sessions_stats_time_remaining: 剩余时间：
+    batch_connect_sessions_stats_time_requested: 所需时间：
+    batch_connect_sessions_stats_time_used: 使用时间：
+    batch_connect_sessions_stats_undetermined_host: 未定
+    batch_connect_sessions_status_bad: 你的会话出现问题。请与支持人员联系以获取更多信息。
+    batch_connect_sessions_status_blurb_create_success: 会话已成功创建。
+    batch_connect_sessions_status_blurb_delete_failure: 删除会话失败。
+    batch_connect_sessions_status_blurb_delete_success: 会话已成功删除.
+    batch_connect_sessions_status_missing_connection: '此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。
 
-    quota_block: "配额使用量%{used} 可用 %{available}"
+'
+    batch_connect_sessions_status_queued: '由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。
+
+'
+    batch_connect_sessions_status_starting: '您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。
+
+'
+    breadcrumbs_all_apps: 所有应用
+    breadcrumbs_home: 主页
+    breadcrumbs_my_sessions: 我的交互会话
+    delete: 删除
+    edit: 编辑
+    launch: 启动
+    motd_title: 每日信息
+    nav_all_apps: 所有应用
+    nav_develop_docs: 开发者文档
+    nav_develop_my_sandbox_apps_dev: 我的沙盒应用 (Development)
+    nav_develop_my_sandbox_apps_prod: 我的沙盒应用 (Production)
+    nav_develop_title: 开发
+    nav_help_change_password: 修改HPC密码
+    nav_help_docs: 帮助文档
+    nav_help_support: 联系支持人员
+    nav_help_title: 帮助
+    nav_help_two_factor: 配置双重身份验证
+    nav_logout: 登出
+    nav_restart_server: 重启网页服务器
+    nav_sessions: 我的交互会话
+    nav_user: 以用户名：%{username}登陆
+    quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
+    quota_block: 配额使用量%{used} 可用 %{available}
     quota_block_shared: "(您的配额%{used_exclusive} )"
-    quota_file: "文件配额使用量%{used} 可用 %{available}"
+    quota_file: 文件配额使用量%{used} 可用 %{available}
     quota_file_shared: "(您的文件配额%{used_exclusive})"
-
+    quota_reload_message: 重新加载页面以查看更新的配额。 配额每5分钟更新一次。
+    quota_warning_prefix_html: 配额限制警告
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
-    shared_apps_title: "共享应用"
-    # shared_apps_caption: "Shared by %{owner_title} (%{owner})"
-    # shared_apps_caption_short: "Shared by %{owner}"
-    sharing_catalog_title: "应用目录"
-    sharing_no_shared_apps_html: |
-      <strong>没有可用的自定义共享应用。</strong>
-    sharing_catalog_msg_html: |
-      <br>可以在%{catalog_link_tag}上查看可用应用程序的子集。
+    shared_apps_title: 共享应用
+    sharing_catalog_msg_html: "<br>可以在%{catalog_link_tag}上查看可用应用程序的子集。\n"
+    sharing_catalog_title: 应用目录
+    sharing_no_shared_apps_html: "<strong>没有可用的自定义共享应用。</strong>\n"
     sharing_support_msg_html: |
       如果您没有找到所需的应用程序，请
       <a href="%{support_url}">联系支持</a>.
     sharing_welcome_msg_html: |
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
-
-    auto_log_location_title: "日志位置"
-
-    # all_apps_table_app_column: "Name"
-    # all_apps_table_category_column: "Category"
-    # all_apps_table_sub_category_column: "Sub Category"
-
-    # unknown: "Unknown"
-    delete: "删除"
-    edit: "编辑"
-    show: "显示" 
-    launch: "启动" 
-    # development_apps_caption: "Sandbox App"
+    show: 显示
+    welcome_html: |
+      %{logo_img_tag}
+      <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
