@@ -116,24 +116,22 @@ GEM
     ffi (1.16.3)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    highline (3.1.1)
-      reline
+    highline (2.1.0)
     http-accept (1.7.0)
     http-cookie (1.0.8)
       domain_name (~> 0.5)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (1.0.14)
+    i18n-tasks (0.9.37)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       erubi
       highline (>= 2.0.0)
       i18n
-      parser (>= 3.2.2.1)
+      parser (>= 2.2.3.0)
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
-    io-console (0.8.0)
     jbuilder (2.13.0)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -249,8 +247,6 @@ GEM
       psych (>= 4.0.0)
     redcarpet (3.6.0)
     regexp_parser (2.9.3)
-    reline (0.5.12)
-      io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
     rest-client (2.1.0)
@@ -328,7 +324,8 @@ DEPENDENCIES
   dotenv-rails (~> 2.1)
   dotiw
   erubi
-  i18n-tasks
+  highline (= 2.1.0)
+  i18n-tasks (= 0.9.37)
   jbuilder (~> 2.0)
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
