@@ -1,30 +1,26 @@
-  
-<%- unless path.to_s == project.directory.to_s -%>  
-  <tr>
-    <td>
-      <i class="fa fa-folder">
-    </td>
-    <td>
-      <strong>
-        <%= link_to(
-          "..",
-          project_directory_path(
-            project_id: project.id,
-            dir_path: "#{path.parent}",
-            sort_by: sort_by
-          ),
-          title: 'Show parent directory',
-          data: { turbo_frame: "project_directory" }
-        )
-      %>
-      </strong>
-    </td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-<%- end -%>  
+<tr>
+  <td>
+    <i class="fa fa-folder">
+  </td>
+  <td>
+    <strong>
+      <%= link_to(
+        "..",
+        directory_frame_path(
+          path: "#{path.parent}",
+          sort_by: sort_by
+        ),
+        title: 'Show parent directory',
+        data: { turbo_frame: "project_directory" }
+      )
+    %>
+    </strong>
+  </td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
 <% files.each do |file| %>
   <tr>
     <td>
@@ -34,9 +30,8 @@
       <%- if file[:directory] -%>
         <%= link_to(
           file[:name], 
-          project_directory_path(
-            project_id: project.id,
-            dir_path: "#{path}/#{file[:name]}",
+          directory_frame_path(
+            path: "#{path}/#{file[:name]}",
             sort_by: sort_by
           ),
           title: "Show #{file[:name]} directory",
@@ -46,8 +41,7 @@
       <%- else -%>
         <%= link_to(
           file[:name], 
-          project_file_path(
-            project_id: project.id,
+          file_frame_path(
             path: "#{path}/#{file[:name]}",
             sort_by: sort_by
           ),

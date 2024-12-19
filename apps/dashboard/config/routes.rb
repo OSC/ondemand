@@ -35,17 +35,16 @@ Rails.application.routes.draw do
           :format => false
       put 'files/api/v1/:fs/*filepath' => 'files#update', :format => false,
           :defaults => { :fs => 'fs', :format => 'json' }
-
-      if Configuration.can_access_files?
-        get 'files/directory' => 'files#directory', as: 'files_directory'
-        get 'files/file' => 'files#file', as: 'files_display_file'
-      end
     end
+    
+    
     post 'files/upload/:fs' => 'files#upload', :defaults => { :fs => 'fs' } if Configuration.upload_enabled?
-
+    
     get 'files', to: redirect("files/fs#{Dir.home}")
     get 'files/fs', to: redirect("files/fs#{Dir.home}")
-
+    get 'frames/directory_frame' => 'files#directory_frame', as: 'directory_frame'
+    get 'frames/file_frame' => 'files#file_frame', as: 'file_frame'
+    
     resources :transfers, only: [:show, :create, :destroy]
   end
 

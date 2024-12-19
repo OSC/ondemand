@@ -3,14 +3,13 @@
 # The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
   include ActionController::Live
-  include DirectoryUtilsConcern
 
-  before_action :strip_sendfile_headers, only: [:fs]
+  before_action :strip_sendfile_headers, only: [:fs, :directory_frame, :file_frame]
 
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
-
-    parse_path
+    @download = fs_params[:download]
+    parse_path(fs_params[:filepath], fs_params[:fs])
     validate_path!
 
     if @path.directory?
@@ -25,7 +24,7 @@ class FilesController < ApplicationController
 
         format.json do
           response.headers['Cache-Control'] = 'no-store'
-          if params[:can_download]
+          if fs_params[:can_download]
             # check to see if this directory can be downloaded as a zip
             can_download, error_message = if ::Configuration.download_enabled?
                                             @path.can_download_as_zip?
@@ -101,33 +100,56 @@ class FilesController < ApplicationController
       show_file
     end
   rescue StandardError => e
-    @files = []
-    flash.now[:alert] = e.message.to_s
+    rescue_action(e)
+  end
 
-    logger.error(e.message)
+  # GET - directory for turbo-frame
+  def directory_frame
+    sort_by = directory_frame_params[:sort_by] || :name
+    parse_path(directory_frame_params[:path], 'fs')
+    validate_path!
+    @path.raise_if_cant_access_directory_contents
+    set_files(sort_by)
 
-    respond_to do |format|
-      format.html do
-        render :index
-      end
-      format.json do
-        @files = []
+    render( partial: 'files/turbo_frames/directory',
+            locals: { 
+              path: @path,
+              files: @files,
+              sort_by: sort_by
+            }
+    )
+  rescue StandardError => e
+    rescue_action(e)
+  end
 
-        render :index
-      end
-    end
+  # GET - file for turbo-frame
+  def file_frame
+    parse_path(file_frame_params[:path], 'fs')
+    validate_path!
+    @path.raise_if_cant_access_directory_contents if @path.directory?
+    @file = show_file
+    
+    render( partial: 'files/turbo_frames/file',
+            locals: { 
+              path: @path,
+              file: @file,
+              sort_by: file_frame_params[:sort_by]
+            }
+    )
+  rescue StandardError => e
+    rescue_action(e)
   end
 
   # PUT - create or update
   def update
-    parse_path
+    parse_path(update_params[:filepath], update_params[:fs])
     validate_path!
 
-    if params.include?(:dir)
+    if update_params.include?(:dir)
       @path.mkdir
-    elsif params.include?(:file)
-      @path.mv_from(params[:file].tempfile)
-    elsif params.include?(:touch)
+    elsif update_params.include?(:file)
+      @path.mv_from(update_params[:file].tempfile)
+    elsif update_params.include?(:touch)
       @path.touch
     else
       content = request.body.read
@@ -147,16 +169,16 @@ class FilesController < ApplicationController
 
   # POST
   def upload
-    upload_path = uppy_upload_path
+    upload_path = uppy_upload_path(upload_params[:relativePath], upload_params[:parent], upload_params[:name])
 
-    parse_path(upload_path)
+    parse_path(upload_path, upload_params[:fs])
     validate_path!
 
     # Need to remove the tempfile from list of Rack tempfiles to prevent it
     # being cleaned up once request completes since Rclone uses the files.
-    request.env[Rack::RACK_TEMPFILES].reject! { |f| f.path == params[:file].tempfile.path } unless posix_file?
+    request.env[Rack::RACK_TEMPFILES].reject! { |f| f.path == upload_params[:file].tempfile.path } unless posix_file?
 
-    @transfer = @path.handle_upload(params[:file].tempfile)
+    @transfer = @path.handle_upload(upload_params[:file].tempfile)
 
 
     if @transfer.kind_of?(Transfer)
@@ -173,7 +195,7 @@ class FilesController < ApplicationController
   end
 
   def edit
-    parse_path
+    parse_path(edit_params[:path], edit_params[:fs])
     validate_path!
 
     if @path.editable?
@@ -188,6 +210,25 @@ class FilesController < ApplicationController
 
   private
 
+  def rescue_action(exception)
+    @files = []
+    flash.now[:alert] = exception.message.to_s
+
+    logger.error(exception.message)
+
+    respond_to do |format|
+
+      format.html do
+        render :index
+      end
+      format.json do
+        @files = []
+
+        render :index
+      end
+    end
+  end
+
   # set these headers to nil so that we (Rails) will read files
   # off of disk instead of nginx.
   def strip_sendfile_headers
@@ -195,38 +236,83 @@ class FilesController < ApplicationController
     request.headers['HTTP_X_ACCEL_MAPPING'] = nil
   end
 
-  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
-  # This should represent a default value.
-  def resolved_path
-    params[:filepath]
+  def normalized_path(path)
+    Pathname.new("/#{path.to_s.chomp('/').delete_prefix('/')}")
   end
-  
-  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
-  # This should represent a default value.
-  def resolved_fs
-    params[:fs]
+
+  def parse_path(path, filesystem)
+    normal_path = normalized_path(path)
+    if filesystem == 'fs'
+      @path = PosixFile.new(normal_path)
+      @filesystem = 'fs'
+    elsif ::Configuration.remote_files_enabled? && filesystem != 'fs'
+      @path = RemoteFile.new(normal_path, filesystem)
+      @filesystem = filesystem
+    else
+      @path = PosixFile.new(normal_path)
+      @filesystem = filesystem
+      raise StandardError, I18n.t('dashboard.files_remote_disabled')
+    end
+  end
+
+  def validate_path!
+    if posix_file?
+      AllowlistPolicy.default.validate!(@path)
+    elsif @path.remote_type.nil?
+      raise StandardError, "Remote #{@path.remote} does not exist"
+    elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == 'local' || @path.remote_type == 'alias')
+      # local and alias remotes would allow bypassing the AllowListPolicy
+      # TODO: Attempt to evaluate the path of them and validate?
+      raise StandardError, "Remotes of type #{@path.remote_type} are not allowed due to ALLOWLIST_PATH"
+    end
+  end
+
+  def set_files(sort_by)
+    @files = sort_by_column(@path.ls, sort_by)
+  end
+
+  def sort_by_column(files, column)
+    col = column.to_sym
+    sorted_files = files.sort_by do |file|
+      case col
+      when :name, :owner
+        file[col].to_s.downcase
+      when :type
+        file[:directory] ? 0 : 1
+      else
+        file[col].to_i
+      end
+    end
+  end
+
+  def posix_file?
+    @path.is_a?(PosixFile)
   end
   
   def download?
-    params[:download]
+    @download ||= false
   end
 
-  def uppy_upload_path
+  def uppy_upload_path(relative_path, parent, name)
     # careful:
     #
     #     File.join '/a/b', '/c' => '/a/b/c'
     #     Pathname.new('/a/b').join('/c') => '/c'
     #
     # handle case where uppy.js sets relativePath to "null"
-    if params[:relativePath] && params[:relativePath] != 'null'
-      Pathname.new(File.join(params[:parent], params[:relativePath]))
+    if relative_path && relative_path != 'null'
+      Pathname.new(File.join(parent, relativePath))
     else
-      Pathname.new(File.join(params[:parent], params[:name]))
+      Pathname.new(File.join(parent, name))
     end
   end
 
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
+    
+    return File.open(@path.to_s, "r") do |file|
+      file.read 
+    end if turbo_frame_request?
 
     if posix_file?
       send_posix_file
@@ -250,7 +336,7 @@ class FilesController < ApplicationController
   rescue StandardError => e
     logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
 
-    if params[:downlaod]
+    if download?
       send_file @path
     else
       send_file @path, disposition: 'inline'
@@ -289,4 +375,29 @@ class FilesController < ApplicationController
   ensure
     response.stream.close
   end
+
+  def fs_params
+    params.permit(:format, :filepath, :fs, :download,  :can_download)
+  end
+
+  def directory_frame_params
+    params.permit(:format, :path, :sort_by)
+  end
+
+  def file_frame_params
+    params.permit(:format, :path, :sort_by)
+  end
+
+  def update_params
+    params.permit(:format, :filepath, :fs, :dir, :file, :touch)
+  end
+
+  def upload_params
+    params.permit(:format, :relativePath, :parent, :name, :fs)
+  end
+
+  def edit_params
+    params.permit(:format, :path, :fs)
+  end
+
 end

@@ -2,14 +2,12 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
-  include DirectoryUtilsConcern
   
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
-    parse_path
-    validate_path!
+    @path = @project&.directory
     
     if @project.nil?
       respond_to do |format|
@@ -31,40 +29,6 @@ class ProjectsController < ApplicationController
         format.json { render :show }
       end
     end
-  end
-
-  # GET /projects/:project_id/files/*filepath
-  def directory
-    @project = Project.find(directory_params[:project_id])
-    sort_by = directory_params[:sort_by] || :name
-    parse_path("#{directory_params[:dir_path]}")
-    validate_path!
-    set_files(sort_by)
-    render( partial: 'projects/directory', 
-            locals: { project: @project,
-                      path: @path,
-                      files: @files,
-                      sort_by: sort_by
-                    }
-    )
-  end
-
-  def file
-    @project = Project.find(file_params[:project_id])
-    parse_path(file_params[:path])
-    validate_path!
-    @file = File.open(@path.to_s, "r") do |file|
-      file.read 
-    end
-
-    render( partial: 'projects/file',
-            locals: { 
-              project: @project,
-              path: @path,
-              file: @file,
-              sort_by: file_params[:sort_by]
-            }
-    )
   end
   
   # GET /projects
@@ -201,18 +165,6 @@ class ProjectsController < ApplicationController
 
   private
 
-  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
-  # This should represent a default value.
-  def resolved_path
-    @project&.directory.to_s
-  end
-
-  # Required for use with directory_utils_concern (app/controllers/concerns/DirectoryUtilsConcern.rb)
-  # This should represent a default value.
-  def resolved_fs
-    'fs'
-  end
-
   def templates
     Project.templates.map do |project|
       label = project.title
@@ -228,14 +180,6 @@ class ProjectsController < ApplicationController
     params
       .require(:project)
       .permit(:name, :directory, :description, :icon, :id, :template)
-  end
-
-  def directory_params
-    params.permit(:project_id, :format, :dir_path, :sort_by)
-  end
-
-  def file_params
-    params.permit(:project_id, :format, :path, :sort_by)
   end
 
   def show_project_params
