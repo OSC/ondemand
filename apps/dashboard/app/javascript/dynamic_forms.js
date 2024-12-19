@@ -780,8 +780,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       if (contextStr == 'optionFor') {
         hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
       } else if (contextStr == 'exclusiveOptionFor') {
-        const exclusiveForCluster = option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`];
-        hide = !(exclusiveForCluster === 'true')
+        hide = !(option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`] === 'true')
       }
 
       if (hide) {

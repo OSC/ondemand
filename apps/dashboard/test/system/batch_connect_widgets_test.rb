@@ -432,7 +432,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'data-options-for-*' do
+  test 'data-options-for-' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
@@ -470,6 +470,9 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal "standard", options[0]["innerHTML"]
       assert_equal "gpu", options[1]["innerHTML"]
 
+      # select gpu, to test that it's deselected properly when pitzer is selected
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
       # pitzer is selected, gpu is not visible
       select('pitzer', from: 'batch_connect_session_context_cluster')
       options = find_all("#batch_connect_session_context_node_type option")
@@ -478,6 +481,9 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       assert_equal "standard", options[0]["innerHTML"]
       assert_equal display_property, options[1].style('display')
+
+      # value of node_type has gone back to standard
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
     end
   end
 
@@ -521,6 +527,9 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal "standard", options[0]["innerHTML"]
       assert_equal display_property, options[1].style('display')
 
+      # select gpu, to test that it's deselected properly when pitzer is selected
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
       # pitzer is selected, gpu is not visible
       select('pitzer', from: 'batch_connect_session_context_cluster')
       options = find_all("#batch_connect_session_context_node_type option")
@@ -529,6 +538,9 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       assert_equal "standard", options[0]["innerHTML"]
       assert_equal display_property, options[1].style('display')
+
+      # value of node_type has gone back to standard
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
     end
   end
 end
