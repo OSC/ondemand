@@ -15,10 +15,6 @@ Rails.application.routes.draw do
         post 'save', on: :member
       end
     end
-    if Configuration.can_access_files?
-      get 'projects/:project_id/directory' => 'projects#directory', as: 'project_directory'
-      get 'projects/:project_id/file' => 'projects#file', as: 'project_file'
-    end
   end
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
@@ -37,11 +33,11 @@ Rails.application.routes.draw do
           :defaults => { :fs => 'fs', :format => 'json' }
     end
     
-    
     post 'files/upload/:fs' => 'files#upload', :defaults => { :fs => 'fs' } if Configuration.upload_enabled?
     
     get 'files', to: redirect("files/fs#{Dir.home}")
     get 'files/fs', to: redirect("files/fs#{Dir.home}")
+
     get 'frames/directory_frame' => 'files#directory_frame', as: 'directory_frame'
     get 'frames/file_frame' => 'files#file_frame', as: 'file_frame'
     

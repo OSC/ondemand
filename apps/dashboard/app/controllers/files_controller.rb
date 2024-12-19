@@ -288,7 +288,7 @@ class FilesController < ApplicationController
   def posix_file?
     @path.is_a?(PosixFile)
   end
-  
+
   def download?
     @download ||= false
   end

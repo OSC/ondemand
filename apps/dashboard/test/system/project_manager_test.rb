@@ -161,7 +161,6 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-
   test 'edit a project' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)

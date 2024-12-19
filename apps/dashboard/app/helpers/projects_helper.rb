@@ -2,10 +2,10 @@
 
 # Helpers for the projects page
 module ProjectsHelper
-  include ApplicationHelper
-  
+
   def render_readme(readme_location)
     file_content = File.read(readme_location)
+
     if File.extname(readme_location) == '.md'
       markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
       markdown_html = markdown.render(file_content).html_safe
