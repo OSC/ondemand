@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddTimestampsToToJsonStores < ActiveRecord::Migration[4.2]
   def change
     add_column :json_stores, :created_at, :datetime
