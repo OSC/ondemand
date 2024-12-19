@@ -393,7 +393,7 @@ class FilesController < ApplicationController
   end
 
   def upload_params
-    params.permit(:format, :relativePath, :parent, :name, :fs)
+    params.permit(:format, :relativePath, :parent, :name, :fs, :type, :file)
   end
 
   def edit_params
