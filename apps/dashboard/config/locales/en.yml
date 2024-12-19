@@ -234,6 +234,8 @@ en:
       header: Support Ticket
       rt:
         creation_success: 'Support ticket created in RequestTracker system. TicketId: %{ticket_id}'
+      servicenow:
+        creation_success: "Support ticket created in ServiceNow system. Number: %{number}"
       title: Support Ticket
       validation:
         attachments_items: The %{id} are invalid. %{items} added, maximum number of attachments is %{max}

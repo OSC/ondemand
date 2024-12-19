@@ -1,0 +1,34 @@
+Ticket submitted from OnDemand dashboard application
+Username: <%= context[:support_ticket].username %>
+Email: <%= context[:support_ticket].email %>
+CC: <%= context[:support_ticket].cc %>
+
+<% if context[:session] %>
+User selected session: <%= context[:session].id %>
+Title: <%= context[:session].title %>
+Scheduler job id: <%= context[:session].job_id %>
+Status: <%= context[:session].status.to_sym %>
+<% end %>
+
+Description:
+<%= context[:support_ticket].description %>
+
+-------------------------------------
+Session Information:
+<% if context[:session] %>
+<%= JSON.pretty_generate(
+      {
+        id: context[:session].id,
+        clusterId: context[:session].cluster_id,
+        jobId: context[:session].job_id,
+        createdAt: Time.at(context[:session].created_at).iso8601,
+        token: context[:session].token,
+        title: context[:session].title,
+        user_context: context[:session].user_context,
+        info: helpers.filter_session_parameters(context[:session].info),
+        deletedInDays: context[:session].days_till_old,
+      })
+%>
+<% else %>
+No session was selected.
+<% end %>
