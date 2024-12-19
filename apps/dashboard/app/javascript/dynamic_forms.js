@@ -11,6 +11,7 @@ const formTokens = [];
 // elements. I.e., {'cluster': [ 'node_type' ] } means that changes to cluster
 // trigger changes to node_type
 const optionForHandlerCache = {};
+const exclusiveOptionForHandlerCache = {};
 
 
 // simples array of string ids for elements that have a handler
@@ -110,6 +111,7 @@ function memorizeElements(elements) {
   elements.each((_i, ele) => {
     formTokens.push(mountainCaseWords(shortId(ele['id'])));
     optionForHandlerCache[ele['id']] = [];
+    exclusiveOptionForHandlerCache[ele['id']] = [];
   });
 };
 
@@ -137,6 +139,9 @@ function makeChangeHandlers(prefix){
               if(key.startsWith('optionFor')) {
                 let token = key.replace(/^optionFor/,'');
                 addOptionForHandler(idFromToken(token), element['id']);
+              } else if (key.startsWith('exclusiveOptionFor')) {
+                let token = key.replace(/^exclusiveOptionFor/, '');
+                addExclusiveOptionForHandler(idFromToken(token), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('set')) {
@@ -537,7 +542,7 @@ function clamp(currentValue, previous, next) {
 
 function addOptionForHandler(causeId, targetId) {
   const changeId = String(causeId || '');
-
+  
   if(changeId.length == 0 || optionForHandlerCache[causeId].includes(targetId)) {
     // nothing to do. invalid causeId or we already have a handler between the 2
     return;
@@ -555,6 +560,29 @@ function addOptionForHandler(causeId, targetId) {
 
     // fake an event to initialize
     toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
+  }
+};
+
+function addExclusiveOptionForHandler(causeId, targetId) {
+  const changeId = String(causeId || '');
+
+  if(changeId.length == 0 || exclusiveOptionForHandlerCache[causeId].includes(targetId)) {
+    // nothing to do. invalid causeId or we already have a handler between the 2
+    return;
+  }
+
+  let causeElement = $(`#${causeId}`);
+
+  if(targetId && causeElement) {
+    // cache the fact that there's a new handler here
+    exclusiveOptionForHandlerCache[causeId].push(targetId);
+
+    causeElement.on('change', (event) => {
+      toggleExclusiveOptionsFor(event, targetId);
+    });
+
+    // fake an event to initialize
+    toggleExclusiveOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
   }
 };
 
@@ -710,6 +738,27 @@ function optionForFromToken(str) {
 }
 
 /**
+ * Extract the option for out of an exclusive option for directive.
+ *
+ * @example
+ *  exclusiveOptionForClusterOakley -> Cluster
+ *
+ * @param {*} str
+ * @returns - the option for string
+ */
+ function exclusiveOptionForFromToken(str) {
+  return formTokens.map((token) => {
+    let match = str.match(`^exclusiveOptionFor${token}`);
+
+    if (match && match.length >= 1) {
+      return token;
+    }
+  }).filter((id) => {
+    return id !== undefined;
+  })[0];
+}
+
+/**
  * Hide or show options of an element based on which cluster is
  * currently selected and the data-option-for-CLUSTER attributes
  * for each option
@@ -798,6 +847,97 @@ function optionForFromToken(str) {
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 };
 
+/**
+ * Hide or show options of an element based on which cluster is
+ * currently selected and the data-exclusive-option-for-CLUSTER attributes
+ * for each option
+ *
+ * @param      {string}  element_name  The name of the element with options to toggle
+ */
+ function toggleExclusiveOptionsFor(_event, elementId) {
+  const options = [...document.querySelectorAll(`#${elementId} option`)];
+  let hideSelectedValue = undefined;
+
+  options.forEach(option => {
+    let hide = false;
+
+    // even though an event occured - an option may be hidden based on the value of
+    // something else entirely. We're going to hide this option if _any_ of the
+    // exlusive-option-for- directives apply.
+    for (let key of Object.keys(option.dataset)) {
+      let exclusiveOptionFor = exclusiveOptionForFromToken(key);
+      let exclusiveOptionForId = idFromToken(key.replace(/^exclusiveOptionFor/,''));
+
+      // it's some other directive type, so just keep going and/or not real
+      if(!key.startsWith('exclusiveOptionFor') || exclusiveOptionForId === undefined) {
+        continue;
+      }
+
+      let exclusiveOptionForValue = mountainCaseWords(document.getElementById(exclusiveOptionForId).value);
+
+      // handle special case where the very first token here is a number.
+      // browsers expect a prefix of hyphens as if it's the next token.
+      // if (exclusiveOptionForValue.match(/^\d/)) {
+      //   exclusiveOptionForValue = `-${exclusiveOptionForValue}`;
+      // }
+      let exclusiveForCluster = option.dataset[`exclusiveOptionFor${exclusiveOptionFor}${exclusiveOptionForValue}`];
+
+      hide = !(exclusiveForCluster === 'true')
+
+      if (hide) {
+        break;
+      }
+    };
+
+    if(hide) {
+      if(option.selected) {
+        option.selected = false;
+        hideSelectedValue = option.textContent;
+      }
+
+      option.style.display = 'none';
+      option.disabled = true;
+    } else {
+      option.style.display = '';
+      option.disabled = false;
+    }
+  });
+
+  // now that we've hidden/shown everything, let's choose what should now
+  // be the current selected value.
+  // if you've hidden what _was_ selected.
+  if(hideSelectedValue !== undefined) {
+    let others = [...document.querySelectorAll(`#${elementId} option[value='${hideSelectedValue}']`)];
+    let newSelectedOption = undefined;
+
+    // You have hidden what _was_ selected, so try to find a duplicate option that is visible
+    if(others.length > 1) {
+      others.forEach(ele => {
+        if(ele.style.display === '') {
+          newSelectedOption = ele;
+          return;
+        }
+      });
+    }
+
+    // no duplciates are visible, so just pick the first visible option
+    if (newSelectedOption === undefined) {
+      others = document.querySelectorAll(`#${elementId} option`);
+      others.forEach(ele => {
+        if(newSelectedOption === undefined && ele.style.display === '') {
+          newSelectedOption = ele;
+        }
+      });
+    }
+
+    if (newSelectedOption !== undefined) {
+      newSelectedOption.selected = true;
+    }
+  }
+
+  // now that we're done, propogate this change to data-set or data-hide handlers
+  document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
+};
 
 export {
   makeChangeHandlers

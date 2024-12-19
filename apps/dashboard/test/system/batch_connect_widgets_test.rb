@@ -481,7 +481,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'data-option-exlusive-for-*' do
+  test 'data-option-exlusive-for-' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
@@ -504,7 +504,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             widget: "select"
             options:
               - standard
-              - ['gpu', 'gpu', data-option-exclusive-for-cluster-owens: true]
+              - ['gpu', 'gpu', data-exclusive-option-for-cluster-owens: true]
       HEREDOC
 
       Pathname.new("#{dir}/app/").join('form.yml').write(form)
@@ -516,13 +516,15 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       select('owens', from: 'batch_connect_session_context_cluster')
       options = find_all("#batch_connect_session_context_node_type option")
 
+      display_property = { "display" => "block" }
+
       assert_equal "standard", options[0]["innerHTML"]
-      assert_equal "gpu", options[1]["innerHTML"]
+      assert_equal display_property, options[1].style('display')
 
       # pitzer is selected, gpu is not visible
       select('pitzer', from: 'batch_connect_session_context_cluster')
       options = find_all("#batch_connect_session_context_node_type option")
-      
+
       display_property = { "display" => "none" }
 
       assert_equal "standard", options[0]["innerHTML"]
