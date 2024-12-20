@@ -468,7 +468,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       options = find_all("#batch_connect_session_context_node_type option")
 
       assert_equal "standard", options[0]["innerHTML"]
-      assert_equal "gpu", options[1]["innerHTML"]
+      assert_equal '', find_option_style('node_type', 'gpu')
 
       # select gpu, to test that it's deselected properly when pitzer is selected
       select('gpu', from: 'batch_connect_session_context_node_type')
@@ -477,10 +477,8 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       select('pitzer', from: 'batch_connect_session_context_cluster')
       options = find_all("#batch_connect_session_context_node_type option")
       
-      display_property = { "display" => "none" }
-
       assert_equal "standard", options[0]["innerHTML"]
-      assert_equal display_property, options[1].style('display')
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
 
       # value of node_type has gone back to standard
       assert_equal 'standard', find('#batch_connect_session_context_node_type').value
@@ -522,10 +520,8 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       select('owens', from: 'batch_connect_session_context_cluster')
       options = find_all("#batch_connect_session_context_node_type option")
 
-      display_property = { "display" => "block" }
-
       assert_equal "standard", options[0]["innerHTML"]
-      assert_equal display_property, options[1].style('display')
+      assert_equal '', find_option_style('node_type', 'gpu')
 
       # select gpu, to test that it's deselected properly when pitzer is selected
       select('gpu', from: 'batch_connect_session_context_node_type')
@@ -534,10 +530,8 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       select('pitzer', from: 'batch_connect_session_context_cluster')
       options = find_all("#batch_connect_session_context_node_type option")
 
-      display_property = { "display" => "none" }
-
       assert_equal "standard", options[0]["innerHTML"]
-      assert_equal display_property, options[1].style('display')
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
 
       # value of node_type has gone back to standard
       assert_equal 'standard', find('#batch_connect_session_context_node_type').value
