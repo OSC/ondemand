@@ -110,8 +110,6 @@ function snakeCaseWords(str) {
 function memorizeElements(elements) {
   elements.each((_i, ele) => {
     formTokens.push(mountainCaseWords(shortId(ele['id'])));
-    optionForHandlerCache[ele['id']] = [];
-    exclusiveOptionForHandlerCache[ele['id']] = [];
   });
 };
 
@@ -545,8 +543,10 @@ function sharedOptionForHandler(causeId, targetId, optionForType) {
   let handlerCache = null;
 
   if (optionForType == 'optionFor') {
+    if (optionForHandlerCache[causeId] == undefined) optionForHandlerCache[causeId] = [];
     handlerCache = optionForHandlerCache;
   } else if (optionForType == 'exclusiveOptionFor') {
+    if (exclusiveOptionForHandlerCache[causeId] == undefined) exclusiveOptionForHandlerCache[causeId] = [];
     handlerCache = exclusiveOptionForHandlerCache;
   }
   
