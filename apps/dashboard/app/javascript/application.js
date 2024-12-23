@@ -49,6 +49,6 @@ jQuery(function(){
     title: function(){ return $(this).text() }
   });
 
-  $('[data-toggle="popover"]').popover();
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-bs-toggle="popover"]').popover();
+  $('[data-bs-toggle="tooltip"]').tooltip();
 });

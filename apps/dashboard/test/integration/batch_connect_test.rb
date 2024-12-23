@@ -41,10 +41,10 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     assert_select 'div.card div.list-group a.list-group-item', 2
     assert_select 'div.card div.list-group a.list-group-item' do |links|
       # Items are sorted by title
-      assert_equal 'Jupyter Notebook', links[0]['data-title']
+      assert_equal 'Jupyter Notebook', links[0]['title']
       assert_equal '/batch_connect/sys/bc_jupyter/session_contexts/new', links[0]['href']
 
-      assert_equal 'Paraview', links[1]['data-title']
+      assert_equal 'Paraview', links[1]['title']
       assert_equal '/batch_connect/sys/bc_paraview/session_contexts/new', links[1]['href']
     end
   end
@@ -68,10 +68,10 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     assert_select 'div.card div.list-group a.list-group-item', 2
     assert_select 'div.card div.list-group a.list-group-item' do |links|
       # Configuration order must be kept
-      assert_equal 'Jupyter Notebook', links[0]['data-title']
+      assert_equal 'Jupyter Notebook', links[0]['title']
       assert_equal '/batch_connect/sys/bc_jupyter/session_contexts/new', links[0]['href']
 
-      assert_equal 'Paraview', links[1]['data-title']
+      assert_equal 'Paraview', links[1]['title']
       assert_equal '/batch_connect/sys/bc_paraview/session_contexts/new', links[1]['href']
     end
   end
