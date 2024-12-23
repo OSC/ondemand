@@ -6,19 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-4013 data exclusive option for (#4025)\
-657 automate localizations (#4003)\
-strengthen checks on plugin directories. (#4020)\
-lint a random file (#4026)\
-update dependencies (#4024)\
-3994 - Fixes test (#4022)\
-Added support for multiple directories to deploy OOD extensions/customizations (#3991)\
-determin inactive users and clean their PUNs too (#3942)\
-Add i18n configuration for system installed captions (#4011)\
-update dependencies (#4016)\
-Update Changelog (#4015)\
-rm unused group calculation from nginx_stage (#4012)\
-lint a random file (#4014)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
@@ -44,6 +31,10 @@ lint a random file (#4014)
 - XDMoD jobs widget now shows CPU, Memory and walltime in [3789](https://github.com/OSC/ondemand/pull/3789).
 - Global batch connect form items can now be defined in ondemand.d files in [3840](https://github.com/OSC/ondemand/pull/3840).
 - The path_selector widget now supports filtering results in [3992](https://github.com/OSC/ondemand/pull/3992).
+- OOD now responds to `/etc/ood/config/plugins` to support eaiser customizations in
+  [3991](https://github.com/OSC/ondemand/pull/3991) and [4020](https://github.com/OSC/ondemand/pull/4020).
+- Dynamic batch connect support for data-exclusive-option-for in [4025](https://github.com/OSC/ondemand/pull/4025).
+- Better localization support in [4003](https://github.com/OSC/ondemand/pull/4003).
 
 ### Changed
 - Script models have been renamed to Launcher in [3397](https://github.com/OSC/ondemand/pull/3397).
@@ -81,6 +72,7 @@ lint a random file (#4014)
 - OnDemand packages no longer relies on scl at runtime in [3952](https://github.com/OSC/ondemand/pull/3952).
 - Only root owned ondemand.d files will be loaded in prodution in [3969](https://github.com/OSC/ondemand/pull/3969).
 - The files app will now create a spinner on the files table when making new requests in [3973](https://github.com/OSC/ondemand/pull/3973).
+- nginx_clean utiltiy in nginx_stage will now determine inactive users and clean their PUNs too in [3942](https://github.com/OSC/ondemand/pull/3942).
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
@@ -108,6 +100,7 @@ lint a random file (#4014)
 - auto_qos correctly returns one option for each qos in [3955](https://github.com/OSC/ondemand/pull/3955).
 - The download button will now disable when users have selected non-downloadable files in [4008](https://github.com/OSC/ondemand/pull/4008)
 - Fixed a bug where the icon shows up on 2nd path_selector in [4009](https://github.com/OSC/ondemand/pull/4009).
+- nginx_stage no longer caclulates the users' groups in [#4012](https://github.com/OSC/ondemand/pull/4012).
 
 ### Security
 
