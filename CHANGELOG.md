@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+4013 data exclusive option for (#4025)\
+657 automate localizations (#4003)\
+strengthen checks on plugin directories. (#4020)\
+lint a random file (#4026)\
+update dependencies (#4024)\
+3994 - Fixes test (#4022)\
+Added support for multiple directories to deploy OOD extensions/customizations (#3991)\
+determin inactive users and clean their PUNs too (#3942)\
+Add i18n configuration for system installed captions (#4011)\
+update dependencies (#4016)\
+Update Changelog (#4015)\
+rm unused group calculation from nginx_stage (#4012)\
+lint a random file (#4014)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
