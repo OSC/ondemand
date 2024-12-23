@@ -3,12 +3,12 @@
     link_to(
       link.url.to_s,
       class: "list-group-item list-group-item-action #{"active" if local_assigns[:current_url] == link.url}",
+      title: link.title,
       data: {
-        toggle: "popover",
-        content: manifest_markdown(link.description),
-        html: true,
-        trigger: "hover",
-        title: link.title,
+        'bs-toggle': "popover",
+        'bs-content': manifest_markdown(link.description),
+        'bs-html': true,
+        'bs-trigger': "hover",
         container: "body",
       }.merge(link.data)
     ) do
