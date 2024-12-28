@@ -46,6 +46,14 @@ jQuery(function() {
   
     }
   });
+
+  $('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbox]', function (e) {
+    if (this.dataset['dlUrl'] == 'undefined' && this.checked) {
+      $("#download-btn").attr('disabled', true);
+    } else if ($("input[data-dl-url='undefined']:checked" ).length == 0) {
+      $("#download-btn").attr('disabled', false);
+    }
+  });
   
   $('#directory-contents tbody').on('dblclick', 'tr td:not(:first-child)', function(){
     // handle doubleclick

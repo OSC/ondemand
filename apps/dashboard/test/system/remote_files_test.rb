@@ -309,7 +309,9 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
 
         find('tbody a', exact_text: 'foo').click
+
         # Need to wait until we're in the new directory before clicking upload
+        sleep 1
         assert_no_selector 'tbody a', exact_text: 'foo', wait: MAX_WAIT
 
         find('#upload-btn').click
@@ -318,18 +320,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
         src_file = 'test/fixtures/files/upload/hello-world.c'
         attach_file 'files[]', src_file, visible: false, match: :first
         find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-
-      # TODO: Investigate why this upload is failing the first time in the first place.
-       begin
-          find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
-        rescue
-          find('#upload-btn').click
-          find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
-          attach_file 'files[]', src_file, visible: false, match: :first
-          find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-
-          find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
-        end
+        find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
       end
     end
   end

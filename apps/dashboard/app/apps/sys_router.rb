@@ -1,6 +1,6 @@
 # The router class for all system apps.
 class SysRouter
-  attr_reader :name
+  attr_reader :name, :owner, :caption, :category
 
   #TODO: consider making SysRouter a subclass of
   # OodAppkit::Url
@@ -23,6 +23,9 @@ class SysRouter
 
   def initialize(name)
     @name = name.to_s
+    @owner = :sys
+    @caption = I18n.t('dashboard.system_apps_caption')
+    @category = ""
   end
 
   def token
@@ -35,18 +38,6 @@ class SysRouter
 
   def type
     :sys
-  end
-
-  def owner
-    :sys
-  end
-
-  def caption
-    "System Installed App"
-  end
-
-  def category
-    ""
   end
 
   def url

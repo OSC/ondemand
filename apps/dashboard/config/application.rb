@@ -46,5 +46,33 @@ module Dashboard
       config.autoload_paths << ::Configuration.config_root.join("lib").to_s
       config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
     end
+
+    # Enable installed plugins only if configured by administrator
+    plugins_dir = Pathname.new(::Configuration.plugins_directory)
+    if plugins_dir.directory?
+      plugins_dir.children.select(&:directory?).each do |installed_plugin|
+        next unless installed_plugin.readable?
+
+        initers = installed_plugin.join('initializers')
+        lib = installed_plugin.join('lib')
+        views = installed_plugin.join('views')
+
+        production = ::Configuration.rails_env_production?
+
+        # only load paths in production if every single file in the directory is root owned.
+        safe_load_initers = production ? safe_load_path?(initers) : true
+        safe_load_lib = production ? safe_load_path?(lib) : true
+        safe_load_views = production ? safe_load_path?(views) : true
+
+        config.paths['config/initializers'] << initers.to_s if safe_load_initers
+        config.autoload_paths << lib.to_s if safe_load_lib
+        config.paths["app/views"].unshift(views.to_s) if safe_load_views
+      end
+    end
+
+    # Determine if this path is safe to load. I.e., are all the files root owned.
+    def safe_load_path?(path)
+      path.children.all? { |f| File.stat(f).uid.zero? }
+    end
   end
 end

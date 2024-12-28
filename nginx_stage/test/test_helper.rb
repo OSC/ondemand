@@ -11,6 +11,5 @@ module TestHelper
   def stub_user(username = test)
     Etc.stubs(:getpwnam).returns(user(username))
     Etc.stubs(:getgrgid).returns(nil)
-    NginxStage::User.any_instance.stubs(:get_groups).returns(['test'])
   end
 end

@@ -26,10 +26,6 @@ module NginxStage
     #   @return [String] the shell
     delegate [:name, :uid, :gid, :gecos, :dir, :shell] => :@passwd
 
-    # List of all groups that user belongs to
-    # @return [Array<String>] list of groups user is in
-    attr_reader :groups
-
     # @param user [String] the user name defining this object
     # @raise [ArgumentError] if user or primary group doesn't exist on local system
     def initialize(user)
@@ -62,8 +58,8 @@ module NginxStage
           raise StandardError, err_msg
         end
       end
-      @group = Etc.getgrgid gid
-      @groups = get_groups
+
+      @group = Etc.getgrgid(gid)
     end
 
     # User's primary group name
@@ -90,21 +86,5 @@ module NginxStage
     def to_str
       @passwd.name
     end
-
-    private
-      # Use `id` to get list of groups as the /etc/group file can give
-      # erroneous results
-      def get_groups
-        # Group names can contain spaces, prevent "domain users" people from being added to the "users" group
-        # We retrieve GIDs and convert to names (or GID)
-        `id -G #{name}`.split(' ').map(&:to_i).map do |gid|
-          begin
-            Etc.getgrgid(gid).name
-          rescue ArgumentError
-            # Still return the GID as a string if the group doesn't exist
-            gid.to_s
-          end
-        end
-      end
   end
 end
