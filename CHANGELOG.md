@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update dependencies (#4038)\
+fix popovers on this app list (#4033)\
+Additional test cases for Files#can_download_as_zip (#4019)\
+lint a random file (#4035)\
+Update Changelog (#4029)\
+update dependencies (#4030)
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
