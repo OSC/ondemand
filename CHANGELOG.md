@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.0.0] - 12-30-2024
+
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
 - BatchConnect form auto_modules directive can now filter by string or regex in [3574](https://github.com/OSC/ondemand/pull/3574).
@@ -1484,7 +1486,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9
 [3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7
