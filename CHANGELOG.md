@@ -6,12 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update dependencies (#4038)\
-fix popovers on this app list (#4033)\
-Additional test cases for Files#can_download_as_zip (#4019)\
-lint a random file (#4035)\
-Update Changelog (#4029)\
-update dependencies (#4030)
+
+## [4.0.0] - 12-30-2024
 
 ### Added
 - BatchConnect form labels can now be made dynamic with data-label-* in [3598](https://github.com/OSC/ondemand/pull/3598).
@@ -1490,7 +1486,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9
 [3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7
