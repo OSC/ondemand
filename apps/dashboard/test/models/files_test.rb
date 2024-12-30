@@ -39,9 +39,40 @@ class FilesTest < ActiveSupport::TestCase
       error_msg = 'some failure message'
       Open3.stubs(:capture3).returns(["blarg \n 28d", error_msg, exit_failure])
       result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_size_unknown', exit_code: '1', error: error_msg)
 
-      assert_equal([false, I18n.t('dashboard.files_directory_size_unknown', exit_code: '1', error: error_msg)], result)
+      assert_equal [false, error], result
     end 
+  end
+
+  test "can_download_as_zip handles unauthorized directory" do
+    Dir.mktmpdir do |dir|
+      FileUtils.chmod(0400, dir)  # Read-only permission
+      result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_download_unauthorized')
+  
+      assert_equal [false, error], result
+    end
+  end
+
+  test "can_download_as_zip handles directory size calculation timeout" do
+    Dir.mktmpdir do |dir|
+      Open3.stubs(:capture3).returns(["", "Timeout", exit_failure(124)])
+      result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_size_calculation_timeout')
+
+      assert_equal [false, error], result
+    end
+  end
+
+  test "can_download_as_zip handles directory size calculation error" do
+    Dir.mktmpdir do |dir|
+      Open3.stubs(:capture3).returns(["", "", exit_success])
+      result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_size_calculation_error')
+
+      assert_equal [false, error], result
+    end
   end
 
   test "can_download_as_zip handles files sizes of 0" do
@@ -50,6 +81,21 @@ class FilesTest < ActiveSupport::TestCase
         0 total", "", exit_success])
 
       assert_equal [true, nil], PosixFile.new(dir).can_download_as_zip?
+    end 
+  end
+
+  test "can_download_as_zip handles directory size exceeding limit" do
+    download_directory_size_limit = Configuration.file_download_dir_max
+    Dir.mktmpdir do |dir|
+      dir_size = download_directory_size_limit + 1
+      PosixFile.any_instance.stubs(:calculate_directory_size)
+        .returns(download_directory_size_limit + 1)
+      Open3.stubs(:capture3).returns(["#{dir_size} #{dir} 
+        \n #{dir_size} total", "", exit_success])
+      result = PosixFile.new(dir).can_download_as_zip?
+      error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
+
+      assert_equal([false, error], result)
     end 
   end
 
