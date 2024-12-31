@@ -3,6 +3,18 @@ require 'test_helper'
 
 class WidgetsPartialTest < ActionDispatch::IntegrationTest
 
+  def setup
+    Configuration.stubs(:widget_partials_enabled?).returns(true)
+    Rails.application.reload_routes!
+  end
+
+  test 'should not load widgets partial route when widget_partials_enabled? is false' do
+    Configuration.stubs(:widget_partials_enabled?).returns(false)
+    Rails.application.reload_routes!
+
+    refute respond_to?(:widgets_url)
+  end
+
   test 'should render widget partial without any layout furniture' do
     get widgets_url('widgets_partial_test')
 
