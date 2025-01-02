@@ -7,6 +7,8 @@ require 'rest_client'
 # - `server`: URL for the ServiceNow server (required)
 # - `user`: ServiceNow API username
 # - `pass`: ServiceNow API password
+# - `auth_token`: ServiceNow API key
+# - `auth_header`: ServiceNow API key HTTP header. Defaults to x-sn-apikey.
 # - `timeout`: Connection and read timeout in seconds. Defaults to 30.
 # - `verify_ssl`: Whether or not the client should validate SSL certificates. Defaults to true.
 # - `proxy`: Proxy server URL. Defaults to no proxy.
@@ -26,10 +28,10 @@ class ServicenowClient
     @verify_ssl = config[:verify_ssl] || false
     @server = config[:server] if config[:server]
 
-    raise ArgumentError, 'server is a required option for ServiceNow client' unless @server
+    raise ArgumentError, 'server is a required parameter for ServiceNow client' unless @server
 
     if !@auth_token && !@user && !@pass
-      raise ArgumentError, 'auth_token or user and pass are required options for the ServiceNow client'
+      raise ArgumentError, 'auth_token or user and pass are required parameters for the ServiceNow client'
     end
 
     headers = { 'User-Agent' => UA,
