@@ -127,34 +127,34 @@ attributes:
           "2.7",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
-          data-set-bc-account-other: 'other_account_python27',
-          data-set-bc-account: 'python27'
+          data-suggest-bc-account-other: 'other_account_python27',
+          data-suggest-bc-account: 'python27'
         ]
       - [
           "3.1",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
-          data-set-bc-account-other: 'other_account_python31',
-          data-set-bc-account: 'python31'
+          data-suggest-bc-account-other: 'other_account_python31',
+          data-suggest-bc-account: 'python31'
         ]
       - [
           "3.2",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
-          data-set-bc-account-other: 'other_account_python32',
-          data-set-bc-account: 'python32'
+          data-suggest-bc-account-other: 'other_account_python32',
+          data-suggest-bc-account: 'python32'
         ]
       - [
           "3.6",
-          data-set-hidden-change-thing: 'python36'
+          data-suggest-hidden-change-thing: 'python36'
         ]
       - [
           "3.7",
-          data-set-hidden-change-thing: 'python37',
+          data-suggest-hidden-change-thing: 'python37',
         ]
       - [
           "4.0.nightly",
-          data-set-hidden-change-thing: 'python4nightly',
+          data-suggest-hidden-change-thing: 'python4nightly',
         ]
   cuda_version:
     widget: select
@@ -184,13 +184,13 @@ attributes:
           'medium', 'medium',
           data-option-for-classroom-astronomy-5678: false,
           data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
-          data-set-checkbox-test: 0,
+          data-suggest-checkbox-test: 0,
         ]
       - [
           'large', 'large',
           data-option-for-classroom-astronomy-5678: false,
           data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
-          data-set-checkbox-test: 1,
+          data-suggest-checkbox-test: 1,
           data-option-for-classroom-123ABC: false,
           data-option-for-classroom-456def: false,
         ]
