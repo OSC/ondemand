@@ -17,6 +17,8 @@ const exclusiveOptionForHandlerCache = {};
 // simples array of string ids for elements that have a handler
 const minMaxHandlerCache = [];
 const setHandlerCache = [];
+const suggestHandlerCache = [];
+
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
@@ -25,6 +27,7 @@ const labelHandlerCache = {};
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
+const suggestValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
 
@@ -144,6 +147,8 @@ function makeChangeHandlers(prefix){
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('set')) {
                 addSetHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('suggest')) {
+                addSuggestHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('hide')) {
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
@@ -320,6 +325,31 @@ function addSetHandler(optionId, option, key, configValue) {
   setValue({ target: document.querySelector(`#${optionId}`) }, id);
 }
 
+function addSuggestHandler(optionId, option, key, configValue) {
+  const k = key.replace(/^suggest/,'');
+  const id = String(idFromToken(k));
+
+  if(id === 'undefined') return;
+
+  // id is account. optionId is classroom
+  let cacheKey = `${id}_${optionId}`
+  if(suggestValueLookup[cacheKey] === undefined) suggestValueLookup[cacheKey] = new Table(optionId, undefined);
+  const table = suggestValueLookup[cacheKey];
+  table.put(option, undefined, configValue);
+
+  if(!suggestHandlerCache.includes(cacheKey)) {
+    const changeElement = $(`#${optionId}`);
+
+    changeElement.on('change', (event) => {
+      suggestValue(event, id);
+    });
+
+    suggestHandlerCache.push(cacheKey);
+  }
+
+  suggestValue({ target: document.querySelector(`#${optionId}`) }, id);  
+}
+
 function setValue(event, changeId) {
   const chosenVal = event.target.value;
   const cacheKey = `${changeId}_${event.target['id']}`
@@ -327,7 +357,29 @@ function setValue(event, changeId) {
   if (table === undefined) return;
 
   const changeVal = table.get(chosenVal, undefined);
+  
+  const element = document.getElementById(changeId);
+  
+  if(changeVal !== undefined) {
+    if(element['type'] == 'checkbox') {
+      setCheckboxValue(element, changeVal);
+    } else {
+      element.value = changeVal;
+    }
+    element.disabled = true;
+  } else {
+    element.disabled = false;
+  }
+}
 
+function suggestValue(event, changeId) {
+  const chosenVal = event.target.value;
+  const cacheKey = `${changeId}_${event.target['id']}`
+  const table = suggestValueLookup[cacheKey];
+  if (table === undefined) return;
+
+  const changeVal = table.get(chosenVal, undefined);
+          
   if(changeVal !== undefined) {
     const element = document.getElementById(changeId);
     if(element['type'] == 'checkbox') {

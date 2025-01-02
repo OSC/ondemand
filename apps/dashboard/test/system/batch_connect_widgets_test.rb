@@ -537,4 +537,106 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal 'standard', find('#batch_connect_session_context_node_type').value
     end
   end
+
+  test 'data-set-' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - project
+          - node_type
+        attributes:
+          project:
+            widget: 'select'
+            options:
+              - ['project1', data-set-node-type: 'standard']
+              - ['project2', data-set-node-type: 'gpu']
+              - 'project3'
+          node_type:
+            widget: 'select'
+            options:
+              - 'standard'
+              - 'gpu'
+        
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('project1', from: 'batch_connect_session_context_project')
+
+      node_type = find('#batch_connect_session_context_node_type')
+
+      assert_equal 'standard', node_type.value
+      assert node_type.disabled?
+
+      select('project2', from: 'batch_connect_session_context_project')
+
+      assert_equal 'gpu', node_type.value
+      assert node_type.disabled?
+
+      select('project3', from: 'batch_connect_session_context_project')
+
+      refute node_type.disabled?
+    end
+  end
+
+  test 'data-suggest-' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - project
+          - node_type
+        attributes:
+          project:
+            widget: 'select'
+            options:
+              - ['project1', data-suggest-node-type: 'standard']
+              - ['project2', data-suggest-node-type: 'gpu']
+              - 'project3'
+          node_type:
+            widget: 'select'
+            options:
+              - 'standard'
+              - 'gpu'
+        
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('project1', from: 'batch_connect_session_context_project')
+
+      node_type = find('#batch_connect_session_context_node_type')
+
+      assert_equal 'standard', node_type.value
+      refute node_type.disabled?
+
+      select('project2', from: 'batch_connect_session_context_project')
+
+      assert_equal 'gpu', node_type.value
+      refute node_type.disabled?
+
+      select('project3', from: 'batch_connect_session_context_project')
+
+      refute node_type.disabled?
+    end
+  end
 end
