@@ -8,6 +8,23 @@ ja_JP:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
+    save: "溜める"
+    add: "付け加え"
+    remove: "抜かす"
+    delete: "消す"
+    edit: "編集する"
+    show: "見せる"
+    launch: "起動する"
+    type: 'タイプ'
+    name: '名前'
+    size: "サイズ"
+    owner: "所有者"
+    date: "日付"
+    mode: "モード"
+    project: "プロジェクト"
+    directory: "ディレクトリ"
+
+    auto_log_location_title: "ログの場所"
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: 付け加え

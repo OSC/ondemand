@@ -243,8 +243,33 @@ en:
           attachments_js: No more attachments allowed
         required: The %{id} is required
         size:
-          attachments_js: Max attachment size is %{max}. Selected file size is %{size}
-      validation_error: Invalid Request. Please review the error messages below
+          attachments_js: "Max attachment size is %{max}. Selected file size is %{size}"
+         validation_error: Invalid Request. Please review the error messages below
+      rt:
+        creation_success: "Support ticket created in RequestTracker system. TicketId: %{ticket_id}"
+
+    custom_pages:
+      invalid: "Invalid page code: %{page}. This page has not been configured"
+
+
+    # These are basic words that many partials can use
+    save: "Save"
+    add: "Add"
+    remove: "Remove"
+    delete: "Delete"
+    edit: "Edit"
+    show: "Show"
+    launch: "Launch"
+    project: "Project"
+    directory: "Directory"
+    close: "Close"
+    type: "Type"
+    name: "Name"
+    size: "Size"
+    owner: "Owner"
+    date: "Date"
+    mode: "Mode"
+      
     system_apps_caption: System Installed App
     unknown: Unknown
     uppy: Uppy
