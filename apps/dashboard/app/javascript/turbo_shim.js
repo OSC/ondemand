@@ -13,14 +13,23 @@ export function replaceHTML(id, html) {
 
   if(ele == null){
     return;
-  } else {
-    var tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    const newHTML = tmp.querySelector('template').innerHTML;
-    tmp.remove();
-
-    setInnerHTML(ele, newHTML);
   }
+
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const newHTML = tmp.querySelector('template').innerHTML;
+  tmp.remove();
+
+  const activeElementId = document.activeElement?.id;
+  setInnerHTML(ele, newHTML);
+
+  // Restore focus to last active element
+  if (activeElementId) {
+    const newActiveElement = document.getElementById(activeElementId);
+    if (newActiveElement) {
+      newActiveElement.focus();
+    }
+  } 
 }
 
 export function pollAndReplace(url, delay, id, callback) {
