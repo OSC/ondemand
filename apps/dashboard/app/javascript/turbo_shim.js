@@ -27,7 +27,7 @@ export function replaceHTML(id, html) {
   if (activeElementId) {
     const newActiveElement = document.getElementById(activeElementId);
     if (newActiveElement) {
-      newActiveElement.focus();
+      newActiveElement.focus({preventScroll: true});
     }
   } 
 }
