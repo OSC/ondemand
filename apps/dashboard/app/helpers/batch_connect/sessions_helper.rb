@@ -99,6 +99,7 @@ module BatchConnect::SessionsHelper
       class: %w[btn px-1 py-0 btn-outline-dark relaunch full-page-spinner],
       form_class: %w[d-inline relaunch],
       title: title,
+      id: "relaunch_button_#{session.id}",
       'aria-label': title,
       data: { toggle: "tooltip", placement: "left" },
       params: params
@@ -115,6 +116,7 @@ module BatchConnect::SessionsHelper
       class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner],
       form_class: %w[d-inline edit-session],
       title: title,
+      id: "edit_button_#{session.id}",
       'aria-label': title,
       data: { toggle: "tooltip", placement: "left" },
       params: {session_id: session.id}
@@ -138,6 +140,7 @@ module BatchConnect::SessionsHelper
       method: :delete,
       class: "btn btn-danger float-end btn-delete",
       title: title,
+      id: "delete_button_#{session.id}",
       'aria-label': title,
       data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
     ) do
@@ -152,6 +155,7 @@ module BatchConnect::SessionsHelper
       method: :post,
       class: "btn btn-danger float-end btn-cancel",
       title: title,
+      id: "cancel_button_#{session.id}",
       'aria-label': title,
       data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom" }
     ) do

@@ -2,5 +2,5 @@
   <strong>
     <%= t('dashboard.batch_connect_sessions_stats_support_ticket') %>
   </strong>
-  <%= link_to(t('dashboard.batch_connect_sessions_stats_support_ticket_link_text'), support_path(session_id: session.id)) %>
+  <%= link_to(t('dashboard.batch_connect_sessions_stats_support_ticket_link_text'), support_path(session_id: session.id),  id: "support_link_#{session.id}") %>
 </p>

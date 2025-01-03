@@ -8,7 +8,7 @@
 
 <div class="card-heading">
   <div class="h5 card-header overflow-auto alert <%= alert_class %>">
-    <a href="<%= new_batch_connect_session_context_path(token: session.token) %>" class="alert-heading">
+    <a href="<%= new_batch_connect_session_context_path(token: session.token) %>" class="alert-heading" id="session_link_<%= session.id %>">
       <span class="card-text"><%= session.title %></span>
     </a>
     <span class="card-text"> (<%= session.job_id %>)</span>
