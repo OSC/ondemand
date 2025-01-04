@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NginxStage
   # This generator stages and generates the NGINX app config. It is also
   # responsible for reloading the per-user NGINX process after updating the app
@@ -51,7 +53,7 @@ module NginxStage
     #   @raise [MissingOption] if sub_request isn't supplied
     add_option :sub_request do
       {
-        opt_args: ["-r", "--sub-request=SUB_REQUEST", "# The SUB_REQUEST that requests the specified app"],
+        opt_args: ['-r', '--sub-request=SUB_REQUEST', '# The SUB_REQUEST that requests the specified app'],
         required: true
         # sub-request is validated in `NginxStage::parse_app_request`
       }
@@ -67,17 +69,19 @@ module NginxStage
 
     # Validate that the path to the app exists on the local filesystem
     add_hook :validate_app_root do
-      raise InvalidRequest, "invalid app root: #{app_root}" unless NginxStage.as_user(user) { File.directory?(app_root) }
+      raise InvalidRequest, "invalid app root: #{app_root}" unless NginxStage.as_user(user) do
+                                                                     File.directory?(app_root)
+                                                                   end
     end
 
     # Generate the NGINX app config from the 'app.conf.erb' template
     add_hook :create_config do
-      template "app.conf.erb", app_config_path
+      template 'app.conf.erb', app_config_path
     end
 
     # Restart the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
-      if !skip_nginx
+      unless skip_nginx
         NginxStage.clean_nginx_env(user: user)
         if File.file? NginxStage.pun_pid_path(user: user)
           o, s = Open3.capture2e(
@@ -106,9 +110,10 @@ module NginxStage
     end
 
     private
-      # NGINX app config path
-      def app_config_path
-        NginxStage.app_config_path(env: env, owner: owner, name: name)
-      end
+
+    # NGINX app config path
+    def app_config_path
+      NginxStage.app_config_path(env: env, owner: owner, name: name)
+    end
   end
 end
