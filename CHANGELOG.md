@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#4042)\
+Only build x86 during nightly builds (#4040)\
+Update Changelog (#4039)\
+update dependencies (#4038)\
+fix popovers on this app list (#4033)\
+Additional test cases for Files#can_download_as_zip (#4019)
 
 ## [4.0.0] - 12-30-2024
 
