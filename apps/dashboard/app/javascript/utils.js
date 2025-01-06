@@ -118,3 +118,23 @@ export function reportErrorForAnalytics(path, error) {
   // Fire and Forget
   fetch(analyticsUrl);
 }
+
+// helper method to hide an element. Note that jQuery's hide()
+// changes the inline style which may not do anything if the element
+// already has a bootstrap display class like d-flex.
+export function hide(id) {
+  const ele = document.getElementById(id);
+  if(ele !== null) {
+    ele.classList.add('d-none');
+  }
+}
+
+// helper method to show an element. Note that jQuery's show()
+// changes the inline style which may not do anything if the element
+// already has a bootstrap display class like d-flex.
+export function show(id) {
+  const ele = document.getElementById(id);
+  if(ele !== null) {
+    ele.classList.remove('d-none');
+  }
+}
