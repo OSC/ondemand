@@ -21,7 +21,7 @@ function makeTable(element) {
 }
 
 function getPathSelectorOptions(element) {
-  options = {};
+  const options = {};
 
   options.filesPath           = element.dataset['filesPath'];
   options.initialDirectory    = element.dataset['initialDirectory'];
