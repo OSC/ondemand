@@ -72,6 +72,121 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'path_selector can filter by file type matching an expression' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      
+      Tempfile.new("test.py", "#{Rails.root}/tmp")
+      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}/tmp"
+            show_files: true
+            file_pattern: \.py
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on 'Select Path'
+
+      table_id = "batch_connect_session_context_path_path_selector_table"
+      shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
+
+      assert shown_dirs_and_files.any? { |file| file.match("test.py") }
+      refute shown_dirs_and_files.any? { |file| file.match("test.rb") }    
+    end
+  end
+
+  test 'path_selector handles invalid regular expressions' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      
+      Tempfile.new("test.py", "#{Rails.root}/tmp")
+      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}/tmp"
+            show_files: true
+            file_pattern: \.doesn't(compile
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      find('.alert-danger')
+    end
+  end
+
+  test 'path_selector handles no provided file pattern' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      
+      Tempfile.new("test.py", "#{Rails.root}/tmp")
+      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}/tmp"
+            show_files: true
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on 'Select Path'
+
+      sleep 1
+
+      table_id = "batch_connect_session_context_path_path_selector_table"
+      shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
+
+      assert shown_dirs_and_files.any? { |file| file.match("test.py") }
+      assert shown_dirs_and_files.any? { |file| file.match("test.rb") } 
+    end
+  end
+
   test 'data-label-* allows select options to dynamically change the label of another form element' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
@@ -314,6 +429,112 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
         select('show', from: bc_ele_id('module_hider'))
         assert(find("##{bc_ele_id('auto_modules_r')}").visible?)
       end
+    end
+  end
+
+  test 'data-options-for-' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - pitzer
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-pitzer: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # owens is selected, standard and gpu are both visible
+      select('owens', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      # select gpu, to test that it's deselected properly when pitzer is selected
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      # pitzer is selected, gpu is not visible
+      select('pitzer', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+      
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+
+      # value of node_type has gone back to standard
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+
+  test 'data-option-exlusive-for-' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - pitzer
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-exclusive-option-for-cluster-owens: true]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # owens is selected, standard and gpu are both visible
+      select('owens', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      # select gpu, to test that it's deselected properly when pitzer is selected
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      # pitzer is selected, gpu is not visible
+      select('pitzer', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+
+      # value of node_type has gone back to standard
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
     end
   end
 end

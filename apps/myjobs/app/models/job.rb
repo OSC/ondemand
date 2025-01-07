@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Job < ApplicationRecord
   include OscMacheteRails::Statusable
 
@@ -12,9 +14,9 @@ class Job < ApplicationRecord
   # so we can include a custom TorqueAdapter
   def job
     OSC::Machete::Job.new(
-      script: script,
-      pbsid: pbsid,
-      host: host || workflow.batch_host,
+      script:        script,
+      pbsid:         pbsid,
+      host:          host || workflow.batch_host,
       torque_helper: ResourceMgrAdapter.new(workflow)
     )
   end

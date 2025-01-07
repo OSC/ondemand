@@ -11,6 +11,7 @@ const formTokens = [];
 // elements. I.e., {'cluster': [ 'node_type' ] } means that changes to cluster
 // trigger changes to node_type
 const optionForHandlerCache = {};
+const exclusiveOptionForHandlerCache = {};
 
 
 // simples array of string ids for elements that have a handler
@@ -109,7 +110,6 @@ function snakeCaseWords(str) {
 function memorizeElements(elements) {
   elements.each((_i, ele) => {
     formTokens.push(mountainCaseWords(shortId(ele['id'])));
-    optionForHandlerCache[ele['id']] = [];
   });
 };
 
@@ -137,6 +137,9 @@ function makeChangeHandlers(prefix){
               if(key.startsWith('optionFor')) {
                 let token = key.replace(/^optionFor/,'');
                 addOptionForHandler(idFromToken(token), element['id']);
+              } else if (key.startsWith('exclusiveOptionFor')) {
+                let token = key.replace(/^exclusiveOptionFor/, '');
+                addExclusiveOptionForHandler(idFromToken(token), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('set')) {
@@ -535,10 +538,19 @@ function clamp(currentValue, previous, next) {
   }
 }
 
-function addOptionForHandler(causeId, targetId) {
+function sharedOptionForHandler(causeId, targetId, optionForType) {
   const changeId = String(causeId || '');
+  let handlerCache = null;
 
-  if(changeId.length == 0 || optionForHandlerCache[causeId].includes(targetId)) {
+  if (optionForType == 'optionFor') {
+    if (optionForHandlerCache[causeId] == undefined) optionForHandlerCache[causeId] = [];
+    handlerCache = optionForHandlerCache;
+  } else if (optionForType == 'exclusiveOptionFor') {
+    if (exclusiveOptionForHandlerCache[causeId] == undefined) exclusiveOptionForHandlerCache[causeId] = [];
+    handlerCache = exclusiveOptionForHandlerCache;
+  }
+  
+  if(changeId.length == 0 || handlerCache[causeId].includes(targetId)) {
     // nothing to do. invalid causeId or we already have a handler between the 2
     return;
   }
@@ -547,15 +559,31 @@ function addOptionForHandler(causeId, targetId) {
 
   if(targetId && causeElement) {
     // cache the fact that there's a new handler here
-    optionForHandlerCache[causeId].push(targetId);
+    handlerCache[causeId].push(targetId);
 
     causeElement.on('change', (event) => {
-      toggleOptionsFor(event, targetId);
+      if (optionForType == 'exclusiveOptionFor') {
+        toggleExclusiveOptionsFor(event, targetId);
+      } else if (optionForType == 'optionFor') {
+        toggleOptionsFor(event, targetId);
+      }
     });
 
     // fake an event to initialize
-    toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
+    if (optionForType == 'exclusiveOptionFor') {
+      toggleExclusiveOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
+    } else if (optionForType == 'optionFor') {
+      toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
+    }
   }
+}
+
+function addOptionForHandler(causeId, targetId) {
+  sharedOptionForHandler(causeId, targetId, 'optionFor');
+};
+
+function addExclusiveOptionForHandler(causeId, targetId) {
+  sharedOptionForHandler(causeId, targetId, 'exclusiveOptionFor');
 };
 
 function parseCheckedWhen(key) {
@@ -687,19 +715,19 @@ function idFromToken(str) {
   }
 }
 
-
 /**
  * Extract the option for out of an option for directive.
  *
  * @example
  *  optionForClusterOakley -> Cluster
+ *  exclusiveOptionForClusterOakley -> Cluster
  *
  * @param {*} str
  * @returns - the option for string
  */
-function optionForFromToken(str) {
+function sharedOptionForFromToken(str, optionForType) {  
   return formTokens.map((token) => {
-    let match = str.match(`^optionFor${token}`);
+    let match = str.match(`^${optionForType}${token}`);
 
     if (match && match.length >= 1) {
       return token;
@@ -709,14 +737,15 @@ function optionForFromToken(str) {
   })[0];
 }
 
-/**
- * Hide or show options of an element based on which cluster is
- * currently selected and the data-option-for-CLUSTER attributes
- * for each option
- *
- * @param      {string}  element_name  The name of the element with options to toggle
- */
- function toggleOptionsFor(_event, elementId) {
+function optionForFromToken(str) {
+  return sharedOptionForFromToken(str, 'optionFor');
+}
+
+function exclusiveOptionForFromToken(str) {
+  return sharedOptionForFromToken(str, 'exclusiveOptionFor');
+}
+
+function sharedToggleOptionsFor(_event, elementId, contextStr) {
   const options = [...document.querySelectorAll(`#${elementId} option`)];
   let hideSelectedValue = undefined;
 
@@ -727,11 +756,17 @@ function optionForFromToken(str) {
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
-      let optionFor = optionForFromToken(key);
-      let optionForId = idFromToken(key.replace(/^optionFor/,''));
+      let optionFor = '';
+
+      if (contextStr == 'optionFor') {
+        optionFor = optionForFromToken(key);
+      } else if (contextStr == 'exclusiveOptionFor') {
+        optionFor = exclusiveOptionForFromToken(key);
+      }
+      let optionForId = idFromToken(key.replace(new RegExp(`^${contextStr}`),''));
 
       // it's some other directive type, so just keep going and/or not real
-      if(!key.startsWith('optionFor') || optionForId === undefined) {
+      if(!key.startsWith(contextStr) || optionForId === undefined) {
         continue;
       }
 
@@ -742,7 +777,12 @@ function optionForFromToken(str) {
         optionForValue = `-${optionForValue}`;
       }
 
-      hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
+      if (contextStr == 'optionFor') {
+        hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
+      } else if (contextStr == 'exclusiveOptionFor') {
+        hide = !(option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`] === 'true')
+      }
+
       if (hide) {
         break;
       }
@@ -796,8 +836,15 @@ function optionForFromToken(str) {
 
   // now that we're done, propogate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
-};
+}
 
+function toggleOptionsFor(_event, elementId) {
+  sharedToggleOptionsFor(_event, elementId, 'optionFor');
+}
+
+function toggleExclusiveOptionsFor(_event, elementId) {
+  sharedToggleOptionsFor(_event, elementId, 'exclusiveOptionFor');
+};
 
 export {
   makeChangeHandlers
