@@ -138,3 +138,11 @@ export function show(id) {
     ele.classList.remove('d-none');
   }
 }
+
+// Helper method to set focus on an element by id
+export function setFocus(id) {
+  const newActiveElem = document.getElementById(id);
+  if (newActiveElem) {
+    newActiveElem.focus({preventScroll: true});
+  }
+}

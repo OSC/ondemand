@@ -5,7 +5,7 @@
   this shim until we enable it.
 */
 
-import { setInnerHTML } from './utils';
+import { setInnerHTML, setFocus } from './utils';
 import { alert } from './alert';
 
 export function replaceHTML(id, html) {
@@ -20,16 +20,14 @@ export function replaceHTML(id, html) {
   const newHTML = tmp.querySelector('template').innerHTML;
   tmp.remove();
 
-  const activeElementId = document.activeElement?.id;
+  const focusedElem = document.activeElement;
+  const focusedElemId = focusedElem?.id;
+
   setInnerHTML(ele, newHTML);
 
-  // Restore focus to last active element
-  if (activeElementId) {
-    const newActiveElement = document.getElementById(activeElementId);
-    if (newActiveElement) {
-      newActiveElement.focus({preventScroll: true});
-    }
-  } 
+  if (focusedElemId && !focusedElem.isConnected) {
+    setFocus(focusedElemId);
+  }
 }
 
 export function pollAndReplace(url, delay, id, callback) {
