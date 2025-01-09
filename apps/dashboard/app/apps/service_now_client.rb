@@ -59,7 +59,6 @@ class ServiceNowClient
     incident_number = response_hash[:number]
     incident_id = response_hash[:sys_id]
 
-    Rails.logger.info response_hash
     raise StandardError, "Unable to create ticket. Server response: #{incident}" unless incident_id
 
     begin
@@ -89,8 +88,8 @@ class ServiceNowClient
 
   def create_response(incident_number, attachments, attachments_success)
     OpenStruct.new({
-      number:             incident_number,
-      attachments:        attachments,
+      number:              incident_number,
+      attachments:         attachments,
       attachments_success: attachments_success
     })
   end
