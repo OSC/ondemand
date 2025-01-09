@@ -543,11 +543,46 @@ class FileOps {
     let id = `#${data.id}`;
     $(id).fadeOut(4000);
   }
+
+  reportTransferTemplate(data) {
+    let html = '';
+    
+    if (data.completed) {
+      if (data.error_summary) {
+        html += `
+          <div id="${data.id}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <b><i class="fas fa-exclamation-triangle"></i> ${data.error_summary}</b>
+            <button class="btn btn-outline-dark btn-sm ms-3 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${data.id}-error-report" aria-expanded="false" aria-controls="${data.id}-error-report">See details</button>
+            <div id="${data.id}-error-report" class="collapse">
+              <div class="mt-3 card">
+                <pre class="card-body">${data.error_message}</pre>
+              </div>
+             </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+      } else {
+        html += `
+          <span class="text-${data.bootstrap_class}" id="${data.id}">
+            <b><i class="fas ${data.fa_label}"></i> ${data.summary}</b>
+          </span>
+        `;
+      }
+    } else {
+      html += `
+        <span class="text-${data.bootstrap_class}" id="${data.id}">
+          <b><i class="fas ${data.fa_label}"></i> ${data.summary}</b>
+        </span>
+      `;
+    }
+    
+    return html;
+  };
   
-  reportTransferTemplate = (function(){
-    let template_str  = $('#transfer-template').html();
-    return Handlebars.compile(template_str);
-  })();
+  // reportTransferTemplate = (function(){
+  //   let template_str  = $('#transfer-template').html();
+  //   return Handlebars.compile(template_str);
+  // })();
 
   poll(data) {
 
