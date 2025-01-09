@@ -140,7 +140,7 @@ class UserConfiguration
     # Supported delivery mechanism
     return SupportTicketEmailService.new(support_ticket) if support_ticket[:email]
     return SupportTicketRtService.new(support_ticket) if support_ticket[:rt_api]
-    return SupportTicketServicenowService.new(support_ticket) if support_ticket[:servicenow_api]
+    return SupportTicketServiceNowService.new(support_ticket) if support_ticket[:servicenow_api]
 
     raise StandardError, I18n.t('dashboard.user_configuration.support_ticket_error')
   end

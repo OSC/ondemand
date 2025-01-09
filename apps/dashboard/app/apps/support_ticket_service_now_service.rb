@@ -3,7 +3,7 @@
 # Service class responsible to create a support ticket and delivery it via ServiceNow API
 #
 # It implements the support ticket interface as defined in the SupportTicketController
-class SupportTicketServicenowService
+class SupportTicketServiceNowService
 
   attr_reader :support_ticket_config
 
@@ -24,7 +24,6 @@ class SupportTicketServicenowService
     support_ticket = SupportTicket.from_config(support_ticket_config)
     support_ticket.username = CurrentUser.name
     support_ticket.session_id = request_params[:session_id]
-    support_ticket.queue = request_params[:queue]
     set_session(support_ticket)
   end
 
@@ -55,6 +54,13 @@ class SupportTicketServicenowService
       short_description: support_ticket.subject,
       description:       description,
     }
+
+    mapping_fields = service_config.fetch(:map, {})
+    mapping_fields.each do |snow_field, form_field|
+      # Map field names from the form into field names from ServiceNow
+      payload[snow_field] = support_ticket.send(form_field)
+    end
+
     custom_payload = service_config.fetch(:payload, {})
     custom_payload.each do |key, value|
       # Use the values from the custom payload if available.
@@ -62,10 +68,11 @@ class SupportTicketServicenowService
       payload[key] = value.nil? ? support_ticket.send(key) : value
     end
 
-    snow_client = ServicenowClient.new(service_config)
-    number = snow_client.create(payload, support_ticket.attachments)
-    Rails.logger.info "Support Ticket created in ServiceNow: #{number}"
-    service_config.fetch(:success_message, I18n.t('dashboard.support_ticket.servicenow.creation_success', number: number))
+    snow_client = ServiceNowClient.new(service_config)
+    result = snow_client.create(payload, support_ticket.attachments)
+    Rails.logger.info "Support Ticket created in ServiceNow: #{result.number} - Attachments[#{result.attachments}] success=#{result.attachments_success}"
+    message_key = result.attachments_success ? 'creation_success' : 'attachments_failure'
+    service_config.fetch(:success_message, I18n.t("dashboard.support_ticket.servicenow.#{message_key}", number: result.number))
   end
 
   private

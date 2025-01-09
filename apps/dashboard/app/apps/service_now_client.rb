@@ -13,7 +13,7 @@ require 'rest_client'
 # - `verify_ssl`: Whether or not the client should validate SSL certificates. Defaults to true.
 # - `proxy`: Proxy server URL. Defaults to no proxy.
 #
-class ServicenowClient
+class ServiceNowClient
 
   UA = 'Open OnDemand ruby ServiceNow Client'
   attr_reader :server, :auth_header, :client, :timeout, :verify_ssl
@@ -30,8 +30,8 @@ class ServicenowClient
 
     raise ArgumentError, 'server is a required parameter for ServiceNow client' unless @server
 
-    if !@auth_token && !@user && !@pass
-      raise ArgumentError, 'auth_token or user and pass are required parameters for the ServiceNow client'
+    if !@auth_token && (!@user || !@pass)
+      raise ArgumentError, 'user and pass are required if not auth_token is provided for the ServiceNow client'
     end
 
     headers = { 'User-Agent' => UA,
@@ -46,7 +46,7 @@ class ServicenowClient
 
     if @user && @pass
       options[:user] = @user
-      options[:pass] = @pass
+      options[:password] = @pass
     end
     options[:proxy] = config[:proxy] if config[:proxy]
 
@@ -59,13 +59,20 @@ class ServicenowClient
     incident_number = response_hash[:number]
     incident_id = response_hash[:sys_id]
 
-    attachments&.each do |request_file|
-      add_attachment(incident_id, request_file)
+    Rails.logger.info response_hash
+    raise StandardError, "Unable to create ticket. Server response: #{incident}" unless incident_id
+
+    begin
+      attachments.to_a.each do |request_file|
+        add_attachment(incident_id, request_file)
+      end
+      attachments_success = true
+    rescue StandardError => e
+      Rails.logger.info "Could not add attachments to incident: #{incident_number}. Error=#{e}"
+      attachments_success = false
     end
 
-    return incident_number if incident_number
-
-    raise StandardError, "Unable to create ticket. Server response: #{incident}"
+    create_response(incident_number, attachments.to_a.size, attachments_success)
   end
 
   def add_attachment(incident_id, request_file)
@@ -75,22 +82,17 @@ class ServicenowClient
       file_name:    request_file.original_filename,
     }
     file = File.new(request_file.tempfile, 'rb')
-    resp = @client['/api/now/attachment/file'].post(file, params: params, content_type: request_file.content_type)
-    response_hash = JSON.parse(resp.body)['result'].symbolize_keys
-    Rails.logger.info response_hash
-
+    @client['/api/now/attachment/file'].post(file, params: params, content_type: request_file.content_type)
   end
 
-  def add_attachment_upload(incident_id, request_file)
-    form_data = {
-      table_name:   'incident',
-      table_sys_id: incident_id,
-      uploadFile:   File.new(request_file.tempfile),
-    }
-    resp = @client['/api/now/attachment/upload'].post(form_data, content_type: :multipart)
-    response_hash = JSON.parse(resp.body)['result'].symbolize_keys
-    Rails.logger.info response_hash
+  private
 
+  def create_response(incident_number, attachments, attachments_success)
+    OpenStruct.new({
+      number:             incident_number,
+      attachments:        attachments,
+      attachments_success: attachments_success
+    })
   end
 
 end
