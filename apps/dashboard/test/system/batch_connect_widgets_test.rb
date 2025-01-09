@@ -103,12 +103,13 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       click_on 'Select Path'
+      sleep 0.5
 
       table_id = "batch_connect_session_context_path_path_selector_table"
       shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
 
-      assert shown_dirs_and_files.any? { |file| file.match("test.py") }
-      refute shown_dirs_and_files.any? { |file| file.match("test.rb") }    
+      assert(shown_dirs_and_files.any? { |file| file.match("test.py") })
+      refute(shown_dirs_and_files.any? { |file| file.match("test.rb") })
     end
   end
 
