@@ -579,11 +579,6 @@ class FileOps {
     return html;
   };
   
-  // reportTransferTemplate = (function(){
-  //   let template_str  = $('#transfer-template').html();
-  //   return Handlebars.compile(template_str);
-  // })();
-
   poll(data) {
 
     let that = this;
