@@ -54,6 +54,11 @@ export function isBCDynamicJSEnabled() {
   return cfgData['bcDynamicJs'] == 'true'
 }
 
+export function downloadEnabled() {
+  const cfgData = configData();
+  return cfgData['downloadEnabled'] == 'true';
+}
+
 /*
   Will return null if xdmod integration is not enabled.
 */

@@ -129,7 +129,7 @@ jQuery(function() {
     const eventData = {
         file: fileName,
     };
-
+    
     $(CONTENTID).trigger(EVENTNAME.renameFilePrompt, eventData);
 
   });
