@@ -12,7 +12,7 @@ RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-late
 RUN dnf -y update && \
     dnf install -y dnf-utils && \
     dnf config-manager --set-enabled powertools && \
-    dnf -y module enable nodejs:18 ruby:3.1 && \
+    dnf -y module enable nodejs:20 ruby:3.3 && \
     dnf install -y \
         file \
         lsof \
