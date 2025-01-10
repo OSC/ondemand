@@ -23,6 +23,7 @@ RUN dnf -y update && \
         patch \
         lua-posix \
         rsync \
+        xz \
         ondemand-gems \
         ondemand-runtime \
         ondemand-build \
