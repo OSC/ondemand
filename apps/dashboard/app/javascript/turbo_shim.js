@@ -11,9 +11,7 @@ import { alert } from './alert';
 export function replaceHTML(id, html) {
   const ele = document.getElementById(id);
 
-  if(ele == null){
-    return;
-  }
+  if(ele == null) return;
 
   var tmp = document.createElement('div');
   tmp.innerHTML = html;
@@ -25,7 +23,7 @@ export function replaceHTML(id, html) {
 
   setInnerHTML(ele, newHTML);
 
-  if (focusedElemId && !focusedElem.isConnected) {
+  if(focusedElemId && !focusedElem.isConnected) {
     setFocus(focusedElemId);
   }
 }
