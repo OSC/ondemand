@@ -6,14 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-sleep here to fix this flaky test (#4066)\
-fix icon picker (#4065)\
-Added support to render widgets partial without any layout furniture (#3989)\
-correctly display cores (#4057)\
-hide & show this element by id (#4051)\
-fix some minified javascript errors (#4054)\
-lint a random file (#4045)\
-update dependencies (#4047)
+
+### Fixed
+- Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
+- Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057).
+- Icon picker correctly shows and hides the spinner in [4051](https://github.com/OSC/ondemand/pull/4051).
+- Project manager template selection fixed in [4054](https://github.com/OSC/ondemand/pull/4054).
+
+### Added
+- Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
 
 ## [4.0.0] - 12-30-2024
 
