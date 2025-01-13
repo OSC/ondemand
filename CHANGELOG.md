@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
+- Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057).
+- Icon picker correctly shows and hides the spinner in [4051](https://github.com/OSC/ondemand/pull/4051).
+- Project manager template selection fixed in [4054](https://github.com/OSC/ondemand/pull/4054).
+
+### Added
+- Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
+
 ## [4.0.0] - 12-30-2024
 
 ### Added

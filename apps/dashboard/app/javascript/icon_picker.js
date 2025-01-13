@@ -89,15 +89,22 @@ function searchIcons(event) {
   const uniqueSearchCharacters = new Set(searchString.split(''));
   const searchCharacters = [...uniqueSearchCharacters].filter((char) => indexKeys.includes(char));
 
-  searchCharacters.forEach(char => {
-    const indices = invertedIndex[char]; // Get indices for the character in the inverted index
-    indices.forEach(index => {
-      const iconStr = ALL_ICONS[index].toLowerCase();
-      if (iconStr.includes(searchString)) {
-        resultIndices.add(index);
-      }
+  // Account for boundary condition where the search string is empty
+  if(searchString.length === 0) {
+    for(let i = 0; i < ALL_ICONS.length; i++) {
+      resultIndices.add(i);
+    }
+  } else {
+    searchCharacters.forEach(char => {
+      const indices = invertedIndex[char]; // Get indices for the character in the inverted index
+      indices.forEach(index => {
+        const iconStr = ALL_ICONS[index].toLowerCase();
+        if (iconStr.includes(searchString)) {
+          resultIndices.add(index);
+        }
+      });
     });
-  });
+  }
 
   ALL_ICONS.forEach((name, idx) => {
     const ele = $(`#${iconId(name)}`)[0];
