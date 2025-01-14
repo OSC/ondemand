@@ -16,7 +16,7 @@
       <%- if session.starting? || session.running? -%>
       <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_nodes, "node") %></span>
       <span class="card-text"> | </span>
-      <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_nodes, "core") %></span>
+      <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_cores, "core") %></span>
       <span class="card-text"> | </span>
       <%- end -%>
       <%= status(session) %>
