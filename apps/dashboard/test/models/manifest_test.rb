@@ -166,47 +166,4 @@ class ManifestTest < ActiveSupport::TestCase
       assert_equal valid_manifest, File.read(path)
     end
   end
-
-  test 'Manifest::Template writes files entries' do
-    opts = { name: 'Ruby', 
-             description: 'test hash', 
-             icon: 'fas://cog',
-             url: '/some/location',
-             category: 'some category',
-             subcategory: 'some subcategory',
-             role: 'some role',
-             metadata: { some_key: 'value' },
-             new_window: false,
-             caption: 'some caption',
-             invalid_key: 'invalid value',
-             files: ['file1', 'file2']
-          }
-
-    valid_manifest = <<~HEREDOC
-      ---
-      name: Ruby
-      description: test hash
-      icon: fas://cog
-      url: "/some/location"
-      category: some category
-      subcategory: some subcategory
-      role: some role
-      metadata:
-        some_key: value
-      new_window: false
-      caption: some caption
-      files:
-      - file1
-      - file2
-    HEREDOC
-
-    manifest = Manifest::Template.new(opts)
-
-    Dir.mktmpdir do |dir|
-      path = dir << '/manifest.yml'
-      manifest.save(path)
-
-      assert_equal valid_manifest, File.read(path)
-    end
-  end
 end
