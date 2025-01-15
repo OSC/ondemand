@@ -233,10 +233,4 @@ category: OSC
       false
     end
   end
-
-  class Template < Manifest
-    def files
-      manifest_options[:files] || []
-    end
-  end
 end
