@@ -202,6 +202,7 @@ Listen 8080
     SetEnv OOD_PUN_SOCKET_ROOT "/path/to/pun/sockets"
     SetEnv OOD_PUN_MAX_RETRIES "3000"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
+
   </Location>
 
   # Control backend PUN for authenticated user:

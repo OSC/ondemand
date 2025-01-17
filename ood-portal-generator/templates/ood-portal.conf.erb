@@ -306,6 +306,7 @@ Listen <%= addr_port %>
     SetEnv OOD_PUN_SOCKET_ROOT "<%= @pun_socket_root %>"
     SetEnv OOD_PUN_MAX_RETRIES "<%= @pun_max_retries %>"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
+
   </Location>
 
   # Control backend PUN for authenticated user:
