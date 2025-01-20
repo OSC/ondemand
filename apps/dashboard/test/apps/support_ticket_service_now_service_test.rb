@@ -60,11 +60,12 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
 
   test 'deliver_support_ticket should generate default payload' do
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = {username: 'username', email: 'email@example.com', subject: 'Subject', description: 'Description'}
+    support_ticket.attributes = {username: 'username', email: 'email@example.com', cc: 'cc@example.com', subject: 'Subject', description: 'Description'}
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
-      payload[:caller_id] == support_ticket.username &&
+      payload[:caller_id] == support_ticket.email &&
         payload[:short_description] == support_ticket.subject &&
+        payload[:watch_list] == support_ticket.cc &&
         payload[:description].include?('Ticket submitted from OnDemand dashboard application') &&
         payload[:description].include?("Username: #{support_ticket.username}") &&
         payload[:description].include?("Email: #{support_ticket.email}")
@@ -79,7 +80,7 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
     config = {
       servicenow_api: {
         map: {
-          caller_id:         'email',
+          caller_id:         'username',
           short_description: 'description'
         }
       }
@@ -89,8 +90,30 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
     support_ticket.attributes = {username: 'username', email: 'email@example.com', subject: 'Subject', description: 'Description'}
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
-      payload[:caller_id] == support_ticket.email &&
+      payload[:caller_id] == support_ticket.username &&
         payload[:short_description] == support_ticket.description
+    end
+    .returns(create_response('incident_number', true))
+
+    ServiceNowClient.expects(:new).returns(mock_client)
+    target.deliver_support_ticket(support_ticket)
+  end
+
+  test 'map should support arrays of fields' do
+    config = {
+      servicenow_api: {
+        map: {
+          watch_list: ['username', 'email', 'cc'],
+        }
+      }
+    }
+    target = SupportTicketServiceNowService.new(config)
+    support_ticket = SupportTicket.from_config({})
+    support_ticket.attributes = {username: 'username', email: 'email@example.com', subject: 'Subject', description: 'Description'}
+    mock_client = mock('servicenow_client')
+    mock_client.expects(:create).with do |payload|
+      # cc is nil, so it should only be username and email
+      payload[:watch_list] == 'username,email@example.com'
     end
     .returns(create_response('incident_number', true))
 

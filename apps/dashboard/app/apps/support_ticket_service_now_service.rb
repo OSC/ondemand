@@ -50,21 +50,24 @@ class SupportTicketServiceNowService
     session = get_session(support_ticket)
     description = create_description_text(service_config, support_ticket, session)
     payload = {
-      caller_id:         support_ticket.username,
+      caller_id:         support_ticket.email,
+      watch_list:        support_ticket.cc,
       short_description: support_ticket.subject,
       description:       description,
     }
 
-    mapping_fields = service_config.fetch(:map, {})
+    mapping_fields = service_config.fetch(:map, {}).to_h
     mapping_fields.each do |snow_field, form_field|
       # Map field names from the form into field names from ServiceNow
-      payload[snow_field] = support_ticket.send(form_field)
+      # arrays are supported for form_field names and the values will be joined with commas.
+      value = Array.wrap(form_field).map { |name| support_ticket.send(name).to_s }.reject(&:blank?).join(',')
+      payload[snow_field] = value
     end
 
     custom_payload = service_config.fetch(:payload, {})
     custom_payload.each do |key, value|
       # Use the values from the custom payload if available.
-      # Default to the values from the form.
+      # Default to the values from the form when nil provided.
       payload[key] = value.nil? ? support_ticket.send(key) : value
     end
 
