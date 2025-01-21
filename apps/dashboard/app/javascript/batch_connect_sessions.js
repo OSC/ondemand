@@ -7,21 +7,20 @@ import { pollAndReplace } from './turbo_shim';
 const sessionStatusMap = new Map();
 
 function checkStatusChanges() {
-  const sessionCards = document.querySelectorAll('.card.session-panel');
+  const sessionCards = document.querySelectorAll('[data-bc-card]');
   
   sessionCards.forEach((card) => {
-    const sessionId = card.querySelector('[id^="id_link"]')?.textContent;
-    const newStatus = card.querySelector('.status')?.textContent;
-    if(!sessionId || !newStatus) return;
+    const sessionId = card.dataset.id;
+    const newStatus = card.dataset.status;
 
     if(sessionStatusMap.has(sessionId)) {
       const oldStatus = sessionStatusMap.get(sessionId);
       if(oldStatus !== newStatus) {
         sessionStatusMap.set(sessionId, newStatus);
-        const sessionTitle = card.querySelector('.card_title').textContent
+        const sessionTitle = card.dataset.title;
         const liveRegion = document.getElementById("sr-live-region");
         if(liveRegion) {
-          setInnerHTML(liveRegion, `${sessionTitle} is now ${newStatus}`);
+          setInnerHTML(liveRegion, `${sessionTitle} is now ${newStatus}.`);
         }
       }
     } else {
