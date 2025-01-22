@@ -5,34 +5,15 @@ require 'test_helper'
 class ServiceNowClientTest < ActiveSupport::TestCase
   test 'should throw exception when server is not provided' do
     config = {
-      server: nil,
-      user:   'test',
-      pass:   'test'
+      server: nil
     }
 
     assert_raises(ArgumentError) { ServiceNowClient.new(config) }
   end
 
-  test 'should throw exception when user or password are missing and not auth_token provided' do
+  test 'should allow missing credentials' do
     config = {
       server: 'http://server.com',
-      user:   'test',
-      pass:   nil
-    }
-    assert_raises(ArgumentError) { ServiceNowClient.new(config) }
-
-    config = {
-      server: 'http://server.com',
-      user:   nil,
-      pass:   'test'
-    }
-    assert_raises(ArgumentError) { ServiceNowClient.new(config) }
-  end
-
-  test 'should not throw exception auth_token is provided instead of username and password' do
-    config = {
-      server:     'http://server.com',
-      auth_token: 'auth'
     }
 
     assert_not_nil(ServiceNowClient.new(config))
@@ -40,9 +21,7 @@ class ServiceNowClientTest < ActiveSupport::TestCase
 
   test 'should set the expected default values' do
     config = {
-      server: 'http://server.com',
-      user:   'test',
-      pass:   'test'
+      server: 'http://server.com'
     }
 
     target = ServiceNowClient.new(config)
@@ -56,6 +35,7 @@ class ServiceNowClientTest < ActiveSupport::TestCase
       server:     'http://server.com',
       user:       'payload_username',
       pass:       'payload_password',
+      auth_token: 'payload_token',
       timeout:    90,
       verify_ssl: true,
       proxy:      'proxy.com:8888'
@@ -64,8 +44,24 @@ class ServiceNowClientTest < ActiveSupport::TestCase
     target = ServiceNowClient.new(config)
     assert_equal('payload_username', target.client.options[:user])
     assert_equal('payload_password', target.client.options[:password])
+    assert_equal('payload_token', target.client.options[:headers]['x-sn-apikey'])
     assert_equal(90, target.client.options[:timeout])
     assert_equal(true, target.client.options[:verify_ssl])
     assert_equal('proxy.com:8888', target.client.options[:proxy])
+  end
+
+  test 'should set password and token from environment if configured' do
+    config = {
+      server:         'http://server.com',
+      pass_env:       'SNOW_PASSWORD',
+      auth_token_env: 'SNOW_TOKEN'
+    }
+
+    with_modified_env(SNOW_PASSWORD: 'password_from_env', SNOW_TOKEN: 'token_from_env') do
+      target = ServiceNowClient.new(config)
+      assert_equal('password_from_env', target.client.options[:password])
+      assert_equal('token_from_env', target.client.options[:headers]['x-sn-apikey'])
+    end
+
   end
 end

@@ -3,11 +3,14 @@
 require 'rest_client'
 
 # HTTP client to create a ServiceNow incident using the API
+# Credentials are not compulsory to support authentication through Apache proxy settings
 # Configuration parameters:
 # - `server`: URL for the ServiceNow server (required)
 # - `user`: ServiceNow API username
 # - `pass`: ServiceNow API password
+# - `pass_env`: Environment variable to use for the ServiceNow API password
 # - `auth_token`: ServiceNow API key
+# - `auth_token_env`: Environment variable to use for the ServiceNow API key
 # - `auth_header`: ServiceNow API key HTTP header. Defaults to x-sn-apikey.
 # - `timeout`: Connection and read timeout in seconds. Defaults to 30.
 # - `verify_ssl`: Whether or not the client should validate SSL certificates. Defaults to true.
@@ -30,9 +33,11 @@ class ServiceNowClient
 
     raise ArgumentError, 'server is a required parameter for ServiceNow client' unless @server
 
-    if !@auth_token && (!@user || !@pass)
-      raise ArgumentError, 'user and pass are required if not auth_token is provided for the ServiceNow client'
-    end
+    # Allow to pass secrets securely through environment variables
+    auth_token_env = config[:auth_token_env]
+    @auth_token = ENV[auth_token_env] if auth_token_env
+    pass_env = config[:pass_env]
+    @pass = ENV[pass_env] if pass_env
 
     headers = { 'User-Agent' => UA,
                 'Cookie'     => '' }
@@ -43,11 +48,8 @@ class ServiceNowClient
       timeout:    @timeout,
       verify_ssl: @verify_ssl,
     }
-
-    if @user && @pass
-      options[:user] = @user
-      options[:password] = @pass
-    end
+    options[:user] = @user if @user
+    options[:password] = @pass if @pass
     options[:proxy] = config[:proxy] if config[:proxy]
 
     @client = RestClient::Resource.new(@server, options)
