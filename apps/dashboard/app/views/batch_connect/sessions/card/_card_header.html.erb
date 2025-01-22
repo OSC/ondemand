@@ -14,10 +14,14 @@
     <span class="card-text"> (<%= session.job_id %>)</span>
     <div class="float-end">
       <%- if session.starting? || session.running? -%>
+      <%- if num_nodes.positive? -%>
       <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_nodes, "node") %></span>
       <span class="card-text"> | </span>
+      <%- end -%>
+      <%- if num_cores.positive? -%>
       <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_cores, "core") %></span>
       <span class="card-text"> | </span>
+      <%- end -%>
       <%- end -%>
       <%= status(session) %>
       <%- if session.completed? && !session.app.preset? -%>
