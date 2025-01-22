@@ -523,7 +523,10 @@ class FileOps {
 
     })
     .then(() => this.doneLoading())
-    .catch(e => this.alertError('Error occurred when attempting to ' + summary, e.message))
+    .catch(e => {
+      this.doneLoading();
+      this.alertError('Error occurred when attempting to ' + summary, e.message)
+    })
   }
   
   findAndUpdateTransferStatus(data) {
