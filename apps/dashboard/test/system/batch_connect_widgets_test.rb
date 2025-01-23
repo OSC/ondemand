@@ -80,7 +80,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       stub_sacctmgr
       stub_git("#{dir}/app")
       
-      ['test.py', 'test.rb'].each do |file|
+      ['test.py', 'test.rbpy'].each do |file|
         FileUtils.touch("#{Rails.root}/tmp/#{file}")
       end
 
@@ -95,7 +95,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             widget: 'path_selector'
             directory: "#{Rails.root}/tmp"
             show_files: true
-            file_pattern: \.py
+            file_pattern: \\.py
       HEREDOC
 
       Pathname.new("#{dir}/app/").join('form.yml').write(form)
