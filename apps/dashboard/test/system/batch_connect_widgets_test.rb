@@ -80,8 +80,9 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       stub_sacctmgr
       stub_git("#{dir}/app")
       
-      Tempfile.new("test.py", "#{Rails.root}/tmp")
-      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+      ['test.py', 'test.rb'].each do |file|
+        FileUtils.touch("#{Rails.root}/tmp/#{file}")
+      end
 
       form = <<~HEREDOC
         ---
