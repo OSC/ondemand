@@ -11,9 +11,33 @@ class SupportTicketHelperTest < ActionView::TestCase
 
   test 'support_ticket_description_text should read content from support_ticket configuration' do
     expected_description = 'This is description text'
-    stub_user_configuration({ support_ticket: {description:  expected_description} })
+    stub_user_configuration({ support_ticket: { description:  expected_description } })
     @user_configuration = UserConfiguration.new
     assert_equal expected_description, support_ticket_description_text
+  end
+
+  test 'support_ticket_javascript should return javascript file from configuration' do
+    stub_user_configuration({ support_ticket: { javascript: '/support/ticket.js' } })
+    @user_configuration = UserConfiguration.new
+    expected_result = {
+      src:  '/public/support/ticket.js',
+      type: ''
+    }
+    assert_equal expected_result, support_ticket_javascript
+  end
+
+  test 'support_ticket_javascript should support type' do
+    javascript_config = {
+      src:  '/support/ticket.js',
+      type: 'module'
+    }
+    stub_user_configuration({ support_ticket: { javascript: javascript_config } })
+    @user_configuration = UserConfiguration.new
+    expected_result = {
+      src:  '/public/support/ticket.js',
+      type: 'module'
+    }
+    assert_equal expected_result, support_ticket_javascript
   end
 
   test 'filter_session_parameters should filter known parameters' do

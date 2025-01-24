@@ -1,4 +1,9 @@
-<%= javascript_include_tag 'support_ticket', nonce: true %>
+<%- content_for :head do -%>
+  <%= javascript_include_tag 'support_ticket', nonce: true %>
+  <% if (custom_js = support_ticket_javascript) %>
+    <script src="<%= custom_js[:src] %>" type="<%= custom_js[:type] %>" nonce="<%= content_security_policy_nonce %>"></script>
+  <% end %>
+<%- end -%>
 
 <%= javascript_tag nonce: true do -%>
 
