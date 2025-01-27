@@ -29,7 +29,7 @@ jQuery(function() {
   });
 
   $(CONTENTID).on(EVENTNAME.showLoading, function(e,options) {
-    sweetAlert.loading(options.message);
+    sweetAlert.loading(options.message, options.returnFocus);
   });
 
   $(CONTENTID).on(EVENTNAME.closeSwal, function() {
@@ -77,11 +77,12 @@ class SweetAlert {
     Swal.fire(error_title, error_message, 'error');
   }
   
-  async loading(title) {
+  async loading(title, returnFocus) {
     Swal.fire({
       title: title,
       allowOutsideClick: false,
       showConfirmButton: false,
+      returnFocus: returnFocus,
       willOpen: () => { Swal.showLoading()  }
     });
   }
