@@ -168,7 +168,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
 
       click_on 'Edit'
-      find('#project_name').set('my-test-project')
+      find('#project_name').set('my-test-project', clear: :backspace)
       click_on 'Save'
       assert_selector "[href='/projects/#{project_id}']", text: 'My Test Project'
       click_on 'Edit'

@@ -85,7 +85,6 @@ class ClipBoard {
   }
 
   updateClipboardFromSelection(selection) {
-
     if (selection.length == 0) {
       this.clearClipboard();
     } else {
@@ -101,81 +100,149 @@ class ClipBoard {
     }
   }
 
-
   updateViewForClipboard() {
-    let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}'),
-      template_str = $('#clipboard-template').html(),
-      template = Handlebars.compile(template_str);
+    let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}');
 
-    $('#clipboard').html(template(clipboard));
+    const clipboardContainer = document.getElementById('clipboard');
+    clipboardContainer.innerHTML = ''; // Clear existing content
 
-    $('#clipboard-clear').on("click", () => {
-      this.clearClipboard();
-      this.updateViewForClipboard();
-    });
+    if (clipboard.files && clipboard.files.length > 0) {
+      // Create card structure
+      const card = document.createElement('div');
+      card.className = 'card mb-3';
 
-    $('#clipboard-move-to-dir').on("click", () => {
-      let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
-      if (clipboard) {
-        clipboard.to = history.state.currentDirectory;
-        clipboard.to_fs = history.state.currentFilesystem;
+      const cardBody = document.createElement('div');
+      cardBody.className = 'card-body';
 
-        if (clipboard.from == clipboard.to) {
-          // No files are changed, so we just have to clear and update the clipboard
-          this.clearClipboard();
-          this.updateViewForClipboard();
+      const closeButton = document.createElement('button');
+      closeButton.id = 'clipboard-clear';
+      closeButton.type = 'button';
+      closeButton.className = 'btn-close';
+      closeButton.setAttribute('data-bs-dismiss', 'alert');
+      closeButton.setAttribute('aria-label', 'Close');
+      cardBody.appendChild(closeButton);
+
+      const description = document.createElement('p');
+      description.className = 'mt-4';
+      description.innerHTML = `Copy or move the files below from <code>${clipboard.from}</code> to the current directory:`;
+      cardBody.appendChild(description);
+
+      card.appendChild(cardBody);
+
+      // Create file list
+      const listGroup = document.createElement('ul');
+      listGroup.className = 'list-group list-group-flush';
+
+      clipboard.files.forEach((file) => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+
+        const icon = document.createElement('span');
+        icon.title = file.directory ? 'directory' : 'file';
+        icon.className = file.directory
+          ? 'fa fa-folder color-gold'
+          : 'fa fa-file color-lightgrey';
+        listItem.appendChild(icon);
+
+        const fileName = document.createTextNode(` ${file.name}`);
+        listItem.appendChild(fileName);
+
+        listGroup.appendChild(listItem);
+      });
+
+      card.appendChild(listGroup);
+
+      // Create action buttons
+      const actionsBody = document.createElement('div');
+      actionsBody.className = 'card-body';
+
+      const copyButton = document.createElement('button');
+      copyButton.id = 'clipboard-copy-to-dir';
+      copyButton.className = 'btn btn-primary';
+      copyButton.textContent = 'Copy';
+      actionsBody.appendChild(copyButton);
+
+      const moveButton = document.createElement('button');
+      moveButton.id = 'clipboard-move-to-dir';
+      moveButton.className = 'btn btn-danger float-end';
+      moveButton.textContent = 'Move';
+      actionsBody.appendChild(moveButton);
+
+      card.appendChild(actionsBody);
+
+      clipboardContainer.appendChild(card);
+
+      // Attach event listeners
+      this.addClipboardEventListeners();
+    }
+  }
+
+  addClipboardEventListeners() {
+    const clearButton = document.getElementById('clipboard-clear');
+    if (clearButton) {
+      clearButton.addEventListener('click', () => {
+        this.clearClipboard();
+        this.updateViewForClipboard();
+      });
+    }
+
+    const moveButton = document.getElementById('clipboard-move-to-dir');
+    if (moveButton) {
+      moveButton.addEventListener('click', () => {
+        const clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
+        if (clipboard) {
+          clipboard.to = history.state.currentDirectory;
+          clipboard.to_fs = history.state.currentFilesystem;
+
+          if (clipboard.from === clipboard.to) {
+            this.clearClipboard();
+            this.updateViewForClipboard();
+          } else {
+            const files = {};
+            clipboard.files.forEach((file) => {
+              files[`${clipboard.from}/${file.name}`] = `${history.state.currentDirectory}/${file.name}`;
+            });
+
+            const eventData = {
+              files: files,
+              token: csrfToken(),
+              from_fs: clipboard.from_fs,
+              to_fs: clipboard.to_fs,
+            };
+
+            $(CONTENTID).trigger(FILEOPS_EVENTNAME.moveFile, eventData);
+          }
+        } else {
+          console.error('Files clipboard is empty');
         }
-        else {
-          let files = {};
-          clipboard.files.forEach((f) => {
-            files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
+      });
+    }
+
+    const copyButton = document.getElementById('clipboard-copy-to-dir');
+    if (copyButton) {
+      copyButton.addEventListener('click', () => {
+        const clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
+        if (clipboard) {
+          clipboard.to = history.state.currentDirectory;
+          clipboard.to_fs = history.state.currentFilesystem;
+
+          const files = {};
+          clipboard.files.forEach((file) => {
+            files[`${clipboard.from}/${file.name}`] = `${clipboard.to}/${file.name}`;
           });
 
           const eventData = {
-            'files': files,
-            'token': csrfToken(),
-            'from_fs': clipboard.from_fs,
-            'to_fs': clipboard.to_fs,
+            files: files,
+            token: csrfToken(),
+            from_fs: clipboard.from_fs,
+            to_fs: clipboard.to_fs,
           };
 
-          $(CONTENTID).trigger(FILEOPS_EVENTNAME.moveFile, eventData);
+          $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
+        } else {
+          console.error('Files clipboard is empty');
         }
-      }
-      else {
-        console.error('files clipboard is empty');
-      }
-    });
-
-
-    $('#clipboard-copy-to-dir').on("click", () => {
-      let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
-
-      if (clipboard) {
-        clipboard.to = history.state.currentDirectory;
-        clipboard.to_fs = history.state.currentFilesystem;
-
-        // files is a hashmap with keys of file current path and value as the corresponding files desired path
-        let files = {};
-
-        clipboard.files.forEach((f) => {
-          files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${f.name}`;
-        });
-
-        const eventData = {
-          'files': files,
-          'token': csrfToken(),
-          'from_fs': clipboard.from_fs,
-          'to_fs': clipboard.to_fs,
-        };
-
-        $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
-      }
-      else {
-        console.error('files clipboard is empty');
-      }
-    });
-
+      });
+    }
   }
-
-
 }

@@ -191,16 +191,6 @@
 # Default: '/pun/sys/dashboard' (default location of the OOD Dashboard app)
 #root_uri: '/pun/sys/dashboard'
 
-# Track server-side analytics with a Google Analytics account and property
-# (see https://github.com/OSC/mod_ood_proxy/blob/master/lib/analytics.lua for
-# information on how to setup the GA property)
-# Example:
-#     analytics:
-#       url: 'http://www.google-analytics.com/collect'
-#       id: 'UA-79331310-4'
-# Default: null (do not track)
-#analytics: null
-
 #
 # Publicly available assets
 #
