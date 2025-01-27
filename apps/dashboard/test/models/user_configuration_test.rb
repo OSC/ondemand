@@ -198,6 +198,12 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal "SupportTicketRtService", service.class.name
   end
 
+  test "create_service_class returns SupportTicketServiceNowService when servicenow_api configuration object defined" do
+    Configuration.stubs(:config).returns({support_ticket: {servicenow_api: {}}})
+    service = UserConfiguration.new.support_ticket_service
+    assert_equal "SupportTicketServiceNowService", service.class.name
+  end
+
   test "create_service_class throws exception when no service class configured" do
     Configuration.stubs(:config).returns({})
     assert_raise StandardError do

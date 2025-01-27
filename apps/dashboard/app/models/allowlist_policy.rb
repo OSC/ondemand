@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 # AllowlistPolicy allows or denies access to directories based off of a configuration.
@@ -18,6 +20,7 @@ class AllowlistPolicy
   #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
     return true if allowlist.blank?
+
     real_path = real_expanded_path(path.to_s)
     key = path_to_key(real_path)
     Rails.cache.fetch(key) do
@@ -83,6 +86,6 @@ class AllowlistPolicy
     p = parent.expand_path.to_s
     c = child.expand_path.to_s
     # Child path if it is same as parent path, or has additional components after "/".
-    c.start_with?(p) && (c.size == p.size || c[p.size] == "/")
+    c.start_with?(p) && (c.size == p.size || c[p.size] == '/')
   end
 end

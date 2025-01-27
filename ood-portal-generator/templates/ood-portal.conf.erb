@@ -307,11 +307,6 @@ Listen <%= addr_port %>
     SetEnv OOD_PUN_MAX_RETRIES "<%= @pun_max_retries %>"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
 
-    <%- if @analytics -%>
-    SetEnv OOD_ANALYTICS_TRACKING_URL "<%= @analytics['url'] %>"
-    SetEnv OOD_ANALYTICS_TRACKING_ID  "<%= @analytics['id']  %>"
-    LuaHookLog analytics.lua analytics_handler
-    <%- end -%>
   </Location>
 
   # Control backend PUN for authenticated user:
