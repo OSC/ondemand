@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+use backspace here to possibly make this test consistent (#4093)\
+Refactors copy_move_popup to use pure Javascript (#4062)\
+Require latest ondemand-passenger and ondemand-nginx (#4089)\
+Fix modal bug when file transfer fails (#4084)\
+Removed analytics.lua and resolved code dependencies (#4069)\
+Removes Handlebars from file action menu code (#4070)\
+only show nodes if it's positive (#4074)\
+change navbar title of Project Manager (#4076)\
+lint a random file (#4085)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
