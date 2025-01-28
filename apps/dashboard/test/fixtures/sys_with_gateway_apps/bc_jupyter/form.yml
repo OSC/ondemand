@@ -29,6 +29,9 @@ attributes:
   node_type:
     widget: select
     label: "Node type"
+    header: |
+      <span id="test_form_element_header">Some text in a span</span>
+      ## Header using Markdown
     options:
       - [
           "any",
