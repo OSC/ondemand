@@ -19,12 +19,12 @@ export function replaceHTML(id, html) {
   tmp.remove();
 
   const focusedElem = document.activeElement;
-  const focusedElemId = focusedElem?.id;
+  const newFocusId = focusedElem?.id ? focusedElem.id : focusedElem.closest('[id]')?.id;
 
   setInnerHTML(ele, newHTML);
 
-  if(focusedElemId && !focusedElem.isConnected) {
-    setFocus(focusedElemId);
+  if(!focusedElem.isConnected && newFocusId) {
+    setFocus(newFocusId);
   }
 }
 

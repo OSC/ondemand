@@ -8,8 +8,8 @@
 
 <div class="card-heading">
   <div class="h5 card-header overflow-auto alert <%= alert_class %>">
-    <a href="<%= new_batch_connect_session_context_path(token: session.token) %>" class="alert-heading" id="session_link_<%= session.id %>">
-      <span class="card-text card_title"><%= session.title %></span>
+    <a href="<%= new_batch_connect_session_context_path(token: session.token) %>" class="alert-heading">
+      <span class="card-text"><%= session.title %></span>
     </a>
     <span class="card-text"> (<%= session.job_id %>)</span>
     <div class="float-end">
@@ -19,7 +19,7 @@
       <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_cores, "core") %></span>
       <span class="card-text"> | </span>
       <%- end -%>
-      <span class="status"><%= status(session) %></span>
+      <%= status(session) %>
       <%- if session.completed? && !session.app.preset? -%>
         <span class="card-text"> | </span>
         <%= edit(session) %>
