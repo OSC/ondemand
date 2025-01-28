@@ -77,10 +77,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_announcements
-    @announcements = Announcements.all(@user_configuration.announcement_path)
+    @announcements ||= Announcements.all(@user_configuration.announcement_path)
   rescue => e
     logger.warn "Error parsing announcements: #{e.message}"
-    @announcements = []
+    @announcements ||= []
   end
 
   # Set a list of my quotas which can be used to display warnings if there is
