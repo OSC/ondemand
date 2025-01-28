@@ -257,9 +257,27 @@ function create_datatable(options){
                 data:               null,
                 "autoWidth":        true,
                 render: function(data, type, row, meta) {
-                  let { jobname, pbsid, delete_path } = data
-                  if(data.delete_path == "" || data.status == "completed") {
-                    return ""
+                  let { jobname, pbsid, delete_path, support_path } = data
+                  let support_ticket = "";
+                  if (support_path != "") {
+                    support_ticket = `
+                        <a
+                          class="btn btn-primary btn-xs"
+                          href="${escapeHtml(support_path)}"
+                          aria-labeled-by"title"
+                          aria-label="Submit support ticket for job with ID ${pbsid}"
+                          data-toggle="tooltip"
+                          title="Submit Support Ticket"
+                        >
+                          <i class='fas fa-medkit fa-fw' aria-hidden='true'></i>
+                        </a>
+                    `;
+                  }
+                  if(delete_path == "") {
+                    return "";
+                  } else if (data.status == "completed") {
+                    // This will be empty when support ticket is disabled.
+                    return `<div>${support_ticket}</div>`;
                   } else {
                     return `
                       <div>
@@ -275,6 +293,7 @@ function create_datatable(options){
                         >
                           <i class='fas fa-trash-alt fa-fw' aria-hidden='true'></i>
                         </a>
+                        ${support_ticket}
                       </div>
                     `;
                   }

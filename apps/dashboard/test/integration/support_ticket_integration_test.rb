@@ -8,7 +8,7 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
       {
         support_ticket: {
           email: {
-            to: "to_address@support.ticket.com",
+            to: 'to_address@support.ticket.com',
             delivery_method: 'test'
           }
         }
@@ -16,7 +16,7 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
     Rails.application.reload_routes!
   end
 
-  test "GET should render support ticket page" do
+  test 'GET should render support ticket page' do
     get support_path
     assert :success
 
@@ -35,7 +35,7 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "input[type='submit']", 1
   end
 
-  test "POST should should create support ticket via email" do
+  test 'POST should should create support ticket via email' do
     get support_path
     assert :success
 
@@ -45,7 +45,7 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
 
     data = {
       support_ticket: {
-        username: "test",
+        username: 'test',
         email: 'name@domain.com',
         cc: 'cc@domain.com',
         subject: 'test subject',
@@ -64,12 +64,14 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
     assert_equal number_of_emails + 1, ActionMailer::Base.deliveries.size
     # Check email details
     ActionMailer::Base.deliveries.last.tap do |email|
-      assert_equal ["to_address@support.ticket.com"], email.to
-      assert_equal ["name@domain.com"], email.from
-      assert_equal ["name@domain.com"], email.reply_to
-      assert_equal ["cc@domain.com"], email.cc
-      assert_equal "test subject", email.subject
+      assert_equal ['to_address@support.ticket.com'], email.to
+      assert_equal ['name@domain.com'], email.from
+      assert_equal ['name@domain.com'], email.reply_to
+      assert_equal ['cc@domain.com'], email.cc
+      assert_equal 'test subject', email.subject
       assert_match 'description', email.body.encoded
+      assert_match 'Session Information:', email.body.encoded
+      assert_match 'Job Information:', email.body.encoded
     end
 
   end

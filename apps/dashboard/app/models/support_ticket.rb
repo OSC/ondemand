@@ -93,6 +93,16 @@ class SupportTicket
         hide_when_empty: true,
         disabled: true,
       },
+      job_id: {
+        widget: "hidden_field",
+      },
+      cluster: {
+        widget: "hidden_field",
+      },
+      job_description: {
+        hide_when_empty: true,
+        disabled: true,
+      },
       attachments: {
         widget: "file_attachments",
       },
