@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NginxStage
   # This generator lists all running per-user NGINX processes.
   class NginxListGenerator < Generator
