@@ -11,7 +11,9 @@
 #  Sends the support ticket to the third party system.
 class SupportTicketController < ApplicationController
   # GET /support?session_id=<session_UUID>
+  # GET /support?job_id=<job_id>&cluster=<cluster>
   # session_id [UUID] optional session to add data to the support ticket
+  # job_id [Integer] cluster [String] optional job id and cluster to add data to the support ticket
   def new
     support_service = create_service_class
     @support_ticket = support_service.default_support_ticket(params)
