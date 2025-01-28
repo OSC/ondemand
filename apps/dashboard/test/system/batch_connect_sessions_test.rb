@@ -37,8 +37,11 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     File.write("#{dir}/#{test_bc_id}", test_data(token: token, title: title).to_json)
   end
 
-  def stub_scheduler(state)
-    info = OodCore::Job::Info.new(id: test_job_id, status: state.to_sym)
+  def stub_scheduler(state, cores: 1, nodes: 1)
+    info = OodCore::Job::Info.new(
+      id: test_job_id, status: state.to_sym, procs: cores.to_i, 
+      allocated_nodes: Array.new(nodes.to_i, { name: 'foo', features: [] })
+    )
     OodCore::Job::Adapters::Slurm.any_instance.stubs(:info).returns(info)
   end
 
@@ -103,7 +106,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       assert_not_nil(card)
 
       header_text = card.find('.h5').text
-      assert_equal("Jupyter (#{test_job_id})\n0 nodes | 0 cores | Starting", header_text)
+      assert_equal("Jupyter (#{test_job_id})\n1 node | 1 core | Starting", header_text)
     end
   end
 
@@ -117,10 +120,66 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       assert_not_nil(card)
 
       header_text = card.find('.h5').text
-      assert_equal("Paraview (#{test_job_id})\n0 nodes | 0 cores | Starting", header_text)
+      assert_equal("Paraview (#{test_job_id})\n1 node | 1 core | Starting", header_text)
 
       info_text = card.find("#info_test_div").text
       assert_equal('This is a test message for an info view.', info_text)
+    end
+  end
+
+  test 'running sessions with 0 nodes and cores' do
+    Dir.mktmpdir do |dir|
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 0, cores: 0)
+      visit(batch_connect_sessions_path)
+
+      card = find("#id_#{test_bc_id}")
+      assert_not_nil(card)
+
+      header_text = card.find('.h5').text
+      assert_equal("Jupyter (#{test_job_id})\nStarting", header_text)
+    end
+  end
+
+  test 'running sessions with 0 nodes and 1 core' do
+    Dir.mktmpdir do |dir|
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 0, cores: 1)
+      visit(batch_connect_sessions_path)
+
+      card = find("#id_#{test_bc_id}")
+      assert_not_nil(card)
+
+      header_text = card.find('.h5').text
+      assert_equal("Jupyter (#{test_job_id})\n1 core | Starting", header_text)
+    end
+  end
+
+  test 'running sessions with 1 nodes and 0 cores' do
+    Dir.mktmpdir do |dir|
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 0, cores: 1)
+      visit(batch_connect_sessions_path)
+
+      card = find("#id_#{test_bc_id}")
+      assert_not_nil(card)
+
+      header_text = card.find('.h5').text
+      assert_equal("Jupyter (#{test_job_id})\n1 core | Starting", header_text)
+    end
+  end
+
+  test 'running sessions correctly pluralize nodes and cores' do
+    Dir.mktmpdir do |dir|
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 2, cores: 2)
+      visit(batch_connect_sessions_path)
+
+      card = find("#id_#{test_bc_id}")
+      assert_not_nil(card)
+
+      header_text = card.find('.h5').text
+      assert_equal("Jupyter (#{test_job_id})\n2 nodes | 2 cores | Starting", header_text)
     end
   end
 end
