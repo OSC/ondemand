@@ -543,11 +543,9 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # Span exists (HTML works).
-    header_span = find(id: 'test_form_element_header')
-    assert_equal('Some text in a span', header_span.text)
+    header_span = find(id: 'test_form_element_header', text: 'Some text in a span')
     # Markdown element exists (## => h2).
-    markdown_header = header_span.find(:xpath, './/../../h2')
-    assert_equal('Header using Markdown', markdown_header.text)
+    markdown_header = header_span.find(:xpath, './/../../h2', text: 'Header using Markdown')
     # Header precedes its form element.
     markdown_header.first(:xpath, './/following-sibling::div').find(id: 'batch_connect_session_context_node_type')
   end
