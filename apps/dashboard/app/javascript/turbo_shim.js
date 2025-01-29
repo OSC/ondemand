@@ -5,7 +5,7 @@
   this shim until we enable it.
 */
 
-import { setInnerHTML, setFocus } from './utils';
+import { setInnerHTML, restoreFocus } from './utils';
 import { alert } from './alert';
 
 export function replaceHTML(id, html) {
@@ -23,8 +23,8 @@ export function replaceHTML(id, html) {
 
   setInnerHTML(ele, newHTML);
 
-  if(focusedElemId && !focusedElem.isConnected) {
-    setFocus(focusedElemId);
+  if(!focusedElem.isConnected && newFocusId) {
+    restoreFocus(newFocusId);
   }
 }
 
