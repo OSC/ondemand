@@ -6,6 +6,9 @@ ENV['PATH'] = "#{File.join(File.expand_path('..', __dir__), 'tmp', 'node_modules
 # Set up gems listed in the Gemfile.
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
+# TODO: we remove this once we upgrade to Rails 7.1
+require 'logger'
+
 require 'bundler/setup' # Set up gems listed in the Gemfile.
 
 # load dotenv files before "before_configuration" callback

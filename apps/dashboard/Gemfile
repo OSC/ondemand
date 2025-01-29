@@ -73,9 +73,6 @@ gem 'cssbundling-rails', '~> 1.1'
 # should upgrade to propshaft - only have an issue with fontawesome icons
 gem 'sprockets-rails', '>= 2.0.0'
 
-# TODO: can remove when we upgrade to rails 7.1
-gem 'logger'
-
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 2.1.0'

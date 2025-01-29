@@ -332,7 +332,6 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
-  logger
   mocha (~> 2.1)
   net-imap (~> 0.3, < 0.4)
   nokogiri (~> 1.15, < 1.16)
