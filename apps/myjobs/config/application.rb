@@ -1,8 +1,5 @@
 require_relative 'boot'
 
-# TODO: remove after upgrade to rails 7.1 because they've fixed this dependency.
-require 'logger'
-
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"

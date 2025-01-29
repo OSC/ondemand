@@ -118,6 +118,7 @@ GEM
       sprockets-rails
     local_time (1.0.3)
       coffee-rails
+    logger (1.6.5)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -273,6 +274,7 @@ DEPENDENCIES
   jquery-rails
   js-routes (~> 1.2.4)
   local_time (~> 1.0.3)
+  logger
   mocha (~> 2.1)
   net-imap (~> 0.3, < 0.4)
   nokogiri (~> 1.15, < 1.16)

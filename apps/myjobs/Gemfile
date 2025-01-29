@@ -69,6 +69,9 @@ gem 'climate_control', '~> 0.2'
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
 gem 'rdoc', '6.3.4.1'
 
+# TODO: can remove when we upgrade to rails 7.1
+gem 'logger'
+
 # lock gems to versions that are compatible with ruby 2.7.0,
 # which Ubuntu 20.04 uses.
 gem 'nokogiri', '~> 1.15', '< 1.16'
