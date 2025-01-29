@@ -38,7 +38,7 @@ module BatchConnect::SessionContextsHelper
                 else
                   form.send widget, attrib.id, all_options
                 end
-    header = OodAppkit.markdown.render(attrib.header)
+    header = sanitize(OodAppkit.markdown.render(attrib.header))
     "#{header}#{rendered}".html_safe
 
   end
