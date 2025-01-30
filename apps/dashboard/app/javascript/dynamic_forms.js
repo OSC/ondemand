@@ -17,6 +17,8 @@ const exclusiveOptionForHandlerCache = {};
 // simples array of string ids for elements that have a handler
 const minMaxHandlerCache = [];
 const setHandlerCache = [];
+const suggestHandlerCache = [];
+
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
@@ -25,6 +27,7 @@ const labelHandlerCache = {};
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
+const suggestValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
 
@@ -142,8 +145,8 @@ function makeChangeHandlers(prefix){
                 addExclusiveOptionForHandler(idFromToken(token), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
-              } else if(key.startsWith('set')) {
-                addSetHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('set') || key.startsWith('suggest')) {
+                addSuggestAndSetHandlers(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('hide')) {
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
@@ -296,44 +299,78 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
  *        data-set-account: 'phy3005'
  *      ]
  */
-function addSetHandler(optionId, option, key, configValue) {
-  const k = key.replace(/^set/,'');
+function addSuggestAndSetHandlers(optionId, option, key, configValue) {
+  let k = '';
+
+  if (key.startsWith('set')) {
+    k = key.replace(/^set/,'');
+  } else if (key.startsWith('suggest')) {
+    k = key.replace(/^suggest/,'');
+  }
+
   const id = String(idFromToken(k));
   if(id === 'undefined') return;
 
-  // id is account. optionId is classroom
   let cacheKey = `${id}_${optionId}`
-  if(setValueLookup[cacheKey] === undefined) setValueLookup[cacheKey] = new Table(optionId, undefined);
-  const table = setValueLookup[cacheKey];
+  
+  let lookup = '';
+  let cache = '';
+
+  if (key.startsWith('set')) {
+    lookup = setValueLookup;
+    cache = setHandlerCache;
+  } else if (key.startsWith('suggest')) {
+    lookup = suggestValueLookup;
+    cache = suggestHandlerCache;
+  }
+
+  if(lookup[cacheKey] === undefined) lookup[cacheKey] = new Table(optionId, undefined);
+  const table = lookup[cacheKey];
   table.put(option, undefined, configValue);
 
-  if(!setHandlerCache.includes(cacheKey)) {
+  if(!cache.includes(cacheKey)) {
     const changeElement = $(`#${optionId}`);
 
     changeElement.on('change', (event) => {
-      setValue(event, id);
+      setOrSuggestValue(event, id, key);
     });
 
-    setHandlerCache.push(cacheKey);
+    cache.push(cacheKey);
   }
 
-  setValue({ target: document.querySelector(`#${optionId}`) }, id);
+  setOrSuggestValue({ target: document.querySelector(`#${optionId}`) }, id, key)
 }
 
-function setValue(event, changeId) {
+function setOrSuggestValue(event, changeId, key) {
   const chosenVal = event.target.value;
   const cacheKey = `${changeId}_${event.target['id']}`
-  const table = setValueLookup[cacheKey];
+
+  let table = undefined;
+
+  if (key.startsWith('set')) {
+    table = setValueLookup[cacheKey];
+  } else if (key.startsWith('suggest')) {
+    table = suggestValueLookup[cacheKey];
+  }
   if (table === undefined) return;
-
+  
   const changeVal = table.get(chosenVal, undefined);
-
+  
+  const element = document.getElementById(changeId);
+  
   if(changeVal !== undefined) {
-    const element = document.getElementById(changeId);
     if(element['type'] == 'checkbox') {
       setCheckboxValue(element, changeVal);
     } else {
       element.value = changeVal;
+    }
+
+    if (key.startsWith('set')) {
+      element.disabled = true;
+    }
+  } else {
+    if (key.startsWith('set')) {
+      element.disabled = false;
     }
   }
 }
