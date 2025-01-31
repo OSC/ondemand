@@ -130,7 +130,7 @@ user_map_cmd: '/opt/my_user_map_cmd'
 # Default: null (use REMOTE_USER)
 user_env: OIDC_CLAIM_preferred_username
 
-# Redirect user to the following URI if fail to map there authenticated-user to
+# Redirect user to the following URI on failure to map authenticated-user to
 # a system-user
 # Example:
 #     map_fail_uri: '/register'
