@@ -551,7 +551,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     markdown_header.first(:xpath, './/following-sibling::div').find(id: 'batch_connect_session_context_node_type')
   end
 
-  test 'something' do
+  test 'attribute headers strip script tags' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
