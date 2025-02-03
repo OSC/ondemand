@@ -550,4 +550,40 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     # Header precedes its form element.
     markdown_header.first(:xpath, './/following-sibling::div').find(id: 'batch_connect_session_context_node_type')
   end
+
+  test 'something' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster: owens
+        form:
+          - node_type
+        attributes:
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-exclusive-option-for-cluster-owens: true]
+            header: |
+              <div name='node_type_header'>
+                <script>window.alert('shouldnt alert');</script>
+              </div>
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # this will not be text on the DOM if it's an actual <script> tag
+      text = find('[name="node_type_header"]').text
+      assert_equal("window.alert('shouldnt alert');", text)
+    end
+  end
 end
