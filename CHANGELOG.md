@@ -18,10 +18,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
+- Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
 - Removed analytics.lua and resolved code dependencies in [4069](https://github.com/OSC/ondemand/pull/4069).
+- Announcements now filter files that don't exist in [4091](https://github.com/OSC/ondemand/pull/4091).
 
 ## [4.0.0] - 12-30-2024
 
