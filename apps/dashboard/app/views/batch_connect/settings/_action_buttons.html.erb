@@ -5,7 +5,7 @@
       class: %w[btn px-1 py-0 btn-outline-dark edit-saved-settings-button full-page-spinner],
       title: title,
       'aria-label': title,
-      data: { toggle: "tooltip", placement: "left" }
+      data: { 'bs-toggle': "tooltip", 'bs-placement': "left" }
     ) do
       fa_icon('pen', classes: nil)
     end
@@ -24,7 +24,7 @@
         form_class: %w[d-inline],
         title: title,
         'aria-label': title,
-        data: { toggle: "tooltip", placement: "left" },
+        data: { 'bs-toggle': "tooltip", 'bs-placement': "left" },
         params: params
       ) do
         fa_icon('play', classes: nil)
