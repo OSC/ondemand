@@ -6,15 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Fixed typos in ood_portal comments and in contribution guide (#4111)\
-dont use tmpfiles here (#4092)\
-Removes Handlebars from default label error messages (#4063)\
-Manual update (#4108)\
-lint a random file (#4101)\
-memorize announcements and filter for existing files (#4091)\
-Support ticket servicenow integration (#4081)\
-Update Changelog (#4096)\
-lint a random file (#4095)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -27,10 +18,12 @@ lint a random file (#4095)
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
+- Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
 - Removed analytics.lua and resolved code dependencies in [4069](https://github.com/OSC/ondemand/pull/4069).
+- Announcements now filter files that don't exist in [4091](https://github.com/OSC/ondemand/pull/4091).
 
 ## [4.0.0] - 12-30-2024
 
