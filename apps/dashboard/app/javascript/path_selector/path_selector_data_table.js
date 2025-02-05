@@ -184,7 +184,7 @@ export class PathSelectorTable {
   }
 
   setLastVisited(path, pathType = 'd') {
-    const item = { path: path, type: pathType };
+    const item = { path: decodeURI(path), type: pathType };
     if(path) {
       localStorage.setItem(this.storageKey(), JSON.stringify(item));
     }

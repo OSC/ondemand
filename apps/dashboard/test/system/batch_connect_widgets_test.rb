@@ -188,6 +188,43 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'path_selector will not have URL encoded data' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      base_id = 'batch_connect_session_context_path'
+      filename = "#{Rails.root}/tmp/file with spaces"
+      FileUtils.touch(filename)
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}/tmp"
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on 'Select Path'
+      sleep 0.5
+
+      find('span', text: 'file with spaces').click
+      find("##{base_id}_path_selector_button").click
+
+      assert_equal(filename, find("##{base_id}").value)
+    end
+  end
+
   test 'data-label-* allows select options to dynamically change the label of another form element' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
