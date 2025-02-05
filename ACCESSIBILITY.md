@@ -25,7 +25,7 @@ with regard to the WCAG 3.0 standard.
 
 Specifically, it outlines where Open OnDemand does not meet this standard.
 It may also link to a ticket that developers track. You can search
-[all accessability issues](https://github.com/OSC/ondemand/issues?q=is%3Aissue+is%3Aopen+label%3Aarea%2Faccessibility)
+[all accessibility issues](https://github.com/OSC/ondemand/issues?q=is%3Aissue+is%3Aopen+label%3Aarea%2Faccessibility)
 as well.
 
 ## 3rd Party Apps
@@ -40,7 +40,7 @@ are not documented here.
 ## Accessibility by URL
 
 Each section below documents a single webpage. If the section heading
-includes sub URLs this means the same webpage is used to genereate content
+includes sub URLs this means the same webpage is used to generate content
 based on the URL.
 
 As an example in the section entitled `/pun/sys/dashboard/files and sub URLs`,
@@ -52,9 +52,9 @@ as `/pun/sys/files/fs/home/jessie`.
 These issues affect all or most URLs.
 
 - Most URLs have the main navigation bar. This is a list of issues with that navigation
-  bar. See this issue for [navigation bar accessability issue](https://github.com/OSC/ondemand/issues/945)
+  bar. See this issue for [navigation bar accessibility issue](https://github.com/OSC/ondemand/issues/945)
   for more details.
-  - Screen readers will see the navigation bar landark as 'banner landmark', 'navigation'
+  - Screen readers will see the navigation bar landmark as 'banner landmark', 'navigation'
     and 'navigation landmark', where really we should only have 1 single landmark.
 - Many [alerts don't notify screen readers.](https://github.com/OSC/ondemand/issues/2077)
   As an example, when you start an interactive session there's an alert to notify the user
@@ -66,8 +66,8 @@ This is the landing page and what the root URL `/` redirects to.
 
 The landing page allows for site administrators to create panels. The panels we
 distribute are covered in this document. Panels specifically created at any
-given site are unknown to us (the developers), have not and will not be assesed
-for accessability.
+given site are unknown to us (the developers), have not and will not be assessed
+for accessibility.
 
 - [The welcome logo does not provide alt text.](https://github.com/OSC/ondemand/issues/2067)
 - [Message of the Day and pinned apps use heading levels 3 & 4 instead of 2 & 3.](https://github.com/OSC/ondemand/issues/2074).
@@ -80,7 +80,7 @@ for accessability.
   There are several issues with batch connect session cards.
     - First when they change state, say from 'Queued' to 'Running' there's no notification that this happened.
     - Secondly, there's no good organization of these cards. They should probably be in a list.
-    - Lastly some of the text is off, like the session id link that is a UUID. It's an ambigous link.
+    - Lastly some of the text is off, like the session id link that is a UUID. It's an ambiguous link.
 
 #### Batch connect app web forms
 
@@ -95,8 +95,8 @@ may have included.
 - [Dynamic form updates do not update the user.](https://github.com/OSC/ondemand/issues/2075)  When a
   user updates a form field, another form field may automatically be updated.  There is no screen reader
   notification when this occurs.
-- [Resolution fields don't have the right labels.](https://github.com/OSC/ondemand/issues/2076)  Resulution
-  form fields have labels visible to sigted users, but screen-reader navigation does not automatically read
+- [Resolution fields don't have the right labels.](https://github.com/OSC/ondemand/issues/2076)  Resolution
+  form fields have labels visible to sighted users, but screen-reader navigation does not automatically read
   them. The user is forced to navigate around the form element to hear the label.
 
 ### /pun/sys/dashboard/noVNC-1.1.0/vnc.html
@@ -115,7 +115,7 @@ where we come to this conclusion.
 - [The files table does not notify users of updates](https://github.com/OSC/ondemand/issues/2080).
   When a user clicks through to another directory in the file browser table the table updates
   with the contents of the chosen directory. However, screen-readers are not notified that this
-  change has occured.
+  change has occurred.
 - [Screen-Readers read the sorting arrows in the files table](https://github.com/OSC/ondemand/issues/2081)
   when they should only read the column name.
 - [File browsing landmarks could be better.](https://github.com/OSC/ondemand/issues/2079)  There's
@@ -125,12 +125,12 @@ where we come to this conclusion.
 
 The shell application is considered completely inaccessible.  Screen
 readers do work on it a little, but it's so little as to be rendered
-completey useless.
+completely useless.
 
 The underlying library `hterm` does have support for accessibility but
 we need some mechanism to turn it on.
 
-We have this ticket concerning [shell accessability](https://github.com/OSC/ondemand/issues/672)
+We have this ticket concerning [shell accessibility](https://github.com/OSC/ondemand/issues/672)
 to tracks this.
 
 ### /pun/sys/myjobs and sub URLs

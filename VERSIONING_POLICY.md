@@ -16,7 +16,7 @@ Minor versions will contain new functionality that's backward compatible. They m
 also contain bug fixes that are not in the prior releases' patch versions.
 
 Minor versions will also introduce deprecations to functionality or configurations
-that maybe be removed in the next major version.
+that may be removed in the next major version.
 
 ## Patch Versions
 Patch versions will only contain security fixes and bug fixes.
