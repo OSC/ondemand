@@ -62,7 +62,7 @@ locals: {
               class: %w[btn btn-danger full-page-spinner],
               title: title,
               'aria-label': title,
-              data: { confirm: t('dashboard.bc_saved_settings.delete_confirm'), toggle: "tooltip", placement: "left"}
+              data: { confirm: t('dashboard.bc_saved_settings.delete_confirm'), 'bs-toggle': "tooltip", 'bs-placement': "left"}
             ) do
               "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.delete')}</span>".html_safe
             end
