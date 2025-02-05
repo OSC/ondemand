@@ -256,7 +256,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       click_on 'Select Path'
       sleep 0.5
 
-      # note the text here is URL encoded 
+      # note the text here is URL encoded
       find('span', text: 'foo%2F+bar.txt').click
       find("##{base_id}_path_selector_button").click
 
