@@ -1,35 +1,4 @@
 <div class="xdmod">
   <div id="jobsEfficiencyReportPanelDiv"></div>
   <div id="coreHoursEfficiencyReportPanelDiv"></div>
-
-  <script id="job-efficiency-template" type="text/x-handlebars-template">
-    <div class="card mt-3">
-
-      <div class="card-header">
-        <a href="{{xdmod_url}}" class="float-end">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
-        <h3>{{title}} - {{date_range}}</h3>
-      </div>
-
-      <div class="card-body">
-        {{#if error}}
-          <div class="alert alert-danger mb-0">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
-        {{else}}
-          {{#if nodata}}
-            <p class="card-text">{{msg}}</p>
-          {{else}}
-          <p class="d-flex justify-content-between card-text font-weight-bold"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficient</span></p>
-          <div class="progress progress-custom">
-            <div class="progress-bar bg-success w-{{good_percent}}" role="progressbar" aria-label="percent efficient" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100">
-            </div>
-            <div class="progress-bar bg-danger w-{{bad_percent}}" role="progressbar" aria-label="percent inefficient" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100">
-            </div>
-          </div>
-          <p class="card-text text-center mt-2">
-            <span class="text-danger">{{count_bad}} inefficient {{unit}} </span> &frasl; {{count}} total {{unit}}
-          </p>
-          {{/if}}
-        {{/if}}
-      </div>
-    </div>
-  </script>
 </div>
