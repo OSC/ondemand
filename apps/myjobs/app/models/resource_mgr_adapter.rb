@@ -5,7 +5,6 @@
 
 # OodJob errors will be caught and re-raised as PBS::Error objects
 class ResourceMgrAdapter
-
   include SanitizedEnv
 
   attr_reader :workflow

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
+- Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
+  and show these if they're positive [4074](https://github.com/OSC/ondemand/pull/4074).
+- Icon picker correctly shows and hides the spinner in [4051](https://github.com/OSC/ondemand/pull/4051).
+- Project manager template selection fixed in [4054](https://github.com/OSC/ondemand/pull/4054).
+- Fix modal bug when file transfer fails in [4084](https://github.com/OSC/ondemand/pull/4084).
+- Require latest ondemand-passenger and ondemand-nginx to fix a proc-ps dependency issue in [4089](https://github.com/OSC/ondemand/pull/4089).
+
+### Added
+- Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
+- Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
+
+### Changed
+- The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
+- Removed analytics.lua and resolved code dependencies in [4069](https://github.com/OSC/ondemand/pull/4069).
+- Announcements now filter files that don't exist in [4091](https://github.com/OSC/ondemand/pull/4091).
+
 ## [4.0.0] - 12-30-2024
 
 ### Added

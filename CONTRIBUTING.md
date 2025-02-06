@@ -32,7 +32,7 @@
 First off - Thank you for your interest in contributing to the Open OnDemand project!
 
 There is no pull request too small! Everything from simple misspellings to very
-large feature requests are welcome.  If you're not quite sure where to get started
+large feature requests are welcome. If you're not quite sure where to get started
 you can search our list of [good first issues].
 
 Please note we have a [code of conduct], please follow it in all your
@@ -40,15 +40,15 @@ interactions with the project.
 
 ## Issues
 
-Issues, bug reports, questions and feature requests are always welcome.  Feel
+Issues, bug reports, questions and feature requests are always welcome. Feel
 free to open an issue and use any [issue labels] as appropriate.
 
-We mostly use [Discourse] for general questions or help.  If you're unsure
+We mostly use [Discourse] for general questions or help. If you're unsure
 of where to route your question, Discourse may be the best forum for it.
 
 ## Other Repositories
 
-There are other repositories to Open OnDemand that are important as well.  You may want to check
+There are other repositories to Open OnDemand that are important as well. You may want to check
 these out too.
 
 * [repository for the Open OnDemand website](https://github.com/OSC/openondemand.org)
@@ -76,8 +76,8 @@ team on proposed changes.
 
 1.  [Fork this repo].
 2.  Branch off of the master branch.
-3.  Now create a pull request to this repository!  At this point a maintainer will be notified
-    and will start reviwing it.
+3.  Now create a pull request to this repository! At this point, a maintainer will be notified
+    and will start reviewing it.
 4.  If changes are being requested, don't let this discourage you! This is a
     natural part of getting changes right and ensuring quality in what we're building.
 
@@ -114,7 +114,7 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 
 ### Project Conventions
 
-* Prefer **read-only** objects.  You'll find mostly read only objects spread throughout this code base.
+* Prefer **read-only** objects. You'll find mostly read only objects spread throughout this code base.
   This means that `attr_writer` or `attr_accessor` are to be avoided and only `attr_reader` should be used.
   It follows then, that most objects should accept a large number of parameters in their initializers
   and set the attributes accordingly.

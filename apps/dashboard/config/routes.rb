@@ -110,6 +110,13 @@ Rails.application.routes.draw do
 
   post 'settings', :to => 'settings#update'
 
+  # Experimental Feature
+  # Allows widget partials to be rendered without any page furniture.
+  # It can be use to extend OOD functionality.
+  if Configuration.widget_partials_enabled?
+    match '/widgets/*widget_path', to: 'widgets#show', via: [:get, :post], as: 'widgets'
+  end
+
   # Support ticket routes
   if Configuration.support_ticket_enabled?
     get '/support', to: 'support_ticket#new'

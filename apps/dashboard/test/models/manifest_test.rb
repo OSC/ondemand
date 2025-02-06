@@ -138,7 +138,8 @@ class ManifestTest < ActiveSupport::TestCase
              metadata: { some_key: 'value' },
              new_window: false,
              caption: 'some caption',
-             invalid_key: 'invalid value'
+             invalid_key: 'invalid value',
+             files: ['file1', 'file2']
           }
 
     valid_manifest = <<~HEREDOC

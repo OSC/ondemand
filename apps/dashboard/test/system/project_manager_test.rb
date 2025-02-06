@@ -166,7 +166,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
 
       click_on 'Edit'
-      find('#project_name').set('my-test-project')
+      find('#project_name').set('my-test-project', clear: :backspace)
       click_on 'Save'
       assert_selector "[href='/projects/#{project_id}']", text: 'My Test Project'
       click_on 'Edit'
@@ -212,11 +212,18 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   test 'searching icons works' do
-    # TODO
+    visit(new_project_path)
+    find('#product_icon_select').set('')
+    find('#product_icon_select').set('cog')
+    icons = find('#icon_picker_list').all('i')
+    assert_equal(4, icons.size)
   end
 
   test 'all icons show after clearing input field' do
-    # TODO
+    visit(new_project_path)
+    find('#product_icon_select').set('')
+    icons = find('#icon_picker_list').all('i')
+    assert_equal(990, icons.size)
   end
 
   test 'creating and showing launchers' do

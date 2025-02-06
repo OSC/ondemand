@@ -1,4 +1,5 @@
 import { alert } from '../alert';
+import { hide, show } from "../utils";
 
 export class PathSelectorTable {
   _table = null;
@@ -87,7 +88,7 @@ export class PathSelectorTable {
   async reloadTable(url) {
     try {
       $(this.tableWrapper()).hide();
-      $(this).closest('.loading-icon').show();
+      show(`${this.tableId}_spinner`);
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
@@ -107,7 +108,7 @@ export class PathSelectorTable {
   }
 
   resetTable() {
-    $(this).closest(".loading-icon").hide();
+    hide(`${this.tableId}_spinner`);
     $(this.tableWrapper()).show();
     $('#forbidden-warning').addClass('d-none');
   }
@@ -183,7 +184,7 @@ export class PathSelectorTable {
   }
 
   setLastVisited(path, pathType = 'd') {
-    const item = { path: path, type: pathType };
+    const item = { path: decodeURI(path), type: pathType };
     if(path) {
       localStorage.setItem(this.storageKey(), JSON.stringify(item));
     }

@@ -16,7 +16,11 @@ class Announcements
         rescue
           p
         end
-      end.map { |p| Announcement.new(p) }
+      end.select do |path|
+        File.exist?(path)
+      end.map do |p|
+        Announcement.new(p)
+      end
 
       new(announcements)
     end

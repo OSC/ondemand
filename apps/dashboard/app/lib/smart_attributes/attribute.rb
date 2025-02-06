@@ -75,6 +75,12 @@ module SmartAttributes
       (opts[:label] || id.titleize).to_s
     end
 
+    # Header to render before this attribute
+    # @return [String] header text
+    def header
+      opts[:header].to_s
+    end
+
     # Help text for this attribute
     # @param fmt [String, nil] formatting of help text
     # @return [String] help text

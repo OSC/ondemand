@@ -66,9 +66,6 @@ module OodPortalGenerator
       # Redirect for the root uri
       @root_uri = opts.fetch(:root_uri, "/pun/sys/dashboard")
 
-      # Portal analytics
-      @analytics = opts.fetch(:analytics, nil)
-
       #
       # Available sub-uri's and their configurations
       #
