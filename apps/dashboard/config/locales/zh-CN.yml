@@ -249,3 +249,18 @@ zh-CN:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
+    # unknown: "Unknown"
+    delete: "删除"
+    edit: "编辑"
+    show: "显示" 
+    launch: "启动" 
+    type: "类型"
+    name: "名称"
+    size: "大小"
+    owner: "所有者"
+    date: "日期"
+    mode: "模式"
+    project: "项目"
+    directory: "目录"
+  
+    auto_log_location_title: "日志位置"
