@@ -117,7 +117,7 @@ class Project
     @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
     @icon = 'fas://cog' if icon.blank?
 
-    make_dir && sync_template && store_manifest(:save)
+    make_dir && updated_permission && sync_template && store_manifest(:save)
   end
 
   def update(attributes)
@@ -250,6 +250,15 @@ class Project
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
+    false
+  end
+
+  def updated_permission
+    # Read and execute to others
+    project_dataroot.chmod(0775)
+    true
+  rescue StandardError => e
+    errors.add(:save, "Failed to change directory permissions: #{e.message}")
     false
   end
 
