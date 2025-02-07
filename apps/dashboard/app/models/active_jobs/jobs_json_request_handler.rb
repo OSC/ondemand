@@ -2,17 +2,18 @@ module ActiveJobs
   # Utility class for responding to json activejobs requests. This class generates
   # the resulting json body that the controller will ultimately repond with.
   class JobsJsonRequestHandler
-    attr_reader :controller, :params, :response, :filter_id, :cluster_id
+    attr_reader :controller, :params, :response, :filter_id, :cluster_id, :user_config
 
     # additional attrs to request when calling info_all
     JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time ]
 
-    def initialize(filter_id:, cluster_id:, controller:, params:, response:)
+    def initialize(filter_id:, cluster_id:, controller:, params:, response:, user_config:)
       @filter_id = filter_id
       @cluster_id = cluster_id
       @controller = controller
       @params = params
       @response = response
+      @user_config = user_config
     end
 
     def filter
@@ -85,7 +86,9 @@ module ActiveJobs
           username: j.job_owner,
           extended_available: extended_available,
           nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?),
-          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : ""
+          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : "",
+          # Check if Support Ticket is enabled via the support_path definition
+          support_path: users_job?(j.job_owner) && !user_config.support_ticket.empty? ? UrlHelper.instance.support_path(job_id: j.id, cluster: cluster.id.to_s) : ""
         }
       }
     end
