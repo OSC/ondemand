@@ -139,20 +139,20 @@ GEM
     mocha (2.7.1)
       ruby2_keywords (>= 0.0.5)
     mustache (1.1.1)
-    net-imap (0.3.7)
+    net-imap (0.3.8)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.5.0)
+    net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
     nokogiri (1.15.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    ood_appkit (2.1.4)
+    ood_appkit (2.1.6)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_core (~> 0.1)

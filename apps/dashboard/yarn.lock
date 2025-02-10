@@ -72,13 +72,13 @@
     p-retry "^6.1.0"
 
 "@uppy/core@^4.0":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-4.4.1.tgz#6cff91bf9e8863b2b0e3cfd490678bfd5ee04536"
-  integrity sha512-WQnphWj3bk0EYzy4j4rn7nEHKOExqYLm/YOWIpBjXZMY7tJIHbzpv60qHqE6oQsRMwmNcz3mkq8PGR5NubBbvQ==
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-4.4.2.tgz#84945abd884893ca0ce99f81b724e05e40fb6b47"
+  integrity sha512-df0fQtPEd5W/e5M/CWIXQb/O0rBb+LCz4HTN5Bkqm0UDzW2JFR9mrxnL0dfh3ikVlUq+9vNjAeBr9P0aluIiFg==
   dependencies:
     "@transloadit/prettier-bytes" "^0.3.4"
     "@uppy/store-default" "^4.2.0"
-    "@uppy/utils" "^6.1.1"
+    "@uppy/utils" "^6.1.2"
     lodash "^4.17.21"
     mime-match "^1.0.2"
     namespace-emitter "^2.0.1"
@@ -112,11 +112,11 @@
     preact "^10.5.13"
 
 "@uppy/provider-views@^4.4.1":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@uppy/provider-views/-/provider-views-4.4.1.tgz#c91e9a09299c8b2dfb66acf6121bbf0b5422fc3b"
-  integrity sha512-XDk1vdpZyVRdn2DWFPDSxXLHZNGl+GuetuTF3F4G/Cmtr0OK3RT1k1gIrg8sD7twMVvBPOtEv9jUarKt9nIeQw==
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@uppy/provider-views/-/provider-views-4.4.2.tgz#bb5a2d662c05fd81ced263dc4e6f55add23df254"
+  integrity sha512-YGrPJuydrksmMCjvo7Ty7/lDLNo/Y8zsOgWgWmVbXB0V5aRvqY49LeKY8HDlOXclKmn6dl5CeQFf7p46txRNGQ==
   dependencies:
-    "@uppy/utils" "^6.1.1"
+    "@uppy/utils" "^6.1.2"
     classnames "^2.2.6"
     nanoid "^5.0.9"
     p-queue "^8.0.0"
@@ -145,10 +145,10 @@
     "@uppy/utils" "^6.1.1"
     exifr "^7.0.0"
 
-"@uppy/utils@^6.1.1":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@uppy/utils/-/utils-6.1.1.tgz#fc2c60cf39729abf14aa613ed8d64bf3d0ebe156"
-  integrity sha512-60guVvz+TXvN1gEgbTjDAfleo6HeTGE02/9T+tycv7hVqIkzLbYsJBgVFhVY/Y2fBW0fOX/lzKc1kN4YZQtvpA==
+"@uppy/utils@^6.1.1", "@uppy/utils@^6.1.2":
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@uppy/utils/-/utils-6.1.2.tgz#a58c6506e06d6c4c01c4cf13f6fb30c6c7df37ab"
+  integrity sha512-PCrw6v51M6p3hlrlB2INmcocen4Dyjun1SobjVZRBkg4wutQE8ihZfSrH5ZE8UXFelufhtO16wlaZMi0EHk84w==
   dependencies:
     lodash "^4.17.21"
     preact "^10.5.13"
