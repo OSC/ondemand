@@ -68,8 +68,8 @@ Rails.application.routes.draw do
   # analytics request appears in the access logs and google analytics
   get 'analytics/:type' => proc { [204, {}, ['']] }, :as => 'analytics'
 
-  get 'apps/show/:name(/:type(/:owner))' => 'apps#show', :as => 'app', :defaults => { type: 'sys' }
-  get 'apps/icon/:name(/:type(/:owner))' => 'apps#icon', :as => 'app_icon', :defaults => { type: 'sys' }
+  get 'apps/show/:name(/:type(/:owner))' => 'apps#show', :as => 'app', :defaults => { type: 'sys' }, :constraints => { owner: %r{[^/]+} }
+  get 'apps/icon/:name(/:type(/:owner))' => 'apps#icon', :as => 'app_icon', :defaults => { type: 'sys' }, :constraints => { owner: %r{[^/]+} }
   get 'apps/index' => 'apps#index'
 
   get 'apps/restart' => 'apps#restart' if Configuration.app_sharing_enabled?
