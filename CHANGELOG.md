@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Various typo and language fixes (#4122)\
+update from data-toggle to data-bs-toggle (#4115)\
+ensure filenames are not url encoded (#4107)\
+add test to ensure sanitize() works here (#4116)\
+Remove Handlebars from XDMoD widget efficiency template (#4103)\
+lint a random file (#4117)\
+Update Changelog (#4112)\
+Add markdown widget for interactive app forms (#3767)\
+update dependencies (#4113)\
+lint a random file (#4110)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
