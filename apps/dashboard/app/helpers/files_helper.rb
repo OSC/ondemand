@@ -30,32 +30,4 @@ module FilesHelper
     starting_index = path_components.length < 5 ? 0 : path_components.length - 5
     return ".../#{path_components[starting_index..-1].join('/')}"
   end
-
-  def column_head_link(column, sort_by, path)
-    link_to(
-      header_text(column, sort_by),
-      target_path(column, path),
-      title: "Show #{path.basename} directory", 
-      class: classes(column, sort_by),
-      data: { turbo_frame: 'project_directory' }
-    )
-  end
-
-  def header_text(column, sort_by)
-    "#{t("dashboard.#{column.to_s}")} #{fa_icon(column.to_s == sort_by.to_s ? 'sort-down' : 'sort', classes: 'fa-md')}".html_safe
-  end
-
-  def target_path(column, path)
-    directory_frame_path(
-      { path: path.to_s,
-        sort_by: column
-      }
-    )
-  end
-
-  def classes(column, sort_by)
-    classes = ['btn', 'btn-xs', 'btn-hover']
-    classes << (column.to_s == sort_by.to_s ? ['btn-primary'] : ['btn-outline-primary'])
-    classes.join(' ')
-  end
 end
