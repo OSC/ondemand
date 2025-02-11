@@ -254,7 +254,6 @@ class Project
   end
 
   def update_permission
-    # Read and execute to group
     project_dataroot.chmod(0750)
     true
   rescue StandardError => e
