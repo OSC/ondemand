@@ -32,7 +32,7 @@ class AppsController < ApplicationController
       app_url = app_uri.to_s
     end
 
-    redirect_to(app_url, allow_other_host: true)
+    redirect_to app_url
 
   rescue ::OodApp::SetupScriptFailed => e
     #FIXME: should this be 500 error?
