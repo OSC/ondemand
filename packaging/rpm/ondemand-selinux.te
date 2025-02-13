@@ -6,6 +6,7 @@ require {
   type shell_exec_t;
   type rsync_exec_t;
   type ptmx_t;
+  type user_home_t;
   type user_home_dir_t;
   type proc_t;
   type vmblock_t;
@@ -105,6 +106,8 @@ read_lnk_files_pattern(httpd_t, ood_apps_public_t, ood_apps_public_t)
 gen_tunable(ondemand_manage_user_home_dir, false)
 
 tunable_policy(`ondemand_manage_user_home_dir',`
+  manage_dirs_pattern(ood_pun_t, user_home_t, user_home_t)
+  manage_files_pattern(ood_pun_t, user_home_t, user_home_t)
   manage_dirs_pattern(ood_pun_t, user_home_dir_t, user_home_dir_t)
   manage_files_pattern(ood_pun_t, user_home_dir_t, user_home_dir_t)
 ')
