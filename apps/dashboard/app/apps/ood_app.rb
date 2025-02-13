@@ -145,13 +145,27 @@ class OodApp
         OodAppLink.new(
           title: title,
           description: manifest.description,
-          url: (type == :sys && owner == :sys) ? app_path(name, nil, nil) : app_path(name, type, owner),
+          url: possibly_external_url,
           icon_uri: icon_uri,
           caption: caption,
           new_tab: open_in_new_window?,
           tile: tile
         )
       ]
+    end
+  end
+
+  # if the URL of the app is external, it's not a real app, just a hack to
+  # make an external link. In this case, we don't want the href to be
+  # 'app_path' (i.e., /pun/sys/dashboard/apps/show/<appname>), but instead
+  # be the actual external URL. This avoids an external host error in Rails,
+  # but also provides the user to know the _actual_ URL before clicking it.
+  def possibly_external_url
+    parsed_url = Addressable::URI.parse(url)
+    if parsed_url.relative?
+      (type == :sys && owner == :sys) ? app_path(name, nil, nil) : app_path(name, type, owner)
+    else
+      url
     end
   end
 
