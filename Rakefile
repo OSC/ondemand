@@ -17,6 +17,7 @@ require "#{TASK_DIR}/test"
 require "#{TASK_DIR}/lint"
 require "#{TASK_DIR}/development"
 require "#{TASK_DIR}/install"
+require "#{TASK_DIR}/demo"
 
 include RakeHelper
 
