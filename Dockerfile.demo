@@ -1,0 +1,30 @@
+FROM rockylinux/rockylinux:8
+LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
+
+RUN dnf install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm && \
+    dnf clean all && rm -rf /var/cache/dnf/*
+
+RUN dnf -y update && \
+    dnf install -y dnf-utils && \
+    dnf config-manager --set-enabled powertools && \
+    dnf -y module enable nodejs:20 ruby:3.3 && \
+    dnf install -y epel-release && \
+    dnf install -y procps libffi-devel python3-devel gcc && \
+    dnf install -y ondemand ondemand-dex && \
+    dnf clean all && rm -rf /var/cache/dnf/*
+
+RUN pip3 install 'setuptools_scm<7' && \
+    pip3 install jupyter
+
+RUN sed -i 's|--rpm|--rpm -f --insecure|g' /etc/systemd/system/httpd.service.d/ood-portal.conf
+RUN systemctl enable httpd ondemand-dex
+
+RUN useradd jessie
+RUN chmod 600 /etc/shadow
+
+COPY lib/files/demo/ood_portal.yml /etc/ood/config/ood_portal.yml
+COPY lib/files/demo/clusters.d /etc/ood/config/clusters.d
+COPY lib/files/demo/apps /var/www/ood/apps/sys/
+COPY lib/files/demo/config /etc/ood/config/apps/
+
+CMD [ "/sbin/init" ]
