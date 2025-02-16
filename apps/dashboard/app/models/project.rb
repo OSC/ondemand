@@ -9,6 +9,15 @@ class Project
   extend JobLogger
 
   class << self
+    def shared_projects_paths
+      vendor_path = ENV['VENDOR_SHARED_FILESYSTEM'] || ''
+      [
+        Pathname.new('/fs/projects'),
+        Pathname.new('/fs/scratch'),
+        Pathname.new(vendor_path)
+      ]
+    end
+
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
         FileUtils.touch(path.to_s) unless path.exist?
@@ -28,9 +37,28 @@ class Project
     end
 
     def all
-      lookup_table.map do |id, directory|
+      projects = lookup_table.map do |id, directory|
         Project.new({ id: id, directory: directory })
       end
+
+      shared_projects_paths.each do |path|
+        if path.exist?
+          CurrentUser.group_names.each do |group|
+            dir_path = path.join(group)
+            # {shared_projects_path}/<UNIX group ID>/<project>/.ondemand
+            if dir_path.exist? && dir_path.directory? 
+              Dir.each_child(dir_path) do |child|
+                if File.directory?(File.join(dir_path, child, '.ondemand'))
+                  projects << Project.new({ id: child, directory: File.join(dir_path, child) })
+                end
+              end
+            end
+  
+          end
+        end
+      end
+
+      projects
     end
 
     def find(id)
