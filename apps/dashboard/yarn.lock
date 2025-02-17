@@ -264,9 +264,9 @@
     "@uppy/utils" "^6.1.1"
 
 ace-code@^1.35.0:
-  version "1.37.5"
-  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.37.5.tgz#9caceb0f251581ff22f20c8416c1843a1a383288"
-  integrity sha512-32IX6aoINIwx0eVnnfJ2lrRJFVZ7YotYNkyt4mAfhxLBKo73iCpi+jpy2FsMJPHpd7CMJeYwx7bQ+XYKXKKgxA==
+  version "1.38.0"
+  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.38.0.tgz#e6825c6dbc97bb1a44d75bcd876cddab6a73001e"
+  integrity sha512-iZtpjAOBWsWka3auM7n2MM81ykCsQk0iSVRRwMiPDMOjnLBNm1bQxDVZkx82y21Oo3s3/5HJgHxf/HWcMwHAyw==
 
 anymatch@~3.1.2:
   version "3.1.3"
@@ -531,9 +531,9 @@ namespace-emitter@^2.0.1:
   integrity sha512-N/sMKHniSDJBjfrkbS/tpkPj4RAbvW3mr8UAzvlMHyun93XEm83IAvhWtJVHo+RHn/oO8Job5YN4b+wRjSVp5g==
 
 nanoid@^5.0.9:
-  version "5.0.9"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.0.9.tgz#977dcbaac055430ce7b1e19cf0130cea91a20e50"
-  integrity sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.1.0.tgz#d61a0cde4db69c39f9320625fc86764c072f221f"
+  integrity sha512-zDAl/llz8Ue/EblwSYwdxGBYfj46IM1dhjVi8dyp9LQffoIGxJEAHj2oeZ4uNcgycSRcQ83CnfcZqEJzVDLcDw==
 
 neo-async@^2.6.2:
   version "2.6.2"
@@ -580,9 +580,9 @@ picomatch@^2.0.4, picomatch@^2.2.1:
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
 preact@^10.5.13:
-  version "10.25.4"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.25.4.tgz#c1d00bee9d7b9dcd06a2311d9951973b506ae8ac"
-  integrity sha512-jLdZDb+Q+odkHJ+MpW/9U5cODzqnB+fy2EiHSZES7ldV5LK7yjlVzTp7R8Xy6W6y75kfK8iWYtFVH7lvjwrCMA==
+  version "10.26.0"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.26.0.tgz#35526753a8fbb98138f1de90fd51022bd40ca661"
+  integrity sha512-6ugi/Mb7lyV5RA6KlnijFyDLMU253i7L0RRiObIzDoqj59KT9iTeNJbA/YGw6M7jP4vxaab0DOA8DgodTOA6EQ==
 
 readdirp@~3.6.0:
   version "3.6.0"
