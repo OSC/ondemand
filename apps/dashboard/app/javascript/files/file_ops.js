@@ -623,10 +623,9 @@ class FileOps {
     $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable, eventData);
   }
 
-  showSwalLoading(message, returnFocus = false) {
+  showSwalLoading(message) {
     const eventData = {
       'message': message,
-      'returnFocus': returnFocus
     };
 
     $(CONTENTID).trigger(SWAL_EVENTNAME.showLoading, eventData);
