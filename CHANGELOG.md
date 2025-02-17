@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bump rack from 2.2.10 to 2.2.11 in /apps/dashboard (#4150)\
+allow redirect to other host in apps#show (#4140)\
+Bump esbuild from 0.14.54 to 0.25.0 in /apps/dashboard (#4137)\
+Fix dev container (#4141)\
+lint a random file (#4144)\
+Add user_home_t to SELinux tunable (#4142)\
+Updated the project directory permission allowing group to read and execute files (#4129)\
+add a test for preserving url encoding (#4125)\
+Permissive constraints on owner segment for apps/show (#4133)\
+account for numeric usernames (#4128)\
+Update Changelog (#4130)\
+update dependencies (#4131)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
