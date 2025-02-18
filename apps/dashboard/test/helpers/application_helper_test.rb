@@ -152,13 +152,19 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal image_uri.to_s, image_html['src']
   end
 
-  test 'favicon tag should have reffererpolicy in production environment' do
-    with_modified_env(RAILS_ENV: 'production') do
-      @user_configuration = stub({ public_url: Pathname.new('/public') })
-      html = Nokogiri::HTML(favicon())
+  test 'favicon tag should use public asset url by default' do
+    @user_configuration = stub({ public_url: Pathname.new('/public') })
+    html = Nokogiri::HTML(favicon())
+    
+    favicon_html = html.at_css("link")
+    assert_equal '/public/favicon.ico', favicon_html['href']
+  end
 
-      favicon_html = html.at_css("link")
-      assert_equal 'origin', favicon_html['referrerpolicy']
-    end
+  test 'favicon tag should have a reffererpolicy attribute with value origin' do
+    @user_configuration = stub({ public_url: Pathname.new('/public') })
+    html = Nokogiri::HTML(favicon())
+
+    favicon_html = html.at_css("link")
+    assert_equal 'origin', favicon_html['referrerpolicy']
   end 
 end
