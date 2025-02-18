@@ -82,6 +82,7 @@ class SweetAlert {
       title: title,
       allowOutsideClick: false,
       showConfirmButton: false,
+      returnFocus: false,
       willOpen: () => { Swal.showLoading()  }
     });
   }
