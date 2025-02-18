@@ -49,7 +49,7 @@ module Dashboard
 
     # Determine if this path is safe to load. I.e., are all the files root owned.
     def safe_load_path?(path)
-      path.exists? && path.children.all? { |f| File.stat(f).uid.zero? }
+      path.exist? && path.children.all? { |f| File.stat(f).uid.zero? }
     end
 
     # Enable installed plugins only if configured by administrator
