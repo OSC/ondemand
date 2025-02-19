@@ -152,7 +152,9 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal image_uri.to_s, image_html['src']
   end
 
-  test 'favicon tag should use public asset url by default' do
+  test 'favicon tag should use public asset uri in production mode' do
+    Rails.stubs(:env).returns(stub('production?', production?: true))
+
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     html = Nokogiri::HTML(favicon())
     
@@ -160,7 +162,19 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal '/public/favicon.ico', favicon_html['href']
   end
 
+  test 'favicon tag should use local asset uri in test mode' do
+    Rails.stubs(:env).returns(stub('production?', production?: false))
+
+    @user_configuration = stub({ public_url: Pathname.new('/public') })
+    html = Nokogiri::HTML(favicon())
+    
+    favicon_html = html.at_css("link")
+    assert_equal '/images/favicon.ico', favicon_html['href']
+  end
+
   test 'favicon tag should have a reffererpolicy attribute with value origin' do
+    Rails.stubs(:env).returns(stub('production?', production?: true))
+
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     html = Nokogiri::HTML(favicon())
 
