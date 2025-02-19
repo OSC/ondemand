@@ -116,8 +116,7 @@ module BatchConnect
     end
 
     def tile
-      parent_tile = OodApp.instance_method(:tile).bind(self).call
-      parent_tile.merge(form_config.fetch(:tile, {}))
+      super.merge(form_config.fetch(:tile, {}))
     end
 
     def category
