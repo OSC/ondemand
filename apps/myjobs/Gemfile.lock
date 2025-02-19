@@ -149,7 +149,7 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.15.7)
+    nokogiri (1.18.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     ood_appkit (2.1.6)
@@ -275,7 +275,7 @@ DEPENDENCIES
   local_time (~> 1.0.3)
   mocha (~> 2.1)
   net-imap (~> 0.3, < 0.4)
-  nokogiri (~> 1.15, < 1.16)
+  nokogiri (~> 1.18)
   ood_appkit (~> 2.0)
   osc_machete_rails (~> 2.1.2)
   pbs (~> 2.2.1)
