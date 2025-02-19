@@ -38,7 +38,7 @@ class AppRecategorizer < SimpleDelegator
       # As an example, we've configured sys/bc_desktop/pitzer.  Pitzer is a sub-app
       # of bc_desktop. We don't care if there are multiple bc_desktops sub-app links,
       # only pitzer is configured - so only _it's_ link should be returned.
-      app = batch_connect.sub_app_list.select do |sub|
+      app = sub_app_list.select do |sub|
         sub.valid? && sub.sub_app == sub_app_name
       end.first
 
