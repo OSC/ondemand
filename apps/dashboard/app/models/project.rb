@@ -9,15 +9,6 @@ class Project
   extend JobLogger
 
   class << self
-    def shared_projects_paths
-      vendor_path = ENV['VENDOR_SHARED_FILESYSTEM'] || ''
-      [
-        Pathname.new('/fs/projects'),
-        Pathname.new('/fs/scratch'),
-        Pathname.new(vendor_path)
-      ]
-    end
-
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
         FileUtils.touch(path.to_s) unless path.exist?
@@ -41,7 +32,8 @@ class Project
         Project.new({ id: id, directory: directory })
       end
 
-      shared_projects_paths.each do |path|
+      # TODO: Move this out of here
+      Configuration.shared_projects_root.each do |path|
         if path.exist?
           CurrentUser.group_names.each do |group|
             dir_path = path.join(group)

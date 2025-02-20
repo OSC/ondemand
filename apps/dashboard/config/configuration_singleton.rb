@@ -529,4 +529,20 @@ class ConfigurationSingleton
       end
     end
   end
+
+  def shared_projects_root
+    # This environment varible will support ':' colon separated paths
+    vendor_path = ENV['VENDOR_SHARED_FILESYSTEM'] || ''
+    path_list = vendor_path.split(":")
+
+    paths = []
+    path_list.each do |path|
+      temp_path = Pathname.new(path)
+      if temp_path.exists? 
+        paths.append(temp_path)
+      end
+    end
+    
+    return paths
+  end
 end
