@@ -1,6 +1,7 @@
 'use strict';
 
 import oboe from 'oboe';
+import { supportPath } from './config.js';
 import { cssBadgeForState, capitalizeFirstLetter } from './utils.js'
 
 window.fetch_table_data = fetch_table_data;
@@ -18,6 +19,8 @@ var entityMap = {
   '`': '&#x60;',
   '=': '&#x3D;'
 };
+
+const support_path = supportPath();
 
 function escapeHtml (string) {
   return String(string).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
@@ -257,13 +260,16 @@ function create_datatable(options){
                 data:               null,
                 "autoWidth":        true,
                 render: function(data, type, row, meta) {
-                  let { jobname, pbsid, delete_path, support_path } = data
+                  let { jobname, pbsid, cluster, delete_path } = data;
                   let support_ticket = "";
                   if (support_path != "") {
+                    const support_url = new URL(support_path, document.location);
+                    support_url.searchParams.set("job_id", pbsid);
+                    support_url.searchParams.set("cluster", cluster);
                     support_ticket = `
                         <a
                           class="btn btn-primary btn-xs"
-                          href="${escapeHtml(support_path)}"
+                          href="${escapeHtml(support_url.toString())}"
                           aria-labeled-by"title"
                           aria-label="Submit support ticket for job with ID ${pbsid}"
                           data-toggle="tooltip"

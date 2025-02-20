@@ -86,9 +86,7 @@ module ActiveJobs
           username: j.job_owner,
           extended_available: extended_available,
           nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?),
-          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : "",
-          # Check if Support Ticket is enabled via the support_path definition
-          support_path: users_job?(j.job_owner) && !user_config.support_ticket.empty? ? UrlHelper.instance.support_path(job_id: j.id, cluster: cluster.id.to_s) : ""
+          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : ""
         }
       }
     end
