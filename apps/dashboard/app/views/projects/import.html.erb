@@ -1,0 +1,9 @@
+<div class='page-header text-center pb-3'>
+  <h1>
+    Import a Shared Project
+  </h1>
+</div>
+
+<%= bootstrap_form_for(@project, url: import_projects_path, method: :patch) do |form| %>
+  <%= render partial: "form", locals: { form: form }%>
+<% end %>

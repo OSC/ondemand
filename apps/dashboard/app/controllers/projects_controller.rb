@@ -41,6 +41,12 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
+  # GET /projects/import
+  def import
+    @templates = []
+    @project = Project.new
+  end
+
   # GET /projects/:id/edit
   def edit
     project_id = show_project_params[:id]
@@ -83,6 +89,21 @@ class ProjectsController < ApplicationController
       render :new
     end
   end
+
+    # POST /projects/import
+    def import_save
+      # TODO fetch the project details from .ondemand and save into .project_lookup
+      # @project = Project.new(project_params)
+  
+      # if @project.save
+        redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
+      # else
+      #   message = @project.errors[:save].empty? ? I18n.t('dashboard.jobs_project_validation_error') : I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+      #   flash.now[:alert] = message
+      #   @templates = templates if project_params.key?(:template)
+      #   render :new
+      # end
+    end
 
   # DELETE /projects/:id
   def destroy

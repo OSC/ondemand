@@ -1,6 +1,6 @@
 <%
-  edit_project_action = action_name != "new" && action_name != "create"
-
+  edit_project_action = action_name != "new" && action_name != "create" && action_name != "import"
+  import_project_action = action_name == "import"
   path_selector_id = "project_directory_path_selector"
 
   path_selector_locals = {
@@ -27,10 +27,13 @@
     <div class='card'>
       <div class='card-body'>
         <div class="col">
+
+        <% if !import_project_action %>
           <div class="field">
             <%= form.text_field :name, placeholder: I18n.t('dashboard.jobs_project_name_placeholder'),
                     help: I18n.t('dashboard.jobs_project_name_validation') %>
           </div>
+        <% end %>
 
           <div class="field">
             <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
@@ -46,31 +49,35 @@
             <%= render(partial: 'shared/path_selector_table', locals: path_selector_locals ) %>
           </div>
 
+        <% if !import_project_action %>
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
+        <% end %>
         </div>
       </div>
       </div>
       <div class="card">
       <div class='card-body'>
         <div class="col">
-          <div class="field">
-          <%= javascript_include_tag('icon_picker', nonce: true, type: 'module') %>
-          <%= form.text_field :icon, placeholder: "cog", id: "product_icon_select", value: @project.icon_class %>
-            <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
-              <% icon = $2; style = $1 %>
-              <p class="text-center">
-                <%= fa_icon(icon, fa_style: style, id: "product_icon")  %>
-              </p>
-            <% else %>
-              <p class="text-center">
-                <%= fa_icon("cog", fa_style: "fas", id: "product_icon") %>
-              </p>
-            <% end %>
-              <ul id="icon_picker_list">
-              </ul>
-          </div>
+          <% if !import_project_action %>
+            <div class="field">
+            <%= javascript_include_tag('icon_picker', nonce: true, type: 'module') %>
+            <%= form.text_field :icon, placeholder: "cog", id: "product_icon_select", value: @project.icon_class %>
+              <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
+                <% icon = $2; style = $1 %>
+                <p class="text-center">
+                  <%= fa_icon(icon, fa_style: style, id: "product_icon")  %>
+                </p>
+              <% else %>
+                <p class="text-center">
+                  <%= fa_icon("cog", fa_style: "fas", id: "product_icon") %>
+                </p>
+              <% end %>
+                <ul id="icon_picker_list">
+                </ul>
+            </div>
+          <% end %>
         </div>
       </div>
       </div>

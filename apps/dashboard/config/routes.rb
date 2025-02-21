@@ -9,6 +9,8 @@ Rails.application.routes.draw do
       get '/jobs/:cluster/:jobid' => 'projects#job_details', :defaults => { :format => 'turbo_stream' }, :as => 'job_details'
       delete '/jobs/:cluster/:jobid' => 'projects#delete_job', :as => 'delete_job'
       post '/jobs/:cluster/:jobid/stop' => 'projects#stop_job', :as => 'stop_job'
+      get '/import' => 'projects#import', :as => 'import'
+      post '/import' => 'projects#import_save', :as => 'import_save'
 
       resources :launchers do
         post 'submit', on: :member
