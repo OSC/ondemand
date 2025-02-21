@@ -92,14 +92,11 @@ class ProjectsController < ApplicationController
 
     # POST /projects/import
     def import_save
-      success = Project.add_shared_to_lookup(:import)
+      success = Project.import_to_lookup(params[:project][:directory])
       if success
         redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
       else
-        message = @project.errors[:save].empty? ? I18n.t('dashboard.jobs_project_validation_error') : I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
-        flash.now[:alert] = message
-        @templates = templates if project_params.key?(:template)
-        render :new
+        redirect_to project_import_path, alert: I18n.t('dashboard.jobs_project_generic_error')
       end
     end
 

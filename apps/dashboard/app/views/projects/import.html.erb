@@ -4,6 +4,6 @@
   </h1>
 </div>
 
-<%= bootstrap_form_for(@project, url: import_projects_path, method: :patch) do |form| %>
+<%= bootstrap_form_for(@project, url: project_import_save_path, method: :post) do |form| %>
   <%= render partial: "form", locals: { form: form }%>
 <% end %>

@@ -86,6 +86,20 @@ class Project
         Project.new(**opts)
       end
     end
+
+    def import_to_lookup(dir)
+      # fetch _id by opening .ondemand/manifest.yml
+      manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
+      contents = File.read(manifest_path)
+      raw_opts = YAML.safe_load(contents)
+      id = raw_opts["id"]
+      new_table = Project.lookup_table.merge(Hash[id, dir.to_s])
+      File.write(Project.lookup_file, new_table.to_yaml)
+      true
+    rescue StandardError => e
+      Rails.logger.warn("Cannot import project #{dir} to lookup file due to error #{e}")
+      false
+    end
   end
 
   attr_reader :id, :name, :description, :icon, :directory, :template
@@ -164,20 +178,6 @@ class Project
 
   def add_to_lookup(operation)
     new_table = Project.lookup_table.merge(Hash[id, directory.to_s])
-    File.write(Project.lookup_file, new_table.to_yaml)
-    true
-  rescue StandardError => e
-    errors.add(operation, "Cannot update lookup file with error #{e.class}:#{e.message}")
-    false
-  end
-
-  def add_shared_to_lookup(operation, dir)
-    # fetch _id by opening .ondemand/manifest.yml
-    manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
-    contents = File.read(manifest_path)
-    raw_opts = YAML.safe_load(contents)
-    id = raw_opts["id"]
-    new_table = Project.lookup_table.merge(Hash[id, dir.to_s])
     File.write(Project.lookup_file, new_table.to_yaml)
     true
   rescue StandardError => e
