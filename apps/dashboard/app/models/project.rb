@@ -171,6 +171,20 @@ class Project
     false
   end
 
+  def add_shared_to_lookup(operation, dir)
+    # fetch _id by opening .ondemand/manifest.yml
+    manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
+    contents = File.read(manifest_path)
+    raw_opts = YAML.safe_load(contents)
+    id = raw_opts["id"]
+    new_table = Project.lookup_table.merge(Hash[id, dir.to_s])
+    File.write(Project.lookup_file, new_table.to_yaml)
+    true
+  rescue StandardError => e
+    errors.add(operation, "Cannot update lookup file with error #{e.class}:#{e.message}")
+    false
+  end
+
   def remove_from_lookup
     new_table = Project.lookup_table.except(id)
     File.write(Project.lookup_file, new_table.to_yaml)
