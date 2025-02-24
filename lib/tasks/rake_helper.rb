@@ -204,6 +204,7 @@ module RakeHelper
 
   def buildah_build_cmd(docker_file, image_name, image_tag: ood_image_tag, extra_args: [])
     args = ['bud', '--build-arg', "VERSION=#{ood_version}"]
+    args.concat(['--layers'])
     args.concat ['-t', "#{image_name}:#{image_tag}", '-f', docker_file]
     args.concat extra_args
 

@@ -525,7 +525,7 @@ class FileOps {
     .then(() => this.doneLoading())
     .catch(e => {
       this.doneLoading();
-      this.alertError('Error occurred when attempting to ' + summary, e.message)
+      this.alertError('Error occurred when attempting to ' + summary, e.message);
     })
   }
   
@@ -653,7 +653,7 @@ class FileOps {
     $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable, eventData);
   }
 
-  showSwalLoading (message) {
+  showSwalLoading(message) {
     const eventData = {
       'message': message,
     };
