@@ -5,21 +5,26 @@
   this shim until we enable it.
 */
 
-import { setInnerHTML } from './utils';
+import { setInnerHTML, restoreFocus } from './utils';
 import { alert } from './alert';
 
 export function replaceHTML(id, html) {
   const ele = document.getElementById(id);
 
-  if(ele == null){
-    return;
-  } else {
-    var tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    const newHTML = tmp.querySelector('template').innerHTML;
-    tmp.remove();
+  if(ele == null) return;
 
-    setInnerHTML(ele, newHTML);
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const newHTML = tmp.querySelector('template').innerHTML;
+  tmp.remove();
+
+  const focusedElem = document.activeElement;
+  const newFocusId = focusedElem?.id ? focusedElem.id : focusedElem.closest('[id]')?.id;
+
+  setInnerHTML(ele, newHTML);
+
+  if(!focusedElem.isConnected && newFocusId) {
+    restoreFocus(newFocusId);
   }
 }
 
@@ -29,7 +34,7 @@ export function pollAndReplace(url, delay, id, callback) {
       if(response.status == 200) {
         return Promise.resolve(response);
       } else if(response.status == 401) {
-        return Promise.reject("This page cannot update becase you are no longer authenticated. Please refresh the page to log back in.")
+        return Promise.reject("This page cannot update because you are no longer authenticated. Please refresh the page to log back in.")
       } else {
         return Promise.reject(response.text());
       }
