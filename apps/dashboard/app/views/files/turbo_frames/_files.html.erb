@@ -7,8 +7,7 @@
       <%= link_to(
         "..",
         directory_frame_path(
-          path: "#{path.parent}",
-          sort_by: sort_by
+          path: "#{path.parent}"
         ),
         title: 'Show parent directory',
         data: { turbo_frame: "project_directory" }
@@ -31,8 +30,7 @@
         <%= link_to(
           file[:name], 
           directory_frame_path(
-            path: "#{path}/#{file[:name]}",
-            sort_by: sort_by
+            path: "#{path}/#{file[:name]}"
           ),
           title: "Show #{file[:name]} directory",
           data: { turbo_frame: "project_directory" }
@@ -42,8 +40,7 @@
         <%= link_to(
           file[:name], 
           file_frame_path(
-            path: "#{path}/#{file[:name]}",
-            sort_by: sort_by
+            path: "#{path}/#{file[:name]}"
           ),
           title: "Show #{file[:name]}", 
           data: { turbo_frame: "project_directory" }

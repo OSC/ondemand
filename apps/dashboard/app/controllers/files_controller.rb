@@ -8,14 +8,14 @@ class FilesController < ApplicationController
 
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
-    @download = fs_params[:download]
+    @is_download = fs_params[:download]
     parse_path(fs_params[:filepath], fs_params[:fs])
     validate_path!
 
     if @path.directory?
       @path.raise_if_cant_access_directory_contents
 
-      request.format = 'zip' if download?
+      request.format = 'zip' if @is_download
 
       respond_to do |format|
         format.html do
@@ -39,8 +39,8 @@ class FilesController < ApplicationController
           end
         end
 
-        # FIXME: below is a large block that should be moved to a concern (Zipable, perhaps?)
-        # if moved to a concern the exceptions can be handled there and
+        # FIXME: below is a large block that should be moved to a model
+        # if moved to a model the exceptions can be handled there and
         # then this code will be simpler to read
         # and we can avoid rescuing in a block so we can reintroduce
         # the block braces which is the Rails convention with the respond_to formats.
@@ -105,17 +105,15 @@ class FilesController < ApplicationController
 
   # GET - directory for turbo-frame
   def directory_frame
-    sort_by = directory_frame_params[:sort_by] || :name
     parse_path(directory_frame_params[:path], 'fs')
     validate_path!
     @path.raise_if_cant_access_directory_contents
-    set_files(sort_by)
+    @files = @path.ls
 
     render( partial: 'files/turbo_frames/directory',
             locals: { 
               path: @path,
-              files: @files,
-              sort_by: sort_by
+              files: @files
             }
     )
   rescue StandardError => e
@@ -132,8 +130,7 @@ class FilesController < ApplicationController
     render( partial: 'files/turbo_frames/file',
             locals: { 
               path: @path,
-              file: @file,
-              sort_by: file_frame_params[:sort_by]
+              file: @file
             }
     )
   rescue StandardError => e
@@ -142,14 +139,20 @@ class FilesController < ApplicationController
 
   # PUT - create or update
   def update
-    parse_path(update_params[:filepath], update_params[:fs])
+    filepath = update_params[:filepath]
+    fs = update_params[:fs]
+    parse_path(filepath, fs)
     validate_path!
 
-    if update_params.include?(:dir)
+    dir = update_params[:dir] if update_params.include?(:dir)
+    file = update_params[:file] if update_params.include?(:file)
+    touch = update_params[:touch] if update_params.include?(:touch)
+
+    if dir
       @path.mkdir
-    elsif update_params.include?(:file)
-      @path.mv_from(update_params[:file].tempfile)
-    elsif update_params.include?(:touch)
+    elsif file
+      @path.mv_from(file.tempfile)
+    elsif touch
       @path.touch
     else
       content = request.body.read
@@ -169,16 +172,22 @@ class FilesController < ApplicationController
 
   # POST
   def upload
-    upload_path = uppy_upload_path(upload_params[:relativePath], upload_params[:parent], upload_params[:name])
+    file = upload_params[:file]
+    fs = upload_params[:fs]
+    @relative_path = upload_params[:relativePath]
+    @parent = upload_params[:parent]
+    @name = upload_params[:name]
 
-    parse_path(upload_path, upload_params[:fs])
+    upload_path = uppy_upload_path
+
+    parse_path(upload_path, fs)
     validate_path!
 
     # Need to remove the tempfile from list of Rack tempfiles to prevent it
     # being cleaned up once request completes since Rclone uses the files.
-    request.env[Rack::RACK_TEMPFILES].reject! { |f| f.path == upload_params[:file].tempfile.path } unless posix_file?
+    request.env[Rack::RACK_TEMPFILES].reject! { |f| f.path == file.tempfile.path } unless posix_file?
 
-    @transfer = @path.handle_upload(upload_params[:file].tempfile)
+    @transfer = @path.handle_upload(file.tempfile)
 
 
     if @transfer.kind_of?(Transfer)
@@ -195,7 +204,9 @@ class FilesController < ApplicationController
   end
 
   def edit
-    parse_path(edit_params[:path], edit_params[:fs])
+    filepath = edit_params[:filepath]
+    fs = edit_params[:fs]
+    parse_path(filepath, fs)
     validate_path!
 
     if @path.editable?
@@ -267,49 +278,27 @@ class FilesController < ApplicationController
     end
   end
 
-  def set_files(sort_by)
-    @files = sort_by_column(@path.ls, sort_by)
-  end
-
-  def sort_by_column(files, column)
-    col = column.to_sym
-    sorted_files = files.sort_by do |file|
-      case col
-      when :name, :owner
-        file[col].to_s.downcase
-      when :type
-        file[:directory] ? 0 : 1
-      else
-        file[col].to_i
-      end
-    end
-  end
-
   def posix_file?
     @path.is_a?(PosixFile)
   end
 
-  def download?
-    @download ||= false
-  end
-
-  def uppy_upload_path(relative_path, parent, name)
+  def uppy_upload_path
     # careful:
     #
     #     File.join '/a/b', '/c' => '/a/b/c'
     #     Pathname.new('/a/b').join('/c') => '/c'
     #
     # handle case where uppy.js sets relativePath to "null"
-    if relative_path && relative_path != 'null'
-      Pathname.new(File.join(parent, relativePath))
+    if @relative_path && @relative_path != 'null'
+      Pathname.new(File.join(@parent, @relative_path))
     else
-      Pathname.new(File.join(parent, name))
+      Pathname.new(File.join(@parent, @name))
     end
   end
 
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
-    
+
     return File.open(@path.to_s, "r") do |file|
       file.read 
     end if turbo_frame_request?
@@ -327,7 +316,7 @@ class FilesController < ApplicationController
     response.set_header 'Content-Length', @path.stat.size
 
     # svgs aren't safe to view until we update our CSP
-    if download? || type.to_s == 'image/svg+xml'
+    if @is_download || type.to_s == 'image/svg+xml'
       type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
       send_file @path, type: type
     else
@@ -336,7 +325,7 @@ class FilesController < ApplicationController
   rescue StandardError => e
     logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
 
-    if download?
+    if @is_download
       send_file @path
     else
       send_file @path, disposition: 'inline'
@@ -351,7 +340,7 @@ class FilesController < ApplicationController
     end
 
     # svgs aren't safe to view until we update our CSP
-    download = download? || type.to_s == 'image/svg+xml'
+    download = @is_download || type.to_s == 'image/svg+xml'
     type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
 
     response.set_header('X-Accel-Buffering', 'no')
@@ -380,24 +369,23 @@ class FilesController < ApplicationController
     params.permit(:format, :filepath, :fs, :download,  :can_download)
   end
 
-  def directory_frame_params
-    params.permit(:format, :path, :sort_by)
-  end
-
-  def file_frame_params
-    params.permit(:format, :path, :sort_by)
-  end
-
   def update_params
     params.permit(:format, :filepath, :fs, :dir, :file, :touch)
   end
 
   def upload_params
-    params.permit(:format, :relativePath, :parent, :name, :fs, :type, :file)
+    params.permit(:format, :relativePath, :parent, :name, :fs, :file)
   end
 
   def edit_params
-    params.permit(:format, :path, :fs)
+    params.permit(:format, :path, :fs, :filepath)
   end
 
+  def directory_frame_params
+    params.permit(:format, :path)
+  end
+
+  def file_frame_params
+    params.permit(:format, :path)
+  end
 end

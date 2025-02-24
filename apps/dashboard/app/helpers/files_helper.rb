@@ -31,3 +31,4 @@ module FilesHelper
     return ".../#{path_components[starting_index..-1].join('/')}"
   end
 end
+
