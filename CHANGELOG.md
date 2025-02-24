@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bug fix/favicon referrerpolicy 2895 (#4166)\
+lint a random file (#4168)\
+Add returnFocus option to resolve focus issues in file_ops (#4100)\
+Fixed application class type for exist? method (#4165)\
+Update Changelog (#4154)\
+Fixed safe_load_path? method definition to avoid runtime errors (#4157)\
+update dependencies (#4155)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
