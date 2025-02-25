@@ -1,4 +1,4 @@
-# Developing Open-OnDemand
+# Developing Open OnDemand
 
 This a a guide to developing Open OnDemand.
 
@@ -57,7 +57,7 @@ However, you may choose to have a different development runtime, and that's fine
 OSC maintainers use `modules` on compute nodes instead of developing on the webnodes
 themselves.
 
-It should be noted here that any Ruby module installation needs configured with
+It should be noted here that any Ruby module installation needs to be configured with
 `--enable-shared` flag to be compatible with the Ruby running on the webnode.
 
 Now run `bin/setup` from within this directory to fetch all the dependencies
@@ -227,7 +227,7 @@ variables you may want and/or need.
 For example if you need additional Linux capabilities you can use `OOD_CTR_CAPABILITIES`
 with a comma separated list of the capabilities you want.
 
-If `privileged` is in this list, no capabilies are used and the container is ran with
+If `privileged` is in this list, no capabilities are used and the container is ran with
 the `--privileged` flag.
 
 ```shell
