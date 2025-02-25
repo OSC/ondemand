@@ -41,6 +41,12 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
+  # GET /projects/import
+  def import
+    @templates = []
+    @project = Project.new
+  end
+
   # GET /projects/:id/edit
   def edit
     project_id = show_project_params[:id]
@@ -81,6 +87,17 @@ class ProjectsController < ApplicationController
       flash.now[:alert] = message
       @templates = templates if project_params.key?(:template)
       render :new
+    end
+  end
+
+  # POST /projects/import
+  def import_save
+    # TODO: Call Project to save directory to lookup file
+    success = true
+    if success
+      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
+    else
+      redirect_to project_import_path, alert: I18n.t('dashboard.jobs_project_generic_error')
     end
   end
 
