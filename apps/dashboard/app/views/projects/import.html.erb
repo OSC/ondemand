@@ -3,7 +3,8 @@
     Import a Shared Project
   </h1>
 </div>
-
+# TODO: Add a new partial for this. May be similar to index with a list of cards or a simple search
+# Right now it point to "Create new Project" form
 <%= bootstrap_form_for(@project, url: project_import_save_path, method: :post) do |form| %>
   <%= render partial: "form", locals: { form: form }%>
 <% end %>
