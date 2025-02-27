@@ -26,5 +26,6 @@ COPY lib/files/demo/ood_portal.yml /etc/ood/config/ood_portal.yml
 COPY lib/files/demo/clusters.d /etc/ood/config/clusters.d
 COPY lib/files/demo/apps /var/www/ood/apps/sys/
 COPY lib/files/demo/config /etc/ood/config/apps/
+COPY lib/files/demo/motd.md /etc/motd.md
 
 CMD [ "/sbin/init" ]
