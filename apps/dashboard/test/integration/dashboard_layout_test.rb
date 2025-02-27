@@ -147,6 +147,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
+    BatchConnect::Session.stubs(:cache_root).returns(Pathname('/dev/null'))
     stub_user_configuration({
                               pinned_apps: [
                                 'sys/bc_jupyter',
@@ -161,8 +162,8 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     end
 
     # pinned_apps makes rows for every 'group', resulting in 2 rows
-    # recently used apps also has 2 rows
-    assert_select 'div.row', 4
+    # recently used apps is also 1 row
+    assert_select 'div.row', 3
     assert_select 'div.row > div.col-md-4', 1
     assert_select 'div.row > div.col-md-8', 1
 
