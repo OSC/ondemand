@@ -58,7 +58,7 @@ module ApplicationHelper
 
   def favicon
     if Rails.env.production?
-      favicon_link_tag('favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true)
+      favicon_link_tag('favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true,  referrerpolicy: 'origin')
     else
       favicon_link_tag('favicon.ico')
     end

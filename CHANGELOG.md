@@ -12,11 +12,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
   and show these if they're positive [4074](https://github.com/OSC/ondemand/pull/4074).
 - Icon picker correctly shows and hides the spinner in [4051](https://github.com/OSC/ondemand/pull/4051).
-- Project manager template selection fixed in [4054](https://github.com/OSC/ondemand/pull/4054).
 - Fix modal bug when file transfer fails in [4084](https://github.com/OSC/ondemand/pull/4084).
 - Require latest ondemand-passenger and ondemand-nginx to fix a proc-ps dependency issue in [4089](https://github.com/OSC/ondemand/pull/4089).
-- Fixed some remaining Bootstrap 5 issues in [4115](https://github.com/OSC/ondemand/pull/4115).
+- Native VNC tabs work correctly in [4115](https://github.com/OSC/ondemand/pull/4115).
 - The path_selector corretly handles files with spaces in [4107](https://github.com/OSC/ondemand/pull/4107).
+- mod_ood_proxy correctly accounts for numeric usernames in [4128](https://github.com/OSC/ondemand/pull/4128).
+- Application Manifests with external URLs use external hrefs in [#4140](https://github.com/OSC/ondemand/pull/4140).
+- Add user_home_t to SELinux tunable [4142](https://github.com/OSC/ondemand/pull/4142).
+- Apps#show route correctly handles usernames with periods in [4133](https://github.com/OSC/ondemand/pull/4133).
+- Fixed safe_load_path? method definition to avoid runtime errors in [4157](https://github.com/OSC/ondemand/pull/4157).
+- File operations correctly return focus in [4100](https://github.com/OSC/ondemand/pull/4100).
+- Favicon has a referrerpolicy in [4166](https://github.com/OSC/ondemand/pull/4166).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -28,6 +34,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Removed analytics.lua and resolved code dependencies in [4069](https://github.com/OSC/ondemand/pull/4069).
 - Announcements now filter files that don't exist in [4091](https://github.com/OSC/ondemand/pull/4091).
 - Removed Handlebars from XDMoD widget efficiency template in [4103](https://github.com/OSC/ondemand/pull/4103).
+
+## [4.0.1] - 02-16-2025
+
+### Fixed
+- Project manager template selection fixed in [4054](https://github.com/OSC/ondemand/pull/4054).
+- Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
+  and show these if they're positive [4087](https://github.com/OSC/ondemand/pull/4087).
+- Require latest ondemand-passenger and ondemand-nginx to fix a proc-ps dependency issue in [4089](https://github.com/OSC/ondemand/pull/4089).
+- Native VNC tabs work correctly in [4124](https://github.com/OSC/ondemand/pull/4124).
+- The path_selector corretly handles files with spaces in [4126](https://github.com/OSC/ondemand/pull/4126).
+- mod_ood_proxy correctly accounts for numeric usernames in [4134](https://github.com/OSC/ondemand/pull/4134).
+- Files app correctly handles filenames with non UTF-8 characters in [4135](https://github.com/OSC/ondemand/pull/4135).
+- Apps#show route correctly handles usernames with periods in [4133](https://github.com/OSC/ondemand/pull/4133).
+- Add user_home_t to SELinux tunable [4143](https://github.com/OSC/ondemand/pull/4143).
+- Application Manifests with external URLs use external hrefs in [#4149](https://github.com/OSC/ondemand/pull/4149).
+  
+### Changed
+- The Project Manager's navbar title is now 'Project Manager' in [4136](https://github.com/OSC/ondemand/pull/4136).
 
 ## [4.0.0] - 12-30-2024
 
@@ -1509,6 +1533,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - From 1.3.7 - 1.4.2 updated app versions
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.0...HEAD
+[4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9

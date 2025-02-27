@@ -21,6 +21,8 @@ RUN dnf -y update && \
     dnf install -y gcc gcc-c++ libyaml-devel nc && \
     dnf clean all && rm -rf /var/cache/dnf/*
 
+RUN chmod 600 /etc/shadow
+
 RUN sed -i 's#^CREATE_MAIL_SPOOL=yes#CREATE_MAIL_SPOOL=no#' /etc/default/useradd; \
     grep $GID /etc/group >/dev/null || groupadd -g $GID $USER; \
     useradd -l -u $UID --create-home --gid $GID $USER && \
