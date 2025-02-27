@@ -23,6 +23,31 @@ class Project
       {}
     end
 
+    def import_to_lookup(dir)
+      # fetch "id" by opening .ondemand/manifest.yml
+      manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
+      unless manifest_path.exist?
+        Rails.logger.warn("Imported directory is not a Open OnDemand project")
+        return false
+      end
+
+      contents = File.read(manifest_path)
+      raw_opts = YAML.safe_load(contents)
+      id = raw_opts["id"]
+      new_table = Project.lookup_table.merge(Hash[id, dir.to_s])
+
+      @project = Project.find(id)
+      if @project.nil?
+        File.write(Project.lookup_file, new_table.to_yaml)
+      else
+        Rails.logger.info("Imported project #{dir} already exists in lookup file")
+      end
+      true
+    rescue StandardError => e
+      Rails.logger.warn("Cannot import project #{dir} to lookup file due to error #{e}")
+      false
+    end
+
     def next_id
       SecureRandom.alphanumeric(8).downcase
     end
