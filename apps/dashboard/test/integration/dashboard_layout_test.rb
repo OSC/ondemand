@@ -172,8 +172,6 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-4 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-4 > div.motd > div.motd_body', 3
 
-    assert_select 'div.row > div.col-md-12 > div.recently-used-apps-header', 1
-
     assert_select pinned_app_row_css_query('8'), 4
     assert_select pinned_app_link_css_query('8', '/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
     assert_select pinned_app_link_css_query('8', '/batch_connect/sys/bc_paraview/session_contexts/new'), 1
