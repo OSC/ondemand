@@ -8,14 +8,13 @@ class FilesController < ApplicationController
 
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
-    @is_download = fs_params[:download]
     parse_path(fs_params[:filepath], fs_params[:fs])
     validate_path!
 
     if @path.directory?
       @path.raise_if_cant_access_directory_contents
 
-      request.format = 'zip' if @is_download
+      request.format = 'zip' if download?
 
       respond_to do |format|
         format.html do
@@ -248,6 +247,10 @@ class FilesController < ApplicationController
     @path.is_a?(PosixFile)
   end
 
+  def download?
+    fs_params[:download]
+  end
+
   def uppy_upload_path
     # careful:
     #
@@ -278,7 +281,7 @@ class FilesController < ApplicationController
     response.set_header 'Content-Length', @path.stat.size
 
     # svgs aren't safe to view until we update our CSP
-    if @is_download || type.to_s == 'image/svg+xml'
+    if download? || type.to_s == 'image/svg+xml'
       type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
       send_file @path, type: type
     else
@@ -287,7 +290,7 @@ class FilesController < ApplicationController
   rescue StandardError => e
     logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
 
-    if @is_download
+    if download?
       send_file @path
     else
       send_file @path, disposition: 'inline'
@@ -302,7 +305,7 @@ class FilesController < ApplicationController
     end
 
     # svgs aren't safe to view until we update our CSP
-    download = @is_download || type.to_s == 'image/svg+xml'
+    download = download? || type.to_s == 'image/svg+xml'
     type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
 
     response.set_header('X-Accel-Buffering', 'no')
