@@ -67,7 +67,7 @@ class PosixFile
   end
 
   def downloadable?
-    (directory? || file?) && readable?
+    Configuration.download_enabled? && (directory? || file?) && readable?
   end
 
   def human_size
