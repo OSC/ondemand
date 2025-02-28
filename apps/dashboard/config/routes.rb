@@ -39,7 +39,9 @@ Rails.application.routes.draw do
 
     get 'files', to: redirect("files/fs#{Dir.home}")
     get 'files/fs', to: redirect("files/fs#{Dir.home}")
-
+    get 'frames/directory_frame' => 'files#directory_frame', as: 'directory_frame'
+    get 'frames/file_frame' => 'files#file_frame', as: 'file_frame'
+    
     resources :transfers, only: [:show, :create, :destroy]
   end
 
