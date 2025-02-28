@@ -73,8 +73,6 @@ def codename
     'noble'
   when 'ubuntu-22.04'
     'jammy'
-  when 'ubuntu-20.04'
-    'focal'
   when 'debian-12'
     'bookworm'
   end
