@@ -15,8 +15,7 @@ class ActiveJobsController < ApplicationController
           cluster_id: params[:jobcluster],
           controller: self,
           params: params,
-          response: response,
-          user_config: @user_configuration
+          response: response
         ).render
       }
     end

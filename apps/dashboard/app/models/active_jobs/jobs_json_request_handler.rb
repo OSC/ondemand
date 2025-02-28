@@ -2,18 +2,17 @@ module ActiveJobs
   # Utility class for responding to json activejobs requests. This class generates
   # the resulting json body that the controller will ultimately repond with.
   class JobsJsonRequestHandler
-    attr_reader :controller, :params, :response, :filter_id, :cluster_id, :user_config
+    attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
     # additional attrs to request when calling info_all
     JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time ]
 
-    def initialize(filter_id:, cluster_id:, controller:, params:, response:, user_config:)
+    def initialize(filter_id:, cluster_id:, controller:, params:, response:)
       @filter_id = filter_id
       @cluster_id = cluster_id
       @controller = controller
       @params = params
       @response = response
-      @user_config = user_config
     end
 
     def filter
