@@ -141,6 +141,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[href='/projects/#{project_id}']").click
       assert_selector 'h1', text: 'Test Project'
       assert_selector '.btn.btn-default', text: 'Back'
+      # project size is hardcoded to 2MB with stub_du
+      assert_selector '#new-dir-btn', text: 'Project Directory (2 MB)'
     end
   end
 

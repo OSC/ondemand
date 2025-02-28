@@ -413,7 +413,7 @@ class FilesTest < ApplicationSystemTestCase
       edit_window = window_opened_by { tr.find('.edit-file').click }
 
       within_window edit_window do
-        find('#editor', wait: MAX_WAIT).click
+        find('#editor').click
         find('textarea.ace_text-input', visible: false).send_keys('foobar')
 
         find('#save-button').click

@@ -2,7 +2,6 @@
 
 # Helpers for the projects page
 module ProjectsHelper
-
   def render_readme(readme_location)
     file_content = File.read(readme_location)
 

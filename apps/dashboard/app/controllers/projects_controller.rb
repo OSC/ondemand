@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
     @path = @project&.directory
-    
+
     if @project.nil?
       respond_to do |format|
         message = I18n.t('dashboard.jobs_project_not_found', project_id: project_id)
