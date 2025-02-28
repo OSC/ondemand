@@ -212,6 +212,7 @@ ja_JP:
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     save: 溜める
     saved_settings_title: Saved Settings
+    select_path: Select Path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
