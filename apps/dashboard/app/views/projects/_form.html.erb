@@ -40,7 +40,7 @@
                                 data: { 'path-selector': true })%>
 
             <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
-              Select Path
+              <%= I18n.t('dashboard.select_path') %>
             </button>
 
             <%= render(partial: 'shared/path_selector_table', locals: path_selector_locals ) %>

@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Application Manifests with external URLs use external hrefs in [#4140](https://github.com/OSC/ondemand/pull/4140).
 - Add user_home_t to SELinux tunable [4142](https://github.com/OSC/ondemand/pull/4142).
 - Apps#show route correctly handles usernames with periods in [4133](https://github.com/OSC/ondemand/pull/4133).
+- Fixed safe_load_path? method definition to avoid runtime errors in [4157](https://github.com/OSC/ondemand/pull/4157).
+- File operations correctly return focus in [4100](https://github.com/OSC/ondemand/pull/4100).
+- Favicon has a referrerpolicy in [4166](https://github.com/OSC/ondemand/pull/4166).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).

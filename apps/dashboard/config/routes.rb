@@ -4,6 +4,9 @@ require 'authz/app_developer_constraint'
 
 Rails.application.routes.draw do
   if Configuration.can_access_projects?
+    get 'projects/import' => 'projects#import', :as => 'project_import'
+    post 'projects/import' => 'projects#import_save', :as => 'project_import_save'
+
     resources :projects do
       root 'projects#index'
       get '/jobs/:cluster/:jobid' => 'projects#job_details', :defaults => { :format => 'turbo_stream' }, :as => 'job_details'
