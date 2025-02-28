@@ -1,1 +1,1 @@
-OOD_SSH_WRAPPER='/bin/bash'
+OOD_SSH_WRAPPER='/etc/ood/config/apps/shell/wrapper'
