@@ -38,6 +38,10 @@ Rails.application.config.after_initialize do
       pinfo = Process.getpgid(id.to_i)
       Process.kill('TERM', id.to_i)    
     end
+
+    def info_all(attrs: nil)
+      []
+    end
   end  
 
   class OodCore::Job::Factory

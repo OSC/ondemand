@@ -3,3 +3,5 @@ v2:
     adapter: localhost
   login:
     host: localhost
+  metadata:
+    title: Localhost
