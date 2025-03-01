@@ -23,6 +23,34 @@ class Project
       {}
     end
 
+    def from_directory(dir)
+      # fetch "id" by opening .ondemand/manifest.yml
+      manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
+      unless manifest_path.exist?
+        Rails.logger.warn("Imported directory is not a Open OnDemand project")
+        nil
+      end
+
+      contents = File.read(manifest_path)
+      raw_opts = YAML.safe_load(contents)
+      id = raw_opts["id"]
+
+      project = Project.find(id)
+      if project.nil?
+        Project.new({ id: id, directory: dir })
+      else
+        nil
+      end
+    rescue StandardError => e
+      Rails.logger.warn("Cannot import project from dir #{dir} due to error #{e}")
+      false
+    end
+
+    def import_to_lookup(dir)
+      project = from_directory(dir)
+      project ? project.add_to_lookup(:import) : false
+    end
+
     def next_id
       SecureRandom.alphanumeric(8).downcase
     end
