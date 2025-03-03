@@ -13,7 +13,7 @@ class Project
     manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
     unless manifest_path.exist?
       Rails.logger.warn("Imported directory is not a Open OnDemand project")
-      nil
+      return nil
     end
 
     contents = File.read(manifest_path)
@@ -28,7 +28,7 @@ class Project
     end
   rescue StandardError => e
     Rails.logger.warn("Cannot import project from dir #{dir} due to error #{e}")
-    false
+    nil
   end
 
   class << self
