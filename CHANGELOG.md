@@ -23,17 +23,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed safe_load_path? method definition to avoid runtime errors in [4157](https://github.com/OSC/ondemand/pull/4157).
 - File operations correctly return focus in [4100](https://github.com/OSC/ondemand/pull/4100).
 - Favicon has a referrerpolicy in [4166](https://github.com/OSC/ondemand/pull/4166).
+- Navigation bar titles will not overflow in [4194](https://github.com/OSC/ondemand/pull/4194).
+- Fixed CSS selectors for active navigation link color in [4183](https://github.com/OSC/ondemand/pull/4183).
+- "Select Path" is now internationalizable in [4176](https://github.com/OSC/ondemand/pull/4176).
+- The files app does not provide hrefs for files when download is disabled in [4167](https://github.com/OSC/ondemand/pull/4167).
+- Desktops start with a safer PATH to ensure that dbus-launch comes from the OS in [4160](https://github.com/OSC/ondemand/pull/4160).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
 - Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
 - Interactive forms now support headers for each form item in [3767](https://github.com/OSC/ondemand/pull/3767).
+- Users can now submit help tickets through the Active Jobs page in [4102](https://github.com/OSC/ondemand/pull/4102).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
 - Removed analytics.lua and resolved code dependencies in [4069](https://github.com/OSC/ondemand/pull/4069).
 - Announcements now filter files that don't exist in [4091](https://github.com/OSC/ondemand/pull/4091).
 - Removed Handlebars from XDMoD widget efficiency template in [4103](https://github.com/OSC/ondemand/pull/4103).
+- Drop support for Ubuntu 20.04 and Ruby 2.7 in [4188](https://github.com/OSC/ondemand/pull/4188).
 
 ## [4.0.1] - 02-16-2025
 
