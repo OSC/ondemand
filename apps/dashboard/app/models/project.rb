@@ -66,6 +66,14 @@ class Project
         Project.new(**opts)
       end
     end
+
+    def template_dataroot
+      OodAppkit.dataroot.join('templates').tap do |path|
+        path.mkpath unless path.exist?
+      rescue StandardError => e
+        Pathname.new('')
+      end
+    end
   end
 
   attr_reader :id, :name, :description, :icon, :directory, :template
@@ -234,6 +242,65 @@ class Project
   def readme_path
     file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
     File.readable?(file) ? file : nil
+  end
+
+  def template_directory
+    @template_directory ||= Project.template_dataroot.join(id)
+  end
+  
+  def create_template(files)
+    @template_files = files
+    @template_save_directory = Project.template_dataroot.join(id)
+    save_template
+  end
+
+  def save_template
+    create_template_directory
+    create_template_manifest
+    copy_template_files
+    deflate_template
+  end
+
+  def template_manifest_path
+    template_directory.join('manifest.yml')
+  end
+
+  def template_files_path
+    template_directory.join('files')
+  end
+
+  def create_template_directory
+    template_directory.mkpath
+  end
+
+  def create_template_files_directory
+    template_files_path.mkpath
+  end
+
+  def create_template_manifest
+    File.open(template_manifest_path, 'w') do |f|
+      f.write(ProjectManifest.new(template_manifest_opts).to_yaml)
+      f.close
+    end
+  end
+
+  def copy_template_files
+    create_template_files_directory
+    files.each { |file| FileUtils.cp_r(file, template_files_path.join(file.to_s.split("#{id}/").last)) }
+  end
+
+  def template_manifest_opts
+    {
+      id: id,
+      name: name,
+      description: description,
+      icon: icon,
+      files: files.map { |file| directory.join(file.to_s).to_s }
+    }
+  end
+
+  def deflate_template
+    # Implement deflate logic here
   end
 
   private
