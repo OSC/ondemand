@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+drop support for Ubuntu 20.04 and Ruby 2.7 (#4188)\
+ensure titles dont overflow (#4194)\
+cast to string for safety (#4196)\
+internationalize "Select Path" (#4176)\
+Added support ticket to active jobs page (#4102)\
+use asset_nil here for fix deprecation warngins (#4197)\
+Refactored Files controller to use strong parameters. (#4192)\
+Do not provide href links to files when download is disabled. (#4167)\
+set the PATH so that dbus-launch comes from the OS (#4160)\
+Added a form to projects to import a shared-project using directory path (#4178)\
+Update Changelog (#4179)\
+lint a random file (#4182)\
+Fixed CSS selectors for active navigation link color (#4183)\
+update dependencies (#4180)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
