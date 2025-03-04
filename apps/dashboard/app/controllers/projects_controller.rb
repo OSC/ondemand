@@ -2,6 +2,9 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
+  include ProjectsHelper
+  @@cache_shared_path = true
+
   # GET /projects/:id
   def show
     project_id = show_project_params[:id]
@@ -32,6 +35,11 @@ class ProjectsController < ApplicationController
   def index
     @projects = Project.all
     @templates = templates
+
+    if @@cache_shared_path
+      self.save_shared_dir
+      @@cache_shared_path = false
+    end
   end
 
   # GET /projects/new
