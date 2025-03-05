@@ -1,0 +1,7 @@
+v2:
+  job:
+    adapter: localhost
+  login:
+    host: localhost
+  metadata:
+    title: Localhost

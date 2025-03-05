@@ -194,7 +194,8 @@ module RakeHelper
     @image_names ||=
       {
         ood: 'ood',
-        dev: 'ood-dev'
+        dev: 'ood-dev',
+        demo: 'ood-demo',
       }.freeze
   end
 
