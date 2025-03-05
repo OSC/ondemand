@@ -92,8 +92,7 @@ class ProjectsController < ApplicationController
 
   # POST /projects/import
   def import_save
-    # TODO: Call Project to save directory to lookup file
-    success = true
+    success = Project.import_to_lookup(project_params[:directory])
     if success
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
     else

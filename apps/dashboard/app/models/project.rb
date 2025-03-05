@@ -8,6 +8,23 @@ class Project
   include IconWithUri
   extend JobLogger
 
+  def self.from_directory(dir)
+    # fetch "id" by opening .ondemand/manifest.yml
+    manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
+    unless manifest_path.exist?
+      Rails.logger.warn("Imported directory is not a Open OnDemand project")
+      return nil
+    end
+
+    contents = File.read(manifest_path)
+    raw_opts = YAML.safe_load(contents)
+    id = raw_opts["id"]
+    Project.new({ id: id, directory: dir })
+  rescue StandardError => e
+    Rails.logger.warn("Cannot import project from dir #{dir} due to error #{e}")
+    nil
+  end
+
   class << self
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
@@ -21,6 +38,14 @@ class Project
     rescue StandardError, Exception => e
       Rails.logger.warn("cannot read #{dataroot}/.project_lookup due to error #{e}")
       {}
+    end
+
+    def import_to_lookup(dir)
+      imported_project = Project.from_directory(dir)
+      if imported_project.nil?
+        return false
+      end
+      Project.find(imported_project.id) ? true : imported_project.add_to_lookup(:import)
     end
 
     def next_id
