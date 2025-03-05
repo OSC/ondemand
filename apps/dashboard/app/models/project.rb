@@ -19,13 +19,7 @@ class Project
     contents = File.read(manifest_path)
     raw_opts = YAML.safe_load(contents)
     id = raw_opts["id"]
-
-    project = Project.find(id)
-    if project.nil?
-      Project.new({ id: id, directory: dir })
-    else
-      nil
-    end
+    Project.new({ id: id, directory: dir })
   rescue StandardError => e
     Rails.logger.warn("Cannot import project from dir #{dir} due to error #{e}")
     nil
@@ -47,8 +41,11 @@ class Project
     end
 
     def import_to_lookup(dir)
-      project = self.class.from_directory(dir)
-      project ? project.add_to_lookup(:import) : false
+      imported_project = Project.from_directory(dir)
+      if imported_project.nil?
+        return false
+      end
+      Project.find(imported_project.id) ? true : imported_project.add_to_lookup(:import)
     end
 
     def next_id
