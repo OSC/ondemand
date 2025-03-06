@@ -132,6 +132,7 @@ en:
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    file_quotas: 'File Quotas'
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
@@ -200,6 +201,7 @@ en:
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
+    project_balances: Project Balances
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
