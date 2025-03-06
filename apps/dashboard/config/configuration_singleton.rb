@@ -28,6 +28,7 @@ class ConfigurationSingleton
   alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
 
   def initialize
+    load_dotenv_files
     add_boolean_configs
     add_string_configs
   end
