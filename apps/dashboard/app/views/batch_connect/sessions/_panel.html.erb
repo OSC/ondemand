@@ -1,5 +1,8 @@
 <div id="<%= "id_#{session.id}" %>" class="card session-panel mb-4"
-  data-id="<%= session.id%>" data-hash="<%= session.to_hash %>" >
+  data-id="<%= session.id %>" data-hash="<%= session.to_hash %>"
+  data-status="<%= status(session).downcase %>"
+  data-title="<%= session.title %>"
+  data-bc-card='true' >
   <%= render_card_partial('card_header', session) %>
   <%= render_card_partial('card_body', session) %>
 </div>
