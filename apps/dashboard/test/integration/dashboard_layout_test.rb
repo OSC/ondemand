@@ -147,6 +147,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
+    BatchConnect::Session.stubs(:cache_root).returns(Pathname('/dev/null'))
     stub_user_configuration({
                               pinned_apps: [
                                 'sys/bc_jupyter',
@@ -160,7 +161,9 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'div.row', 2 # one extra row because pinned_apps makes rows for every 'group'
+    # pinned_apps makes rows for every 'group', resulting in 2 rows
+    # recently used apps is also 1 row
+    assert_select 'div.row', 3
     assert_select 'div.row > div.col-md-4', 1
     assert_select 'div.row > div.col-md-8', 1
 
@@ -310,5 +313,28 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-6 > #my-test-partial', 1
     actual_value = css_select('div.row > div.col-md-6 > #my-test-partial').text.gsub(/\n/, '').strip
     assert_equal "My Test Partial's now in the dashboard!", actual_value
+  end
+
+  test 'when recently used apps is populated' do
+    Dir.mktmpdir do |dir|
+      BatchConnect::Session.stubs(:cache_root).returns(Pathname.new(dir))
+      stub_sys_apps
+      cfg = {
+        'cluster'           => 'quick',
+        'bc_num_hours'      => 1,
+        'bc_account'        => 'abc',
+        'bc_vnc_resolution' => '1228x691'
+      }
+      File.write("#{dir}/sys_bc_paraview.json", cfg.to_json)
+
+      get '/'
+
+      assert_select 'div.row > div.col-md-12 > div.recently-used-apps-header > div.row', 1
+      ruas = css_select('div.row > div.col-md-12 > div.recently-used-apps-header > div.row > div.app-launcher-container')
+      assert_equal(1, ruas.size)
+
+      header_text = css_select('h4.apps-section-header-blue').text
+      assert_equal(I18n.t('dashboard.recently_used_apps_title'), header_text)
+    end
   end
 end
