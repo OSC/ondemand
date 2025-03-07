@@ -32,37 +32,27 @@ module ProjectsHelper
     end
   end
 
-  # This will always create a local shared lookup file
-  # It will save directory path of shared OOD projects in this file after brute forcing all possible path
-  def save_shared_dir
+  # TODO: Use it to populate drop down selection of shared directory in import project form
+  def cached_shared_dir
+    Rails.cache.fetch('cached_shared_dir', expires_in: 1.hour) do
+      shared_dir_list
+    end
+  end
+  
+  private
+  def shared_dir_list
     shared_path = []
-    Configuration.shared_projects_root.each do |path|
-      CurrentUser.group_names.each do |group|
-        dir_path = path.join(group)
-        # {shared_projects_path}/<UNIX group ID>/<project>/.ondemand
-        if dir_path.exist? && dir_path.directory? 
-          Dir.each_child(dir_path) do |child|
-            if File.directory?(File.join(dir_path, child, '.ondemand'))
-              shared_path << File.join(dir_path, child)
-            end
-          end
-        end
-
+    Configuration.shared_projects_root.each do |dir_path|
+      next unless File.readable?(dir_path)
+      Dir.each_child(dir_path) do |child|
+        child_dir = File.join(dir_path, child)
+        gid = File.stat(child_dir).gid
+        name = Etc.getgrgid(gid).name rescue nil
+        next unless CurrentUser.group_names.include?(name)
+        shared_path << child_dir
       end
     end
 
-    # TODO: First brute force all path and do `ls -l` to check if it is part of user group
-    # save to local varible shared_path
-    # Next check if any child in shared path is ood project and save it to ood_shared_projects
-    # finally save this local varible below to lookup file
-    
-    # Cache the shared path, so these are visible accross instances of project controller
-    dataroot = OodAppkit.dataroot.join('projects')
-    shared_cache = Pathname("#{dataroot}/.shared_lookup")
-    File.open(shared_cache, "w") do |file|
-      shared_path.each do |path|
-        file.puts path
-      end
-    end
+    return shared_path
   end
 end
