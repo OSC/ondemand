@@ -446,7 +446,7 @@ class ConfigurationSingleton
     paths = []
     path_list.each do |path|
       temp_path = Pathname.new(path)
-      if temp_path.exists? 
+      if temp_path.exist? 
         paths.append(temp_path)
       end
     end
