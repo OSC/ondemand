@@ -531,9 +531,9 @@ namespace-emitter@^2.0.1:
   integrity sha512-N/sMKHniSDJBjfrkbS/tpkPj4RAbvW3mr8UAzvlMHyun93XEm83IAvhWtJVHo+RHn/oO8Job5YN4b+wRjSVp5g==
 
 nanoid@^5.0.9:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.1.2.tgz#b87c6cb6941d127a23b24dffc4659bba48b219d7"
-  integrity sha512-b+CiXQCNMUGe0Ri64S9SXFcP9hogjAJ2Rd6GdVxhPLRm7mhGaM7VgOvCAJ1ZshfHbqVDI3uqTI5C8/GaKuLI7g==
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.1.3.tgz#4ab91f7882148771526e3f0ffb87bb5af9fa71ac"
+  integrity sha512-zAbEOEr7u2CbxwoMRlz/pNSpRP0FdAU4pRaYunCdEezWohXFs+a0Xw7RfkKaezMsmSM1vttcLthJtwRnVtOfHQ==
 
 neo-async@^2.6.2:
   version "2.6.2"
