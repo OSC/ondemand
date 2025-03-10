@@ -6,7 +6,6 @@ class ProjectsController < ApplicationController
   def show
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
-    @path = @project&.directory
 
     if @project.nil?
       respond_to do |format|

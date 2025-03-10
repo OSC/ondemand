@@ -4,7 +4,7 @@
 class FilesController < ApplicationController
   include ActionController::Live
 
-  before_action :strip_sendfile_headers, only: [:fs]
+  before_action :strip_sendfile_headers, only: [:fs, :directory_frame, :file_frame]
 
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
