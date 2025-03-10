@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#4214)\
-Ensure minimum 1000 UIDs/GIDs are mapped for the dev container (#4209)\
-Add Recently Used Apps to the default dashboard layout (#4193)\
-Saved imported directory into lookup_file for shared projects (#4189)\
-support for a demo container (#4151)\
-Bump rack from 2.2.11 to 2.2.12 in /apps/dashboard (#4205)\
-update dependencies (#4202)\
-Update Changelog (#4201)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -42,6 +34,7 @@ Update Changelog (#4201)
 - Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
 - Interactive forms now support headers for each form item in [3767](https://github.com/OSC/ondemand/pull/3767).
 - Users can now submit help tickets through the Active Jobs page in [4102](https://github.com/OSC/ondemand/pull/4102).
+- This project now has a demo container for demonstration purposes in [4151](https://github.com/OSC/ondemand/pull/4151).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -49,6 +42,7 @@ Update Changelog (#4201)
 - Announcements now filter files that don't exist in [4091](https://github.com/OSC/ondemand/pull/4091).
 - Removed Handlebars from XDMoD widget efficiency template in [4103](https://github.com/OSC/ondemand/pull/4103).
 - Drop support for Ubuntu 20.04 and Ruby 2.7 in [4188](https://github.com/OSC/ondemand/pull/4188).
+- Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
 
 ## [4.0.1] - 02-16-2025
 
