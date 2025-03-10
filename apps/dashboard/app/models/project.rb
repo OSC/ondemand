@@ -8,6 +8,13 @@ class Project
   include IconWithUri
   extend JobLogger
 
+  @@import_default_shared_project = false
+  def self.update_import_default(value)
+    if value == "1"
+      @@import_default_shared_project = true
+    end
+  end
+
   def self.from_directory(dir)
     # fetch "id" by opening .ondemand/manifest.yml
     manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
@@ -53,8 +60,13 @@ class Project
     end
 
     def all
-      lookup_table.map do |id, directory|
+      projects = lookup_table.map do |id, directory|
         Project.new({ id: id, directory: directory })
+      end
+      if @import_default_shared_project && !Project.possible_imports.nil?
+        projects + Projects.possible_imports
+      else
+        projects
       end
     end
 

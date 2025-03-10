@@ -45,6 +45,8 @@ class ProjectsController < ApplicationController
   def import
     @templates = []
     @project = Project.new
+    # To cache all the importable shared projects
+    Project.possible_imports
   end
 
   # GET /projects/:id/edit
@@ -92,7 +94,8 @@ class ProjectsController < ApplicationController
 
   # POST /projects/import
   def import_save
-    success = Project.import_to_lookup(project_params[:directory])
+    success = project_params[:directory]=="" || Project.import_to_lookup(project_params[:directory])
+    Project.update_import_default(project_params[:import_default])
     if success
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
     else
@@ -192,7 +195,7 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:name, :directory, :description, :icon, :id, :template)
+      .permit(:name, :directory, :description, :icon, :id, :template, :import_default)
   end
 
   def show_project_params
