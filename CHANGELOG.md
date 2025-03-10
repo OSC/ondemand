@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#4214)\
+Ensure minimum 1000 UIDs/GIDs are mapped for the dev container (#4209)\
+Add Recently Used Apps to the default dashboard layout (#4193)\
+Saved imported directory into lookup_file for shared projects (#4189)\
+support for a demo container (#4151)\
+Bump rack from 2.2.11 to 2.2.12 in /apps/dashboard (#4205)\
+update dependencies (#4202)\
+Update Changelog (#4201)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
