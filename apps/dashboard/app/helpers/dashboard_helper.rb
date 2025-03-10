@@ -73,7 +73,16 @@ module DashboardHelper
       right_column = nil
     end
 
-    { rows: [{ columns: [left_column, right_column].compact }] }
+    { rows: [recently_used_row, { columns: [left_column, right_column].compact }] }
+  end
+
+  def recently_used_row
+    {
+      columns: [{
+        width:   12,
+        widgets: ['recently_used_apps']
+      }]
+    }
   end
 
   def render_motd_rss_item(item)

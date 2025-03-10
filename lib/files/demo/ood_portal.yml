@@ -1,0 +1,18 @@
+---
+servername: localhost
+port: 8080
+listen_addr_port: 8080
+oidc_remote_user_claim: email
+dex:
+  static_passwords:
+  - email: jessie@localhost
+    password: owens
+    username: jessie
+    userID: 7e3146ab-83fb-4642-ad0d-3120a76bfd9a
+  frontend:
+    extra:
+      loginLogo: '/public/login.png'
+
+rnode_uri: '/rnode'
+node_uri: '/node'
+host_regex: 'ood\.demo'

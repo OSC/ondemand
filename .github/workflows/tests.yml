@@ -13,8 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["2.7.1"]
-        bundler: ["2.1.4"]
+        ruby: ["3.3.5"]
+        bundler: ["2.5.16"]
         include:
           # Test versions from Ubuntu 22.04
           - os: ubuntu-latest
@@ -125,7 +125,6 @@ jobs:
           - el8
           - el9
           - amzn2023
-          - ubuntu-20.04
           - ubuntu-22.04
           - ubuntu-24.04
           - debian-12
@@ -142,8 +141,6 @@ jobs:
           - dist: amzn2023
             arch: ppc64le
           # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
-          - dist: ubuntu-20.04
-            arch: ppc64le
           - dist: ubuntu-22.04
             arch: ppc64le
           - dist: ubuntu-24.04
