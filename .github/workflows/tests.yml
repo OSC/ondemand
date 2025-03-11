@@ -38,6 +38,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+          bundler: 2.5.22
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -154,6 +155,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
+          bundler: "2.5.22"
           bundler-cache: true
 
       - name: Build package
