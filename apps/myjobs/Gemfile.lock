@@ -274,12 +274,10 @@ DEPENDENCIES
   js-routes (~> 1.2.4)
   local_time (~> 1.0.3)
   mocha (~> 2.1)
-  net-imap (~> 0.3, < 0.4)
-  nokogiri (~> 1.15, < 1.16)
+  nokogiri
   ood_appkit (~> 2.0)
   osc_machete_rails (~> 2.1.2)
   pbs (~> 2.2.1)
-  public_suffix (~> 5.0, < 6.0)
   rails (= 7.0.8.5)
   rails-controller-testing
   rdoc (= 6.3.4.1)
@@ -291,4 +289,4 @@ DEPENDENCIES
   zeitwerk (= 2.6.18)
 
 BUNDLED WITH
-   2.3.6
+   2.5.22

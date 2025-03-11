@@ -69,9 +69,8 @@ gem 'climate_control', '~> 0.2'
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
 gem 'rdoc', '6.3.4.1'
 
-# lock gems to versions that are compatible with ruby 2.7.0,
-# which Ubuntu 20.04 uses.
-gem 'nokogiri', '~> 1.15', '< 1.16'
-gem 'net-imap', '~> 0.3', '< 0.4'
-gem 'public_suffix', '~> 5.0', '< 6.0'
+# have to force_ruby_platform here to get the right
+# GLIBC version to compile against.
+gem 'nokogiri', force_ruby_platform: true
+
 gem 'zeitwerk', '2.6.18'
