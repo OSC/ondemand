@@ -65,10 +65,6 @@ gem 'ood_appkit', '~> 2.0'
 
 gem 'climate_control', '~> 0.2'
 
-# we have to lock rdoc because 6.4 depends on psych 4.0 which breaks with
-# Psych::BadAlias: Cannot load database configuration: Unknown alias: default
-gem 'rdoc', '6.3.4.1'
-
 # have to force_ruby_platform here to get the right
 # GLIBC version to compile against.
 gem 'nokogiri', force_ruby_platform: true
