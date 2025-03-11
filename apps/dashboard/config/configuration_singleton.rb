@@ -444,7 +444,7 @@ class ConfigurationSingleton
     paths.map do |path|
       Pathname.new(path)
     end.select do |path|
-      path.exist?
+      path.exist? && path.directory?
     end
   end
 

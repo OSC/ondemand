@@ -25,7 +25,7 @@ class Project
     nil
   end
 
-  # TODO: Use it to populate drop down selection of shared directory in import project form
+  # TODO: Use it to populate similar page as /projects where we will keep the imported projects
   def self.possible_imports
     Rails.cache.fetch('possible_imports', expires_in: 1.hour) do
       importable_directories
@@ -102,25 +102,17 @@ class Project
     private
 
     def importable_directories
-      Configuration.shared_projects_root.each do |path|
-        next unless File.readable?(path)
-        Dir.each_child(path) do |child|
-          root = File.join(path, child)
-          next unless File.readable?(root)
+      Configuration.shared_projects_root.flat_map do |root|
+        next unless File.readable?(root)
 
-          # Look for all ood projects under this shared root path
-          # Find.find(root) do |dir|
-          #   if File.basename(dir)=='.ondemand' && File.directory?(dir)
-          #     Find.prune
-          #     dir
-          #   end
-          # end
-          Dir.glob("#{root}/**/.ondemand", FILE::FNM_DOTMATCH).find do |dir|
-            next unless File.directory?(dir)
-            File.directory?(dir)
+        Dir.each_child(root).flat_map do |child|
+          child_dir = "#{root}/#{child}"
+          next unless File.readable?(child_dir) && File.directory?(child_dir)
+          Dir.each_child(child_dir).map do |possible_project|
+            Project.from_directory("#{child_dir}/#{possible_project}")
           end
         end
-      end
+      end.compact
     end
   end
 
