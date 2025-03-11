@@ -31,28 +31,4 @@ module ProjectsHelper
       status
     end
   end
-
-  # TODO: Use it to populate drop down selection of shared directory in import project form
-  def cached_shared_dir
-    Rails.cache.fetch('cached_shared_dir', expires_in: 1.hour) do
-      shared_dir_list
-    end
-  end
-  
-  private
-  def shared_dir_list
-    shared_path = []
-    Configuration.shared_projects_root.each do |dir_path|
-      next unless File.readable?(dir_path)
-      Dir.each_child(dir_path) do |child|
-        child_dir = File.join(dir_path, child)
-        gid = File.stat(child_dir).gid
-        name = Etc.getgrgid(gid).name rescue nil
-        next unless CurrentUser.group_names.include?(name)
-        shared_path << child_dir
-      end
-    end
-
-    return shared_path
-  end
 end
