@@ -1,0 +1,9 @@
+<div class="h2 text-center"><%= t('dashboard.project_balances') %></div>
+
+<ul class="list-group">
+  <%- @my_balances.sort_by { |b| b.value }.each do |balance| -%>
+    <li class="list-group-item">
+      <b><%= balance.project %></b>: <%= balance %>
+    </li>
+  <%- end -%>
+</ul>

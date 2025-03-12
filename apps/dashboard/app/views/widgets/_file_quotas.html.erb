@@ -1,0 +1,14 @@
+
+<div class="h2 text-center"><%= t('dashboard.file_quotas') %></div>
+
+<ul class="list-group">
+<%- @my_quotas.sort_by { |q| q.percent_total_usage }.reverse.each do |quota| -%>
+  <li class="list-group-item">
+    <b><%= quota.path %></b>: <%= quota %>
+    <%=
+      render(partial: "shared/variable_progress_bar", locals: { percent: quota.percent_total_usage })
+    -%>
+  </li>
+
+<%- end -%>
+</ul>

@@ -1,0 +1,22 @@
+<%- 
+  bg_class =  if percent <= 50
+                'bg-info'
+              elsif percent <= 80
+                'bg-warning'
+              else
+                'bg-danger'
+              end
+-%>
+
+<div class="progress">
+  <div class="progress-bar <%= bg_class %> w-<%= percent.round %>"
+      role="progressbar"
+      aria-busy="false"
+      aria-valuenow="<%= percent %>"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <%= percent %>%
+  </div>
+</div>
+  
