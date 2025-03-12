@@ -34,7 +34,17 @@ Installing Open OnDemand is simple, use our `.rpm` or `.deb` packages. Get start
 
 ### Container demos
 
-You can use the [hpc toolset tutorial] to demonstrate Open OnDemand before installing on your systems. This `docker-compose` project
+This repository comes with the ability to create a stand-alone container for demonstration purposes.
+
+```
+bundle install
+bundle exec rake demo:start
+```
+
+This will boot the container at `http://localhost:8080`. Login to this container with the user `jessie@localhost` with the
+password `owens`.
+
+Additionally, you can use the [hpc toolset tutorial] to demonstrate Open OnDemand before installing on your systems. This `docker-compose` project
 has a full suite of applications like Slurm, Coldfront and of course Open OnDemand.  It also includes tutorials on how to use
 and update the applications.
 
