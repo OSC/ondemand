@@ -136,7 +136,7 @@ module BatchConnect::SessionsHelper
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
-      class: "btn btn-danger float-end btn-delete",
+      class: "btn btn-outline-danger fw-semibold float-end btn-delete",
       title: title,
       'aria-label': title,
       data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
