@@ -845,6 +845,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       launcher_id = setup_launcher(project_id)
       add_account(project_id, launcher_id)
 
+      sleep 0.5
       visit edit_project_launcher_path(project_id, launcher_id)
 
       find('#edit_launcher_auto_accounts').click
