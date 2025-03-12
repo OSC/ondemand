@@ -1,0 +1,16 @@
+<%=
+  link_to(
+    link.url.to_s,
+    title: link.title,
+    class: "dropdown-item",
+    target: link.new_tab? ? "_blank" : nil,
+    aria: ({ current: ('page' if (current_page?(link.url))) }),
+    role: 'menuitem',
+    data: link.data
+  ) do
+%>
+  <%= icon_tag(link.icon_uri, classes: ['app-icon', 'me-1']) unless link.icon_uri.to_s.blank? %> <%= link.title %>
+  <% if link.subtitle.present? %>
+    <%= content_tag(:small, link.subtitle, class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline ms-2') %>
+  <% end %>
+<% end %>
