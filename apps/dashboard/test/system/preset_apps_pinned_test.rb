@@ -29,6 +29,7 @@ class PresetAppsPinnedTest < ApplicationSystemTestCase
   test 'preset apps in pinned apps directly launch' do
     visit root_path
     click_on 'Test App: Preset'
+    sleep 1.5
     verify_bc_alert('sys/preset_app/preset', err_header, err_msg)
   end
 
