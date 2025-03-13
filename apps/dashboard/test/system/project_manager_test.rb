@@ -915,6 +915,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal('', File.read("#{dir}/.project_lookup"))
 
       click_on(I18n.t('dashboard.save'))
+      sleep 2
 
       assert_equal(2, Dir.children(dir).size)
       project_dir = Dir.children(dir).select { |path| File.directory?("#{dir}/#{path}") }.first
