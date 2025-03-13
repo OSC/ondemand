@@ -37,7 +37,7 @@ class PresetAppsNavbarTest < ApplicationSystemTestCase
     assert_equal new_batch_connect_session_context_path('sys/preset_app/choice'), current_path
     click_on 'Launch'
 
-    sleep 0.25
+    sleep 1.5
     verify_bc_alert('sys/preset_app/choice', err_header, err_msg)
   end
 end
