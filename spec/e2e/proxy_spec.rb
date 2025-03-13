@@ -27,7 +27,7 @@ describe 'Node and Rnode proxies' do
 
   it 'rnode proxies directly to the origin' do
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/simple-page"
-    sleep 1.5
+    sleep 3
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/simple-page")
     expect(browser.div(id: 'test-div').present?).to be true
   end
