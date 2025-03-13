@@ -1509,10 +1509,11 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         check('batch_connect_session_save_template')
         fill_in('modal_input_template_new_name', with: 'test template')
-        sleep 5 # modal needs to sleep?
+        sleep 2 # modal needs to sleep?
         click_on('Save')
 
         click_on('Save settings and close', wait: 30)
+        sleep 2
         expected = output_fixture('user_settings/simple_bc_test.yml')
         actual = File.read("#{dir}/settings.yml")
 
