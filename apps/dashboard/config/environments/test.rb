@@ -61,6 +61,3 @@ Rails.application.configure do
 
   config.hosts = nil
 end
-
-# set the nice value in the CI so it has priority
-Process.setpriority(Process::PRIO_PROCESS, 0, 20)
