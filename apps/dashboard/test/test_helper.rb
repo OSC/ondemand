@@ -15,8 +15,8 @@ module ActiveSupport
 
     UserDouble = Struct.new(:name, :groups)
 
-    # decrease the nice value of tests so the app has priority.
-    Process.setpriority(Process::PRIO_PROCESS, 0, 0)
+    # increase the nice value of tests so the app has priority.
+    Process.setpriority(Process::PRIO_PROCESS, 0, 20)
 
     class BrokenAdapter < OodCore::Job::Adapter
       SUBMIT_ERR_MSG = 'this adapter cannot submit jobs'
