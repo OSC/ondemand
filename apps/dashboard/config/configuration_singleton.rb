@@ -28,6 +28,7 @@ class ConfigurationSingleton
   alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
 
   def initialize
+    load_dotenv_files
     add_boolean_configs
     add_string_configs
   end
@@ -66,7 +67,7 @@ class ConfigurationSingleton
   def string_configs
     {
       :module_file_dir                => nil,
-      :user_settings_file             => Pathname.new("~/.config/ondemand/settings.yml").expand_path.to_s,
+      :user_settings_file             => Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s,
       :facl_domain                    => nil,
       :auto_groups_filter             => nil,
       :bc_clean_old_dirs_days         => '30',
@@ -278,12 +279,16 @@ class ConfigurationSingleton
     #
     root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
     if rails_env == "production"
-      root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
+      root ||= "~/#{ood_portal}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
     else
       root ||= app_root.join("data")
     end
 
     Pathname.new(root).expand_path
+  end
+
+  def ood_portal
+    ENV['OOD_PORTAL'] || 'ondemand'
   end
 
   def locale
