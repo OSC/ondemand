@@ -4,6 +4,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
 
+  # decrease the nice value of tests so the app has priority.
+  Process.setpriority(Process::PRIO_PROCESS, 0, 0)
+
   driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
     # only chrome has support for browser logs
     options.logging_prefs = { browser: 'ALL' }
