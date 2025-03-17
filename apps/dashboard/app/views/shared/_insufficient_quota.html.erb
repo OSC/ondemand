@@ -1,8 +1,8 @@
 <%- if quotas.try(:any?) { |quota| quota.insufficient?(threshold: Configuration.quota_threshold) } -%>
-  <div class="alert alert-danger insufficient-quota" role="alert">
+  <div class="alert alert-danger insufficient-quota">
     <div class="insufficient-quota-group">
     <%- quotas.select{ |quota| quota.insufficient?(threshold: Configuration.quota_threshold) }.each do |quota| -%>
-      <div class="insufficient-quota-resource">
+      <div class="insufficient-quota-resource" role="alert">
         <%=
           render(
             partial: "shared/insufficient_quota_resource",
