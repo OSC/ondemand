@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Add widgets for file_quotas and balances. (#4206)\
+Add an id tag to the version string. (#4211)\
+Update application.html.erb (#4212)\
+Update Changelog (#4216)\
+Bump rack from 2.2.12 to 2.2.13 in /apps/dashboard (#4219)\
+update dependencies (#4217)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
