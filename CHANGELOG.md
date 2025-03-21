@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Interactive forms now support headers for each form item in [3767](https://github.com/OSC/ondemand/pull/3767).
 - Users can now submit help tickets through the Active Jobs page in [4102](https://github.com/OSC/ondemand/pull/4102).
 - This project now has a demo container for demonstration purposes in [4151](https://github.com/OSC/ondemand/pull/4151).
+- Added widgets for file_quotas and balances in [4206](https://github.com/OSC/ondemand/pull/4206).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
