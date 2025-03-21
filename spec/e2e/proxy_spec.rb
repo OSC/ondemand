@@ -19,6 +19,7 @@ describe 'Node and Rnode proxies' do
        'FLASK_PORT=5001 FLASK_BASE_URL=/node/localhost/5001 /opt/extras/simple_origin_server.py >/tmp/node.out 2>&1 &'
 
     browser_login(browser)
+    sleep 10 # give it all a bit to boot up.
   end
 
   after(:all) do
@@ -26,9 +27,7 @@ describe 'Node and Rnode proxies' do
   end
 
   it 'rnode proxies directly to the origin' do
-    sleep 10
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/simple-page"
-    sleep 10
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/simple-page")
     expect(browser.div(id: 'test-div').present?).to be true
   end
