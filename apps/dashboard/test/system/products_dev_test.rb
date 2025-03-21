@@ -118,6 +118,7 @@ class ProductsDevTest < ApplicationSystemTestCase
 
       assert_equal 'fas fa-dumpster-fire fa-fw app-icon', find_css_class('product_icon')
       click_on 'Save'
+      sleep 1
       actual_manifest = File.read("#{dir}/dashboard/manifest.yml")
       expected_manifest = <<~HEREDOC
         ---
@@ -126,8 +127,8 @@ class ProductsDevTest < ApplicationSystemTestCase
         icon: fas://dumpster-fire
       HEREDOC
 
-      assert_equal current_path, product_path('dev', 'dashboard')
-      assert_equal expected_manifest, actual_manifest
+      assert_equal(product_path('dev', 'dashboard'), current_path)
+      assert_equal(expected_manifest, actual_manifest)
     end
   end
 end
