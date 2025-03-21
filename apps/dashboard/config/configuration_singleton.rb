@@ -438,6 +438,16 @@ class ConfigurationSingleton
     rails_env == 'production'
   end
 
+  def shared_projects_root
+    # This environment varible will support ':' colon separated paths
+    paths = (ENV['OOD_SHARED_PROJECT_PATH'] || '').split(":")
+    paths.map do |path|
+      Pathname.new(path)
+    end.select do |path|
+      path.exist? && path.directory?
+    end
+  end
+
   private
 
   def can_access_core_app?(name)
