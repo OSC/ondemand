@@ -25,13 +25,6 @@ class Project
     nil
   end
 
-  # TODO: Use it to populate similar page as /projects where we will keep the imported projects
-  def self.possible_imports
-    Rails.cache.fetch('possible_imports', expires_in: 1.hour) do
-      importable_directories
-    end
-  end
-
   class << self
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
@@ -96,6 +89,13 @@ class Project
         }
 
         Project.new(**opts)
+      end
+    end
+
+    # TODO: Use it to populate similar page as /projects where we will keep the imported projects
+    def possible_imports
+      Rails.cache.fetch('possible_imports', expires_in: 1.hour) do
+        importable_directories
       end
     end
 
