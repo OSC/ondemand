@@ -6,12 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Add widgets for file_quotas and balances. (#4206)\
-Add an id tag to the version string. (#4211)\
-Update application.html.erb (#4212)\
-Update Changelog (#4216)\
-Bump rack from 2.2.12 to 2.2.13 in /apps/dashboard (#4219)\
-update dependencies (#4217)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -41,6 +35,7 @@ update dependencies (#4217)
 - Interactive forms now support headers for each form item in [3767](https://github.com/OSC/ondemand/pull/3767).
 - Users can now submit help tickets through the Active Jobs page in [4102](https://github.com/OSC/ondemand/pull/4102).
 - This project now has a demo container for demonstration purposes in [4151](https://github.com/OSC/ondemand/pull/4151).
+- Added widgets for file_quotas and balances in [4206](https://github.com/OSC/ondemand/pull/4206).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
