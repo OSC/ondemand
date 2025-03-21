@@ -19,7 +19,7 @@ describe 'Node and Rnode proxies' do
        'FLASK_PORT=5001 FLASK_BASE_URL=/node/localhost/5001 /opt/extras/simple_origin_server.py >/tmp/node.out 2>&1 &'
 
     browser_login(browser)
-    sleep 10 # give it all a bit to boot up.
+    sleep 20 # give it all a bit to boot up.
   end
 
   after(:all) do
