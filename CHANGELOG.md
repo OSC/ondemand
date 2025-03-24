@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update dependencies (#4235)\
-Update Changelog (#4234)\
-Remove Ubuntu 20.04 from build matrix as this version is no longer supported (#4224)\
-support nested modules (#4204)\
-missed this update after upgrading to rail 7 (#4221)\
-Updated user_settings_file to use OOD_PORTAL value in the path (#4213)\
-fix CI (#4225)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -43,6 +36,8 @@ fix CI (#4225)
 - Users can now submit help tickets through the Active Jobs page in [4102](https://github.com/OSC/ondemand/pull/4102).
 - This project now has a demo container for demonstration purposes in [4151](https://github.com/OSC/ondemand/pull/4151).
 - Added widgets for file_quotas and balances in [4206](https://github.com/OSC/ondemand/pull/4206).
+- auto_modules now support nested modules in [4204](https://github.com/OSC/ondemand/pull/4204).
+- user_settings_file incorporates OOD_PORTAL in the path in [4213](https://github.com/OSC/ondemand/pull/4213).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
