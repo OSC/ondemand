@@ -169,7 +169,7 @@ GEM
     multi_json (1.15.0)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    net-imap (0.3.8)
+    net-imap (0.5.6)
       date
       net-protocol
     net-pop (0.1.2)
@@ -180,7 +180,7 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.4)
-    nokogiri (1.15.7)
+    nokogiri (1.18.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     ood_appkit (2.1.6)
@@ -203,7 +203,7 @@ GEM
     psych (5.2.3)
       date
       stringio
-    public_suffix (5.1.1)
+    public_suffix (6.0.1)
     racc (1.8.1)
     rack (2.2.13)
     rack-protection (3.2.0)
@@ -335,13 +335,11 @@ DEPENDENCIES
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
   mocha (~> 2.1)
-  net-imap (~> 0.3, < 0.4)
-  nokogiri (~> 1.15, < 1.16)
+  nokogiri
   ood_appkit (~> 2.1.0)
   ood_core (~> 0.24)
   ood_support (~> 0.0.2)
   pry
-  public_suffix (~> 5.0, < 6.0)
   rails (= 7.0.8.5)
   redcarpet (~> 3.3)
   rest-client (~> 2.0)
@@ -358,4 +356,4 @@ DEPENDENCIES
   zip_kit (~> 6.2)
 
 BUNDLED WITH
-   2.3.6
+   2.5.22
