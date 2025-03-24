@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Users can now submit help tickets through the Active Jobs page in [4102](https://github.com/OSC/ondemand/pull/4102).
 - This project now has a demo container for demonstration purposes in [4151](https://github.com/OSC/ondemand/pull/4151).
 - Added widgets for file_quotas and balances in [4206](https://github.com/OSC/ondemand/pull/4206).
+- auto_modules now support nested modules in [4204](https://github.com/OSC/ondemand/pull/4204).
+- user_settings_file incorporates OOD_PORTAL in the path in [4213](https://github.com/OSC/ondemand/pull/4213).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
