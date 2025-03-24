@@ -174,6 +174,11 @@ class FilesController < ApplicationController
     parse_path(filepath, fs)
     validate_path!
 
+    if File.size(@path) > 10.megabytes
+      redirect_to root_path, alert: "#{@path} is too large to edit in browser. Please download to edit locally."
+      return
+    end
+
     if @path.editable?
       @content = @path.read
       render :edit, status: status, layout: 'editor'
