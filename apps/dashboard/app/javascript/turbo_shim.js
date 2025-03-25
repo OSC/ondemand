@@ -5,7 +5,7 @@
   this shim until we enable it.
 */
 
-import { setInnerHTML, restoreFocus } from './utils';
+import { setInnerHTML } from './utils';
 import { alert } from './alert';
 
 export function replaceHTML(id, html) {
@@ -18,14 +18,7 @@ export function replaceHTML(id, html) {
   const newHTML = tmp.querySelector('template').innerHTML;
   tmp.remove();
 
-  const focusedElem = document.activeElement;
-  const newFocusId = focusedElem?.id ? focusedElem.id : focusedElem.closest('[id]')?.id;
-
   setInnerHTML(ele, newHTML);
-
-  if(!focusedElem.isConnected && newFocusId) {
-    restoreFocus(newFocusId);
-  }
 }
 
 export function pollAndReplace(url, delay, id, callback) {

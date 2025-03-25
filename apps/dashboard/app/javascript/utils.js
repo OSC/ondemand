@@ -138,14 +138,3 @@ export function show(id) {
     ele.classList.remove('d-none');
   }
 }
-
-// Helper method to set focus on an element, or on its first focusable child, by ID
-export function restoreFocus(id) {
-  let newActiveElem = document.getElementById(id);
-  if(newActiveElem && newActiveElem.tabIndex < 0) {
-    newActiveElem = newActiveElem.querySelector('input, select, textarea, button, a[href]')
-  }
-  if(newActiveElem) {
-    newActiveElem.focus({preventScroll: true});
-  }
-}

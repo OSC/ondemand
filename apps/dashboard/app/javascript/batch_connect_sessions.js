@@ -18,7 +18,7 @@ function checkStatusChanges() {
       if(oldStatus !== newStatus) {
         sessionStatusMap.set(sessionId, newStatus);
         const sessionTitle = card.dataset.title;
-        const liveRegion = document.getElementById("sr-live-region");
+        const liveRegion = document.getElementById("hl-aria-live-message-container");
         if(liveRegion) {
           setInnerHTML(liveRegion, `${sessionTitle} is now ${newStatus}.`);
         }
