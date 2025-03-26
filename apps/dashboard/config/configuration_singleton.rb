@@ -440,12 +440,7 @@ class ConfigurationSingleton
 
   def shared_projects_root
     # This environment varible will support ':' colon separated paths
-    paths = (ENV['OOD_SHARED_PROJECT_PATH'] || '').split(":")
-    paths.map do |path|
-      Pathname.new(path)
-    end.select do |path|
-      path.exist? && path.directory?
-    end
+    ENV.fetch("OOD_SHARED_PROJECT_PATH", "").strip.split(/:(?!\/\/)/).map{ |s| Pathname.new(s) }
   end
 
   private

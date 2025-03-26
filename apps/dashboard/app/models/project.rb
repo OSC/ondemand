@@ -102,17 +102,17 @@ class Project
     private
 
     def importable_directories
-      Configuration.shared_projects_root.flat_map do |root|
-        next unless File.readable?(root)
+      Configuration.shared_projects_root.map do |root|
+        next unless File.exist?(root) && File.directory?(root) && File.readable?(root)
 
-        Dir.each_child(root).flat_map do |child|
+        Dir.each_child(root).map do |child|
           child_dir = "#{root}/#{child}"
-          next unless File.readable?(child_dir) && File.directory?(child_dir)
+          next unless File.directory?(child_dir) && File.readable?(child_dir)
           Dir.each_child(child_dir).map do |possible_project|
             Project.from_directory("#{child_dir}/#{possible_project}")
           end
-        end
-      end.compact
+        end.flatten
+      end.flatten.compact
     end
   end
 
