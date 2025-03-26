@@ -778,6 +778,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       launcher_id = setup_launcher(project_id)
       add_account(project_id, launcher_id)
 
+      sleep 0.5
       visit edit_project_launcher_path(project_id, launcher_id)
 
       find('#edit_launcher_auto_accounts').click
@@ -843,6 +844,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       launcher_id = setup_launcher(project_id)
       add_account(project_id, launcher_id)
 
+      sleep 0.5
       visit edit_project_launcher_path(project_id, launcher_id)
 
       find('#edit_launcher_auto_accounts').click
@@ -911,6 +913,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal('', File.read("#{dir}/.project_lookup"))
 
       click_on(I18n.t('dashboard.save'))
+      sleep 2
 
       assert_equal(2, Dir.children(dir).size)
       project_dir = Dir.children(dir).select { |path| File.directory?("#{dir}/#{path}") }.first
