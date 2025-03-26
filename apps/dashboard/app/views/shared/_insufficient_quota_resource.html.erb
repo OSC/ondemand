@@ -1,11 +1,11 @@
-<h4 class="alert-heading">
+<div class="alert-heading h4">
   <strong><%= t('dashboard.quota_warning_prefix_html') %></strong>
   <span>
     <%= link_to OodAppkit.files.url(path: quota.path).to_s, class: "text-danger", target: "_blank" do %>
       <strong><%= quota.path %></strong>
     <%- end -%>
   </span>
-</h4>
+</div>
 <ul class="list-unstyled mb-2">
   <li>
     <%= quota.to_s %><%= ". #{t('dashboard.quota_additional_message')}" %>
