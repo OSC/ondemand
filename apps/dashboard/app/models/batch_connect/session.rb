@@ -433,8 +433,35 @@ module BatchConnect
       end
     end
 
+    # The min_memory value from Job::OodCore::Info.native
+    # @return [Float] of job's memory in GB's
     def min_memory
-      info.native[:min_memory]
+      # Assumes output will be in GB's
+      raw_info = info.native[:min_memory]
+
+      # Guard if no min_memory available.
+      return nil if raw_info.empty?
+
+      memory_match =  raw_info
+      when /(\d+)([KMGTP])/
+        # grab the raw value and raw unit from the raw info
+        raw_value = Regexp.last_match(1).to_f
+        raw_unit = Regexp.last_match(2)
+
+        memory_conversions = {
+          K: 1.0 / 1_000_000,
+          M: 1.0 / 1_000,
+          G: 1.0,
+          T: 1_000.0,
+          P: 1_000_000.0,
+        }
+
+        # convert the memory letter representation to its float value.
+        memory_multiplier = memory_conversions[raw_unit.to_sym]
+        
+        # Return the converted the value for display in GBs.
+        (raw_value * memory_multiplier).round(1)
+      end
     end
 
     # Whether this session is persisted to the database
