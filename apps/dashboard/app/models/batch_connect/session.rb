@@ -433,6 +433,10 @@ module BatchConnect
       end
     end
 
+    def min_memory
+      info.native[:min_memory]
+    end
+
     # Whether this session is persisted to the database
     # @return [Boolean] whether persisted
     def persisted?
