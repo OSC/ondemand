@@ -1,10 +1,8 @@
-<div>
-  <p class="fs-4 mb-1 alert-heading">
-    <%= t('dashboard.balance_warning_prefix_html', units_balance: balance.units_balance, unit: balance.unit) %>
-    <strong><%= balance.project_type %> <%= balance.balance_object %></strong>
-  </p>
-  <p><%= balance.to_s %>. <%= t('dashboard.balance_additional_message', balanace_units: balance.balanace_units, unit: balance.unit) %></p>
-</div>
-<p class="text-muted d-none d-md-block p-2">
+<h4 class="alert-heading">
+  <%= t('dashboard.balance_warning_prefix_html', units_balance: balance.units_balance, unit: balance.unit) %>
+  <strong><%= balance.project_type %> <%= balance.balance_object %></strong>
+</h4>
+<p><%= balance.to_s %>. <%= t('dashboard.balance_additional_message', balanace_units: balance.balanace_units, unit: balance.unit) %></p>
+<p class="text-muted d-none d-md-block">
   <%= t('dashboard.balance_reload_message_html', last_update: local_time(balance.updated_at, format: '%Y/%m/%d at %l:%M%p')) %>
 </p>

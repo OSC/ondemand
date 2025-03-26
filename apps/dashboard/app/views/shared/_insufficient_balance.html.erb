@@ -2,7 +2,7 @@
   <div class="alert alert-danger insufficient-balance">
     <div class="insufficient-balance-group">
     <%- balances.select{ |balance| balance.insufficient?(threshold: Configuration.balance_threshold) }.each do |balance| -%>
-      <div class="insufficient-balance-resource d-flex flex-row justify-content-between" role="alert">
+      <div class="insufficient-balance-resource" role="alert">
         <%=
           render(
             partial: "shared/insufficient_balance_resource",
