@@ -370,6 +370,14 @@ class ConfigurationSingleton
     ENV['OOD_DOWNLOAD_DIR_MAX']&.to_i || 10737418240
   end
 
+  # The maximum size of a file that can be edited in the file editor.
+  #
+  # Default for OOD_FILE_EDITOR_MAX is 12*1024*1024 bytes.
+  # @return [Integer]
+  def file_editor_max
+    ENV['OOD_FILE_EDITOR_MAX']&.to_i || 12582912 
+  end
+
   def allowlist_paths
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
   end
