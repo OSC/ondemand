@@ -91,6 +91,29 @@ class Project
         Project.new(**opts)
       end
     end
+
+    # TODO: Use it to populate similar page as /projects where we will keep the imported projects
+    def possible_imports
+      Rails.cache.fetch('possible_imports', expires_in: 1.hour) do
+        importable_directories
+      end
+    end
+
+    private
+
+    def importable_directories
+      Configuration.shared_projects_root.map do |root|
+        next unless File.exist?(root) && File.directory?(root) && File.readable?(root)
+
+        Dir.each_child(root).map do |child|
+          child_dir = "#{root}/#{child}"
+          next unless File.directory?(child_dir) && File.readable?(child_dir)
+          Dir.each_child(child_dir).map do |possible_project|
+            Project.from_directory("#{child_dir}/#{possible_project}")
+          end
+        end.flatten
+      end.flatten.compact
+    end
   end
 
   attr_reader :id, :name, :description, :icon, :directory, :template
