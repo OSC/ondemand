@@ -441,7 +441,7 @@ module BatchConnect
       # Comes in as raw megabyte count e.g. 4556M 
       raw_info = info.native[:min_memory]
 
-      memory_match =  /(\d+)([KMGTP])/.match(raw_info)
+      memory_match = /(\d+)([KMGTP])/.match(raw_info)
       # grab the raw value and raw unit from the raw info
       value = memory_match[1]
       unit = memory_match[2]
@@ -458,7 +458,7 @@ module BatchConnect
       memory_multiplier = memory_conversions[unit.to_sym]
 
       # Return the converted the value for display in GBs.
-      (value * memory_multiplier).round(1)
+      (value.to_f * memory_multiplier).round(1)
     end
 
     # Whether this session is persisted to the database
