@@ -1,5 +1,5 @@
 <div class="progress">
-<div class="progress-bar bg-danger w-<%= percent.round %>"
+<div class="progress-bar bg-danger w-<%= [percent.round, 100].min %>"
     role="progressbar"
     aria-valuenow="<%= percent %>"
     aria-valuemin="0"
