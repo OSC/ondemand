@@ -476,7 +476,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'auto modules something' do
+  test 'auto modules are case sensitive' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
         form = <<~HEREDOC
@@ -506,6 +506,30 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
         # select show and it's back.
         select('show', from: bc_ele_id('module_hider'))
         assert(find("##{bc_ele_id('auto_modules_r')}").visible?)
+      end
+    end
+  end
+
+  test 'auto modules handle nested modules' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+        form = <<~HEREDOC
+          cluster: ascend
+          form:
+            - auto_modules_nest-test/regular
+            - auto_modules_nest-test/super
+        HEREDOC
+
+        stub_ascend
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        # super and regular variants have all the right versions
+        super_opts = find_all_options('auto_modules_nest_test_super', nil).map(&:text).to_set
+        assert_equal(['default', '1.0', '2.0', '3.0'].to_set, super_opts)
+
+        regular_opts = find_all_options('auto_modules_nest_test_regular', nil).map(&:text).to_set
+        assert_equal(['default', '1.0', '1.2', '1.3'].to_set, regular_opts)
       end
     end
   end

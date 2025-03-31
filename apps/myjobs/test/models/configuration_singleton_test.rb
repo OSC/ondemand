@@ -62,7 +62,8 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     with_modified_env({ RAILS_ENV: 'production', OOD_DATAROOT: nil }) do
       config = ConfigurationSingleton.new
       assert_equal File.expand_path('~/ondemand/data/sys/myjobs'), config.dataroot.to_s
-      assert_equal File.expand_path('~/ondemand/data/sys/myjobs/production.sqlite3'), config.production_database_path.to_s
+      assert_equal File.expand_path('~/ondemand/data/sys/myjobs/production.sqlite3'),
+                   config.production_database_path.to_s
       assert_equal true, config.load_external_config?
     end
   end

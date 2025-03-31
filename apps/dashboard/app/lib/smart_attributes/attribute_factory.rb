@@ -1,7 +1,7 @@
 module SmartAttributes
   class AttributeFactory
 
-    AUTO_MODULES_REX = /\Aauto_modules_([\w-]+)\z/.freeze
+    AUTO_MODULES_REX = /\Aauto_modules_([\w\-\/]+)\z/.freeze
     AUTO_ENVIRONMENT_VARIABLE_REX = /\Aauto_environment_variable_([\w-]+)\z/.freeze
     GLOBAL_ATTRIBUTE_REX = /\Aglobal_([\w-]+)\z/.freeze
 
