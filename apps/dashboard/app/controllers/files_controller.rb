@@ -175,8 +175,8 @@ class FilesController < ApplicationController
     parse_path(filepath, fs)
     validate_path!
 
-    if File.size(@path) > ::Configuration.file_editor_max
-      redirect_back(fallback_location: root_path, alert: "<strong>#{@path}</strong> exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max)}. Please download the file to edit or view it locally.".html_safe)
+    if @path.stat.size > ::Configuration.file_editor_max_size
+      redirect_back(fallback_location: root_path, alert: "<strong>#{@path}</strong> exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max_size)}. Please download the file to edit or view it locally.".html_safe)
       return
     end
 
