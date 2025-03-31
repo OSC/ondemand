@@ -20,7 +20,7 @@ gem 'sdoc', group: :doc, require: false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem 'byebug', '< 12.0.0'
   gem 'pry'
   gem 'timecop', '~> 0.9'
 end
