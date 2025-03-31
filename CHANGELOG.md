@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - "Select Path" is now internationalizable in [4176](https://github.com/OSC/ondemand/pull/4176).
 - The files app does not provide hrefs for files when download is disabled in [4167](https://github.com/OSC/ondemand/pull/4167).
 - Desktops start with a safer PATH to ensure that dbus-launch comes from the OS in [4160](https://github.com/OSC/ondemand/pull/4160).
+- Dynamic batch connect correctly accounts for clusters with hyphens (-) in [4245](https://github.com/OSC/ondemand/pull/4245).
+- My interactive sessions page has better landmarks in [4254](https://github.com/OSC/ondemand/pull/4254).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
