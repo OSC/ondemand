@@ -46,7 +46,7 @@ group :development do
 end
 
 # force_ruby_platform to ensure we get the right GLIBC version.
-gem 'nokogiri', force_ruby_platform: true
+gem 'nokogiri', '> 1.8', force_ruby_platform: true
 
 gem 'turbo-rails', '2.0.7'
 gem 'zeitwerk', '2.6.18'

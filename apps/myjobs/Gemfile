@@ -70,4 +70,4 @@ gem 'climate_control', '~> 0.2'
 gem 'rdoc', '6.3.4.1'
 
 # force_ruby_platform to ensure we get the right GLIBC version.
-gem 'nokogiri', force_ruby_platform: true
+gem 'nokogiri', '> 1.8', force_ruby_platform: true
