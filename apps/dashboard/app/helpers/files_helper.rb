@@ -25,10 +25,7 @@ module FilesHelper
   end
 
   def frame_path(path)
-    return ".../projects#{path.to_s.split('projects')[1]}" if path.to_s.include?('projects')
-    path_components = path.to_s.split('/')
-    starting_index = path_components.length < 5 ? 0 : path_components.length - 5
-    return ".../#{path_components[starting_index..-1].join('/')}"
+    path.to_s
   end
 end
 
