@@ -175,16 +175,13 @@ class FilesController < ApplicationController
     parse_path(filepath, fs)
     validate_path!
 
-    if @path.stat.size > ::Configuration.file_editor_max_size
+    if !@path.editable?
+      redirect_back(fallback_location: root_path, alert: "<strong>#{@path}</strong> is not an editable file".html_safe)
+    elsif @path.size > ::Configuration.file_editor_max_size
       redirect_back(fallback_location: root_path, alert: "<strong>#{@path}</strong> exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max_size)}. Please download the file to edit or view it locally.".html_safe)
-      return
-    end
-
-    if @path.editable?
+    else
       @content = @path.read
       render :edit, status: status, layout: 'editor'
-    else
-      redirect_back(fallback_location: root_path, alert: "<strong>#{@path}</strong> is not an editable file".html_safe)
     end
   rescue StandardError => e
     redirect_back(fallback_location: root_path, alert: e.message)
