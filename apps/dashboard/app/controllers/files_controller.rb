@@ -176,9 +176,9 @@ class FilesController < ApplicationController
     validate_path!
 
     if !@path.editable?
-      redirect_back(fallback_location: root_path, alert: "<strong>#{@path}</strong> is not an editable file".html_safe)
+      redirect_back(fallback_location: root_path, alert: "#{@path} is not an editable file")
     elsif @path.size > ::Configuration.file_editor_max_size
-      redirect_back(fallback_location: root_path, alert: "<strong>#{@path}</strong> exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max_size)}. Please download the file to edit or view it locally.".html_safe)
+      redirect_back(fallback_location: root_path, alert: "#{@path} exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max_size)}. Please download the file to edit or view it locally.")
     else
       @content = @path.read
       render :edit, status: status, layout: 'editor'
