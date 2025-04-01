@@ -40,7 +40,8 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   def stub_scheduler(state, cores: 1, nodes: 1)
     info = OodCore::Job::Info.new(
       id: test_job_id, status: state.to_sym, procs: cores.to_i, 
-      allocated_nodes: Array.new(nodes.to_i, { name: 'foo', features: [] })
+      allocated_nodes: Array.new(nodes.to_i, { name: 'foo', features: [] }),
+      native: { min_memory: "4556M" }
     )
     OodCore::Job::Adapters::Slurm.any_instance.stubs(:info).returns(info)
   end
