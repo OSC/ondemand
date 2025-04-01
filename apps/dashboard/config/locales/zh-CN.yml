@@ -170,7 +170,6 @@ zh-CN:
     jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_save_error: Cannot save manifest to %{path}
-    jobs_project_shared_help: Do you want to import other shared project readable to you based upon your group-id
     jobs_project_validation_error: Invalid Request. Please review the errors below
     launch: 启动
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
