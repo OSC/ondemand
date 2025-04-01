@@ -336,7 +336,7 @@ DEPENDENCIES
   local_time (~> 1.0.3)
   mocha (~> 2.1)
   net-imap (~> 0.3, < 0.4)
-  nokogiri (~> 1.15, < 1.16)
+  nokogiri
   ood_appkit (~> 2.1.0)
   ood_core (~> 0.24)
   ood_support (~> 0.0.2)
@@ -358,4 +358,4 @@ DEPENDENCIES
   zip_kit (~> 6.2)
 
 BUNDLED WITH
-   2.3.6
+   2.6.6
