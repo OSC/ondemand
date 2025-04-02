@@ -3,6 +3,7 @@
 # The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
   include ActionController::Live
+  include ActionView::Helpers::NumberHelper
 
   before_action :strip_sendfile_headers, only: [:fs]
 
@@ -175,14 +176,16 @@ class FilesController < ApplicationController
     parse_path
     validate_path!
 
-    if @path.editable?
+    if !@path.editable?
+      redirect_back(fallback_location: root_path, alert: "#{@path} is not an editable file")
+    elsif @path.size > ::Configuration.file_editor_max_size
+      redirect_back(fallback_location: root_path, alert: "#{@path} exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max_size)}. Please download the file to edit or view it locally.")
+    else
       @content = @path.read
       render :edit, status: status, layout: 'editor'
-    else
-      redirect_to root_path, alert: "#{@path} is not an editable file"
     end
   rescue StandardError => e
-    redirect_to root_path, alert: e.message
+    redirect_back(fallback_location: root_path, alert: e.message)
   end
 
   private
