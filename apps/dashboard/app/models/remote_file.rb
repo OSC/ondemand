@@ -88,6 +88,10 @@ class RemoteFile
     transfer.tap(&:perform_later)
   end
 
+  def size
+    RcloneUtil.size(remote, path)["bytes"]
+  end
+
   def mime_type
     # Rclone does not return same mime types as `file -b --mime-type` used in PosixFile
     # Results in shell scripts not being viewable as they are application/x-sh and not text/x-shellscript

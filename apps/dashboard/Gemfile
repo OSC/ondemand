@@ -47,7 +47,7 @@ end
 
 # lock gems to versions that are compatible with ruby 2.7.0,
 # which Ubuntu 20.04 uses.
-gem 'nokogiri', '~> 1.15', '< 1.16'
+gem 'nokogiri', force_ruby_platform: true
 gem 'net-imap', '~> 0.3', '< 0.4'
 gem 'public_suffix', '~> 5.0', '< 6.0'
 gem 'turbo-rails', '2.0.7'

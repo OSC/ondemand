@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SettingsControllerTest < ActionDispatch::IntegrationTest
-
   def setup
     # lot's of setup here to get a valid csrf-token
     get root_path
@@ -83,10 +84,10 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should not save user_settings when parameters are outside the settings namespace" do
+  test 'should not save user_settings when parameters are outside the settings namespace' do
     Dir.mktmpdir do |temp_data_dir|
       Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
-      data = { profile: "root_value" }
+      data = { profile: 'root_value' }
 
       post settings_path, params: data, headers: @headers
       assert_response :redirect

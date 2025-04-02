@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Ohio Supercomputer Center <oschelp@osc.edu>
 Build-Depends: debhelper (>=11~), curl, build-essential,
   tzdata, libxml2-dev, libxslt-dev, pkg-config, zlib1g-dev, liblzma-dev,
-  ruby, ruby-dev,
+  ruby, ruby-dev, libyaml-dev, libxml2,
   nodejs (>= 20.0), nodejs (<< 21.0),
   sqlite3, libsqlite3-dev, python3@EXTRA_DEPENDS@
 Standards-Version: 4.1.4

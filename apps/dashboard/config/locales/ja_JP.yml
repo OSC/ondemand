@@ -145,6 +145,7 @@ ja_JP:
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
+    jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
@@ -156,6 +157,7 @@ ja_JP:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
+    jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
@@ -212,6 +214,7 @@ ja_JP:
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     save: 溜める
     saved_settings_title: Saved Settings
+    select_path: Select Path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})

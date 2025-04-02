@@ -16,7 +16,6 @@ require File.expand_path('configuration_singleton', __dir__)
 
 # global instance to access and use
 Configuration = ConfigurationSingleton.new
-Configuration.load_dotenv_files
 
 # set defaults to address OodAppkit.dataroot issue
 ENV['OOD_DATAROOT'] = Configuration.dataroot.to_s

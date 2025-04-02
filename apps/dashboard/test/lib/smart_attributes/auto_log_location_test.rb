@@ -37,7 +37,7 @@ module SmartAttributes
         }
         attribute = SmartAttributes::AttributeFactory.build('auto_log_location', options)
 
-        assert_equal(nil, attribute.value)
+        assert_nil(attribute.value)
       end
     end
 
@@ -49,7 +49,7 @@ module SmartAttributes
         }
         attribute = SmartAttributes::AttributeFactory.build('auto_log_location', options)
 
-        assert_equal(nil, attribute.value)
+        assert_nil(attribute.value)
       end
     end
   end

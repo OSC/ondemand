@@ -28,6 +28,7 @@ class ConfigurationSingleton
   alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
 
   def initialize
+    load_dotenv_files
     add_boolean_configs
     add_string_configs
   end
@@ -66,7 +67,7 @@ class ConfigurationSingleton
   def string_configs
     {
       :module_file_dir                => nil,
-      :user_settings_file             => Pathname.new("~/.config/ondemand/settings.yml").expand_path.to_s,
+      :user_settings_file             => Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s,
       :facl_domain                    => nil,
       :auto_groups_filter             => nil,
       :bc_clean_old_dirs_days         => '30',
@@ -278,12 +279,16 @@ class ConfigurationSingleton
     #
     root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
     if rails_env == "production"
-      root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
+      root ||= "~/#{ood_portal}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
     else
       root ||= app_root.join("data")
     end
 
     Pathname.new(root).expand_path
+  end
+
+  def ood_portal
+    ENV['OOD_PORTAL'] || 'ondemand'
   end
 
   def locale
@@ -365,6 +370,14 @@ class ConfigurationSingleton
     ENV['OOD_DOWNLOAD_DIR_MAX']&.to_i || 10737418240
   end
 
+  # The maximum size of a file that can be opened in the file editor.
+  #
+  # Default for OOD_FILE_EDITOR_MAX_SIZE is 12*1024*1024 bytes.
+  # @return [Integer]
+  def file_editor_max_size
+    ENV['OOD_FILE_EDITOR_MAX_SIZE']&.to_i || 12582912 
+  end
+
   def allowlist_paths
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
   end
@@ -431,6 +444,11 @@ class ConfigurationSingleton
 
   def rails_env_production?
     rails_env == 'production'
+  end
+
+  def shared_projects_root
+    # This environment varible will support ':' colon separated paths
+    ENV['OOD_SHARED_PROJECT_PATH'].to_s.split(":").map { |p| Pathname.new(p) }
   end
 
   private

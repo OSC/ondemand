@@ -94,6 +94,13 @@ export function statusIndexUrl() {
   return cfgData['statusIndexUrl'];
 }
 
+export function supportPath() {
+  const cfgData = configData();
+  const supportPath = cfgData['supportPath'];
+
+  return supportPath;
+}
+
 export function appsDatatablePageLength() {
   const cfgData = configData();
   return parseInt(cfgData['appsDatatablePageLength']);

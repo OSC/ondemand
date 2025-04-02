@@ -25,6 +25,7 @@ class PresetAppsNavbarTest < ApplicationSystemTestCase
     click_on 'Interactive Apps'
     click_on 'Test App: Preset'
 
+    sleep 1.5
     verify_bc_alert('sys/preset_app/preset', err_header, err_msg)
   end
 
@@ -37,6 +38,7 @@ class PresetAppsNavbarTest < ApplicationSystemTestCase
     assert_equal new_batch_connect_session_context_path('sys/preset_app/choice'), current_path
     click_on 'Launch'
 
+    sleep 1.5
     verify_bc_alert('sys/preset_app/choice', err_header, err_msg)
   end
 end

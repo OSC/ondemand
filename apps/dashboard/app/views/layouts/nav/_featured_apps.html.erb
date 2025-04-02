@@ -9,21 +9,7 @@
         <%= content_tag "li", g.title_with_nav_limit_caption, class: "dropdown-header" unless g.title_with_nav_limit_caption.empty? %>
         <% g.apps.take(g.nav_limit).map { |app| app.links.first }.compact.each do |link| %>
             <li role="none">
-              <%=
-                link_to(
-                  link.url.to_s,
-                  title: link.title,
-                  class: "dropdown-item",
-                  target: link.new_tab? ? "_blank" : nil,
-                  role: 'menuitem',
-                  data: link.data
-                ) do
-              %>
-                <%= icon_tag(link.icon_uri) %> <%=link.title %>
-                <% if link.subtitle.present? %>
-                  <%= content_tag(:small, link.subtitle, class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline ms-2') %>
-                <% end %>
-              <% end %>
+              <%= render partial: "layouts/nav/dropdown_item", locals: {link: link} %>
             </li>
         <% end %>
       <% end %>
