@@ -32,6 +32,7 @@ ja_JP:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: System Apps
     auto_log_location_title: ログの場所
+    back: Back
     balance_additional_message: Consider requesting additional %{balanace_units}
     balance_message: "%{units_balance} is %{value}"
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
@@ -143,6 +144,7 @@ ja_JP:
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    import: Import
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
     jobs_import_shared_project: Import a shared project
@@ -209,6 +211,7 @@ ja_JP:
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
     remove: 抜かす
+    reset: Reset
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
