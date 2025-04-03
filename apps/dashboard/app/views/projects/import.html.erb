@@ -47,9 +47,9 @@
   </div>
   <br>
   <p>
-    <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save project' %>
-    <%= form.button 'Reset', type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
-    <%= link_to 'Back', projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
+    <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project' %>
+    <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+    <%= link_to I18n.t('dashboard.back'), projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
   </p>
 </div>
 <% end %>
