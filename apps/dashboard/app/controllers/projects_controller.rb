@@ -92,11 +92,11 @@ class ProjectsController < ApplicationController
 
   # POST /projects/import
   def import_save
-    success = Project.import_to_lookup(project_params[:directory])
-    if success
+    begin
+      Project.import_to_lookup(project_params[:directory])
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
-    else
-      redirect_to project_import_path, alert: I18n.t('dashboard.jobs_project_generic_error')
+    rescue StandardError => e
+      redirect_to project_import_path, alert: I18n.t('dashboard.jobs_project_generic_error', error: e.message.to_s)
     end
   end
 
