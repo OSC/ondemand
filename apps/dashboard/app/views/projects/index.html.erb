@@ -80,5 +80,19 @@
         <% end %>
       </div>
 
+      <div class="mt-5 justify-content-center text-center project-icon">
+        <%= link_to(project_imports_path,
+                      title: I18n.t('dashboard.jobs_shared_project'),
+                      class: 'text-dark btn btn-link') do
+        %>
+          <div class="text-center d-flex justify-content-center">
+            <strong>
+              <%= icon_tag(URI.parse("fas://folder")) %><br>
+              <%= I18n.t('dashboard.jobs_shared_project') %>
+            </strong>
+          </div>
+        <% end %>
+      </div>
+
   </div>
 </div>

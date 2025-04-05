@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   if Configuration.can_access_projects?
     get 'projects/import' => 'projects#import', :as => 'project_import'
     post 'projects/import' => 'projects#import_save', :as => 'project_import_save'
+    get 'projects/imports' => 'projects#imports', :as => 'project_imports'
 
     resources :projects do
       root 'projects#index'
