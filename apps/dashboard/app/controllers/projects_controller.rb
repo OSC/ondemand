@@ -47,6 +47,13 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
+  # GET /projects/imports
+  def imports
+    @templates = []
+    @projects = Project.possible_imports
+    render 'shared'
+  end
+
   # GET /projects/:id/edit
   def edit
     project_id = show_project_params[:id]

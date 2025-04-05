@@ -1,0 +1,36 @@
+<div class='page-header text-center'>
+  <h1>Shared Projects</h1>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-9">
+    <div class="row">
+      <% @projects.each do |project| %>
+        <div id="<%= project.id %>" class="col-md-3 project-icon project-card">
+          <%= link_to(project_path(project.id), class: 'text-dark') do %>
+            <div class="text-center d-flex justify-content-center">
+              <strong>
+                <%= icon_tag(URI.parse(project.icon)) %>
+                <%= content_tag(:p, project.title) %>
+              </strong>
+            </div>
+            <div class="row">
+              <div class="col">
+                <%= button_to 'Delete', project_path(project.id), class: 'btn btn-danger w-100 mb-1', method: 'delete',
+                    form: { class: 'button_to d-flex justify-content-center' },
+                    data: { confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation') }
+                %>
+              </div>
+              <div class="col">
+                <%= button_to 'Edit', edit_project_path(project.id), class: 'btn btn-info w-100', method: 'get',
+                    form: { class: 'd-flex justify-content-center' },
+                    title: 'Edit project directory'
+                %>  
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
