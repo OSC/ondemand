@@ -179,6 +179,7 @@ en:
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_shared_project: Shared projects
+    jobs_shared_project_empty: There are no shared projects for your group-id
     launch: Launch
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
