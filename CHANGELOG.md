@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#4267)\
-Created form for importing shared project via directory (#4258)\
-Update _insufficient_quota_progress_bar.html.erb (#4237)\
-Replace headings with list items in balance warnings (#4228)\
-update dependencies for ruby 3.0+ (#4222)\
-Add file editor limit (#4256)\
-Update Changelog (#4260)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -47,6 +40,8 @@ Update Changelog (#4260)
 - Added widgets for file_quotas and balances in [4206](https://github.com/OSC/ondemand/pull/4206).
 - auto_modules now support nested modules in [4204](https://github.com/OSC/ondemand/pull/4204).
 - user_settings_file incorporates OOD_PORTAL in the path in [4213](https://github.com/OSC/ondemand/pull/4213).
+- The file editor will now only open files under a certain limit in [4256](https://github.com/OSC/ondemand/pull/4256).
+- Projects can now be imported from a directory in [4258](https://github.com/OSC/ondemand/pull/4258).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -55,6 +50,7 @@ Update Changelog (#4260)
 - Removed Handlebars from XDMoD widget efficiency template in [4103](https://github.com/OSC/ondemand/pull/4103).
 - Drop support for Ubuntu 20.04 and Ruby 2.7 in [4188](https://github.com/OSC/ondemand/pull/4188).
 - Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
+- Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
 
 ## [4.0.1] - 02-16-2025
 
