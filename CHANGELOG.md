@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#4267)\
+Created form for importing shared project via directory (#4258)\
+Update _insufficient_quota_progress_bar.html.erb (#4237)\
+Replace headings with list items in balance warnings (#4228)\
+update dependencies for ruby 3.0+ (#4222)\
+Add file editor limit (#4256)\
+Update Changelog (#4260)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
