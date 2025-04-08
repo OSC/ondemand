@@ -52,6 +52,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
 
+## [4.0.2] - 03-25-2025
+
+### Fixes
+
+- Transfer failures correctly show the error modal in [4152](https://github.com/OSC/ondemand/pull/4237) (backport of
+  [4084](https://github.com/OSC/ondemand/pull/4084)).
+- Plugins correctly load in [4158](https://github.com/OSC/ondemand/pull/4158) (backport of
+  [4157](https://github.com/OSC/ondemand/pull/4157)).
+- Active navigation correctly changes link colors in [4184](https://github.com/OSC/ondemand/pull/4184) (backport of
+  [4183](https://github.com/OSC/ondemand/pull/4183)).
+- Desktops now use a safer PATH to avoid issues with python installations in [4187](https://github.com/OSC/ondemand/pull/4187) (backport of
+  [4160](https://github.com/OSC/ondemand/pull/4160)). 
+- Clusters with titles now safely render in the navigation bar in [4200](https://github.com/OSC/ondemand/pull/4200) (backport of
+  [4196](https://github.com/OSC/ondemand/pull/4196)). 
+- Dynamic batch connect forms correctly respond to clusters with hyphens (-) in [4249](https://github.com/OSC/ondemand/pull/4249) (backport of
+  [4245](https://github.com/OSC/ondemand/pull/4245)). 
+        
+### Added
+- "Select Path" in the path_selector widget is now internationalizable in [4199](https://github.com/OSC/ondemand/pull/4199) (backport of
+  [4176](https://github.com/OSC/ondemand/pull/4176)).
+
 ## [4.0.1] - 02-16-2025
 
 ### Fixed
@@ -1549,7 +1570,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.2...HEAD
+[4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
