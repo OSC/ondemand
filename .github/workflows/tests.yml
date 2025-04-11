@@ -169,6 +169,7 @@ jobs:
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
+          CONTAINER_RT: 'podman'
 
       - name: Run package tests
         if: matrix.arch == 'x86_64'
@@ -176,7 +177,6 @@ jobs:
         env:
           BEAKER_set: ${{ matrix.dist }}
           OOD_BUILD_REPO: ${{ matrix.version }}
-          CONTAINER_RT: 'podman'
 
       - name: arch distro
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
