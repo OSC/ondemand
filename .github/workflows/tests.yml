@@ -164,7 +164,12 @@ jobs:
 
       - name: Build package
         if: matrix.arch == 'x86_64'
-        run: bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+        run: |
+          # have to use docker for el8 packaging.
+          if [[ "${{ matrix.dist }}" == "el8" ]]; then
+            unset CONTAINER_RT
+          fi
+          bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
         timeout-minutes: 10
         env:
           VERSION: "${{ matrix.version }}.0"
