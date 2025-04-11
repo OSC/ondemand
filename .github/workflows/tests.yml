@@ -165,6 +165,7 @@ jobs:
       - name: Build package
         if: matrix.arch == 'x86_64'
         run: bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+        timeout-minutes: 30
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
