@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+env:
+  ACTIONS_STEP_DEBUG: true
+  ACTIONS_RUNNER_DEBUG: true
+
 jobs:
   unit-tests:
     strategy:
@@ -160,10 +164,17 @@ jobs:
 
       - name: Build package
         if: matrix.arch == 'x86_64'
-        run: bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+        run: |
+          # have to use docker for el8 packaging.
+          if [[ "${{ matrix.dist }}" == "el8" ]]; then
+            unset CONTAINER_RT
+          fi
+          bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+        timeout-minutes: 10
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
+          CONTAINER_RT: 'podman'
 
       - name: Run package tests
         if: matrix.arch == 'x86_64'
