@@ -34,6 +34,17 @@
                                 required: false,
                                 data: { 'path-selector': true })%>
 
+              <div class="dropdown mt-2">
+                <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="directory-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <%= I18n.t('dashboard.jobs_select_directory_placeholder') %>
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="directory-dropdown" id="directory-dropdown-menu">
+                  <% @directories.each do |dir| %>
+                    <li><a class="dropdown-item" href="javascript:void(0);" data-value="<%= dir %>"><%= dir %></a></li>
+                  <% end %>
+                </ul>
+              </div>
+
             <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
               <%= I18n.t('dashboard.select_path') %>
             </button>

@@ -177,6 +177,7 @@ ja_JP:
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
+    jobs_select_directory_placeholder: List of importable directories based upon your group-id
     launch: 起動する
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
