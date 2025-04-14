@@ -8,14 +8,7 @@ class Project
   include IconWithUri
   extend JobLogger
 
-  class InvalidProject
-    attr_reader :error
-    def initialize(error)
-      @error = error
-    end
-  end
-
-  def self.from_directory(dir)
+  def self.from_directory!(dir)
     # fetch "id" by opening .ondemand/manifest.yml
     manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
     raise StandardError, "Imported directory is not a Open OnDemand project" unless manifest_path.exist?
@@ -25,8 +18,9 @@ class Project
     id = raw_opts["id"]
     Project.new({ id: id, directory: dir })
   rescue StandardError => e
-    msg = "Cannot import project from #{dir} due to error - #{e.message}"
-    InvalidProject.new(msg)
+    project = Project.new({ id: nil, directory: dir })
+    project.errors.add(:base, "Cannot import project from #{dir} due to error - #{e.message}")
+    project
   end
 
   class << self
@@ -45,9 +39,9 @@ class Project
     end
 
     def import_to_lookup(dir)
-      imported_project = Project.from_directory(dir)
-      if imported_project.is_a?(Project::InvalidProject)
-        raise StandardError, imported_project.error
+      imported_project = Project.from_directory!(dir)
+      unless imported_project.errors.empty?
+        raise StandardError, imported_project.errors.full_messages.join(", ")
       end
       Project.find(imported_project.id) ? true : imported_project.add_to_lookup(:import)
     end
@@ -113,10 +107,10 @@ class Project
           child_dir = "#{root}/#{child}"
           next unless File.directory?(child_dir) && File.readable?(child_dir)
           Dir.each_child(child_dir).map do |possible_project|
-            Project.from_directory("#{child_dir}/#{possible_project}")
+            Project.from_directory!("#{child_dir}/#{possible_project}")
           end
         end.flatten
-      end.flatten.reject { |p| p.is_a?(InvalidProject) }
+      end.flatten.compact.select{|p| p.errors.empty? }
     end
   end
 
