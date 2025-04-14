@@ -23,8 +23,9 @@ module SmartAttributes
           opts = opts.merge({'key' => env_variable})
         elsif id.match?(GLOBAL_ATTRIBUTE_REX)
           real_id = id
+          sub_id = id.match(GLOBAL_ATTRIBUTE_REX)[1]
           id = 'global_attribute'
-          opts = opts.merge({ 'key' => real_id })
+          opts = opts.merge({ 'key' => real_id, 'sub_id' => sub_id })
         end
 
         build_method = "build_#{id}"
