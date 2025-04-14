@@ -102,7 +102,10 @@ class Product
   end
 
   def app
-    OodApp.new(router)
+    @app ||= begin
+      a = OodApp.new(router)
+      a.batch_connect_app? ? BatchConnect::App.new(router: router) : a
+    end
   end
 
   def gemfile
