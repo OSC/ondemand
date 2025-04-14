@@ -174,13 +174,13 @@
     p-retry "^6.1.0"
 
 "@uppy/core@^4.0":
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-4.4.3.tgz#2c3c4a07aed03f8525f9626c9f93a2463ff94c08"
-  integrity sha512-Ma/v9+u0xYoxFcTajBpe0TUHI0Vjw2IKgB0AUNevhgFsBRgA03nL5n8Fac8TrC0QjPkYu7h0n2xf2EgzvyxAQA==
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/@uppy/core/-/core-4.4.4.tgz#89e7d1933b4dd27f6c3c49479f1672f569411e28"
+  integrity sha512-etaG6uSrShnS8x/CGI9ME/XP23jw8FTkujzKbaag4lDTtdlvcs6PxcObtH3I5MxxJXUEWwcfVGTdAUvd/tGCaA==
   dependencies:
     "@transloadit/prettier-bytes" "^0.3.4"
     "@uppy/store-default" "^4.2.0"
-    "@uppy/utils" "^6.1.2"
+    "@uppy/utils" "^6.1.3"
     lodash "^4.17.21"
     mime-match "^1.0.2"
     namespace-emitter "^2.0.1"
@@ -188,16 +188,16 @@
     preact "^10.5.13"
 
 "@uppy/dashboard@^4.0":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@uppy/dashboard/-/dashboard-4.3.2.tgz#215c94b8c724784415b1ff94e07bb751bbbdef53"
-  integrity sha512-6cikgcY/TMy+Fq/v03QI1BNocfm1kOxii3kuUaxnz1SFGeuZ/55+C7KKL7SP/IdeoVwH7KV+550HThT0uwIQEw==
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@uppy/dashboard/-/dashboard-4.3.3.tgz#98a121bca32a7c47954b4f18a6c27b0bd29cf124"
+  integrity sha512-bZzzyzWzyoCsXxLUKsjT+X6AWNlFjRU1Ui+28Hp0C7A43zm8y0pb8BbwECl8a3NJH10tKNOHwT8IiVwbiGwXPQ==
   dependencies:
     "@transloadit/prettier-bytes" "^0.3.4"
     "@uppy/informer" "^4.2.1"
     "@uppy/provider-views" "^4.4.2"
-    "@uppy/status-bar" "^4.1.2"
+    "@uppy/status-bar" "^4.1.3"
     "@uppy/thumbnail-generator" "^4.1.1"
-    "@uppy/utils" "^6.1.2"
+    "@uppy/utils" "^6.1.3"
     classnames "^2.2.6"
     lodash "^4.17.21"
     memoize-one "^6.0.0"
@@ -224,13 +224,13 @@
     p-queue "^8.0.0"
     preact "^10.5.13"
 
-"@uppy/status-bar@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@uppy/status-bar/-/status-bar-4.1.2.tgz#cc0144789870174e62b8e4532ac1714741073f6f"
-  integrity sha512-Z2fDXItoE940uMo3kwdDo4ZFPjTk5GY6y/C/G5+tSl6nL/IaDtWo5iVbAKHIH4s9SIRwCBgllEhxbmEPhuK7eA==
+"@uppy/status-bar@^4.1.3":
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@uppy/status-bar/-/status-bar-4.1.3.tgz#770cfd3d14085047627ccd3e9655477cd2e6a3a1"
+  integrity sha512-1YlbsoA9lTNL2b7nhehDri15XslVzGLG+J7HFAsxbE2cMHnOusuLCkm03oE9c72pOU9nG2qZV6yqdWBTwdxbNA==
   dependencies:
     "@transloadit/prettier-bytes" "^0.3.4"
-    "@uppy/utils" "^6.1.2"
+    "@uppy/utils" "^6.1.3"
     classnames "^2.2.6"
     preact "^10.5.13"
 
@@ -247,10 +247,10 @@
     "@uppy/utils" "^6.1.1"
     exifr "^7.0.0"
 
-"@uppy/utils@^6.1.1", "@uppy/utils@^6.1.2":
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/@uppy/utils/-/utils-6.1.2.tgz#a58c6506e06d6c4c01c4cf13f6fb30c6c7df37ab"
-  integrity sha512-PCrw6v51M6p3hlrlB2INmcocen4Dyjun1SobjVZRBkg4wutQE8ihZfSrH5ZE8UXFelufhtO16wlaZMi0EHk84w==
+"@uppy/utils@^6.1.1", "@uppy/utils@^6.1.2", "@uppy/utils@^6.1.3":
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/@uppy/utils/-/utils-6.1.3.tgz#34e18bfa9fbcad76ab3ab066eaeac3ec25c3add1"
+  integrity sha512-7WuTtMf0k1g962sE76mKy8aDV/kLeDrF8Wv1oTxaXQzUpmHBAoKd3FXLrQXu7TgM0XNHHRZXAckBttbVOWkKCw==
   dependencies:
     lodash "^4.17.21"
     preact "^10.5.13"
