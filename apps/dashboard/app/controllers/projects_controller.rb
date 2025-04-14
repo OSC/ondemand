@@ -92,11 +92,15 @@ class ProjectsController < ApplicationController
 
   # POST /projects/import
   def import_save
-    begin
-      Project.import_to_lookup(project_params[:directory])
-      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
-    rescue StandardError => e
-      redirect_to project_import_path, alert: I18n.t('dashboard.jobs_project_generic_error', error: e.message.to_s)
+    @project = Project.from_directory(project_params[:directory])
+    if @project.errors.empty?
+      if Project.import_to_lookup(@project)
+        redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
+      else
+        redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
+      end
+    else
+      redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
     end
   end
 
