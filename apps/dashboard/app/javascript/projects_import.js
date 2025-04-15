@@ -8,7 +8,7 @@ jQuery(function() {
 
 document.addEventListener('DOMContentLoaded', function () {
   const inputField = document.getElementById('project_directory');
-  const dropdownMenu = document.getElementById('directory-dropdown-menu');
+  const dropdownMenu = document.getElementById('directory_dropdown_menu');
 
   dropdownMenu.addEventListener('click', function (e) {
     if (e.target && e.target.matches('a.dropdown-item')) {
