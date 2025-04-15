@@ -388,8 +388,8 @@ class ConfigurationSingleton
   end
 
   def show_bc_card_memory?
-    if ENV['OOD_MEMORY_WIDGET']
-      to_bool(ENV['OOD_MEMORY_WIDGET'])
+    if ENV['OOD_BC_CARD_MEMORY']
+      to_bool(ENV['OOD_BC_CARD_MEMORY'])
     else
       false
     end
