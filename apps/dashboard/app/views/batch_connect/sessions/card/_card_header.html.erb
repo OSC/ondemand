@@ -22,9 +22,11 @@
       <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_cores, "core") %></span>
       <span class="card-text"> | </span>
       <%- end -%>
-      <%- unless session.min_memory.nil? -%>
-      <span class="badge <%= badge_class %> rounded-pill"><%= session.min_memory %> GB </span>
-      <span class="card-text"> | </span>
+      <%- if Configuration.show_bc_card_memory? -%>
+        <%- unless session.min_memory.nil? -%>
+        <span class="badge <%= badge_class %> rounded-pill"><%= session.min_memory %> GB </span>
+        <span class="card-text"> | </span>
+        <%- end -%>
       <%- end -%>
       <%- end -%>
       <%= status(session) %>
