@@ -8,7 +8,7 @@ class Project
   include IconWithUri
   extend JobLogger
 
-  def self.from_directory!(dir)
+  def self.from_directory(dir)
     # fetch "id" by opening .ondemand/manifest.yml
     manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
     contents = File.read(manifest_path)
