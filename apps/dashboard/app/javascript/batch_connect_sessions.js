@@ -1,7 +1,7 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { bindFullPageSpinnerEvent, setInnerHTML } from './utils';
+import { bindFullPageSpinnerEvent } from './utils';
 import { pollAndReplace } from './turbo_shim';
 
 const sessionStatusMap = new Map();
@@ -18,9 +18,9 @@ function checkStatusChanges() {
       if(oldStatus !== newStatus) {
         sessionStatusMap.set(sessionId, newStatus);
         const sessionTitle = card.dataset.title;
-        const liveRegion = document.getElementById("hl-aria-live-message-container");
+        const liveRegion = document.getElementById("aria_live_region");
         if(liveRegion) {
-          setInnerHTML(liveRegion, `${sessionTitle} is now ${newStatus}.`);
+          liveRegion.textContent = `${sessionTitle} is now ${newStatus}.`;
         }
       }
     } else {
