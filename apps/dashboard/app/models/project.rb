@@ -103,7 +103,7 @@ class Project
           child_dir = "#{root}/#{child}"
           next unless File.directory?(child_dir) && File.readable?(child_dir)
           Dir.each_child(child_dir).map do |possible_project|
-            Project.from_directory!("#{child_dir}/#{possible_project}")
+            Project.from_directory("#{child_dir}/#{possible_project}")
           end
         end.flatten
       end.flatten.compact.reject{ |p| p.errors.any? }
