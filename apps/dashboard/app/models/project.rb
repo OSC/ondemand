@@ -11,18 +11,14 @@ class Project
   def self.from_directory(dir)
     # fetch "id" by opening .ondemand/manifest.yml
     manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
-    unless manifest_path.exist?
-      Rails.logger.warn("Imported directory is not a Open OnDemand project")
-      return nil
-    end
-
     contents = File.read(manifest_path)
     raw_opts = YAML.safe_load(contents)
     id = raw_opts["id"]
     Project.new({ id: id, directory: dir })
   rescue StandardError => e
-    Rails.logger.warn("Cannot import project from dir #{dir} due to error #{e}")
-    nil
+    p = Project.new({ id: nil, directory: dir })
+    p.errors.add(:create, "Cannot import project from #{dir} due to error #{e}")
+    p
   end
 
   class << self
@@ -40,11 +36,9 @@ class Project
       {}
     end
 
-    def import_to_lookup(dir)
-      imported_project = Project.from_directory(dir)
-      if imported_project.nil?
-        return false
-      end
+    def import_to_lookup(imported_project)
+      return false if imported_project.nil? || !imported_project.valid?
+
       Project.find(imported_project.id) ? true : imported_project.add_to_lookup(:import)
     end
 
@@ -112,7 +106,7 @@ class Project
             Project.from_directory("#{child_dir}/#{possible_project}")
           end
         end.flatten
-      end.flatten.compact
+      end.flatten.compact.reject{ |p| p.errors.any? }
     end
   end
 
