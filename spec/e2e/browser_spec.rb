@@ -64,6 +64,7 @@ describe 'OnDemand browser test' do
   it 'redirects /pun/sys/files#index' do
     browser.goto "#{ctr_base_url}/pun/sys/files"
     expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard/files/fs/home/ood")
+    sleep 5
     expect(browser.title).to eq('Dashboard - Open OnDemand')
     expect(browser.table(id: 'directory-contents').present?).to be true
   end

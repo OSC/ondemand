@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+env:
+  ACTIONS_STEP_DEBUG: true
+  ACTIONS_RUNNER_DEBUG: true
+
 jobs:
   unit-tests:
     strategy:
@@ -14,24 +18,19 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
         ruby: ["3.3.5"]
-        bundler: ["2.5.16"]
         include:
           # Test versions from Ubuntu 22.04
           - os: ubuntu-latest
             ruby: "3.0.2"
-            bundler: "2.3.5"
           # Test versions from Debian 12
           - os: ubuntu-latest
             ruby: "3.1.2"
-            bundler: "2.3.7"
           # Test versions from Amazon Linux 2023 and Ubuntu 24.04
           - os: ubuntu-latest
             ruby: "3.2.2"
-            bundler: "2.4.10"
           # Test versions from RHEL8 & RHEL9
           - os: ubuntu-latest
             ruby: "3.3.5"
-            bundler: "2.5.16"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
@@ -39,11 +38,11 @@ jobs:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v3
 
-      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+      - name: Setup Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: ${{ matrix.bundler }}
+          bundler: 2.5.23
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -159,16 +158,23 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.7.1"
-          bundler: "2.1.4"
+          ruby-version: "3.0"
+          bundler: "2.5.23"
           bundler-cache: true
 
       - name: Build package
         if: matrix.arch == 'x86_64'
-        run: bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+        run: |
+          # have to use docker for el8 packaging.
+          if [[ "${{ matrix.dist }}" == "el8" ]]; then
+            unset CONTAINER_RT
+          fi
+          bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+        timeout-minutes: 10
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
+          CONTAINER_RT: 'podman'
 
       - name: Run package tests
         if: matrix.arch == 'x86_64'

@@ -134,15 +134,8 @@ set -x
 set -e
 export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
-%ifarch aarch64
-%if 0%{?rhel} && 0%{?rhel} < 9
-# Nokogiri and possibly other gems will fail to build on older aarch64 and glibc
 bundle config set --global force_ruby_platform true
-%endif
-%endif
-%ifarch ppc64le
-bundle config set --global force_ruby_platform true
-%endif
+bundle config --global build.nokogiri --use-system-libraries
 BUNDLE_WITHOUT='doc test package development' bundle install
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache

@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - "Select Path" is now internationalizable in [4176](https://github.com/OSC/ondemand/pull/4176).
 - The files app does not provide hrefs for files when download is disabled in [4167](https://github.com/OSC/ondemand/pull/4167).
 - Desktops start with a safer PATH to ensure that dbus-launch comes from the OS in [4160](https://github.com/OSC/ondemand/pull/4160).
+- Dynamic batch connect correctly accounts for clusters with hyphens (-) in [4245](https://github.com/OSC/ondemand/pull/4245).
+- My interactive sessions page has better landmarks in [4254](https://github.com/OSC/ondemand/pull/4254).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -38,6 +40,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added widgets for file_quotas and balances in [4206](https://github.com/OSC/ondemand/pull/4206).
 - auto_modules now support nested modules in [4204](https://github.com/OSC/ondemand/pull/4204).
 - user_settings_file incorporates OOD_PORTAL in the path in [4213](https://github.com/OSC/ondemand/pull/4213).
+- The file editor will now only open files under a certain limit in [4256](https://github.com/OSC/ondemand/pull/4256).
+- Projects can now be imported from a directory in [4258](https://github.com/OSC/ondemand/pull/4258).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -46,6 +50,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Removed Handlebars from XDMoD widget efficiency template in [4103](https://github.com/OSC/ondemand/pull/4103).
 - Drop support for Ubuntu 20.04 and Ruby 2.7 in [4188](https://github.com/OSC/ondemand/pull/4188).
 - Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
+- Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
+
+## [4.0.2] - 03-25-2025
+
+### Fixes
+
+- Transfer failures correctly show the error modal in [4152](https://github.com/OSC/ondemand/pull/4237) (backport of
+  [4084](https://github.com/OSC/ondemand/pull/4084)).
+- Plugins correctly load in [4158](https://github.com/OSC/ondemand/pull/4158) (backport of
+  [4157](https://github.com/OSC/ondemand/pull/4157)).
+- Active navigation correctly changes link colors in [4184](https://github.com/OSC/ondemand/pull/4184) (backport of
+  [4183](https://github.com/OSC/ondemand/pull/4183)).
+- Desktops now use a safer PATH to avoid issues with python installations in [4187](https://github.com/OSC/ondemand/pull/4187) (backport of
+  [4160](https://github.com/OSC/ondemand/pull/4160)). 
+- Clusters with titles now safely render in the navigation bar in [4200](https://github.com/OSC/ondemand/pull/4200) (backport of
+  [4196](https://github.com/OSC/ondemand/pull/4196)). 
+- Dynamic batch connect forms correctly respond to clusters with hyphens (-) in [4249](https://github.com/OSC/ondemand/pull/4249) (backport of
+  [4245](https://github.com/OSC/ondemand/pull/4245)). 
+        
+### Added
+- "Select Path" in the path_selector widget is now internationalizable in [4199](https://github.com/OSC/ondemand/pull/4199) (backport of
+  [4176](https://github.com/OSC/ondemand/pull/4176)).
 
 ## [4.0.1] - 02-16-2025
 
@@ -1544,7 +1570,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.2...HEAD
+[4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
