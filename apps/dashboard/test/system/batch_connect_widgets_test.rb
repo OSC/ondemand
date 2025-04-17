@@ -686,4 +686,111 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal("window.alert('shouldnt alert');", text)
     end
   end
+
+  test 'global_bc_num_hours is same as bc_num_hours' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_bc_num_hours
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # the element does not have global_ prefix.
+      # it's a number (default is text_field) and has the correct name.
+      ele = find("##{bc_ele_id('bc_num_hours')}")
+      assert_equal(ele[:type], 'number')
+      assert_equal(ele[:name], 'batch_connect_session_context[bc_num_hours]')
+    end
+  end
+
+  test 'global_bc_num_hours will respond to attributes if no ondemand.d config' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_bc_num_hours
+        attributes:
+          global_bc_num_hours:
+            min: 2
+            max: 10
+            value: 5
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # the element does not have global_ prefix.
+      # it's a number (default is text_field) and has the correct name.
+      ele = find("##{bc_ele_id('bc_num_hours')}")
+      assert_equal(ele[:type], 'number')
+      assert_equal(ele[:name], 'batch_connect_session_context[bc_num_hours]')
+      assert_equal(ele[:min], '2')
+      assert_equal(ele[:max], '10')
+      assert_equal(ele[:value], '5')
+    end
+  end
+
+  test 'global_bc_num_hours will respond override attributes it has ondemand.d config' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      Configuration.stubs(:config).returns({ 
+        global_bc_form_items: {
+          global_bc_num_hours: {
+            label: 'New Label',
+            min: 100,
+            max: 500,
+            value: 250
+          }
+        }
+      })
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_bc_num_hours
+        attributes:
+          global_bc_num_hours:
+            min: 2
+            max: 10
+            value: 5
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # the element does not have global_ prefix.
+      # it's a number (default is text_field) and has the correct name.
+      ele = find("##{bc_ele_id('bc_num_hours')}")
+      assert_equal(ele[:type], 'number')
+      assert_equal(ele[:name], 'batch_connect_session_context[bc_num_hours]')
+
+      label = find("label[for='#{bc_ele_id('bc_num_hours')}']")
+
+      # these values came from the ondemand.d configuration and override what's
+      # in the attributes section of the form.yml.
+      assert_equal(ele[:min], '100')
+      assert_equal(ele[:max], '500')
+      assert_equal(ele[:value], '250')
+      assert_equal(label.text, 'New Label')
+    end
+  end
 end
