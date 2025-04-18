@@ -40,7 +40,8 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   def stub_scheduler(state, cores: 1, nodes: 1)
     info = OodCore::Job::Info.new(
       id: test_job_id, status: state.to_sym, procs: cores.to_i, 
-      allocated_nodes: Array.new(nodes.to_i, { name: 'foo', features: [] })
+      allocated_nodes: Array.new(nodes.to_i, { name: 'foo', features: [] }),
+      native: { min_memory: "4556M" }
     )
     OodCore::Job::Adapters::Slurm.any_instance.stubs(:info).returns(info)
   end
@@ -180,6 +181,23 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
       header_text = card.find('.h5').text
       assert_equal("Jupyter (#{test_job_id})\n2 nodes | 2 cores | Starting", header_text)
+    end
+  end
+
+  test 'memory displays when configuration is set' do
+    Dir.mktmpdir do |dir|
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 2, cores: 2)
+
+      ClimateControl.modify OOD_BC_CARD_MEMORY: '1' do
+        visit(batch_connect_sessions_path)
+
+        card = find("#id_#{test_bc_id}")
+
+        header_text = card.find('.h5').text
+        # Using 4556M to stub out SLURM's response
+        assert_equal("Jupyter (#{test_job_id})\n2 nodes | 2 cores | 4.6 GB | Starting", header_text)
+      end
     end
   end
 end
