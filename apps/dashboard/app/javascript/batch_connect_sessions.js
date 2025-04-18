@@ -4,6 +4,31 @@ import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent } from './utils';
 import { pollAndReplace } from './turbo_shim';
 
+const sessionStatusMap = new Map();
+
+function checkStatusChanges() {
+  const sessionCards = document.querySelectorAll('[data-bc-card]');
+  
+  sessionCards.forEach((card) => {
+    const sessionId = card.dataset.id;
+    const newStatus = card.dataset.status;
+
+    if(sessionStatusMap.has(sessionId)) {
+      const oldStatus = sessionStatusMap.get(sessionId);
+      if(oldStatus !== newStatus) {
+        sessionStatusMap.set(sessionId, newStatus);
+        const sessionTitle = card.dataset.title;
+        const liveRegion = document.getElementById("aria_live_region");
+        if(liveRegion) {
+          liveRegion.textContent = `${sessionTitle} is now ${newStatus}.`;
+        }
+      }
+    } else {
+      sessionStatusMap.set(sessionId, newStatus);
+    }
+  });
+}
+
 function settingKey(id) {
   return id + '_value';
 }
@@ -36,6 +61,9 @@ window.tryUpdateSetting = tryUpdateSetting;
 
 jQuery(function (){
   if ($('#batch_connect_sessions').length) {
-    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", bindFullPageSpinnerEvent);
+    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
+      bindFullPageSpinnerEvent();
+      checkStatusChanges();
+    });
   }
 });
