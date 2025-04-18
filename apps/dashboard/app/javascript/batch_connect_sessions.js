@@ -3,6 +3,7 @@
 import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent } from './utils';
 import { pollAndReplace } from './turbo_shim';
+import { ariaNotify } from './aria_live_notify';
 
 const sessionStatusMap = new Map();
 
@@ -18,10 +19,7 @@ function checkStatusChanges() {
       if(oldStatus !== newStatus) {
         sessionStatusMap.set(sessionId, newStatus);
         const sessionTitle = card.dataset.title;
-        const liveRegion = document.getElementById("aria_live_region");
-        if(liveRegion) {
-          liveRegion.textContent = `${sessionTitle} is now ${newStatus}.`;
-        }
+        ariaNotify(`${sessionTitle} is now ${newStatus}.`);
       }
     } else {
       sessionStatusMap.set(sessionId, newStatus);
