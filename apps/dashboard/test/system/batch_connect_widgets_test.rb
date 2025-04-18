@@ -745,7 +745,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'global_bc_num_hours will respond override attributes it has ondemand.d config' do
+  test 'global_bc_num_hours will use attributes over global config' do
     Dir.mktmpdir do |dir|
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
       Configuration.stubs(:config).returns({ 
@@ -785,11 +785,12 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       label = find("label[for='#{bc_ele_id('bc_num_hours')}']")
 
-      # these values came from the ondemand.d configuration and override what's
-      # in the attributes section of the form.yml.
-      assert_equal(ele[:min], '100')
-      assert_equal(ele[:max], '500')
-      assert_equal(ele[:value], '250')
+      # these values came from the attributes section of the form.yml
+      assert_equal(ele[:min], '2')
+      assert_equal(ele[:max], '10')
+      assert_equal(ele[:value], '5')
+
+      # but label is from the global setting.
       assert_equal(label.text, 'New Label')
     end
   end

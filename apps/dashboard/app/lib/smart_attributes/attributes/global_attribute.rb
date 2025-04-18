@@ -11,8 +11,9 @@ module SmartAttributes
 
       config = Configuration.global_bc_form_item(id)
 
-      # this behaves like a normal Attribute if there's no actual configuration for it.
-      config = opts if config.nil? || config.empty?
+      # this behaves like a normal Attribute if there's no actual configuration for it,
+      # and you can override the global options if you have a 'attributes' defined.
+      config = config.to_h.deep_merge(opts)
 
       # try to build a bc_ attribute if you can.
       if sub_id.start_with?('bc_')
