@@ -5,7 +5,7 @@ class FilesController < ApplicationController
   include ActionController::Live
   include ActionView::Helpers::NumberHelper
 
-  before_action :strip_sendfile_headers, only: [:fs]
+  before_action :strip_sendfile_headers, only: [:fs, :directory_frame, :file_frame]
 
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
@@ -99,6 +99,40 @@ class FilesController < ApplicationController
     else
       show_file
     end
+  rescue StandardError => e
+    rescue_action(e)
+  end
+
+  # GET - directory for turbo-frame
+  def directory_frame
+    parse_path(directory_frame_params[:path], 'fs')
+    validate_path!
+    @path.raise_if_cant_access_directory_contents
+    @files = @path.ls
+
+    render( partial: 'files/turbo_frames/directory',
+            locals: { 
+              path: @path,
+              files: @files
+            }
+    )
+  rescue StandardError => e
+    rescue_action(e)
+  end
+
+  # GET - file for turbo-frame
+  def file_frame
+    parse_path(file_frame_params[:path], 'fs')
+    validate_path!
+    @path.raise_if_cant_access_directory_contents if @path.directory?
+    @file = show_file
+    
+    render( partial: 'files/turbo_frames/file',
+            locals: { 
+              path: @path,
+              file: @file
+            }
+    )
   rescue StandardError => e
     rescue_action(e)
   end
@@ -271,6 +305,10 @@ class FilesController < ApplicationController
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
 
+    return File.open(@path.to_s, "r") do |file|
+      file.read 
+    end if turbo_frame_request?
+
     if posix_file?
       send_posix_file
     else
@@ -347,5 +385,13 @@ class FilesController < ApplicationController
 
   def edit_params
     params.permit(:format, :path, :fs, :filepath)
+  end
+
+  def directory_frame_params
+    params.permit(:format, :path)
+  end
+
+  def file_frame_params
+    params.permit(:format, :path)
   end
 end
