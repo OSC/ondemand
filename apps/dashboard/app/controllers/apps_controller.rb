@@ -44,6 +44,7 @@ class AppsController < ApplicationController
 
   def icon
     set_app
+    expires_in 365.days, public: true
 
     if @app.svg_icon? 
       send_file @app.icon_path, :type => 'image/svg+xml', :disposition => 'inline'

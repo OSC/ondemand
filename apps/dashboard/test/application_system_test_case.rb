@@ -1,7 +1,8 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
 
   driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
