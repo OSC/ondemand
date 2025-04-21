@@ -6,12 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Improve accessibility for interactive session cards (#4061)\
-pass errors back to controller through models (#4266)\
-lint a random file (#4285)\
-cache icons (#4277)\
-update dependencies (#4281)\
-lint a random file (#4276)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -48,6 +42,7 @@ lint a random file (#4276)
 - user_settings_file incorporates OOD_PORTAL in the path in [4213](https://github.com/OSC/ondemand/pull/4213).
 - The file editor will now only open files under a certain limit in [4256](https://github.com/OSC/ondemand/pull/4256).
 - Projects can now be imported from a directory in [4258](https://github.com/OSC/ondemand/pull/4258).
+- Interactive session cards now announce state changes to screen readers in [4061](https://github.com/OSC/ondemand/pull/4061).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -57,6 +52,7 @@ lint a random file (#4276)
 - Drop support for Ubuntu 20.04 and Ruby 2.7 in [4188](https://github.com/OSC/ondemand/pull/4188).
 - Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
+- Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
 
 ## [4.0.2] - 03-25-2025
 
