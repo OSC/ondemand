@@ -44,8 +44,7 @@ class ProjectsController < ApplicationController
   # GET /projects/import
   def import
     @project = Project.new
-    importable_projects = Project.possible_imports
-    @directories = importable_projects.map(&:directory)
+    @projects = Project.possible_imports
   end
 
   # GET /projects/:id/edit
