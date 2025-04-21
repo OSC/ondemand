@@ -3,7 +3,7 @@
 # ProjectTemplate classes are used to create a ProjectTemplate from a Project object.
 class ProjectTemplate
   include ActiveModel::Model
-  include Deflateable
+  include Compressable
 
   class << self
     def dataroot
@@ -46,7 +46,6 @@ class ProjectTemplate
     directory.join('files')
   end
   
-
   private
 
   def create_template_directory
