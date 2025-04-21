@@ -8,6 +8,19 @@ class Project
   include IconWithUri
   extend JobLogger
 
+  def self.from_directory(dir)
+    # fetch "id" by opening .ondemand/manifest.yml
+    manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
+    contents = File.read(manifest_path)
+    raw_opts = YAML.safe_load(contents)
+    id = raw_opts["id"]
+    Project.new({ id: id, directory: dir })
+  rescue StandardError => e
+    p = Project.new({ id: nil, directory: dir })
+    p.errors.add(:create, "Cannot import project from #{dir} due to error #{e}")
+    p
+  end
+
   class << self
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
@@ -21,6 +34,12 @@ class Project
     rescue StandardError, Exception => e
       Rails.logger.warn("cannot read #{dataroot}/.project_lookup due to error #{e}")
       {}
+    end
+
+    def import_to_lookup(imported_project)
+      return false if imported_project.nil? || !imported_project.valid?
+
+      Project.find(imported_project.id) ? true : imported_project.add_to_lookup(:import)
     end
 
     def next_id
@@ -65,6 +84,29 @@ class Project
 
         Project.new(**opts)
       end
+    end
+
+    # TODO: Use it to populate similar page as /projects where we will keep the imported projects
+    def possible_imports
+      Rails.cache.fetch('possible_imports', expires_in: 1.hour) do
+        importable_directories
+      end
+    end
+
+    private
+
+    def importable_directories
+      Configuration.shared_projects_root.map do |root|
+        next unless File.exist?(root) && File.directory?(root) && File.readable?(root)
+
+        Dir.each_child(root).map do |child|
+          child_dir = "#{root}/#{child}"
+          next unless File.directory?(child_dir) && File.readable?(child_dir)
+          Dir.each_child(child_dir).map do |possible_project|
+            Project.from_directory("#{child_dir}/#{possible_project}")
+          end
+        end.flatten
+      end.flatten.compact.reject{ |p| p.errors.any? }
     end
   end
 
@@ -117,7 +159,7 @@ class Project
     @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
     @icon = 'fas://cog' if icon.blank?
 
-    make_dir && sync_template && store_manifest(:save)
+    make_dir && update_permission && sync_template && store_manifest(:save)
   end
 
   def update(attributes)
@@ -250,6 +292,14 @@ class Project
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
+    false
+  end
+
+  def update_permission
+    project_dataroot.chmod(0750)
+    true
+  rescue StandardError => e
+    errors.add(:save, "Failed to update permissions of the directory: #{e.message}")
     false
   end
 

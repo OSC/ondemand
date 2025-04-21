@@ -32,6 +32,7 @@ ja_JP:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: System Apps
     auto_log_location_title: ログの場所
+    back: Back
     balance_additional_message: Consider requesting additional %{balanace_units}
     balance_message: "%{units_balance} is %{value}"
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
@@ -143,8 +144,10 @@ ja_JP:
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    import: Import
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
+    jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
@@ -156,6 +159,7 @@ ja_JP:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
+    jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
@@ -207,11 +211,13 @@ ja_JP:
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
     remove: 抜かす
+    reset: Reset
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     save: 溜める
     saved_settings_title: Saved Settings
+    select_path: Select Path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})

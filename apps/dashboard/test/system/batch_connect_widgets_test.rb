@@ -80,8 +80,9 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       stub_sacctmgr
       stub_git("#{dir}/app")
       
-      Tempfile.new("test.py", "#{Rails.root}/tmp")
-      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+      ['test.py', 'test.rbpy'].each do |file|
+        FileUtils.touch("#{Rails.root}/tmp/#{file}")
+      end
 
       form = <<~HEREDOC
         ---
@@ -94,7 +95,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             widget: 'path_selector'
             directory: "#{Rails.root}/tmp"
             show_files: true
-            file_pattern: \.py
+            file_pattern: \\.py
       HEREDOC
 
       Pathname.new("#{dir}/app/").join('form.yml').write(form)
@@ -185,6 +186,82 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       assert shown_dirs_and_files.any? { |file| file.match("test.py") }
       assert shown_dirs_and_files.any? { |file| file.match("test.rb") } 
+    end
+  end
+
+  test 'path_selector will not have URL encoded data' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      base_id = 'batch_connect_session_context_path'
+      filename = "#{Rails.root}/tmp/file with spaces"
+      FileUtils.touch(filename)
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}/tmp"
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on 'Select Path'
+      sleep 0.5
+
+      find('span', text: 'file with spaces').click
+      find("##{base_id}_path_selector_button").click
+
+      assert_equal(filename, find("##{base_id}").value)
+    end
+  end
+
+  test 'path_selector retains URL encodes if they are present' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      base_id = 'batch_connect_session_context_path'
+      filename = "#{Rails.root}/tmp/#{CGI.escape('foo/ bar.txt')}"
+      FileUtils.touch(filename)
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}/tmp"
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      click_on 'Select Path'
+      sleep 0.5
+
+      # note the text here is URL encoded
+      find('span', text: 'foo%2F+bar.txt').click
+      find("##{base_id}_path_selector_button").click
+
+      # note that the variable 'filename' is URL encoded
+      assert_equal(filename, find("##{base_id}").value)
     end
   end
 
@@ -399,7 +476,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'auto modules something' do
+  test 'auto modules are case sensitive' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
         form = <<~HEREDOC
@@ -429,6 +506,30 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
         # select show and it's back.
         select('show', from: bc_ele_id('module_hider'))
         assert(find("##{bc_ele_id('auto_modules_r')}").visible?)
+      end
+    end
+  end
+
+  test 'auto modules handle nested modules' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+        form = <<~HEREDOC
+          cluster: ascend
+          form:
+            - auto_modules_nest-test/regular
+            - auto_modules_nest-test/super
+        HEREDOC
+
+        stub_ascend
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        # super and regular variants have all the right versions
+        super_opts = find_all_options('auto_modules_nest_test_super', nil).map(&:text).to_set
+        assert_equal(['default', '1.0', '2.0', '3.0'].to_set, super_opts)
+
+        regular_opts = find_all_options('auto_modules_nest_test_regular', nil).map(&:text).to_set
+        assert_equal(['default', '1.0', '1.2', '1.3'].to_set, regular_opts)
       end
     end
   end
@@ -536,6 +637,53 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       # value of node_type has gone back to standard
       assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+
+  test 'form element headers support markdown and html' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # Span exists (HTML works).
+    header_span = find(class: 'test_form_element_header', text: 'Some text in a span')
+    # Markdown element exists (## => h2).
+    markdown_header = header_span.find(:xpath, './/../../h2', text: 'Header using Markdown')
+    # Header precedes its form element.
+    markdown_header.first(:xpath, './/following-sibling::div').find(id: 'batch_connect_session_context_node_type')
+  end
+
+  test 'attribute headers strip script tags' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster: owens
+        form:
+          - node_type
+        attributes:
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-exclusive-option-for-cluster-owens: true]
+            header: |
+              <div name='node_type_header'>
+                <script>window.alert('shouldnt alert');</script>
+              </div>
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # this will not be text on the DOM if it's an actual <script> tag
+      text = find('[name="node_type_header"]').text
+      assert_equal("window.alert('shouldnt alert');", text)
     end
   end
 end

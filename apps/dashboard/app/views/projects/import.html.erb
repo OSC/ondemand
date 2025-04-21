@@ -1,0 +1,55 @@
+<%= javascript_include_tag('projects_import', nonce: true, type: 'module') %>
+
+<div class='page-header text-center pb-3'>
+  <h1>
+    Import a Shared Project
+  </h1>
+</div>
+
+<%
+  path_selector_id = "project_directory_path_selector"
+
+  path_selector_locals = {
+    path_selector_id: path_selector_id,
+    show_files: false,
+    show_hidden: false,
+    file_pattern: '',
+    initial_directory: CurrentUser.home,
+    table_id: "#{path_selector_id}_table",
+    breadcrumb_id: "#{path_selector_id}_breadcrumb",
+    button_id: "#{path_selector_id}_button",
+    input_field_id: 'project_directory',
+    favorites: false,
+  }
+%>
+
+<%= bootstrap_form_for(@project, url: project_import_save_path, method: :post) do |form| %>
+<div class='card'>
+  <div class='card-group'>
+    <div class='card'>
+      <div class='card-body'>
+        <div class="col">
+          <div class="field">
+            <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
+                                required: false,
+                                data: { 'path-selector': true })%>
+
+            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+              <%= I18n.t('dashboard.select_path') %>
+            </button>
+
+            <%= render(partial: 'shared/path_selector_table', locals: path_selector_locals ) %>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <p>
+    <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project' %>
+    <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+    <%= link_to I18n.t('dashboard.back'), projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
+  </p>
+</div>
+<% end %>

@@ -32,6 +32,7 @@ en:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: System Apps
     auto_log_location_title: Log Location
+    back: Back
     balance_additional_message: Consider requesting additional %{balanace_units}
     balance_message: "%{units_balance} is %{value}"
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
@@ -132,6 +133,7 @@ en:
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    file_quotas: 'File Quotas'
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
@@ -143,8 +145,10 @@ en:
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    import: Import
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
+    jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
@@ -156,6 +160,7 @@ en:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
+    jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
@@ -198,6 +203,7 @@ en:
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
+    project_balances: Project Balances
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
@@ -207,11 +213,13 @@ en:
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
     remove: Remove
+    reset: Reset
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     save: Save
     saved_settings_title: Saved Settings
+    select_path: Select Path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
@@ -234,6 +242,9 @@ en:
       header: Support Ticket
       rt:
         creation_success: 'Support ticket created in RequestTracker system. TicketId: %{ticket_id}'
+      servicenow:
+        creation_success: "Support ticket created in ServiceNow. Number: %{number}"
+        attachments_failure: "Support ticket created in ServiceNow. Number: %{number}. But unable to add the attachments."
       title: Support Ticket
       validation:
         attachments_items: The %{id} are invalid. %{items} added, maximum number of attachments is %{max}
@@ -249,7 +260,7 @@ en:
     unknown: Unknown
     uppy: Uppy
     user_configuration:
-      support_ticket_error: support_ticket is misconfigured. "email" or "rt_api" sections are required in the configuration YAML.
+      support_ticket_error: support_ticket is misconfigured. Please add a backend implementation in the configuration YAML.
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>

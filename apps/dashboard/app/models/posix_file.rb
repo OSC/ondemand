@@ -5,6 +5,7 @@ class PosixFile
 
   delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
   delegate :directory?, :realpath, :readable?, :file?, to: :path
+  delegate :size, to: :stat
 
   # include to give us number_to_human_size
   include ActionView::Helpers::NumberHelper
@@ -67,7 +68,7 @@ class PosixFile
   end
 
   def downloadable?
-    (directory? || file?) && readable?
+    Configuration.download_enabled? && (directory? || file?) && readable?
   end
 
   def human_size

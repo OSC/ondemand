@@ -12,32 +12,35 @@ module BatchConnect::SessionContextsHelper
       return render :partial => "batch_connect/session_contexts/fixed", :locals => { form: form, attrib: attrib, field_options: field_options, format: format }
     end
 
-    case widget
-    when 'select'
-      form.select(attrib.id, attrib.select_choices(hide_excludable: hide_excludable), field_options, attrib.html_options)
-    when 'resolution_field'
-      resolution_field(form, attrib.id, all_options)
-    when 'check_box'
-      form.form_group attrib.id, help: field_options[:help] do
-        form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
-      end
-    when 'radio', 'radio_button'
-      form.form_group attrib.id, help: field_options[:help] do
-        opts = {
-          label:   label_tag(attrib.id, attrib.label),
-          checked: (attrib.value.presence || attrib.field_options[:checked])
-        }
-        form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)
-      end
-    when 'path_selector'
-      form.form_group(attrib.id) do
-        render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options })
-      end
-    when 'file_attachments'
-      render :partial => "batch_connect/session_contexts/file_attachments", :locals => { form: form, attrib: attrib, field_options: field_options }
-    else
-      form.send widget, attrib.id, all_options
-    end
+    rendered =  case widget
+                when 'select'
+                  form.select(attrib.id, attrib.select_choices(hide_excludable: hide_excludable), field_options, attrib.html_options)
+                when 'resolution_field'
+                  resolution_field(form, attrib.id, all_options)
+                when 'check_box'
+                  form.form_group attrib.id, help: field_options[:help] do
+                    form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
+                  end
+                when 'radio', 'radio_button'
+                  form.form_group attrib.id, help: field_options[:help] do
+                    opts = {
+                      label:   label_tag(attrib.id, attrib.label),
+                      checked: (attrib.value.presence || attrib.field_options[:checked])
+                    }
+                    form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)
+                  end
+                when 'path_selector'
+                  form.form_group(attrib.id) do
+                    render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options })
+                  end
+                when 'file_attachments'
+                  render :partial => "batch_connect/session_contexts/file_attachments", :locals => { form: form, attrib: attrib, field_options: field_options }
+                else
+                  form.send widget, attrib.id, all_options
+                end
+    header = sanitize(OodAppkit.markdown.render(attrib.header))
+    "#{header}#{rendered}".html_safe
+
   end
 
   def resolution_field(form, id, opts = {})

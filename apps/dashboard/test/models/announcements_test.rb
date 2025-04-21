@@ -13,13 +13,13 @@ class AnnouncementsTest < ActiveSupport::TestCase
     assert_equal 0, announcements.count
   end
 
-  test "should create invalid announcement for file that doesn't exist" do
+  test "should not create announcements for a file that doesn't exist" do
     f = Tempfile.open(['announcement', '.md'])
     path = f.path
     f.close(true)
 
     announcements = Announcements.all(path)
-    assert_equal 1, announcements.count
+    assert_equal 0, announcements.count
     assert_equal 0, announcements.select(&:valid?).count
   end
 
@@ -159,7 +159,8 @@ class AnnouncementsTest < ActiveSupport::TestCase
     Dir.mkdir("#{f6}/invalid4.yml")
 
     announcements = Announcements.all([f1.path, f2.path, f3.path, f4_path, f5.path, f6, f7])
-    assert_equal 12, announcements.count
+    # could have been 12, but 2 were dropped because they don't exist.
+    assert_equal 10, announcements.count
     assert_equal 4, announcements.select(&:valid?).count
   end
 end

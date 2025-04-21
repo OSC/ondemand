@@ -30,7 +30,7 @@ Open OnDemand is an NSF-funded open-source HPC portal. The goal of Open OnDemand
 ![Open ondemand demo demonstrating integration with Open XDMOD; interactive jobs with desktops, Jupyter and visual studio code; file browsing, creation, editing and deletion.](docs/imgs/open_ondemand_demo.gif)
 
 ## Installation
-Installing Open OnDemand simple, use our `.rpm` or `.deb` packages. Get started by visiting the [installation instructions] in our documentation.
+Installing Open OnDemand is simple, use our `.rpm` or `.deb` packages. Get started by visiting the [installation instructions] in our documentation.
 
 ### Container demos
 

@@ -35,7 +35,8 @@ nav.navbar {
 
 a.navbar-brand.navbar-brand-logo {
   display: inline-block;
-  height: 2em;
+  max-width: 20em;
+  overflow-x: hidden;
 }
 
 .navbar-brand.navbar-brand-logo img {

@@ -32,7 +32,7 @@
 First off - Thank you for your interest in contributing to the Open OnDemand project!
 
 There is no pull request too small! Everything from simple misspellings to very
-large feature requests are welcome.  If you're not quite sure where to get started
+large feature requests are welcome. If you're not quite sure where to get started
 you can search our list of [good first issues].
 
 Please note we have a [code of conduct], please follow it in all your
@@ -40,15 +40,15 @@ interactions with the project.
 
 ## Issues
 
-Issues, bug reports, questions and feature requests are always welcome.  Feel
+Issues, bug reports, questions and feature requests are always welcome. Feel
 free to open an issue and use any [issue labels] as appropriate.
 
-We mostly use [Discourse] for general questions or help.  If you're unsure
+We mostly use [Discourse] for general questions or help. If you're unsure
 of where to route your question, Discourse may be the best forum for it.
 
 ## Other Repositories
 
-There are other repositories to Open OnDemand that are important as well.  You may want to check
+There are other repositories to Open OnDemand that are important as well. You may want to check
 these out too.
 
 * [repository for the Open OnDemand website](https://github.com/OSC/openondemand.org)
@@ -76,8 +76,8 @@ team on proposed changes.
 
 1.  [Fork this repo].
 2.  Branch off of the master branch.
-3.  Now create a pull request to this repository!  At this point a maintainer will be notified
-    and will start reviwing it.
+3.  Now create a pull request to this repository! At this point, a maintainer will be notified
+    and will start reviewing it.
 4.  If changes are being requested, don't let this discourage you! This is a
     natural part of getting changes right and ensuring quality in what we're building.
 
@@ -114,14 +114,14 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 
 ### Project Conventions
 
-* Prefer **read-only** objects.  You'll find mostly read only objects spread throughout this code base.
+* Prefer **read-only** objects. You'll find mostly read only objects spread throughout this code base.
   This means that `attr_writer` or `attr_accessor` are to be avoided and only `attr_reader` should be used.
   It follows then, that most objects should accept a large number of parameters in their initializers
   and set the attributes accordingly.
 
 ### Linters
 
-For any Ruby librares/apps there is a `.rubocop.yml` at the top of this project. If you
+For any Ruby libraries/apps there is a `.rubocop.yml` at the top of this project. If you
 work in IDEs where you want to only open a part of this project, executing `rake lint:setup`
 and it will copy copy lint config files to various locations. Watch out though, `rake clean`
 will remove them!
@@ -155,7 +155,7 @@ methods.
 * avoid using semi-colons `;`
 * Spaces:
   * around operators `=`, `+`, `-`, `*`, `%`
-  * around curly bracies `{` `}`
+  * around curly braces `{` `}`
   * after commas , colons, and semicolons
 
     ```ruby
@@ -175,7 +175,7 @@ methods.
     end
     ```
 
-* Empty line between method defintions.
+* Empty line between method definitions.
 
     ```ruby
     def method1(arg1)
@@ -406,7 +406,7 @@ function snakeCaseWords(str) {
 
 Beyond the [ESLint] configuration files, we follow these styles:
 
-* File names use underscores, `_`, for word seperators.
+* File names use underscores, `_`, for word separators.
 * Variables are `camelCase` named and are `const` or `let`. Using `var` is discouraged.
 * Function names are `camelCase`.
 
@@ -415,13 +415,13 @@ Beyond the [ESLint] configuration files, we follow these styles:
 In general, when making html elements (or Ruby/Js/Etc models of)
 we'll follow this style.
 
-* IDs use underscores `_` for word seperation. This follows the Rails `form_for` convention.
+* IDs use underscores `_` for word separation. This follows the Rails `form_for` convention.
 
 
 ### CSS Style
 
 * Applicable SCSS conventions like hyphenated variables and those variables are in the `_variables.scss` file.
-* class names use hyphens, `-` for word seperators. If for no other reason than to follow bootstrap
+* class names use hyphens, `-` for word separators. If for no other reason than to follow bootstrap
   which we use quite extensively.
 * classes should mostly use relative sizes (`em` and `rem`), rarely pixel values (`px`).
 

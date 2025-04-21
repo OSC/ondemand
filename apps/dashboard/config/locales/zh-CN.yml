@@ -31,6 +31,7 @@ zh-CN:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: 系统应用
     auto_log_location_title: 日志位置
+    back: Back
     balance_additional_message: 考虑申请额外的 %{balanace_units}
     balance_message: "%{units_balance} 是 %{value}"
     balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
@@ -139,8 +140,10 @@ zh-CN:
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    import: Import
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
+    jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
@@ -152,6 +155,7 @@ zh-CN:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
+    jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
@@ -203,11 +207,13 @@ zh-CN:
     quota_warning_prefix_html: 配额限制警告
     recently_used_apps_title: Recently Used Apps
     remove: Remove
+    reset: Reset
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
     save: Save
     saved_settings_title: Saved Settings
+    select_path: Select Path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})

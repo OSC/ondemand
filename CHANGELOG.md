@@ -9,12 +9,89 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
-- Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057).
+- Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
+  and show these if they're positive [4074](https://github.com/OSC/ondemand/pull/4074).
 - Icon picker correctly shows and hides the spinner in [4051](https://github.com/OSC/ondemand/pull/4051).
-- Project manager template selection fixed in [4054](https://github.com/OSC/ondemand/pull/4054).
+- Fix modal bug when file transfer fails in [4084](https://github.com/OSC/ondemand/pull/4084).
+- Require latest ondemand-passenger and ondemand-nginx to fix a proc-ps dependency issue in [4089](https://github.com/OSC/ondemand/pull/4089).
+- Native VNC tabs work correctly in [4115](https://github.com/OSC/ondemand/pull/4115).
+- The path_selector corretly handles files with spaces in [4107](https://github.com/OSC/ondemand/pull/4107).
+- mod_ood_proxy correctly accounts for numeric usernames in [4128](https://github.com/OSC/ondemand/pull/4128).
+- Application Manifests with external URLs use external hrefs in [#4140](https://github.com/OSC/ondemand/pull/4140).
+- Add user_home_t to SELinux tunable [4142](https://github.com/OSC/ondemand/pull/4142).
+- Apps#show route correctly handles usernames with periods in [4133](https://github.com/OSC/ondemand/pull/4133).
+- Fixed safe_load_path? method definition to avoid runtime errors in [4157](https://github.com/OSC/ondemand/pull/4157).
+- File operations correctly return focus in [4100](https://github.com/OSC/ondemand/pull/4100).
+- Favicon has a referrerpolicy in [4166](https://github.com/OSC/ondemand/pull/4166).
+- Navigation bar titles will not overflow in [4194](https://github.com/OSC/ondemand/pull/4194).
+- Fixed CSS selectors for active navigation link color in [4183](https://github.com/OSC/ondemand/pull/4183).
+- "Select Path" is now internationalizable in [4176](https://github.com/OSC/ondemand/pull/4176).
+- The files app does not provide hrefs for files when download is disabled in [4167](https://github.com/OSC/ondemand/pull/4167).
+- Desktops start with a safer PATH to ensure that dbus-launch comes from the OS in [4160](https://github.com/OSC/ondemand/pull/4160).
+- Dynamic batch connect correctly accounts for clusters with hyphens (-) in [4245](https://github.com/OSC/ondemand/pull/4245).
+- My interactive sessions page has better landmarks in [4254](https://github.com/OSC/ondemand/pull/4254).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
+- Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
+- Interactive forms now support headers for each form item in [3767](https://github.com/OSC/ondemand/pull/3767).
+- Users can now submit help tickets through the Active Jobs page in [4102](https://github.com/OSC/ondemand/pull/4102).
+- This project now has a demo container for demonstration purposes in [4151](https://github.com/OSC/ondemand/pull/4151).
+- Added widgets for file_quotas and balances in [4206](https://github.com/OSC/ondemand/pull/4206).
+- auto_modules now support nested modules in [4204](https://github.com/OSC/ondemand/pull/4204).
+- user_settings_file incorporates OOD_PORTAL in the path in [4213](https://github.com/OSC/ondemand/pull/4213).
+- The file editor will now only open files under a certain limit in [4256](https://github.com/OSC/ondemand/pull/4256).
+- Projects can now be imported from a directory in [4258](https://github.com/OSC/ondemand/pull/4258).
+- Interactive session cards now announce state changes to screen readers in [4061](https://github.com/OSC/ondemand/pull/4061).
+
+### Changed
+- The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
+- Removed analytics.lua and resolved code dependencies in [4069](https://github.com/OSC/ondemand/pull/4069).
+- Announcements now filter files that don't exist in [4091](https://github.com/OSC/ondemand/pull/4091).
+- Removed Handlebars from XDMoD widget efficiency template in [4103](https://github.com/OSC/ondemand/pull/4103).
+- Drop support for Ubuntu 20.04 and Ruby 2.7 in [4188](https://github.com/OSC/ondemand/pull/4188).
+- Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
+- Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
+- Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
+
+## [4.0.2] - 03-25-2025
+
+### Fixes
+
+- Transfer failures correctly show the error modal in [4152](https://github.com/OSC/ondemand/pull/4237) (backport of
+  [4084](https://github.com/OSC/ondemand/pull/4084)).
+- Plugins correctly load in [4158](https://github.com/OSC/ondemand/pull/4158) (backport of
+  [4157](https://github.com/OSC/ondemand/pull/4157)).
+- Active navigation correctly changes link colors in [4184](https://github.com/OSC/ondemand/pull/4184) (backport of
+  [4183](https://github.com/OSC/ondemand/pull/4183)).
+- Desktops now use a safer PATH to avoid issues with python installations in [4187](https://github.com/OSC/ondemand/pull/4187) (backport of
+  [4160](https://github.com/OSC/ondemand/pull/4160)). 
+- Clusters with titles now safely render in the navigation bar in [4200](https://github.com/OSC/ondemand/pull/4200) (backport of
+  [4196](https://github.com/OSC/ondemand/pull/4196)). 
+- Dynamic batch connect forms correctly respond to clusters with hyphens (-) in [4249](https://github.com/OSC/ondemand/pull/4249) (backport of
+  [4245](https://github.com/OSC/ondemand/pull/4245)). 
+        
+### Added
+- "Select Path" in the path_selector widget is now internationalizable in [4199](https://github.com/OSC/ondemand/pull/4199) (backport of
+  [4176](https://github.com/OSC/ondemand/pull/4176)).
+
+## [4.0.1] - 02-16-2025
+
+### Fixed
+- Project manager template selection fixed in [4054](https://github.com/OSC/ondemand/pull/4054).
+- Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
+  and show these if they're positive [4087](https://github.com/OSC/ondemand/pull/4087).
+- Require latest ondemand-passenger and ondemand-nginx to fix a proc-ps dependency issue in [4089](https://github.com/OSC/ondemand/pull/4089).
+- Native VNC tabs work correctly in [4124](https://github.com/OSC/ondemand/pull/4124).
+- The path_selector corretly handles files with spaces in [4126](https://github.com/OSC/ondemand/pull/4126).
+- mod_ood_proxy correctly accounts for numeric usernames in [4134](https://github.com/OSC/ondemand/pull/4134).
+- Files app correctly handles filenames with non UTF-8 characters in [4135](https://github.com/OSC/ondemand/pull/4135).
+- Apps#show route correctly handles usernames with periods in [4133](https://github.com/OSC/ondemand/pull/4133).
+- Add user_home_t to SELinux tunable [4143](https://github.com/OSC/ondemand/pull/4143).
+- Application Manifests with external URLs use external hrefs in [#4149](https://github.com/OSC/ondemand/pull/4149).
+  
+### Changed
+- The Project Manager's navbar title is now 'Project Manager' in [4136](https://github.com/OSC/ondemand/pull/4136).
 
 ## [4.0.0] - 12-30-2024
 
@@ -1495,7 +1572,9 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.2...HEAD
+[4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
+[4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9

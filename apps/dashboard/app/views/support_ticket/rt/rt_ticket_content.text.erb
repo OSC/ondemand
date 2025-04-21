@@ -16,7 +16,7 @@ Session Information:
 <%= JSON.pretty_generate(
       {
         id: context[:session].id,
-        clusterId:context[:session].cluster_id,
+        clusterId: context[:session].cluster_id,
         jobId: context[:session].job_id,
         createdAt: Time.at(context[:session].created_at).iso8601,
         token: context[:session].token,
@@ -28,4 +28,21 @@ Session Information:
 %>
 <% else %>
 No session was selected.
+<% end %>
+-------------------------------------
+Job Information:
+<% if context[:job] %>
+<%= JSON.pretty_generate(
+      {
+        id: context[:job].id,
+        job_name: context[:job].job_name,
+        status:  context[:job].status,
+        queue_name: context[:job].queue_name,
+        submission_time: context[:job].submission_time,
+        wallclock_limit: context[:job].wallclock_limit,
+        native: helpers.filter_session_parameters(context[:job].native),
+      })
+%>
+<% else %>
+  No job was selected.
 <% end %>

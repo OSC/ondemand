@@ -41,6 +41,12 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
+  # GET /projects/import
+  def import
+    @templates = []
+    @project = Project.new
+  end
+
   # GET /projects/:id/edit
   def edit
     project_id = show_project_params[:id]
@@ -81,6 +87,20 @@ class ProjectsController < ApplicationController
       flash.now[:alert] = message
       @templates = templates if project_params.key?(:template)
       render :new
+    end
+  end
+
+  # POST /projects/import
+  def import_save
+    @project = Project.from_directory(project_params[:directory])
+    if @project.errors.empty?
+      if Project.import_to_lookup(@project)
+        redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
+      else
+        redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
+      end
+    else
+      redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
     end
   end
 

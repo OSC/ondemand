@@ -15,9 +15,10 @@ class RequestTrackerService
     end
   end
 
-  def create_ticket(support_ticket_request, session)
+  def create_ticket(support_ticket_request, session, job)
     ticket_template_context = {
       session:     session,
+      job:         job,
       description: support_ticket_request.description,
       username:    support_ticket_request.username
     }

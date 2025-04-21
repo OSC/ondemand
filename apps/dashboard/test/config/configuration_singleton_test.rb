@@ -256,6 +256,18 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "default value for user_settings_file" do
+    with_modified_env(OOD_PORTAL: nil) do
+      assert_equal Pathname.new('~/.config/ondemand/settings.yml').expand_path.to_s, ConfigurationSingleton.new.user_settings_file
+    end
+  end
+
+  test "user_settings_file uses OOD_PORTAL" do
+    with_modified_env(OOD_PORTAL: 'my_portal') do
+      assert_equal Pathname.new('~/.config/my_portal/settings.yml').expand_path.to_s, ConfigurationSingleton.new.user_settings_file
+    end
+  end
+
   test "quota_paths correctly parses OOD_QUOTA_PATH" do
     with_modified_env(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json') do
       assert_equal ['/path_a/quota.json', '/path_b/quota.json'], ConfigurationSingleton.new.quota_paths

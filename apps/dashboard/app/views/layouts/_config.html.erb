@@ -12,5 +12,6 @@
   data-bc-index-url="<%= batch_connect_sessions_path %>"
   data-status-poll-delay="<%= Configuration.status_poll_delay %>"
   data-status-index-url="<%= system_status_path if respond_to?(:system_status_path) %>"
+  data-support-path="<%= support_path if respond_to?(:support_path) %>"
   data-apps-datatable-page-length="<%= @user_configuration.apps_datatable[:page_length] %>"
 ></div>

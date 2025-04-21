@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 
   <title><%= "Job Composer - #{OodAppkit.dashboard.title}" %> </title>
-  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
+  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true, referrerpolicy: 'origin' %>
 
   <%= stylesheet_link_tag    "application", media: "all" %>
   <script>

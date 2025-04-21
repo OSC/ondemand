@@ -47,6 +47,11 @@ module Dashboard
       config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
     end
 
+    # Determine if this path is safe to load. I.e., are all the files root owned.
+    def safe_load_path?(path)
+      path.exist? && path.children.all? { |f| File.stat(f).uid.zero? }
+    end
+
     # Enable installed plugins only if configured by administrator
     plugins_dir = Pathname.new(::Configuration.plugins_directory)
     if plugins_dir.directory?
@@ -68,11 +73,6 @@ module Dashboard
         config.autoload_paths << lib.to_s if safe_load_lib
         config.paths["app/views"].unshift(views.to_s) if safe_load_views
       end
-    end
-
-    # Determine if this path is safe to load. I.e., are all the files root owned.
-    def safe_load_path?(path)
-      path.children.all? { |f| File.stat(f).uid.zero? }
     end
   end
 end
