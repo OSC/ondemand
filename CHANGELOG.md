@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Improve accessibility for interactive session cards (#4061)\
+pass errors back to controller through models (#4266)\
+lint a random file (#4285)\
+cache icons (#4277)\
+update dependencies (#4281)\
+lint a random file (#4276)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
