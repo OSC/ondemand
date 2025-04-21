@@ -1,5 +1,4 @@
-import ClipboardJS from 'clipboard'
-import Handlebars from 'handlebars';
+import ClipboardJS from 'clipboard';
 import {CONTENTID} from './data_table.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
