@@ -748,4 +748,45 @@ class FilesTest < ApplicationSystemTestCase
       assert_equal('/etc does not have an ancestor directory specified in ALLOWLIST_PATH', alert_text)
     end
   end
+
+  test 'files have hrefs when download is enabled' do
+    visit(files_url(Rails.root))
+    find('#show-dotfiles').click
+    files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+    file_elements = find_all('[data-type="f"]')
+
+    # all files are shown in the table.
+    assert_equal(files.size, file_elements.size)
+
+    # all the HTML elements have hrefs.
+    assert(file_elements.all? { |e| !e[:href].nil? })
+  end
+
+  test 'files do not have hrefs when download is enabled' do
+    with_modified_env({ OOD_DOWNLOAD_ENABLED: 'false' }) do
+      visit(files_url(Rails.root))
+      find('#show-dotfiles').click
+      files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+      file_elements = find_all('[data-type="f"]')
+
+      # all files are shown in the table.
+      assert_equal(files.size, file_elements.size)
+
+      # none of the HTML elements have hrefs.
+      assert(file_elements.all? { |e| e[:href].nil? })
+    end
+  end
+
+  test 'filenames are correctly escaped' do
+    bad_fname = '<img src=1 onerror=alert(\"hello\")>'
+    `touch "tmp/#{bad_fname}"`
+    visit(files_url("#{Rails.root}/tmp"))
+
+    # innerHTML returns escaped text, i.e., '&lt;' not '<'.
+    actual_text = find('tbody a', text: 'onerror')[:innerHTML]
+
+    assert_equal('&lt;img src=1 onerror=alert("hello")&gt;', actual_text)
+  end
 end
