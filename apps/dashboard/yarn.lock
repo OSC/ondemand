@@ -214,11 +214,11 @@
     preact "^10.5.13"
 
 "@uppy/provider-views@^4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@uppy/provider-views/-/provider-views-4.4.2.tgz#bb5a2d662c05fd81ced263dc4e6f55add23df254"
-  integrity sha512-YGrPJuydrksmMCjvo7Ty7/lDLNo/Y8zsOgWgWmVbXB0V5aRvqY49LeKY8HDlOXclKmn6dl5CeQFf7p46txRNGQ==
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@uppy/provider-views/-/provider-views-4.4.3.tgz#6ae255a403de9c68c58725d48e1fb815d1788027"
+  integrity sha512-5Ymeuqin+OwIGiiJnEiWguHwLImHmKURf/xDl8bPY5mh5KNXPuFXqQZJvirxwj+sU700usrPSXEmCZYfP7RMpw==
   dependencies:
-    "@uppy/utils" "^6.1.2"
+    "@uppy/utils" "^6.1.3"
     classnames "^2.2.6"
     nanoid "^5.0.9"
     p-queue "^8.0.0"
@@ -264,9 +264,9 @@
     "@uppy/utils" "^6.1.2"
 
 ace-code@^1.35.0:
-  version "1.39.1"
-  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.39.1.tgz#dd1a9901d2faeb43728ad17bf607cd2c50756ae5"
-  integrity sha512-RTYdkvslVyfhFJi9UNyuDvCtFaDvX/qm06yP0z24AVX+VKERDkx3nLt71LheqFfAkdl48eQAzQATYzwFfVkfeA==
+  version "1.40.0"
+  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.40.0.tgz#988500364b160c65d12191a62017ebd2aad5de14"
+  integrity sha512-tgwnAY2na45ABN/EOXYzzA4J8OFwOnzSBh9BFw6HZ/hXUeenPADgPpgqa3FtxFroIEModn8jQm3MoKAC33tVlg==
 
 anymatch@~3.1.2:
   version "3.1.3"
