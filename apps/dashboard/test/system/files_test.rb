@@ -46,7 +46,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#new-dir-btn').click
       find('#swal2-input').set('bar')
       find('.swal2-confirm').click
-      find('tbody a.d', exact_text: 'bar', wait: MAX_WAIT)
+      find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
       assert File.directory? File.join(dir, 'bar')
     end
   end
@@ -149,7 +149,7 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector '#directory-contents tbody tr', count: 3
       find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
       find('tbody a', exact_text: 'link', wait: MAX_WAIT)
-      find('tbody a.d', exact_text: 'linked_dir', wait: MAX_WAIT)
+      find('tbody a[data-type="d"]', exact_text: 'linked_dir', wait: MAX_WAIT)
 
       # the symlinks are copied as a symlinks and they still point to the same realpath
       sym_file = Pathname.new("#{dir}/dest/src/link")
