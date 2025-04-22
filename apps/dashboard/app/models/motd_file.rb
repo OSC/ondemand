@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 
 # The Message of the Day (MOTD) file.
 class MotdFile
-
   attr_reader :motd_path
 
   # Initialize the Motd Controller object based on the current user.
@@ -18,7 +19,7 @@ class MotdFile
   # Uses open-uri to check local or remote path for contents
   # @return [String] the motd raw content as string
   def content
-    @content || ""
+    @content || ''
   end
 
   # A title for the message of the day.
@@ -35,20 +36,22 @@ class MotdFile
   # @return [Object, nil] an MotdFormatter object that responds to `:to_partial_path`
   #                       `nil` if a file does not exist at the path.
   def formatter
-    case ENV['MOTD_FORMAT']
-      when 'osc'
-        @motd = MotdFormatter::Osc.new(self)
-      when 'markdown'
-        @motd = MotdFormatter::Markdown.new(self)
-      when 'markdown_erb'
-        @motd = MotdFormatter::MarkdownErb.new(self)
-      when 'rss'
-        @motd = MotdFormatter::Rss.new(self)
-      when 'text_erb'
-        @motd = MotdFormatter::PlaintextErb.new(self)
-      else
-        @motd = MotdFormatter::Plaintext.new(self)
-    end if self.exist?
+    if exist?
+      @motd = case ENV['MOTD_FORMAT']
+              when 'osc'
+                MotdFormatter::Osc.new(self)
+              when 'markdown'
+                MotdFormatter::Markdown.new(self)
+              when 'markdown_erb'
+                MotdFormatter::MarkdownErb.new(self)
+              when 'rss'
+                MotdFormatter::Rss.new(self)
+              when 'text_erb'
+                MotdFormatter::PlaintextErb.new(self)
+              else
+                MotdFormatter::Plaintext.new(self)
+              end
+    end
   end
 
   # Is the content present and not empty?
@@ -78,11 +81,8 @@ class MotdFile
   rescue OpenURI::HTTPError
     Rails.logger.warn "MOTD File is not available at #{motd_uri}"
     nil
-  rescue StandardError => ex
-    Rails.logger.warn "Error opening MOTD at #{motd_uri}\nException: #{ex.message}"
+  rescue StandardError => e
+    Rails.logger.warn "Error opening MOTD at #{motd_uri}\nException: #{e.message}"
     nil
   end
 end
-
-
-
