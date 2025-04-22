@@ -57,6 +57,7 @@ jobs:
 
       - name: Setup Bundler
         run: |
+          gem update --system
           bundle config path ~/vendor/bundle
           bundle install
           gem install rake
