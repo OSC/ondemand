@@ -43,8 +43,8 @@ class ProjectsController < ApplicationController
 
   # GET /projects/import
   def import
-    @templates = []
     @project = Project.new
+    @projects = Project.possible_imports
   end
 
   # GET /projects/:id/edit

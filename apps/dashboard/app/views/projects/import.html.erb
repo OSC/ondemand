@@ -31,8 +31,7 @@
         <div class="col">
           <div class="field">
             <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
-                                required: false,
-                                data: { 'path-selector': true })%>
+                                data: { 'path-selector': true }) %>
 
             <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
               <%= I18n.t('dashboard.select_path') %>
@@ -53,3 +52,31 @@
   </p>
 </div>
 <% end %>
+
+<div class='card'>
+  <div class='card-group'>
+    <div class='card'>
+      <div class='card-body'>
+        <strong>
+          <%= label :directory, I18n.t('dashboard.jobs_select_directory_placeholder') %>
+        </strong>
+        <div class="d-flex flex-wrap justify-content-start">
+          <% @projects.each do |project| %>
+            <%= button_to project_import_save_path, method: :post, 
+                params: { project: { directory: project.directory } }, 
+                class: 'btn p-0 border-0 bg-transparent' do %>
+              <div id="<%= project.id %>" class="col-md-3 project-icon project-card" style="width: 150px;">
+                <div class="text-center d-flex justify-content-center">
+                  <strong>
+                    <%= icon_tag(URI.parse(project.icon)) %>
+                    <%= content_tag(:p, project.title) %>
+                  </strong>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
