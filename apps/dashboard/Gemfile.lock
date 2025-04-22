@@ -169,7 +169,7 @@ GEM
     multi_json (1.15.0)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    net-imap (0.3.8)
+    net-imap (0.3.9)
       date
       net-protocol
     net-pop (0.1.2)
@@ -180,7 +180,7 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.4)
-    nokogiri (1.18.7)
+    nokogiri (1.18.8)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     ood_appkit (2.1.6)
