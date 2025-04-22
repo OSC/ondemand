@@ -160,7 +160,7 @@ GEM
     mime-types (3.6.2)
       logger
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2025.0415)
+    mime-types-data (3.2025.0422)
     mini_mime (1.1.5)
     mini_portile2 (2.8.8)
     minitest (5.25.5)
@@ -169,7 +169,7 @@ GEM
     multi_json (1.15.0)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    net-imap (0.3.9)
+    net-imap (0.5.7)
       date
       net-protocol
     net-pop (0.1.2)
@@ -203,7 +203,7 @@ GEM
     psych (5.2.3)
       date
       stringio
-    public_suffix (5.1.1)
+    public_suffix (6.0.1)
     racc (1.8.1)
     rack (2.2.13)
     rack-protection (3.2.0)
@@ -294,10 +294,6 @@ GEM
     tilt (2.6.0)
     timecop (0.9.10)
     timeout (0.4.3)
-    turbo-rails (2.0.7)
-      actionpack (>= 6.0.0)
-      activejob (>= 6.0.0)
-      railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.1.4)
@@ -311,7 +307,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.18)
+    zeitwerk (2.7.2)
     zip_kit (6.3.3)
 
 PLATFORMS
@@ -336,13 +332,11 @@ DEPENDENCIES
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
   mocha (~> 2.1)
-  net-imap (~> 0.3, < 0.4)
   nokogiri
   ood_appkit (~> 2.1.0)
   ood_core (~> 0.24)
   ood_support (~> 0.0.2)
   pry
-  public_suffix (~> 5.0, < 6.0)
   rails (= 7.0.8.7)
   redcarpet (~> 3.3)
   rest-client (~> 2.0)
@@ -353,9 +347,7 @@ DEPENDENCIES
   sinatra-contrib
   sprockets-rails (>= 2.0.0)
   timecop (~> 0.9)
-  turbo-rails (= 2.0.7)
   webrick
-  zeitwerk (= 2.6.18)
   zip_kit (~> 6.2)
 
 BUNDLED WITH
