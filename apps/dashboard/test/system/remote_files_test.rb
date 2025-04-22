@@ -54,11 +54,11 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('#new-dir-btn').click
         find('#swal2-input').set('bar')
         find('.swal2-confirm').click
-        find('tbody a.d', exact_text: 'bar', wait: MAX_WAIT)
+        find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
         assert File.directory? File.join(dir, 'bar')
 
         visit files_url('local_remote', dir)
-        find('tbody a.d', exact_text: 'bar', wait: MAX_WAIT)
+        find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
       end
     end
   end
