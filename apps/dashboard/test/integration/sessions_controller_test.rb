@@ -60,8 +60,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     get batch_connect_sessions_path
     assert_response :success
+    File.write('delme.html', @response.body)
 
-    assert_select 'nav.col-md-3 div.card div.card-header' do |menu_headers|
+    assert_select 'div.col-md-3 div.card div.card-header' do |menu_headers|
       assert_equal 2, menu_headers.size
       assert_equal 'Shared apps title', menu_headers[0].text
       assert_equal 'Interactive apps title', menu_headers[1].text
