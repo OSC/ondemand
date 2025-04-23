@@ -93,7 +93,11 @@ class ConfigurationSingleton
   end
 
   def ood_bc_ssh_to_compute_node
-    to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
+    if !ENV['OOD_BC_SSH_TO_COMPUTE_NODE'].nil?
+      to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'])
+    else
+      true
+    end
   end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
@@ -141,7 +145,7 @@ class ConfigurationSingleton
   end
 
   def load_external_config?
-    to_bool(ENV['OOD_LOAD_EXTERNAL_CONFIG'] || (rails_env == 'production'))
+    to_bool(ENV['OOD_LOAD_EXTERNAL_CONFIG']) || (rails_env == 'production')
   end
 
   # The root directory that holds configuration information for Batch Connect
@@ -151,7 +155,7 @@ class ConfigurationSingleton
   end
 
   def load_external_bc_config?
-    to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] || (rails_env == "production"))
+    to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"]) || (rails_env == "production")
   end
 
   # The paths to the JSON files that store the quota information
@@ -250,7 +254,7 @@ class ConfigurationSingleton
 
   def app_development_enabled?
     return @app_development_enabled if defined? @app_development_enabled
-    to_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.directory? || DevRouter.base_path.symlink?)
+    to_bool(ENV['OOD_APP_DEVELOPMENT']) || DevRouter.base_path.directory? || DevRouter.base_path.symlink?
   end
   alias_method :app_development_enabled, :app_development_enabled?
 
@@ -261,7 +265,11 @@ class ConfigurationSingleton
   alias_method :app_sharing_enabled, :app_sharing_enabled?
 
   def batch_connect_global_cache_enabled?
-    to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
+    if !ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"].nil?
+      to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"])
+    else
+      true
+    end
   end
 
   def developer_docs_url
@@ -388,7 +396,7 @@ class ConfigurationSingleton
   #
   # @return [Boolean] true if by default open apps in new window
   def open_apps_in_new_window?
-    if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
+    if !ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'].nil?
       to_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
     else
       true
