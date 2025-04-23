@@ -72,7 +72,9 @@ export class PathSelectorTable {
             data: 'name',
             className: 'text-break',
             render: (data, _type, _row, _meta) => {
-                return `<span>${data}</span>`;
+                const ele = document.createElement('span');
+                ele.textContent = data;
+                return ele.outerHTML;
             }
 
         }
