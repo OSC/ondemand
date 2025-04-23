@@ -1,3 +1,18 @@
+<%- usr_app_groups.each do |app_group| -%>
+  <%=
+    render(
+      partial: "batch_connect/shared/app_list",
+      locals: {
+        title: app_group.title,
+        apps: app_group.apps,
+        current_url: local_assigns[:current_url],
+        group_by: :category,
+        show_owner: true
+      }
+    )
+  %>
+<%- end -%>
+
 <%- if apps_menu_group -%>
   <%=
     render(
@@ -11,20 +26,6 @@
     )
   %>
 <%- else -%>
-  <%- usr_app_groups.each do |app_group| -%>
-    <%=
-      render(
-          partial: "batch_connect/shared/app_list",
-          locals: {
-            title: app_group.title,
-            apps: app_group.apps,
-            current_url: local_assigns[:current_url],
-            group_by: :category,
-            show_owner: true
-          }
-      )
-    %>
-  <%- end -%>
   <%- sys_app_groups.each do |app_group| -%>
     <%=
       render(
