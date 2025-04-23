@@ -637,8 +637,9 @@ class ProjectsTest < ApplicationSystemTestCase
       script_id = setup_script(project_id)
       add_account(project_id, script_id)
 
+      sleep 2
       visit edit_project_script_path(project_id, script_id)
-      sleep 8
+      sleep 2
 
       find('#edit_script_auto_accounts').click
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
