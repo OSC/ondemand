@@ -372,6 +372,7 @@ class FilesTest < ApplicationSystemTestCase
 
       # and it's still there, now with new content and it keeps the 755 permissions
       assert File.exist?(upload_file)
+      sleep 3
       assert_equal File.read(src_file), File.read(upload_file)
       assert_equal File.stat(upload_file).mode, 33_261 # still 755
     end

@@ -162,6 +162,7 @@ class ProjectsTest < ApplicationSystemTestCase
       click_on 'Edit'
       find('#project_name').set('my-test-project')
       click_on 'Save'
+      sleep 5
       assert_selector "[href='/projects/#{project_id}']", text: 'My Test Project'
       click_on 'Edit'
       assert_selector 'h1', text: 'Editing: My Test Project'
@@ -295,7 +296,9 @@ class ProjectsTest < ApplicationSystemTestCase
       end
 
       accept_confirm do
+        sleep 2
         click_on 'Delete'
+        sleep 2
       end
 
       assert_selector '.alert-success', text: 'Script successfully deleted!'
@@ -336,6 +339,7 @@ class ProjectsTest < ApplicationSystemTestCase
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
       click_on 'Launch'
+      sleep 3
       assert_selector('.alert-success', text: 'job-id-123')
       assert_equal [{ 'id'          => 'job-id-123',
                       'submit_time' => @expected_now,
@@ -633,7 +637,9 @@ class ProjectsTest < ApplicationSystemTestCase
       script_id = setup_script(project_id)
       add_account(project_id, script_id)
 
+      sleep 2
       visit edit_project_script_path(project_id, script_id)
+      sleep 2
 
       find('#edit_script_auto_accounts').click
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
@@ -698,7 +704,9 @@ class ProjectsTest < ApplicationSystemTestCase
       script_id = setup_script(project_id)
       add_account(project_id, script_id)
 
+      sleep 2
       visit edit_project_script_path(project_id, script_id)
+      sleep 2
 
       find('#edit_script_auto_accounts').click
       accounts_select = find('#script_auto_accounts')
@@ -766,6 +774,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal('', File.read("#{dir}/.project_lookup"))
 
       click_on(I18n.t('dashboard.save'))
+      sleep 2
 
       assert_equal(2, Dir.children(dir).size)
       project_dir = Dir.children(dir).select { |path| File.directory?("#{dir}/#{path}") }.first

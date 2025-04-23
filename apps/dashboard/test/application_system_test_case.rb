@@ -52,6 +52,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   def verify_bc_alert(token, header, message)
+    sleep 2
     assert_equal batch_connect_session_contexts_path(token), current_path
     assert_equal header, find('div[role="alert"]').find('h4').text
     assert_equal message, find('div[role="alert"]').find('pre').text
