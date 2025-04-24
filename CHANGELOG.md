@@ -57,18 +57,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.0.3] - 04-23-2025
 
 ### Changed
-- All icons will be cached in the browser to reduce response times in (4303)[https://github.com/OSC/ondemand/pull/4303].
+- All icons will be cached in the browser to reduce response times in [4303](https://github.com/OSC/ondemand/pull/4303).
 
 ### Fixed
-- Shared interactive applications correctly show in left menu panel of My Interactive Sessions in (4304)[https://github.com/OSC/ondemand/pull/4304].
+- Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4304](https://github.com/OSC/ondemand/pull/4304).
 
 ### Security
-- The path_selector correctly escapes file names that contain HTML in (4038)[https://github.com/OSC/ondemand/pull/4308].
+- The path_selector correctly escapes file names that contain HTML in [4038](https://github.com/OSC/ondemand/pull/4308).
 
 ## [3.1.11] - 04-23-2025
 
 ### Security
-- The path_selector correctly escapes file names that contain HTML in (4039)[https://github.com/OSC/ondemand/pull/4309].
+- The path_selector correctly escapes file names that contain HTML in [4039](https://github.com/OSC/ondemand/pull/4309).
 
 ## [4.0.2] - 03-25-2025
 
