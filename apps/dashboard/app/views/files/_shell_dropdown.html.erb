@@ -1,23 +1,27 @@
 <div id="shell-wrapper" class="btn-group dropend">
-  <%= link_to OodAppkit.shell.url(path: @path.to_s).to_s, id: 'open-in-terminal-btn', class: 'btn btn-outline-dark btn-sm', target: '_blank' do %>
-    <i class="fas fa-terminal" aria-hidden="true"></i>
-    Open in Terminal
-  <% end %>
+  <%=
+    render(partial: 'shared/shell_button',
+           locals: {
+              path: @path,
+              label: 'Open in Terminal',
+              classes: 'btn btn-outline-dark btn-sm',
+              icon: 'fas fa-terminal'
+            })
+  %>
   <% if Configuration.login_clusters.count > 0 %>
     <button type="button" class="btn btn-sm btn-outline-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
     <ul class="dropdown-menu" data-popper-placement="right-start" id="shell-dropdown-items">
       <% Configuration.login_clusters.each do |cluster| %>
-        <%=
-          tag.li(
-            tag.a(
-              "#{cluster.metadata.title || cluster.id.to_s.titleize}",
-              href: OodAppkit.shell.url(host: cluster.login.host, path: @path.to_s),
-              title: "#{cluster.metadata.title || cluster.id.to_s.titleize}",
-              target: '_blank',
-              class: 'dropdown-item'
-            )
-          )
-        %>
+        <li>
+          <%= render(partial: 'shared/shell_button',
+                    locals: {
+                      host: cluster.login.host,
+                      path: @path.to_s,
+                      label: "#{cluster.metadata.title || cluster.id.to_s.titleize}",
+                      classes: 'dropdown-item',
+                    })
+          %>
+        </li>
       <% end %>
     </ul>
   <% end %>
