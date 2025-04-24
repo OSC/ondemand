@@ -6,21 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-fix path selector and broken tests (#4302)\
-Added a drop down menu in import directory form (#4283)\
-Rm handlebars (#4294)\
-Fixed rendering shared apps left hand menu when custom navigation is configured (#4291)\
-upgrade to rails 7.0.8.7 (#4301)\
-Update Dependencies (#4300)\
-upgrade job composer's nokogiri (#4296)\
-Update .zenodo.json (#4297)\
-lint a random file (#4298)\
-small refactor to reuse notifying this aria live region (#4290)\
-rename this function so it doesn't collide with window.alert (#4288)\
-support setting bc_ attributes globally (#4282)\
-Update Changelog (#4292)\
-Update Dependencies (#4293)\
-Improve accessibility for interactive session cards (#4061)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -68,6 +53,22 @@ Improve accessibility for interactive session cards (#4061)
 - Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
 - Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
+
+## [4.0.3] - 04-23-2025
+
+### Changed
+- All icons will be cached in the browser to reduce response times in (4303)[https://github.com/OSC/ondemand/pull/4303].
+
+### Fixed
+- Shared interactive applications correctly show in left menu panel of My Interactive Sessions in (4304)[https://github.com/OSC/ondemand/pull/4304].
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in (4038)[https://github.com/OSC/ondemand/pull/4308].
+
+## [3.1.11] - 04-23-2025
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in (4039)[https://github.com/OSC/ondemand/pull/4309].
 
 ## [4.0.2] - 03-25-2025
 
@@ -1587,10 +1588,12 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.2...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.3...HEAD
+[4.0.3]: https://github.com/OSC/ondemand/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.11]: https://github.com/OSC/ondemand/compare/v3.1.10...v3.1.11
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9
 [3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7
