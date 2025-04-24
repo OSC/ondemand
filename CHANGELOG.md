@@ -54,6 +54,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
 - Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
 
+## [4.0.3] - 04-23-2025
+
+### Changed
+- All icons will be cached in the browser to reduce response times in (4303)[https://github.com/OSC/ondemand/pull/4303].
+
+### Fixed
+- Shared interactive applications correctly show in left menu panel of My Interactive Sessions in (4304)[https://github.com/OSC/ondemand/pull/4304].
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in (4038)[https://github.com/OSC/ondemand/pull/4308].
+
+## [3.1.11] - 04-23-2025
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in (4039)[https://github.com/OSC/ondemand/pull/4309].
+
 ## [4.0.2] - 03-25-2025
 
 ### Fixes
@@ -1572,10 +1588,12 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.2...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.3...HEAD
+[4.0.3]: https://github.com/OSC/ondemand/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.11]: https://github.com/OSC/ondemand/compare/v3.1.10...v3.1.11
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9
 [3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7
