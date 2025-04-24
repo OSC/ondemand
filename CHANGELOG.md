@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+fix path selector and broken tests (#4302)\
+Added a drop down menu in import directory form (#4283)\
+Rm handlebars (#4294)\
+Fixed rendering shared apps left hand menu when custom navigation is configured (#4291)\
+upgrade to rails 7.0.8.7 (#4301)\
+Update Dependencies (#4300)\
+upgrade job composer's nokogiri (#4296)\
+Update .zenodo.json (#4297)\
+lint a random file (#4298)\
+small refactor to reuse notifying this aria live region (#4290)\
+rename this function so it doesn't collide with window.alert (#4288)\
+support setting bc_ attributes globally (#4282)\
+Update Changelog (#4292)\
+Update Dependencies (#4293)\
+Improve accessibility for interactive session cards (#4061)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
