@@ -8,6 +8,7 @@ class Project
   include IconWithUri
   extend JobLogger
 
+
   def self.from_directory(dir)
     # fetch "id" by opening .ondemand/manifest.yml
     manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
@@ -278,6 +279,55 @@ class Project
     File.readable?(file) ? file : nil
   end
 
+
+
+
+
+
+
+  def compress_to_template_archive(file_names)
+    return nil if file_names.blank?
+    file_names << "template_manifest.yml"
+    create_template_manifest(file_names)
+    
+    project_template = Tempfile.new("#{id}_template.tar.gz", project_dataroot)
+    begin
+      ZipKit::Streamer.open(project_template) do |zip|
+        file_names.each do |file_name|
+          file_path = project_dataroot.join(file_name)
+          next unless File.exist?(file_path) && File.readable?(file_path)
+          
+          if File.file?(file_path)
+            zip.write_deflated_file(file_name) do |zip_file|
+              IO.copy_stream(file_path, zip_file)
+            end
+          elsif File.directory?(file_path)
+            zip.add_empty_directory(dirname: file_name)
+          end
+        end
+      rescue StandardError => e
+        Rails.logger.error("Error compressing project template archive: #{e.message}")
+      end
+
+      project_template.path
+    rescue StandardError => e
+      Rails.logger.error("Error creating archive: #{e.message}")
+      nil
+    ensure
+      project_template.close
+      project_template.unlink
+    end
+  end
+
+
+
+
+
+
+
+
+
+
   private
 
   def update_attrs(attributes)
@@ -361,5 +411,11 @@ class Project
     template_path = Pathname.new(template)
     errors.add(:template, :invalid) if Project.templates.map { |t| t.directory.to_s }.exclude?(template.to_s)
     errors.add(:template, :invalid) unless template_path.exist? && template_path.readable?
+  end
+
+  def create_template_manifest(file_names)
+    template_manifest = Tempfile.new("template_manifest.yml", project_dataroot)
+    template_manifest.write({ id: id, name: name, description: description, icon: icon, files: file_names }.to_yaml)
+    template_manifest.close
   end
 end
