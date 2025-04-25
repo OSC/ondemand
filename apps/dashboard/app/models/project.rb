@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'zip'
 
 # Project classes represent projects users create to run HPC jobs.
 class Project
@@ -279,54 +280,22 @@ class Project
     File.readable?(file) ? file : nil
   end
 
-
-
-
-
-
-
-  def compress_to_template_archive(file_names)
+  def zip_to_template(file_names)
     return nil if file_names.blank?
     file_names << "template_manifest.yml"
     create_template_manifest(file_names)
-    
-    project_template = Tempfile.new("#{id}_template.tar.gz", project_dataroot)
-    begin
-      ZipKit::Streamer.open(project_template) do |zip|
-        file_names.each do |file_name|
-          file_path = project_dataroot.join(file_name)
-          next unless File.exist?(file_path) && File.readable?(file_path)
-          
-          if File.file?(file_path)
-            zip.write_deflated_file(file_name) do |zip_file|
-              IO.copy_stream(file_path, zip_file)
-            end
-          elsif File.directory?(file_path)
-            zip.add_empty_directory(dirname: file_name)
-          end
-        end
-      rescue StandardError => e
-        Rails.logger.error("Error compressing project template archive: #{e.message}")
+
+    # using ZipKit create a zip file called project.zip containiong the files named in file_names and save it in the project_dataroot
+    zip_file = "#{project_dataroot}/project.zip"
+    Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
+      file_names.each do |file_name|
+        file_path = "#{project_dataroot}/#{file_name}"
+        zipfile.add(file_name, file_path) if File.exist?(file_path)
       end
-
-      project_template.path
-    rescue StandardError => e
-      Rails.logger.error("Error creating archive: #{e.message}")
-      nil
-    ensure
-      project_template.close
-      project_template.unlink
     end
+    zip_file
+    File.delete("#{project_dataroot}/template_manifest.yml") if File.exist?("#{project_dataroot}/template_manifest.yml")
   end
-
-
-
-
-
-
-
-
-
 
   private
 
@@ -414,7 +383,7 @@ class Project
   end
 
   def create_template_manifest(file_names)
-    template_manifest = Tempfile.new("template_manifest.yml", project_dataroot)
+    template_manifest = File.open("#{project_dataroot}/template_manifest.yml", "w")
     template_manifest.write({ id: id, name: name, description: description, icon: icon, files: file_names }.to_yaml)
     template_manifest.close
   end
