@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table">
+    <thead class="table-light">
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Version(s)</th>
+        <th>Description</th>
+        <th>Clusters</th>
+      </tr>
+    </thead>
+    <tbody id="moduleTable">
+      <% modules.sort.each_with_index do |(name, versions), index| %>
+        <%= render 'module_row', name: name, versions: versions, selected_clusters: selected_clusters %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
