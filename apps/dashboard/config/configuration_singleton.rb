@@ -155,7 +155,10 @@ class ConfigurationSingleton
   end
 
   def load_external_bc_config?
-    to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"]) || (rails_env == "production")
+    if ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"].nil?
+      rails_env == "production"
+    else
+      to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"])
   end
 
   # The paths to the JSON files that store the quota information
