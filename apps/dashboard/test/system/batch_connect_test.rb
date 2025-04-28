@@ -8,13 +8,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     stub_sys_apps
     stub_user
     Configuration.stubs(:bc_dynamic_js).returns(true)
-    Configuration.stubs(:bc_dynamic_js?).returns(true) #stub the alias too
+    Configuration.stubs(:bc_dynamic_js?).returns(true) # stub the alias too
   end
 
   def stub_git(dir)
     Open3.stubs(:capture3)
-      .with('git', 'describe', '--always', '--tags', chdir: dir)
-      .returns(['1.2.3', '', exit_success])
+         .with('git', 'describe', '--always', '--tags', chdir: dir)
+         .returns(['1.2.3', '', exit_success])
   end
 
   def make_bc_app(dir, form)
@@ -80,7 +80,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping works on maxes' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # defaults
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
@@ -97,7 +97,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping works on mins' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # defaults
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
@@ -114,7 +114,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping shifts left' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # setup to start with same
     select('same', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
@@ -122,7 +122,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     # less than current max, but greater than the next choices'
     fill_in bc_ele_id('bc_num_slots'), with: 150
-    
+
     # toggle back to 'gpu' and it should clamp to 150 down to 28
     select('gpu', from: bc_ele_id('node_type'))
     assert_equal 28, find_max('bc_num_slots')
@@ -131,7 +131,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping shifts right' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # start with defaults
     assert_equal 3, find_min('bc_num_slots')
     assert_equal 7, find_max('bc_num_slots')
@@ -405,7 +405,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     # insert some text into the field
     account_element = find("##{bc_ele_id('bc_account')}")
-    account_element.send_keys " & some typed value"
+    account_element.send_keys ' & some typed value'
     assert_equal 'python31 & some typed value', find_value('bc_account')
 
     # now change it and confirm the value
@@ -435,7 +435,6 @@ class BatchConnectTest < ApplicationSystemTestCase
   test 'sessions respond to cache file' do
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
-
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'owens', find_value('cluster')
@@ -535,7 +534,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert(find("##{bc_ele_id('gpus')}").visible?)
     end
   end
-
 
   test 'hiding using check boxes based on when unchecked' do
     Dir.mktmpdir do |dir|
@@ -781,7 +779,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       # the script.sh.erb raises the message 'context.auto_modules_netcdf_serial' (note the _ in the name)
       # which should be 'netcdf-serial/4.3.3.1'
       click_on('Launch')
-      verify_bc_alert('sys/bc_jupyter',  I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
+      verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
     end
   end
 
@@ -824,7 +822,7 @@ class BatchConnectTest < ApplicationSystemTestCase
           - auto_accounts
       HEREDOC
 
-      Pathname.new("#{dir}/app/").join("form.yml").write(form)
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
 
       visit new_batch_connect_session_context_url('sys/app')
 
@@ -869,7 +867,7 @@ class BatchConnectTest < ApplicationSystemTestCase
             - auto_accounts
         HEREDOC
 
-        Pathname.new("#{dir}/app/").join("form.yml").write(form)
+        Pathname.new("#{dir}/app/").join('form.yml').write(form)
 
         visit new_batch_connect_session_context_url('sys/app')
 
@@ -878,7 +876,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                            'pzs1117', 'pzs1118', 'pzs1124'].to_set
+                             'pzs1117', 'pzs1118', 'pzs1124'].to_set
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).to_set
@@ -1349,9 +1347,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
       OodFilesApp.stubs(:candidate_favorite_paths).returns([
-        FavoritePath.new('/tmp'),
-        FavoritePath.new('/var')
-      ])
+                                                             FavoritePath.new('/tmp'),
+                                                             FavoritePath.new('/var')
+                                                           ])
       stub_scontrol
       stub_sacctmgr
       stub_git("#{dir}/app")
@@ -1422,9 +1420,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
       OodFilesApp.stubs(:candidate_favorite_paths).returns([
-        FavoritePath.new('/tmp'),
-        FavoritePath.new('/var')
-      ])
+                                                             FavoritePath.new('/tmp'),
+                                                             FavoritePath.new('/var')
+                                                           ])
       stub_scontrol
       stub_sacctmgr
       stub_git("#{dir}/app")
@@ -1455,10 +1453,9 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   def get_favorites
     # For debugging flaky tests
-    favorites = all('#favorites li', wait: 30)
+    all('#favorites li', wait: 30)
     # puts "FAVORITES: "
     # puts favorites.map{|i| i['innerHTML']}.join('')
-    favorites
   end
 
   test 'launches and saves settings as a template' do
