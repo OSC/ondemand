@@ -48,9 +48,7 @@
   <td>
     <div class="d-grid gap-2">
       <%= link_to 'Details', product_path(product.name, type: @type), class: 'btn btn-info' %>
-      <% if Configuration.can_access_shell? %>
-        <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
-      <% end %>
+      <%= render(partial: 'shared/shell_button', locals: { host: ENV['OOD_DEV_SSH_HOST'], path: product.router.path.realdirpath }) %>
       <% if Configuration.can_access_files? %>
         <%= link_to 'Files', OodAppkit.files.url(path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
       <% end %>
