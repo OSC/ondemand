@@ -36,12 +36,6 @@ module SmartAttributes
         (opts[:label] || 'Number of nodes').to_s
       end
 
-      # Whether this attribute is required
-      # @return [Boolean] is required
-      def required
-        false
-      end
-
       # Submission hash describing how to submit this attribute
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
