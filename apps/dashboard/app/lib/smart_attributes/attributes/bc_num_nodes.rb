@@ -33,21 +33,13 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        str = opts[:label] || case fmt
-                              when 'lsf'
-                                'Number of processors'
-                              when 'pbspro'
-                                'Number of CPUs on single node'
-                              else
-                                'Number of nodes'
-                              end
-        str.to_s
+        (opts[:label] || 'Number of nodes').to_s
       end
 
       # Whether this attribute is required
       # @return [Boolean] is required
       def required
-        true
+        false
       end
 
       # Submission hash describing how to submit this attribute
@@ -61,7 +53,7 @@ module SmartAttributes
                  when 'slurm'
                    ['-N', nodes]
                  when 'pbspro'
-                   ['-l', "select=1:ncpus=#{nodes}"]
+                   ['-l', "select=#{nodes}"]
                  when 'lsf'
                    ['-n', nodes]
                  when 'fujitsu_tcs'
