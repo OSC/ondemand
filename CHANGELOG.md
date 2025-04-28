@@ -6,23 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#4317)\
-fix links in changelog (#4316)\
-Add 4.0.3 and 3.1.11 to the changlog. (#4315)\
-fix path selector and broken tests (#4302)\
-Added a drop down menu in import directory form (#4283)\
-Rm handlebars (#4294)\
-Fixed rendering shared apps left hand menu when custom navigation is configured (#4291)\
-upgrade to rails 7.0.8.7 (#4301)\
-Update Dependencies (#4300)\
-upgrade job composer's nokogiri (#4296)\
-Update .zenodo.json (#4297)\
-lint a random file (#4298)\
-small refactor to reuse notifying this aria live region (#4290)\
-rename this function so it doesn't collide with window.alert (#4288)\
-support setting bc_ attributes globally (#4282)\
-Update Changelog (#4292)\
-Update Dependencies (#4293)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -47,6 +30,7 @@ Update Dependencies (#4293)
 - Desktops start with a safer PATH to ensure that dbus-launch comes from the OS in [4160](https://github.com/OSC/ondemand/pull/4160).
 - Dynamic batch connect correctly accounts for clusters with hyphens (-) in [4245](https://github.com/OSC/ondemand/pull/4245).
 - My interactive sessions page has better landmarks in [4254](https://github.com/OSC/ondemand/pull/4254).
+- Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4291](https://github.com/OSC/ondemand/pull/4291).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -60,6 +44,7 @@ Update Dependencies (#4293)
 - The file editor will now only open files under a certain limit in [4256](https://github.com/OSC/ondemand/pull/4256).
 - Projects can now be imported from a directory in [4258](https://github.com/OSC/ondemand/pull/4258).
 - Interactive session cards now announce state changes to screen readers in [4061](https://github.com/OSC/ondemand/pull/4061).
+- SmartAttributes prefixed by bc_ can now be set globally in [4282](https://github.com/OSC/ondemand/pull/4282).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -70,6 +55,9 @@ Update Dependencies (#4293)
 - Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
 - Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
 
 ## [4.0.3] - 04-23-2025
 
