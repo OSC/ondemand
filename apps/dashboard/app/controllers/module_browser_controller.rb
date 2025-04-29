@@ -4,7 +4,7 @@ class ModuleBrowserController < ApplicationController
   def index
     # FIXME: select clusters from Configuration.job_clusters
     @clusters = OodAppkit.clusters.select(&:job_allow?).reject { |c| c.metadata.hidden }
-    @selected_clusters = params[:cluster]
+    # TODO:  Modify HpcModule to return all modules across all clusters
     @modules = @clusters.flat_map do |cluster|
       HpcModule.all(cluster.id).each { |mod| mod.cluster = cluster.id }
     end
