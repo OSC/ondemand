@@ -45,6 +45,11 @@ module LaunchersHelper
     create_editable_widget(script_form_double, attrib)
   end
 
+  def bc_num_nodes_template
+    attrib = SmartAttributes::AttributeFactory.build_bc_num_nodes
+    create_editable_widget(script_form_double, attrib)
+  end
+
   def bc_num_slots_template
     attrib = SmartAttributes::AttributeFactory.build_bc_num_slots
     create_editable_widget(script_form_double, attrib)

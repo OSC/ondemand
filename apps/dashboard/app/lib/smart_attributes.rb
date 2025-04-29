@@ -18,6 +18,7 @@ module SmartAttributes
   require 'smart_attributes/attributes/bc_account'
   require 'smart_attributes/attributes/bc_email_on_started'
   require 'smart_attributes/attributes/bc_num_hours'
+  require 'smart_attributes/attributes/bc_num_nodes'
   require 'smart_attributes/attributes/bc_num_slots'
   require 'smart_attributes/attributes/bc_queue'
   require 'smart_attributes/attributes/bc_vnc_idle'

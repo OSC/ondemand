@@ -23,9 +23,13 @@ const newFieldData = {
     label: "Log Location",
     help: "The destination of the job's log output."
   },
-  bc_num_slots: {
+  bc_num_nodes: {
     label: "Nodes",
     help: "How many nodes the job will run on."
+  },
+  bc_num_slots: {
+    label: "Slots",
+    help: "How many slots or cores the job will run on."
   },
   auto_environment_variable: {
     label: 'Environment Variable',
