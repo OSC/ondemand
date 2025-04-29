@@ -5,6 +5,7 @@ module BatchConnect
   class SessionContextsController < ApplicationController
     include BatchConnectConcern
     include UserSettingStore
+    include EncryptedCache
 
     # GET /batch_connect/<app_token>/session_contexts/new
     def new
@@ -46,7 +47,8 @@ module BatchConnect
       @session = BatchConnect::Session.new
       respond_to do |format|
         if @session.save(app: @app, context: @session_context, format: @render_format)
-          cache_file.write(@session_context.to_openstruct.to_h.to_json) # save context to cache file
+          cache_data = encypted_cache_data(app: @app, data: @session_context.to_openstruct.to_h)
+          cache_file.write(cache_data.to_json) # save context to cache file
           save_template
           # We need to set the prefill templates only after storing the new one
           # so that the new one is included / updated in the list
