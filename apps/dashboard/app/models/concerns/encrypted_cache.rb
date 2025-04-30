@@ -2,6 +2,10 @@ module EncryptedCache
 
   def decypted_cache_data(app: nil, data: {})
     encrypt_decript(app: app, data: data, action: :decrypt)
+
+  # catch the error for backward compatability. i.e., what's cached is not encrypted.
+  rescue ActiveSupport::MessageEncryptor::InvalidMessage
+    data
   end
 
   def encypted_cache_data(app: nil, data: {})
