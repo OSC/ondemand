@@ -513,9 +513,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       actual_new_options = page.all("##{new_field_id} option").map(&:value).to_set
       expected_new_options = [
-        'bc_num_hours', 'auto_queues', 'bc_num_slots', 'auto_cores',
+        'bc_num_hours', 'auto_queues', 'bc_num_nodes', 'auto_cores',
         'auto_accounts', 'auto_job_name', 'auto_environment_variable',
-        'auto_log_location', 'bc_num_nodes'
+        'auto_log_location',
       ].to_set
       assert_equal expected_new_options, actual_new_options
     end
