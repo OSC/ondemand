@@ -1,8 +1,0 @@
----
-#
-# Portal configuration
-#
-
-listen_addr_port: 8080
-servername: localhost
-port: 8080
