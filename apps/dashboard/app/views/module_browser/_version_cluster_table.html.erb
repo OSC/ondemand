@@ -20,7 +20,9 @@
           <% clusters.each do |cluster| %>
             <td>
               <% if grouped_versions[version_name].any? { |v| v.cluster == cluster } %>
-                X
+                <span role="img" aria-label="Available" class="text-success fw-bold">X</span>
+              <% else %>
+                <span class="visually-hidden">Not available</span>
               <% end %>
             </td>
           <% end %>

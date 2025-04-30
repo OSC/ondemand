@@ -1,5 +1,5 @@
 <ul class="d-flex flex-wrap gap-2 list-unstyled" id="module_list">
-  <% modules.sort.each do |(name, versions)| %>
+  <% modules.sort_by { |name, _| name.to_s.titleize }.each do |(name, versions)| %>
     <%= render 'module', name: name, versions: versions %>
   <% end %>
 </ul>
