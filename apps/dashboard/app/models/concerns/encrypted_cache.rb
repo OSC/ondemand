@@ -1,10 +1,7 @@
 module EncryptedCache
 
   def decypted_cache_data(app: nil, data: {})
-    Rails.logger.info("raw data is: #{data.inspect}")
-    ret = encrypt_decript(app: app, data: data, action: :decrypt)
-    Rails.logger.info("after modification is: #{ret.inspect}")
-    ret
+    encrypt_decript(app: app, data: data, action: :decrypt)
   end
 
   def encypted_cache_data(app: nil, data: {})
@@ -15,7 +12,6 @@ module EncryptedCache
     return {} if app.nil?
 
     secret_fields = app.attributes.select { |a| a.widget == 'password_field' }.map(&:id)
-    Rails.logger.info("secret_fields are #{secret_fields.inspect} from #{app.inspect}")
 
     if secret_fields.empty?
       data
