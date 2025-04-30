@@ -515,7 +515,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       expected_new_options = [
         'bc_num_hours', 'auto_queues', 'bc_num_slots', 'auto_cores',
         'auto_accounts', 'auto_job_name', 'auto_environment_variable',
-        'auto_log_location'
+        'auto_log_location', 'bc_num_nodes'
       ].to_set
       assert_equal expected_new_options, actual_new_options
     end
