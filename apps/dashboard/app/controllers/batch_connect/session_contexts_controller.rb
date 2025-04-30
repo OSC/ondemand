@@ -143,13 +143,13 @@ module BatchConnect
 
     # Set the rendering format for displaying attributes
     def set_prefill_templates
-      @prefill_templates ||= bc_templates(@app.token)
+      @prefill_templates ||= bc_templates(@app)
     end
 
     def save_template
       return unless params[:save_template].present? && params[:save_template] == 'on' && params[:template_name].present?
 
-      save_bc_template(@app.token, params[:template_name], @session_context.to_h)
+      save_bc_template(@app, params[:template_name], @session_context.to_h)
     end
 
     # Only permit certian parameters
