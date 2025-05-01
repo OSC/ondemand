@@ -1,0 +1,32 @@
+<% versions_by_cluster = versions.group_by(&:cluster) %>
+
+<div class="table-responsive mt-2 mb-2">
+  <table class="table table-bordered small">
+    <thead class="table-light">
+      <tr>
+        <th>Cluster</th>
+        <th>Versions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% clusters.each do |cluster| %>
+        <% cluster_versions = versions_by_cluster[cluster] || [] %>
+        <tr>
+          <td class="fw-bold"><%= cluster.to_s.titleize %></td>
+          <td>
+            <% if cluster_versions.any? %>
+              <% cluster_versions.uniq { |v| v.version }.sort_by(&:version).reverse.each do |mod| %>
+                <% next if mod.version.blank? %>
+                <span class="badge bg-secondary me-1" title="<%= mod.to_s %>">
+                  <%= mod.version %>
+                </span>
+              <% end %>
+            <% else %>
+              <span class="text-muted">None</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
