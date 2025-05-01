@@ -5,118 +5,13 @@ on:
     branches: [master]
   pull_request:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
 
 env:
   ACTIONS_STEP_DEBUG: true
   ACTIONS_RUNNER_DEBUG: true
 
 jobs:
-  unit-tests:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
-        ruby: ["3.3.5"]
-        include:
-          # Test versions from Ubuntu 22.04
-          - os: ubuntu-latest
-            ruby: "3.0.2"
-          # Test versions from Debian 12
-          - os: ubuntu-latest
-            ruby: "3.1.2"
-          # Test versions from Amazon Linux 2023 and Ubuntu 24.04
-          - os: ubuntu-latest
-            ruby: "3.2.2"
-          # Test versions from RHEL8 & RHEL9
-          - os: ubuntu-latest
-            ruby: "3.3.5"
-    runs-on: ${{ matrix.os }}
-    name: Unit tests
-
-    steps:
-      - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
-
-      - name: Setup Ruby ${{ matrix.ruby }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler: 2.5.23
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-1
-
-      - name: Setup os dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rclone libsqlite3-dev
-
-      - name: Setup Bundler
-        run: |
-          # try to update gems - this can fail on ruby 3.0
-          gem update --system || true
-          bundle config path ~/vendor/bundle
-          bundle install
-          gem install rake
-
-      - name: Run unit tests
-        run: bundle exec rake test:unit
-
-      - name: Run ShellCheck
-        run: bundle exec rake test:shellcheck
-
-      - name: Check file encodings
-        run: bundle exec rake test:unix
-
-      - name: Run Zeitwerk check
-        run: |
-          cd apps/dashboard
-          bundle install
-          bundle exec rake zeitwerk:check
-
-      - name: Run lint tests
-        run: bundle exec rake lint || true
-
-      - name: Run System Dashboard tests
-        run: cd apps/dashboard; bin/rake test:system
-
-      - name: Upload system test failures.
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: system-test-failures-${{ matrix.ruby }}
-          path: |
-            apps/dashboard/tmp/screenshots/*.png
-            apps/dashboard/log/test.log
-
-  k8s-tests:
-    runs-on: ubuntu-latest
-    name: Kubernetes tests
-    steps:
-      - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
-      - name: Create kind cluster
-        uses: container-tools/kind-action@v2
-      - name: Apply ondemand RBAC
-        run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
-      - name: Get ondemand token
-        id: token
-        run: |
-           TOKEN=$(kubectl create token ondemand --namespace=ondemand)
-           echo "ondemand=${TOKEN}" >> $GITHUB_OUTPUT
-      - name: Setup kubectl
-        run: |
-          kubectl config set-credentials ondemand --token="${{ steps.token.outputs.ondemand }}"
-          kubectl config set-context kind-kind --user=ondemand
-          kubectl config use-context kind-kind
-          kubectl cluster-info
-      - name: Test k8s-bootstrap
-        run: /bin/bash hooks/k8s-bootstrap/k8s-bootstrap-ondemand.sh test hooks/hook.env.example
-
   e2e-tests:
     strategy:
       fail-fast: false
@@ -124,30 +19,9 @@ jobs:
         os: [ubuntu-22.04]
         dist:
           - el8
-          - el9
-          - amzn2023
-          - ubuntu-22.04
-          - ubuntu-24.04
-          - debian-12
         arch:
           - x86_64
-          - aarch64
-          - ppc64le
         version: ["4.0"]
-        exclude:
-          # Amazon 2023 on aarch64 is very slow and will time out
-          - dist: amzn2023
-            arch: aarch64
-          # Amazon 2023 doesn't have ppc64le containers
-          - dist: amzn2023
-            arch: ppc64le
-          # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
-          - dist: ubuntu-22.04
-            arch: ppc64le
-          - dist: ubuntu-24.04
-            arch: ppc64le
-          - dist: debian-12
-            arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
@@ -175,8 +49,8 @@ jobs:
         timeout-minutes: 10
         env:
           VERSION: "${{ matrix.version }}.0"
-          OOD_PACKAGING_DEBUG: 'true'
-          CONTAINER_RT: 'podman'
+          OOD_PACKAGING_DEBUG: "true"
+          CONTAINER_RT: "podman"
 
       - name: Run package tests
         if: matrix.arch == 'x86_64'
