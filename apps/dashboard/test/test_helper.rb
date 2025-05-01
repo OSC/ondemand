@@ -128,6 +128,11 @@ module ActiveSupport
     def output_fixture(file)
       File.read("#{Rails.root}/test/fixtures/file_output/#{file}")
     end
+
+    def sys_bc_app(app: 'bc_paraview')
+      r = SysRouter.new(app)
+      BatchConnect::App.new(router: r)
+    end
   end
 end
 
