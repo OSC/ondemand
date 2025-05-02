@@ -133,6 +133,12 @@ module ActiveSupport
       r = SysRouter.new(app)
       BatchConnect::App.new(router: r)
     end
+
+    def stub_git(dir)
+      Open3.stubs(:capture3)
+        .with('git', 'describe', '--always', '--tags', chdir: dir)
+        .returns(['1.2.3', '', exit_success])
+    end
   end
 end
 
