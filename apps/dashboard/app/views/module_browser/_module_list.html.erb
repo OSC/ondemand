@@ -1,6 +1,6 @@
 <ul class="d-flex flex-wrap gap-2 list-unstyled" id="module_list">
   <% modules.sort_by { |name, _| name.to_s.titleize }.each do |(name, versions)| %>
-    <li class="module-card p-2">
+    <li class="module-card p-2" data-name="<%= name %>" data-clusters="<%= versions.map(&:cluster).uniq.join(',') %>">
       <button class="btn btn-secondary p-2 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_<%= name %>">
         <%= name.to_s.titleize %>
       </button>
