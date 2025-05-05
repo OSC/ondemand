@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+move Dockerfile to Dockerfile.example (#4328)\
+Scaffold lmod browser (#4319)\
+Use ood_packaging 0.17.1 (#4331)\
+lint a random file (#4330)\
+Removed support of bc_num_slots as auto_cores will take its place in PM (#4329)\
+Added new Smart Attribute bc_num_nodes to define number of nodes (#4327)\
+small refactor regarding these buttons (#4324)\
+Added new SmartAttribute bc_num_nodes to replace bc_num_slots in PM (#4323)\
+refactor shell buttons so they can be disabled (#4313)\
+lint a random file (#4320)\
+Update Changelog (#4321)\
+update dependencies (#4322)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
