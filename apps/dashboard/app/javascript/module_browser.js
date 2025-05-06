@@ -1,16 +1,23 @@
-jQuery(function (){
-  $(document).on('input change', '#module_search, #cluster_filter', function () {
-    const searchQuery = $('#module_search').val().toLowerCase();
-    const selectedCluster = $('#cluster_filter').val();
+document.addEventListener('DOMContentLoaded', function () {
+  const moduleSearch = document.getElementById('module_search');
+  const clusterFilter = document.getElementById('cluster_filter');
 
-    $('[data-name][data-clusters]').each(function () {
-      const name = $(this).data('name');
-      const clusters = $(this).data('clusters').split(',');
+  function filterModules() {
+    const searchQuery = moduleSearch.value.toLowerCase();
+    const selectedCluster = clusterFilter.value;
+
+    const modules = document.querySelectorAll('[data-name][data-clusters]');
+    modules.forEach(function (module) {
+      const name = module.getAttribute('data-name').toLowerCase();
+      const clusters = module.getAttribute('data-clusters').split(',');
 
       const searchMatches = name.includes(searchQuery);
       const clusterMatches = !selectedCluster || clusters.includes(selectedCluster);
 
-      $(this).toggle(searchMatches && clusterMatches);
+      module.style.display = (searchMatches && clusterMatches) ? '' : 'none';
     });
-  });
+  }
+
+  moduleSearch.addEventListener('input', filterModules);
+  clusterFilter.addEventListener('change', filterModules);
 });
