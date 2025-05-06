@@ -33,7 +33,7 @@ describe 'Nginx stage' do
 
       # Note there's no error here about 'deleted_user'
       on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force' do
-        assert_equal stdout, "ood\ndeleted_user (disabled)\n"
+        assert_equal result.stdout, "ood\ndeleted_user (disabled)\n"
         refute(File.exists?('/var/run/ondemand-nginx/deleted_user'))
         refute(File.exists?('/var/lib/ondemand-nginx/config/puns/deleted_user.conf'))
         refute(File.exists?('/var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'))

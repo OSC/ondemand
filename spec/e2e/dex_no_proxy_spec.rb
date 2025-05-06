@@ -32,7 +32,7 @@ describe 'OnDemand Dex proxy test' do
 
   it 'has Dex issuer' do
     on hosts, 'curl http://localhost:5556/.well-known/openid-configuration' do
-      data = JSON.parse(stdout)
+      data = JSON.parse(result.stdout)
       expect(data['issuer']).to eq('http://localhost:5556')
     end
   end
