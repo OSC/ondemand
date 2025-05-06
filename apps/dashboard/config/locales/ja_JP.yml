@@ -260,3 +260,23 @@ ja_JP:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+    # unknown: "Unknown"
+    save: "溜める"
+    add: "付け加え"
+    remove: "抜かす"
+    delete: "消す"
+    edit: "編集する"
+    show: "見せる"
+    launch: "起動する"
+    type: 'タイプ'
+    name: '名前'
+    size: "サイズ"
+    owner: "所有者"
+    date: "日付"
+    mode: "モード"
+    project: "プロジェクト"
+    directory: "ディレクトリ"
+
+    # project: "Project"
+    # directory: "Directory"
+    auto_log_location_title: "ログの場所"
