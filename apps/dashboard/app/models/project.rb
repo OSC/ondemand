@@ -289,7 +289,6 @@ class Project
       end
     end
     zip_file
-    File.delete("#{project_dataroot}/template_manifest.yml") if File.exist?("#{project_dataroot}/template_manifest.yml")
   end
 
   private
