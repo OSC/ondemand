@@ -104,6 +104,19 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def import_from_zip(zip_file)
+    @project = Project.from_zip(zip_file)
+    if @project.errors.empty?
+      if Project.import_to_lookup(@project)
+        redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
+      else
+        redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
+      end
+    else
+      redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
+    end
+  end
+
   # DELETE /projects/:id
   def destroy
     project_id = params[:id]
