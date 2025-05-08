@@ -74,8 +74,8 @@ Requires:        python3
 Requires:        rclone
 %endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.24.0-1.p6.0.20.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.0.20-1.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.24.0-2.p6.0.20.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.0.20-2.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}
