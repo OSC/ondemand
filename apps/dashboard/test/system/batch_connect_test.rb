@@ -26,6 +26,16 @@ class BatchConnectTest < ApplicationSystemTestCase
     Pathname.new(app_dir).join('form.yml').write(form)
   end
 
+  def stub_good_launch(dir)
+    Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
+    BatchConnect::Session.any_instance.stubs(:save).returns(true)
+    BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
+    BatchConnect::Session.stubs(:cache_root).returns(Pathname.new(dir))
+    OodCore::Job::Adapters::Slurm.any_instance
+                                 .stubs(:info)
+                                 .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+  end
+
   test 'cluster choice changes node types' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -1347,12 +1357,7 @@ class BatchConnectTest < ApplicationSystemTestCase
   test 'saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
-        Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
-        BatchConnect::Session.any_instance.stubs(:save).returns(true)
-        BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
-        OodCore::Job::Adapters::Slurm.any_instance
-                                     .stubs(:info)
-                                     .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+        stub_good_launch(dir)
 
         visit new_batch_connect_session_context_url('sys/bc_paraview')
 

@@ -20,6 +20,8 @@ module BatchConnect
     # Raised when batch connect app components could not be found
     class AppNotFound < StandardError; end
 
+    include EncryptedCache
+
     class << self
       # Generate an object from a token
       # @param token [String] the token
@@ -164,6 +166,9 @@ module BatchConnect
     def update_session_with_cache(session_context, cache_file)
       cache = cache_file.file? ? JSON.parse(cache_file.read) : {}
       cache.delete('cluster') if delete_cached_cluster?(cache['cluster'].to_s)
+      cache = cache.symbolize_keys
+
+      cache = decypted_cache_data(app: self, data: cache)
 
       session_context.update_with_cache(cache)
     end
