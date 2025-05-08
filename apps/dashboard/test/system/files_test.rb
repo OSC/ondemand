@@ -33,8 +33,8 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-file-btn').click
-      find('#swal2-input').set('bar.txt')
-      find('.swal2-confirm').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
       find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
       assert File.file? File.join(dir, 'bar.txt')
     end
@@ -44,8 +44,8 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-dir-btn').click
-      find('#swal2-input').set('bar')
-      find('.swal2-confirm').click
+      find('#files_input_modal_input').set('bar')
+      find('#files_input_modal_ok_button').click
       find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
       assert File.directory? File.join(dir, 'bar')
     end
@@ -248,8 +248,8 @@ class FilesTest < ApplicationSystemTestCase
       tr.find('.rename-file').click
 
       # rename dialog input
-      find('#swal2-input').set('bar.txt')
-      find('.swal2-confirm').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
 
       find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
       assert File.file? File.join(dir, 'bar.txt')
@@ -300,7 +300,7 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'app').ancestor('tr').check
       find('tbody a', exact_text: 'single_file').ancestor('tr').check
       find('#delete-btn').click
-      find('button.swal2-confirm').click
+      find('#files_input_modal_ok_button').click
 
       # verify app dir deleted according to UI
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
@@ -389,14 +389,14 @@ class FilesTest < ApplicationSystemTestCase
     find('tbody a', exact_text: 'config')
 
     find('#goto-btn').click
-    find('#swal2-input').set(Rails.root.join('app'))
-    find('.swal2-confirm').click
+    find('#files_input_modal_input').set(Rails.root.join('app'))
+    find('#files_input_modal_ok_button').click
     find('tbody a', exact_text: 'helpers')
     find('tbody a', exact_text: 'controllers')
 
     find('#goto-btn').click
-    find('#swal2-input').set(Rails.root.to_s)
-    find('.swal2-confirm').click
+    find('#files_input_modal_input').set(Rails.root.to_s)
+    find('#files_input_modal_ok_button').click
     find('tbody a', exact_text: 'app')
     find('tbody a', exact_text: 'config')
   end
@@ -737,8 +737,8 @@ class FilesTest < ApplicationSystemTestCase
       assert(alerts.empty?)
 
       find('#goto-btn').click
-      find('#swal2-input').set('/etc')
-      find('.swal2-confirm').click
+      find('#files_input_modal_input').set('/etc')
+      find('#files_input_modal_ok_button').click
 
       alerts = all('.alert')
       refute(alerts.empty?)

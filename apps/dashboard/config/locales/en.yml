@@ -127,6 +127,7 @@ en:
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
     close: Close
+    ok: OK
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     delete: Delete
