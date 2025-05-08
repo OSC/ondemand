@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import { OODAlert } from '../alert';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
+import { pageSpin, stopPageSpin } from '../utils';
 
 export {EVENTNAME};
 
@@ -92,11 +93,11 @@ jQuery(function() {
   });
 
   $(CONTENTID).on(EVENTNAME.showLoading, function(e,options) {
-    sweetAlert.loading(options.message);
+    pageSpin();
   });
 
   $(CONTENTID).on(EVENTNAME.closeSwal, function() {
-    sweetAlert.close();
+    stopPageSpin();
   });
 
 });
