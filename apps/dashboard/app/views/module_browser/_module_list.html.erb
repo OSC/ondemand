@@ -4,30 +4,39 @@
       <button class="btn btn-secondary p-2 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_<%= name %>">
         <%= name.to_s.titleize %>
       </button>
+
       <div id="collapse_<%= name %>" class="collapse">
         <div class="border rounded p-3">
           <div class="mb-3">
             <div class="mb-2"><strong>Available modules: </strong><span class="text-muted">(select version)</span></div>
             <%= render 'versions_table', versions: versions, clusters: versions.map(&:cluster).uniq %>
           </div>
+
           <div id="module_info_<%= name %>" data-role="module-info">
+
             <div class="mb-3">
               <div class="mb-2"><strong>Dependencies:</strong></div>
-              <%# Make dependencies expandable %>
-              <span data-role="module-dependencies">-</span>
+              <% # TODO: Make dependencies expandable %>
+              <span data-role="module-dependencies">
+                -
+              </span>
             </div>
-            <div class="load-command-box">
+
+            <div>
               <div class="mb-2"><strong>Load command:</strong></div>
-              <code data-role="module-load-command">module load <%= name %></code>
-              <button 
-                type="button"
-                class="btn btn-outline-secondary btn-sm ms-2"
-                data-role="copy-btn"
-                data-clipboard-target="#module_info_<%= name %> [data-role='module-load-command']"
-              >
-                Copy
-              </button>
+              <div class="d-flex align-items-center bg-light border rounded p-2">
+                <pre data-role="module-load-command" class="flex-grow-1 mb-0">module load <%= name %></pre>
+                <button 
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm ms-2"
+                  data-role="copy-btn"
+                  data-clipboard-target="#module_info_<%= name %> [data-role='module-load-command']"
+                >
+                  Copy
+                </button>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
