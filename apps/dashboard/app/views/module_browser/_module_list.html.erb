@@ -1,16 +1,33 @@
 <ul class="d-flex flex-wrap gap-2 list-unstyled" id="module_list">
   <% modules.sort_by { |name, _| name.to_s.titleize }.each do |(name, versions)| %>
-    <li class="module-card p-2">
+    <li class="module-card p-2" data-name="<%= name %>" data-clusters="<%= versions.map(&:cluster).uniq.join(',') %>">
       <button class="btn btn-secondary p-2 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_<%= name %>">
         <%= name.to_s.titleize %>
       </button>
-      <%# TODO: Lazy load collapse content %>
-      <div id="collapse_<%= name %>" class="collapse mt-2">
-        <div class="p-3 border rounded bg-light">
-          <div>
-            <strong>Available modules:</strong> 
-            <br>
+      <div id="collapse_<%= name %>" class="collapse">
+        <div class="border rounded p-3">
+          <div class="mb-3">
+            <div class="mb-2"><strong>Available modules: </strong><span class="text-muted">(select version)</span></div>
             <%= render 'versions_table', versions: versions, clusters: versions.map(&:cluster).uniq %>
+          </div>
+          <div id="module_info_<%= name %>" data-role="module-info">
+            <div class="mb-3">
+              <div class="mb-2"><strong>Dependencies:</strong></div>
+              <%# Make dependencies expandable %>
+              <span data-role="module-dependencies">-</span>
+            </div>
+            <div class="load-command-box">
+              <div class="mb-2"><strong>Load command:</strong></div>
+              <code data-role="module-load-command">module load <%= name %></code>
+              <button 
+                type="button"
+                class="btn btn-outline-secondary btn-sm ms-2"
+                data-role="copy-btn"
+                data-clipboard-target="#module_info_<%= name %> [data-role='module-load-command']"
+              >
+                Copy
+              </button>
+            </div>
           </div>
         </div>
       </div>

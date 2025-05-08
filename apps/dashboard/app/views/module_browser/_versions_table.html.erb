@@ -1,7 +1,7 @@
 <% versions_by_cluster = versions.group_by(&:cluster) %>
 
-<div class="table-responsive mt-2 mb-2">
-  <table class="table table-bordered small">
+<div class="table-responsive">
+  <table class="table table-bordered">
     <thead class="table-light">
       <tr>
         <th>Cluster</th>
@@ -17,7 +17,14 @@
             <% if cluster_versions.any? %>
               <% cluster_versions.uniq { |v| v.version }.sort_by(&:version).reverse.each do |mod| %>
                 <% next if mod.version.blank? %>
-                <span class="badge bg-secondary me-1" title="<%= mod.to_s %>">
+                <span 
+                  class="badge me-1 version-badge" 
+                  title="<%= mod.to_s %>"
+                  data-role="selectable-version"
+                  data-module="<%= mod.name %>"
+                  data-version="<%= mod.version %>"
+                  data-dependencies="<%= (mod.dependencies || []).flatten.join(', ') %>"
+                >
                   <%= mod.version %>
                 </span>
               <% end %>

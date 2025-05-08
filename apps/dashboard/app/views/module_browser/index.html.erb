@@ -1,3 +1,5 @@
 <h1 class="mb-4">Module Browser</h1>
 
 <%= render 'module_list', modules: @modules %>
+
+<%= javascript_include_tag 'module_browser', nonce: true %>
