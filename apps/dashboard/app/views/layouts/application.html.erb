@@ -63,6 +63,10 @@
     </nav>
   </header>
 
+  <div id="full_page_spinner" class="full-page-spinner d-none">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
   <div id="main_container" class="<%= local_assigns[:layout_container_class] || 'container-md' %> content mt-4" role="main">
 
     <%= render "layouts/announcements" %>
