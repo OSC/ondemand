@@ -105,6 +105,11 @@
 #
 #passenger_log_file: '/var/log/ondemand-nginx/%{user}/error.log'
 
+# Option to disable the Passenger telemetry.
+# Set to `on` if you don't want to regularly send anonymous telemetry data to Phusion
+#
+#passenger_disable_anonymous_telemetry: on
+
 # Hash of Passenger configuration options
 # Keys without passenger_ prefix will be ignored
 #
