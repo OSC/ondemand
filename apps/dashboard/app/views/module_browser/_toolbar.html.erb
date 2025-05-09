@@ -1,0 +1,17 @@
+<div class="d-flex flex-wrap align-items-end gap-3 mb-4">
+  <div class="flex-grow-1">
+    <label for="module_search" class="form-label">Search Modules</label>
+    <input type="text" class="form-control" id="module_search" placeholder="Search by module name...">
+  </div>
+  <div>
+    <label for="cluster_filter" class="form-label">Cluster</label>
+    <select id="cluster_filter" class="form-select">
+      <option value="">All Clusters</option>
+      <% Configuration.job_clusters.each do |cluster| %>
+        <option value="<%= cluster.id %>">
+          <%= cluster.metadata.title.presence || cluster.id.titleize %>
+        </option>
+      <% end %>
+    </select>
+  </div>
+</div>

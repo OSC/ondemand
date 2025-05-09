@@ -122,9 +122,10 @@ export function reportErrorForAnalytics(path, error) {
 // helper method to hide an element. Note that jQuery's hide()
 // changes the inline style which may not do anything if the element
 // already has a bootstrap display class like d-flex.
-export function hide(id) {
-  const ele = document.getElementById(id);
-  if(ele !== null) {
+// target can be an id or an HTMLElement
+export function hide(target) {
+  const ele = typeof target === 'string' ? document.getElementById(target) : target;
+  if(ele instanceof HTMLElement) {
     ele.classList.add('d-none');
   }
 }
@@ -132,9 +133,10 @@ export function hide(id) {
 // helper method to show an element. Note that jQuery's show()
 // changes the inline style which may not do anything if the element
 // already has a bootstrap display class like d-flex.
-export function show(id) {
-  const ele = document.getElementById(id);
-  if(ele !== null) {
+// target can be an id or an HTMLElement
+export function show(target) {
+  const ele = typeof target === 'string' ? document.getElementById(target) : target;
+  if(ele instanceof HTMLElement) {
     ele.classList.remove('d-none');
   }
 }
