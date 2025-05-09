@@ -23,7 +23,8 @@
                   data-role="selectable-version"
                   data-module="<%= mod.name %>"
                   data-version="<%= mod.version %>"
-                  data-dependencies="<%= (mod.dependencies || []).flatten.join(', ') %>"
+                  data-dependencies="<%= (mod.dependencies || []).to_json %>"
+                  data-default="<%= mod.default? %>"
                 >
                   <%= mod.version %>
                 </span>

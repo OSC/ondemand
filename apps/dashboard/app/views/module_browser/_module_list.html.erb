@@ -16,10 +16,21 @@
 
             <div class="mb-3">
               <div class="mb-2"><strong>Dependencies:</strong></div>
-              <% # TODO: Make dependencies expandable %>
-              <span data-role="module-dependencies">
-                -
-              </span>
+              <%# TODO: Make dependencies expandable %>
+              <div class="form-check form-check-inline">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="dep-<%= name %>" 
+                  id="dep-none-<%= name %>" 
+                  value="" 
+                  checked
+                >
+                <label class="form-check-label" for="dep-none-<%= name %>">None</label>
+              </div>
+              <div data-role="module-dependencies">
+
+              </div>
             </div>
 
             <div>

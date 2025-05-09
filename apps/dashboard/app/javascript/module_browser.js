@@ -2,31 +2,87 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-name]').forEach(card => {
     const versions = card.querySelectorAll("[data-role='selectable-version']");
     const infoBox = card.querySelector("[data-role='module-info']");
-    const dependenciesSpan = infoBox.querySelector("[data-role='module-dependencies']");
+    const dependenciesContainer = infoBox.querySelector("[data-role='module-dependencies']");
     const loadCmd = infoBox.querySelector("[data-role='module-load-command']");
 
-    const defaultVersion = [...versions].find(v => v.dataset.default === 'true');
-    if (defaultVersion) updateInfo(defaultVersion);
-
-    versions.forEach(badge => {
-      badge.addEventListener('click', () => {
+    versions.forEach(version => {
+      version.addEventListener('click', () => {
         versions.forEach(v => v.classList.remove('selected-version'));
-        badge.classList.add('selected-version');
+        version.classList.add('selected-version');
 
-        updateInfo(badge);
+        updateInfo(version);
       });
     });
 
-    function updateInfo(badge) {
-      const module = badge.dataset.module;
-      const version = badge.dataset.version;
-      const deps = badge.dataset.dependencies || '-';
+    /** 
+     * Updates dependencies and load command based on the selected version.
+     */
+    function updateInfo(selectedVersion) {
+      const module = selectedVersion.dataset.module;
+      const version = selectedVersion.dataset.version;
+      const rawDeps = selectedVersion.dataset.dependencies;
+      let depGroups = [];
 
-      dependenciesSpan.textContent = deps;
-      loadCmd.textContent = `module load ${module}/${version}`;
+      try {
+        depGroups = JSON.parse(rawDeps);
+      } catch {
+        depGroups = [];
+      }
+
+      if (!Array.isArray(depGroups) || depGroups.length === 0) {
+        loadCmd.textContent = `module load ${module}/${version}`;
+        return;
+      }
+      
+      const radioName = `dep-${module}`;
+      const noneInput = infoBox.querySelector(`#dep-none-${module}`);
+      dependenciesContainer.innerHTML = '';
+
+      depGroups.forEach((group, index) => {
+        const id = `${module}-depgrp-${index}`;
+        const labelText = group.join(' + ');
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'form-check form-check-inline';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = radioName;
+        input.className = 'form-check-input';
+        input.id = id;
+        input.value = group.join(' ');
+
+        const label = document.createElement('label');
+        label.className = 'form-check-label';
+        label.setAttribute('for', id);
+        label.textContent = labelText;
+
+        wrapper.appendChild(input);
+        wrapper.appendChild(label);
+        dependenciesContainer.appendChild(wrapper);
+
+        input.addEventListener('change', updateCommand);
+      });
+
+      if (noneInput) {
+        noneInput.name = radioName;
+        noneInput.checked = true;
+        noneInput.addEventListener('change', updateCommand);
+      }
+
+      updateCommand();
+
+      function updateCommand() {
+        const selected = infoBox.querySelector(`input[name="${radioName}"]:checked`)?.value || '';
+        const depsPart = selected ? `${selected} ` : '';
+        loadCmd.textContent = `module load ${depsPart}${module}/${version}`;
+      }
     }
   });
 
+  /*
+   * Copies the text content of the target element to the clipboard
+   */
   document.querySelectorAll('[data-role="copy-btn"]').forEach(button => {
     button.addEventListener('click', () => {
       const selector = button.getAttribute('data-clipboard-target');
