@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /*
     Copies the text content of the target element to the clipboard
-   */
+  */
   document.querySelectorAll('[data-role="copy-btn"]').forEach(button => {
     button.addEventListener('click', () => {
       const selector = button.getAttribute('data-clipboard-target');
@@ -100,6 +100,20 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(err => {
           console.error('Clipboard write failed:', err);
         });
+    });
+  });
+
+  /*
+    Toggles the visibility of the module info box when the card is clicked
+  */
+  document.querySelectorAll('.collapse').forEach(collapse => {
+    const card = collapse.closest('[data-name]');
+    collapse.addEventListener('shown.bs.collapse', () => {
+      if (card) card.classList.add('expanded');
+    });
+
+    collapse.addEventListener('hidden.bs.collapse', () => {
+      if (card) card.classList.remove('expanded');
     });
   });
 });

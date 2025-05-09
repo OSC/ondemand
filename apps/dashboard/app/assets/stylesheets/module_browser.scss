@@ -1,10 +1,18 @@
 .module-card {
-  width: 25rem;
+  flex: 1 1 20rem;
+  min-width: 20rem
+}
+
+.module-card.expanded {
+  flex: 0 0 100%;
 }
 
 .version-badge {
+  margin: 5px 0;
   cursor: pointer;
   background-color: #6c757d;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
 }
 
 .selected-version {

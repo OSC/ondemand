@@ -12,7 +12,7 @@
       </button>
 
       <div id="collapse_<%= name %>" class="collapse">
-        <div class="border rounded p-3">
+        <div class="border rounded p-4">
           <div class="mb-3">
             <div class="mb-3 h5"><strong>Available modules: </strong><span class="text-muted small">(select version)</span></div>
             <%= render 'versions_table', versions: versions, clusters: versions.map(&:cluster).uniq %>
