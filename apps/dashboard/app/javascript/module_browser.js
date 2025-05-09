@@ -1,3 +1,5 @@
+import { hide, show } from './utils.js';
+
 document.addEventListener('DOMContentLoaded', function () {
   const moduleSearch = document.getElementById('module_search');
   const clusterFilter = document.getElementById('cluster_filter');
@@ -14,7 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const searchMatches = name.includes(searchQuery);
       const clusterMatches = !selectedCluster || clusters.includes(selectedCluster);
 
-      module.style.display = (searchMatches && clusterMatches) ? '' : 'none';
+      if (searchMatches && clusterMatches) {
+        show(module);
+      } else {
+        hide(module);
+      }
     });
   }
 
