@@ -79,6 +79,10 @@ module NginxStage
       @passenger_log_file&.%({ user: user })
     end
 
+    # Option to disable the Passenger telemetry
+    # @return [String] the value for passenger_disable_anonymous_telemetry
+    attr_accessor :passenger_disable_anonymous_telemetry
+
     attr_writer :passenger_log_file
 
     # Hash of Passenger configuration options
