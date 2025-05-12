@@ -26,7 +26,7 @@
   height: 5rem;
 }
 
-.full-page-spinner {
+.global-full-page-spinner {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -36,7 +36,7 @@
   z-index: 10000;
 }
 
-.full-page-spinner .spinner-border {
+.global-full-page-spinner .spinner-border {
   display: block;
   color: #fff;
   width: 100px;
