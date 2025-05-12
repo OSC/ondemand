@@ -61,9 +61,7 @@ http {
   <%- if passenger_log_file -%>
   passenger_log_file <%= passenger_log_file %>;
   <%- end -%>
-  <%- if passenger_disable_anonymous_telemetry -%>
   passenger_disable_anonymous_telemetry <%= passenger_disable_anonymous_telemetry %>;
-  <%- end -%>
 <%- passenger_options.to_h.each_pair do |key, value| -%>
   <%= key %> <%= value %>;
 <%- end -%>
