@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bump rack from 2.2.13 to 2.2.14 in /apps/dashboard (#4351)\
+start to remove sweetalert (#4346)\
+Update e2e ci (#4341)\
+encrypt password fields when caching them (#4326)\
+Use latest passenger/nginx (#4342)\
+Feature/3999 zip template from project (#4097)\
+raise an error under certain conditions. (#4339)\
+Update Changelog (#4336)\
+update dependencies (#4337)\
+lint a random file (#4335)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
