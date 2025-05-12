@@ -42,6 +42,11 @@ export function today() {
   return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
 }
 
+function showSpinner() {
+  $('body').addClass('modal-open');
+  $('#full-page-spinner').removeClass('d-none');
+}
+
 export function pageSpin() {
   const ele = document.getElementById('full_page_spinner');
   ele.classList.remove('d-none');
