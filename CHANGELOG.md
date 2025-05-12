@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Bump rack from 2.2.13 to 2.2.14 in /apps/dashboard (#4351)\
-start to remove sweetalert (#4346)\
-Update e2e ci (#4341)\
-encrypt password fields when caching them (#4326)\
-Use latest passenger/nginx (#4342)\
-Feature/3999 zip template from project (#4097)\
-raise an error under certain conditions. (#4339)\
-Update Changelog (#4336)\
-update dependencies (#4337)\
-lint a random file (#4335)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -42,7 +32,8 @@ lint a random file (#4335)
 - My interactive sessions page has better landmarks in [4254](https://github.com/OSC/ondemand/pull/4254).
 - Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4291](https://github.com/OSC/ondemand/pull/4291).
 - Shell buttons correctly disappear when the shell app is disabled in [4313](https://github.com/OSC/ondemand/pull/4313).
-
+- ood-portal-generator will now raise an error when attempting to use dex when it is not installed in [4339](https://github.com/OSC/ondemand/pull/4339).
+  
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
 - Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
@@ -69,9 +60,11 @@ lint a random file (#4335)
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
 - Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
 - The Dockerfile is now a Dockerfile.example file to illustrate it's just an example in [4328](https://github.com/OSC/ondemand/pull/4328).
+- passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
+- password_fields are now encrypted when written to cache or settings files in [4326](https://github.com/OSC/ondemand/pull/4326).
 
 ## [4.0.3] - 04-23-2025
 
