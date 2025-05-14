@@ -14,7 +14,8 @@ module BatchConnect
       request_params = settings_request_params
       app_token = request_params[:token]
       settings_name = request_params[:id]
-      settings_values = bc_templates(app_token)[settings_name.to_sym]
+      app = BatchConnect::App.from_token(app_token)
+      settings_values = bc_templates(app)[settings_name.to_sym]
       if settings_values.nil?
         redirect_to new_batch_connect_session_context_path(token: app_token),
                     alert: t('dashboard.bc_saved_settings.missing_settings')

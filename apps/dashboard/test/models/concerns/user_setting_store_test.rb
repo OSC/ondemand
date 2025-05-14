@@ -68,51 +68,51 @@ class UserSettingStoreTest < ActionView::TestCase
 
   test 'bc_templates returns application saved settings' do
     with_user_settings_file do
-      app_token = 'app/token'
+      app = sys_bc_app
       values = { name1: 'value1', name2: 'value2' }
 
-      save_bc_template(app_token, 'settings1', values)
-      save_bc_template(app_token, 'settings2', values)
-      assert_equal({ settings1: values, settings2: values }, bc_templates(app_token))
+      save_bc_template(app, 'settings1', values)
+      save_bc_template(app, 'settings2', values)
+      assert_equal({ settings1: values, settings2: values }, bc_templates(app))
     end
   end
 
   test 'save_bc_template save settings with expected structure' do
     with_user_settings_file do
-      app_token = 'app/token'
+      app = sys_bc_app
       values = { name1: 'value1', name2: 'value2' }
 
-      save_bc_template(app_token, 'settings1', values)
-      save_bc_template(app_token, 'settings2', values)
-      assert_equal({ app_token.to_sym => { settings1: values, settings2: values } }, all_bc_templates)
+      save_bc_template(app, 'settings1', values)
+      save_bc_template(app, 'settings2', values)
+      assert_equal({ app.token.to_sym => { settings1: values, settings2: values } }, all_bc_templates)
     end
   end
 
   test 'delete_bc_template deletes settings data' do
     with_user_settings_file do
       assert_equal({}, all_bc_templates)
-      app_token = 'app/token'
+      app = sys_bc_app
       values = { name1: 'value1', name2: 'value2' }
 
-      save_bc_template(app_token, 'settings1', values)
-      save_bc_template(app_token, 'settings2', values)
-      assert_equal({ app_token.to_sym => { settings1: values, settings2: values } }, all_bc_templates)
+      save_bc_template(app, 'settings1', values)
+      save_bc_template(app, 'settings2', values)
+      assert_equal({ app.token.to_sym => { settings1: values, settings2: values } }, all_bc_templates)
 
-      delete_bc_template(app_token, 'settings1')
-      assert_equal({ app_token.to_sym => { settings2: values } }, all_bc_templates)
+      delete_bc_template(app.token, 'settings1')
+      assert_equal({ app.token.to_sym => { settings2: values } }, all_bc_templates)
     end
   end
 
   test 'delete_bc_template deletes app entry when empty' do
     with_user_settings_file do
       assert_equal({}, all_bc_templates)
-      app_token = 'app/token'
+      app = sys_bc_app
       values = { name1: 'value1', name2: 'value2' }
 
-      save_bc_template('app/token', 'settings name', values)
-      assert_equal({ app_token.to_sym => { :'settings name' => values } }, all_bc_templates)
+      save_bc_template(app, 'settings name', values)
+      assert_equal({ app.token.to_sym => { :'settings name' => values } }, all_bc_templates)
 
-      delete_bc_template('app/token', 'settings name')
+      delete_bc_template(app.token, 'settings name')
       assert_equal({}, all_bc_templates)
     end
   end
