@@ -1,4 +1,5 @@
 import {analyticsPath} from "./config";
+import { ariaNotify } from './aria_live_notify';
 
 export function cssBadgeForState(state){
   switch (state) {
@@ -50,11 +51,13 @@ function showSpinner() {
 export function pageSpin() {
   const ele = document.getElementById('full_page_spinner');
   ele.classList.remove('d-none');
+  ariaNotify('Loading.');
 }
 
 export function stopPageSpin() {
   const ele = document.getElementById('full_page_spinner');
   ele.classList.add('d-none');
+  ariaNotify('Loading complete.');
 }
 
 export function bindFullPageSpinnerEvent() {
