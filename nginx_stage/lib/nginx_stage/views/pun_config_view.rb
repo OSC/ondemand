@@ -73,6 +73,12 @@ module NginxStage
       NginxStage.passenger_log_file(user: user)
     end
 
+    # Option to disable the Passenger telemetry.
+    # @return [String] the value for passenger_disable_anonymous_telemetry
+    def passenger_disable_anonymous_telemetry
+      NginxStage.passenger_disable_anonymous_telemetry
+    end
+
     # Hash of Passenger configuration options
     # @return [Hash] Hash of Passenger configuration options
     def passenger_options
