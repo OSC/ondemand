@@ -15,9 +15,9 @@ module FilesHelper
     end
   end
 
-  def files_button(path)
+  def files_button(path, text = "Open in files app")
     link_to(
-      frame_path(path),
+      text,
       files_path(fs: 'fs', filepath: path),
       target: '_top',
       class: 'link-light'

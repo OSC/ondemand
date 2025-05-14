@@ -37,13 +37,12 @@
         )
         %>
       <%- else -%>
-        <%= link_to(
-          file[:name], 
-          file_frame_path(
-            path: "#{path}/#{file[:name]}"
-          ),
-          title: "Show #{file[:name]}", 
-          data: { turbo_frame: "project_directory" }
+        <%= 
+          link_to(
+            file[:name],
+            files_path("#{path}/#{file[:name]}"),
+            format: :html,
+            target: "_top",
           )
         %>
       <%- end -%>

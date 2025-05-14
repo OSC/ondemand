@@ -305,10 +305,6 @@ class FilesController < ApplicationController
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
 
-    return File.open(@path.to_s, "r") do |file|
-      file.read 
-    end if turbo_frame_request?
-
     if posix_file?
       send_posix_file
     else
