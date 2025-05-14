@@ -455,6 +455,7 @@ module NginxStage
 
       self.passenger_pool_idle_time = 300
       self.passenger_log_file = nil
+      self.passenger_disable_anonymous_telemetry = 'on'
       self.passenger_options = {}
 
       self.pun_custom_env      = {}
