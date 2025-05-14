@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -e
-
-/opt/ood/ood-portal-generator/sbin/update_ood_portal --force --insecure
-runuser -u ondemand-dex /usr/sbin/ondemand-dex serve /etc/ood/dex/config.yaml &
-/usr/sbin/httpd -DFOREGROUND

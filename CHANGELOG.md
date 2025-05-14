@@ -30,7 +30,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Desktops start with a safer PATH to ensure that dbus-launch comes from the OS in [4160](https://github.com/OSC/ondemand/pull/4160).
 - Dynamic batch connect correctly accounts for clusters with hyphens (-) in [4245](https://github.com/OSC/ondemand/pull/4245).
 - My interactive sessions page has better landmarks in [4254](https://github.com/OSC/ondemand/pull/4254).
-
+- Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4291](https://github.com/OSC/ondemand/pull/4291).
+- Shell buttons correctly disappear when the shell app is disabled in [4313](https://github.com/OSC/ondemand/pull/4313).
+- ood-portal-generator will now raise an error when attempting to use dex when it is not installed in [4339](https://github.com/OSC/ondemand/pull/4339).
+  
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
 - Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
@@ -42,6 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - user_settings_file incorporates OOD_PORTAL in the path in [4213](https://github.com/OSC/ondemand/pull/4213).
 - The file editor will now only open files under a certain limit in [4256](https://github.com/OSC/ondemand/pull/4256).
 - Projects can now be imported from a directory in [4258](https://github.com/OSC/ondemand/pull/4258).
+- Interactive session cards now announce state changes to screen readers in [4061](https://github.com/OSC/ondemand/pull/4061).
+- SmartAttributes prefixed by bc_ can now be set globally in [4282](https://github.com/OSC/ondemand/pull/4282).
+- `bc_num_nodes` Smart Attribute has been added in [4327](https://github.com/OSC/ondemand/pull/4327).
+- Support for an lmod module browser in [4319](https://github.com/OSC/ondemand/pull/4319).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -51,6 +58,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Drop support for Ubuntu 20.04 and Ruby 2.7 in [4188](https://github.com/OSC/ondemand/pull/4188).
 - Recently Used Apps widget is now part of the default dashboard layout in [4193](https://github.com/OSC/ondemand/pull/4193).
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
+- Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
+- The Dockerfile is now a Dockerfile.example file to illustrate it's just an example in [4328](https://github.com/OSC/ondemand/pull/4328).
+- passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
+- password_fields are now encrypted when written to cache or settings files in [4326](https://github.com/OSC/ondemand/pull/4326).
+
+## [4.0.3] - 04-23-2025
+
+### Changed
+- All icons will be cached in the browser to reduce response times in [4303](https://github.com/OSC/ondemand/pull/4303).
+
+### Fixed
+- Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4304](https://github.com/OSC/ondemand/pull/4304).
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in [4038](https://github.com/OSC/ondemand/pull/4308).
+
+## [3.1.11] - 04-23-2025
+
+### Security
+- The path_selector correctly escapes file names that contain HTML in [4039](https://github.com/OSC/ondemand/pull/4309).
 
 ## [4.0.2] - 03-25-2025
 
@@ -1570,10 +1600,12 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.2...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.3...HEAD
+[4.0.3]: https://github.com/OSC/ondemand/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.11]: https://github.com/OSC/ondemand/compare/v3.1.10...v3.1.11
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9
 [3.1.7]: https://github.com/OSC/ondemand/compare/v3.1.4...v3.1.7

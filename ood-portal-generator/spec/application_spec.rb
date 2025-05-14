@@ -467,6 +467,14 @@ describe OodPortalGenerator::Application do
         expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
         described_class.generate()
       end
+
+      it 'raises an error when config is provided, but dex is not installed' do
+        allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(false)
+        expect {
+          allow(described_class).to receive(:context).and_return({ dex: nil })
+          described_class.generate
+        }.to(raise_error(ArgumentError, /You do not have dex installed/))
+      end
     end
   end
 

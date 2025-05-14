@@ -6,21 +6,19 @@
 */
 
 import { setInnerHTML } from './utils';
-import { alert } from './alert';
+import { OODAlert } from './alert';
 
 export function replaceHTML(id, html) {
   const ele = document.getElementById(id);
 
-  if(ele == null){
-    return;
-  } else {
-    var tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    const newHTML = tmp.querySelector('template').innerHTML;
-    tmp.remove();
+  if(ele == null) return;
 
-    setInnerHTML(ele, newHTML);
-  }
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const newHTML = tmp.querySelector('template').innerHTML;
+  tmp.remove();
+
+  setInnerHTML(ele, newHTML);
 }
 
 export function pollAndReplace(url, delay, id, callback) {
@@ -29,7 +27,7 @@ export function pollAndReplace(url, delay, id, callback) {
       if(response.status == 200) {
         return Promise.resolve(response);
       } else if(response.status == 401) {
-        return Promise.reject("This page cannot update becase you are no longer authenticated. Please refresh the page to log back in.")
+        return Promise.reject("This page cannot update because you are no longer authenticated. Please refresh the page to log back in.")
       } else {
         return Promise.reject(response.text());
       }
@@ -44,9 +42,9 @@ export function pollAndReplace(url, delay, id, callback) {
     })
     .catch((err) => {
       if (typeof err == 'string') {
-        alert(err);
+        OODAlert(err);
       } else {
-        alert('This page has encountered an unexpected error. Please refresh the page.');
+        OODAlert('This page has encountered an unexpected error. Please refresh the page.');
       }
       console.log(err);
     });

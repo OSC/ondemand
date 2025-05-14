@@ -311,7 +311,7 @@ class ConfigurationSingleton
 
   # Setting terminal functionality in files app
   def files_enable_shell_button
-    to_bool(config.fetch(:files_enable_shell_button, true))
+    can_access_shell? && to_bool(config.fetch(:files_enable_shell_button, true))
   end
 
   # Report performance of activejobs table rendering

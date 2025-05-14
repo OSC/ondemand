@@ -1,4 +1,3 @@
-import Handlebars from 'handlebars';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
@@ -378,14 +377,21 @@ class DataTable {
     }
 
     renderNameColumn(data, type, row, meta) {
-        const cssClass = `${row.type} name ${row.type == 'd' ? '' : 'view-file'}`;
-        const text = Handlebars.escapeExpression(data);
+        let element = undefined;
 
         if(row.type == 'f' && !downloadEnabled()) {
-            return `<span class="${cssClass}">${text}</span>`;
+            element = document.createElement('span');
         } else {
-            return `<a class="${cssClass}" href="${row.url}">${text}</a>`;
+            element = document.createElement('a');
+            element.href = row.url;
         }
+
+        // dataset.type is only used in testing.
+        element.dataset.type = row.type;
+        element.classList.add('name');
+        element.textContent = data;
+
+        return element.outerHTML;
     }
 
     actionsBtnTemplate(options) {

@@ -5,6 +5,7 @@ module BatchConnect
   class SessionContextsController < ApplicationController
     include BatchConnectConcern
     include UserSettingStore
+    include EncryptedCache
 
     # GET /batch_connect/<app_token>/session_contexts/new
     def new
@@ -46,7 +47,8 @@ module BatchConnect
       @session = BatchConnect::Session.new
       respond_to do |format|
         if @session.save(app: @app, context: @session_context, format: @render_format)
-          cache_file.write(@session_context.to_openstruct.to_h.to_json) # save context to cache file
+          cache_data = encypted_cache_data(app: @app, data: @session_context.to_openstruct.to_h)
+          cache_file.write(cache_data.to_json) # save context to cache file
           save_template
           # We need to set the prefill templates only after storing the new one
           # so that the new one is included / updated in the list
@@ -141,13 +143,13 @@ module BatchConnect
 
     # Set the rendering format for displaying attributes
     def set_prefill_templates
-      @prefill_templates ||= bc_templates(@app.token)
+      @prefill_templates ||= bc_templates(@app)
     end
 
     def save_template
       return unless params[:save_template].present? && params[:save_template] == 'on' && params[:template_name].present?
 
-      save_bc_template(@app.token, params[:template_name], @session_context.to_h)
+      save_bc_template(@app, params[:template_name], @session_context.to_h)
     end
 
     # Only permit certian parameters

@@ -8,13 +8,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     stub_sys_apps
     stub_user
     Configuration.stubs(:bc_dynamic_js).returns(true)
-    Configuration.stubs(:bc_dynamic_js?).returns(true) #stub the alias too
+    Configuration.stubs(:bc_dynamic_js?).returns(true) # stub the alias too
   end
 
   def stub_git(dir)
     Open3.stubs(:capture3)
-      .with('git', 'describe', '--always', '--tags', chdir: dir)
-      .returns(['1.2.3', '', exit_success])
+         .with('git', 'describe', '--always', '--tags', chdir: dir)
+         .returns(['1.2.3', '', exit_success])
   end
 
   def make_bc_app(dir, form)
@@ -24,6 +24,16 @@ class BatchConnectTest < ApplicationSystemTestCase
     stub_sacctmgr
     stub_git(app_dir)
     Pathname.new(app_dir).join('form.yml').write(form)
+  end
+
+  def stub_good_launch(dir)
+    Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
+    BatchConnect::Session.any_instance.stubs(:save).returns(true)
+    BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
+    BatchConnect::Session.stubs(:cache_root).returns(Pathname.new(dir))
+    OodCore::Job::Adapters::Slurm.any_instance
+                                 .stubs(:info)
+                                 .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
   end
 
   test 'cluster choice changes node types' do
@@ -80,7 +90,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping works on maxes' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # defaults
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
@@ -97,7 +107,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping works on mins' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # defaults
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
@@ -114,7 +124,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping shifts left' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # setup to start with same
     select('same', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
@@ -122,7 +132,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     # less than current max, but greater than the next choices'
     fill_in bc_ele_id('bc_num_slots'), with: 150
-    
+
     # toggle back to 'gpu' and it should clamp to 150 down to 28
     select('gpu', from: bc_ele_id('node_type'))
     assert_equal 28, find_max('bc_num_slots')
@@ -131,7 +141,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamping shifts right' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    
+
     # start with defaults
     assert_equal 3, find_min('bc_num_slots')
     assert_equal 7, find_max('bc_num_slots')
@@ -405,7 +415,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     # insert some text into the field
     account_element = find("##{bc_ele_id('bc_account')}")
-    account_element.send_keys " & some typed value"
+    account_element.send_keys ' & some typed value'
     assert_equal 'python31 & some typed value', find_value('bc_account')
 
     # now change it and confirm the value
@@ -435,7 +445,6 @@ class BatchConnectTest < ApplicationSystemTestCase
   test 'sessions respond to cache file' do
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
-
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'owens', find_value('cluster')
@@ -535,7 +544,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert(find("##{bc_ele_id('gpus')}").visible?)
     end
   end
-
 
   test 'hiding using check boxes based on when unchecked' do
     Dir.mktmpdir do |dir|
@@ -781,7 +789,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       # the script.sh.erb raises the message 'context.auto_modules_netcdf_serial' (note the _ in the name)
       # which should be 'netcdf-serial/4.3.3.1'
       click_on('Launch')
-      verify_bc_alert('sys/bc_jupyter',  I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
+      verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
     end
   end
 
@@ -824,7 +832,7 @@ class BatchConnectTest < ApplicationSystemTestCase
           - auto_accounts
       HEREDOC
 
-      Pathname.new("#{dir}/app/").join("form.yml").write(form)
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
 
       visit new_batch_connect_session_context_url('sys/app')
 
@@ -869,7 +877,7 @@ class BatchConnectTest < ApplicationSystemTestCase
             - auto_accounts
         HEREDOC
 
-        Pathname.new("#{dir}/app/").join("form.yml").write(form)
+        Pathname.new("#{dir}/app/").join('form.yml').write(form)
 
         visit new_batch_connect_session_context_url('sys/app')
 
@@ -878,7 +886,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                            'pzs1117', 'pzs1118', 'pzs1124'].to_set
+                             'pzs1117', 'pzs1118', 'pzs1124'].to_set
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).to_set
@@ -1349,9 +1357,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
       OodFilesApp.stubs(:candidate_favorite_paths).returns([
-        FavoritePath.new('/tmp'),
-        FavoritePath.new('/var')
-      ])
+                                                             FavoritePath.new('/tmp'),
+                                                             FavoritePath.new('/var')
+                                                           ])
       stub_scontrol
       stub_sacctmgr
       stub_git("#{dir}/app")
@@ -1422,9 +1430,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
       OodFilesApp.stubs(:candidate_favorite_paths).returns([
-        FavoritePath.new('/tmp'),
-        FavoritePath.new('/var')
-      ])
+                                                             FavoritePath.new('/tmp'),
+                                                             FavoritePath.new('/var')
+                                                           ])
       stub_scontrol
       stub_sacctmgr
       stub_git("#{dir}/app")
@@ -1455,21 +1463,15 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   def get_favorites
     # For debugging flaky tests
-    favorites = all('#favorites li', wait: 30)
+    all('#favorites li', wait: 30)
     # puts "FAVORITES: "
     # puts favorites.map{|i| i['innerHTML']}.join('')
-    favorites
   end
 
   test 'launches and saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
-        Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
-        BatchConnect::Session.any_instance.stubs(:save).returns(true)
-        BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
-        OodCore::Job::Adapters::Slurm.any_instance
-                                     .stubs(:info)
-                                     .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+        stub_good_launch(dir)
 
         visit new_batch_connect_session_context_url('sys/bc_paraview')
 
@@ -1589,6 +1591,53 @@ class BatchConnectTest < ApplicationSystemTestCase
       cache_data = YAML.safe_load(File.read(cache_file.to_s)).to_h
       assert_equal('A', value)
       assert_equal({ 'cluster' => 'owens', 'filter' => 'A' }, cache_data)
+    end
+  end
+
+  test 'password fields are encrypted in the cache.json' do
+    Dir.mktmpdir do |dir|
+      stub_good_launch(dir)
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - some_field
+          - some_password_field
+        attributes:
+          some_password_field:
+            widget: 'password_field'
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # they're empty to begin with
+      assert(find("##{bc_ele_id('some_field')}").value.empty?)
+      assert(find("##{bc_ele_id('some_password_field')}").value.empty?)
+
+      # fill in some values and submit to get the cache file to write.
+      raw_password = 'abc123'
+      fill_in(bc_ele_id('some_field'), with: 42)
+      fill_in(bc_ele_id('some_password_field'), with: raw_password)
+      click_on('Launch')
+
+      sleep 3
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # the form has the previous values (password being plaintext).
+      assert_equal('42', find("##{bc_ele_id('some_field')}").value)
+      assert_equal(raw_password, find("##{bc_ele_id('some_password_field')}").value)
+
+      cache_data = JSON.parse(File.read("#{dir}/sys_app.json"))
+
+      # have to actually decrypt what was written as it's not deterministic.
+      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+      stored_password = crypt.decrypt_and_verify(cache_data['some_password_field'])
+
+      assert_equal(cache_data['some_field'], '42')
+      assert_equal(cache_data['cluster'], 'owens')
+      assert_equal(raw_password, stored_password)
     end
   end
 end

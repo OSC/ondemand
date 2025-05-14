@@ -9,7 +9,6 @@ module AccountCache
   # @return [Array<AccountInfo>] - the account info objects
   def accounts
     Rails.cache.fetch('account_info', expires_in: 4.hours) do
-
       # only Slurm support in ood_core
       cluster = Configuration.job_clusters.select(&:slurm?).first
       cluster.nil? ? [] : cluster.job_adapter.accounts
@@ -59,7 +58,6 @@ module AccountCache
   # @return [Array] - the dynamic form options
   def queues
     Rails.cache.fetch('queues', expires_in: 4.hours) do
-
       queues_per_cluster.map do |cluster, cluster_queues|
         other_clusters = queues_per_cluster.reject do |c, _queues|
           c == cluster

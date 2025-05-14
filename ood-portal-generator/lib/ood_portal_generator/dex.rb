@@ -76,6 +76,12 @@ module OodPortalGenerator
 
     # determine if this config would enable dex configurations.
     def set_enable(config)
+      if !Dex.installed? && config != NO_CONFIG && config != false
+        msg = 'You do not have dex installed, but are trying to configure it. Please install ondemand-dex' \
+              ' or remove the configurations to continue.'
+        raise(ArgumentError, msg)
+      end
+
       @enable = if config == NO_CONFIG || config == false || !Dex.installed?
                   false
                 else

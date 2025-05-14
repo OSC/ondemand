@@ -1,4 +1,4 @@
-import { alert } from '../alert';
+import { OODAlert } from '../alert';
 import { hide, show } from "../utils";
 
 export class PathSelectorTable {
@@ -72,7 +72,9 @@ export class PathSelectorTable {
             data: 'name',
             className: 'text-break',
             render: (data, _type, _row, _meta) => {
-                return `<span>${data}</span>`;
+                const ele = document.createElement('span');
+                ele.textContent = data;
+                return ele.outerHTML;
             }
 
         }
@@ -218,7 +220,7 @@ export class PathSelectorTable {
         regex = RegExp(this.filePattern);
       }
     } catch {
-      alert("The regular expression provided for this path selector did not compile");
+      OODAlert("The regular expression provided for this path selector did not compile");
     }
 
     const filteredFiles = data.files.filter((file) => {

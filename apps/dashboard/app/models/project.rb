@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'zip'
 
 # Project classes represent projects users create to run HPC jobs.
 class Project
@@ -8,20 +9,20 @@ class Project
   include IconWithUri
   extend JobLogger
 
-  def self.from_directory(dir)
-    # fetch "id" by opening .ondemand/manifest.yml
-    manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
-    contents = File.read(manifest_path)
-    raw_opts = YAML.safe_load(contents)
-    id = raw_opts["id"]
-    Project.new({ id: id, directory: dir })
-  rescue StandardError => e
-    p = Project.new({ id: nil, directory: dir })
-    p.errors.add(:create, "Cannot import project from #{dir} due to error #{e}")
-    p
-  end
-
   class << self
+    def from_directory(dir)
+      # fetch "id" by opening .ondemand/manifest.yml
+      manifest_path = Pathname("#{dir.to_s}/.ondemand/manifest.yml")
+      contents = File.read(manifest_path)
+      raw_opts = YAML.safe_load(contents)
+      id = raw_opts["id"]
+      Project.new({ id: id, directory: dir })
+    rescue StandardError => e
+      p = Project.new({ id: nil, directory: dir })
+      p.errors.add(:create, "Cannot import project from #{dir} due to error #{e}")
+      p
+    end
+  
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
         FileUtils.touch(path.to_s) unless path.exist?
@@ -110,7 +111,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template
+  attr_reader :id, :name, :description, :icon, :directory, :template, :files
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -278,10 +279,22 @@ class Project
     File.readable?(file) ? file : nil
   end
 
+  def zip_to_template
+    # using ZipKit create a zip file called project.zip containiong the files named in file_names and save it in the project_dataroot
+    zip_file = "#{project_dataroot}/project.zip"
+    Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
+      files.each do |file_name|
+        file_path = "#{project_dataroot}/#{file_name}"
+        zipfile.add(file_name, file_path) if File.exist?(file_path)
+      end
+    end
+    zip_file
+  end
+
   private
 
   def update_attrs(attributes)
-    [:name, :description, :icon].each do |attribute|
+    [:name, :description, :icon, :files].each do |attribute|
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
   end

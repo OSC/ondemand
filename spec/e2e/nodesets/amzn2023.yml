@@ -6,8 +6,7 @@ HOSTS:
     hypervisor: docker
     image: amazonlinux:2023
     docker_preserve_image: true
-    docker_cmd:
-      - '/usr/sbin/init'
+    docker_cmd: '/usr/sbin/init'
     docker_image_commands:
       - 'dnf install -y net-tools dnf-utils wget which cronie iproute initscripts langpacks-en glibc-all-langpacks'
     docker_env:

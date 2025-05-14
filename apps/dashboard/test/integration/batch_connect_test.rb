@@ -49,6 +49,31 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'shared apps left menu should render when nav_bar property defined' do
+    stub_usr_router
+    BatchConnect::SessionContextsController.any_instance.stubs(:t).with('dashboard.batch_connect_apps_menu_title').returns('Interactive apps title')
+    BatchConnect::SessionContextsController.any_instance.stubs(:t).with('dashboard.shared_apps_title').returns('Shared apps title')
+    stub_user_configuration(
+      {
+        nav_bar: [
+          { title: 'Test Apps',
+            links: [
+              { apps: 'sys/bc_paraview' }
+            ] }
+        ]
+      }
+    )
+
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :success
+
+    assert_select 'div.col-md-3 div.card div.card-header' do |menu_headers|
+      assert_equal 2, menu_headers.size
+      assert_equal 'Shared apps title', menu_headers[0].text
+      assert_equal 'Interactive apps title', menu_headers[1].text
+    end
+  end
+
   test 'interactive_apps_menu override renders correctly' do
     stub_user_configuration({
       interactive_apps_menu: {

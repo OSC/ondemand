@@ -32,6 +32,7 @@ class HpcModule
   end
 
   attr_reader :name, :version, :hidden
+  attr_accessor :cluster
   alias hidden? hidden
 
   def initialize(name, version: nil, hidden: false)

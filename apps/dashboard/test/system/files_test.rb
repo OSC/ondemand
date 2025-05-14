@@ -33,8 +33,8 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-file-btn').click
-      find('#swal2-input').set('bar.txt')
-      find('.swal2-confirm').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
       find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
       assert File.file? File.join(dir, 'bar.txt')
     end
@@ -44,9 +44,9 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-dir-btn').click
-      find('#swal2-input').set('bar')
-      find('.swal2-confirm').click
-      find('tbody a.d', exact_text: 'bar', wait: MAX_WAIT)
+      find('#files_input_modal_input').set('bar')
+      find('#files_input_modal_ok_button').click
+      find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
       assert File.directory? File.join(dir, 'bar')
     end
   end
@@ -149,7 +149,7 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector '#directory-contents tbody tr', count: 3
       find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
       find('tbody a', exact_text: 'link', wait: MAX_WAIT)
-      find('tbody a.d', exact_text: 'linked_dir', wait: MAX_WAIT)
+      find('tbody a[data-type="d"]', exact_text: 'linked_dir', wait: MAX_WAIT)
 
       # the symlinks are copied as a symlinks and they still point to the same realpath
       sym_file = Pathname.new("#{dir}/dest/src/link")
@@ -248,8 +248,8 @@ class FilesTest < ApplicationSystemTestCase
       tr.find('.rename-file').click
 
       # rename dialog input
-      find('#swal2-input').set('bar.txt')
-      find('.swal2-confirm').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
 
       find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
       assert File.file? File.join(dir, 'bar.txt')
@@ -300,7 +300,7 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'app').ancestor('tr').check
       find('tbody a', exact_text: 'single_file').ancestor('tr').check
       find('#delete-btn').click
-      find('button.swal2-confirm').click
+      find('#files_input_modal_ok_button').click
 
       # verify app dir deleted according to UI
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
@@ -389,14 +389,14 @@ class FilesTest < ApplicationSystemTestCase
     find('tbody a', exact_text: 'config')
 
     find('#goto-btn').click
-    find('#swal2-input').set(Rails.root.join('app'))
-    find('.swal2-confirm').click
+    find('#files_input_modal_input').set(Rails.root.join('app'))
+    find('#files_input_modal_ok_button').click
     find('tbody a', exact_text: 'helpers')
     find('tbody a', exact_text: 'controllers')
 
     find('#goto-btn').click
-    find('#swal2-input').set(Rails.root.to_s)
-    find('.swal2-confirm').click
+    find('#files_input_modal_input').set(Rails.root.to_s)
+    find('#files_input_modal_ok_button').click
     find('tbody a', exact_text: 'app')
     find('tbody a', exact_text: 'config')
   end
@@ -737,8 +737,8 @@ class FilesTest < ApplicationSystemTestCase
       assert(alerts.empty?)
 
       find('#goto-btn').click
-      find('#swal2-input').set('/etc')
-      find('.swal2-confirm').click
+      find('#files_input_modal_input').set('/etc')
+      find('#files_input_modal_ok_button').click
 
       alerts = all('.alert')
       refute(alerts.empty?)
@@ -747,5 +747,46 @@ class FilesTest < ApplicationSystemTestCase
       alert_text = find('.alert > span').text
       assert_equal('/etc does not have an ancestor directory specified in ALLOWLIST_PATH', alert_text)
     end
+  end
+
+  test 'files have hrefs when download is enabled' do
+    visit(files_url(Rails.root))
+    find('#show-dotfiles').click
+    files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+    file_elements = find_all('[data-type="f"]')
+
+    # all files are shown in the table.
+    assert_equal(files.size, file_elements.size)
+
+    # all the HTML elements have hrefs.
+    assert(file_elements.all? { |e| !e[:href].nil? })
+  end
+
+  test 'files do not have hrefs when download is enabled' do
+    with_modified_env({ OOD_DOWNLOAD_ENABLED: 'false' }) do
+      visit(files_url(Rails.root))
+      find('#show-dotfiles').click
+      files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+      file_elements = find_all('[data-type="f"]')
+
+      # all files are shown in the table.
+      assert_equal(files.size, file_elements.size)
+
+      # none of the HTML elements have hrefs.
+      assert(file_elements.all? { |e| e[:href].nil? })
+    end
+  end
+
+  test 'filenames are correctly escaped' do
+    bad_fname = '<img src=1 onerror=alert(\"hello\")>'
+    `touch "tmp/#{bad_fname}"`
+    visit(files_url("#{Rails.root}/tmp"))
+
+    # innerHTML returns escaped text, i.e., '&lt;' not '<'.
+    actual_text = find('tbody a', text: 'onerror')[:innerHTML]
+
+    assert_equal('&lt;img src=1 onerror=alert("hello")&gt;', actual_text)
   end
 end

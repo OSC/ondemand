@@ -15,13 +15,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     Configuration.stubs(:bc_dynamic_js).returns(true)
     Configuration.stubs(:bc_dynamic_js?).returns(true) #stub the alias too
   end
-    
-  def stub_git(dir)
-    Open3.stubs(:capture3)
-      .with('git', 'describe', '--always', '--tags', chdir: dir)
-      .returns(['1.2.3', '', exit_success])
-  end
-    
+
   def make_bc_app(dir, form)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
@@ -684,6 +678,159 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       # this will not be text on the DOM if it's an actual <script> tag
       text = find('[name="node_type_header"]').text
       assert_equal("window.alert('shouldnt alert');", text)
+    end
+  end
+
+  test 'global_bc_num_hours is same as bc_num_hours' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_bc_num_hours
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # the element does not have global_ prefix.
+      # it's a number (default is text_field) and has the correct name.
+      ele = find("##{bc_ele_id('bc_num_hours')}")
+      assert_equal(ele[:type], 'number')
+      assert_equal(ele[:name], 'batch_connect_session_context[bc_num_hours]')
+    end
+  end
+
+  test 'global_bc_num_hours will respond to attributes if no ondemand.d config' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_bc_num_hours
+        attributes:
+          global_bc_num_hours:
+            min: 2
+            max: 10
+            value: 5
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # the element does not have global_ prefix.
+      # it's a number (default is text_field) and has the correct name.
+      ele = find("##{bc_ele_id('bc_num_hours')}")
+      assert_equal(ele[:type], 'number')
+      assert_equal(ele[:name], 'batch_connect_session_context[bc_num_hours]')
+      assert_equal(ele[:min], '2')
+      assert_equal(ele[:max], '10')
+      assert_equal(ele[:value], '5')
+    end
+  end
+
+  test 'global_bc_num_hours will use attributes over global config' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      Configuration.stubs(:config).returns({ 
+        global_bc_form_items: {
+          global_bc_num_hours: {
+            label: 'New Label',
+            min: 100,
+            max: 500,
+            value: 250
+          }
+        }
+      })
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_bc_num_hours
+        attributes:
+          global_bc_num_hours:
+            min: 2
+            max: 10
+            value: 5
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # the element does not have global_ prefix.
+      # it's a number (default is text_field) and has the correct name.
+      ele = find("##{bc_ele_id('bc_num_hours')}")
+      assert_equal(ele[:type], 'number')
+      assert_equal(ele[:name], 'batch_connect_session_context[bc_num_hours]')
+
+      label = find("label[for='#{bc_ele_id('bc_num_hours')}']")
+
+      # these values came from the attributes section of the form.yml
+      assert_equal(ele[:min], '2')
+      assert_equal(ele[:max], '10')
+      assert_equal(ele[:value], '5')
+
+      # but label is from the global setting.
+      assert_equal(label.text, 'New Label')
+    end
+  end
+
+  test 'global_bc_num_hours is bc_num_hours set globally' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      Configuration.stubs(:config).returns({ 
+        global_bc_form_items: {
+          global_bc_num_hours: {
+            label: 'New Label',
+            min: 100,
+            max: 500,
+            value: 250
+          }
+        }
+      })
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - global_bc_num_hours
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").tap { |p| FileUtils.mkdir_p(p) }.join('form.yml').write(form)
+      visit(new_batch_connect_session_context_url('sys/app'))
+
+      # the element does not have global_ prefix.
+      # it's a number (default is text_field) and has the correct name.
+      ele = find("##{bc_ele_id('bc_num_hours')}")
+      assert_equal(ele[:type], 'number')
+      assert_equal(ele[:name], 'batch_connect_session_context[bc_num_hours]')
+
+      label = find("label[for='#{bc_ele_id('bc_num_hours')}']")
+
+      # these values came from the the ondemand.d configuration
+      assert_equal(ele[:min], '100')
+      assert_equal(ele[:max], '500')
+      assert_equal(ele[:value], '250')
+
+      # but label is from the global setting.
+      assert_equal(label.text, 'New Label')
     end
   end
 end

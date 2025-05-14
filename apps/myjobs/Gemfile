@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8.5'
+gem 'rails', '7.0.8.7'
 # Use sqlite3 as the database for Active Record
 # Note that the version has been fixed due to an incompatibilty
 # https://github.com/rails/rails/issues/35153
@@ -71,7 +71,7 @@ gem 'rdoc', '6.3.4.1'
 
 # lock gems to versions that are compatible with ruby 2.7.0,
 # which Ubuntu 20.04 uses.
-gem 'nokogiri', '~> 1.15', '< 1.16'
+gem 'nokogiri', force_ruby_platform: true
 gem 'net-imap', '~> 0.3', '< 0.4'
 gem 'public_suffix', '~> 5.0', '< 6.0'
 gem 'zeitwerk', '2.6.18'

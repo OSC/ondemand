@@ -71,7 +71,11 @@ locals: {
         <% @settings.app.attributes.each do |attribute| %>
           <p>
             <strong><%= attribute.label %>:</strong>
+            <%- if attribute.widget == 'password_field' -%>
+            <span><%= @settings.values[attribute.id.to_sym].to_s.chars.map { |c| '*' }.join %></span>
+            <%- else -%>
             <span><%= @settings.values[attribute.id.to_sym] %></span>
+            <%- end -%>
           </p>
         <% end %>
       </div>

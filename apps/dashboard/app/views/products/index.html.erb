@@ -7,9 +7,7 @@
 <p>
   <%= link_to 'New App', new_product_path(type: @type), class: 'btn btn-default' %>
   <span class="float-end">
-    <% if Configuration.can_access_shell? %>
-      <%= link_to 'Launch Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product_class.router.base_path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
-    <% end %>
+    <%= render(partial: 'shared/shell_button', locals: { label: 'Launch Shell', path: product_class.router.base_path.realdirpath }) %>
     <% if Configuration.can_access_files? %>
       <%= link_to 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
     <% end %>

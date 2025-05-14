@@ -1,4 +1,3 @@
-import Handlebars from 'handlebars';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
