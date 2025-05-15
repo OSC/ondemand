@@ -25,3 +25,23 @@
   width: 5rem;
   height: 5rem;
 }
+
+.global-full-page-spinner {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+}
+
+.global-full-page-spinner .spinner-border {
+  display: block;
+  color: #fff;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40vh;
+}
