@@ -1,0 +1,63 @@
+<tr>
+  <td>
+    <i class="fa fa-folder">
+  </td>
+  <td>
+    <strong>
+      <%= link_to(
+        "..",
+        directory_frame_path(
+          path: "#{path.parent}"
+        ),
+        title: 'Show parent directory',
+        data: { turbo_frame: "project_directory" }
+      )
+    %>
+    </strong>
+  </td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<% files.each do |file| %>
+  <tr>
+    <td>
+      <i class="fa <%= file[:directory] ? 'fa-folder' : 'fa-file' %>">
+    </td>
+    <td>
+      <%- if file[:directory] -%>
+        <%= link_to(
+          file[:name], 
+          directory_frame_path(
+            path: "#{path}/#{file[:name]}"
+          ),
+          title: "Show #{file[:name]} directory",
+          data: { turbo_frame: "project_directory" }
+        )
+        %>
+      <%- else -%>
+        <%= 
+          link_to(
+            file[:name],
+            files_path("#{path}/#{file[:name]}"),
+            format: :html,
+            target: "_top",
+          )
+        %>
+      <%- end -%>
+    </td>
+    <td>
+      <%= file[:size] %>
+    </td>
+    <td>
+      <%= DateTime.parse(Time.at(file[:date]).to_s).strftime("%F %r") %>
+    </td>
+    <td>
+      <%= file[:owner] %>
+    </td>
+    <td>
+      <%= file[:mode] %>
+    </td>
+  </tr>
+<%- end -%>
