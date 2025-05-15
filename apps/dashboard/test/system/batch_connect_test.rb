@@ -26,6 +26,16 @@ class BatchConnectTest < ApplicationSystemTestCase
     Pathname.new(app_dir).join('form.yml').write(form)
   end
 
+  def stub_good_launch(dir)
+    Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
+    BatchConnect::Session.any_instance.stubs(:save).returns(true)
+    BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
+    BatchConnect::Session.stubs(:cache_root).returns(Pathname.new(dir))
+    OodCore::Job::Adapters::Slurm.any_instance
+                                 .stubs(:info)
+                                 .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+  end
+
   test 'cluster choice changes node types' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -1464,12 +1474,7 @@ class BatchConnectTest < ApplicationSystemTestCase
   test 'launches and saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
-        Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
-        BatchConnect::Session.any_instance.stubs(:save).returns(true)
-        BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
-        OodCore::Job::Adapters::Slurm.any_instance
-                                     .stubs(:info)
-                                     .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+        stub_good_launch(dir)
 
         visit new_batch_connect_session_context_url('sys/bc_paraview')
 
@@ -1589,6 +1594,53 @@ class BatchConnectTest < ApplicationSystemTestCase
       cache_data = YAML.safe_load(File.read(cache_file.to_s)).to_h
       assert_equal('A', value)
       assert_equal({ 'cluster' => 'owens', 'filter' => 'A' }, cache_data)
+    end
+  end
+
+  test 'password fields are encrypted in the cache.json' do
+    Dir.mktmpdir do |dir|
+      stub_good_launch(dir)
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - some_field
+          - some_password_field
+        attributes:
+          some_password_field:
+            widget: 'password_field'
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # they're empty to begin with
+      assert(find("##{bc_ele_id('some_field')}").value.empty?)
+      assert(find("##{bc_ele_id('some_password_field')}").value.empty?)
+
+      # fill in some values and submit to get the cache file to write.
+      raw_password = 'abc123'
+      fill_in(bc_ele_id('some_field'), with: 42)
+      fill_in(bc_ele_id('some_password_field'), with: raw_password)
+      click_on('Launch')
+
+      sleep 3
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # the form has the previous values (password being plaintext).
+      assert_equal('42', find("##{bc_ele_id('some_field')}").value)
+      assert_equal(raw_password, find("##{bc_ele_id('some_password_field')}").value)
+
+      cache_data = JSON.parse(File.read("#{dir}/sys_app.json"))
+
+      # have to actually decrypt what was written as it's not deterministic.
+      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+      stored_password = crypt.decrypt_and_verify(cache_data['some_password_field'])
+
+      assert_equal(cache_data['some_field'], '42')
+      assert_equal(cache_data['cluster'], 'owens')
+      assert_equal(raw_password, stored_password)
     end
   end
 end
