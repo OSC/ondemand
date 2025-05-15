@@ -120,23 +120,6 @@ class FilesController < ApplicationController
     rescue_action(e)
   end
 
-  # GET - file for turbo-frame
-  def file_frame
-    parse_path(file_frame_params[:path], 'fs')
-    validate_path!
-    @path.raise_if_cant_access_directory_contents if @path.directory?
-    @file = show_file
-    
-    render( partial: 'files/turbo_frames/file',
-            locals: { 
-              path: @path,
-              file: @file
-            }
-    )
-  rescue StandardError => e
-    rescue_action(e)
-  end
-
   # PUT - create or update
   def update
     filepath = update_params[:filepath]
@@ -384,10 +367,6 @@ class FilesController < ApplicationController
   end
 
   def directory_frame_params
-    params.permit(:format, :path)
-  end
-
-  def file_frame_params
     params.permit(:format, :path)
   end
 end
