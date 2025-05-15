@@ -15,13 +15,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     Configuration.stubs(:bc_dynamic_js).returns(true)
     Configuration.stubs(:bc_dynamic_js?).returns(true) #stub the alias too
   end
-    
-  def stub_git(dir)
-    Open3.stubs(:capture3)
-      .with('git', 'describe', '--always', '--tags', chdir: dir)
-      .returns(['1.2.3', '', exit_success])
-  end
-    
+
   def make_bc_app(dir, form)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }

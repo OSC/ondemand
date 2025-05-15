@@ -1,4 +1,5 @@
 module UserSettingStore
+  include EncryptedCache
 
   BC_TEMPLATES = :batch_connect_templates
 
@@ -40,23 +41,32 @@ module UserSettingStore
     Pathname.new(::Configuration.user_settings_file)
   end
 
-  def bc_templates(app_token)
-    templates = user_settings[BC_TEMPLATES]
-    return {} if templates.nil? || templates.empty?
-
-    user_settings[BC_TEMPLATES][app_token.to_sym].to_h
+  def all_bc_templates
+    user_settings[BC_TEMPLATES].to_h
   end
 
-  def save_bc_template(app_token, name, key_values)
+  def bc_templates(app)
+    templates = all_bc_templates
+    return {} if templates.empty?
+
+    data = user_settings[BC_TEMPLATES][app.token.to_sym].to_h
+    {}.tap do |decrypted|
+      data.each do |template_name, template_values|
+        decrypted[template_name.to_sym] = decypted_cache_data(app: app, data: template_values)
+      end
+    end
+  end
+
+  def save_bc_template(app, name, key_values)
     current_templates = user_settings[BC_TEMPLATES] || {}
-    current_app_templates = current_templates[app_token.to_sym] || {}
+    current_app_templates = current_templates[app.token.to_sym] || {}
 
     new_template = {}
-    new_template[name.to_sym] = key_values
+    new_template[name.to_sym] = encypted_cache_data(app: app, data: key_values)
 
     new_settings = {}
     new_settings[BC_TEMPLATES] = {}
-    new_settings[BC_TEMPLATES][app_token.to_sym] = current_app_templates.merge(new_template)
+    new_settings[BC_TEMPLATES][app.token.to_sym] = current_app_templates.merge(new_template)
 
     update_user_settings(new_settings)
   end
