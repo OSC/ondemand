@@ -112,6 +112,16 @@ class Workflow < ApplicationRecord
       self.staged_dir = OSC::Machete::JobDir.new(staging_target_dir).new_jobdir.to_s
       FileUtils.mkdir_p self.staged_dir
 
+      # have to check for recursion here. Can't copy a parent like all of HOME into the
+      # destination which is also within your HOME
+      src = Pathname.new(staged_dir).expand_path.realpath
+      dest = Pathname.new(staging_template_dir).expand_path.realpath
+      if src.to_s.start_with?(dest.to_s)
+        msg = "Source Path (#{staging_template_dir}) cannot be a parent of the destination directory (#{staged_dir})."
+        errors.add(:staging_template_dir, msg)
+        throw(:abort)
+      end
+
       # rsync to ignore manifest.yml
       stdout, stderr, status = Open3.capture3 "rsync -r --exclude='manifest.yml' #{Shellwords.escape(staging_template_dir.to_s)}/ #{Shellwords.escape(self.staged_dir)}"
       raise IOError if status.exitstatus != 0
