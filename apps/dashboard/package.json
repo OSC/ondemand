@@ -20,8 +20,7 @@
     "jquery-ujs": "^1.2.2",
     "lodash": "^4.17.21",
     "oboe": "^2.1.5",
-    "sass": "1.78.0",
-    "sweetalert2": "10.16.9"
+    "sass": "1.78.0"
   },
   "scripts": {
     "build": "node esbuild.config.js",
