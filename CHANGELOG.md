@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Spin instead of sweet alert load (#4353)\
+Display module information for different versions 3402 (#4348)\
+Add option to disable Passenger telemetry (#4355)\
+Add search and filter by cluster to module browser (#4334)\
+Update Changelog (#4356)\
+update dependencies (#4357)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
