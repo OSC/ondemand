@@ -6,12 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Spin instead of sweet alert load (#4353)\
-Display module information for different versions 3402 (#4348)\
-Add option to disable Passenger telemetry (#4355)\
-Add search and filter by cluster to module browser (#4334)\
-Update Changelog (#4356)\
-update dependencies (#4357)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -55,6 +49,7 @@ update dependencies (#4357)
 - SmartAttributes prefixed by bc_ can now be set globally in [4282](https://github.com/OSC/ondemand/pull/4282).
 - `bc_num_nodes` Smart Attribute has been added in [4327](https://github.com/OSC/ondemand/pull/4327).
 - Support for an lmod module browser in [4319](https://github.com/OSC/ondemand/pull/4319).
+- Passenger telemetry is now disabled by default with an option to turn it back on in [4355](https://github.com/OSC/ondemand/pull/4355).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
