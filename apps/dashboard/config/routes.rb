@@ -1,4 +1,4 @@
-sazwmk# frozen_string_literal: true
+# frozen_string_literal: true
 
 require 'authz/app_developer_constraint'
 
