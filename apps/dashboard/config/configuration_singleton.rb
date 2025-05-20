@@ -401,7 +401,7 @@ class ConfigurationSingleton
         yml = YAML.safe_load(content, aliases: true) || {}
         conf.deep_merge!(yml.deep_symbolize_keys)
       rescue => e
-        Rails.logger.error("Can't read or parse #{f} because of error #{e}")
+        $stderr.puts("Can't read or parse #{f} because of error #{e}")
       end
     end
   end
