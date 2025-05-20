@@ -50,11 +50,14 @@ class UsrRouter
   def self.apps(owner: OodSupport::Process.user.name)
     target = base_path(owner: owner)
     if target.directory? && target.executable? && target.readable?
-      target.children.map { |d| OodApp.new self.new(d.basename, owner) }
-        .select(&:directory?)
-        .select(&:accessible?)
-        .reject(&:hidden?)
-        .reject(&:backup?)
+      target.children.map do |d|
+        router = new(d.basename, owner)
+        app = OodApp.new(router)
+        app.batch_connect_app? ? BatchConnect::App.new(router: router) : app
+      end.select(&:directory?)
+         .select(&:accessible?)
+         .reject(&:hidden?)
+         .reject(&:backup?)
     else
       []
     end
