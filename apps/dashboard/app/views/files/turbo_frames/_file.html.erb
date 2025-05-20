@@ -1,0 +1,24 @@
+<%= turbo_frame_tag "project_directory" do %>
+  <div class="h5 border-bottom border-1 pb-2">
+    <div class="row">
+      <div class="pl-2">
+        <%= link_to("",
+            directory_frame_path(path: "#{path.parent}"),
+            class: 'fa fa-window-close align-self-start button buttom-sm text-danger',
+            data: { turbo_frame: "project_directory" }
+          )
+        %>&nbsp
+        .../projects<%= path.to_s.split('projects')[1] %>
+      </div>
+    </div>
+  </div>
+  <div >
+    <pre><%= file %></pre>
+  </div>
+  <hr>
+  <div class="row content-justied-center col-6 mx-auto">
+    <div class="btn btn-sm btn-primary">
+      <span><i class="fa fa-folder-open"></i>&nbsp<%= files_button(path) %></span>
+    </div>
+  </div>
+<%- end -%>

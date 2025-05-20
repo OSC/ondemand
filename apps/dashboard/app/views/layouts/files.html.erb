@@ -1,7 +1,10 @@
-<%
-content_for :head do
-  javascript_include_tag('files/index', nonce: true, type: 'module')
-end
-%>
+<%- unless turbo_frame_request? %>
 
-<%= render template: "layouts/application", locals: { layout_container_class: 'container-fluid' } %>
+  <%
+  content_for :head do
+    javascript_include_tag('files/index', nonce: true, type: 'module')
+  end
+  %>
+
+  <%= render template: "layouts/application", locals: { layout_container_class: 'container-fluid' } %>
+<%- end -%>
