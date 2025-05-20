@@ -22,7 +22,7 @@
 
 <div class="row mb-3">
   <div class="col-md-2 mt-3">
-    <div class="list-group shadow bg-white rounded">
+    <div class="list-group bg-white rounded">
       <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
           data-bs-toggle="collapse" data-bs-target="#launcher_list"
           aria-expanded="true" aria-controls="launcher_list">
@@ -51,7 +51,7 @@
   </div>
   
   <div class="col-md-4">
-    <div class="border border-2 shadow p-3 mt-3 mb-5 bg-white rounded">
+    <div class="border border-2 p-3 mt-3 mb-5 bg-white rounded">
       <div class="row">
         <h2 class="lead fw-bolder d-flex justify-content-center">Active Jobs</h2>
         <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job, locals: { project: @project }) %>
@@ -70,7 +70,7 @@
     </div>
   </div>
   <div class="col-md-6">
-    <div id="directory_browser" class="border border-2 shadow p-3 mt-3 mb-5 bg-white rounded">
+    <div id="directory_browser" class="border border-2 p-3 mt-3 mb-5 bg-white rounded">
       <h2 class="lead fw-bolder d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
       <hr>
       <%= turbo_frame_tag 'project_directory', 
