@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import { hide, show } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -130,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedCluster = clusterFilter.value;
 
     const modules = document.querySelectorAll('[data-name][data-clusters]');
+    let resultsCount = 0;
     modules.forEach(function (module) {
       const name = module.getAttribute('data-name').toLowerCase();
       const clusters = module.getAttribute('data-clusters').split(',');
@@ -139,12 +141,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (searchMatches && clusterMatches) {
         show(module);
+        resultsCount++;
       } else {
         hide(module);
       }
     });
+
+    // Update visible module count
+    const resultsCountElem = document.getElementById('module_results_count');
+    if (resultsCountElem) {
+      resultsCountElem.textContent = `Showing ${resultsCount} results`;
+    }
   }
 
-  moduleSearch.addEventListener('input', filterModules);
+  moduleSearch.addEventListener('input', debounce(filterModules, 300));
   clusterFilter.addEventListener('change', filterModules);
 });

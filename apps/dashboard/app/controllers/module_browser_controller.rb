@@ -9,5 +9,6 @@ class ModuleBrowserController < ApplicationController
       HpcModule.all(cluster.id).each { |mod| mod.cluster = cluster.id }
     end
     @modules = @modules.group_by(&:name)
+    @modules_last_updated = helpers.modules_last_updated
   end
 end

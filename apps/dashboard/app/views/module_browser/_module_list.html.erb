@@ -1,3 +1,7 @@
+<div class="mb-2 text-muted" id="module_results_count">
+  Showing <%= modules.size %> results
+</div>
+
 <ul class="d-flex flex-wrap gap-2 list-unstyled" id="module_list">
   <% modules.sort_by { |name, _| name.to_s.titleize }.each do |(name, versions)| %>
     <li class="module-card p-2" data-name="<%= name %>" data-clusters="<%= versions.map(&:cluster).uniq.join(',') %>">

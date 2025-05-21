@@ -1,4 +1,7 @@
-<h1 class="mb-4">Module Browser</h1>
+<h1 class="mb-4 d-flex justify-content-between">
+  Module Browser
+  <span class="h4 text-muted">(Last updated: <%= @modules_last_updated.strftime('%Y-%m-%d %H:%M:%S') %>)</span>
+</h1>
 
 <%= render 'toolbar' %>
 <%= render 'module_list', modules: @modules %>
