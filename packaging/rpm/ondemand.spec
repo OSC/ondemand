@@ -8,7 +8,12 @@
 %define runtime_version %{major_version}.%{minor_version}.6
 %define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
+# Use hardcoded RHEL 9.5 for a short period while downstream RHEL clones get RHEL 9.6 release
+%if 0%{?rhel} == 9
+%define selinux_policy_ver 38.1.45
+%else
 %define selinux_policy_ver %(rpm --qf "%%{version}" -q selinux-policy)
+%endif
 %global selinux_module_version %{package_version}.%{package_release}
 %global gem_home %{scl_ondemand_core_gem_home}/%{version}-%{package_release}
 %global gems_name ondemand-gems-%{version}-%{package_release}
