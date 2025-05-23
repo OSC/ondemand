@@ -6,7 +6,7 @@ module BatchConnect
   # This is the model representing a batch connect app. It's mostly a data object
   # holding and interpreting the configurations (notable form.yml.erb) and rendering
   # submit options based off of what's been chosen by the user.
-  class App
+  class App < OodApp
     # Router for a deployed batch connect app
     # @return [DevRouter, UsrRouter, SysRouter] router for batch connect app
     attr_accessor :router
@@ -15,10 +15,10 @@ module BatchConnect
     # @return [String, nil] sub app
     attr_accessor :sub_app
 
-    delegate :type, to: :ood_app
-
     # Raised when batch connect app components could not be found
     class AppNotFound < StandardError; end
+
+    include EncryptedCache
 
     class << self
       # Generate an object from a token
@@ -44,8 +44,8 @@ module BatchConnect
     # @param router [DevRouter, UsrRouter, SysRouter] router for batch connect
     #   app
     # @param sub_app [String, nil] sub app
-    def initialize(router:, sub_app: nil)
-      @router  = router
+    def initialize(router: nil, sub_app: nil)
+      super(router)
       @sub_app = sub_app&.to_s
     end
 
@@ -92,7 +92,7 @@ module BatchConnect
     # Default title for the batch connect app
     # @return [String] default title of app
     def default_title
-      title  = ood_app.title
+      title  = OodApp.instance_method(:title).bind(self).call
       title += ": #{sub_app.titleize}" if sub_app
       title
     end
@@ -106,31 +106,32 @@ module BatchConnect
     # Default description for the batch connect app
     # @return [String] default description of app
     def default_description
-      ood_app.manifest.description
+      OodApp.instance_method(:manifest).bind(self).call.description
     end
 
     def icon_uri
-      form_config.fetch(:icon, ood_app.icon_uri)
+      form_config.fetch(:icon, super)
     end
 
     def caption
-      form_config.fetch(:caption, ood_app.caption)
+      form_config.fetch(:caption, super)
     end
 
     def tile
-      ood_app.tile.merge(form_config.fetch(:tile, {}))
+      super.merge(form_config.fetch(:tile, {}))
     end
 
     def category
-      form_config.fetch(:category, ood_app.category)
+      form_config.fetch(:category, super)
     end
 
     def subcategory
-      form_config.fetch(:subcategory, ood_app.subcategory)
+      form_config.fetch(:subcategory, super)
     end
 
     def metadata
-      ood_app.metadata.merge(form_config.fetch(:metadata, {}))
+      parent_md = OodApp.instance_method(:metadata).bind(self).call
+      parent_md.merge(form_config.fetch(:metadata, {}))
     end
 
     def form_header
@@ -168,6 +169,9 @@ module BatchConnect
     def update_session_with_cache(session_context, cache_file)
       cache = cache_file.file? ? JSON.parse(cache_file.read) : {}
       cache.delete('cluster') if delete_cached_cluster?(cache['cluster'].to_s)
+      cache = cache.symbolize_keys
+
+      cache = decypted_cache_data(app: self, data: cache)
 
       session_context.update_with_cache(cache)
     end
@@ -332,10 +336,8 @@ module BatchConnect
       @sub_app_list ||= build_sub_app_list
     end
 
-    # The version of the OodApp
-    # @return [String] the version
-    def version
-      @ood_app.version
+    def has_sub_apps?
+      sub_app_list.size > 1 || sub_app_list[0] != self
     end
 
     # Convert object to string
@@ -455,11 +457,6 @@ module BatchConnect
         hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding) if file
       end
       @submit_config = hsh
-    end
-
-    # The OOD app object describing this app
-    def ood_app
-      @ood_app ||= OodApp.new(router)
     end
 
     # add a widget for choosing the cluster if one doesn't already exist

@@ -127,6 +127,7 @@ en:
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
     close: Close
+    ok: OK
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     delete: Delete
@@ -265,3 +266,20 @@ en:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+    unknown: "Unknown"
+    save: "Save"
+    add: "Add"
+    remove: "Remove"
+    delete: "Delete"
+    edit: "Edit"
+    show: "Show"
+    launch: "Launch"
+    project: "Project"
+    directory: "Directory"
+    close: "Close"
+    type: "Type"
+    name: "Name"
+    size: "Size"
+    owner: "Owner"
+    date: "Date"
+    mode: "Mode"

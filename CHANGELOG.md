@@ -32,7 +32,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - My interactive sessions page has better landmarks in [4254](https://github.com/OSC/ondemand/pull/4254).
 - Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4291](https://github.com/OSC/ondemand/pull/4291).
 - Shell buttons correctly disappear when the shell app is disabled in [4313](https://github.com/OSC/ondemand/pull/4313).
-
+- ood-portal-generator will now raise an error when attempting to use dex when it is not installed in [4339](https://github.com/OSC/ondemand/pull/4339).
+  
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
 - Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
@@ -48,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - SmartAttributes prefixed by bc_ can now be set globally in [4282](https://github.com/OSC/ondemand/pull/4282).
 - `bc_num_nodes` Smart Attribute has been added in [4327](https://github.com/OSC/ondemand/pull/4327).
 - Support for an lmod module browser in [4319](https://github.com/OSC/ondemand/pull/4319).
+- Passenger telemetry is now disabled by default with an option to turn it back on in [4355](https://github.com/OSC/ondemand/pull/4355).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -59,9 +61,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Quotas now render in a more readable format in [4237](https://github.com/OSC/ondemand/pull/4237).
 - Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
 - The Dockerfile is now a Dockerfile.example file to illustrate it's just an example in [4328](https://github.com/OSC/ondemand/pull/4328).
+- passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
+- password_fields are now encrypted when written to cache or settings files in [4326](https://github.com/OSC/ondemand/pull/4326).
 
 ## [4.0.3] - 04-23-2025
 

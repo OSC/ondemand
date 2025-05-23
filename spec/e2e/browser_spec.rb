@@ -27,8 +27,8 @@ describe 'OnDemand browser test' do
   end
 
   it 'uses /dex in OIDC issuer' do
-    on hosts, 'curl http://localhost:8080/dex/.well-known/openid-configuration' do
-      data = JSON.parse(stdout)
+    on hosts, 'curl http://localhost:8080/dex/.well-known/openid-configuration' do |result|
+      data = JSON.parse(result.stdout)
       expect(data['issuer']).to eq('http://localhost:8080/dex')
     end
   end

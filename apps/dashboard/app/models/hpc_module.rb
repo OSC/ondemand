@@ -10,7 +10,7 @@ class HpcModule
           begin
             JSON.parse(File.read(file)).map do |name, spider_output|
               spider_output.map do |_, mod|
-                HpcModule.new(name, version: mod['Version'], hidden: mod['hidden'])
+                HpcModule.new(name, version: mod['Version'], dependencies: mod['parentAA'], hidden: mod['hidden'])
               end
             end.flatten.uniq.reject(&:hidden?)
           rescue StandardError => e
@@ -31,13 +31,14 @@ class HpcModule
     end
   end
 
-  attr_reader :name, :version, :hidden
+  attr_reader :name, :version, :dependencies, :hidden
   attr_accessor :cluster
   alias hidden? hidden
 
-  def initialize(name, version: nil, hidden: false)
+  def initialize(name, version: nil, dependencies: nil, hidden: false)
     @name = name
     @version = version.to_s if version
+    @dependencies = dependencies
     @hidden = hidden
   end
 

@@ -1,3 +1,7 @@
+<%- # Short circuits the loading of layouts, js, css, etc only when hotwire turbo-frames are requested -%>
+<%- # Consider adding similar return statement for turbo-streams after looking into our needs around this -%>
+<%= return "turbo_rails/frame" if turbo_frame_request? %>
+
 <!DOCTYPE html>
 <html lang="<%= Configuration.locale %>">
 <head>
@@ -62,6 +66,10 @@
       </ul>
     </nav>
   </header>
+
+  <div id="full_page_spinner" class="global-full-page-spinner d-none">
+    <div class="spinner-border" role="status"></div>
+  </div>
 
   <div id="main_container" class="<%= local_assigns[:layout_container_class] || 'container-md' %> content mt-4" role="main">
 

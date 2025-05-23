@@ -184,10 +184,6 @@ class OodApp
     role == "batch_connect"
   end
 
-  def batch_connect
-    @batch_connect ||= BatchConnect::App.new(router: router)
-  end
-
   def has_gemfile?
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
   end
@@ -346,18 +342,12 @@ class OodApp
   end
 
   def sub_app_list
-    batch_connect_app? ? batch_connect.sub_app_list : []
+    []
   end
 
-  # The subapp list may only be of size 1 and actually contains
-  # this app. This returns true if there are indeed sub apps that
-  # that differ from this object.
+  # OodApps do not have sub_apps, but a child like BatchConnect::App could.
   def has_sub_apps?
-    if batch_connect_app?
-      sub_app_list.size > 1 || sub_app_list[0] != batch_connect
-    else
-      false
-    end
+    false
   end
 
   def tile

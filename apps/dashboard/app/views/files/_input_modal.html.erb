@@ -1,0 +1,23 @@
+
+
+<div class="modal" id="files_input_modal" tabindex="-1" aria-labelledby="files_input_modal_title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title justify-text-center" id="files_input_modal_title"></div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('dashboard.close') %>"></button>
+      </div>
+      <div class="modal-body">
+        <div id="files_input_modal_input_wrapper">
+          <label for="files_input_modal_input" id="files_input_modal_label" class="form-label"></label>
+          <input id="files_input_modal_input" class="form-control">
+        </div>
+        <span id="files_input_modal_text_span"></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('dashboard.close') %></button>
+        <button type="button" class="btn btn-primary" id="files_input_modal_ok_button"><%= t('dashboard.ok') %></button>
+      </div>
+    </div>
+  </div>
+</div>
