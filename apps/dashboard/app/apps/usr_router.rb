@@ -48,18 +48,20 @@ class UsrRouter
   # @param owner [String] username of user to get apps for
   # @return [Array<OodApp>] all apps owner has shared that user has access to
   def self.apps(owner: OodSupport::Process.user.name)
-    target = base_path(owner: owner)
-    if target.directory? && target.executable? && target.readable?
-      target.children.map do |d|
-        router = new(d.basename, owner)
-        app = OodApp.new(router)
-        app.batch_connect_app? ? BatchConnect::App.new(router: router) : app
-      end.select(&:directory?)
-         .select(&:accessible?)
-         .reject(&:hidden?)
-         .reject(&:backup?)
-    else
-      []
+    Rails.cache.fetch("usr_apps_#{owner}", expires_in: 6.hours) do
+      target = base_path(owner: owner)
+      if target.directory? && target.executable? && target.readable?
+        target.children.map do |d|
+          router = new(d.basename, owner)
+          app = OodApp.new(router)
+          app.batch_connect_app? ? BatchConnect::App.new(router: router) : app
+        end.select(&:directory?)
+          .select(&:accessible?)
+          .reject(&:hidden?)
+          .reject(&:backup?)
+      else
+        []
+      end
     end
   end
 

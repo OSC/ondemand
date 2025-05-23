@@ -47,6 +47,9 @@ module BatchConnect
     def initialize(router: nil, sub_app: nil)
       super(router)
       @sub_app = sub_app&.to_s
+
+      # read the form config now so it's there when this object is cached in upper layers.
+      form_config
     end
 
     # Generate a token from this object
