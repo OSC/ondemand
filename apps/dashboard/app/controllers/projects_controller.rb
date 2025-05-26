@@ -181,6 +181,35 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def workflow_poc
+    project_id = show_project_params[:id]
+    @project = Project.find(project_id)
+
+    launchers = Launcher.all(@project.directory)
+    launcher_a = launchers.find { |l| l.title == "A" }
+    launcher_b = launchers.find { |l| l.title == "B" }
+    launcher_c = launchers.find { |l| l.title == "C" }
+
+    opts_a = submit_launcher_params(launcher_a, []).to_h.symbolize_keys
+    job_a = launcher_a.submit(opts_a)
+
+    opts_b = submit_launcher_params(launcher_b, [job_a]).to_h.symbolize_keys
+    job_b = launcher_b.submit(opts_b)
+
+    opts_c = submit_launcher_params(launcher_c, [job_a, job_b]).to_h.symbolize_keys
+    job_c = launcher_c.submit(opts_c)
+    
+    redirect_to(project_path(project_id), notice: "Workflow submitted.")
+  end
+
+  def submit_launcher_params(launcher, dependent_jobs)
+    launcher_data = launcher.smart_attributes.each_with_object({}) do |attr, hash|
+      hash[attr.id.to_s] = attr.opts[:value]
+    end
+    launcher_data["afterok"] = Array(dependent_jobs)
+    launcher_data
+  end
+
   private
 
   def templates

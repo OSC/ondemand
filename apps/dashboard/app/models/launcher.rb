@@ -193,9 +193,10 @@ class Launcher
     render_format = adapter.class.name.split('::').last.downcase
 
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
+    afterok = Array(options[:afterok])
 
     job_id = Dir.chdir(project_dir) do
-      adapter.submit(job_script)
+      adapter.submit(job_script, afterok: afterok)
     end
     update_job_log(job_id, cluster_id.to_s)
     write_job_options_to_cache(options)

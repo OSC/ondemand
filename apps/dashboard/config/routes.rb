@@ -13,6 +13,10 @@ Rails.application.routes.draw do
       delete '/jobs/:cluster/:jobid' => 'projects#delete_job', :as => 'delete_job'
       post '/jobs/:cluster/:jobid/stop' => 'projects#stop_job', :as => 'stop_job'
 
+      member do
+        post :workflow_poc
+      end
+
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
