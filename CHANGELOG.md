@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Hardcode selinux-policy dependency for RHEL9 (#4379)\
+refactor OodApp and BatchConnect::App (#4170)\
+Feature/3944 add file browser to projects#show (#3981)\
+remove sweetalert (#4374)\
+use warn instead of Rails.logger.error (#4370)\
+Update Changelog (#4368)\
+add check before staging (#4367)\
+update dependencies (#4369)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
