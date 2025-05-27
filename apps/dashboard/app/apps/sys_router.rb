@@ -9,18 +9,20 @@ class SysRouter
   #
   # @return [Array<OodApp>] all system apps
   def self.apps
-    target = base_path
-    if target.directory? && target.executable? && target.readable?
-      target.children.map do |d|
-        router = new(d.basename)
-        app = OodApp.new(router)
-        app.batch_connect_app? ? BatchConnect::App.new(router: router) : app
-      end.select(&:directory?)
-         .select(&:accessible?)
-         .reject(&:hidden?)
-         .reject(&:backup?)
-    else
-      []
+    Rails.cache.fetch('sys_apps', expires_in: 6.hours) do
+      target = base_path
+      if target.directory? && target.executable? && target.readable?
+        target.children.map do |d|
+          router = new(d.basename)
+          app = OodApp.new(router)
+          app.batch_connect_app? ? BatchConnect::App.new(router: router) : app
+        end.select(&:directory?)
+           .select(&:accessible?)
+           .reject(&:hidden?)
+           .reject(&:backup?)
+      else
+        []
+      end
     end
   end
 
