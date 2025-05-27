@@ -3,7 +3,7 @@
 # HpcModule is a class representing a module you'd see on an HPC system.
 class HpcModule
   class << self
-    def all(cluster = nil)
+    def all(cluster: nil)
       if cluster
         Rails.cache.fetch("modules_#{cluster}", expires_in: 24.hours) do
           file = "#{Configuration.module_file_dir}/#{cluster}.json"
@@ -25,7 +25,7 @@ class HpcModule
         end
       else
         Configuration.job_clusters.flat_map do |cluster|
-          all(cluster.id)
+          all(cluster: cluster.id)
         end
       end
     end
