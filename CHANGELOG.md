@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Hardcode selinux-policy dependency for RHEL9 (#4379)\
-refactor OodApp and BatchConnect::App (#4170)\
-Feature/3944 add file browser to projects#show (#3981)\
-remove sweetalert (#4374)\
-use warn instead of Rails.logger.error (#4370)\
-Update Changelog (#4368)\
-add check before staging (#4367)\
-update dependencies (#4369)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -41,7 +33,9 @@ update dependencies (#4369)
 - Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4291](https://github.com/OSC/ondemand/pull/4291).
 - Shell buttons correctly disappear when the shell app is disabled in [4313](https://github.com/OSC/ondemand/pull/4313).
 - ood-portal-generator will now raise an error when attempting to use dex when it is not installed in [4339](https://github.com/OSC/ondemand/pull/4339).
-  
+- The job composer now checks the path before staging in [4367](https://github.com/OSC/ondemand/pull/4367).
+- The configuration_singleton now uses use warn instead of Rails.logger.error in [4370](https://github.com/OSC/ondemand/pull/4370).
+
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
 - Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
@@ -58,6 +52,7 @@ update dependencies (#4369)
 - `bc_num_nodes` Smart Attribute has been added in [4327](https://github.com/OSC/ondemand/pull/4327).
 - Support for an lmod module browser in [4319](https://github.com/OSC/ondemand/pull/4319).
 - Passenger telemetry is now disabled by default with an option to turn it back on in [4355](https://github.com/OSC/ondemand/pull/4355).
+- The project Manager now shows files in [3981](https://github.com/OSC/ondemand/pull/3981).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -70,6 +65,7 @@ update dependencies (#4369)
 - Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
 - The Dockerfile is now a Dockerfile.example file to illustrate it's just an example in [4328](https://github.com/OSC/ondemand/pull/4328).
 - passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
+- Sweetalert2 has been removed and replaced by bootstrap modals in [4374](https://github.com/OSC/ondemand/pull/4374).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
