@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const dependenciesContainer = infoBox.querySelector("[data-role='module-dependencies']");
     const loadCmdBox = infoBox.querySelector("[data-role='module-load-command']");
 
-    versions.forEach(version => {
-      version.addEventListener('click', () => {
-        versions.forEach(v => v.classList.remove('selected-version'));
-        version.classList.add('selected-version');
-        updateVersionInfo(version);
+    versions.forEach(targetVersion => {
+      targetVersion.addEventListener('click', () => {
+        versions.forEach(v => v.classList.remove('active'));
+        targetVersion.classList.add('active');
+        updateVersionInfo(targetVersion);
       });
     });
 
@@ -107,16 +107,20 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /*
-    Toggles the visibility of the module info box when the card is clicked
+    Toggles the style of the module info box when expanded
   */
-  document.querySelectorAll('.collapse').forEach(collapse => {
-    const card = collapse.closest('[data-name]');
+  document.querySelectorAll('[data-name]').forEach(card => {
+    const toggleBtn = card.querySelector('[data-bs-target]');
+    const collapse = card.querySelector('[id^="collapse_"]');
+
     collapse.addEventListener('shown.bs.collapse', () => {
-      if (card) card.classList.add('expanded');
+      card.classList.add('expanded');
+      toggleBtn.classList.add('active');
     });
 
     collapse.addEventListener('hidden.bs.collapse', () => {
-      if (card) card.classList.remove('expanded');
+      card.classList.remove('expanded');
+      toggleBtn.classList.remove('active');
     });
   });
 
@@ -127,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const clusterFilter = document.getElementById('cluster_filter');
 
   function filterModules() {
-    const searchQuery = moduleSearch.value.toLowerCase();
+    const searchQuery = moduleSearch.value.trim().toLowerCase();
     const selectedCluster = clusterFilter.value;
 
     const modules = document.querySelectorAll('[data-name][data-clusters]');
