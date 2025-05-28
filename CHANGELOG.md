@@ -33,7 +33,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Shared interactive applications correctly show in left menu panel of My Interactive Sessions in [4291](https://github.com/OSC/ondemand/pull/4291).
 - Shell buttons correctly disappear when the shell app is disabled in [4313](https://github.com/OSC/ondemand/pull/4313).
 - ood-portal-generator will now raise an error when attempting to use dex when it is not installed in [4339](https://github.com/OSC/ondemand/pull/4339).
-  
+- The job composer now checks the path before staging in [4367](https://github.com/OSC/ondemand/pull/4367).
+- The configuration_singleton now uses use warn instead of Rails.logger.error in [4370](https://github.com/OSC/ondemand/pull/4370).
+
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
 - Support tickets now integrate with ServieNow in [4081](https://github.com/OSC/ondemand/pull/4081).
@@ -50,6 +52,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `bc_num_nodes` Smart Attribute has been added in [4327](https://github.com/OSC/ondemand/pull/4327).
 - Support for an lmod module browser in [4319](https://github.com/OSC/ondemand/pull/4319).
 - Passenger telemetry is now disabled by default with an option to turn it back on in [4355](https://github.com/OSC/ondemand/pull/4355).
+- The project Manager now shows files in [3981](https://github.com/OSC/ondemand/pull/3981).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -62,10 +65,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Icons now set cache headers in [4277](https://github.com/OSC/ondemand/pull/4277).
 - The Dockerfile is now a Dockerfile.example file to illustrate it's just an example in [4328](https://github.com/OSC/ondemand/pull/4328).
 - passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
+- Sweetalert2 has been removed and replaced by bootstrap modals in [4374](https://github.com/OSC/ondemand/pull/4374).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
 - password_fields are now encrypted when written to cache or settings files in [4326](https://github.com/OSC/ondemand/pull/4326).
+
+## [4.0.5] - 05-27-2025
+
+### Added
+- Passenger telemetry is disabled by default in [4361](https://github.com/OSC/ondemand/pull/4361).
+- The file editor will now only open files under a certain limit in [4312](https://github.com/OSC/ondemand/pull/4312).
+
+### Security
+- password_field form items are now encrypted when saved to a file in [4363](https://github.com/OSC/ondemand/pull/4363).
+
+### Fixed
+- The job composer now checks the path before staging in [4371](https://github.com/OSC/ondemand/pull/4371).
+- The configuration_singleton now uses use warn instead of Rails.logger.error in [4375](https://github.com/OSC/ondemand/pull/4375).
+
+### Changed
+- Passenger has been patched and updated for better performance in [4343](https://github.com/OSC/ondemand/pull/4343).
+- selinux dependency has been capped on RHEL9 in [4380](https://github.com/OSC/ondemand/pull/4380).
+
+## [3.1.13] - 05-23-2025
+
+### Added
+- Passenger telemetry is disabled by default in [4362](https://github.com/OSC/ondemand/pull/4362).
+
+### Security
+- password_field form items are now encrypted when saved to a file in [4364](https://github.com/OSC/ondemand/pull/4364).
+
+### Fixed
+- The job composer now checks the path before staging in [4372](https://github.com/OSC/ondemand/pull/4372).
+- The configuration_singleton now uses use warn instead of Rails.logger.error in [4376](https://github.com/OSC/ondemand/pull/4376).
+
+### Changed
+- Passenger has been patched and updated for better performance in [4344](https://github.com/OSC/ondemand/pull/4344).
+- selinux dependency has been capped on RHEL9 in [4381](https://github.com/OSC/ondemand/pull/4381).
 
 ## [4.0.3] - 04-23-2025
 
@@ -1601,11 +1638,13 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.3...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.5...HEAD
+[4.0.5]: https://github.com/OSC/ondemand/compare/v4.0.3...v4.0.5
 [4.0.3]: https://github.com/OSC/ondemand/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.13]: https://github.com/OSC/ondemand/compare/v3.1.11...v3.1.13
 [3.1.11]: https://github.com/OSC/ondemand/compare/v3.1.10...v3.1.11
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
 [3.1.9]: https://github.com/OSC/ondemand/compare/v3.1.7...v3.1.9
