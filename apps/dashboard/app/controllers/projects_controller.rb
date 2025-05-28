@@ -157,6 +157,25 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # GET /projects/:project_id/zip
+  # zip current project using project.zip_to_template
+  def zip_to_template
+    @project = Project.find(params[:project_id])
+
+    if @project.nil?
+      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: params[:project_id])
+      return
+    end
+
+    zip_file = @project.zip_to_template
+
+    if zip_file
+      send_file(zip_file, type: 'application/zip', filename: "#{@project.name}.zip", disposition: 'attachment')
+    else
+      redirect_to project_path(@project), alert: I18n.t('dashboard.jobs_project_zip_error')
+    end
+  end
+
   # POST /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
     @project = Project.find(job_details_params[:project_id])
