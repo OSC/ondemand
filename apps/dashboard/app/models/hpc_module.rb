@@ -32,7 +32,7 @@ class HpcModule
 
     def all_versions(module_name)
       Configuration.job_clusters.map do |cluster|
-        all(cluster.id).select { |m| m.name == module_name.to_s }
+        all(cluster: cluster.id).select { |m| m.name == module_name.to_s }
       end.flatten.uniq(&:to_s).sort_by(&:version).reverse
     end
   end
@@ -57,6 +57,6 @@ class HpcModule
   end
 
   def on_cluster?(cluster_name)
-    HpcModule.all(cluster_name).any? { |m| m.to_s == to_s }
+    HpcModule.all(cluster: cluster_name).any? { |m| m.to_s == to_s }
   end
 end
