@@ -167,12 +167,19 @@ class ProjectsController < ApplicationController
       return
     end
 
-    zip_file = @project.zip_to_template
+    begin
+      zip_file = @project.zip_to_template
 
-    if zip_file
-      send_file(zip_file, type: 'application/zip', filename: "#{@project.name}.zip", disposition: 'attachment')
-    else
-      redirect_to project_path(@project), alert: I18n.t('dashboard.jobs_project_zip_error')
+      send_file(
+        zip_file, type: 'application/zip',
+        filename: "#{@project.name}.zip",
+        disposition: 'attachment')
+      ) if zip_file
+    rescue StandardError => e
+      redirect_to(
+        project_path(@project),
+        alert: I18n.t('dashboard.project_zip_error_message', error: e.message.to_s)
+      )
     end
   end
 
