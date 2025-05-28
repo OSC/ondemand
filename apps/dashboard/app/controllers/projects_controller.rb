@@ -160,21 +160,15 @@ class ProjectsController < ApplicationController
   # GET /projects/:project_id/zip
   # zip current project using project.zip_to_template
   def zip_to_template
-    @project = Project.find(params[:project_id])
+    @project = Project.find(zip_to_template_params[:project_id])
 
     if @project.nil?
-      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: params[:project_id])
+      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: zip_to_template_params[:project_id])
       return
     end
 
     begin
       zip_file = @project.zip_to_template
-
-      send_file(
-        zip_file, type: 'application/zip',
-        filename: "#{@project.name}.zip",
-        disposition: 'attachment'
-      ) if zip_file
     rescue StandardError => e
       redirect_to(
         project_path(@project),
@@ -236,5 +230,9 @@ class ProjectsController < ApplicationController
 
   def job_details_params
     params.permit(:project_id, :cluster, :jobid)
+  end
+
+  def zip_to_template_params
+    params.permit(:project_id)
   end
 end
