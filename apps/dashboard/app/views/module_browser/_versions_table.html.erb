@@ -12,13 +12,13 @@
       <% clusters.each do |cluster| %>
         <% cluster_versions = versions_by_cluster[cluster] || [] %>
         <tr>
-          <td class="fw-bold"><%= cluster.to_s.titleize %></td>
+          <td><%= cluster.to_s.titleize %></td>
           <td>
             <% if cluster_versions.any? %>
               <% cluster_versions.uniq { |v| v.version }.sort_by(&:version).reverse.each do |mod| %>
                 <% next if mod.version.blank? %>
-                <span 
-                  class="badge me-1 version-badge" 
+                <button 
+                  class="btn btn-outline-primary btn-sm version-btn" 
                   title="<%= mod.to_s %>"
                   data-role="selectable-version"
                   data-module="<%= mod.name %>"
@@ -27,7 +27,7 @@
                   data-default="<%= mod.default? %>"
                 >
                   <%= mod.version %>
-                </span>
+                </button>
               <% end %>
             <% else %>
               <span class="text-muted">None</span>
