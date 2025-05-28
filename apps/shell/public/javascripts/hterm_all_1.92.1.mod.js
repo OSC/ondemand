@@ -760,7 +760,7 @@ lib.colors.rgbxArrayToHslaArray = function(rgbx) {
   const max = Math.max(r, g, b);
   const spread = max - min;
 
-  /* eslint-disable id-blacklist */
+  /* eslint-disable id-denylist */
   const l = (max + min) / 2;
 
   if (spread == 0) {
@@ -782,7 +782,7 @@ lib.colors.rgbxArrayToHslaArray = function(rgbx) {
   const s = spread / (1 - Math.abs(2 * l - 1));
 
   return [h, 100 * s, 100 * l, rgbx[3] !== undefined ? +rgbx[3] : 1];
-  /* eslint-enable id-blacklist */
+  /* eslint-enable id-denylist */
 };
 
 /**
@@ -801,7 +801,7 @@ lib.colors.rgbToHsl = function(rgb) {
     return null;
   }
 
-  /* eslint-disable id-blacklist */
+  /* eslint-disable id-denylist */
   // eslint-disable-next-line prefer-const
   let [h, s, l, a] = lib.colors.rgbxArrayToHslaArray(ary);
   h = Math.round(h);
@@ -809,7 +809,7 @@ lib.colors.rgbToHsl = function(rgb) {
   l = Math.round(l);
 
   return a === 1 ? `hsl(${h}, ${s}%, ${l}%)` : `hsla(${h}, ${s}%, ${l}%, ${a})`;
-  /* eslint-enable id-blacklist */
+  /* eslint-enable id-denylist */
 };
 
 /**
@@ -1797,7 +1797,7 @@ lib.f.replaceVars.functions = {
 };
 
 /**
- * Convert a relative path to a fully qulified URI.
+ * Convert a relative path to a fully qualified URI.
  *
  * @param {string} path Relative path
  * @return {string} Fully qualified URI.
@@ -1805,6 +1805,11 @@ lib.f.replaceVars.functions = {
 lib.f.getURL = function(path) {
   if (lib.f.getURL.chromeSupported()) {
     return chrome.runtime.getURL(path);
+  }
+
+  // Use current location origin if path is absolute.
+  if (path.startsWith('/')) {
+    return window.location.origin + path;
   }
 
   return path;
@@ -1939,8 +1944,9 @@ lib.f.getOs = function() {
 
   // Use the native Chrome API if available.
   if (window.chrome && chrome.runtime && chrome.runtime.getPlatformInfo) {
-    return new Promise((resolve, reject) =>
-        chrome.runtime.getPlatformInfo((info) => resolve(info.os)));
+    return new Promise((resolve, reject) => {
+      return chrome.runtime.getPlatformInfo((info) => resolve(info.os));
+    });
   }
 
   // Fallback logic.  Capture the major OS's.  The rest should support the
@@ -2080,7 +2086,19 @@ lib.i18n.browserSupported = function() {
 lib.i18n.getAcceptLanguages = function() {
   if (lib.i18n.browser_) {
     return new Promise((resolve) => {
-      lib.i18n.browser_.getAcceptLanguages(resolve);
+      lib.i18n.browser_.getAcceptLanguages((languages) => {
+        // Chrome might be in a bad state and not return any languages.  If we
+        // pass this up to the caller who isn't expecting undefined, they'll
+        // probably crash.  Fallback to the default language that we expect all
+        // translations to have.
+        if (!languages) {
+          // Clear the error to avoid throwing an unchecked error.
+          console.error('getAcceptLanguages failed', lib.f.lastError());
+          languages = ['en'];
+        }
+
+        resolve(languages);
+      });
     });
   } else {
     const languages = navigator.languages || [navigator.language];
@@ -2151,16 +2169,16 @@ lib.i18n.resolveLanguage = function(language) {
   // Map es-RR other than es-ES to es-419 (Chrome's Latin American
   // Spanish locale).
   if (lang == 'es') {
-    if (region != undefined && region != 'es') {
-      return ['es_419'];
+    if ([undefined, 'es'].includes(region)) {
+      return ['es'];
     }
-    return ['es'];
+    return ['es_419'];
   }
 
   // Map pt-RR other than pt-BR to pt-PT. Note that "pt" by itself maps to
   // pt-BR (logic below).
   if (lang == 'pt') {
-    if (region == 'br' || region == undefined) {
+    if ([undefined, 'br'].includes(region)) {
       return ['pt_BR'];
     }
     return ['pt_PT'];
@@ -2168,20 +2186,21 @@ lib.i18n.resolveLanguage = function(language) {
 
   // Map zh-HK and zh-MO to zh-TW. Otherwise, zh-FOO is mapped to zh-CN.
   if (lang == 'zh') {
-    if (region == 'tw' || region == 'hk' || region == 'mo') {
+    if (['tw', 'hk', 'mo'].includes(region)) {
       return ['zh_TW'];
     }
     return ['zh_CN'];
   }
 
-  // Map Australian, Canadian, Indian, New Zealand and South African
-  // English to British English for now.
+  // Map Liberian and Filipino English to US English, and everything else to
+  // British English.
   if (lang == 'en') {
-    if (region == 'au' || region == 'ca' || region == 'in' || region == 'nz' ||
-        region == 'za') {
-      return ['en_GB'];
+    if ([undefined, 'us', 'lr', 'ph'].includes(region)) {
+      return ['en'];
     }
-    return ['en'];
+
+    // Our GB translation is not complete, so need to add 'en' as a fallback.
+    return ['en_GB', 'en'];
   }
 
   if (region) {
@@ -3618,19 +3637,7 @@ lib.Storage.Chrome = function(storage) {
   this.storage_ = storage;
   this.observers_ = [];
 
-  // R73 introduced onChanged for the storage area.  Keep backwards compat
-  // for EOL systems until we drop app support completely.
-  if (storage.onChanged) {
-    // Newer R73+ code.
-    storage.onChanged.addListener(this.onChanged_.bind(this));
-  } else {
-    // Older <R73 code.
-    chrome.storage.onChanged.addListener((changes, areaname) => {
-      if (chrome.storage[areaname] === this.storage_) {
-        this.onChanged_(changes);
-      }
-    });
-  }
+  storage.onChanged.addListener(this.onChanged_.bind(this));
 };
 
 /**
@@ -4725,111 +4732,113 @@ lib.wc.combining = [
   [0x06ea, 0x06ed], [0x0711, 0x0711], [0x0730, 0x074a],
   [0x07a6, 0x07b0], [0x07eb, 0x07f3], [0x07fd, 0x07fd],
   [0x0816, 0x0819], [0x081b, 0x0823], [0x0825, 0x0827],
-  [0x0829, 0x082d], [0x0859, 0x085b], [0x08d3, 0x08e1],
-  [0x08e3, 0x0902], [0x093a, 0x093a], [0x093c, 0x093c],
-  [0x0941, 0x0948], [0x094d, 0x094d], [0x0951, 0x0957],
-  [0x0962, 0x0963], [0x0981, 0x0981], [0x09bc, 0x09bc],
-  [0x09c1, 0x09c4], [0x09cd, 0x09cd], [0x09e2, 0x09e3],
-  [0x09fe, 0x09fe], [0x0a01, 0x0a02], [0x0a3c, 0x0a3c],
-  [0x0a41, 0x0a42], [0x0a47, 0x0a48], [0x0a4b, 0x0a4d],
-  [0x0a51, 0x0a51], [0x0a70, 0x0a71], [0x0a75, 0x0a75],
-  [0x0a81, 0x0a82], [0x0abc, 0x0abc], [0x0ac1, 0x0ac5],
-  [0x0ac7, 0x0ac8], [0x0acd, 0x0acd], [0x0ae2, 0x0ae3],
-  [0x0afa, 0x0aff], [0x0b01, 0x0b01], [0x0b3c, 0x0b3c],
-  [0x0b3f, 0x0b3f], [0x0b41, 0x0b44], [0x0b4d, 0x0b4d],
-  [0x0b55, 0x0b56], [0x0b62, 0x0b63], [0x0b82, 0x0b82],
-  [0x0bc0, 0x0bc0], [0x0bcd, 0x0bcd], [0x0c00, 0x0c00],
-  [0x0c04, 0x0c04], [0x0c3e, 0x0c40], [0x0c46, 0x0c48],
-  [0x0c4a, 0x0c4d], [0x0c55, 0x0c56], [0x0c62, 0x0c63],
-  [0x0c81, 0x0c81], [0x0cbc, 0x0cbc], [0x0cbf, 0x0cbf],
-  [0x0cc6, 0x0cc6], [0x0ccc, 0x0ccd], [0x0ce2, 0x0ce3],
-  [0x0d00, 0x0d01], [0x0d3b, 0x0d3c], [0x0d41, 0x0d44],
-  [0x0d4d, 0x0d4d], [0x0d62, 0x0d63], [0x0d81, 0x0d81],
-  [0x0dca, 0x0dca], [0x0dd2, 0x0dd4], [0x0dd6, 0x0dd6],
-  [0x0e31, 0x0e31], [0x0e34, 0x0e3a], [0x0e47, 0x0e4e],
-  [0x0eb1, 0x0eb1], [0x0eb4, 0x0ebc], [0x0ec8, 0x0ecd],
-  [0x0f18, 0x0f19], [0x0f35, 0x0f35], [0x0f37, 0x0f37],
-  [0x0f39, 0x0f39], [0x0f71, 0x0f7e], [0x0f80, 0x0f84],
-  [0x0f86, 0x0f87], [0x0f8d, 0x0f97], [0x0f99, 0x0fbc],
-  [0x0fc6, 0x0fc6], [0x102d, 0x1030], [0x1032, 0x1037],
-  [0x1039, 0x103a], [0x103d, 0x103e], [0x1058, 0x1059],
-  [0x105e, 0x1060], [0x1071, 0x1074], [0x1082, 0x1082],
-  [0x1085, 0x1086], [0x108d, 0x108d], [0x109d, 0x109d],
-  [0x1160, 0x11ff], [0x135d, 0x135f], [0x1712, 0x1714],
-  [0x1732, 0x1734], [0x1752, 0x1753], [0x1772, 0x1773],
-  [0x17b4, 0x17b5], [0x17b7, 0x17bd], [0x17c6, 0x17c6],
-  [0x17c9, 0x17d3], [0x17dd, 0x17dd], [0x180b, 0x180e],
-  [0x1885, 0x1886], [0x18a9, 0x18a9], [0x1920, 0x1922],
-  [0x1927, 0x1928], [0x1932, 0x1932], [0x1939, 0x193b],
-  [0x1a17, 0x1a18], [0x1a1b, 0x1a1b], [0x1a56, 0x1a56],
-  [0x1a58, 0x1a5e], [0x1a60, 0x1a60], [0x1a62, 0x1a62],
-  [0x1a65, 0x1a6c], [0x1a73, 0x1a7c], [0x1a7f, 0x1a7f],
-  [0x1ab0, 0x1ac0], [0x1b00, 0x1b03], [0x1b34, 0x1b34],
-  [0x1b36, 0x1b3a], [0x1b3c, 0x1b3c], [0x1b42, 0x1b42],
-  [0x1b6b, 0x1b73], [0x1b80, 0x1b81], [0x1ba2, 0x1ba5],
-  [0x1ba8, 0x1ba9], [0x1bab, 0x1bad], [0x1be6, 0x1be6],
-  [0x1be8, 0x1be9], [0x1bed, 0x1bed], [0x1bef, 0x1bf1],
-  [0x1c2c, 0x1c33], [0x1c36, 0x1c37], [0x1cd0, 0x1cd2],
-  [0x1cd4, 0x1ce0], [0x1ce2, 0x1ce8], [0x1ced, 0x1ced],
-  [0x1cf4, 0x1cf4], [0x1cf8, 0x1cf9], [0x1dc0, 0x1df9],
-  [0x1dfb, 0x1dff], [0x200b, 0x200f], [0x202a, 0x202e],
-  [0x2060, 0x2064], [0x2066, 0x206f], [0x20d0, 0x20f0],
-  [0x2cef, 0x2cf1], [0x2d7f, 0x2d7f], [0x2de0, 0x2dff],
-  [0x302a, 0x302d], [0x3099, 0x309a], [0xa66f, 0xa672],
-  [0xa674, 0xa67d], [0xa69e, 0xa69f], [0xa6f0, 0xa6f1],
-  [0xa802, 0xa802], [0xa806, 0xa806], [0xa80b, 0xa80b],
-  [0xa825, 0xa826], [0xa82c, 0xa82c], [0xa8c4, 0xa8c5],
-  [0xa8e0, 0xa8f1], [0xa8ff, 0xa8ff], [0xa926, 0xa92d],
-  [0xa947, 0xa951], [0xa980, 0xa982], [0xa9b3, 0xa9b3],
-  [0xa9b6, 0xa9b9], [0xa9bc, 0xa9bd], [0xa9e5, 0xa9e5],
-  [0xaa29, 0xaa2e], [0xaa31, 0xaa32], [0xaa35, 0xaa36],
-  [0xaa43, 0xaa43], [0xaa4c, 0xaa4c], [0xaa7c, 0xaa7c],
-  [0xaab0, 0xaab0], [0xaab2, 0xaab4], [0xaab7, 0xaab8],
-  [0xaabe, 0xaabf], [0xaac1, 0xaac1], [0xaaec, 0xaaed],
-  [0xaaf6, 0xaaf6], [0xabe5, 0xabe5], [0xabe8, 0xabe8],
-  [0xabed, 0xabed], [0xfb1e, 0xfb1e], [0xfe00, 0xfe0f],
-  [0xfe20, 0xfe2f], [0xfeff, 0xfeff], [0xfff9, 0xfffb],
-  [0x101fd, 0x101fd], [0x102e0, 0x102e0], [0x10376, 0x1037a],
-  [0x10a01, 0x10a03], [0x10a05, 0x10a06], [0x10a0c, 0x10a0f],
-  [0x10a38, 0x10a3a], [0x10a3f, 0x10a3f], [0x10ae5, 0x10ae6],
-  [0x10d24, 0x10d27], [0x10eab, 0x10eac], [0x10f46, 0x10f50],
-  [0x11001, 0x11001], [0x11038, 0x11046], [0x1107f, 0x11081],
-  [0x110b3, 0x110b6], [0x110b9, 0x110ba], [0x11100, 0x11102],
-  [0x11127, 0x1112b], [0x1112d, 0x11134], [0x11173, 0x11173],
-  [0x11180, 0x11181], [0x111b6, 0x111be], [0x111c9, 0x111cc],
-  [0x111cf, 0x111cf], [0x1122f, 0x11231], [0x11234, 0x11234],
-  [0x11236, 0x11237], [0x1123e, 0x1123e], [0x112df, 0x112df],
-  [0x112e3, 0x112ea], [0x11300, 0x11301], [0x1133b, 0x1133c],
-  [0x11340, 0x11340], [0x11366, 0x1136c], [0x11370, 0x11374],
-  [0x11438, 0x1143f], [0x11442, 0x11444], [0x11446, 0x11446],
-  [0x1145e, 0x1145e], [0x114b3, 0x114b8], [0x114ba, 0x114ba],
-  [0x114bf, 0x114c0], [0x114c2, 0x114c3], [0x115b2, 0x115b5],
-  [0x115bc, 0x115bd], [0x115bf, 0x115c0], [0x115dc, 0x115dd],
-  [0x11633, 0x1163a], [0x1163d, 0x1163d], [0x1163f, 0x11640],
-  [0x116ab, 0x116ab], [0x116ad, 0x116ad], [0x116b0, 0x116b5],
-  [0x116b7, 0x116b7], [0x1171d, 0x1171f], [0x11722, 0x11725],
-  [0x11727, 0x1172b], [0x1182f, 0x11837], [0x11839, 0x1183a],
-  [0x1193b, 0x1193c], [0x1193e, 0x1193e], [0x11943, 0x11943],
-  [0x119d4, 0x119d7], [0x119da, 0x119db], [0x119e0, 0x119e0],
-  [0x11a01, 0x11a0a], [0x11a33, 0x11a38], [0x11a3b, 0x11a3e],
-  [0x11a47, 0x11a47], [0x11a51, 0x11a56], [0x11a59, 0x11a5b],
-  [0x11a8a, 0x11a96], [0x11a98, 0x11a99], [0x11c30, 0x11c36],
-  [0x11c38, 0x11c3d], [0x11c3f, 0x11c3f], [0x11c92, 0x11ca7],
-  [0x11caa, 0x11cb0], [0x11cb2, 0x11cb3], [0x11cb5, 0x11cb6],
-  [0x11d31, 0x11d36], [0x11d3a, 0x11d3a], [0x11d3c, 0x11d3d],
-  [0x11d3f, 0x11d45], [0x11d47, 0x11d47], [0x11d90, 0x11d91],
-  [0x11d95, 0x11d95], [0x11d97, 0x11d97], [0x11ef3, 0x11ef4],
-  [0x13430, 0x13438], [0x16af0, 0x16af4], [0x16b30, 0x16b36],
-  [0x16f4f, 0x16f4f], [0x16f8f, 0x16f92], [0x16fe4, 0x16fe4],
-  [0x1bc9d, 0x1bc9e], [0x1bca0, 0x1bca3], [0x1d167, 0x1d169],
-  [0x1d173, 0x1d182], [0x1d185, 0x1d18b], [0x1d1aa, 0x1d1ad],
-  [0x1d242, 0x1d244], [0x1da00, 0x1da36], [0x1da3b, 0x1da6c],
-  [0x1da75, 0x1da75], [0x1da84, 0x1da84], [0x1da9b, 0x1da9f],
-  [0x1daa1, 0x1daaf], [0x1e000, 0x1e006], [0x1e008, 0x1e018],
-  [0x1e01b, 0x1e021], [0x1e023, 0x1e024], [0x1e026, 0x1e02a],
-  [0x1e130, 0x1e136], [0x1e2ec, 0x1e2ef], [0x1e8d0, 0x1e8d6],
-  [0x1e944, 0x1e94a], [0xe0001, 0xe0001], [0xe0020, 0xe007f],
-  [0xe0100, 0xe01ef],
+  [0x0829, 0x082d], [0x0859, 0x085b], [0x0898, 0x089f],
+  [0x08ca, 0x08e1], [0x08e3, 0x0902], [0x093a, 0x093a],
+  [0x093c, 0x093c], [0x0941, 0x0948], [0x094d, 0x094d],
+  [0x0951, 0x0957], [0x0962, 0x0963], [0x0981, 0x0981],
+  [0x09bc, 0x09bc], [0x09c1, 0x09c4], [0x09cd, 0x09cd],
+  [0x09e2, 0x09e3], [0x09fe, 0x09fe], [0x0a01, 0x0a02],
+  [0x0a3c, 0x0a3c], [0x0a41, 0x0a42], [0x0a47, 0x0a48],
+  [0x0a4b, 0x0a4d], [0x0a51, 0x0a51], [0x0a70, 0x0a71],
+  [0x0a75, 0x0a75], [0x0a81, 0x0a82], [0x0abc, 0x0abc],
+  [0x0ac1, 0x0ac5], [0x0ac7, 0x0ac8], [0x0acd, 0x0acd],
+  [0x0ae2, 0x0ae3], [0x0afa, 0x0aff], [0x0b01, 0x0b01],
+  [0x0b3c, 0x0b3c], [0x0b3f, 0x0b3f], [0x0b41, 0x0b44],
+  [0x0b4d, 0x0b4d], [0x0b55, 0x0b56], [0x0b62, 0x0b63],
+  [0x0b82, 0x0b82], [0x0bc0, 0x0bc0], [0x0bcd, 0x0bcd],
+  [0x0c00, 0x0c00], [0x0c04, 0x0c04], [0x0c3c, 0x0c3c],
+  [0x0c3e, 0x0c40], [0x0c46, 0x0c48], [0x0c4a, 0x0c4d],
+  [0x0c55, 0x0c56], [0x0c62, 0x0c63], [0x0c81, 0x0c81],
+  [0x0cbc, 0x0cbc], [0x0cbf, 0x0cbf], [0x0cc6, 0x0cc6],
+  [0x0ccc, 0x0ccd], [0x0ce2, 0x0ce3], [0x0d00, 0x0d01],
+  [0x0d3b, 0x0d3c], [0x0d41, 0x0d44], [0x0d4d, 0x0d4d],
+  [0x0d62, 0x0d63], [0x0d81, 0x0d81], [0x0dca, 0x0dca],
+  [0x0dd2, 0x0dd4], [0x0dd6, 0x0dd6], [0x0e31, 0x0e31],
+  [0x0e34, 0x0e3a], [0x0e47, 0x0e4e], [0x0eb1, 0x0eb1],
+  [0x0eb4, 0x0ebc], [0x0ec8, 0x0ecd], [0x0f18, 0x0f19],
+  [0x0f35, 0x0f35], [0x0f37, 0x0f37], [0x0f39, 0x0f39],
+  [0x0f71, 0x0f7e], [0x0f80, 0x0f84], [0x0f86, 0x0f87],
+  [0x0f8d, 0x0f97], [0x0f99, 0x0fbc], [0x0fc6, 0x0fc6],
+  [0x102d, 0x1030], [0x1032, 0x1037], [0x1039, 0x103a],
+  [0x103d, 0x103e], [0x1058, 0x1059], [0x105e, 0x1060],
+  [0x1071, 0x1074], [0x1082, 0x1082], [0x1085, 0x1086],
+  [0x108d, 0x108d], [0x109d, 0x109d], [0x1160, 0x11ff],
+  [0x135d, 0x135f], [0x1712, 0x1714], [0x1732, 0x1733],
+  [0x1752, 0x1753], [0x1772, 0x1773], [0x17b4, 0x17b5],
+  [0x17b7, 0x17bd], [0x17c6, 0x17c6], [0x17c9, 0x17d3],
+  [0x17dd, 0x17dd], [0x180b, 0x180f], [0x1885, 0x1886],
+  [0x18a9, 0x18a9], [0x1920, 0x1922], [0x1927, 0x1928],
+  [0x1932, 0x1932], [0x1939, 0x193b], [0x1a17, 0x1a18],
+  [0x1a1b, 0x1a1b], [0x1a56, 0x1a56], [0x1a58, 0x1a5e],
+  [0x1a60, 0x1a60], [0x1a62, 0x1a62], [0x1a65, 0x1a6c],
+  [0x1a73, 0x1a7c], [0x1a7f, 0x1a7f], [0x1ab0, 0x1ace],
+  [0x1b00, 0x1b03], [0x1b34, 0x1b34], [0x1b36, 0x1b3a],
+  [0x1b3c, 0x1b3c], [0x1b42, 0x1b42], [0x1b6b, 0x1b73],
+  [0x1b80, 0x1b81], [0x1ba2, 0x1ba5], [0x1ba8, 0x1ba9],
+  [0x1bab, 0x1bad], [0x1be6, 0x1be6], [0x1be8, 0x1be9],
+  [0x1bed, 0x1bed], [0x1bef, 0x1bf1], [0x1c2c, 0x1c33],
+  [0x1c36, 0x1c37], [0x1cd0, 0x1cd2], [0x1cd4, 0x1ce0],
+  [0x1ce2, 0x1ce8], [0x1ced, 0x1ced], [0x1cf4, 0x1cf4],
+  [0x1cf8, 0x1cf9], [0x1dc0, 0x1dff], [0x200b, 0x200f],
+  [0x202a, 0x202e], [0x2060, 0x2064], [0x2066, 0x206f],
+  [0x20d0, 0x20f0], [0x2cef, 0x2cf1], [0x2d7f, 0x2d7f],
+  [0x2de0, 0x2dff], [0x302a, 0x302d], [0x3099, 0x309a],
+  [0xa66f, 0xa672], [0xa674, 0xa67d], [0xa69e, 0xa69f],
+  [0xa6f0, 0xa6f1], [0xa802, 0xa802], [0xa806, 0xa806],
+  [0xa80b, 0xa80b], [0xa825, 0xa826], [0xa82c, 0xa82c],
+  [0xa8c4, 0xa8c5], [0xa8e0, 0xa8f1], [0xa8ff, 0xa8ff],
+  [0xa926, 0xa92d], [0xa947, 0xa951], [0xa980, 0xa982],
+  [0xa9b3, 0xa9b3], [0xa9b6, 0xa9b9], [0xa9bc, 0xa9bd],
+  [0xa9e5, 0xa9e5], [0xaa29, 0xaa2e], [0xaa31, 0xaa32],
+  [0xaa35, 0xaa36], [0xaa43, 0xaa43], [0xaa4c, 0xaa4c],
+  [0xaa7c, 0xaa7c], [0xaab0, 0xaab0], [0xaab2, 0xaab4],
+  [0xaab7, 0xaab8], [0xaabe, 0xaabf], [0xaac1, 0xaac1],
+  [0xaaec, 0xaaed], [0xaaf6, 0xaaf6], [0xabe5, 0xabe5],
+  [0xabe8, 0xabe8], [0xabed, 0xabed], [0xfb1e, 0xfb1e],
+  [0xfe00, 0xfe0f], [0xfe20, 0xfe2f], [0xfeff, 0xfeff],
+  [0xfff9, 0xfffb], [0x101fd, 0x101fd], [0x102e0, 0x102e0],
+  [0x10376, 0x1037a], [0x10a01, 0x10a03], [0x10a05, 0x10a06],
+  [0x10a0c, 0x10a0f], [0x10a38, 0x10a3a], [0x10a3f, 0x10a3f],
+  [0x10ae5, 0x10ae6], [0x10d24, 0x10d27], [0x10eab, 0x10eac],
+  [0x10f46, 0x10f50], [0x10f82, 0x10f85], [0x11001, 0x11001],
+  [0x11038, 0x11046], [0x11070, 0x11070], [0x11073, 0x11074],
+  [0x1107f, 0x11081], [0x110b3, 0x110b6], [0x110b9, 0x110ba],
+  [0x110c2, 0x110c2], [0x11100, 0x11102], [0x11127, 0x1112b],
+  [0x1112d, 0x11134], [0x11173, 0x11173], [0x11180, 0x11181],
+  [0x111b6, 0x111be], [0x111c9, 0x111cc], [0x111cf, 0x111cf],
+  [0x1122f, 0x11231], [0x11234, 0x11234], [0x11236, 0x11237],
+  [0x1123e, 0x1123e], [0x112df, 0x112df], [0x112e3, 0x112ea],
+  [0x11300, 0x11301], [0x1133b, 0x1133c], [0x11340, 0x11340],
+  [0x11366, 0x1136c], [0x11370, 0x11374], [0x11438, 0x1143f],
+  [0x11442, 0x11444], [0x11446, 0x11446], [0x1145e, 0x1145e],
+  [0x114b3, 0x114b8], [0x114ba, 0x114ba], [0x114bf, 0x114c0],
+  [0x114c2, 0x114c3], [0x115b2, 0x115b5], [0x115bc, 0x115bd],
+  [0x115bf, 0x115c0], [0x115dc, 0x115dd], [0x11633, 0x1163a],
+  [0x1163d, 0x1163d], [0x1163f, 0x11640], [0x116ab, 0x116ab],
+  [0x116ad, 0x116ad], [0x116b0, 0x116b5], [0x116b7, 0x116b7],
+  [0x1171d, 0x1171f], [0x11722, 0x11725], [0x11727, 0x1172b],
+  [0x1182f, 0x11837], [0x11839, 0x1183a], [0x1193b, 0x1193c],
+  [0x1193e, 0x1193e], [0x11943, 0x11943], [0x119d4, 0x119d7],
+  [0x119da, 0x119db], [0x119e0, 0x119e0], [0x11a01, 0x11a0a],
+  [0x11a33, 0x11a38], [0x11a3b, 0x11a3e], [0x11a47, 0x11a47],
+  [0x11a51, 0x11a56], [0x11a59, 0x11a5b], [0x11a8a, 0x11a96],
+  [0x11a98, 0x11a99], [0x11c30, 0x11c36], [0x11c38, 0x11c3d],
+  [0x11c3f, 0x11c3f], [0x11c92, 0x11ca7], [0x11caa, 0x11cb0],
+  [0x11cb2, 0x11cb3], [0x11cb5, 0x11cb6], [0x11d31, 0x11d36],
+  [0x11d3a, 0x11d3a], [0x11d3c, 0x11d3d], [0x11d3f, 0x11d45],
+  [0x11d47, 0x11d47], [0x11d90, 0x11d91], [0x11d95, 0x11d95],
+  [0x11d97, 0x11d97], [0x11ef3, 0x11ef4], [0x13430, 0x13438],
+  [0x16af0, 0x16af4], [0x16b30, 0x16b36], [0x16f4f, 0x16f4f],
+  [0x16f8f, 0x16f92], [0x16fe4, 0x16fe4], [0x1bc9d, 0x1bc9e],
+  [0x1bca0, 0x1bca3], [0x1cf00, 0x1cf2d], [0x1cf30, 0x1cf46],
+  [0x1d167, 0x1d169], [0x1d173, 0x1d182], [0x1d185, 0x1d18b],
+  [0x1d1aa, 0x1d1ad], [0x1d242, 0x1d244], [0x1da00, 0x1da36],
+  [0x1da3b, 0x1da6c], [0x1da75, 0x1da75], [0x1da84, 0x1da84],
+  [0x1da9b, 0x1da9f], [0x1daa1, 0x1daaf], [0x1e000, 0x1e006],
+  [0x1e008, 0x1e018], [0x1e01b, 0x1e021], [0x1e023, 0x1e024],
+  [0x1e026, 0x1e02a], [0x1e130, 0x1e136], [0x1e2ae, 0x1e2ae],
+  [0x1e2ec, 0x1e2ef], [0x1e8d0, 0x1e8d6], [0x1e944, 0x1e94a],
+  [0xe0001, 0xe0001], [0xe0020, 0xe007f], [0xe0100, 0xe01ef],
 ];
 
 // Sorted list of non-overlapping intervals of East Asian Ambiguous characters
@@ -4901,7 +4910,8 @@ lib.wc.ambiguous = [
   [0xac00, 0xd7a3], [0xe000, 0xfaff], [0xfe00, 0xfe19],
   [0xfe30, 0xfe6f], [0xff01, 0xff60], [0xffe0, 0xffe6],
   [0xfffd, 0xfffd], [0x16fe0, 0x16fe4], [0x16ff0, 0x16ff1],
-  [0x17000, 0x18cd5], [0x18d00, 0x18d08], [0x1b000, 0x1b12f],
+  [0x17000, 0x18cd5], [0x18d00, 0x18d08], [0x1aff0, 0x1aff3],
+  [0x1aff5, 0x1affb], [0x1affd, 0x1affe], [0x1b000, 0x1b12f],
   [0x1b150, 0x1b152], [0x1b164, 0x1b167], [0x1b170, 0x1b2ff],
   [0x1f004, 0x1f004], [0x1f0cf, 0x1f0cf], [0x1f100, 0x1f10a],
   [0x1f110, 0x1f12d], [0x1f130, 0x1f169], [0x1f170, 0x1f1ac],
@@ -4914,13 +4924,14 @@ lib.wc.ambiguous = [
   [0x1f550, 0x1f567], [0x1f57a, 0x1f57a], [0x1f595, 0x1f596],
   [0x1f5a4, 0x1f5a4], [0x1f5fb, 0x1f64f], [0x1f680, 0x1f6c5],
   [0x1f6cc, 0x1f6cc], [0x1f6d0, 0x1f6d2], [0x1f6d5, 0x1f6d7],
-  [0x1f6eb, 0x1f6ec], [0x1f6f4, 0x1f6fc], [0x1f7e0, 0x1f7eb],
-  [0x1f90c, 0x1f93a], [0x1f93c, 0x1f945], [0x1f947, 0x1f978],
-  [0x1f97a, 0x1f9cb], [0x1f9cd, 0x1f9ff], [0x1fa70, 0x1fa74],
-  [0x1fa78, 0x1fa7a], [0x1fa80, 0x1fa86], [0x1fa90, 0x1faa8],
-  [0x1fab0, 0x1fab6], [0x1fac0, 0x1fac2], [0x1fad0, 0x1fad6],
-  [0x20000, 0x2fffd], [0x30000, 0x3fffd], [0xe0100, 0xe01ef],
-  [0xf0000, 0xffffd], [0x100000, 0x10fffd],
+  [0x1f6dd, 0x1f6df], [0x1f6eb, 0x1f6ec], [0x1f6f4, 0x1f6fc],
+  [0x1f7e0, 0x1f7eb], [0x1f7f0, 0x1f7f0], [0x1f90c, 0x1f93a],
+  [0x1f93c, 0x1f945], [0x1f947, 0x1f9ff], [0x1fa70, 0x1fa74],
+  [0x1fa78, 0x1fa7c], [0x1fa80, 0x1fa86], [0x1fa90, 0x1faac],
+  [0x1fab0, 0x1faba], [0x1fac0, 0x1fac5], [0x1fad0, 0x1fad9],
+  [0x1fae0, 0x1fae7], [0x1faf0, 0x1faf6], [0x20000, 0x2fffd],
+  [0x30000, 0x3fffd], [0xe0100, 0xe01ef], [0xf0000, 0xffffd],
+  [0x100000, 0x10fffd],
 ];
 
 // Sorted list of non-overlapping intervals of East Asian Unambiguous characters
@@ -4943,6 +4954,7 @@ lib.wc.unambiguous = [
   [0xf900, 0xfaff], [0xfe10, 0xfe19], [0xfe30, 0xfe6f],
   [0xff01, 0xff60], [0xffe0, 0xffe6], [0x16fe0, 0x16fe4],
   [0x16ff0, 0x16ff1], [0x17000, 0x18cd5], [0x18d00, 0x18d08],
+  [0x1aff0, 0x1aff3], [0x1aff5, 0x1affb], [0x1affd, 0x1affe],
   [0x1b000, 0x1b12f], [0x1b150, 0x1b152], [0x1b164, 0x1b167],
   [0x1b170, 0x1b2ff], [0x1f004, 0x1f004], [0x1f0cf, 0x1f0cf],
   [0x1f18e, 0x1f18e], [0x1f191, 0x1f19a], [0x1f200, 0x1f202],
@@ -4954,13 +4966,13 @@ lib.wc.unambiguous = [
   [0x1f4ff, 0x1f53d], [0x1f54b, 0x1f54e], [0x1f550, 0x1f567],
   [0x1f57a, 0x1f57a], [0x1f595, 0x1f596], [0x1f5a4, 0x1f5a4],
   [0x1f5fb, 0x1f64f], [0x1f680, 0x1f6c5], [0x1f6cc, 0x1f6cc],
-  [0x1f6d0, 0x1f6d2], [0x1f6d5, 0x1f6d7], [0x1f6eb, 0x1f6ec],
-  [0x1f6f4, 0x1f6fc], [0x1f7e0, 0x1f7eb], [0x1f90c, 0x1f93a],
-  [0x1f93c, 0x1f945], [0x1f947, 0x1f978], [0x1f97a, 0x1f9cb],
-  [0x1f9cd, 0x1f9ff], [0x1fa70, 0x1fa74], [0x1fa78, 0x1fa7a],
-  [0x1fa80, 0x1fa86], [0x1fa90, 0x1faa8], [0x1fab0, 0x1fab6],
-  [0x1fac0, 0x1fac2], [0x1fad0, 0x1fad6], [0x20000, 0x2fffd],
-  [0x30000, 0x3fffd],
+  [0x1f6d0, 0x1f6d2], [0x1f6d5, 0x1f6d7], [0x1f6dd, 0x1f6df],
+  [0x1f6eb, 0x1f6ec], [0x1f6f4, 0x1f6fc], [0x1f7e0, 0x1f7eb],
+  [0x1f7f0, 0x1f7f0], [0x1f90c, 0x1f93a], [0x1f93c, 0x1f945],
+  [0x1f947, 0x1f9ff], [0x1fa70, 0x1fa74], [0x1fa78, 0x1fa7c],
+  [0x1fa80, 0x1fa86], [0x1fa90, 0x1faac], [0x1fab0, 0x1faba],
+  [0x1fac0, 0x1fac5], [0x1fad0, 0x1fad9], [0x1fae0, 0x1fae7],
+  [0x1faf0, 0x1faf6], [0x20000, 0x2fffd], [0x30000, 0x3fffd],
 ];
 
 /**
@@ -5156,11 +5168,11 @@ lib.wc.substring = function(str, start, end) {
   return lib.wc.substr(str, start, end - start);
 };
 lib.resource.add('libdot/changelog/version', 'text/plain',
-'8.0.0'
+'9.0.0'
 );
 
 lib.resource.add('libdot/changelog/date', 'text/plain',
-'2020-12-07'
+'2022-02-24'
 );
 
 // SOURCE FILE: hterm/js/hterm.js
@@ -7542,14 +7554,16 @@ hterm.Keyboard.prototype.onKeyDown_ = function(e) {
     this.keyMap.addKeyDef(e.keyCode, keyDef);
   }
 
-  // The type of action we're going to use.
+  // The type of action we're going to use: control, alt, meta, or normal.
   let resolvedActionType = null;
 
   /**
-   * @param {string} name
+   * Get the default key definition action for the given modifier name.
+   *
+   * @param {string} name 'control', 'alt', 'meta', or 'normal'.
    * @return {!hterm.Keyboard.KeyDefAction}
    */
-  const getAction = (name) => {
+  const getKeyDefAction = (name) => {
     // Get the key action for the given action name.  If the action is a
     // function, dispatch it.  If the action defers to the normal action,
     // resolve that instead.
@@ -7562,7 +7576,7 @@ hterm.Keyboard.prototype.onKeyDown_ = function(e) {
     }
 
     if (action === DEFAULT && name != 'normal') {
-      action = getAction('normal');
+      action = getKeyDefAction('normal');
     }
 
     return action;
@@ -7577,6 +7591,7 @@ hterm.Keyboard.prototype.onKeyDown_ = function(e) {
   const STRIP = hterm.Keyboard.KeyActions.STRIP;
 
   let control = e.ctrlKey;
+  let shift = e.shiftKey;
   let alt = this.altIsMeta ? false : e.altKey;
   let meta = this.altIsMeta ? (e.altKey || e.metaKey) : e.metaKey;
 
@@ -7608,25 +7623,6 @@ hterm.Keyboard.prototype.onKeyDown_ = function(e) {
     break;
   }
 
-  /** @type {?hterm.Keyboard.KeyDefAction} */
-  let action;
-
-  if (control) {
-    action = getAction('control');
-  } else if (alt) {
-    action = getAction('alt');
-  } else if (meta) {
-    action = getAction('meta');
-  } else {
-    action = getAction('normal');
-  }
-
-  // If e.maskShiftKey was set (during getAction) it means the shift key is
-  // already accounted for in the action, and we should not act on it any
-  // further. This is currently only used for Ctrl+Shift+Tab, which should send
-  // "CSI Z", not "CSI 1 ; 2 Z".
-  let shift = !e.maskShiftKey && e.shiftKey;
-
   /** @type {!hterm.Keyboard.KeyDown} */
   const keyDown = {
     keyCode: e.keyCode,
@@ -7636,8 +7632,11 @@ hterm.Keyboard.prototype.onKeyDown_ = function(e) {
     meta: meta,
   };
 
-  const binding = this.bindings.getBinding(keyDown);
+  /** @type {?hterm.Keyboard.KeyDefAction} */
+  let action;
 
+  // Allow user specified keybindings to override default keyDef.
+  const binding = this.bindings.getBinding(keyDown);
   if (binding) {
     // Clear out the modifier bits so we don't try to munge the sequence
     // further.
@@ -7651,6 +7650,23 @@ hterm.Keyboard.prototype.onKeyDown_ = function(e) {
     } else {
       action = /** @type {!hterm.Keyboard.KeyAction} */ (binding.action);
     }
+  } else {
+    // No user keybinding, so use default keyDef.
+    if (control) {
+      action = getKeyDefAction('control');
+    } else if (alt) {
+      action = getKeyDefAction('alt');
+    } else if (meta) {
+      action = getKeyDefAction('meta');
+    } else {
+      action = getKeyDefAction('normal');
+    }
+
+    // If e.maskShiftKey was set (during getKeyDefAction) it means the shift key
+    // is already accounted for in the action, and we should not act on it any
+    // further. This is currently only used for Ctrl+Shift+Tab, which should
+    // send "CSI Z", not "CSI 1 ; 2 Z".
+    shift = !e.maskShiftKey && e.shiftKey;
   }
 
   // Call keyDef function now that we have given bindings a chance to override.
@@ -8330,6 +8346,9 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     keycapSC = 59;      // ;:
     keycapEP = 61;      // =+
     keycapMU = 173;     // -_
+
+    // Firefox Italian +*.
+    add(171, '+*', DEFAULT, c('onZoom_'), DEFAULT, c('onZoom_'));
   } else {
     // All other browsers use these mappings.
     // keycapMute = 173;   // Mute
@@ -8384,9 +8403,6 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
   add(keycapMU, '-_', DEFAULT, c('onZoom_'),  DEFAULT,        c('onZoom_'));
   add(keycapEP, '=+', DEFAULT, c('onZoom_'),  DEFAULT,        c('onZoom_'));
 
-  // Firefox Italian +*.
-  add(171, '+*', DEFAULT, c('onZoom_'), DEFAULT, c('onZoom_'));
-
   add(8,   '[BKSP]', bs('\x7f', '\b'), bs('\b', '\x7f'), DEFAULT,     DEFAULT);
 
   // Third row.
@@ -8411,7 +8427,7 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
   // want to do that. Our behavior on Enter is what most other
   // modern emulators do.
   add(20,  '[CAPS]',  PASS,    PASS,                        PASS,    DEFAULT);
-  add(65,  'aA',      DEFAULT, ctl('A'),                    DEFAULT, DEFAULT);
+  add(65,  'aA', DEFAULT, sh(ctl('A'), c('onCtrlShiftA_')), DEFAULT, DEFAULT);
   add(83,  'sS',      DEFAULT, ctl('S'),                    DEFAULT, DEFAULT);
   add(68,  'dD',      DEFAULT, ctl('D'),                    DEFAULT, DEFAULT);
   add(70,  'fF', DEFAULT, sh(ctl('F'), c('onCtrlShiftF_')), DEFAULT, DEFAULT);
@@ -8688,7 +8704,8 @@ hterm.Keyboard.KeyMap.prototype.onClear_ = function(e) {
  * @return {symbol|string} Key action or sequence.
  */
 hterm.Keyboard.KeyMap.prototype.onF11_ = function(e) {
-  if (hterm.windowType != 'popup' && !e.shiftKey) {
+  if (hterm.windowType !== 'popup' && hterm.windowType !== 'app' &&
+      !e.shiftKey) {
     return hterm.Keyboard.KeyActions.PASS;
   } else {
     return '\x1b[23~';
@@ -8798,6 +8815,19 @@ hterm.Keyboard.KeyMap.prototype.onCtrlT_ = function(e) {
 };
 
 /**
+ * Select all lines. Returns a function which selects all lines when invoked
+ * rather than calling selectAll() directly so that users can override their own
+ * key binding for 'Ctrl+Shift+A' if desired.
+ *
+ * @param {!KeyboardEvent} e The event to process.
+ * @return {symbol} Key action or sequence.
+ */
+hterm.Keyboard.KeyMap.prototype.onCtrlShiftA_ = function(e) {
+  this.keyboard.terminal.getScrollPort().selectAll();
+  return hterm.Keyboard.KeyActions.CANCEL;
+};
+
+/**
  * Display the find bar.
  *
  * @param {!KeyboardEvent} e The event to process.
@@ -8848,8 +8878,7 @@ hterm.Keyboard.KeyMap.prototype.onCtrlC_ = function(e) {
  * Either send a ^N or open a new window to the same location.
  *
  * @param {!KeyboardEvent} e The event to process.
- * @return {!hterm.Keyboard.KeyDefFunction|symbol|string} Key action or
- *     sequence.
+ * @return {symbol|string} Key action or sequence.
  */
 hterm.Keyboard.KeyMap.prototype.onCtrlN_ = function(e) {
   if (this.keyboard.terminal.passCtrlN) {
@@ -8857,13 +8886,11 @@ hterm.Keyboard.KeyMap.prototype.onCtrlN_ = function(e) {
   }
 
   if (e.shiftKey) {
-    return function(e, k) {
-      lib.f.openWindow(document.location.href, '',
-                       'chrome=no,close=yes,resize=yes,scrollbars=yes,' +
-                       'minimizable=yes,width=' + window.innerWidth +
-                       ',height=' + window.innerHeight);
-      return hterm.Keyboard.KeyActions.CANCEL;
-    };
+    lib.f.openWindow(document.location.href, '',
+                     'chrome=no,close=yes,resize=yes,scrollbars=yes,' +
+                     'minimizable=yes,width=' + window.innerWidth +
+                     ',height=' + window.innerHeight);
+    return hterm.Keyboard.KeyActions.CANCEL;
   }
 
   return '\x0e';
@@ -8900,17 +8927,15 @@ hterm.Keyboard.KeyMap.prototype.onCtrlV_ = function(e) {
  * Either the default action or open a new window to the same location.
  *
  * @param {!KeyboardEvent} e The event to process.
- * @return {!hterm.Keyboard.KeyDefFunction|symbol} Key action or sequence.
+ * @return {symbol} Key action or sequence.
  */
 hterm.Keyboard.KeyMap.prototype.onMetaN_ = function(e) {
   if (e.shiftKey) {
-    return function(e, k) {
-      lib.f.openWindow(document.location.href, '',
-                       'chrome=no,close=yes,resize=yes,scrollbars=yes,' +
-                       'minimizable=yes,width=' + window.outerWidth +
-                       ',height=' + window.outerHeight);
-      return hterm.Keyboard.KeyActions.CANCEL;
-    };
+    lib.f.openWindow(document.location.href, '',
+                     'chrome=no,close=yes,resize=yes,scrollbars=yes,' +
+                     'minimizable=yes,width=' + window.outerWidth +
+                     ',height=' + window.outerHeight);
+    return hterm.Keyboard.KeyActions.CANCEL;
   }
 
   return hterm.Keyboard.KeyActions.DEFAULT;
@@ -9752,7 +9777,7 @@ hterm.Parser.identifiers.keyCodes = {
   T: 84,
   Y: 89,
   U: 85,
-  // eslint-disable-next-line id-blacklist
+  // eslint-disable-next-line id-denylist
   I: 73,
   O: 79,
   P: 80,
@@ -9933,6 +9958,17 @@ hterm.Parser.identifiers.actions = {
   },
 
   /**
+   * Select all lines in the terminal buffer.
+   *
+   * @param {!hterm.Terminal} terminal
+   * @return {!hterm.Keyboard.KeyActions}
+   */
+  selectAll: function(terminal) {
+    terminal.getScrollPort().selectAll();
+    return hterm.Keyboard.KeyActions.CANCEL;
+  },
+
+  /**
    * Clear the active screen and move the cursor to (0,0).
    *
    * @param {!hterm.Terminal} terminal
@@ -9997,11 +10033,12 @@ hterm.Parser.identifiers.actions = {
  *
  * This is currently just an ordered list of known connection profiles.
  *
- * @param {string} profileId
+ * @param {string=} profileId Uses 'default' if not specified.
  * @extends {lib.PreferenceManager}
  * @constructor
  */
-hterm.PreferenceManager = function(profileId) {
+hterm.PreferenceManager = function(
+    profileId = hterm.Terminal.DEFAULT_PROFILE_ID) {
   lib.PreferenceManager.call(this, hterm.defaultStorage,
                              hterm.PreferenceManager.prefix_ + profileId);
   Object.entries(hterm.PreferenceManager.defaultPreferences).forEach(
@@ -10220,6 +10257,7 @@ hterm.PreferenceManager.defaultPreferences = {
       `  "0": "\\u2588"\n} }`,
   ),
 
+  // TODO(crbug.com/1258487): remove this after all users has migrated.
   'close-on-exit': hterm.PreferenceManager.definePref_(
       'Close window on exit',
       hterm.PreferenceManager.Categories.Miscellaneous,
@@ -10466,6 +10504,13 @@ hterm.PreferenceManager.defaultPreferences = {
       hterm.PreferenceManager.Categories.Appearance,
       'antialiased', 'string',
       `CSS font-smoothing property.`,
+  ),
+
+  'line-height-padding-size': hterm.PreferenceManager.definePref_(
+      'Line height padding size',
+      hterm.PreferenceManager.Categories.Appearance,
+      0, 'int',
+      `The padding size in pixels between each row of the terminal screen.`,
   ),
 
   'foreground-color': hterm.PreferenceManager.definePref_(
@@ -12127,8 +12172,8 @@ hterm.ScrollPort = function(rowProvider) {
   this.previousRowNodeCache_ = {};
 
   // Used during scroll events to detect when the underlying cause is a resize.
-  this.lastScreenWidth_ = null;
-  this.lastScreenHeight_ = null;
+  this.lastScreenWidth_ = 0;
+  this.lastScreenHeight_ = 0;
 
   // True if the user should be allowed to select text in the terminal.
   // This is disabled when the host requests mouse drag events so that we don't
@@ -12151,6 +12196,11 @@ hterm.ScrollPort = function(rowProvider) {
    * Size of screen padding in pixels.
    */
   this.screenPaddingSize = 0;
+
+  /**
+   * Size of line height padding in pixels.
+   */
+  this.lineHeightPaddingSize = 0;
 
   /**
    * True if the last scroll caused the scrollport to show the final row.
@@ -12216,8 +12266,24 @@ hterm.ScrollPort.Selection = function(scrollPort) {
    *
    * If only one row is selected then startRow == endRow.  If there is no
    * selection or the selection is collapsed then startRow == null.
+   *
+   * @type {?Node}
    */
   this.startRow = null;
+
+  /**
+   * Node where selection starts.
+   *
+   * @type {?Node}
+   */
+  this.startNode = null;
+
+  /**
+   * Character offset in startNode where selection starts.
+   *
+   * @type {number}
+   */
+  this.startOffset = 0;
 
   /**
    * The row containing the end of the selection.
@@ -12228,18 +12294,77 @@ hterm.ScrollPort.Selection = function(scrollPort) {
    *
    * If only one row is selected then startRow == endRow.  If there is no
    * selection or the selection is collapsed then startRow == null.
+   *
+   * @type {?Node}
    */
   this.endRow = null;
 
   /**
-   * True if startRow != endRow.
+   * Node where selection ends.
+   *
+   * @type {?Node}
    */
-  this.isMultiline = null;
+  this.endNode = null;
 
   /**
-   * True if the selection is just a point rather than a range.
+   * Character offset in endNode where selection ends.
+   *
+   * @type {number}
    */
-  this.isCollapsed = null;
+  this.endOffset = 0;
+
+  /**
+   * True if startRow != endRow.
+   *
+   * @type {boolean}
+   */
+  this.isMultiline = false;
+
+  /**
+   * True if the selection is just a point (empty) rather than a range.
+   *
+   * @type {boolean}
+   */
+  this.isCollapsed = true;
+
+  /**
+   * @private
+   * @const
+   */
+  this.autoScrollOnMouseMoveBound_ =
+      /** @type {!EventListener} */ (this.autoScrollOnMouseMove_.bind(this));
+
+  /**
+   * True when 'mousedown' event is received for primary button until 'mouseup'
+   * is received for primary button.
+   *
+   * @private {boolean}
+   */
+  this.autoScrollEnabled_ = false;
+
+  /**
+   * Direction of auto scroll. 1 for scrolling down, -1 for scrolling up. Set by
+   * detecting mouse position from 'mousemove' events.
+   *
+   * @private {number}
+   */
+  this.autoScrollDirection_ = 1;
+
+  /**
+   * ID of interval running this.autoScroll_(). Set by startAutoScroll_(),
+   * cleared by stopAutoScroll_().
+   *
+   * @private {?number}
+   */
+  this.autoScrollInterval_ = null;
+
+  /**
+   * Number of rows to scroll at a time. Auto scroll runs at a 200ms interval.
+   * It starts by scrolling 1 row and accelerates by 20% each invocation.
+   *
+   * @private {number}
+   */
+  this.autoScrollDelta_ = 1;
 };
 
 /**
@@ -12273,6 +12398,81 @@ hterm.ScrollPort.Selection.prototype.findFirstChild = function(
 };
 
 /**
+ * Capture mousemove events while auto scroll is enabled. Set scroll direction
+ * up if mouse is above midpoint of screen, else set direction down. Start and
+ * stop auto scroll when mouse moves above or below rows.
+ *
+ * @param {!MouseEvent} e
+ * @private
+ */
+hterm.ScrollPort.Selection.prototype.autoScrollOnMouseMove_ = function(e) {
+  // If mouse is in top half of screen, then direction is up, else down.
+  const screenHeight = this.scrollPort_.lastScreenHeight_;
+  this.autoScrollDirection_ = (e.pageY * 2) < screenHeight ? -1 : 1;
+
+  const padding = this.scrollPort_.screenPaddingSize;
+  if (e.pageY < padding) {
+    // Mouse above rows.
+    this.startAutoScroll_();
+  } else if (e.pageY < (this.scrollPort_.visibleRowsHeight + padding)) {
+    // Mouse inside rows.
+    this.stopAutoScroll_();
+  } else {
+    // Mouse below rows.
+    this.startAutoScroll_();
+  }
+};
+
+/**
+ * Enable auto scrolling. True while primary mouse button is down.
+ *
+ * @param {boolean} enabled
+ */
+hterm.ScrollPort.Selection.prototype.setAutoScrollEnabled = function(enabled) {
+  this.autoScrollEnabled_ = enabled;
+  const doc = this.scrollPort_.getDocument();
+  if (enabled) {
+    doc.addEventListener('mousemove', this.autoScrollOnMouseMoveBound_);
+  } else {
+    doc.removeEventListener('mousemove', this.autoScrollOnMouseMoveBound_);
+    this.stopAutoScroll_();
+  }
+};
+
+/**
+ * Increase this.autoScrollDelta_ by 20% and scroll.
+ *
+ * @private
+ */
+hterm.ScrollPort.Selection.prototype.autoScroll_ = function() {
+  this.autoScrollDelta_ *= 1.2;
+  const delta = Math.floor(this.autoScrollDelta_) * this.autoScrollDirection_;
+  this.scrollPort_.scrollRowToTop(this.scrollPort_.getTopRowIndex() + delta);
+};
+
+/**
+ * Start auto scrolling if primary mouse is down and it is above or below rows.
+ *
+ * @private
+ */
+hterm.ScrollPort.Selection.prototype.startAutoScroll_ = function() {
+  if (this.autoScrollEnabled_ && this.autoScrollInterval_ === null) {
+    this.autoScrollInterval_ = setInterval(this.autoScroll_.bind(this), 200);
+  }
+};
+
+/**
+ * Stop auto scrolling called on 'mouseup' or if mouse moves back into rows.
+ *
+ * @private
+ */
+hterm.ScrollPort.Selection.prototype.stopAutoScroll_ = function() {
+  clearInterval(this.autoScrollInterval_);
+  this.autoScrollInterval_ = null;
+  this.autoScrollDelta_ = 1;
+};
+
+/**
  * Synchronize this object with the current DOM selection.
  *
  * This is a one-way synchronization, the DOM selection is copied to this
@@ -12288,15 +12488,15 @@ hterm.ScrollPort.Selection.prototype.sync = function() {
     this.startNode = selection.anchorNode;
     this.startOffset = selection.anchorOffset;
     this.endRow = focusRow;
-    this.endNode = selection.focusNode;
-    this.endOffset = selection.focusOffset;
+    this.endNode = focusNode;
+    this.endOffset = focusOffset;
   };
 
   // This function is used when we detect that the "focus" node is first.
   const focusFirst = () => {
     this.startRow = focusRow;
-    this.startNode = selection.focusNode;
-    this.startOffset = selection.focusOffset;
+    this.startNode = focusNode;
+    this.startOffset = focusOffset;
     this.endRow = anchorRow;
     this.endNode = selection.anchorNode;
     this.endOffset = selection.anchorOffset;
@@ -12304,24 +12504,27 @@ hterm.ScrollPort.Selection.prototype.sync = function() {
 
   const selection = this.scrollPort_.getDocument().getSelection();
 
-  this.startRow = null;
-  this.endRow = null;
-  this.isMultiline = null;
-  this.isCollapsed = !selection || selection.isCollapsed;
+  const clear = () => {
+    this.startRow = null;
+    this.startNode = null;
+    this.startOffset = 0;
+    this.endRow = null;
+    this.endNode = null;
+    this.endOffset = 0;
+    this.isMultiline = false;
+    this.isCollapsed = true;
+  };
 
   if (!selection) {
+    clear();
     return;
   }
 
-  // Usually collapsed selections wouldn't be interesting, however screen
-  // readers will set a collapsed selection as they navigate through the DOM.
-  // It is important to preserve these nodes in the DOM as scrolling happens
-  // so that screen reader navigation isn't cleared.
-  const accessibilityEnabled = this.scrollPort_.accessibilityReader_ &&
-      this.scrollPort_.accessibilityReader_.accessibilityEnabled;
-  if (this.isCollapsed && !accessibilityEnabled) {
-    return;
-  }
+  // Do not ignore collapsed selections. They must not be cleared.
+  // Screen readers will set them as they navigate through the DOM.
+  // Auto scroll can also create them as the selection inverts if you scroll
+  // one way and then reverse direction.
+  this.isCollapsed = !selection || selection.isCollapsed;
 
   let anchorRow = selection.anchorNode;
   while (anchorRow && anchorRow.nodeName != 'X-ROW') {
@@ -12330,17 +12533,58 @@ hterm.ScrollPort.Selection.prototype.sync = function() {
 
   if (!anchorRow) {
     // Don't set a selection if it's not a row node that's selected.
+    clear();
     return;
   }
 
   let focusRow = selection.focusNode;
+  let focusNode = focusRow;
+  let focusOffset = selection.focusOffset;
+  const focusIsStartOfTopRow = () => {
+    focusRow = this.scrollPort_.topFold_.nextSibling;
+    focusNode = focusRow;
+    focusOffset = 0;
+  };
+  const focusIsEndOfBottomRow = () => {
+    focusRow = this.scrollPort_.bottomFold_.previousSibling;
+    focusNode = focusRow;
+    while (focusNode.lastChild) {
+      focusNode = focusNode.lastChild;
+    }
+    focusOffset = focusNode.length || 0;
+  };
+
+  // If focus is topFold or bottomFold, use adjacent row.
+  if (focusRow === this.scrollPort_.topFold_) {
+    focusIsStartOfTopRow();
+  } else if (focusRow === this.scrollPort_.bottomFold_) {
+    focusIsEndOfBottomRow();
+  }
+
   while (focusRow && focusRow.nodeName != 'X-ROW') {
     focusRow = focusRow.parentNode;
   }
 
   if (!focusRow) {
-    // Don't set a selection if it's not a row node that's selected.
+    // Keep existing selection (do not clear()) if focus is not a valid row.
     return;
+  }
+
+  // During auto scroll, if focusRow is one of the selection rows inside the
+  // fold, use adjacent row.
+  if (this.scrollPort_.autoScrollEnabled_) {
+    let node = this.scrollPort_.topFold_;
+    while ((node = node.previousSibling) !== null) {
+      if (node === focusRow) {
+        focusIsStartOfTopRow();
+      }
+    }
+    node = this.scrollPort_.bottomFold_;
+    while ((node = node.nextSibling) !== null) {
+      if (node === focusRow) {
+        focusIsEndOfBottomRow();
+      }
+    }
   }
 
   if (anchorRow.rowIndex < focusRow.rowIndex) {
@@ -12349,8 +12593,8 @@ hterm.ScrollPort.Selection.prototype.sync = function() {
   } else if (anchorRow.rowIndex > focusRow.rowIndex) {
     focusFirst();
 
-  } else if (selection.focusNode == selection.anchorNode) {
-    if (selection.anchorOffset < selection.focusOffset) {
+  } else if (focusNode == selection.anchorNode) {
+    if (selection.anchorOffset < focusOffset) {
       anchorFirst();
     } else {
       focusFirst();
@@ -12360,7 +12604,7 @@ hterm.ScrollPort.Selection.prototype.sync = function() {
     // The selection starts and ends in the same row, but isn't contained all
     // in a single node.
     const firstNode = this.findFirstChild(
-        anchorRow, [selection.anchorNode, selection.focusNode]);
+        anchorRow, [selection.anchorNode, focusNode]);
 
     if (!firstNode) {
       throw new Error('Unexpected error syncing selection.');
@@ -12813,6 +13057,12 @@ hterm.ScrollPort.prototype.setScreenPaddingSize = function(size) {
   this.resize();
 };
 
+/** @param {number} size */
+hterm.ScrollPort.prototype.setLineHeightPaddingSize = function(size) {
+  this.lineHeightPaddingSize = size;
+  this.syncCharacterSize();
+};
+
 /** @param {boolean} ctrlVPaste */
 hterm.ScrollPort.prototype.setCtrlVPaste = function(ctrlVPaste) {
   this.ctrlVPaste = ctrlVPaste;
@@ -12979,51 +13229,20 @@ hterm.ScrollPort.prototype.getFontSize = function() {
  * @return {!hterm.Size} A new hterm.Size object.
  */
 hterm.ScrollPort.prototype.measureCharacterSize = function(weight = '') {
-  // Number of lines used to average the height of a single character.
-  const numberOfLines = 100;
-  // Number of chars per line used to average the width of a single character.
-  const lineLength = 100;
-
-  if (!this.ruler_) {
-    this.ruler_ = this.document_.createElement('div');
-    this.ruler_.id = 'hterm:ruler-character-size';
-    this.ruler_.style.cssText = (
-        'position: absolute;' +
-        'top: 0;' +
-        'left: 0;' +
-        'visibility: hidden;' +
-        'height: auto !important;' +
-        'width: auto !important;');
-
-    // We need to put the text in a span to make the size calculation
-    // work properly in Firefox
-    this.rulerSpan_ = this.document_.createElement('span');
-    this.rulerSpan_.id = 'hterm:ruler-span-workaround';
-    this.rulerSpan_.innerHTML =
-        ('X'.repeat(lineLength) + '\r').repeat(numberOfLines);
-    this.ruler_.appendChild(this.rulerSpan_);
-
-    this.rulerBaseline_ = this.document_.createElement('span');
-    this.rulerSpan_.id = 'hterm:ruler-baseline';
-    // We want to collapse it on the baseline
-    this.rulerBaseline_.style.fontSize = '0px';
-    this.rulerBaseline_.textContent = 'X';
+  let ruler = this.ruler_;
+  if (!ruler) {
+    ruler = this.ruler_ = this.document_.createElement('canvas');
   }
-
-  this.rulerSpan_.style.fontWeight = weight;
-
-  this.rowNodes_.appendChild(this.ruler_);
-  const rulerSize = this.rulerSpan_.getBoundingClientRect();
-
-  const size = new hterm.Size(rulerSize.width / lineLength,
-                            rulerSize.height / numberOfLines);
-
-  this.ruler_.appendChild(this.rulerBaseline_);
-  this.ruler_.removeChild(this.rulerBaseline_);
-
-  this.rowNodes_.removeChild(this.ruler_);
-
-  return size;
+  const context = ruler.getContext('2d');
+  context.font = `${weight} ${this.getFontSize()}px ${this.getFontFamily()}`;
+  const heightBox = context.measureText('X\u{2588}');
+  const ascent =
+      heightBox.actualBoundingBoxAscent || heightBox.fontBoundingBoxAscent;
+  const descent =
+      heightBox.actualBoundingBoxDescent || heightBox.fontBoundingBoxDescent;
+  const widthBox = context.measureText('X');
+  return new hterm.Size(widthBox.width,
+                        ascent + descent + this.lineHeightPaddingSize);
 };
 
 /**
@@ -13094,13 +13313,13 @@ hterm.ScrollPort.prototype.syncRowNodesDimensions_ = function() {
       screenSize.height, this.characterSize.height);
 
   // Then compute the height of our integral number of rows.
-  const visibleRowsHeight = this.visibleRowCount * this.characterSize.height;
+  this.visibleRowsHeight = this.visibleRowCount * this.characterSize.height;
 
   // Then the difference between the screen height and total row height needs to
   // be made up for as top margin.  We need to record this value so it
   // can be used later to determine the topRowIndex.
   this.visibleRowTopMargin = 0;
-  this.visibleRowBottomMargin = screenSize.height - visibleRowsHeight;
+  this.visibleRowBottomMargin = screenSize.height - this.visibleRowsHeight;
 
   this.topFold_.style.marginBottom = this.visibleRowTopMargin + 'px';
 
@@ -13115,7 +13334,7 @@ hterm.ScrollPort.prototype.syncRowNodesDimensions_ = function() {
   // Set the dimensions of the visible rows container.
   this.rowNodes_.style.width = screenSize.width + 'px';
   this.rowNodes_.style.height =
-      visibleRowsHeight + topFoldOffset + this.screenPaddingSize + 'px';
+      this.visibleRowsHeight + topFoldOffset + this.screenPaddingSize + 'px';
   this.rowNodes_.style.left =
       this.screen_.offsetLeft + this.screenPaddingSize + 'px';
   this.rowNodes_.style.top =
@@ -13532,14 +13751,14 @@ hterm.ScrollPort.prototype.fetchRowNode_ = function(rowIndex) {
 };
 
 /**
- * Select all rows in the viewport.
+ * Select all rows in the terminal including scrollback.
  */
 hterm.ScrollPort.prototype.selectAll = function() {
   let firstRow;
 
   if (this.topFold_.nextSibling.rowIndex != 0) {
     while (this.topFold_.previousSibling) {
-      this.rowNodes_.removeChild(this.topFold_.previousSibling);
+      this.topFold_.previousSibling.remove();
     }
 
     firstRow = this.fetchRowNode_(0);
@@ -13554,18 +13773,23 @@ hterm.ScrollPort.prototype.selectAll = function() {
 
   if (this.bottomFold_.previousSibling.rowIndex != lastRowIndex) {
     while (this.bottomFold_.nextSibling) {
-      this.rowNodes_.removeChild(this.bottomFold_.nextSibling);
+      this.bottomFold_.nextSibling.remove();
     }
 
     lastRow = this.fetchRowNode_(lastRowIndex);
     this.rowNodes_.appendChild(lastRow);
   } else {
-    lastRow = this.bottomFold_.previousSibling.rowIndex;
+    lastRow = this.bottomFold_.previousSibling;
+  }
+
+  let focusNode = lastRow;
+  while (focusNode.lastChild) {
+    focusNode = focusNode.lastChild;
   }
 
   const selection = this.document_.getSelection();
   selection.collapse(firstRow, 0);
-  selection.extend(lastRow, lastRow.childNodes.length);
+  selection.extend(focusNode, focusNode.length || 0);
 
   this.selection.sync();
 };
@@ -14263,12 +14487,19 @@ hterm.Terminal = function({profileId} = {}) {
   // TODO(crbug.com/1063219) Remove this once the bug is fixed.
   this.alwaysUseLegacyPasting = false;
 
-  this.setProfile(profileId || 'default',
+  this.setProfile(profileId || hterm.Terminal.DEFAULT_PROFILE_ID,
                   function() { this.onTerminalReady(); }.bind(this));
 
   /** @const */
   this.findBar = new hterm.FindBar(this);
 };
+
+/**
+ * Default Profile ID.
+ *
+ * @const {string}
+ */
+hterm.Terminal.DEFAULT_PROFILE_ID = 'default';
 
 /**
  * Possible cursor shapes.
@@ -14306,9 +14537,15 @@ hterm.Terminal.prototype.tabWidth = 8;
  */
 hterm.Terminal.prototype.setProfile = function(
     profileId, callback = undefined) {
-  this.profileId_ = profileId.replace(/\//g, '');
+  profileId = profileId.replace(/\//g, '');
+  if (this.profileId_ === profileId) {
+    if (callback) {
+      callback();
+    }
+    return;
+  }
 
-  const terminal = this;
+  this.profileId_ = profileId;
 
   if (this.prefs_) {
     this.prefs_.deactivate();
@@ -14323,8 +14560,8 @@ hterm.Terminal.prototype.setProfile = function(
    * @param {*?=} bindings
    * @param {*?=} useOsDefaults
    */
-  function loadKeyBindings(bindings = null, useOsDefaults = false) {
-    terminal.keyboard.bindings.clear();
+  const loadKeyBindings = (bindings = null, useOsDefaults = false) => {
+    this.keyboard.bindings.clear();
 
     // Default to an empty object so we still handle OS defaults.
     if (bindings === null) {
@@ -14338,14 +14575,14 @@ hterm.Terminal.prototype.setProfile = function(
     }
 
     try {
-      terminal.keyboard.bindings.addBindings(bindings, !!useOsDefaults);
+      this.keyboard.bindings.addBindings(bindings, !!useOsDefaults);
     } catch (ex) {
       console.error('Error in keybindings preference: ' + ex);
     }
-  }
+  };
 
   this.prefs_.addObservers(null, {
-    'alt-gr-mode': function(v) {
+    'alt-gr-mode': (v) => {
       if (v == null) {
         if (navigator.language.toLowerCase() == 'en-us') {
           v = 'none';
@@ -14362,40 +14599,44 @@ hterm.Terminal.prototype.setProfile = function(
         v = 'none';
       }
 
-      terminal.keyboard.altGrMode = v;
+      this.keyboard.altGrMode = v;
     },
 
-    'alt-backspace-is-meta-backspace': function(v) {
-      terminal.keyboard.altBackspaceIsMetaBackspace = v;
+    'alt-backspace-is-meta-backspace': (v) => {
+      this.keyboard.altBackspaceIsMetaBackspace = v;
     },
 
-    'alt-is-meta': function(v) {
-      terminal.keyboard.altIsMeta = v;
+    'alt-is-meta': (v) => {
+      this.keyboard.altIsMeta = v;
     },
 
-    'alt-sends-what': function(v) {
+    'alt-sends-what': (v) => {
       if (!/^(escape|8-bit|browser-key)$/.test(v)) {
         v = 'escape';
       }
 
-      terminal.keyboard.altSendsWhat = v;
+      this.keyboard.altSendsWhat = v;
     },
 
-    'audible-bell-sound': function(v) {
+    'audible-bell-sound': (v) => {
       const ary = v.match(/^lib-resource:(\S+)/);
       if (ary) {
-        terminal.bellAudio_.setAttribute('src',
-                                         lib.resource.getDataUrl(ary[1]));
+        const name = ary[1];
+        if (lib.resource.get(name) === undefined) {
+          console.warn(`Invalid resource name '${name}'`);
+          this.prefs_.reset('audible-bell-sound');
+          return;
+        }
+        this.bellAudio_.setAttribute('src', lib.resource.getDataUrl(name));
       } else {
-        terminal.bellAudio_.setAttribute('src', v);
+        this.bellAudio_.setAttribute('src', v);
       }
     },
 
-    'desktop-notification-bell': function(v) {
+    'desktop-notification-bell': (v) => {
       if (v && Notification) {
-        terminal.desktopNotificationBell_ =
-            Notification.permission === 'granted';
-        if (!terminal.desktopNotificationBell_) {
+        this.desktopNotificationBell_ = Notification.permission === 'granted';
+        if (!this.desktopNotificationBell_) {
           // Note: We don't call Notification.requestPermission here because
           // Chrome requires the call be the result of a user action (such as an
           // onclick handler), and pref listeners are run asynchronously.
@@ -14406,67 +14647,67 @@ hterm.Terminal.prototype.setProfile = function(
                        'permission to display notifications.');
         }
       } else {
-        terminal.desktopNotificationBell_ = false;
+        this.desktopNotificationBell_ = false;
       }
     },
 
-    'background-color': function(v) {
-      terminal.setBackgroundColor(v);
+    'background-color': (v) => {
+      this.setBackgroundColor(v);
     },
 
-    'background-image': function(v) {
-      terminal.scrollPort_.setBackgroundImage(v);
+    'background-image': (v) => {
+      this.scrollPort_.setBackgroundImage(v);
     },
 
-    'background-size': function(v) {
-      terminal.scrollPort_.setBackgroundSize(v);
+    'background-size': (v) => {
+      this.scrollPort_.setBackgroundSize(v);
     },
 
-    'background-position': function(v) {
-      terminal.scrollPort_.setBackgroundPosition(v);
+    'background-position': (v) => {
+      this.scrollPort_.setBackgroundPosition(v);
     },
 
-    'backspace-sends-backspace': function(v) {
-      terminal.keyboard.backspaceSendsBackspace = v;
+    'backspace-sends-backspace': (v) => {
+      this.keyboard.backspaceSendsBackspace = v;
     },
 
-    'character-map-overrides': function(v) {
+    'character-map-overrides': (v) => {
       if (!(v == null || v instanceof Object)) {
         console.warn('Preference character-map-modifications is not an ' +
                      'object: ' + v);
         return;
       }
 
-      terminal.vt.characterMaps.reset();
-      terminal.vt.characterMaps.setOverrides(v);
+      this.vt.characterMaps.reset();
+      this.vt.characterMaps.setOverrides(v);
     },
 
-    'cursor-blink': function(v) {
-      terminal.setCursorBlink(!!v);
+    'cursor-blink': (v) => {
+      this.setCursorBlink(!!v);
     },
 
-    'cursor-shape': function(v) {
-      terminal.setCursorShape(v);
+    'cursor-shape': (v) => {
+      this.setCursorShape(v);
     },
 
-    'cursor-blink-cycle': function(v) {
+    'cursor-blink-cycle': (v) => {
         if (v instanceof Array &&
             typeof v[0] == 'number' &&
             typeof v[1] == 'number') {
-          terminal.cursorBlinkCycle_ = v;
+          this.cursorBlinkCycle_ = v;
         } else if (typeof v == 'number') {
-          terminal.cursorBlinkCycle_ = [v, v];
+          this.cursorBlinkCycle_ = [v, v];
         } else {
           // Fast blink indicates an error.
-          terminal.cursorBlinkCycle_ = [100, 100];
+          this.cursorBlinkCycle_ = [100, 100];
         }
     },
 
-    'cursor-color': function(v) {
-      terminal.setCursorColor(v);
+    'cursor-color': (v) => {
+      this.setCursorColor(v);
     },
 
-    'color-palette-overrides': function(v) {
+    'color-palette-overrides': (v) => {
       if (!(v == null || v instanceof Object || v instanceof Array)) {
         console.warn('Preference color-palette-overrides is not an array or ' +
                      'object: ' + v);
@@ -14476,8 +14717,8 @@ hterm.Terminal.prototype.setProfile = function(
       // Reset all existing colors first as the new palette override might not
       // have the same mappings.  If the old one set colors the new one doesn't,
       // those old mappings have to get cleared first.
-      lib.colors.stockPalette.forEach((c, i) => terminal.setColorPalette(i, c));
-      terminal.colorPaletteOverrides_.clear();
+      lib.colors.stockPalette.forEach((c, i) => this.setColorPalette(i, c));
+      this.colorPaletteOverrides_.clear();
 
       if (v) {
         for (const key in v) {
@@ -14490,270 +14731,285 @@ hterm.Terminal.prototype.setProfile = function(
           if (v[i]) {
             const rgb = lib.colors.normalizeCSS(v[i]);
             if (rgb) {
-              terminal.setColorPalette(i, rgb);
-              terminal.colorPaletteOverrides_.set(i, rgb);
+              this.setColorPalette(i, rgb);
+              this.colorPaletteOverrides_.set(i, rgb);
             }
           }
         }
       }
 
-      terminal.primaryScreen_.textAttributes.colorPaletteOverrides = [];
-      terminal.alternateScreen_.textAttributes.colorPaletteOverrides = [];
+      this.primaryScreen_.textAttributes.colorPaletteOverrides = [];
+      this.alternateScreen_.textAttributes.colorPaletteOverrides = [];
     },
 
-    'copy-on-select': function(v) {
-      terminal.copyOnSelect = !!v;
+    'copy-on-select': (v) => {
+      this.copyOnSelect = !!v;
     },
 
-    'use-default-window-copy': function(v) {
-      terminal.useDefaultWindowCopy = !!v;
+    'use-default-window-copy': (v) => {
+      this.useDefaultWindowCopy = !!v;
     },
 
-    'clear-selection-after-copy': function(v) {
-      terminal.clearSelectionAfterCopy = !!v;
+    'clear-selection-after-copy': (v) => {
+      this.clearSelectionAfterCopy = !!v;
     },
 
-    'ctrl-plus-minus-zero-zoom': function(v) {
-      terminal.keyboard.ctrlPlusMinusZeroZoom = v;
+    'ctrl-plus-minus-zero-zoom': (v) => {
+      this.keyboard.ctrlPlusMinusZeroZoom = v;
     },
 
-    'ctrl-c-copy': function(v) {
-      terminal.keyboard.ctrlCCopy = v;
+    'ctrl-c-copy': (v) => {
+      this.keyboard.ctrlCCopy = v;
     },
 
-    'ctrl-v-paste': function(v) {
-      terminal.keyboard.ctrlVPaste = v;
-      terminal.scrollPort_.setCtrlVPaste(v);
+    'ctrl-v-paste': (v) => {
+      this.keyboard.ctrlVPaste = v;
+      this.scrollPort_.setCtrlVPaste(v);
     },
 
-    'paste-on-drop': function(v) {
-      terminal.scrollPort_.setPasteOnDrop(v);
+    'paste-on-drop': (v) => {
+      this.scrollPort_.setPasteOnDrop(v);
     },
 
-    'east-asian-ambiguous-as-two-column': function(v) {
+    'east-asian-ambiguous-as-two-column': (v) => {
       lib.wc.regardCjkAmbiguous = v;
     },
 
-    'enable-8-bit-control': function(v) {
-      terminal.vt.enable8BitControl = !!v;
+    'enable-8-bit-control': (v) => {
+      this.vt.enable8BitControl = !!v;
     },
 
-    'enable-bold': function(v) {
-      terminal.syncBoldSafeState();
+    'enable-bold': (v) => {
+      this.syncBoldSafeState();
     },
 
-    'enable-bold-as-bright': function(v) {
-      terminal.primaryScreen_.textAttributes.enableBoldAsBright = !!v;
-      terminal.alternateScreen_.textAttributes.enableBoldAsBright = !!v;
+    'enable-bold-as-bright': (v) => {
+      this.primaryScreen_.textAttributes.enableBoldAsBright = !!v;
+      this.alternateScreen_.textAttributes.enableBoldAsBright = !!v;
     },
 
-    'enable-blink': function(v) {
-      terminal.setTextBlink(!!v);
+    'enable-blink': (v) => {
+      this.setTextBlink(!!v);
     },
 
-    'enable-clipboard-write': function(v) {
-      terminal.vt.enableClipboardWrite = !!v;
+    'enable-clipboard-write': (v) => {
+      this.vt.enableClipboardWrite = !!v;
     },
 
-    'enable-dec12': function(v) {
-      terminal.vt.enableDec12 = !!v;
+    'enable-dec12': (v) => {
+      this.vt.enableDec12 = !!v;
     },
 
-    'enable-csi-j-3': function(v) {
-      terminal.vt.enableCsiJ3 = !!v;
+    'enable-csi-j-3': (v) => {
+      this.vt.enableCsiJ3 = !!v;
     },
 
-    'find-result-color': function(v) {
-      terminal.findBar.setFindResultColor(v);
+    'find-result-color': (v) => {
+      this.findBar.setFindResultColor(v);
     },
 
-    'find-result-selected-color': function(v) {
-      terminal.findBar.setFindResultSelectedColor(v);
+    'find-result-selected-color': (v) => {
+      this.findBar.setFindResultSelectedColor(v);
     },
 
-    'font-family': function(v) {
-      terminal.syncFontFamily();
+    'font-family': (v) => {
+      this.syncFontFamily();
     },
 
-    'font-size': function(v) {
+    'font-size': (v) => {
       v = parseInt(v, 10);
       if (isNaN(v) || v <= 0) {
         console.error(`Invalid font size: ${v}`);
         return;
       }
 
-      terminal.setFontSize(v);
+      this.setFontSize(v);
     },
 
-    'font-smoothing': function(v) {
-      terminal.syncFontFamily();
+    'font-smoothing': (v) => {
+      this.syncFontFamily();
     },
 
-    'foreground-color': function(v) {
-      terminal.setForegroundColor(v);
+    'foreground-color': (v) => {
+      this.setForegroundColor(v);
     },
 
-    'hide-mouse-while-typing': function(v) {
-      terminal.setAutomaticMouseHiding(v);
+    'hide-mouse-while-typing': (v) => {
+      this.setAutomaticMouseHiding(v);
     },
 
-    'home-keys-scroll': function(v) {
-      terminal.keyboard.homeKeysScroll = v;
+    'home-keys-scroll': (v) => {
+      this.keyboard.homeKeysScroll = v;
     },
 
-    'keybindings': function(v) {
-      loadKeyBindings(v, terminal.prefs_.get('keybindings-os-defaults'));
+    'keybindings': (v) => {
+      loadKeyBindings(v, this.prefs_.get('keybindings-os-defaults'));
     },
 
-    'keybindings-os-defaults': function(v) {
-      loadKeyBindings(terminal.prefs_.get('keybindings'), v);
+    'keybindings-os-defaults': (v) => {
+      loadKeyBindings(this.prefs_.get('keybindings'), v);
     },
 
-    'media-keys-are-fkeys': function(v) {
-      terminal.keyboard.mediaKeysAreFKeys = v;
+    'line-height-padding-size': (v) => {
+      v = parseFloat(v);
+      if (isNaN(v)) {
+        console.error(`Invalid line height padding size: ${v}`);
+        return;
+      }
+      this.setLineHeightPaddingSize(v);
     },
 
-    'meta-sends-escape': function(v) {
-      terminal.keyboard.metaSendsEscape = v;
+    'media-keys-are-fkeys': (v) => {
+      this.keyboard.mediaKeysAreFKeys = v;
     },
 
-    'mouse-right-click-paste': function(v) {
-      terminal.mouseRightClickPaste = v;
+    'meta-sends-escape': (v) => {
+      this.keyboard.metaSendsEscape = v;
     },
 
-    'mouse-paste-button': function(v) {
-      terminal.syncMousePasteButton();
+    'mouse-right-click-paste': (v) => {
+      this.mouseRightClickPaste = v;
     },
 
-    'page-keys-scroll': function(v) {
-      terminal.keyboard.pageKeysScroll = v;
+    'mouse-paste-button': (v) => {
+      this.syncMousePasteButton();
     },
 
-    'pass-alt-number': function(v) {
+    'page-keys-scroll': (v) => {
+      this.keyboard.pageKeysScroll = v;
+    },
+
+    'pass-alt-number': (v) => {
       if (v == null) {
         // Let Alt+1..9 pass to the browser (to control tab switching) on
         // non-OS X systems, or if hterm is not opened in an app window.
-        v = (hterm.os != 'mac' && hterm.windowType != 'popup');
+        v = (hterm.os !== 'mac' &&
+             hterm.windowType !== 'popup' &&
+             hterm.windowType !== 'app');
       }
 
-      terminal.passAltNumber = v;
+      this.passAltNumber = v;
     },
 
-    'pass-ctrl-number': function(v) {
+    'pass-ctrl-number': (v) => {
       if (v == null) {
         // Let Ctrl+1..9 pass to the browser (to control tab switching) on
         // non-OS X systems, or if hterm is not opened in an app window.
-        v = (hterm.os != 'mac' && hterm.windowType != 'popup');
+        v = (hterm.os !== 'mac' &&
+             hterm.windowType !== 'popup' &&
+             hterm.windowType !== 'app');
       }
 
-      terminal.passCtrlNumber = v;
+      this.passCtrlNumber = v;
     },
 
-    'pass-ctrl-n': function(v) {
-      terminal.passCtrlN = v;
+    'pass-ctrl-n': (v) => {
+      this.passCtrlN = v;
     },
 
-    'pass-ctrl-t': function(v) {
-      terminal.passCtrlT = v;
+    'pass-ctrl-t': (v) => {
+      this.passCtrlT = v;
     },
 
-    'pass-ctrl-tab': function(v) {
-      terminal.passCtrlTab = v;
+    'pass-ctrl-tab': (v) => {
+      this.passCtrlTab = v;
     },
 
-    'pass-ctrl-w': function(v) {
-      terminal.passCtrlW = v;
+    'pass-ctrl-w': (v) => {
+      this.passCtrlW = v;
     },
 
-    'pass-meta-number': function(v) {
+    'pass-meta-number': (v) => {
       if (v == null) {
         // Let Meta+1..9 pass to the browser (to control tab switching) on
         // OS X systems, or if hterm is not opened in an app window.
-        v = (hterm.os == 'mac' && hterm.windowType != 'popup');
+        v = (hterm.os === 'mac' &&
+             hterm.windowType !== 'popup' &&
+             hterm.windowType !== 'app');
       }
 
-      terminal.passMetaNumber = v;
+      this.passMetaNumber = v;
     },
 
-    'pass-meta-v': function(v) {
-      terminal.keyboard.passMetaV = v;
+    'pass-meta-v': (v) => {
+      this.keyboard.passMetaV = v;
     },
 
-    'screen-padding-size': function(v) {
+    'screen-padding-size': (v) => {
       v = parseInt(v, 10);
       if (isNaN(v) || v < 0) {
         console.error(`Invalid screen padding size: ${v}`);
         return;
       }
-      terminal.setScreenPaddingSize(v);
+      this.setScreenPaddingSize(v);
     },
 
-    'screen-border-size': function(v) {
+    'screen-border-size': (v) => {
       v = parseInt(v, 10);
       if (isNaN(v) || v < 0) {
         console.error(`Invalid screen border size: ${v}`);
         return;
       }
-      terminal.setScreenBorderSize(v);
+      this.setScreenBorderSize(v);
     },
 
-    'screen-border-color': function(v) {
-      terminal.div_.style.borderColor = v;
+    'screen-border-color': (v) => {
+      this.div_.style.borderColor = v;
     },
 
-    'scroll-on-keystroke': function(v) {
-      terminal.scrollOnKeystroke_ = v;
+    'scroll-on-keystroke': (v) => {
+      this.scrollOnKeystroke_ = v;
     },
 
-    'scroll-on-output': function(v) {
-      terminal.scrollOnOutput_ = v;
+    'scroll-on-output': (v) => {
+      this.scrollOnOutput_ = v;
     },
 
-    'scrollbar-visible': function(v) {
-      terminal.setScrollbarVisible(v);
+    'scrollbar-visible': (v) => {
+      this.setScrollbarVisible(v);
     },
 
-    'scroll-wheel-may-send-arrow-keys': function(v) {
-      terminal.scrollWheelArrowKeys_ = v;
+    'scroll-wheel-may-send-arrow-keys': (v) => {
+      this.scrollWheelArrowKeys_ = v;
     },
 
-    'scroll-wheel-move-multiplier': function(v) {
-      terminal.setScrollWheelMoveMultipler(v);
+    'scroll-wheel-move-multiplier': (v) => {
+      this.setScrollWheelMoveMultipler(v);
     },
 
-    'shift-insert-paste': function(v) {
-      terminal.keyboard.shiftInsertPaste = v;
+    'shift-insert-paste': (v) => {
+      this.keyboard.shiftInsertPaste = v;
     },
 
-    'terminal-encoding': function(v) {
-      terminal.vt.setEncoding(v);
+    'terminal-encoding': (v) => {
+      this.vt.setEncoding(v);
     },
 
-    'user-css': function(v) {
-      terminal.scrollPort_.setUserCssUrl(v);
+    'user-css': (v) => {
+      this.scrollPort_.setUserCssUrl(v);
     },
 
-    'user-css-text': function(v) {
-      terminal.scrollPort_.setUserCssText(v);
+    'user-css-text': (v) => {
+      this.scrollPort_.setUserCssText(v);
     },
 
-    'word-break-match-left': function(v) {
-      terminal.primaryScreen_.wordBreakMatchLeft = v;
-      terminal.alternateScreen_.wordBreakMatchLeft = v;
+    'word-break-match-left': (v) => {
+      this.primaryScreen_.wordBreakMatchLeft = v;
+      this.alternateScreen_.wordBreakMatchLeft = v;
     },
 
-    'word-break-match-right': function(v) {
-      terminal.primaryScreen_.wordBreakMatchRight = v;
-      terminal.alternateScreen_.wordBreakMatchRight = v;
+    'word-break-match-right': (v) => {
+      this.primaryScreen_.wordBreakMatchRight = v;
+      this.alternateScreen_.wordBreakMatchRight = v;
     },
 
-    'word-break-match-middle': function(v) {
-      terminal.primaryScreen_.wordBreakMatchMiddle = v;
-      terminal.alternateScreen_.wordBreakMatchMiddle = v;
+    'word-break-match-middle': (v) => {
+      this.primaryScreen_.wordBreakMatchMiddle = v;
+      this.alternateScreen_.wordBreakMatchMiddle = v;
     },
 
-    'allow-images-inline': function(v) {
-      terminal.allowImagesInline = v;
+    'allow-images-inline': (v) => {
+      this.allowImagesInline = v;
     },
   });
 
@@ -15210,6 +15466,14 @@ hterm.Terminal.prototype.setWindowTitle = function(title) {
 };
 
 /**
+ * Change the name of the terminal. This is used by tmux, and it is different
+ * from the window title. See the "NAMES AND TITLES" section in `man tmux`.
+ *
+ * @param {string} name The name to set.
+ */
+hterm.Terminal.prototype.setWindowName = function(name) {};
+
+/**
  * Restore a previously saved cursor position.
  *
  * @param {!hterm.RowCol} cursor The position to restore.
@@ -15282,6 +15546,15 @@ hterm.Terminal.prototype.setCursorShape = function(shape) {
  */
 hterm.Terminal.prototype.getCursorShape = function() {
   return this.cursorShape_;
+};
+
+/**
+ * Set the line height padding size in pixels.
+ *
+ * @param {number} size
+ */
+hterm.Terminal.prototype.setLineHeightPaddingSize = function(size) {
+  this.scrollPort_.setLineHeightPaddingSize(size);
 };
 
 /**
@@ -17131,6 +17404,10 @@ hterm.Terminal.prototype.setAlternateMode = function(state) {
     }
   }
 
+  // NB: We specifically do not use realizeSize_ because that's optimized to
+  // elide updates when the size is the same which is the most common scenario
+  // at this point.  We need the other cascading changes from switching the
+  // underlying screen to be processed.
   this.realizeWidth_(this.screenSize.width);
   this.realizeHeight_(this.screenSize.height);
   this.scrollPort_.syncScrollHeight();
@@ -17719,8 +17996,9 @@ hterm.Terminal.prototype.getSelectionText = function() {
   }
 
   // End offset measures from the end of the line.
-  let endOffset = (hterm.TextAttributes.nodeWidth(selection.endNode) -
-                   selection.endOffset);
+  let endOffset =
+      hterm.TextAttributes.nodeWidth(lib.notNull(selection.endNode)) -
+      selection.endOffset;
   node = selection.endNode;
 
   if (node.nodeName != 'X-ROW') {
@@ -17938,6 +18216,11 @@ hterm.Terminal.prototype.onMouse_ = function(e) {
       this.setSelectionEnabled(false);
       e.preventDefault();
     }
+
+    // Primary button 'mousedown'.
+    if (e.button === 0) {
+      this.scrollPort_.selection.setAutoScrollEnabled(true);
+    }
   }
 
   if (!reportMouseEvents) {
@@ -18040,11 +18323,18 @@ hterm.Terminal.prototype.onMouse_ = function(e) {
     this.onMouse(e);
   }
 
-  if (e.type == 'mouseup' && this.document_.getSelection().isCollapsed) {
-    // Restore this on mouseup in case it was temporarily defeated with a
-    // alt-mousedown.  Only do this when the selection is empty so that
-    // we don't immediately kill the users selection.
-    this.defeatMouseReports_ = false;
+  if (e.type == 'mouseup') {
+    if (this.document_.getSelection().isCollapsed) {
+      // Restore this on mouseup in case it was temporarily defeated with a
+      // alt-mousedown.  Only do this when the selection is empty so that
+      // we don't immediately kill the users selection.
+      this.defeatMouseReports_ = false;
+    }
+
+    // Primary button 'mouseup'.
+    if (e.button === 0) {
+      this.scrollPort_.selection.setAutoScrollEnabled(false);
+    }
   }
 };
 
@@ -18252,6 +18542,17 @@ hterm.Terminal.prototype.onOpenOptionsPage = function() {};
 hterm.Terminal.prototype.onOpenOptionsPage_ = function() {
   this.onOpenOptionsPage();
 };
+
+
+/**
+ * Client should override this if they want to handle tmux control mode DCS
+ * sequence (see https://github.com/tmux/tmux/wiki/Control-Mode). We split the
+ * sequence data into lines and call this once per line (the '\r\n' ending will
+ * be stripped). When the sequence ends with ST, we call this once with null.
+ *
+ * @param {?string} line The line or null when the sequence ends.
+ */
+hterm.Terminal.prototype.onTmuxControlModeLine = function(line) {};
 // SOURCE FILE: hterm/js/hterm_terminal_io.js
 // Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -18413,6 +18714,7 @@ hterm.Terminal.IO.prototype.onVTKeystroke = function(string) {
  * @param {number} height The new terminal height.
  */
 hterm.Terminal.IO.prototype.onTerminalResize_ = function(width, height) {
+  // eslint-disable-next-line consistent-this
   let obj = this;
   while (obj) {
     obj.columnCount = width;
@@ -18692,6 +18994,10 @@ hterm.TextAttributes.prototype.createContainer = function(textContent = '') {
 
   if (this.background != this.DEFAULT_COLOR) {
     style.backgroundColor = this.background.toString();
+    // Make sure the span fills the line when changing the background color.
+    // Otherwise, if the line happens to be taller than this glyph, we won't
+    // fill the color completely leading to visual gaps.
+    style.display = 'inline-block';
   }
 
   if (this.enableBold && this.bold) {
@@ -19396,6 +19702,13 @@ hterm.VT.ParseState.prototype.isComplete = function() {
 };
 
 /**
+ * Reset the parse state.
+ */
+hterm.VT.prototype.resetParseState = function() {
+  this.parseState_.reset();
+};
+
+/**
  * Reset the VT back to baseline state.
  */
 hterm.VT.prototype.reset = function() {
@@ -19761,6 +20074,133 @@ hterm.VT.prototype.parseCSI_ = function(parseState) {
 };
 
 /**
+ * Parse a Device Control String and dispatch it.
+ *
+ * See [DCS] for some useful information about these codes.
+ *
+ * @param {!hterm.VT.ParseState} parseState The current parse state.
+ */
+hterm.VT.prototype.parseDCS_ = function(parseState) {
+  const ch = parseState.peekChar();
+  const args = parseState.args;
+
+  const finishParsing = () => {
+    // Resetting the arguments isn't strictly necessary, but it makes debugging
+    // less confusing (otherwise args will stick around until the next sequence
+    // that needs arguments).
+    parseState.resetArguments();
+    parseState.resetParseFunction();
+  };
+
+  if (ch >= '@' && ch <= '~') {
+    // This is the final character.
+    parseState.advance(1);
+    this.dispatch('DCS', this.leadingModifier_ + this.trailingModifier_ + ch,
+                  parseState);
+
+    // Don't reset the parser function if it's being handled.
+    // The dispatched method must handle ST termination itself.
+    if (parseState.func === this.parseDCS_) {
+      parseState.func = this.parseUntilStringTerminator_;
+    }
+    return;
+
+  } else if (ch === ';') {
+    // Parameter delimiter.
+    if (this.trailingModifier_) {
+      // Parameter delimiter after the trailing modifier.  Abort parsing.
+      finishParsing();
+
+    } else {
+      if (!args.length) {
+        // They omitted the first param, we need to supply it.
+        args.push('');
+      }
+
+      args.push('');
+    }
+
+  } else if (ch >= '0' && ch <= '9') {
+    // Next byte in the current parameter.
+
+    if (this.trailingModifier_) {
+      // Numeric parameter after the trailing modifier.  Abort parsing.
+      finishParsing();
+    } else {
+      if (!args.length) {
+        args[0] = ch;
+      } else {
+        args[args.length - 1] += ch;
+      }
+    }
+
+  } else if (ch >= ' ' && ch <= '?') {
+    // Modifier character.
+    if (!args.length) {
+      this.leadingModifier_ += ch;
+    } else {
+      this.trailingModifier_ += ch;
+    }
+
+  } else if (this.cc1Pattern_.test(ch)) {
+    // Control character.
+    this.dispatch('CC1', ch, parseState);
+
+  } else {
+    // Unexpected character in sequence, bail out.
+    finishParsing();
+  }
+
+  parseState.advance(1);
+};
+
+
+/**
+ * Parse tmux control mode data, which is terminated with ST.
+ *
+ * @param {!hterm.VT.ParseState} parseState
+ */
+hterm.VT.prototype.parseTmuxControlModeData_ = function(parseState) {
+  const args = parseState.args;
+  if (!args.length) {
+    // This stores the unfinished line.
+    args[0] = '';
+  }
+  // Consume as many lines as possible.
+  while (true) {
+    const args0InitialLength = args[0].length;
+    const buf = args[0] + parseState.peekRemainingBuf();
+    args[0] = '';
+
+    // Find either ST or line break.
+    // eslint-disable-next-line no-control-regex
+    const index = buf.search(/\x1b\\|\r\n/);
+    if (index === -1) {
+      parseState.args[0] = buf;
+      parseState.resetBuf();
+      return;
+    }
+
+    const data = buf.slice(0, index);
+    parseState.advance(index + 2 - args0InitialLength);
+
+    // Check if buf ends with ST.
+    if (buf[index] === '\x1b') {
+      if (data) {
+        console.error(`unexpected data before ST: ${data}`);
+      }
+      this.terminal.onTmuxControlModeLine(null);
+      parseState.resetArguments();
+      parseState.resetParseFunction();
+      return;
+    }
+
+    // buf ends with line break.
+    this.terminal.onTmuxControlModeLine(data);
+  }
+};
+
+/**
  * Skip over the string until the next String Terminator (ST, 'ESC \') or
  * Bell (BEL, '\x07').
  *
@@ -20109,6 +20549,15 @@ hterm.VT.ESC = {};
 hterm.VT.CSI = {};
 
 /**
+ * Collection of DCS (Device Control String) sequences.
+ *
+ * These sequences begin with 'ESC P', may take zero or more arguments, and are
+ * normally terminated by ST.  Registered handlers have to consume the ST if
+ * they change the active parser func.
+ */
+hterm.VT.DCS = {};
+
+/**
  * Collection of OSC (Operating System Control) sequences.
  *
  * These sequences begin with 'ESC ]', followed by a function number and a
@@ -20379,7 +20828,6 @@ hterm.VT.ESC['O'] = hterm.VT.ignore;
  * Device Control String (DCS).
  *
  * Indicate a DCS sequence.  See Device-Control functions in [XTERM].
- * Not currently implemented.
  *
  * TODO(rginda): Consider implementing DECRQSS, the rest don't seem applicable.
  *
@@ -20389,7 +20837,9 @@ hterm.VT.ESC['O'] = hterm.VT.ignore;
 hterm.VT.CC1['\x90'] =
 hterm.VT.ESC['P'] = function(parseState) {
   parseState.resetArguments();
-  parseState.func = this.parseUntilStringTerminator_;
+  this.leadingModifier_ = '';
+  this.trailingModifier_ = '';
+  parseState.func = this.parseDCS_;
 };
 
 /**
@@ -20658,13 +21108,12 @@ hterm.VT.ESC['-'] =
 hterm.VT.ESC['.'] =
 hterm.VT.ESC['/'] = function(parseState, code) {
   parseState.func = function(parseState) {
-    const ch = parseState.consumeChar();
-    if (ch == '\x1b') {
+    if (parseState.peekChar() === '\x1b') {
+      // Invalid SCS sequence, treat this ESC as a new sequence starting.
       parseState.resetParseFunction();
-      parseState.func();
       return;
     }
-
+    const ch = parseState.consumeChar();
     const map = this.characterMaps.getMap(ch);
     if (map !== undefined) {
       if (code == '(') {
@@ -20754,6 +21203,33 @@ hterm.VT.ESC['c'] = function() {
 };
 
 /**
+ * Set window name. This is used by tmux (maybe also screen) and it is different
+ * from window title. See the "NAMES AND TITLES" section in `man tmux`.
+ *
+ * @this {!hterm.VT}
+ * @param {!hterm.VT.ParseState} parseState The current parse state.
+ */
+hterm.VT.ESC['k'] = function(parseState) {
+  function parse(parseState) {
+    if (!this.parseUntilStringTerminator_(parseState)) {
+      // The string sequence was too long.
+      return;
+    }
+
+    if (parseState.func === parse) {
+      // We're not done parsing the string yet.
+      return;
+    }
+
+    this.terminal.setWindowName(parseState.args[0]);
+    parseState.resetArguments();
+  }
+
+  parseState.resetArguments();
+  parseState.func = parse;
+};
+
+/**
  * Memory lock/unlock.
  *
  * Will not implement.
@@ -20814,6 +21290,19 @@ hterm.VT.ESC['}'] = function() {
  */
 hterm.VT.ESC['~'] = function() {
   this.GR = 'G1';
+};
+
+/**
+ * Tmux control mode if the args === ['1000'].
+ *
+ * @this {!hterm.VT}
+ * @param {!hterm.VT.ParseState} parseState The current parse state.
+ */
+hterm.VT.DCS['p'] = function(parseState) {
+  if (parseState.args.length === 1 && parseState.args[0] === '1000') {
+    parseState.resetArguments();
+    parseState.func = this.parseTmuxControlModeData_;
+  }
 };
 
 /**
@@ -22373,8 +22862,8 @@ hterm.VT.CharacterMap.prototype.sync_ = function(glmap = undefined) {
     this.glmap_ = this.glmapBase_;
   }
 
-  const glchars = Object.keys(lib.notNull(this.glmap_)).map((key) =>
-      '\\x' + lib.f.zpad(key.charCodeAt(0).toString(16), 2));
+  const glchars = Object.keys(lib.notNull(this.glmap_)).map(
+      (key) => '\\x' + lib.f.zpad(key.charCodeAt(0).toString(16), 2));
   this.glre_ = new RegExp('[' + glchars.join('') + ']', 'g');
 
   this.GL = (str) => str.replace(this.glre_, (ch) => this.glmap_[ch]);
@@ -23107,18 +23596,18 @@ lib.resource.add('hterm/images/icon-96', 'image/png;base64',
 );
 
 lib.resource.add('hterm/concat/date', 'text/plain',
-'Tue, 26 Jan 2021 06:35:10 +0000'
+'Wed, 21 May 2025 15:12:09 +0000'
 );
 
 lib.resource.add('hterm/changelog/version', 'text/plain',
-'1.91'
+'1.92.1'
 );
 
 lib.resource.add('hterm/changelog/date', 'text/plain',
-'2020-12-07'
+'2022-03-04'
 );
 
 lib.resource.add('hterm/git/HEAD', 'text/plain',
-'1c1752e4ef917ef92cab0d1d36accde5a09a819f'
+'25a9592267b488b5ddd8688677175bfd82f6f515'
 );
 
