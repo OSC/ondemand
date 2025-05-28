@@ -173,7 +173,7 @@ class ProjectsController < ApplicationController
       send_file(
         zip_file, type: 'application/zip',
         filename: "#{@project.name}.zip",
-        disposition: 'attachment')
+        disposition: 'attachment'
       ) if zip_file
     rescue StandardError => e
       redirect_to(
