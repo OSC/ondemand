@@ -281,7 +281,7 @@ class Project
 
   def zip_to_template
     # using ZipKit create a zip file called project.zip containiong the files named in file_names and save it in the project_dataroot
-    zip_file = "#{project_dataroot}/project.zip"
+    zip_file = "#{project_dataroot}/.ondemand/project.zip"
     Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
       files.each do |file_name|
         file_path = "#{project_dataroot}/#{file_name}"

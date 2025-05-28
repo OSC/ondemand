@@ -206,6 +206,7 @@ en:
     pinned_apps_title: Pinned Apps
     project: Project
     project_balances: Project Balances
+    project_zip_error_message: "Error creating ZIP file: %{error}"
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"

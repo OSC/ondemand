@@ -9,14 +9,14 @@
 
 <div class='row'>
   <div class="col-2 align-self-center justify-content-left d-flex">
-    <%= link_to 'Back', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
+    <%= link_to 'Create ZIP', project_zip_to_template_path(@project.id), class: 'btn btn-primary align-self-start', title: "create a ZIP archive of #{@project.title} in its '.ondemand' directory" %>
   </div>
-
-
   <div class='page-header text-center col-8'>
     <h1 class="my-2 h3"><%= @project.title %></h1>
-
     <small class="text-muted">This is a preview of the new 'Project Manager'</small>
+  </div>
+  <div class="col-2 align-self-center justify-content-end d-flex">
+    <%= link_to 'Back to Projects', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
   </div>
 </div>
 

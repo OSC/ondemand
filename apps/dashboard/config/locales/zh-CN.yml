@@ -199,6 +199,7 @@ zh-CN:
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
+    project_zip_error_message: "创建 ZIP 文件时出错：%{error_message}"
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
     quota_block: 配额使用量%{used} 可用 %{available}
     quota_block_shared: "(您的配额%{used_exclusive} )"
