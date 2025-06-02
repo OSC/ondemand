@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Upgrade hterm (#4387)\
+Enhance module browser UI (#4386)\
+Refactor HpcModule to return all modules across clusters (#4378)\
+cache apps so they only render once (#4377)\
+Update Changelog (#4382)\
+update dependencies (#4383)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
