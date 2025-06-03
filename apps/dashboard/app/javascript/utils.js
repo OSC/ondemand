@@ -1,5 +1,5 @@
 import {analyticsPath} from "./config";
-import { ariaNotify } from './aria_live_notify';
+import { ariaNotify } from './notify';
 
 export function cssBadgeForState(state){
   switch (state) {

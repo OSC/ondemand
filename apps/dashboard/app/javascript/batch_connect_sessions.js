@@ -3,7 +3,7 @@
 import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent } from './utils';
 import { pollAndReplace } from './turbo_shim';
-import { ariaNotify } from './aria_live_notify';
+import { ariaNotify, pushNotify } from './notify';
 
 const sessionStatusMap = new Map();
 
@@ -11,18 +11,29 @@ function checkStatusChanges() {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
   
   sessionCards.forEach((card) => {
+    const sessionTitle = card.dataset.title;
     const sessionId = card.dataset.id;
-    const newStatus = card.dataset.status;
+    const jobId = card.dataset.jobId;
+    const currentStatus = card.dataset.status;
 
     if(sessionStatusMap.has(sessionId)) {
       const oldStatus = sessionStatusMap.get(sessionId);
-      if(oldStatus !== newStatus) {
-        sessionStatusMap.set(sessionId, newStatus);
-        const sessionTitle = card.dataset.title;
-        ariaNotify(`${sessionTitle} is now ${newStatus}.`);
+      if(oldStatus !== currentStatus) {
+        sessionStatusMap.set(sessionId, currentStatus);
+        ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
+        pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
+          tag: `session-${sessionId}`,
+        });
       }
     } else {
-      sessionStatusMap.set(sessionId, newStatus);
+      sessionStatusMap.set(sessionId, currentStatus);
+    }
+
+    const minutesRemaining = parseInt(card.dataset.minutesRemaining);
+    if (minutesRemaining === 15 || minutesRemaining === 5) {
+      pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
+        tag: 'session-${sessionId}',
+      });
     }
   });
 }
@@ -58,6 +69,9 @@ window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
 jQuery(function (){
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
   if ($('#batch_connect_sessions').length) {
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
