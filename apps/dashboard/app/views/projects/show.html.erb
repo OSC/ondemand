@@ -9,7 +9,15 @@
 
 <div class='row'>
   <div class="col-2 align-self-center justify-content-left d-flex">
-    <%= link_to 'Create ZIP', project_zip_to_template_path(@project.id), class: 'btn btn-primary align-self-start', title: "create a ZIP archive of #{@project.title} in its '.ondemand' directory" %>
+    <%= button_to(
+        'Create ZIP',
+        project_zip_to_template_path(@project.id),
+        class: 'btn btn-primary align-self-start',
+        title: "create a ZIP archive of #{@project.title} in its '.ondemand' directory",
+        method: :post
+      )
+    %>
+
   </div>
   <div class='page-header text-center col-8'>
     <h1 class="my-2 h3"><%= @project.title %></h1>

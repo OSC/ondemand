@@ -207,6 +207,7 @@ en:
     project: Project
     project_balances: Project Balances
     project_zip_error_message: "Error creating ZIP file: %{error}"
+    project_zip_success_message: "SUCCESS: project.zip was created in your project directory."
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"

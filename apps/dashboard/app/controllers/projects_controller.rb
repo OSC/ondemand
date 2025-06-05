@@ -157,7 +157,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # GET /projects/:project_id/zip
+  # POST /projects/:project_id/zip
   # zip current project using project.zip_to_template
   def zip_to_template
     @project = Project.find(zip_to_template_params[:project_id])
@@ -169,9 +169,13 @@ class ProjectsController < ApplicationController
 
     begin
       zip_file = @project.zip_to_template
+      redirect_to(
+        project_path(@project.id),
+        notice: I18n.t('dashboard.project_zip_success_message')
+      )
     rescue StandardError => e
       redirect_to(
-        project_path(@project),
+        project_path(@project.id),
         alert: I18n.t('dashboard.project_zip_error_message', error: e.message.to_s)
       )
     end
