@@ -195,7 +195,7 @@ class Launcher
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
 
     job_id = Dir.chdir(project_dir) do
-      adapter.submit(job_script)
+      adapter.submit(job_script, **dependency_helper(options))
     end
     update_job_log(job_id, cluster_id.to_s)
     write_job_options_to_cache(options)
@@ -205,6 +205,15 @@ class Launcher
     errors.add(:submit, e.message)
     Rails.logger.error("ERROR: #{e.class} - #{e.message}")
     nil
+  end
+
+  def dependency_helper(options)
+    {
+      after: Array(options[:after]),
+      afterok: Array(options[:afterok]),
+      afternotok: Array(options[:afternotok]),
+      afterany: Array(options[:afterany])
+    }
   end
 
   def create_default_script
