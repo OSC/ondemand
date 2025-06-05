@@ -34,7 +34,7 @@ module SmartAttributes
         versions = hpc_versions
         versions = versions_with_default(versions) if show_default?
         versions = filtered_versions(versions) if filter_versions?
-        versions.sort { |a, b| sort_versions(a.first, b.first) }.reverse
+        sorted_versions(versions).reverse
       end
 
       def show_default?
@@ -86,20 +86,22 @@ module SmartAttributes
         end
       end
 
-      def sort_versions(left, right)
-        left = left.split('.').map(&:to_i)
-        right = right.split('.').map(&:to_i)
+      def sorted_versions(versions)
+        versions.sort do |left, right|
+          left = left.first.split('.').map(&:to_i)
+          right = right.first.split('.').map(&:to_i)
 
-        diff = 0
-        left.each_with_index do |digit, idx|
-          # we can cast nil to_i here to get 0 right[idx] is nil.
-          next if digit == right[idx].to_i
+          diff = 0
+          left.each_with_index do |digit, idx|
+            # we can cast nil to_i here to get 0 right[idx] is nil.
+            next if digit == right[idx].to_i
 
-          diff = digit - right[idx].to_i
-          break
+            diff = digit - right[idx].to_i
+            break
+          end
+
+          diff
         end
-
-        diff
       end
     end
   end
