@@ -89,7 +89,6 @@ module SmartAttributes
       def sorted_versions(versions)
         versions.sort do |left, right|
           # put default at the top
-          Rails.logger.info("left #{left.first} and right #{right.first}")
           if left.first == 'default'
             next 1
           elsif right.first == 'default'
