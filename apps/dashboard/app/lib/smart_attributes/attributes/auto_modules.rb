@@ -34,7 +34,7 @@ module SmartAttributes
         versions = hpc_versions
         versions = versions_with_default(versions) if show_default?
         versions = filtered_versions(versions) if filter_versions?
-        sorted_versions(versions).reverse
+        sorted_versions(versions)
       end
 
       def show_default?
@@ -88,6 +88,14 @@ module SmartAttributes
 
       def sorted_versions(versions)
         versions.sort do |left, right|
+          # put default at the top
+          Rails.logger.info("left #{left.first} and right #{right.first}")
+          if left.first == 'default'
+            next 1
+          elsif right.first == 'default'
+            next -1
+          end
+
           left = left.first.split('.').map(&:to_i)
           right = right.first.split('.').map(&:to_i)
 
@@ -101,7 +109,7 @@ module SmartAttributes
           end
 
           diff
-        end
+        end.reverse
       end
     end
   end
