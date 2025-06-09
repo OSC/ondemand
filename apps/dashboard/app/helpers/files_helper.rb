@@ -20,8 +20,8 @@ module FilesHelper
       text,
       files_path(fs: 'fs', filepath: path),
       target: '_top',
-      class: 'link-light'
-      ).html_safe
+      class: 'btn btn-primary btn-sm files-button'
+      )
   end
 
   def frame_path(path)
