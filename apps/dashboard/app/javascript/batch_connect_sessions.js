@@ -1,11 +1,10 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { bindFullPageSpinnerEvent } from './utils';
+import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
 import { pollAndReplace } from './turbo_shim';
-import { ariaNotify, pushNotify } from './notify';
 
-const sessionStatusMap = new Map();
+const sessionStats = new Map();
 
 function checkStatusChanges() {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
@@ -16,24 +15,29 @@ function checkStatusChanges() {
     const jobId = card.dataset.jobId;
     const currentStatus = card.dataset.status;
 
-    if(sessionStatusMap.has(sessionId)) {
-      const oldStatus = sessionStatusMap.get(sessionId);
-      if(oldStatus !== currentStatus) {
-        sessionStatusMap.set(sessionId, currentStatus);
-        ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
-        pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
-          tag: `session-${sessionId}`,
-        });
-      }
-    } else {
-      sessionStatusMap.set(sessionId, currentStatus);
+    if(!sessionStats.has(sessionId)) {
+      sessionStats.set(sessionId, {
+        status: currentStatus,
+        notified15: false,
+      });
+    }
+
+    const session = sessionStats.get(sessionId);
+
+    if (session.status !== currentStatus) {
+      session.status = currentStatus;
+      ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
+      pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
+        tag: `session-${sessionId}`,
+      });
     }
 
     const minutesRemaining = parseInt(card.dataset.minutesRemaining);
-    if (minutesRemaining === 15 || minutesRemaining === 5) {
+    if (minutesRemaining <= 15 && !session.notified15) {
       pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
         tag: 'session-${sessionId}',
       });
+      session.notified15 = true;
     }
   });
 }
