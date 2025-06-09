@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Launchers now support 'after', 'afterok' etc. job-id lists in submit() (#4388)\
+Fix SELinux to work with Munge on RHEL9 (#4397)\
+Update Changelog (#4392)\
+update dependencies (#4393)\
+update workflows to ruby 3.3 (#4396)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
