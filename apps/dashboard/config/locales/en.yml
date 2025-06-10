@@ -101,8 +101,8 @@ en:
     batch_connect_sessions_status_blurb_delete_success: Session was successfully deleted.
     batch_connect_sessions_status_completed: For debugging purposes, this card will be retained for %{days} more days
     batch_connect_sessions_status_missing_connection: |
-      This app is missing information required to establish a connection. Please
-      contact support if you see this message.
+      This app is missing information required to establish a connection. Specifically,
+      the view.html.erb file is missing. Please contact support if you see this message.
     batch_connect_sessions_status_queued: |
       Please be patient as your job currently sits in queue. The wait time depends
       on the number of cores as well as time requested.
