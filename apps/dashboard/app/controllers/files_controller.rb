@@ -288,11 +288,17 @@ class FilesController < ApplicationController
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
 
-    if posix_file?
+    if html_file? && ::Configuration.unsafe_render_html
+      render(file: @path.realpath, layout: false)
+    elsif posix_file?
       send_posix_file
     else
       send_remote_file
     end
+  end
+
+  def html_file?
+    posix_file? && Files.mime_type_by_extension(@path).presence == 'text/html'
   end
 
   def send_posix_file
