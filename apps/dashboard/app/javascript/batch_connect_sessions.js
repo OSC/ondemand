@@ -1,7 +1,7 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
+import { bindFullPageSpinnerEvent, ariaNotify, pushNotify, show, hide } from './utils';
 import { pollAndReplace } from './turbo_shim';
 
 const sessionStats = new Map();
@@ -35,7 +35,7 @@ function checkStatusChanges() {
     const minutesRemaining = parseInt(card.dataset.minutesRemaining);
     if (minutesRemaining <= 15 && !session.notified15) {
       pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
-        tag: 'session-${sessionId}',
+        tag: `session-${sessionId}`,
       });
       session.notified15 = true;
     }
@@ -72,11 +72,24 @@ function installSettingHandlers(name) {
 window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
-jQuery(function (){
+document.addEventListener('DOMContentLoaded', function () {
   if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission();
+    show('notification_banner');
   }
-  if ($('#batch_connect_sessions').length) {
+
+  const enableBtn = document.getElementById('enable_notifications');
+  if (enableBtn) {
+    enableBtn.addEventListener('click', function () {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          hide('notification_banner');
+          pushNotify('Notifications enabled for interactive sessions.');
+        }
+      });
+    });
+  }
+
+  if (document.getElementById('batch_connect_sessions')) {
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges();

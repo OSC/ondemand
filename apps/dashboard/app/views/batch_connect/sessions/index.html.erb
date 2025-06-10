@@ -5,6 +5,12 @@
 
 <%= javascript_include_tag 'batch_connect_sessions', nonce: true %>
 
+<div id="notification_banner" class="alert alert-warning alert-dismissible fade show d-none" role="alert">
+  <strong>Notifications:</strong> Get alerts when sessions are updated or about to expire.
+  <button id="enable_notifications" type="button" class="btn btn-primary btn-sm ms-2">Enable Notifications</button>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
 <%= render partial: 'batch_connect/shared/breadcrumb',
 locals: {
   links: [
