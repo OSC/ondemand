@@ -4,6 +4,7 @@ attributes:
     label: "Desktop Environment"
     widget: select
     options:
+      - "gnome3"
       - "gnome"
       - "kde"
       - "mate"
