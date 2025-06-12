@@ -38,6 +38,6 @@ module EncryptedCache
   end
 
   def encryptor
-    @encryptor ||= ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+    @encryptor ||= ActiveSupport::MessageEncryptor.new(Rails.application.credentials.secret_key_base[0..31])
   end
 end
