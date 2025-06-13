@@ -1,4 +1,4 @@
-<%- links = app.links -%>
+<%- links = app.router.name == "files" ? Array(app.links.first) : app.links -%>
 
 <% links.each do |link| %>
   <%- tile_data = link.tile -%>
