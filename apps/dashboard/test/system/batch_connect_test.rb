@@ -1632,7 +1632,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       cache_data = JSON.parse(File.read("#{dir}/sys_app.json"))
 
       # have to actually decrypt what was written as it's not deterministic.
-      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secret_key_base[0..31])
       stored_password = crypt.decrypt_and_verify(cache_data['some_password_field'])
 
       assert_equal(cache_data['some_field'], '42')
