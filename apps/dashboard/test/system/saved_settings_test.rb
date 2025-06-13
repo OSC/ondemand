@@ -118,7 +118,6 @@ class SavedSettingsTest < ApplicationSystemTestCase
 
       Pathname.new("#{dir}/app/form.yml").write(form)
       visit(new_batch_connect_session_context_url('sys/app'))
-      puts Configuration.user_settings_file.inspect
 
       fill_in(bc_ele_id('some_field'), with: 'my data')
       fill_in(bc_ele_id('some_password_field'), with: 'mypassword')
