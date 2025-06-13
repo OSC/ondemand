@@ -29,7 +29,7 @@ class SupportTicketServiceNowService
       caller_id:         support_ticket.email,
       watch_list:        support_ticket.cc,
       short_description: support_ticket.subject,
-      description:       description,
+      description:       description
     }
 
     mapping_fields = service_config.fetch(:map, {}).to_h
@@ -51,7 +51,8 @@ class SupportTicketServiceNowService
     result = snow_client.create(payload, support_ticket.attachments)
     Rails.logger.info "Support Ticket created in ServiceNow: #{result.number} - Attachments[#{result.attachments}] success=#{result.attachments_success}"
     message_key = result.attachments_success ? 'creation_success' : 'attachments_failure'
-    service_config.fetch(:success_message, I18n.t("dashboard.support_ticket.servicenow.#{message_key}", number: result.number))
+    service_config.fetch(:success_message,
+                         I18n.t("dashboard.support_ticket.servicenow.#{message_key}", number: result.number))
   end
 
   private
@@ -60,7 +61,7 @@ class SupportTicketServiceNowService
     ticket_template_context = {
       session:        session,
       job:            job,
-      support_ticket: support_ticket_request,
+      support_ticket: support_ticket_request
     }
 
     template = service_config.fetch(:template, 'servicenow_content.text.erb')
