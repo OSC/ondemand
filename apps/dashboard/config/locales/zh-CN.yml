@@ -174,6 +174,8 @@ zh-CN:
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
+    jobs_workflow_button: Workflows
+    jobs_workflow_submit: Submit Workflow
     launch: 启动
     module_browser_last_updated: "Last updated: %{last_updated}"
     module_browser_title: Module Browser
