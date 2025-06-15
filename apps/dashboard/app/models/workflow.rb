@@ -3,6 +3,83 @@
 class Workflow
   include ActiveModel::Model
 
+  class DAG
+    attr_reader :n, :index, :dependency, :adj_mat, :order, :has_cycle
+
+    def initialize(attributes = {})
+      @n = attributes[:launcher_ids].size
+      @index = attributes[:launcher_ids].each_with_index.to_h
+
+      create_dependency_list(attributes[:source_ids], attributes[:target_ids], attributes[:launcher_ids])
+      create_adjacency_matrix(attributes[:source_ids], attributes[:target_ids], attributes[:launcher_ids])
+
+      topological_sort(attributes[:launcher_ids])
+    end
+
+    # This will be use to do Depth-First-Search on graph
+    # Save edges are integer representing index of launcher_ids
+    def create_adjacency_matrix(from_ids, to_ids, launcher_ids)
+      @adj_mat = Array.new(@n) { Array.new(@n, false) }
+
+      m = to_ids.size
+      for i in 0...m
+        next if from_ids[i].nil? || to_ids[i].nil?
+        next unless launcher_ids.include?(from_ids[i]) && launcher_ids.include?(to_ids[i])
+
+        u = index[from_ids[i]]
+        v = index[to_ids[i]]
+        @adj_mat[u][v] = true
+      end
+    end
+
+    # This will give out list of launcher_ids whose job id current launcher depends upon
+    def create_dependency_list(from_ids, to_ids, launcher_ids)
+      @dependency = Hash.new { |h, k| h[k] = [] }
+
+      m = to_ids.size
+      for i in 0...m
+        next if from_ids[i].nil? || to_ids[i].nil?
+        next unless launcher_ids.include?(from_ids[i]) && launcher_ids.include?(to_ids[i])
+
+        @dependency[to_ids[i]] << from_ids[i]
+      end
+    end
+
+    def topological_sort(launcher_ids)
+      @order = []
+      @has_cycle = false
+      visited = Array.new(@n, false)
+      stack = Array.new(@n, false)
+
+      # Depth first search
+      define_singleton_method(:dfs) do |parent|
+        return if visited[parent]
+        visited[parent] = true
+        stack[parent] = true
+
+        for child in 0...@n
+          if adj_mat[parent][child]
+            if stack[child]
+              @has_cycle = true  # To detect cycle
+              return
+            end
+            dfs(child)
+          end
+        end
+
+        # Append the launcher_id in order is there is no other launcher dependent on it
+        order.unshift(launcher_ids[parent])
+        stack[parent] = false
+      end
+
+      for i in 0...@n
+        dfs(i) unless visited[i]
+        break if @has_cycle
+      end
+    end
+
+  end
+
   class << self
     def workflow_dir(project_dir)
       dir = Pathname.new("#{project_dir}/.ondemand/workflows")
@@ -35,7 +112,7 @@ class Workflow
     end
   end
 
-  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids
+  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids
 
   def initialize(attributes = {})
     @id = attributes[:id]
@@ -44,6 +121,8 @@ class Workflow
     @project_dir = attributes[:project_dir]
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
+    @source_ids = attributes[:source_ids] || []
+    @target_ids = attributes[:target_ids] || []
   end
 
   def to_h
@@ -53,7 +132,9 @@ class Workflow
       :description => description,
       :created_at => created_at,
       :project_dir => project_dir,
-      :launcher_ids => launcher_ids
+      :launcher_ids => launcher_ids,
+      :source_ids => source_ids,
+      :target_ids => target_ids
     }
   end
 
@@ -89,8 +170,49 @@ class Workflow
     Workflow.workflow_dir(@project_dir).join("#{@id}.yml")
   end
 
-  # TODO: Add logic to save the DAG relation between launchers like array of <launcher #1, launcher #2>
+  def submit(attributes = {})
+    graph = DAG.new(attributes)
+    if graph.has_cycle
+      errors.add("Submit", "Specified edges form a cycle not directed-acyclic graph")
+      return false
+    end
+    dependency = graph.dependency
+    order = graph.order
+    Rails.logger.info("Dependency list created by DAG #{dependency}")
+    Rails.logger.info("Order in which launcher got submitted #{order}")
 
-  # TODO: Add logic to save launcher pairs in the <workflow_id>.yml file and use it in def show() from workflow_controller
+    allLaunchers = Launcher.all(attributes[:project_dir])
+    jobIdHash = Hash.new { |h, k| }  # launcher-jobId hash
+
+    for id in order
+      launcher = allLaunchers.find { |l| l.id == id }
+      unless launcher
+        Rails.logger.warn("No launcher found for id #{id}, skipping...")
+        next
+      end
+      dependLauncher = dependency[id] || []
+
+      begin
+        jobs = dependLauncher.map { |id| jobIdHash[id] }.compact
+        opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
+        jobId = launcher.submit(opts)
+        if jobId.nil?
+          Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
+        else
+          jobIdHash[id] = jobId
+        end
+      rescue => e
+        Rails.logger.warn("Launcher #{id} with opts #{opts} failed to submit. Error: #{e.class}: #{e.message}")
+      end
+    end
+  end
+
+  def submit_launcher_params(launcher, dependent_jobs)
+    launcher_data = launcher.smart_attributes.each_with_object({}) do |attr, hash|
+      hash[attr.id.to_s] = attr.opts[:value]
+    end
+    launcher_data["afterok"] = Array(dependent_jobs)
+    launcher_data
+  end
 
 end
