@@ -4,19 +4,27 @@ class LauncherWorkflow
   include ActiveModel::Model
 
   class << self
-    attr_accessor :projectroot
+    attr_accessor :project_dir
+
+    def workflows_dir
+      Pathname.new("#{project_dir}/.ondemand/workflows")
+    end
 
     def workflows_file
-      Pathname("#{projectroot}/.workflows").tap do |path|
-        FileUtils.touch(path.to_s) unless path.exist?
-      end
+      # TODO: Create directory for each workflow and save workflow.yml inside that directory
+      file = workflows_dir.join("workflow.yml")
+
+      FileUtils.mkdir_p(workflows_dir)
+      FileUtils.touch(workflows_dir.join("workflow.yml")) unless file.exist?
+
+      file
     end
 
     def workflows
       f = File.read(workflows_file)
       YAML.safe_load(f).to_h
     rescue StandardError, Exception => e
-      Rails.logger.warn("cannot read #{projectroot}/.workflows due to error #{e}")
+      Rails.logger.warn("cannot read #{project_dir}/.ondemand/workflows/workflow.yml due to error #{e}")
       {}
     end
 
