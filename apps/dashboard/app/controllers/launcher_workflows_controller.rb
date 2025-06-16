@@ -11,7 +11,7 @@ class LauncherWorkflowsController < ApplicationController
   # GET /projects/:id/workflows
   def index
     @project = Project.find(params[:project_id])
-    LauncherWorkflow.projectroot = @project.directory
+    LauncherWorkflow.project_dir = @project.directory
     @workflows = LauncherWorkflow.all
   end
 
