@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_e2e'
 
 describe 'OnDemand Dex proxy test' do
