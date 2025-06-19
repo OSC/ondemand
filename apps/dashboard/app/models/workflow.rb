@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LauncherWorkflow
+class Workflow
   include ActiveModel::Model
 
   class << self
@@ -11,7 +11,7 @@ class LauncherWorkflow
     end
 
     def workflows_file
-      # TODO: Create directory for each workflow and save workflow.yml inside that directory
+      # TODO: Later use <workflow_id>.yml to get list of all workflows
       file = workflows_dir.join("workflow.yml")
 
       FileUtils.mkdir_p(workflows_dir)
@@ -20,18 +20,14 @@ class LauncherWorkflow
       file
     end
 
-    def workflows
+    def all
       f = File.read(workflows_file)
-      YAML.safe_load(f).to_h
+      YAML.safe_load(f).to_h.map do |id, workflow_name|
+        Workflow.new({ id: id, name: workflow_name })
+      end
     rescue StandardError, Exception => e
       Rails.logger.warn("cannot read #{project_dir}/.ondemand/workflows/workflow.yml due to error #{e}")
       {}
-    end
-
-    def all
-      workflows.map do |id, launcher_pair|
-        LauncherWorkflow.new({ id: id, pair: launcher_pair })
-      end
     end
 
     def find(id)
@@ -45,5 +41,7 @@ class LauncherWorkflow
   end
 
   # TODO: Add logic to save the DAG relation between launchers like array of <launcher #1, launcher #2>
+
+  # TODO: Add logic to save launcher pairs in the <workflow_id>.yml file and use it in def show() from workflow_controller
 
 end
