@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # The controller for apps pages /dashboard/projects/:project_id/workflows/:workflow_id
-class LauncherWorkflowsController < ApplicationController
+class WorkflowsController < ApplicationController
 
   # GET /projects/:id/workflows/:id
   def show
@@ -11,13 +11,13 @@ class LauncherWorkflowsController < ApplicationController
   # GET /projects/:id/workflows
   def index
     @project = Project.find(params[:project_id])
-    LauncherWorkflow.project_dir = @project.directory
-    @workflows = LauncherWorkflow.all
+    Workflow.project_dir = @project.directory
+    @workflows = Workflow.all
   end
 
   # GET /projects/:id/workflows/new
   def new
-    @workflow = LauncherWorkflow.new()
+    @workflow = Workflow.new()
   end
 
   # GET /projects/:id/workflows/edit
