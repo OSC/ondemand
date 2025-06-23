@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8.7'
+gem 'rails', '7.1.5.1'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -26,12 +26,9 @@ group :development, :test do
 end
 
 group :test do
-  # FIXME: capybara locked due to ruby 2.7 support.
-  gem 'capybara', '~> 3.39', '< 3.40'
+  gem 'capybara'
 
-  # lock selenium as it doesn't work on ubuntu 22.04
-  # https://github.com/SeleniumHQ/selenium/issues/11291
-  gem "selenium-webdriver", '4.5.0'
+  gem "selenium-webdriver"
   gem "webrick"
   gem 'mocha', '~> 2.1'
 end
@@ -75,7 +72,7 @@ gem 'sprockets-rails', '>= 2.0.0'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
-gem 'ood_appkit', '~> 2.1.0'
+gem 'ood_appkit', '~> 2'
 gem 'ood_core', '~> 0.24'
 
 # gems to include in ondemand-gems repo for status apps to use
