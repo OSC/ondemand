@@ -106,6 +106,8 @@ module ActiveJobs
       attributes = []
       attributes.push Attribute.new "Cluster", self.cluster_title
       attributes.push Attribute.new "Job Id", self.pbsid
+      attributes.push Attribute.new "Array Job Id", info.native[:array_job_id]
+      attributes.push Attribute.new "Array Task Id", info.native[:array_task_id]
       attributes.push Attribute.new "Job Name", self.jobname
       attributes.push Attribute.new "User", self.username
       attributes.push Attribute.new "Account", self.account
