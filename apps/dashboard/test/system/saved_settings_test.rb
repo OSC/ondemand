@@ -118,7 +118,6 @@ class SavedSettingsTest < ApplicationSystemTestCase
 
       Pathname.new("#{dir}/app/form.yml").write(form)
       visit(new_batch_connect_session_context_url('sys/app'))
-      puts Configuration.user_settings_file.inspect
 
       fill_in(bc_ele_id('some_field'), with: 'my data')
       fill_in(bc_ele_id('some_password_field'), with: 'mypassword')
@@ -136,7 +135,7 @@ class SavedSettingsTest < ApplicationSystemTestCase
 
       settings = YAML.safe_load(File.read(user_settings_file)).to_h
       actual_data = settings['batch_connect_templates']['sys/app']['test']
-      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secret_key_base[0..31])
       stored_password = crypt.decrypt_and_verify(actual_data['some_password_field'])
 
       assert_equal('mypassword', stored_password)

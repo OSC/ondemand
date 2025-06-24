@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The job composer now checks the path before staging in [4367](https://github.com/OSC/ondemand/pull/4367).
 - The configuration_singleton now uses use warn instead of Rails.logger.error in [4370](https://github.com/OSC/ondemand/pull/4370).
 - Apps are now cached so they only render ERB files once in [4377](https://github.com/OSC/ondemand/pull/4377).
+- There's now a link to skip navigation for screen readers and keyboard users in [4403](https://github.com/OSC/ondemand/pull/4403).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
