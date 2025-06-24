@@ -13,7 +13,7 @@ class SettingsController < ApplicationController
     logger.info "settings: updated user settings to: #{new_settings}"
     respond_to do |format|
       format.html do
-        if back_param
+        if back_param == 'true'
           redirect_back allow_other_host: false, fallback_location: root_url, notice: I18n.t('dashboard.settings_updated')
         else
           redirect_to root_url, notice: I18n.t('dashboard.settings_updated')
@@ -30,7 +30,7 @@ class SettingsController < ApplicationController
   end
 
   def back_param
-    ActiveModel::Type::Boolean.new.cast(params[:back])
+    params.permit(:back)[:back]
   end
 
   def read_settings(params)
