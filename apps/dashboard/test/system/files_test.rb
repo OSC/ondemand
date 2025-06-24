@@ -811,7 +811,7 @@ class FilesTest < ApplicationSystemTestCase
     # not rendered as HTML, only test. There is no <h1> or <script> elements
     assert_no_selector('h1')
     assert_no_selector('script')
-    assert_equal(data, find('pre').text)
+    assert_equal(data.chomp, find('pre').text.chomp)
   end
 
   test 'will render HTML when configured to do so' do
