@@ -4,13 +4,8 @@ class Workflow
   include ActiveModel::Model
 
   class << self
-    attr_accessor :project_dir
-
-    def workflows_dir
-      Pathname.new("#{project_dir}/.ondemand/workflows")
-    end
-
-    def workflows_file
+    def workflows_file(project_dir)
+      workflows_dir = Pathname.new("#{project_dir}/.ondemand/workflows")
       # TODO: Later use <workflow_id>.yml to get list of all workflows
       file = workflows_dir.join("workflow.yml")
 
@@ -20,7 +15,7 @@ class Workflow
       file
     end
 
-    def all
+    def all(project_dir)
       f = File.read(workflows_file)
       YAML.safe_load(f).to_h.map do |id, workflow_name|
         Workflow.new({ id: id, name: workflow_name })
