@@ -57,6 +57,7 @@ class ConfigurationSingleton
       :download_enabled             => true,
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
+      :unsafe_render_html           => false,
     }.freeze
   end
 
