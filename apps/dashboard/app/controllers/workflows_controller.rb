@@ -11,13 +11,12 @@ class WorkflowsController < ApplicationController
   # GET /projects/:id/workflows
   def index
     @project = Project.find(params[:project_id])
-    Workflow.project_dir = @project.directory
-    @workflows = Workflow.all
+    @workflows = Workflow.all(index_params[:project_id])
   end
 
   # GET /projects/:id/workflows/new
   def new
-    @workflow = Workflow.new()
+    @workflow = Workflow.new
   end
 
   # GET /projects/:id/workflows/edit
@@ -43,6 +42,12 @@ class WorkflowsController < ApplicationController
   # POST /projects/:project_id/workflows/:id/submit
   def submit
     # TODO: Add logic to call submit of each launcher based upon dependency DAG graph
+  end
+
+  private
+
+  def index_params
+    params.permit(:project_id)
   end
 
 end
