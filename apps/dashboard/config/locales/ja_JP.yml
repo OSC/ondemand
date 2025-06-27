@@ -203,6 +203,8 @@ ja_JP:
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
+    project_zip_error_message: "zipファイルの作成エラー: %{error}"
+    project_zip_success_message: "成功: プロジェクト ディレクトリに project.zip が作成されました。"
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
