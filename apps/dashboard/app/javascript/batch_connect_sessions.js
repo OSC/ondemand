@@ -4,7 +4,28 @@ import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent, ariaNotify, pushNotify, show, hide } from './utils';
 import { pollAndReplace } from './turbo_shim';
 
+const EXPIRATION_NOTIFIED_KEY = "expiration_notified";
 const sessionStats = new Map();
+
+function getNotifiedSessions() {
+  return JSON.parse(localStorage.getItem(EXPIRATION_NOTIFIED_KEY)) || [];
+}
+
+function setNotifiedSessions(sessions) {
+  localStorage.setItem(EXPIRATION_NOTIFIED_KEY, JSON.stringify(sessions));
+}
+
+function pruneNotifiedSessions() {
+  const sessionCards = document.querySelectorAll('[data-bc-card]');
+  const activeIds = new Set();
+  sessionCards.forEach(card => activeIds.add(card.dataset.id));
+
+  const notifiedSessions = getNotifiedSessions();
+  const filtered = notifiedSessions.filter(id => activeIds.has(id));
+  if (filtered.length !== notifiedSessions.length) {
+    setNotifiedSessions(filtered);
+  }
+}
 
 function checkStatusChanges() {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
@@ -15,29 +36,31 @@ function checkStatusChanges() {
     const jobId = card.dataset.jobId;
     const currentStatus = card.dataset.status;
 
-    if(!sessionStats.has(sessionId)) {
-      sessionStats.set(sessionId, {
-        status: currentStatus,
-        notified15: false,
-      });
+    if (!sessionStats.has(sessionId)) {
+      sessionStats.set(sessionId, currentStatus);
     }
 
-    const session = sessionStats.get(sessionId);
-
-    if (session.status !== currentStatus) {
-      session.status = currentStatus;
+    if (sessionStats.get(sessionId) !== currentStatus) {
+      sessionStats.set(sessionId, currentStatus);
       ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
       pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
         tag: `session-${sessionId}`,
       });
     }
 
-    const minutesRemaining = parseInt(card.dataset.minutesRemaining);
-    if (minutesRemaining <= 15 && !session.notified15) {
-      pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
-        tag: `session-${sessionId}`,
-      });
-      session.notified15 = true;
+    // TODO: Add config option?
+    const expWarnThreshold = 15;
+
+    const minutesRemaining = parseInt(card.dataset.minutesRemaining) || 0;
+    if (minutesRemaining <= expWarnThreshold && minutesRemaining > 0) {
+      const notifiedSessions = getNotifiedSessions();
+      if (!notifiedSessions.includes(sessionId)) {
+        pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
+          tag: `session-${sessionId}`,
+        });
+        notifiedSessions.push(sessionId);
+        setNotifiedSessions(notifiedSessions);
+      }
     }
   });
 }
@@ -95,4 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
       checkStatusChanges();
     });
   }
+
+  pruneNotifiedSessions();
 });
