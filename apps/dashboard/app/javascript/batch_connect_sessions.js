@@ -1,28 +1,43 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { bindFullPageSpinnerEvent } from './utils';
+import { bindFullPageSpinnerEvent, ariaNotify, pushNotify, show, hide } from './utils';
 import { pollAndReplace } from './turbo_shim';
-import { ariaNotify } from './aria_live_notify';
 
-const sessionStatusMap = new Map();
+const sessionStats = new Map();
 
 function checkStatusChanges() {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
   
   sessionCards.forEach((card) => {
+    const sessionTitle = card.dataset.title;
     const sessionId = card.dataset.id;
-    const newStatus = card.dataset.status;
+    const jobId = card.dataset.jobId;
+    const currentStatus = card.dataset.status;
 
-    if(sessionStatusMap.has(sessionId)) {
-      const oldStatus = sessionStatusMap.get(sessionId);
-      if(oldStatus !== newStatus) {
-        sessionStatusMap.set(sessionId, newStatus);
-        const sessionTitle = card.dataset.title;
-        ariaNotify(`${sessionTitle} is now ${newStatus}.`);
-      }
-    } else {
-      sessionStatusMap.set(sessionId, newStatus);
+    if(!sessionStats.has(sessionId)) {
+      sessionStats.set(sessionId, {
+        status: currentStatus,
+        notified15: false,
+      });
+    }
+
+    const session = sessionStats.get(sessionId);
+
+    if (session.status !== currentStatus) {
+      session.status = currentStatus;
+      ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
+      pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
+        tag: `session-${sessionId}`,
+      });
+    }
+
+    const minutesRemaining = parseInt(card.dataset.minutesRemaining);
+    if (minutesRemaining <= 15 && !session.notified15) {
+      pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
+        tag: `session-${sessionId}`,
+      });
+      session.notified15 = true;
     }
   });
 }
@@ -57,8 +72,24 @@ function installSettingHandlers(name) {
 window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
-jQuery(function (){
-  if ($('#batch_connect_sessions').length) {
+document.addEventListener('DOMContentLoaded', function () {
+  if ('Notification' in window && Notification.permission === 'default') {
+    show('notification_banner');
+  }
+
+  const enableBtn = document.getElementById('enable_notifications');
+  if (enableBtn) {
+    enableBtn.addEventListener('click', function () {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          hide('notification_banner');
+          pushNotify('Notifications enabled for interactive sessions.');
+        }
+      });
+    });
+  }
+
+  if (document.getElementById('batch_connect_sessions')) {
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges();
