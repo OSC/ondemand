@@ -1,6 +1,6 @@
 <%# z-index:999 cause dropdowns are 1000 default sticky-top is 1020 https://getbootstrap.com/docs/4.6/layout/overview/#z-index %>
 
-<div class="text-end sticky-top bg-white border-bottom p-2 m-3 z-index-999">
+<div class="text-end sticky-top bg-white p-2 mb-4 z-index-999">
   <!-- terminal button href is set via JavaScript because the URL is based on the current directory -->
   <% if Configuration.files_enable_shell_button %>
     <%= render partial: 'shell_dropdown' %>
@@ -20,7 +20,7 @@
 
 <hr>
 
-<div class="row">
+<div class="row gap-3 gap-md-0">
   <div class="col-md-3">
     <%= render partial: "favorites" %>
     <%= render partial: "copy_move_popup" %>
