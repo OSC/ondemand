@@ -16,7 +16,7 @@ class WorkflowsController < ApplicationController
 
   # GET /projects/:id/workflows/new
   def new
-    @workflow = Workflow.new
+    @workflow = Workflow.new(index_params)
   end
 
   # GET /projects/:id/workflows/edit
@@ -47,7 +47,7 @@ class WorkflowsController < ApplicationController
   private
 
   def index_params
-    params.permit(:project_id)
+    params.permit(:project_id).to_h.symbolize_keys
   end
 
 end

@@ -15,8 +15,10 @@ class Workflow
       file
     end
 
-    def all(project_dir)
-      f = File.read(workflows_file)
+    def all(project_id)
+      project = Project.find(project_id)
+      project_dir = project.directory
+      f = File.read(workflows_file(project_dir))
       YAML.safe_load(f).to_h.map do |id, workflow_name|
         Workflow.new({ id: id, name: workflow_name })
       end
