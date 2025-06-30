@@ -7,6 +7,7 @@ class Workflow
     def workflows_file(project_dir)
       workflows_dir = Pathname.new("#{project_dir}/.ondemand/workflows")
       # TODO: Later use <workflow_id>.yml to get list of all workflows
+      # This is similar to lookup file in Project, and will keep list of workflows
       file = workflows_dir.join("workflow.yml")
 
       FileUtils.mkdir_p(workflows_dir)

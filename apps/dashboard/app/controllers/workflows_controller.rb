@@ -10,7 +10,7 @@ class WorkflowsController < ApplicationController
 
   # GET /projects/:id/workflows
   def index
-    @project = Project.find(params[:project_id])
+    @project = Project.find(index_params[:project_id])
     @workflows = Workflow.all(index_params[:project_id])
   end
 
