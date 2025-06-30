@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+enable unsafe rendering of html files through a configuration (#4416)\
+Added support to redirect back for dismissible announcements (#4427)\
+Do not titleize the cluster title in the Cluster Status helper (#4440)\
+Update _globus.html.erb (#4439)\
+Support releasing to staging (#4441)\
+lint a random file (#4438)\
+Add Slurm ArrayJobId and ArrayTaskId to extended panel (#4436)\
+Bump brace-expansion from 1.1.11 to 1.1.12 in /apps/shell (#4434)\
+Remove h5 tag (#4433)\
+`path_selector` widget wording option (#4426)\
+Display all links for a given pinned app (#4407)\
+sort modules in auto_modules (#4408)\
+upgrade rails to 7.1 (#4420)\
+lint a random file (#4430)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
