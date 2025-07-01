@@ -14,6 +14,8 @@ Rails.application.routes.draw do
       post '/jobs/:cluster/:jobid/stop' => 'projects#stop_job', :as => 'stop_job'
       post '/zip_to_template' => 'projects#zip_to_template', :as => 'zip_to_template'
 
+      resources :workflows
+
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
