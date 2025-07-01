@@ -5,26 +5,27 @@ import { bindFullPageSpinnerEvent, ariaNotify, pushNotify, show, hide } from './
 import { pollAndReplace } from './turbo_shim';
 
 const EXPIRATION_NOTIFIED_KEY = "expiration_notified";
-const sessionStats = new Map();
+const sessions = new Map();
+const notifiedSessionIds = new Set(getNotifiedSessionIds());
 
-function getNotifiedSessions() {
+function getNotifiedSessionIds() {
   return JSON.parse(localStorage.getItem(EXPIRATION_NOTIFIED_KEY)) || [];
 }
 
-function setNotifiedSessions(sessions) {
+function setNotifiedSessionIds(sessions) {
   localStorage.setItem(EXPIRATION_NOTIFIED_KEY, JSON.stringify(sessions));
 }
 
-function pruneNotifiedSessions() {
-  const sessionCards = document.querySelectorAll('[data-bc-card]');
-  const activeIds = new Set();
-  sessionCards.forEach(card => activeIds.add(card.dataset.id));
+function pruneNotifiedSessionIds() {
+  const currentNotifiedIds = []
 
-  const notifiedSessions = getNotifiedSessions();
-  const filtered = notifiedSessions.filter(id => activeIds.has(id));
-  if (filtered.length !== notifiedSessions.length) {
-    setNotifiedSessions(filtered);
-  }
+  notifiedSessionIds.forEach((sessionId) => {
+    if (sessions.has(sessionId)) {
+      currentNotifiedIds.push(sessionId);
+    }
+  });
+
+  setNotifiedSessionIds(currentNotifiedIds);
 }
 
 function checkStatusChanges() {
@@ -36,31 +37,34 @@ function checkStatusChanges() {
     const jobId = card.dataset.jobId;
     const currentStatus = card.dataset.status;
 
-    if (!sessionStats.has(sessionId)) {
-      sessionStats.set(sessionId, currentStatus);
+    if (!sessions.has(sessionId)) {
+      sessions.set(sessionId, {
+        status: currentStatus, 
+        expNotified: notifiedSessionIds.has(sessionId)
+      });
     }
 
-    if (sessionStats.get(sessionId) !== currentStatus) {
-      sessionStats.set(sessionId, currentStatus);
+    const session = sessions.get(sessionId);
+
+    if (session.status !== currentStatus) {
+      session.status = currentStatus;
       ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
       pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
         tag: `session-${sessionId}`,
       });
     }
 
-    // TODO: Add config option?
+    // TODO: Add config option
     const expWarnThreshold = 15;
 
     const minutesRemaining = parseInt(card.dataset.minutesRemaining) || 0;
-    if (minutesRemaining <= expWarnThreshold && minutesRemaining > 0) {
-      const notifiedSessions = getNotifiedSessions();
-      if (!notifiedSessions.includes(sessionId)) {
-        pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
-          tag: `session-${sessionId}`,
-        });
-        notifiedSessions.push(sessionId);
-        setNotifiedSessions(notifiedSessions);
-      }
+    if (minutesRemaining <= expWarnThreshold && minutesRemaining > 0 && !session.expNotified) {
+      pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
+        tag: `session-${sessionId}`,
+      });
+      session.expNotified = true;
+      notifiedSessionIds.add(sessionId);
+      setNotifiedSessionIds([...notifiedSessionIds]);
     }
   });
 }
@@ -100,9 +104,9 @@ document.addEventListener('DOMContentLoaded', function () {
     show('notification_banner');
   }
 
-  const enableBtn = document.getElementById('enable_notifications');
-  if (enableBtn) {
-    enableBtn.addEventListener('click', function () {
+  const enableNotifsBtn = document.getElementById('enable_notifications');
+  if (enableNotifsBtn) {
+    enableNotifsBtn.addEventListener('click', function () {
       Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
           hide('notification_banner');
@@ -119,5 +123,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  pruneNotifiedSessions();
+  pruneNotifiedSessionIds();
 });
