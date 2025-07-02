@@ -4,19 +4,15 @@ import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent, ariaNotify, pushNotify, show, hide } from './utils';
 import { pollAndReplace } from './turbo_shim';
 
-const EXPIRATION_NOTIFIED_KEY = "expiration_notified";
-const sessions = new Map();
-const notifiedSessionIds = new Set(getNotifiedSessionIds());
-
 function getNotifiedSessionIds() {
-  return JSON.parse(localStorage.getItem(EXPIRATION_NOTIFIED_KEY)) || [];
+  return JSON.parse(localStorage.getItem('expiration_notified')) || [];
 }
 
-function setNotifiedSessionIds(sessions) {
-  localStorage.setItem(EXPIRATION_NOTIFIED_KEY, JSON.stringify(sessions));
+function storeNotifiedSessionIds(sessions) {
+  localStorage.setItem('expiration_notified', JSON.stringify(sessions));
 }
 
-function pruneNotifiedSessionIds() {
+function pruneNotifiedSessionIds(sessions, notifiedSessionIds) {
   const currentNotifiedIds = []
 
   notifiedSessionIds.forEach((sessionId) => {
@@ -25,10 +21,18 @@ function pruneNotifiedSessionIds() {
     }
   });
 
-  setNotifiedSessionIds(currentNotifiedIds);
+  storeNotifiedSessionIds(currentNotifiedIds);
 }
 
-function checkStatusChanges() {
+function notificationsEnabled() {
+  return localStorage.getItem(settingKey('notification_toggle')) === 'true';
+}
+
+function withinWarnLimit(minutesRemaining, threshold) {
+  return minutesRemaining <= threshold && minutesRemaining > 0;
+}
+
+function checkStatusChanges(sessions, notifiedSessionIds, notificationsEnabled) {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
   
   sessionCards.forEach((card) => {
@@ -49,22 +53,24 @@ function checkStatusChanges() {
     if (session.status !== currentStatus) {
       session.status = currentStatus;
       ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
-      pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
-        tag: `session-${sessionId}`,
-      });
+      if (notificationsEnabled) {
+        pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
+          tag: `session-${sessionId}`,
+        });
+      }
     }
 
     // TODO: Add config option
     const expWarnThreshold = 15;
 
-    const minutesRemaining = parseInt(card.dataset.minutesRemaining) || 0;
-    if (minutesRemaining <= expWarnThreshold && minutesRemaining > 0 && !session.expNotified) {
+    const minutesRemaining = parseInt(card.dataset.minutesRemaining, 10) || 0;
+    if (notificationsEnabled && withinWarnLimit(minutesRemaining, expWarnThreshold) && !session.expNotified) {
       pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
         tag: `session-${sessionId}`,
       });
       session.expNotified = true;
       notifiedSessionIds.add(sessionId);
-      setNotifiedSessionIds([...notifiedSessionIds]);
+      storeNotifiedSessionIds([...notifiedSessionIds]);
     }
   });
 }
@@ -76,6 +82,10 @@ function settingKey(id) {
 function storeSetting(event) {
   var key = settingKey(event.currentTarget.id);
   var value = event.currentTarget.value;
+
+  if (event.currentTarget.type === 'checkbox') {
+    value = event.currentTarget.checked;
+  }
 
   localStorage.setItem(key, value);
 }
@@ -100,28 +110,43 @@ window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
 document.addEventListener('DOMContentLoaded', function () {
-  if ('Notification' in window && Notification.permission === 'default') {
-    show('notification_banner');
+  const notifToggleBtn = document.getElementById('notification_toggle');
+  notifToggleBtn.checked = notificationsEnabled();
+
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    notifToggleBtn.checked = false;
   }
 
-  const enableNotifsBtn = document.getElementById('enable_notifications');
-  if (enableNotifsBtn) {
-    enableNotifsBtn.addEventListener('click', function () {
+  notifToggleBtn.addEventListener('click', (event) => {
+    if (Notification.permission === 'default') {
+      event.preventDefault();
       Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
-          hide('notification_banner');
-          pushNotify('Notifications enabled for interactive sessions.');
-        }
+          notifToggleBtn.checked = true;
+          pushNotify('Notifications enabled for interactive sessions', {
+            tag: 'notification-toggle',
+          });
+        } 
       });
-    });
-  }
+    } else if (Notification.permission === 'denied') {
+      event.preventDefault();
+      notifToggleBtn.checked = false;
+    }
+  });
+
+  notifToggleBtn.addEventListener('change', (event) => {
+    storeSetting(event);
+  });
+
+  const sessions = new Map();
+  const notifiedSessionIds = new Set(getNotifiedSessionIds());
 
   if (document.getElementById('batch_connect_sessions')) {
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
-      checkStatusChanges();
+      checkStatusChanges(sessions, notifiedSessionIds, notifToggleBtn.checked);
     });
   }
 
-  pruneNotifiedSessionIds();
+  pruneNotifiedSessionIds(sessions, notifiedSessionIds);
 });
