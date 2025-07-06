@@ -1,0 +1,43 @@
+<div class='page-header text-center'>
+  <h1>New Workflow</h1>
+</div>
+
+<br>
+
+<%= bootstrap_form_for(@workflow, url: project_path(@workflow.project_id)) do |form| %>
+  <div class='card'>
+    <div class='card-group'>
+      <div class='card'>
+        <div class='card-body'>
+          <div class="col">
+            <div class="field">
+              <%= form.text_field :name, placeholder: I18n.t('dashboard.jobs_workflow_name_placeholder'),
+                      help: I18n.t('dashboard.jobs_workflow_name_validation') %>
+            </div>
+
+            <div class="field">
+              <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_workflow_description_placeholder') %>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="card">
+        <div class='card-body'>
+
+          <%# TODO Add support to select launchers which you want to keep in this workflow via drop down %>
+
+          <%# TODO Add support to describe relationship among launchers via two drop down menu to select "To-Fro" edge %>
+          <%# This will act as way to describe the DAG until we figure out which JS UI library to use %>
+
+        </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <p>
+      <%= form.submit I18n.t('dashboard.save'), class: 'btn btn-primary', title: 'Save project' %>
+      <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+      <%= link_to I18n.t('dashboard.back'), project_path(@workflow.project_id), class: 'btn btn-default', title: 'Return to projects page' %>
+    </p>
+  </div>
+<% end %>

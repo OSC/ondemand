@@ -1,0 +1,37 @@
+<div class="list-group bg-white rounded">
+  <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+      data-bs-toggle="collapse" data-bs-target="#workflow_list"
+      aria-expanded="true" aria-controls="workflow_list">
+    <span class="lead fw-bolder"><%= t('dashboard.jobs_workflows') %></span>
+  </a>
+
+  <div id="workflow_list" class="collapse show">
+    <%- @workflows.each do |workflow| -%>
+    <div class="list-group-item list-group-item-action" id="workflow_<%= workflow.id %>">
+      <div class="row workflow-item">
+        <div class="col workflow-title">
+          <%= workflow.name %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <%= link_to I18n.t('dashboard.show'), project_workflow_path(@project.id, workflow.id),
+                      class: 'btn btn-info launcher-button #{disabled_class}' %>
+        </div>
+        <div class="col">
+          <%= button_to I18n.t('dashboard.delete'), project_workflow_path(@project.id, workflow.id),
+                        method: :delete,
+                        data: { confirm: t('dashboard.jobs_project_delete_project_confirmation') },
+                        class: 'btn btn-danger launcher-button #{disabled_class}' %>
+        </div>
+      </div>
+    </div>
+    <%- end -%>
+  </div>
+
+  <a class="list-group-item list-group-item-action text-info font-weight-bold"
+    href="<%= new_project_workflow_path(@project.id) %>">
+    <%= t('dashboard.jobs_create_blank_workflow') %>
+  </a>
+</div>
