@@ -95,6 +95,9 @@
       <%- end -%>
     </div>
   </div>
+  <div class="col-md-2">
+    <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
+  </div>
 </div>
 
 <% unless @project.readme_path.nil? %>
@@ -108,7 +111,3 @@
     </div>
   </div>
 <% end %>
-
-<div class="d-flex justify-content-center mb-3">
-  <%= button_to t('dashboard.jobs_workflow_button'), project_workflows_path(@project.id), method: :get, class: "btn btn-primary" %>
-</div>
