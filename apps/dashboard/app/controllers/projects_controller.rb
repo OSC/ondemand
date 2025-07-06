@@ -15,6 +15,7 @@ class ProjectsController < ApplicationController
       end
     else
       @launchers = Launcher.all(@project.directory)
+      @workflows = Workflow.all(@project.id)
       @valid_project = Launcher.clusters?
       @valid_scripts = Launcher.scripts?(@project.directory)
 
