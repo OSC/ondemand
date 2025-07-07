@@ -4,7 +4,7 @@ const id = 'product_cli_modal';
 const spinnerId = `${id}_spinner`;
 const headerId = `${id}_header`;
 const buttonId = `${id}_button`;
-const closeButton = `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>`;
+const closeButton = `<button id="${buttonId}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>`;
 
 function modalHeader(title = null) {
   if(title === null || title === undefined) {
