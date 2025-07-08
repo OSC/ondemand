@@ -181,7 +181,7 @@ zh-CN:
     jobs_workflow_name_placeholder: Workflow name
     jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
     jobs_workflow_description_placeholder: Workflow description
-    jobs_workflow_not_found: Cannot find workflow %{project_id}
+    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_deleted: Workflow successfully deleted!
     launch: 启动
     module_browser_last_updated: "Last updated: %{last_updated}"

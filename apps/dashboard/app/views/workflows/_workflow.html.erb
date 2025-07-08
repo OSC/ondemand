@@ -17,13 +17,13 @@
       <div class="row">
         <div class="col">
           <%= link_to I18n.t('dashboard.show'), project_workflow_path(@project.id, workflow.id),
-                      class: 'btn btn-info launcher-button #{disabled_class}' %>
+                      class: "btn btn-info launcher-button" %>
         </div>
         <div class="col">
           <%= button_to I18n.t('dashboard.delete'), project_workflow_path(@project.id, workflow.id),
                         method: :delete,
                         data: { confirm: t('dashboard.jobs_project_delete_project_confirmation') },
-                        class: 'btn btn-danger launcher-button #{disabled_class}' %>
+                        class: "btn btn-danger launcher-button" %>
         </div>
       </div>
     </div>
