@@ -25,24 +25,35 @@ class WorkflowsController < ApplicationController
 
   # POST /projects/:id/workflows/
   def create
-    # TODO: Complete it
+    @workflow = Workflow.new(permit_params)
+
+    if @workflow.save
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_workflow_created')
+    else
+      # TODO: Rename "jobs_project_*"" to "jobs_*" to generalize
+      message = if @workflow.errors[:save].empty?
+                  I18n.t('dashboard.jobs_project_validation_error')
+                else
+                  I18n.t('dashboard.jobs_project_generic_error', error: @workflow.collect_errors)
+                end
+      flash.now[:alert] = message
+      render :new
+    end
   end
 
   # DELETE /projects/:id/workflows/:id
   def destroy
-    project_id = params[:project_id]
-    workflow_id = params[:id]
-    @workflow = Workflow.find(project_id, workflow_id)
+    @workflow = Workflow.find(params[:id], project_directory)
 
     if @workflow.nil?
-      redirect_to project_path, notice: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: workflow_id)
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: params[:id])
       return
     end
 
     if @workflow.destroy!
-      redirect_to project_path, notice: I18n.t('dashboard.jobs_workflow_deleted')
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_workflow_deleted')
     else
-      redirect_to project_path, notice: I18n.t('dashboard.jobs_project_generic_error', error: @workflow.collect_errors)
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_project_generic_error', error: @workflow.collect_errors)
     end
   end
 
@@ -61,7 +72,11 @@ class WorkflowsController < ApplicationController
     params
       .require(:workflow)
       .permit(:name, :description, :id)
-      .merge(project_id: params[:project_id])
+      .merge(project_dir: project_directory)
+  end
+
+  def project_directory
+    project_dir = Project.find(params[:project_id]).directory
   end
 
 end

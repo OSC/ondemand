@@ -4,7 +4,7 @@
 
 <br>
 
-<%= bootstrap_form_for(@workflow, url: project_path(@workflow.project_id)) do |form| %>
+<%= bootstrap_form_for(@workflow, url: project_workflows_path(params[:project_id])) do |form| %>
   <div class='card'>
     <div class='card-group'>
       <div class='card'>
@@ -37,7 +37,7 @@
     <p>
       <%= form.submit I18n.t('dashboard.save'), class: 'btn btn-primary', title: 'Save project' %>
       <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
-      <%= link_to I18n.t('dashboard.back'), project_path(@workflow.project_id), class: 'btn btn-default', title: 'Return to projects page' %>
+      <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
     </p>
   </div>
 <% end %>
