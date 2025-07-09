@@ -1,0 +1,8 @@
+---
+name: Module Browser
+category: Jobs
+description: |-
+  Browser for modules available on system.
+icon: fa://box
+url: module-browser
+new_window: false
