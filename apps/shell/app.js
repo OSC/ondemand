@@ -152,6 +152,7 @@ wss.on('connection', function connection (ws, req) {
   ws.isAlive = true;
   ws.startedAt = Date.now();
   ws.lastActivity = Date.now();
+  ws.lastLog = Date.now();
   
   console.log('Connection established');
 
@@ -179,7 +180,17 @@ wss.on('connection', function connection (ws, req) {
 
     term.onData(function (data) {
       ws.send(data, function (error) {
-        if (error) console.log('Send error: ' + error.message);
+        if(ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+          // nothing to do. websocket is closed or closing, so the error is likely about that.
+        } else if (error) {
+          const logDelta = Date.now() - ws.lastLog;
+
+          // rate limit logging errors here to once a minute.
+          if(logDelta >= 60000) {
+            console.log('Send error: ' + error.message);
+            ws.lastLog = Date.now();
+          }
+        }
       });
       ws.lastActivity = Date.now();
     });
