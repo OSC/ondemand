@@ -142,6 +142,40 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
   }
 }
 
+function createLogger() {
+  const messages = [];
+  let lastLog = 0;
+  let timer;
+
+  const logQueuedMessages = (immediate = false) => {
+    const now = Date.now();
+    clearTimeout(timer);
+    if (now - lastLog > 5000 || immediate) {
+      for (const { message, count } of messages) {
+        const countMessage = count > 1 ? ` (${count}x in 5000ms)` : '';
+        console.log(`${message}${countMessage}`);
+      }
+      messages.length = 0;
+      lastLog = now;
+    } else if (messages.length > 0) {
+      timer = setTimeout(logQueuedMessages, (lastLog + 5000 - now));
+    }
+  }
+
+  return {
+    log: (msg) => {
+      const lastMessage = messages.at(-1);
+      if (lastMessage && lastMessage.message == msg) {
+        lastMessage.count++;
+      } else {
+        messages.push({"message": msg, count: 1});
+      }
+      logQueuedMessages();
+    },
+    flush: () => logQueuedMessages(true),
+  };
+};
+
 wss.on('connection', function connection (ws, req) {
   var dir,
       term,
@@ -152,7 +186,8 @@ wss.on('connection', function connection (ws, req) {
   ws.isAlive = true;
   ws.startedAt = Date.now();
   ws.lastActivity = Date.now();
-  
+  ws.logger = createLogger();
+
   console.log('Connection established');
 
   [host, dir] = host_and_dir_from_url(req.url);
@@ -182,7 +217,7 @@ wss.on('connection', function connection (ws, req) {
         if(ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
           // nothing to do. websocket is closed or closing, so the error is likely about that.
         } else if (error) {
-            console.log('Send error: ' + error.message);
+          ws.logger.log('Send error: ' + error.message);
         }
       });
       ws.lastActivity = Date.now();
@@ -205,6 +240,7 @@ wss.on('connection', function connection (ws, req) {
       term.end();
       this.isAlive = false;
       console.log('Closed terminal: ' + term.pid);
+      ws.logger.flush();
     });
 
     ws.on('pong', function () {
