@@ -142,7 +142,10 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
   }
 }
 
+// Combines duplicated lines into a single message (log message + number of skipped messages)
 function createLogger() {
+  // Combine logs for logInterval ms duration
+  const logInterval = 5000;
   const messages = [];
   let lastLog = 0;
   let timer;
@@ -150,15 +153,19 @@ function createLogger() {
   const logQueuedMessages = (immediate = false) => {
     const now = Date.now();
     clearTimeout(timer);
-    if (now - lastLog > 5000 || immediate) {
+    // Nothing logged since logInterval, log immediately
+    if (now - lastLog > logInterval || immediate) {
       for (const { message, count } of messages) {
-        const countMessage = count > 1 ? ` (${count}x in 5000ms)` : '';
-        console.log(`${message}${countMessage}`);
+        console.log(message);
+        if (count > 1) {
+          console.log(`Skipped ${count-1} previous duplicated messages`);
+        }
       }
       messages.length = 0;
       lastLog = now;
     } else if (messages.length > 0) {
-      timer = setTimeout(logQueuedMessages, (lastLog + 5000 - now));
+      // Log at most logInterval duration since current queue started
+      timer = setTimeout(logQueuedMessages, (lastLog + logInterval - now));
     }
   }
 
