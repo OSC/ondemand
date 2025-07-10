@@ -215,7 +215,8 @@ wss.on('connection', function connection (ws, req) {
     term.onData(function (data) {
       ws.send(data, function (error) {
         if(ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
-          // nothing to do. websocket is closed or closing, so the error is likely about that.
+          ws.logger.log('The websocket will not receive any more messages. Killing the terminal connection');
+          term.kill();
         } else if (error) {
           ws.logger.log('Send error: ' + error.message);
         }
