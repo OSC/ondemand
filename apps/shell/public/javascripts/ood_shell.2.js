@@ -42,6 +42,7 @@ OodShell.prototype.runTerminal = function () {
 
   // Connect terminal to sacrificial DOM node
   this.term.decorate(this.element);
+  this.term.setAccessibilityEnabled(true);
 
   // Warn user if he/she unloads page
   window.onbeforeunload = function() {
