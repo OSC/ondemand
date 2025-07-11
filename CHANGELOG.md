@@ -1668,12 +1668,14 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.6...HEAD
+[4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
 [4.0.5]: https://github.com/OSC/ondemand/compare/v4.0.3...v4.0.5
 [4.0.3]: https://github.com/OSC/ondemand/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.14]: https://github.com/OSC/ondemand/compare/v3.1.13...v3.1.14
 [3.1.13]: https://github.com/OSC/ondemand/compare/v3.1.11...v3.1.13
 [3.1.11]: https://github.com/OSC/ondemand/compare/v3.1.10...v3.1.11
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10
