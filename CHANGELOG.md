@@ -77,6 +77,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
 - password_fields are now encrypted when written to cache or settings files in [4326](https://github.com/OSC/ondemand/pull/4326).
 
+## [4.0.6] - 07-10-2025
+
+### Security
+- Resolved CVE-2025-53636, an issue that allowed users to perform a denial-of-service (DoS) attack by flooding log files
+  with errors via the shell application. The shell application now restricts log output and properly manages scenarios
+  where the terminal remains open but the WebSocket connection is inactive in [4463](https://github.com/OSC/ondemand/pull/4463).
+
+### Fixed
+- Updated SELinux policies to ensure compatibility with Munge on EL9, resolving a "Permission Denied" error encountered
+  when connecting to the Munge socket in [4401](https://github.com/OSC/ondemand/pull/4401).
+- Adjusted Debian package dependencies for 'ondemand-nginx' and 'ondemand-passenger', resolving installation issues
+  that prevented older versions of OnDemand from being installed in [4462](https://github.com/OSC/ondemand/pull/4462).
+
+## [3.1.14] - 07-10-2025
+
+### Security
+- Resolved CVE-2025-53636, an issue that allowed users to perform a denial-of-service (DoS) attack by flooding log files
+  with errors via the shell application. The shell application now restricts log output and properly manages scenarios
+  where the terminal remains open but the WebSocket connection is inactive in [4464](https://github.com/OSC/ondemand/pull/4464).
+
+### Fixed
+- Updated SELinux policies to ensure compatibility with Munge on EL9, resolving a "Permission Denied" error encountered
+  when connecting to the Munge socket in [4402](https://github.com/OSC/ondemand/pull/4402).
+
 ## [4.0.5] - 05-27-2025
 
 ### Added
