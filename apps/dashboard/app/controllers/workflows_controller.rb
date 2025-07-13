@@ -11,6 +11,7 @@ class WorkflowsController < ApplicationController
   # GET /projects/:id/workflows/new
   def new
     @workflow = Workflow.new(index_params)
+    @launchers = Launcher.all(project_directory)
   end
 
   # GET /projects/:id/workflows/edit
@@ -26,6 +27,7 @@ class WorkflowsController < ApplicationController
   # POST /projects/:id/workflows/
   def create
     @workflow = Workflow.new(permit_params)
+    Rails.logger.warn(params[:workflow][:launcher_ids])
 
     if @workflow.save
       redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_workflow_created')
@@ -71,7 +73,7 @@ class WorkflowsController < ApplicationController
   def permit_params
     params
       .require(:workflow)
-      .permit(:name, :description, :id)
+      .permit(:name, :description, :id, launcher_ids: [])
       .merge(project_dir: project_directory)
   end
 

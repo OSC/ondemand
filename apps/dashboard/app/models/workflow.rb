@@ -35,7 +35,7 @@ class Workflow
     end
   end
 
-  attr_reader :id, :name, :description, :project_dir, :created_at
+  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids
 
   def initialize(attributes = {})
     @id = attributes[:id]
@@ -43,6 +43,7 @@ class Workflow
     @description = attributes[:description]
     @project_dir = attributes[:project_dir]
     @created_at = attributes[:created_at]
+    @launcher_ids = attributes[:launcher_ids] || []
   end
 
   def to_h
@@ -52,6 +53,7 @@ class Workflow
       :description => description,
       :created_at => created_at,
       :project_dir => project_dir,
+      :launcher_ids => launcher_ids
     }
   end
 

@@ -20,24 +20,28 @@
             </div>
           </div>
         </div>
-        </div>
-        <div class="card">
+      </div>
+      <div class="card">
         <div class='card-body'>
-
-          <%# TODO Add support to select launchers which you want to keep in this workflow via drop down %>
-
-          <%# TODO Add support to describe relationship among launchers via two drop down menu to select "To-Fro" edge %>
-          <%# This will act as way to describe the DAG until we figure out which JS UI library to use %>
-
-        </div>
+          <div class="field mt-3">
+            <strong>Pick Launchers</strong><br>
+            <% @launchers.each do |launcher| %>
+              <div class="form-check">
+                <%= check_box_tag "workflow[launcher_ids][]", launcher.id,
+                                  @workflow.launcher_ids.include?(launcher.id),
+                                  id: "launcher_#{launcher.id}", class: "form-check-input" %>
+                <%= label_tag "launcher_#{launcher.id}", launcher.title, class: "form-check-label" %>
+              </div>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
-    <br>
-    <p>
-      <%= form.submit I18n.t('dashboard.save'), class: 'btn btn-primary', title: 'Save project' %>
-      <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
-      <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
-    </p>
   </div>
+  <br>
+  <p>
+    <%= form.submit I18n.t('dashboard.save'), class: 'btn btn-primary', title: 'Save project' %>
+    <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+    <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
+  </p>
 <% end %>
