@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Update CHANGELOG.md (#4466)\
+fixup product modals (#4454)\
+Upgrade myjobs to rails 7.1 (#4450)\
+Shell logging (#4461)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
