@@ -76,6 +76,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
 - password_fields are now encrypted when written to cache or settings files in [4326](https://github.com/OSC/ondemand/pull/4326).
+- Resolved CVE-2025-53636, an issue that allowed users to perform a denial-of-service (DoS) attack by flooding log files
+  with errors via the shell application. The shell application now restricts log output and properly manages scenarios
+  where the terminal remains open but the WebSocket connection is inactive in [4461](https://github.com/OSC/ondemand/pull/4461).
 
 ## [4.0.6] - 07-10-2025
 
