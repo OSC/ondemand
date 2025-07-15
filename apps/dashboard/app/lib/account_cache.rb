@@ -137,7 +137,7 @@ module AccountCache
 
   # do you have _any_ account that can submit to this queue?
   def blocked_queue?(queue)
-    !(accounts.select {|account| account_allowed?(queue, account)}).any?
+    (accounts.select {|account| account_allowed?(queue, account)}).none?
   end
 
   def queues_per_cluster
