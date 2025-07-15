@@ -5,5 +5,20 @@
         <%= tag.a link[:text], aria: ({ current: 'page' } if (links.length - 1 == idx)), href: (link[:href] unless link.key?('href') || link[:disabled]) %>
       <% end %>
     <% end %>
+    <% if local_assigns[:show_notification_toggle] %>
+      <li class="form-check form-switch ms-5" title="Toggle notifications">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="notification_toggle"
+          aria-label="Toggle push notifications"
+        >
+        <label class="form-check-label" for="notification_toggle">
+          <i class="fa fa-bell" aria-hidden="true"></i>
+          <span class="visually-hidden">Toggle push notifications</span>
+        </label>
+      </li>
+    <% end %>
   </ol>
 </nav>
