@@ -789,4 +789,56 @@ class FilesTest < ApplicationSystemTestCase
 
     assert_equal('&lt;img src=1 onerror=alert("hello")&gt;', actual_text)
   end
+
+  test 'will not render HTML files by default' do
+    data = <<-HEREDOC
+    <html>
+      <body><h1>hello world</h1></body>
+      <script>window.alert('hello world');</script>
+    </html>
+    HEREDOC
+
+    src_file = "#{Rails.root}/tmp/file.html"
+    FileUtils.rm(src_file) if File.exist?(src_file)
+    File.write(src_file, data)
+
+    visit(files_url("#{Rails.root}/tmp"))
+
+    find('tbody a', exact_text: 'file.html').click
+    assert_equal(current_path, files_path("#{Rails.root}/tmp/file.html"))
+
+    # there's no need to confirm the javascript window.alert, because it's
+    # not rendered as HTML, only test. There is no <h1> or <script> elements
+    assert_no_selector('h1')
+    assert_no_selector('script')
+    assert_equal(data.chomp, find('pre').text.chomp)
+  end
+
+  test 'will render HTML when configured to do so' do
+    with_modified_env({ OOD_UNSAFE_RENDER_HTML: 'true' }) do
+      data = <<-HEREDOC
+      <html>
+        <body><h1>hello world</h1></body>
+        <script>window.alert('hello world');</script>
+      </html>
+      HEREDOC
+
+      src_file = "#{Rails.root}/tmp/file.html"
+      FileUtils.rm(src_file) if File.exist?(src_file)
+      File.write(src_file, data)
+
+      dest_file = DOWNLOAD_DIRECTORY.join('file.html')
+      FileUtils.rm(dest_file) if File.exist?(dest_file)
+
+      visit(files_url("#{Rails.root}/tmp"))
+
+      # note that there's no accept_alert block in the previous test.
+      accept_alert 'hello world' do
+        find('tbody a', exact_text: 'file.html').click
+      end
+
+      assert_equal(current_path, files_path("#{Rails.root}/tmp/file.html"))
+      assert_equal('hello world', find('h1').text)
+    end
+  end
 end
