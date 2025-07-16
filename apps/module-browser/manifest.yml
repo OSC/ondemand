@@ -1,8 +1,8 @@
 ---
 name: Module Browser
-category: Jobs
+category: Clusters
 description: |-
-  Browser for modules available on system.
+  Browse modules on the clusters for detailed information on the modules.
 icon: fa://box
 url: module-browser
 new_window: false
