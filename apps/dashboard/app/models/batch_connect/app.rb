@@ -474,7 +474,7 @@ module BatchConnect
       attributes[:cluster] = if clusters.size > 1
                                {
                                  widget:  'select',
-                                 label:   defined_cluster_attr[:label] || 'Cluster',
+                                 label:   'Cluster',
                                  options: clusters.map(&:id)
                                }.merge(defined_cluster_attr)
                              else
