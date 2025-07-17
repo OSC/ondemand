@@ -954,7 +954,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # use different accounts than what the template was generated with
       Open3
         .stubs(:capture3)
-        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', stdin_data: '')
+        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,qos', 'where', 'user=me', stdin_data: '')
         .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts_alt.txt'), '', exit_success])
 
       Project.stubs(:dataroot).returns(Pathname.new(dir))
