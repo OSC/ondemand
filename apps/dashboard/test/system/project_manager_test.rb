@@ -972,11 +972,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_dir = Dir.children(dir).select { |p| Pathname.new("#{dir}/#{p}").directory? }.first
       project_dir = "#{dir}/#{project_dir}"
 
-      # NOTE: we're using pzs1124 from sacctmgr_show_accts_alt.txt instead of pzs1124
+      # NOTE: we're using pzs2124 from sacctmgr_show_accts_alt.txt instead of pzs1124
       # from the template.
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-D', project_dir, '-A', 'pzs1124', '--export', 'NONE', '--parsable', '-M', 'owens',
+        .with({}, 'sbatch', '-D', project_dir, '-A', 'pzs2124', '--export', 'NONE', '--parsable', '-M', 'owens',
               stdin_data: input_data)
         .returns(['job-id-123', '', exit_success])
 
