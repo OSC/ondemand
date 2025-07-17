@@ -1,5 +1,3 @@
-pzs0715|ruby|ruby-default
-pzs0714|ruby|ruby-default
 pzs1124|owens|owens-default,staff,phoenix,geophys,hal,gpt
 pzs1118|owens|owens-default
 pzs1117|owens|owens-default
