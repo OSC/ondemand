@@ -6,16 +6,20 @@
 module AccountCache
   # Get all the accounts for the current user.
   #
-  # @return [Array<AccountInfo>] - the account info objects
-  def accounts
-    Rails.cache.fetch('account_info', expires_in: 4.hours) do
-      # only Slurm support in ood_core
-      cluster = Configuration.job_clusters.select(&:slurm?).first
-      cluster.nil? ? [] : cluster.job_adapter.accounts
+  # @return [Hash<String, Array<AccountInfo>>] - the account info objects organized by cluster name
+  def accounts_per_cluster
+    Rails.cache.fetch('accounts_per_cluster', expires_in: 4.hours) do
+      {}.tap do |hash|
+        Configuration.job_clusters.each do |cluster|
+          if cluster.job_adapter.respond_to?(:accounts) then
+            hash[cluster.id.to_s] = cluster.job_adapter.accounts
+          end
+        end
+      end
     rescue StandardError => e
       Rails.logger.warn("Did not get accounts from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
-      []
+      {}
     end
   end
 
@@ -24,7 +28,7 @@ module AccountCache
   # @return [Array<String>] - the unique list of accounts
   def account_names
     Rails.cache.fetch('account_names', expires_in: 4.hours) do
-      accounts.map(&:to_s).uniq
+      cluster_names_per_account_name.keys
     end
   end
 
@@ -39,10 +43,8 @@ module AccountCache
                                        .map(&:id)
                                        .map(&:to_s)
 
-      accounts.group_by(&:name).map do |account_name, grouped_accounts|
-        valid_clusters = grouped_accounts.map(&:cluster)
-        invalid_clusters = job_cluster_names - valid_clusters
-
+      cluster_names_per_account_name.map do |account_name, cluster_names|
+        invalid_clusters = job_cluster_names - cluster_names
         data = invalid_clusters.map do |invalid_cluster|
           ["data-option-for-cluster-#{invalid_cluster}", false]
         end.compact.to_h
@@ -91,11 +93,13 @@ module AccountCache
 
   def dynamic_qos
     Rails.cache.fetch('dynamic_qos', expires_in: 4.hours) do
-      qos_tuples = accounts.map do |account|
-        account.qos.map do |qos|
-          [account.name, account.cluster, qos]
+      qos_tuples = accounts_per_cluster.flat_map do |cluster_name, accounts|
+        accounts.flat_map do |account|
+          account.qos.map do |qos|
+            [account.name, cluster_name, qos]
+          end
         end
-      end.flatten(1).group_by { |tuple| tuple[2] }
+      end.group_by { |tuple| tuple[2] }
 
       clusters = Configuration.job_clusters.map { |c| c.id.to_s }
 
@@ -125,11 +129,7 @@ module AccountCache
   private
 
   def unique_qos_names
-    [].tap do |arr|
-      accounts.each do |acct|
-        arr << acct.qos
-      end
-    end.flatten.uniq
+    accounts_per_cluster.values.map { |accounts| accounts.map(&:qos) }.flatten.uniq
   end
 
   # do you have _any_ account that can submit to this queue?
@@ -147,7 +147,20 @@ module AccountCache
     Rails.cache.fetch('queues_per_cluster', expires_in: 24.hours) do
       {}.tap do |hash|
         Configuration.job_clusters.each do |cluster|
-          hash[cluster.id] = cluster.job_adapter.queues
+          hash[cluster.id.to_s] = cluster.job_adapter.queues
+        end
+      end
+    end
+  end
+
+  def cluster_names_per_account_name
+    Rails.cache.fetch('cluster_names_per_account_name', expires_in: 4.hours) do
+      {}.tap do |hash|
+        accounts_per_cluster.each do |cluster_name, accounts|
+          accounts.each do |account|
+            hash[account.name] ||= []
+            hash[account.name] << cluster_name
+          end
         end
       end
     end
