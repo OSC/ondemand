@@ -95,6 +95,9 @@
       <%- end -%>
     </div>
   </div>
+  <div class="col-md-2">
+    <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
+  </div>
 </div>
 
 <% unless @project.readme_path.nil? %>
