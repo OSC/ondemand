@@ -179,6 +179,8 @@ ja_JP:
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
     launch: 起動する
+    module_browser_last_updated: "Last updated: %{last_updated}"
+    module_browser_title: Module Browser
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     nav_all_apps: All Apps
