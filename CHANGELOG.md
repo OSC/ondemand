@@ -72,6 +72,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
 - Sweetalert2 has been removed and replaced by bootstrap modals in [4374](https://github.com/OSC/ondemand/pull/4374).
 - hterm has been updated to 1.92.1 in [4387](https://github.com/OSC/ondemand/pull/4387).
+- The shell app has accessibility features turned on in [4451](https://github.com/OSC/ondemand/pull/4451).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
