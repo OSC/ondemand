@@ -6,9 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#4472)\
-turn accessibility on for the shell app (#4451)\
-Update Changelog (#4467)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -75,6 +72,7 @@ Update Changelog (#4467)
 - passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
 - Sweetalert2 has been removed and replaced by bootstrap modals in [4374](https://github.com/OSC/ondemand/pull/4374).
 - hterm has been updated to 1.92.1 in [4387](https://github.com/OSC/ondemand/pull/4387).
+- The shell app has accessibility features turned on in [4451](https://github.com/OSC/ondemand/pull/4451).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
