@@ -205,4 +205,16 @@ module BatchConnect::SessionsHelper
       end
     end
   end
+
+  def adjusted_poll_delay(sessions)
+    any_active_sessions = sessions.any? { |s| s.starting? || s.running? || s.queued? }
+    throttle_polling = sessions.all? { |s| s.running? || s.completed? }
+    if any_active_sessions && throttle_polling
+      Configuration.bc_sessions_poll_delay_throttled
+    elsif any_active_sessions
+      Configuration.bc_sessions_poll_delay
+    else
+      0   # No polling needed if no active sessions
+    end
+  end
 end
