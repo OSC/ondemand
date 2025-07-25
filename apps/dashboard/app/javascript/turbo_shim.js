@@ -35,7 +35,9 @@ export function pollAndReplace(url, delay, id, callback) {
     .then((r) => r.text())
     .then((html) => replaceHTML(id, html))
     .then(() => {
-      setTimeout(pollAndReplace, delay, url, delay, id, callback);
+      if (delay) {
+        setTimeout(pollAndReplace, delay, url, delay, id, callback);
+      }
       if (typeof callback == 'function') {
         callback();
       }

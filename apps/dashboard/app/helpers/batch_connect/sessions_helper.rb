@@ -205,4 +205,12 @@ module BatchConnect::SessionsHelper
       end
     end
   end
+  
+  def bc_polling_enabled?(sessions)
+    sessions.any? { |s| s.starting? || s.running? || s.queued? }
+  end
+
+  def throttle_bc_polling?(sessions)
+    sessions.all? { |s| s.running? || s.completed? }
+  end
 end

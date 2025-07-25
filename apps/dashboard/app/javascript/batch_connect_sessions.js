@@ -57,9 +57,11 @@ function installSettingHandlers(name) {
 window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
-jQuery(function (){
-  if ($('#batch_connect_sessions').length) {
-    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
+document.addEventListener('DOMContentLoaded', function () {
+  const bcSessionsContainer = document.getElementById('batch_connect_sessions');
+  if (bcSessionsContainer) {
+    const pollDelay = bcSessionsContainer.dataset.bcPollingEnabled === "true" ? bcPollDelay() : null;
+    pollAndReplace(bcIndexUrl(), pollDelay, "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges();
     });
