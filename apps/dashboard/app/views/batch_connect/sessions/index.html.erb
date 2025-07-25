@@ -35,11 +35,7 @@ locals: {
       %>
     </nav>
     <div class="col-md-9" role="region" aria-label="Active Sessions">
-      <div 
-        id="batch_connect_sessions" 
-        data-bc-polling-enabled="<%= bc_polling_enabled?(@sessions) %>"
-        data-throttle-on-load="<%= throttle_bc_polling?(@sessions) %>"
-      >
+      <div id="batch_connect_sessions">
         <%= render(partial: 'panels') %>
       </div>
     </div>

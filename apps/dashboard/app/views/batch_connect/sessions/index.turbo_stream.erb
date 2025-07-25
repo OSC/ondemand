@@ -1,7 +1,11 @@
 
 <turbo-stream action="update" target="batch_connect_sessions" id="sessions_frame">
   <template>
-    <div class="batch-connect sessions">
+    <div
+      id="bc_sessions_content"
+      class="batch-connect sessions"
+      data-adjusted-poll-delay="<%= adjusted_poll_delay(@sessions) %>"
+    >
       <% if @sessions.empty? %>
         <div class="ood-appkit markdown">
           <p><%= t('dashboard.batch_connect_no_sessions') %></p>

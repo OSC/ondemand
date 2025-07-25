@@ -7,6 +7,14 @@ import { ariaNotify } from './aria_live_notify';
 
 const sessionStatusMap = new Map();
 
+function getPollDelay() {
+  const bcSessionsContainer = document.getElementById('bc_sessions_content');
+  if (!bcSessionsContainer) return bcPollDelay();
+
+  const delay = parseInt(bcSessionsContainer.dataset.adjustedPollDelay);
+  return isNaN(delay) ? bcPollDelay() : delay;
+}
+
 function checkStatusChanges() {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
   
@@ -60,10 +68,10 @@ window.tryUpdateSetting = tryUpdateSetting;
 document.addEventListener('DOMContentLoaded', function () {
   const bcSessionsContainer = document.getElementById('batch_connect_sessions');
   if (bcSessionsContainer) {
-    const pollDelay = bcSessionsContainer.dataset.bcPollingEnabled === "true" ? bcPollDelay() : null;
+    const pollDelay = getPollDelay();
     pollAndReplace(bcIndexUrl(), pollDelay, "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges();
-    });
+    }, getPollDelay);
   }
 });
