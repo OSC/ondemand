@@ -167,7 +167,7 @@ en:
     jobs_project_description_placeholder: Project description
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
-    jobs_project_generic_error : 'There was an error processing your request: %{error}'
+    jobs_project_generic_error: 'There was an error processing your request: %{error}'
     jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
     jobs_project_invalid_configuration_scripts: An executable script is required for your project. Upload a script using the file application.
     jobs_project_job_deleted: Successfully deleted job %{job_id}

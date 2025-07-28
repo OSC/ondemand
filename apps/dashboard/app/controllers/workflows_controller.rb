@@ -27,10 +27,9 @@ class WorkflowsController < ApplicationController
   # POST /projects/:id/workflows/
   def create
     @workflow = Workflow.new(permit_params)
-    Rails.logger.warn(params[:workflow][:launcher_ids])
 
     if @workflow.save
-      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_workflow_created')
+      redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_created')
     else
       # TODO: Rename "jobs_project_*"" to "jobs_*" to generalize
       message = if @workflow.errors[:save].empty?
@@ -45,17 +44,17 @@ class WorkflowsController < ApplicationController
 
   # DELETE /projects/:id/workflows/:id
   def destroy
-    @workflow = Workflow.find(params[:id], project_directory)
+    @workflow = Workflow.find(workflow_id, project_directory)
 
     if @workflow.nil?
-      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: params[:id])
+      redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: workflow_id)
       return
     end
 
     if @workflow.destroy!
-      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_workflow_deleted')
+      redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_deleted')
     else
-      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_project_generic_error', error: @workflow.collect_errors)
+      redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_project_generic_error', error: @workflow.collect_errors)
     end
   end
 
@@ -70,6 +69,14 @@ class WorkflowsController < ApplicationController
     params.permit(:project_id).to_h.symbolize_keys
   end
 
+  def project_id
+    params.permit(:project_id)[:project_id]
+  end
+
+  def workflow_id
+    params.require(:id)
+  end
+
   def permit_params
     params
       .require(:workflow)
@@ -78,7 +85,7 @@ class WorkflowsController < ApplicationController
   end
 
   def project_directory
-    project_dir = Project.find(params[:project_id]).directory
+    Project.find(params[:project_id]).directory
   end
 
 end
