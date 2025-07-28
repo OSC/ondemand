@@ -287,6 +287,14 @@ class OodApp
             msg += "for user #{Etc.getpwuid.name} with output: #{output}"
             raise SetupScriptFailed, msg
           end
+        else
+          msg = "Per user setup failed: file 'bin/setup-production'"
+          if !File.exist?(setup)
+            msg += " was not found at runtime."
+          elsif !File.executable?(setup)
+            msg += " is not executable. Ensure the user has access to this file."
+          end
+          raise SetupScriptFailed, msg
         end
       end
     end
