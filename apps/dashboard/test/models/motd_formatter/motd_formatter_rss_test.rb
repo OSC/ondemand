@@ -3,42 +3,26 @@ require 'test_helper'
 class MotdTest < ActiveSupport::TestCase
   include MotdFormatter
   test "test when motd formatter_rss_valid" do
-
-    path = "#{Rails.root}/test/fixtures/files/motd_rss"
-    motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterRss.new motd_file
-
-    assert formatted_motd.content.items.is_a? Enumerable
+    with_modified_env({ 'MOTD_FORMAT': "rss", 'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_rss" }) do
+      assert MotdFile.new.formatter.content.items.is_a? Enumerable
+    end
   end
 
   test "test when motd_formatter_rss invalid" do
-    path = "#{Rails.root}/test/fixtures/files/motd_rss_invalid"
-    motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterRss.new motd_file
-
-    assert_nil formatted_motd.content
+    with_modified_env({ 'MOTD_FORMAT': "rss", 'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_rss_invalid" }) do
+      assert_nil MotdFile.new.formatter.content
+    end
   end
 
   test "test when motd_formatter_rss empty" do
-    path = "#{Rails.root}/test/fixtures/files/motd_empty"
-    motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterRss.new motd_file
-
-    assert_nil formatted_motd.content
+    with_modified_env({ 'MOTD_FORMAT': "rss", 'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_empty" }) do
+      assert_nil MotdFile.new.formatter.content
+    end
   end
 
   test "test when motd formatter_rss_missing" do
-    path = "#{Rails.root}/test/fixtures/files/motd_missing"
-    motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterRss.new motd_file
-
-    assert_nil formatted_motd.content
-  end
-
-  test "test when motd formatter_rss_nil" do
-    motd_file = nil
-    formatted_motd = MotdFormatterRss.new motd_file
-
-    assert_nil formatted_motd.content
+    with_modified_env({ 'MOTD_FORMAT': "rss", 'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_missing" }) do
+      assert_nil MotdFile.new.formatter
+    end
   end
 end
