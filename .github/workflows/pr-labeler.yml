@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
   pull_request_target:
 
+permissions:
+  pull-request: read
+
 jobs:
   triage:
     name: Add labels to PR
