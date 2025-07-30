@@ -2,7 +2,7 @@
   <%=
     link_to(
       link.url.to_s,
-      class: "list-group-item list-group-item-action #{"active" if local_assigns[:current_url] == link.url}",
+      class: "list-group-item list-group-item-action border-0 #{"active" if local_assigns[:current_url] == link.url}",
       title: link.title,
       data: {
         'bs-toggle': "popover",
