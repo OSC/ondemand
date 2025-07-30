@@ -9,6 +9,9 @@ on:
       - 'release_**'
     types: [closed]
 
+permissions:
+  content: read
+
 jobs:
   # Create an issue on the documentation repository to document whatever was just pulled in.
   create-doc-issue:

@@ -1,4 +1,4 @@
-name: Lint Random File
+name: Fix Localizations
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ defaults:
     shell: bash
 
 permissions:
-  content: read
+  contents: read
 
 jobs:
   update-dependencies:
