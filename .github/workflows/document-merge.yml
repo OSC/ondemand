@@ -10,7 +10,7 @@ on:
     types: [closed]
 
 permissions:
-  content: read
+  contents: read
 
 jobs:
   # Create an issue on the documentation repository to document whatever was just pulled in.
