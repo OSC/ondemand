@@ -21,7 +21,7 @@ export function replaceHTML(id, html) {
   setInnerHTML(ele, newHTML);
 }
 
-export function pollAndReplace(url, delay, id, callback) {
+export function pollAndReplace(url, delay, id, callback, getNextDelay=null) {
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
     .then((response) => {
       if(response.status == 200) {
@@ -35,7 +35,10 @@ export function pollAndReplace(url, delay, id, callback) {
     .then((r) => r.text())
     .then((html) => replaceHTML(id, html))
     .then(() => {
-      setTimeout(pollAndReplace, delay, url, delay, id, callback);
+      if (delay) {
+        const nextDelay = (typeof getNextDelay === 'function') ? getNextDelay() : delay;
+        setTimeout(pollAndReplace, nextDelay, url, nextDelay, id, callback, getNextDelay);
+      }
       if (typeof callback == 'function') {
         callback();
       }
