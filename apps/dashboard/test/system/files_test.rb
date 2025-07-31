@@ -441,7 +441,7 @@ class FilesTest < ApplicationSystemTestCase
         find('.uppy.uppy-Informer', text: /osc-logo.png exceeds [\w ]+ size of 10 B/, wait: MAX_WAIT)
 
         # Temporarily add localization for max upload size error
-        en = { :dashboard => { :uppy => { :strings => { :exceedsSize => 'custom error, %{file}, %{size}' } } } }
+        en = { :dashboard => { :uppy => { :strings => { :exceedsSize => 'custom error, %<file>s, %<size>s' } } } }
         I18n.backend.store_translations(:en, en)
 
         visit files_url(dir)
@@ -832,7 +832,7 @@ class FilesTest < ApplicationSystemTestCase
 
       visit(files_url("#{Rails.root}/tmp"))
 
-      # note that there's no accept_alert block in the previous test.
+      # NOTE: that there's no accept_alert block in the previous test.
       accept_alert 'hello world' do
         find('tbody a', exact_text: 'file.html').click
       end
