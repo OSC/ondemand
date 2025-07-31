@@ -25,7 +25,7 @@ function pruneNotifiedSessionIds(sessions, notifiedSessionIds) {
 }
 
 function notificationsEnabled() {
-  return localStorage.getItem(settingKey('notification_toggle')) === 'true';
+  return localStorage.getItem(settingKey('ood_notification_toggle')) === 'true';
 }
 
 function withinWarnLimit(minutesRemaining, threshold) {
@@ -110,7 +110,7 @@ window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
 document.addEventListener('DOMContentLoaded', function () {
-  const notifToggleBtn = document.getElementById('notification_toggle');
+  const notifToggleBtn = document.getElementById('ood_notification_toggle');
   notifToggleBtn.checked = notificationsEnabled();
 
   if (!('Notification' in window) || Notification.permission !== 'granted') {
