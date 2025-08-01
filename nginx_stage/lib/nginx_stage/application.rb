@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'optparse'
 require 'cgi'
 
@@ -22,14 +25,14 @@ module NginxStage
         'nginx'       => NginxStage::NginxProcessGenerator,
         'nginx_show'  => NginxStage::NginxShowGenerator,
         'nginx_list'  => NginxStage::NginxListGenerator,
-        'nginx_clean' => NginxStage::NginxCleanGenerator,
+        'nginx_clean' => NginxStage::NginxCleanGenerator
       }
     end
 
     # Starts the NginxStage workflow
     # @return [void]
     def self.start
-      ARGV << "--help" if ARGV.empty?
+      ARGV << '--help' if ARGV.empty?
       command = ARGV.first[0] != '-' ? ARGV.shift : nil
 
       generator = commands.fetch(command) do
@@ -37,11 +40,11 @@ module NginxStage
       end
 
       parser = generator ? cmd_parser(command, generator) : default_parser
-      parser.parse!( ARGV )
-      generator.new(options).invoke if generator
-    rescue
-      $stderr.puts "#{$!.to_s}"
-      $stderr.puts "Run 'nginx_stage --help' to see a full list of available command line options."
+      parser.parse!(ARGV)
+      generator&.new(options)&.invoke
+    rescue StandardError
+      warn $ERROR_INFO
+      warn "Run 'nginx_stage --help' to see a full list of available command line options."
       exit(false)
     end
 
@@ -49,28 +52,28 @@ module NginxStage
     # @return [OptionParser] the option parser object
     def self.default_parser
       OptionParser.new do |opts|
-        opts.banner = "Usage: nginx_stage COMMAND [OPTIONS]"
+        opts.banner = 'Usage: nginx_stage COMMAND [OPTIONS]'
 
-        opts.separator ""
-        opts.separator "Commands:"
+        opts.separator ''
+        opts.separator 'Commands:'
         commands.each do |cmd, klass|
-          opts.separator sprintf(" %-20s# %s", cmd, klass.desc)
+          opts.separator format(' %-20s# %s', cmd, klass.desc)
         end
 
-        opts.separator ""
-        opts.separator "General options:"
-        opts.on("-h", "--help", "# Show this help message") do
+        opts.separator ''
+        opts.separator 'General options:'
+        opts.on('-h', '--help', '# Show this help message') do
           puts opts
           exit
         end
-        opts.on("-v", "--version", "# Show version") do
+        opts.on('-v', '--version', '# Show version') do
           puts "nginx_stage, version #{VERSION}"
           exit
         end
 
-        opts.separator ""
-        opts.separator "All commands can be run with -h (or --help) for more information."
-        opts.separator ""
+        opts.separator ''
+        opts.separator 'All commands can be run with -h (or --help) for more information.'
+        opts.separator ''
       end
     end
 
@@ -82,44 +85,42 @@ module NginxStage
       OptionParser.new do |opts|
         opts.banner = "Usage: nginx_stage #{command} [OPTIONS]"
 
-        opts.separator ""
-        opts.separator "Required options:"
-        generator.options.select {|k,v| v[:required]}.each do |k, v|
+        opts.separator ''
+        opts.separator 'Required options:'
+        generator.options.select { |_k, v| v[:required] }.each do |k, v|
           opts.on(*v[:opt_args]) do |input|
             options[k] = unescape(input)
           end
         end
 
-        opts.separator ""
-        opts.separator "General options:"
-        generator.options.select {|k,v| !v[:required]}.each do |k, v|
+        opts.separator ''
+        opts.separator 'General options:'
+        generator.options.reject { |_k, v| v[:required] }.each do |k, v|
           opts.on(*v[:opt_args]) do |input|
             options[k] = unescape(input)
           end
         end
 
-        opts.separator ""
-        opts.separator "Common options:"
-        opts.on("-h", "--help", "# Show this help message") do
+        opts.separator ''
+        opts.separator 'Common options:'
+        opts.on('-h', '--help', '# Show this help message') do
           puts opts
           exit
         end
-        opts.on("-v", "--version", "# Show version") do
+        opts.on('-v', '--version', '# Show version') do
           puts "nginx_stage, version #{VERSION}"
           exit
         end
 
-        opts.separator ""
+        opts.separator ''
         opts.separator generator.footer
-        opts.separator ""
+        opts.separator ''
       end
     end
 
-
-    private
-      # Unescape string
-      def self.unescape(value)
-        value.respond_to?(:gsub) ? CGI::unescape(value) : value
-      end
+    # Unescape string
+    def self.unescape(value)
+      value.respond_to?(:gsub) ? CGI.unescape(value) : value
+    end
   end
 end
