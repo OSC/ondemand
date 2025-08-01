@@ -124,6 +124,16 @@ export function pushNotify(message, options = {}) {
   }
 }
 
+// Store a boolean value in localStorage
+export function storeBoolean(key, value) {
+  localStorage.setItem(key, value ? 'true' : 'false');
+}
+
+// Retrieve a boolean value from localStorage
+export function getBoolean(key) {
+  return localStorage.getItem(key) === 'true';
+}
+
 // Helper method to set an element's innerHTML property
 // and evaluate any <script> tags that may exist within it.
 // Just setting innerHTML of an html element does not re-evaluate

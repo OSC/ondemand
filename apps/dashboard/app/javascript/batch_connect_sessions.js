@@ -1,40 +1,21 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { bindFullPageSpinnerEvent, ariaNotify, pushNotify, show, hide } from './utils';
+import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
 import { pollAndReplace } from './turbo_shim';
-
-function getNotifiedSessionIds() {
-  return JSON.parse(localStorage.getItem('expiration_notified')) || [];
-}
-
-function storeNotifiedSessionIds(sessions) {
-  localStorage.setItem('expiration_notified', JSON.stringify(sessions));
-}
-
-function pruneNotifiedSessionIds(sessions, notifiedSessionIds) {
-  const currentNotifiedIds = []
-
-  notifiedSessionIds.forEach((sessionId) => {
-    if (sessions.has(sessionId)) {
-      currentNotifiedIds.push(sessionId);
-    }
-  });
-
-  storeNotifiedSessionIds(currentNotifiedIds);
-}
-
-function notificationsEnabled() {
-  return localStorage.getItem(settingKey('ood_notification_toggle')) === 'true';
-}
+import { 
+  notificationsEnabled, getNotifiedSessionIds, storeNotifiedSessionIds, 
+  pruneNotifiedSessionIds, setupNotificationToggle,
+} from './batch_connect/bc_notifications';
 
 function withinWarnLimit(minutesRemaining, threshold) {
   return minutesRemaining <= threshold && minutesRemaining > 0;
 }
 
-function checkStatusChanges(sessions, notifiedSessionIds, notificationsEnabled) {
+function checkStatusChanges(sessions, notifiedSessionIds) {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
-  
+  const notificationsOn = notificationsEnabled();
+
   sessionCards.forEach((card) => {
     const sessionTitle = card.dataset.title;
     const sessionId = card.dataset.id;
@@ -53,7 +34,7 @@ function checkStatusChanges(sessions, notifiedSessionIds, notificationsEnabled) 
     if (session.status !== currentStatus) {
       session.status = currentStatus;
       ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
-      if (notificationsEnabled) {
+      if (notificationsOn) {
         pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
           tag: `session-${sessionId}`,
         });
@@ -64,7 +45,7 @@ function checkStatusChanges(sessions, notifiedSessionIds, notificationsEnabled) 
     const expWarnThreshold = 15;
 
     const minutesRemaining = parseInt(card.dataset.minutesRemaining, 10) || 0;
-    if (notificationsEnabled && withinWarnLimit(minutesRemaining, expWarnThreshold) && !session.expNotified) {
+    if (notificationsOn && withinWarnLimit(minutesRemaining, expWarnThreshold) && !session.expNotified) {
       pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
         tag: `session-${sessionId}`,
       });
@@ -82,10 +63,6 @@ function settingKey(id) {
 function storeSetting(event) {
   var key = settingKey(event.currentTarget.id);
   var value = event.currentTarget.value;
-
-  if (event.currentTarget.type === 'checkbox') {
-    value = event.currentTarget.checked;
-  }
 
   localStorage.setItem(key, value);
 }
@@ -110,41 +87,14 @@ window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
 document.addEventListener('DOMContentLoaded', function () {
-  const notifToggleBtn = document.getElementById('ood_notification_toggle');
-  notifToggleBtn.checked = notificationsEnabled();
-
-  if (!('Notification' in window) || Notification.permission !== 'granted') {
-    notifToggleBtn.checked = false;
-  }
-
-  notifToggleBtn.addEventListener('click', (event) => {
-    if (Notification.permission === 'default') {
-      event.preventDefault();
-      Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-          notifToggleBtn.checked = true;
-          pushNotify('Notifications enabled for interactive sessions', {
-            tag: 'notification-toggle',
-          });
-        } 
-      });
-    } else if (Notification.permission === 'denied') {
-      event.preventDefault();
-      notifToggleBtn.checked = false;
-    }
-  });
-
-  notifToggleBtn.addEventListener('change', (event) => {
-    storeSetting(event);
-  });
-
+  setupNotificationToggle('notification_toggle');
   const sessions = new Map();
   const notifiedSessionIds = new Set(getNotifiedSessionIds());
 
   if (document.getElementById('batch_connect_sessions')) {
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
-      checkStatusChanges(sessions, notifiedSessionIds, notifToggleBtn.checked);
+      checkStatusChanges(sessions, notifiedSessionIds);
     });
   }
 
