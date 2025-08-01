@@ -1,4 +1,5 @@
 import { getBoolean, storeBoolean } from '../utils';
+import { OODAlert }from '../alert';
 
 export function notificationsEnabled() {
   return getBoolean('ood_notifications_enabled');
@@ -37,9 +38,14 @@ export function setupNotificationToggle(toggleElementId) {
 
   notifToggleBtn.addEventListener('change', async (event) => {
     if (Notification.permission !== 'granted') {
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        event.target.checked = false;
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          event.target.checked = false;
+          OODAlert('Please allow notification permissions in your browser to enable session alerts.');
+        }
+      } catch (error) {
+        OODAlert('Error requesting notification permission:', error);
       }
     }
     storeBoolean('ood_notifications_enabled', event.target.checked);
