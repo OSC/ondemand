@@ -6,19 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-fix pr-labeler.yml (#4500)\
-update ood_core (#4495)\
-Update workflows (#4499)\
-rm minor ruby versions and apply permissions (#4498)\
-updates after rails app:update (#4437)\
-add descriptive messages to setup-production errors (#4492)\
-Added basic new/delete functionality for the workflow class (#4422)\
-no margin top for path selector button (#4484)\
-tweak system test (#4476)\
-Integrate module browser (#4460)\
-Respect user-defined cluster attribute from form.yml (#4459)\
-Bump thor from 1.3.2 to 1.4.0 (#4493)\
-Bump thor from 1.3.2 to 1.4.0 in /apps/dashboard (#4486)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -51,6 +38,7 @@ Bump thor from 1.3.2 to 1.4.0 in /apps/dashboard (#4486)
 - Apps are now cached so they only render ERB files once in [4377](https://github.com/OSC/ondemand/pull/4377).
 - There's now a link to skip navigation for screen readers and keyboard users in [4403](https://github.com/OSC/ondemand/pull/4403).
 - Pinned apps now display all links for a given app in [4407](https://github.com/OSC/ondemand/pull/4407).
+- bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
