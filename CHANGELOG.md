@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+fix pr-labeler.yml (#4500)\
+update ood_core (#4495)\
+Update workflows (#4499)\
+rm minor ruby versions and apply permissions (#4498)\
+updates after rails app:update (#4437)\
+add descriptive messages to setup-production errors (#4492)\
+Added basic new/delete functionality for the workflow class (#4422)\
+no margin top for path selector button (#4484)\
+tweak system test (#4476)\
+Integrate module browser (#4460)\
+Respect user-defined cluster attribute from form.yml (#4459)\
+Bump thor from 1.3.2 to 1.4.0 (#4493)\
+Bump thor from 1.3.2 to 1.4.0 in /apps/dashboard (#4486)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
