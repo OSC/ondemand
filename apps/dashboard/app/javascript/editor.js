@@ -200,6 +200,8 @@ jQuery(function () {
       editor.setTheme($("#theme option:selected").val());
       $("#wordwrap").prop("checked", getUserPreference('wordwrap') === "true");
       editor.getSession().setUseWrapMode($("#wordwrap").is(':checked'));
+
+      editor.session.setUseSoftTabs(false);
     };
 
     initializeEditor();
