@@ -17,6 +17,10 @@
               class: ['launcher-click', tile_data[:border_color]],
               data: {:method => "post"},
               params: params,
+	      data_bs_toggle: 'tooltip',
+	      data_bs_placement: 'bottom',
+	      data_bs_html: 'true',
+	      title: app.recent_settings,
               ) do
           %>
 

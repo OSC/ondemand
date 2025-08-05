@@ -145,6 +145,11 @@ module BatchConnect
       form_config[:ssh_allow]
     end
 
+    def recent_settings
+      displayed = attributes.select(&:display?)
+      displayed.map do |attr| "#{attr.label}: #{attr.value}" end.join("\n")
+    end
+    
     def link
       OodAppLink.new(
         # FIXME: better to use default_title and "" description
