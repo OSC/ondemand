@@ -41,7 +41,9 @@ module NginxStage
       generator.new(options).invoke if generator
     rescue
       $stderr.puts "#{$!.to_s}"
-      $stderr.puts "Run 'nginx_stage --help' to see a full list of available command line options."
+      unless NginxStage.disable_nginx_stage_help_message
+        $stderr.puts "Run 'nginx_stage --help' to see a full list of available command line options."
+      end
       exit(false)
     end
 
