@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Apps are now cached so they only render ERB files once in [4377](https://github.com/OSC/ondemand/pull/4377).
 - There's now a link to skip navigation for screen readers and keyboard users in [4403](https://github.com/OSC/ondemand/pull/4403).
 - Pinned apps now display all links for a given app in [4407](https://github.com/OSC/ondemand/pull/4407).
+- bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
