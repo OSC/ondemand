@@ -1,0 +1,256 @@
+---
+fr-CA:
+  activemodel:
+    errors:
+      messages:
+        format: "Le format de %{attribute} est invalide ou manquant"
+        invalid: "%{attribute} est invalide"
+        required: "%{attribute} est requis"
+        used: "%{attribute} est déjà utilisé"
+  dashboard:
+    active_sessions_caption_html: <a href="%{all_sessions_url}"> voir tout (%{number_of_sessions})</a>
+    active_sessions_title: Sessions interactives actives
+    add: Ajouter
+    all_apps_table_app_column: Nom
+    all_apps_table_category_column: Catégorie
+    all_apps_table_sub_category_column: Sous-catégorie
+    announcements_dismissible_button: OK
+    announcements_required_button: Accepter
+    apps_setup_failure_html: |
+      <h2>Un problème est survenu lors de l'initialisation de vos données pour cette application.</h2>
+      <p class="lead">
+        À vos risques, vous pouvez quand même <a href="%{app_url}">ouvrir l’application</a>
+        ou simplement <a href="%{home_url}">retourner au tableau de bord</a>
+      </p>
+      <p>
+        Partagez ceci avec le développeur de votre application :
+        Le script de production de configuration devrait être idempotent et s’exécute chaque fois
+        que l’utilisateur ouvre l’application via le tableau de bord.</p>
+      <h4>Exception : %{exception_class}</h4>
+      <pre>%{exception_message}</pre>
+      <h4>Trace de la pile :</h4>
+      <pre>%{exception_trace}</pre>
+    apps_system_apps_title: Applications système
+    auto_log_location_title: Emplacement du journal
+    balance_additional_message: Envisagez de demander %{balanace_units} supplémentaires
+    balance_message: "%{units_balance} est %{value}"
+    balance_reload_message_html: "Rechargez la page pour voir le solde mis à jour. Les soldes sont mis à jour quotidiennement.<br>Dernière mise à jour : %{last_update}"
+    balance_warning_prefix_html: "%{units_balance} avertissement pour"
+    batch_connect_apps_menu_title: Applications interactives
+    batch_connect_form_attr_cache_error: Impossible d'utiliser les valeurs en cache, utilisation des valeurs par défaut. (%{error_message})
+    batch_connect_form_choose_template_name: Choisir un nom de modèle
+    batch_connect_form_data_root: répertoire racine des données
+    batch_connect_form_invalid: Le form.yml a des options manquantes dans le champ de formulaire %{id}.
+    batch_connect_form_launch: Lancer
+    batch_connect_form_prefill: Utiliser les paramètres sauvegardés
+    batch_connect_form_prefill_error: Oups... Quelque chose ne va pas avec votre modèle
+    batch_connect_form_reset_resolution: Réinitialiser la résolution
+    batch_connect_form_save: Enregistrer les paramètres
+    batch_connect_form_save_new_template: enregistrer de nouveaux paramètres
+    batch_connect_form_save_submit: Enregistrer et fermer
+    batch_connect_form_select_template: sélectionner les paramètres sauvegardés
+    batch_connect_form_session_data_html: |
+      * Les données de session %{title} pour cette session sont accessibles
+        sous %{data_link_tag}.
+    batch_connect_form_template_name_label: nom du paramètre
+    batch_connect_form_type_new_name: Nom des paramètres de l’application
+    batch_connect_form_type_new_name_error: Veuillez saisir un nom valide pour continuer
+    batch_connect_invalid_form_array: "'form' dans form.yml n'est pas un tableau"
+    batch_connect_invalid_form_attributes: "'attributes' dans form.yml n'est pas une carte"
+    batch_connect_missing_cluster: |
+      Le cluster n'a jamais été défini. Définissez-le soit dans form.yml.erb avec `cluster` ou `form.cluster` ou
+      définissez `cluster` dans submit.yml.erb.
+    batch_connect_no_apps: Il n'y a pas d'applications interactives disponibles.
+    batch_connect_no_sessions: Vous n'avez aucune session active.
+    batch_connect_sandbox: " [Bac à sable]"
+    batch_connect_sessions_cancel_confirm: Êtes-vous sûr ?
+    batch_connect_sessions_cancel_title: Annuler
+    batch_connect_sessions_data_html: |
+      Les données de session %{title} pour cette session sont accessibles
+      sous %{data_link_tag}.
+    batch_connect_sessions_delete_confirm: Êtes-vous sûr ?
+    batch_connect_sessions_delete_hover: Supprimer la session
+    batch_connect_sessions_delete_title: Supprimer
+    batch_connect_sessions_edit_title: Modifier %{title} avec les paramètres de cette session
+    batch_connect_sessions_error_invalid_job_name_html: |
+      Si ce travail a échoué en raison d'un nom de travail invalide,
+      veuillez demander à votre administrateur de configurer OnDemand pour définir
+      la variable d'environnement OOD_JOB_NAME_ILLEGAL_CHARS.
+    batch_connect_sessions_errors_staging: 'Échec du staging du modèle avec l’erreur suivante :'
+    batch_connect_sessions_errors_submission: 'Échec de la soumission de la session avec l’erreur suivante :'
+    batch_connect_sessions_novnc_launch: Lancer %{app_title}
+    batch_connect_sessions_novnc_view_only: Vue seule (Lien partageable)
+    batch_connect_sessions_path_selector_forbidden_error: Vous n'avez pas la permission de sélectionner ce répertoire ou fichier.
+    batch_connect_sessions_relaunch_title: Relancer
+    batch_connect_sessions_staged_root: répertoire racine mis en scène
+    batch_connect_sessions_stats_created_at: 'Créé le :'
+    batch_connect_sessions_stats_host: 'Hôte :'
+    batch_connect_sessions_stats_session_id: 'ID de session :'
+    batch_connect_sessions_stats_support_ticket: Problèmes avec cette session ?
+    batch_connect_sessions_stats_support_ticket_link_text: Soumettre un billet de soutien
+    batch_connect_sessions_stats_time_remaining: 'Temps restant :'
+    batch_connect_sessions_stats_time_requested: 'Temps demandé :'
+    batch_connect_sessions_stats_time_used: 'Temps utilisé :'
+    batch_connect_sessions_stats_undetermined_host: Indéterminé
+    batch_connect_sessions_status_bad: Votre session a rencontré un problème. N’hésitez pas à contacter le support.
+    batch_connect_sessions_status_blurb_cancel_failure: Échec de l'annulation de la session.
+    batch_connect_sessions_status_blurb_cancel_success: Session annulée avec succès.
+    batch_connect_sessions_status_blurb_create_success: Session créée avec succès.
+    batch_connect_sessions_status_blurb_delete_failure: Échec de la suppression de la session.
+    batch_connect_sessions_status_blurb_delete_success: Session supprimée avec succès.
+    batch_connect_sessions_status_completed: À des fins de débogage, cette carte sera conservée pendant %{days} jours supplémentaires
+    batch_connect_sessions_status_missing_connection: |
+      Cette application manque d’informations nécessaires à l’établissement d’une connexion.
+      Veuillez contacter le support si vous voyez ce message.
+    batch_connect_sessions_status_queued: |
+      Merci de patienter pendant que votre travail est en file d’attente.
+      Le temps d’attente dépend du nombre de cœurs et du temps demandé.
+    batch_connect_sessions_status_starting: |
+      Votre session démarre actuellement... Veuillez patienter car ce processus peut
+      prendre quelques minutes.
+    batch_connect_sessions_word: Session
+    bc_saved_settings:
+      delete_confirm: Êtes-vous sûr ?
+      delete_title: Supprimer les paramètres enregistrés %{settings_name}
+      deleted_message: Paramètres enregistrés %{settings_name} supprimés.
+      edit_title: Modifier les paramètres enregistrés %{settings_name}
+      launch_title: Lancer %{app_title} avec les paramètres %{settings_name}
+      missing_settings: Paramètres enregistrés sélectionnés introuvables.
+      no_settings_title: Vous n'avez pas de paramètres enregistrés.
+      outdated_message: Les paramètres de %{app_title} ont changé depuis la création de ces paramètres.
+      saved_message: Paramètres %{settings_name} enregistrés
+      settings_values_label: Valeurs
+      title: Paramètres enregistrés
+    breadcrumbs_all_apps: Toutes les applications
+    breadcrumbs_home: Accueil
+    breadcrumbs_my_sessions: Mes sessions interactives
+    breadcrumbs_support_ticket: Billet de soutien
+    close: Fermer
+    custom_pages:
+      invalid: 'Code de page invalide : %{page}. Cette page n’a pas été configurée'
+    delete: Supprimer
+    development_apps_caption: Application bac à sable
+    directory: Répertoire
+    edit: Modifier
+    files_directory_download_error_modal_title: Répertoire trop volumineux à télécharger
+    files_directory_download_unauthorized: Vous ne pouvez télécharger qu’un répertoire au format zip si vous y avez les droits de lecture et d’exécution
+    files_directory_size_calculation_error: Délai dépassé lors de la détermination de la taille du répertoire.
+    files_directory_size_calculation_timeout: Délai dépassé lors de la détermination de la taille du répertoire.
+    files_directory_size_unknown: 'Erreur avec le code de sortie %{exit_code} lors de la détermination de la taille du répertoire : %{error}'
+    files_directory_too_large: Le répertoire est trop volumineux pour être téléchargé en zip. Il doit faire moins de %{download_directory_size_limit} octets.
+    files_download_not_enabled: Le téléchargement de fichiers n’est pas activé sur ce serveur.
+    files_remote_dir_not_created: Répertoire %{path} non créé
+    files_remote_disabled: Le support de fichiers distants n’est pas activé
+    files_remote_empty_dir_unsupported: Les répertoires vides ne sont pas pris en charge à distance
+    files_remote_error_listing_remotes: 'Erreur lors de la liste des remotes Rclone : %{error}'
+    jobs_create_blank_project: Créer un nouveau projet
+    jobs_create_template_project: Créer un nouveau projet à partir d’un modèle
+    jobs_launchers: Lancements
+    jobs_launchers_created: Lancement créé avec succès !
+    jobs_launchers_default_created: Un « hello_world.sh » a aussi été ajouté à ce projet.
+    jobs_launchers_delete_script_confirmation: Supprimer tout le contenu du lancement ?
+    jobs_launchers_deleted: Lancement supprimé avec succès !
+    jobs_launchers_fixed_field: Valeur fixe
+    jobs_launchers_not_found: Impossible de trouver le lancement %{launcher_id}
+    jobs_launchers_submitted: Travail %{job_id} soumis avec succès.
+    jobs_launchers_updated: Manifest du lancement mis à jour !
+    jobs_new_launcher: Nouveau lancement
+    jobs_project_created: Projet créé avec succès !
+    jobs_project_delete_project_confirmation: Supprimer tout le contenu du répertoire du projet ?
+    jobs_project_deleted: Projet supprimé avec succès !
+    jobs_project_description_placeholder: Description du projet
+    jobs_project_directory_help_html: 'Laisser vide et un nouveau répertoire sera créé. <br />Emplacement par défaut : %{root_directory}'
+    jobs_project_directory_placeholder: Chemin absolu du répertoire du projet
+    jobs_project_generic_error: 'Erreur lors du traitement de votre requête : %{error}'
+    jobs_project_invalid_configuration_clusters: Un cluster HPC est requis. Contactez votre administrateur pour en ajouter un au système.
+    jobs_project_invalid_configuration_scripts: Un script exécutable est requis pour votre projet. Téléversez un script via l’application de fichiers.
+    jobs_project_job_deleted: Travail %{job_id} supprimé avec succès
+    jobs_project_job_not_deleted: Impossible de supprimer le travail %{job_id}
+    jobs_project_job_stopped: Travail %{job_id} arrêté avec succès
+    jobs_project_manifest_updated: Manifest du projet mis à jour !
+    jobs_project_name_placeholder: Nom du projet
+    jobs_project_name_validation: Le nom du projet ne peut contenir que des lettres, chiffres, tirets, soulignés et espaces
+    jobs_project_not_found: Impossible de trouver le projet %{project_id}
+    jobs_project_save_error: Impossible d’enregistrer le manifest dans %{path}
+    jobs_project_validation_error: Requête invalide. Veuillez vérifier les erreurs ci-dessous
+    launch: Lancer
+    motd_erb_render_error: 'Le MOTD n’a pas été analysé ou rendu correctement : %{error_message}'
+    motd_title: Message du jour
+    nav_all_apps: Toutes les applications
+    nav_develop_docs: Documentation développeur
+    nav_develop_my_sandbox_apps_dev: Mes applications bac à sable (Développement)
+    nav_develop_my_sandbox_apps_prod: Mes applications partagées (Production)
+    nav_develop_title: Développer
+    nav_help_change_password: Changer le mot de passe HPC
+    nav_help_custom: Aide personnalisée
+    nav_help_docs: Documentation en ligne
+    nav_help_support: Contacter le support technique
+    nav_help_support_ticket: Soumettre un billet de soutien
+    nav_help_title: Aide
+    nav_help_two_factor: Configurer l’authentification à deux facteurs
+    nav_limit_caption: affichage de %{subset_count} sur %{total_count}
+    nav_logout: Déconnexion
+    nav_restart_server: Redémarrer le serveur web
+    nav_sessions: Mes sessions interactives
+    nav_user: Connecté en tant que %{username}
+    not_grouped: Autres applications
+    pinned_apps_caption_html: Un sous-ensemble en vedette de <a href="%{all_apps_url}">toutes les applications disponibles</a>
+    pinned_apps_category: Applications
+    pinned_apps_title: Applications épinglées
+    project: Projet
+    quota_additional_message: Envisagez de supprimer ou d’archiver des fichiers pour libérer de l’espace disque.
+    quota_block: Utilisation de %{used} sur quota %{available}
+    quota_block_shared: "(%{used_exclusive} vous appartiennent)"
+    quota_file: Utilisation de %{used} fichiers sur quota %{available} fichiers
+    quota_file_shared: "(%{used_exclusive} fichiers sont à vous)"
+    quota_reload_message: Rechargez la page pour voir la quota mise à jour. Les quotas sont mis à jour toutes les 5 minutes.
+    quota_warning_prefix_html: Avertissement de limite de quota pour
+    recently_used_apps_title: Applications récemment utilisées
+    remove: Retirer
+    restart_msg_html: |
+      Votre appartenance au groupe a changé, ce qui affecte votre accès aux applications. Votre tableau de bord devrait redémarrer automatiquement.
+      Si ce n’est pas le cas, cliquez ici : <a href="%{restart_url}">redémarrer le serveur web</a>.
+    save: Enregistrer
+    saved_settings_title: Paramètres enregistrés
+    select_path: Sélectionner le chemin
+    settings_invalid_request: Paramètres soumis invalides
+    settings_updated: Paramètres mis à jour
+    shared_apps_caption: Partagé par %{owner_title} (%{owner})
+    shared_apps_caption_short: Partagé par %{owner}
+    shared_apps_title: Applications partagées
+    sharing_catalog_msg_html: "<br>Un sous-ensemble des applications disponibles peut être consulté sur le %{catalog_link_tag}.\n"
+    sharing_catalog_title: Catalogue d’applications
+    sharing_no_shared_apps_html: "<strong>Aucune application personnalisée partagée disponible.</strong>\n"
+    sharing_support_msg_html: |
+      Si vous ne voyez pas l’application recherchée, veuillez
+      <a href="%{support_url}">contacter le support</a>.
+    sharing_welcome_msg_html: |
+      Les applications d’accès aux clusters sont disponibles via les menus déroulants dans la barre de navigation ci-dessus.
+      <br>Les applications partagées personnalisées sont disponibles ci-dessous.
+    shell_app_title: "%{cluster_title} Accès Shell"
+    show: "Afficher"
+    support_ticket:
+      creation_success: "Courriel de billet de soutien envoyé à : %{to}"
+      generic_error: "Erreur lors du traitement de votre requête : %{error}"
+      header: "Billet de soutien"
+      rt:
+        creation_success: "Billet créé dans le système RequestTracker. ID du billet : %{ticket_id}"
+      title: "Billet de soutien"
+      validation:
+        attachments_items: "Les %{id} sont invalides. %{items} ajoutés, nombre maximal de pièces jointes : %{max}"
+        attachments_size: "Les %{id} sont invalides. Taille maximale de la pièce jointe : %{max}"
+        email: "Le format de %{id} est invalide. Adresse courriel valide attendue"
+        items:
+          attachments_js: "Plus de pièces jointes autorisées"
+        required: "Le champ %{id} est requis"
+        size:
+          attachments_js: "Taille max de la pièce jointe : %{max}. Taille du fichier sélectionné : %{size}"
+      validation_error: "Requête invalide. Veuillez revoir les messages d’erreur ci-dessous"
+    system_apps_caption: "Application système installée"
+    unknown: "Inconnu"
+    uppy: "Uppy"
+    user_configuration:
+      support_ticket_error: "support_ticket est mal configuré. Les sections « email » ou « rt_api » sont requises dans le YAML de configuration."
+    welcome_html: |
+      %{logo_img_tag}
+      <p class="lead">OnDemand offre un point d'accès intégré et unique à toutes vos ressources HPC.</p>
