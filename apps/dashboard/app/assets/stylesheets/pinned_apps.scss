@@ -35,7 +35,7 @@
   margin-bottom: 1.2em;
 
   border-radius: 10%;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: $pinned-app-shadow;
   overflow: hidden;
 
 
@@ -198,4 +198,14 @@
 
 .app-launcher-hover:hover {
   transform: scale(0.98);
+}
+
+// Recently used apps tooltip styling
+div.tooltip {
+  box-shadow: $pinned-app-shadow;
+  border-radius: var(--bs-tooltip-border-radius);
+}
+
+hr.thin {
+  margin: 0px 0px;
 }

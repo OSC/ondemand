@@ -145,9 +145,12 @@ module BatchConnect
       form_config[:ssh_allow]
     end
 
-    def recent_settings
-      displayed = attributes.select(&:display?)
-      displayed.map do |attr| "#{attr.label}: #{attr.value}" end.join("\n")
+    def tooltip_html
+      settings = recent_settings
+      if !settings.empty?
+        html = '<b> Parameters </b><hr class="thin">'
+        html += settings.join '<br>'
+      end
     end
     
     def link
@@ -366,6 +369,11 @@ module BatchConnect
     end
 
     private
+
+    def recent_settings
+      displayed = attributes.select(&:display?)
+      displayed.map { |attr| "#{attr.label}: #{attr.value}" }
+    end
 
     def url
       helpers = Rails.application.routes.url_helpers
