@@ -17,13 +17,13 @@
               class: ['launcher-click', tile_data[:border_color]],
               data: {:method => "post"},
               params: params,
-	            title: app.tooltip_html,
+	      title: app.tooltip_html,
               data: {
                 bs_toggle: 'tooltip',
-	              bs_placement: 'bottom',
-	              bs_html: 'true'
-	            }
-	          ) do
+	        bs_placement: 'bottom',
+	        bs_html: 'true'
+	      }
+	    ) do
           %>
 
             <%= render partial: "/widgets/pinned_apps/app_content", locals: { link: link } %>
