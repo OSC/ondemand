@@ -13,7 +13,19 @@ module RecentlyUsedAppsHelper
     end
   end
 
+  def tooltip_html
+    settings = recent_settings
+    unless settings.empty?
+      html = '<b> Parameters </b><hr class="thin">'
+      html += settings.join '<br>'
+    end
+  end
+
   private
+
+  def recent_settings
+    attributes.select(&:display?).map { |attr| "#{attr.label}: #{attr.value}" }
+  end
 
   # Returns the 4 most recently used interactive applications based on their cache file
   # @return [Array<BatchConnect::App>] The 4 most recently used apps
