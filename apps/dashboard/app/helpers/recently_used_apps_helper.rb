@@ -13,8 +13,8 @@ module RecentlyUsedAppsHelper
     end
   end
 
-  def tooltip_html
-    settings = recent_settings
+  def tooltip_html(app)
+    settings = recent_settings(app)
     unless settings.empty?
       html = '<b> Parameters </b><hr class="thin">'
       html += settings.join '<br>'
@@ -23,8 +23,8 @@ module RecentlyUsedAppsHelper
 
   private
 
-  def recent_settings
-    attributes.select(&:display?).map { |attr| "#{attr.label}: #{attr.value}" }
+  def recent_settings(app)
+    app.attributes.select(&:display?).map { |attr| "#{attr.label}: #{attr.value}" }
   end
 
   # Returns the 4 most recently used interactive applications based on their cache file
