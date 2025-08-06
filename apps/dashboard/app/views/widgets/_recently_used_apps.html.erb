@@ -17,11 +17,13 @@
               class: ['launcher-click', tile_data[:border_color]],
               data: {:method => "post"},
               params: params,
-              title: tooltip_html(app),
+              title: (displayable_settings?(app)? 'Parameters' : nil),
               data: {
-                bs_toggle: 'tooltip',
+                bs_content: recent_settings(app),
+                bs_toggle: 'popover',
 	        bs_placement: 'bottom',
-	        bs_html: 'true'
+	        bs_html: 'true',
+                bs_trigger: 'hover'
               }
             ) do
           %>
