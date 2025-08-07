@@ -94,6 +94,24 @@ class Project
       end
     end
 
+    def from_zip(zip_file)
+      # unzip the file to the dataroot
+      unzip_dir = "#{dataroot}/#{zip_file}"
+      FileUtils.mkdir_p(unzip_dir)
+      Zip::File.open(zip_file) do |zipfile|
+        zipfile.each do |f|
+          f_path = File.join(unzip_dir, f.name)
+          FileUtils.mkdir_p(File.dirname(f_path))
+          zipfile.extract(f, f_path) unless File.exist?(f_path)
+        end
+      end
+
+      # create a new project from the unzipped directory
+      Project.new(id: next_id, directory: unzip_dir)
+      
+    end
+    
+
     private
 
     def importable_directories
