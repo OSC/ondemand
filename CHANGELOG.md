@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - ood-portal-generator will now raise an error when attempting to use dex when it is not installed in [4339](https://github.com/OSC/ondemand/pull/4339).
 - The job composer now checks the path before staging in [4367](https://github.com/OSC/ondemand/pull/4367).
 - The configuration_singleton now uses use warn instead of Rails.logger.error in [4370](https://github.com/OSC/ondemand/pull/4370).
+- Apps are now cached so they only render ERB files once in [4377](https://github.com/OSC/ondemand/pull/4377).
+- There's now a link to skip navigation for screen readers and keyboard users in [4403](https://github.com/OSC/ondemand/pull/4403).
+- Pinned apps now display all links for a given app in [4407](https://github.com/OSC/ondemand/pull/4407).
+- bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -53,6 +57,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for an lmod module browser in [4319](https://github.com/OSC/ondemand/pull/4319).
 - Passenger telemetry is now disabled by default with an option to turn it back on in [4355](https://github.com/OSC/ondemand/pull/4355).
 - The project Manager now shows files in [3981](https://github.com/OSC/ondemand/pull/3981).
+- OnDemand can now render unsafe html files through a configuration in [4416](https://github.com/OSC/ondemand/pull/4416).
+- The path_selector widget wording now suppports changing the title through popup_title in [4426](https://github.com/OSC/ondemand/pull/4426).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -66,10 +72,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The Dockerfile is now a Dockerfile.example file to illustrate it's just an example in [4328](https://github.com/OSC/ondemand/pull/4328).
 - passenger/nginx have been updated to allow for better metric collection performance in [4342](https://github.com/OSC/ondemand/pull/4342).
 - Sweetalert2 has been removed and replaced by bootstrap modals in [4374](https://github.com/OSC/ondemand/pull/4374).
+- hterm has been updated to 1.92.1 in [4387](https://github.com/OSC/ondemand/pull/4387).
+- The shell app has accessibility features turned on in [4451](https://github.com/OSC/ondemand/pull/4451).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
 - password_fields are now encrypted when written to cache or settings files in [4326](https://github.com/OSC/ondemand/pull/4326).
+- Resolved CVE-2025-53636, an issue that allowed users to perform a denial-of-service (DoS) attack by flooding log files
+  with errors via the shell application. The shell application now restricts log output and properly manages scenarios
+  where the terminal remains open but the WebSocket connection is inactive in [4461](https://github.com/OSC/ondemand/pull/4461).
+
+## [4.0.6] - 07-10-2025
+
+### Security
+- Resolved CVE-2025-53636, an issue that allowed users to perform a denial-of-service (DoS) attack by flooding log files
+  with errors via the shell application. The shell application now restricts log output and properly manages scenarios
+  where the terminal remains open but the WebSocket connection is inactive in [4463](https://github.com/OSC/ondemand/pull/4463).
+
+### Fixed
+- Updated SELinux policies to ensure compatibility with Munge on EL9, resolving a "Permission Denied" error encountered
+  when connecting to the Munge socket in [4401](https://github.com/OSC/ondemand/pull/4401).
+- Adjusted Debian package dependencies for 'ondemand-nginx' and 'ondemand-passenger', resolving installation issues
+  that prevented older versions of OnDemand from being installed in [4462](https://github.com/OSC/ondemand/pull/4462).
+
+## [3.1.14] - 07-10-2025
+
+### Security
+- Resolved CVE-2025-53636, an issue that allowed users to perform a denial-of-service (DoS) attack by flooding log files
+  with errors via the shell application. The shell application now restricts log output and properly manages scenarios
+  where the terminal remains open but the WebSocket connection is inactive in [4464](https://github.com/OSC/ondemand/pull/4464).
+
+### Fixed
+- Updated SELinux policies to ensure compatibility with Munge on EL9, resolving a "Permission Denied" error encountered
+  when connecting to the Munge socket in [4402](https://github.com/OSC/ondemand/pull/4402).
 
 ## [4.0.5] - 05-27-2025
 
@@ -1638,12 +1673,14 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.6...HEAD
+[4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
 [4.0.5]: https://github.com/OSC/ondemand/compare/v4.0.3...v4.0.5
 [4.0.3]: https://github.com/OSC/ondemand/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.14]: https://github.com/OSC/ondemand/compare/v3.1.13...v3.1.14
 [3.1.13]: https://github.com/OSC/ondemand/compare/v3.1.11...v3.1.13
 [3.1.11]: https://github.com/OSC/ondemand/compare/v3.1.10...v3.1.11
 [3.1.10]: https://github.com/OSC/ondemand/compare/v3.1.9...v3.1.10

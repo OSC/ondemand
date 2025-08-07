@@ -15,12 +15,15 @@ class ProjectsController < ApplicationController
       end
     else
       @launchers = Launcher.all(@project.directory)
+      @workflows = Workflow.all(@project.directory)
       @valid_project = Launcher.clusters?
       @valid_scripts = Launcher.scripts?(@project.directory)
 
       alert_messages = []
       alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_clusters') unless @valid_project
-      alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_scripts') if @launchers.any? && !@valid_scripts
+      if @launchers.any? && !@valid_scripts
+        alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_scripts')
+      end
       flash.now[:alert] = alert_messages.join(' ') if alert_messages.any?
       respond_to do |format|
         format.html
@@ -71,7 +74,13 @@ class ProjectsController < ApplicationController
     if @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      message = @project.errors[:save].empty? ? I18n.t('dashboard.jobs_project_validation_error') : I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+      message = if @project.errors[:save].empty?
+                  I18n.t('dashboard.jobs_project_validation_error')
+                else
+                  I18n.t(
+                    'dashboard.jobs_project_generic_error', error: @project.collect_errors
+                  )
+                end
       flash.now[:alert] = message
       render :edit
     end
@@ -84,7 +93,13 @@ class ProjectsController < ApplicationController
     if @project.save
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
-      message = @project.errors[:save].empty? ? I18n.t('dashboard.jobs_project_validation_error') : I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+      message = if @project.errors[:save].empty?
+                  I18n.t('dashboard.jobs_project_validation_error')
+                else
+                  I18n.t(
+                    'dashboard.jobs_project_generic_error', error: @project.collect_errors
+                  )
+                end
       flash.now[:alert] = message
       @templates = templates if project_params.key?(:template)
       render :new
@@ -157,6 +172,30 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # POST /projects/:project_id/zip
+  # zip current project using project.zip_to_template
+  def zip_to_template
+    @project = Project.find(zip_to_template_params[:project_id])
+
+    if @project.nil?
+      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: zip_to_template_params[:project_id])
+      return
+    end
+
+    begin
+      zip_file = @project.zip_to_template
+      redirect_to(
+        project_path(@project.id),
+        notice: I18n.t('dashboard.project_zip_success_message')
+      )
+    rescue StandardError => e
+      redirect_to(
+        project_path(@project.id),
+        alert: I18n.t('dashboard.project_zip_error_message', error: e.message.to_s)
+      )
+    end
+  end
+
   # POST /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
     @project = Project.find(job_details_params[:project_id])
@@ -210,5 +249,9 @@ class ProjectsController < ApplicationController
 
   def job_details_params
     params.permit(:project_id, :cluster, :jobid)
+  end
+
+  def zip_to_template_params
+    params.permit(:project_id)
   end
 end

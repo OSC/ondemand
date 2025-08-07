@@ -108,6 +108,19 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+    test 'should redirect to referrer if back param is true' do
+      Dir.mktmpdir do |temp_data_dir|
+        Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+        data = { settings: {}, back: 'true' }
+        referrer_url = '/some-previous-page'
+
+        post settings_path, params: data, headers: @headers.merge('HTTP_REFERER' => referrer_url)
+
+        assert_response :redirect
+        assert_redirected_to referrer_url
+      end
+    end
+
   class TestUserSettings
     include UserSettingStore
   end

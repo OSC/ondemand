@@ -886,10 +886,10 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124'].to_set
+                             'pzs1117', 'pzs1118', 'pzs1124'].sort
 
         id = bc_ele_id('auto_accounts')
-        actual_accounts = page.all("##{id} option").map(&:value).to_set
+        actual_accounts = page.all("##{id} option").map(&:value).sort
 
         assert_equal expected_accounts, actual_accounts
       end
@@ -1632,7 +1632,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       cache_data = JSON.parse(File.read("#{dir}/sys_app.json"))
 
       # have to actually decrypt what was written as it's not deterministic.
-      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+      crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secret_key_base[0..31])
       stored_password = crypt.decrypt_and_verify(cache_data['some_password_field'])
 
       assert_equal(cache_data['some_field'], '42')

@@ -31,7 +31,7 @@ end
   # Test the files_button method
   test 'files_button should return a link to the project_file_path' do
     path = 'blargh/cat_videos/projects/path/to/file'
-    expected_link = "<a target=\"_top\" class=\"link-light\" href=\"/files/fs/blargh/cat_videos/projects/path/to/file\">Open in files app</a>"
+    expected_link = "<a target=\"_top\" class=\"btn btn-primary btn-sm files-button\" href=\"/files/fs/blargh/cat_videos/projects/path/to/file\">Open in files app</a>"
     assert_equal(expected_link, files_button(path)) 
   end
 end

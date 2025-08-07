@@ -7,6 +7,9 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+permissions:
+  contents: read
+
 env:
   ACTIONS_STEP_DEBUG: true
   ACTIONS_RUNNER_DEBUG: true
@@ -21,16 +24,16 @@ jobs:
         include:
           # Test versions from Ubuntu 22.04
           - os: ubuntu-latest
-            ruby: "3.0.2"
+            ruby: "3.0"
           # Test versions from Debian 12
           - os: ubuntu-latest
-            ruby: "3.1.2"
+            ruby: "3.1"
           # Test versions from Amazon Linux 2023 and Ubuntu 24.04
           - os: ubuntu-latest
-            ruby: "3.2.2"
+            ruby: "3.2"
           # Test versions from RHEL8 & RHEL9
           - os: ubuntu-latest
-            ruby: "3.3.5"
+            ruby: "3.3"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 

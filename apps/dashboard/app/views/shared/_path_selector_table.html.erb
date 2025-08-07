@@ -13,12 +13,13 @@
     data-select-button-id="<%= button_id %>"
     data-input-field-id="<%= input_field_id %>"
     data-file-pattern="<%= file_pattern %>"
+    data-popup_title="<%= popup_title %>"
     >
 
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal-path-selector-title">Select Your Working Directory</h5>
+        <div class="modal-title h5" id="modal-path-selector-title"><%= popup_title %></div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -38,7 +39,7 @@
         
       
             <div class="<%= favorites ? 'col-sm-7' : 'col-sm-12' %>">
-              <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter">
+              <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter rounded">
               </ol>
 
               <div class="d-none alert alert-warning" role="alert" id="forbidden-warning">

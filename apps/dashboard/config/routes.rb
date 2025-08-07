@@ -12,6 +12,9 @@ Rails.application.routes.draw do
       get '/jobs/:cluster/:jobid' => 'projects#job_details', :defaults => { :format => 'turbo_stream' }, :as => 'job_details'
       delete '/jobs/:cluster/:jobid' => 'projects#delete_job', :as => 'delete_job'
       post '/jobs/:cluster/:jobid/stop' => 'projects#stop_job', :as => 'stop_job'
+      post '/zip_to_template' => 'projects#zip_to_template', :as => 'zip_to_template'
+
+      resources :workflows
 
       resources :launchers do
         post 'submit', on: :member
@@ -129,7 +132,7 @@ Rails.application.routes.draw do
   match '/404', :to => 'errors#not_found', :via => :all
   match '/500', :to => 'errors#internal_server_error', :via => :all
 
-  get 'module_browser' => 'module_browser#index', :as => 'module_browser'
+  get 'module-browser' => 'module_browser#index', :as => 'module_browser'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -101,8 +101,8 @@ en:
     batch_connect_sessions_status_blurb_delete_success: Session was successfully deleted.
     batch_connect_sessions_status_completed: For debugging purposes, this card will be retained for %{days} more days
     batch_connect_sessions_status_missing_connection: |
-      This app is missing information required to establish a connection. Please
-      contact support if you see this message.
+      This app is missing information required to establish a connection. Specifically,
+      the view.html.erb file is missing. Please contact support if you see this message.
     batch_connect_sessions_status_queued: |
       Please be patient as your job currently sits in queue. The wait time depends
       on the number of cores as well as time requested.
@@ -180,7 +180,18 @@ en:
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
+    jobs_workflows: Workflows
+    jobs_workflow_submit: Submit Workflow
+    jobs_create_blank_workflow: New Workflow
+    jobs_workflow_created: Workflow successfully created!
+    jobs_workflow_name_placeholder: Workflow name
+    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
+    jobs_workflow_description_placeholder: Workflow description
+    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
+    jobs_workflow_deleted: Workflow successfully deleted!
     launch: Launch
+    module_browser_last_updated: "Last updated: %{last_updated}"
+    module_browser_title: Module Browser
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     nav_all_apps: All Apps
@@ -206,6 +217,8 @@ en:
     pinned_apps_title: Pinned Apps
     project: Project
     project_balances: Project Balances
+    project_zip_error_message: "Error creating ZIP file: %{error}"
+    project_zip_success_message: "SUCCESS: project.zip was created in your project directory."
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
@@ -238,6 +251,7 @@ en:
       <br>Custom shared apps are available below.
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
+    skip_navigation: Skip Navigation
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
