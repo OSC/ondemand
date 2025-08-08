@@ -1,5 +1,6 @@
 <li role='button'
   class='clickable text-wrap list-group-item list-group-item-action'
   data-api-url=<%= files_path(path.to_s, fs: path.filesystem) %>>
-  <span class='fa fa-folder'>&nbsp;</span><%= path %>
+  <%= fa_icon (path.title.to_s.downcase.include?('home') ? 'home' : path.icon), classes: ''%>
+  <%= path.title || path %>
 </li>
