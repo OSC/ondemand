@@ -61,16 +61,9 @@ class ConfigurationProperty
 
   class BooleanMapper
     def self.map_string(string_value)
-      string_value.nil? ? string_value : BooleanMapper.to_bool(string_value.to_s.upcase)
+      extend BoolReader
+      
+      string_value.nil? ? string_value : read_bool(string_value)
     end
-
-    private
-    FALSE_VALUES = ['', '0', 'F', 'FALSE', 'OFF', 'NO'].freeze
-    
-    def self.to_bool(value)
-      !FALSE_VALUES.include?(value)
-    end
-
   end
-
 end
