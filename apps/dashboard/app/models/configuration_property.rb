@@ -1,7 +1,6 @@
-# A generic class to map configurations to Ruby runtime objects like Intgers, Strings
+# A generic class to map configurations to Ruby runtime objects like Integers, Strings
 # and Booleans.
 class ConfigurationProperty
-
   def self.with_boolean_mapper(name:, default_value: nil, read_from_env: false, env_names: nil)
     ConfigurationProperty.new(name, default_value, read_from_env, env_names, BooleanMapper)
   end
@@ -15,7 +14,7 @@ class ConfigurationProperty
   end
 
   attr_reader :name, :default_value, :read_from_environment, :environment_names
-  alias_method :read_from_environment?, :read_from_environment
+  alias read_from_environment? read_from_environment
 
   #
   # Represents a profile based configuration property.
@@ -62,7 +61,7 @@ class ConfigurationProperty
   class BooleanMapper
     def self.map_string(string_value)
       extend BoolReader
-      
+
       string_value.nil? ? string_value : read_bool(string_value)
     end
   end

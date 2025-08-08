@@ -6,7 +6,7 @@ module BatchConnect
   class SessionContext
     include Enumerable
     include BoolReader
-    
+
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
