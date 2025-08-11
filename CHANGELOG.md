@@ -59,6 +59,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The project Manager now shows files in [3981](https://github.com/OSC/ondemand/pull/3981).
 - OnDemand can now render unsafe html files through a configuration in [4416](https://github.com/OSC/ondemand/pull/4416).
 - The path_selector widget wording now suppports changing the title through popup_title in [4426](https://github.com/OSC/ondemand/pull/4426).
+- Added en-CA and fr-CA localizations in [4512](https://github.com/OSC/ondemand/pull/4512).
+- Added OOD_SHELL_TERM environment variable to configure the shells terminal in [4504](https://github.com/OSC/ondemand/pull/4504).
+- Added two configurations to nginx_stage for help messages. show_nginx_stage_help_message to disable the --help message on failure and
+  disabled_shell_message to reconfigure the message displayed when a disabled user attempts to login in [4511](https://github.com/OSC/ondemand/pull/4511).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
