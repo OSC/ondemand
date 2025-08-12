@@ -1,16 +1,19 @@
 import { getBoolean, storeBoolean } from '../utils';
-import { OODAlert }from '../alert';
+import { OODAlert } from '../alert';
+
+const NOTIFICATIONS_ENABLED_KEY = 'ood_notifications_enabled';
+const EXPIRATION_NOTIFIED_KEY = 'ood_expiration_notified';
 
 export function notificationsEnabled() {
-  return getBoolean('ood_notifications_enabled');
+  return getBoolean(NOTIFICATIONS_ENABLED_KEY);
 }
 
 export function getNotifiedSessionIds() {
-  return JSON.parse(localStorage.getItem('expiration_notified')) || [];
+  return JSON.parse(localStorage.getItem(EXPIRATION_NOTIFIED_KEY)) || [];
 }
 
 export function storeNotifiedSessionIds(sessions) {
-  localStorage.setItem('expiration_notified', JSON.stringify(sessions));
+  localStorage.setItem(EXPIRATION_NOTIFIED_KEY, JSON.stringify(sessions));
 }
 
 export function pruneNotifiedSessionIds(sessions, notifiedSessionIds) {
@@ -32,9 +35,9 @@ export function setupNotificationToggle(toggleElementId) {
   if (!('Notification' in window) || Notification.permission !== 'granted') {
     notifToggleBtn.checked = false;
   } else {
-    notifToggleBtn.checked = getBoolean('ood_notifications_enabled');
+    notifToggleBtn.checked = getBoolean(NOTIFICATIONS_ENABLED_KEY);
   }
-  storeBoolean('ood_notifications_enabled', notifToggleBtn.checked);
+  storeBoolean(NOTIFICATIONS_ENABLED_KEY, notifToggleBtn.checked);
 
   notifToggleBtn.addEventListener('change', async (event) => {
     if (Notification.permission !== 'granted') {
@@ -48,6 +51,6 @@ export function setupNotificationToggle(toggleElementId) {
         OODAlert('Error requesting notification permission:', error);
       }
     }
-    storeBoolean('ood_notifications_enabled', event.target.checked);
+    storeBoolean(NOTIFICATIONS_ENABLED_KEY, event.target.checked);
   });
 }
