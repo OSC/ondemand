@@ -18,7 +18,7 @@ class MotdFormatter::PlaintextErbTest < ActiveSupport::TestCase
 
   test "plaintext-formatter-erb throws a standard error when given an invalid motd erb file" do
     with_modified_env({ 'MOTD_FORMAT': "text_erb", 'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_erb_standard_error" }) do
-      assert_raises(Exception) {
+      assert_raises(StandardError) {
         MotdFile.new.formatter
       }
     end
