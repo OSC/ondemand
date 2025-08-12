@@ -263,6 +263,7 @@ class FilesController < ApplicationController
     can_download, error = @path.can_download?
     if !(::Configuration.download_enabled? && can_download)
       error_message = ::Configuration.download_enabled? ? error : t('dashboard.files_download_not_enabled') 
+      @path = @path.parent
       raise(StandardError, error_message)
     end
 
