@@ -177,7 +177,7 @@ class PosixFile
       # Handle files and directories
       elsif file?
         can_download = stat.size <= download_directory_size_limit
-        error = can_download ? nil : I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
+        error = can_download ? nil : I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_directory_size_limit)
       elsif directory?
         # Determine the size of the directory.
         o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
