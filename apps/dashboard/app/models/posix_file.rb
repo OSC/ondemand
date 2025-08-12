@@ -67,8 +67,9 @@ class PosixFile
     }
   end
 
+  # A lightweight check of download feasability for rendering (Not to be confused with can_download?)
   def downloadable?
-    Configuration.download_enabled? && (directory? || file?) && readable?
+    ::Configuration.download_enabled? && (directory? || file?) && readable?
   end
 
   def human_size
@@ -162,44 +163,56 @@ class PosixFile
     nil
   end
 
-  def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
+  # A final and decisive check for downloadability that all downloads must pass through (Not to be confused with downloadable?). 
+  # All exceptions are rescued, and non-nil can_download values can be relied upon
+  def can_download?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
     can_download = false
     error = nil
+    begin
+      # Check download restrictions
+      if !::Configuration.download_enabled?
+        error = I18n.t('dashboard.files_download_not_enabled')
+      elsif !(path.readable? && (file? || path.executable?))
+        error = I18n.t('dashboard.files_directory_download_unauthorized')
+      # Handle files and directories
+      elsif file?
+        can_download = stat.size <= download_directory_size_limit
+        error = can_download ? nil : I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
+      elsif directory?
+        # Determine the size of the directory.
+        o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
 
-    if ! (directory? && path.readable? && path.executable?)
-      error = I18n.t('dashboard.files_directory_download_unauthorized')
-    else
-      # Determine the size of the directory.
-      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
-
-      # Catch SIGTERM.
-      if s.exitstatus == 124
-        error = I18n.t('dashboard.files_directory_size_calculation_timeout')
-      elsif ! s.success?
-        error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s.exitstatus, error: e)
-      else
-        # Example output from: du -cbs $path
-        #
-        #    496184  .
-        #    64      ./ood-portal-generator/lib/ood_portal_generator
-        #    72      ./ood-portal-generator/lib
-        #    24      ./ood-portal-generator/templates
-        #    40      ./ood-portal-generator/share
-        #    576     ./ood-portal-generator
-        #
-        size = o&.split&.first
-
-        if size.blank?
-          error = I18n.t('dashboard.files_directory_size_calculation_error')
-        elsif size.to_i > download_directory_size_limit
-          error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
+        # Catch SIGTERM.
+        if s.exitstatus == 124
+          error = I18n.t('dashboard.files_directory_size_calculation_timeout')
+        elsif ! s.success?
+          error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s.exitstatus, error: e)
         else
-          can_download = true
+          # Example output from: du -cbs $path
+          #
+          #    496184  .
+          #    64      ./ood-portal-generator/lib/ood_portal_generator
+          #    72      ./ood-portal-generator/lib
+          #    24      ./ood-portal-generator/templates
+          #    40      ./ood-portal-generator/share
+          #    576     ./ood-portal-generator
+          #
+          size = o&.split&.first
+
+          if size.blank?
+            error = I18n.t('dashboard.files_directory_size_calculation_error')
+          elsif size.to_i > download_directory_size_limit
+            error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
+          else
+            can_download = true
+          end
         end
       end
+    rescue Exception => e
+      can_download = false
+      error = e.message
     end
-
-    return can_download, error
+    [can_download, error]
   end
 
   def mime_type

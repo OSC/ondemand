@@ -48,8 +48,13 @@ class RemoteFile
     end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
-  def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
-    [false, 'Downloading remote files as zip is currently not supported']
+  def can_download?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
+    if directory?
+      [false, 'Downloading remote files as zip is currently not supported']
+    else 
+      can_download = size <= download_directory_size_limit
+      too_large_error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
+      [can_download, can_download ? nil : too_large_error]
   end
 
   def editable?

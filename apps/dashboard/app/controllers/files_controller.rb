@@ -12,45 +12,30 @@ class FilesController < ApplicationController
     parse_path(fs_params[:filepath], fs_params[:fs])
     validate_path!
 
-    if @path.directory?
-      @path.raise_if_cant_access_directory_contents
+    respond_to do |format|      
+      format.json do
+        response.headers['Cache-Control'] = 'no-store'
+        if fs_params[:can_download]
+          # check to see if this directory or file can be downloaded
+          can_download, error_message = @path.can_download?
 
-      request.format = 'zip' if download?
-
-      respond_to do |format|
-        format.html do
+          render json: { can_download: can_download, error_message: error_message }
+        elsif @path.directory?
+          @files = @path.ls
           render :index
+        else 
+          render json: { can_download: false, error_message: "File #{@path} is not downloadable"}
         end
+      end
 
-        format.json do
-          response.headers['Cache-Control'] = 'no-store'
-          if fs_params[:can_download]
-            # check to see if this directory can be downloaded as a zip
-            can_download, error_message = if ::Configuration.download_enabled?
-                                            @path.can_download_as_zip?
-                                          else
-                                            [false, t('dashboard.files_download_not_enabled')]
-                                          end
+      if @path.directory?
+        @path.raise_if_cant_access_directory_contents
+        request.format = 'zip' if download?
 
-            render json: { can_download: can_download, error_message: error_message }
-          else
-            @files = @path.ls
-            render :index
-          end
-        end
+        format.html { render :index }
 
-        # FIXME: below is a large block that should be moved to a model
-        # if moved to a model the exceptions can be handled there and
-        # then this code will be simpler to read
-        # and we can avoid rescuing in a block so we can reintroduce
-        # the block braces which is the Rails convention with the respond_to formats.
         format.zip do
-          can_download, error_message = if ::Configuration.download_enabled?
-                                          @path.can_download_as_zip?
-                                        else
-                                          raise(StandardError, t('dashboard.files_download_not_enabled'))
-                                        end
-
+          can_download, error_message = @path.can_download?                         
           if can_download
             zipname = "#{@path.basename}.zip"
             response.set_header 'Last-Modified', Time.now.httpdate
@@ -78,26 +63,14 @@ class FilesController < ApplicationController
               end
             end
           else
-            logger.warn "unable to download directory #{@path}: #{error_message}"
+            Rails.logger.warn "unable to download directory #{@path}: #{error_message}"
             response.set_header 'X-OOD-Failure-Reason', error_message
             head :internal_server_error
           end
-        rescue StandardError => e
-          # Third party API requests (from outside of OnDemand) will see this error
-          # message if there's an error while downloading a directory.
-          #
-          # The client side code in the Files App performs checks before downloading
-          # a directory with the ?can_download query parameter but other implementations
-          # that don't perform this check will see HTTP 500 returned and the error
-          # error message will be in the "X-OOD-Failure-Reason" header.
-          #
-          Rails.logger.warn "exception raised when attempting to download directory #{@path}: #{e.message}"
-          response.set_header 'X-OOD-Failure-Reason', e.message
-          head :internal_server_error
         end
+      else
+        show_file
       end
-    else
-      show_file
     end
   rescue StandardError => e
     rescue_action(e)
@@ -286,8 +259,14 @@ class FilesController < ApplicationController
   end
 
   def show_file
-    raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
+    # Check downloadability
+    can_download, error = @path.can_download?
+    if !(::Configuration.download_enabled? && can_download)
+      error_message = ::Configuration.download_enabled? ? error : t('dashboard.files_download_not_enabled') 
+      raise(StandardError, error_message)
+    end
 
+    # handle file types
     if html_file? && ::Configuration.unsafe_render_html
       render(file: @path.realpath, layout: false)
     elsif posix_file?
