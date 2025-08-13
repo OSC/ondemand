@@ -405,12 +405,14 @@ class ConfigurationSingleton
     (ood_bc_card_time_int < 0) ? 0 : ood_bc_card_time_int
   end
 
+  MIN_POLL_DELAY = 10_000
+
   # Returns the number of milliseconds to wait between calls to the system status page
   # The default is 30s and the minimum is 10s.
   def status_poll_delay
     status_poll_delay = ENV['OOD_STATUS_POLL_DELAY']
     status_poll_delay_int = status_poll_delay.nil? ? config.fetch(:status_poll_delay, '30000').to_i : status_poll_delay.to_i
-    status_poll_delay_int < 10_000 ? 10_000 : status_poll_delay_int
+    status_poll_delay_int < MIN_POLL_DELAY ? MIN_POLL_DELAY : status_poll_delay_int
   end
 
   # Returns the number of milliseconds to wait between calls to the BatchConnect Sessions resource
@@ -419,16 +421,7 @@ class ConfigurationSingleton
   def bc_sessions_poll_delay
     bc_poll_delay = ENV['OOD_BC_SESSIONS_POLL_DELAY'] || ENV['POLL_DELAY']
     bc_poll_delay_int = bc_poll_delay.nil? ? config.fetch(:bc_sessions_poll_delay, '10000').to_i : bc_poll_delay.to_i
-    bc_poll_delay_int < 10_000 ? 10_000 : bc_poll_delay_int
-  end
-
-  # Returns the number of milliseconds to wait between calls to the BatchConnect Sessions resource
-  # when all sessions are in running states. This reduces server load when states are stable.
-  # The default is `bc_sessions_poll_delay` and minimum value is 10s = 10_000
-  def bc_sessions_poll_delay_throttled
-    bc_poll_delay_int = (ENV['OOD_BC_SESSIONS_POLL_DELAY_THROTTLED'] || ENV['OOD_BC_SESSIONS_POLL_DELAY'] || ENV['POLL_DELAY'] ||
-                          config[:bc_sessions_poll_delay_throttled] || config[:bc_sessions_poll_delay] || '10000').to_i
-    bc_poll_delay_int < 10_000 ? 10_000 : bc_poll_delay_int
+    bc_poll_delay_int < MIN_POLL_DELAY ? MIN_POLL_DELAY : bc_poll_delay_int
   end
 
   def config
