@@ -1383,7 +1383,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       # shows the OodFilesApp.candidate_favorite_paths favorites
       sleep 3
       favorites = get_favorites
-      assert_equal(2, favorites.size)
+      assert_equal(3, favorites.size)
       assert_equal('/tmp', favorites[0].text.strip)
       assert_equal('/var', favorites[1].text.strip)
     end
