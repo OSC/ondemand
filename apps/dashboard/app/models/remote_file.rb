@@ -55,6 +55,7 @@ class RemoteFile
       can_download = size <= download_directory_size_limit
       too_large_error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
       [can_download, can_download ? nil : too_large_error]
+    end
   end
 
   def editable?
