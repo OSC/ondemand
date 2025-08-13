@@ -1,6 +1,7 @@
 require 'pathname'
 require 'dotenv'
 require_relative '../lib/current_user'
+require_relative '../app/models/concerns/bool_reader.rb'
 
 # Dashboard app specific configuration singleton definition
 # following the first proposal in:
@@ -20,7 +21,6 @@ require_relative '../lib/current_user'
 # ConfigurationSingleton and defining it as a class method on Configuration.
 #
 class ConfigurationSingleton
-  require_relative '../app/models/concerns/bool_reader.rb'
   include BoolReader
   attr_writer :app_development_enabled
   attr_writer :app_sharing_enabled
