@@ -26,6 +26,7 @@
       
         <div class="container-fluid">
           <div class="row">
+          <% if favorites %>
             <div class="col-sm-5">
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
@@ -35,8 +36,9 @@
                 </ol>
               </div>
             </div>
+          <% end %>
 
-            <div class="col-sm-7">
+            <div class="<%= favorites ? 'col-sm-7' : 'col-sm-12' %>">
               <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter rounded">
               </ol>
 
