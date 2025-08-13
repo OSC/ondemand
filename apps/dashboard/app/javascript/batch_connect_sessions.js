@@ -11,8 +11,8 @@ function getPollDelay() {
   const bcSessionsContainer = document.getElementById('bc_sessions_content');
   if (!bcSessionsContainer) return bcPollDelay();
 
-  const delay = parseInt(bcSessionsContainer.dataset.adjustedPollDelay);
-  return isNaN(delay) ? bcPollDelay() : delay;
+  const delayAttr = bcSessionsContainer.dataset.pollDelay;
+  return delayAttr !== undefined ? parseInt(delayAttr, 10) : null;
 }
 
 function checkStatusChanges() {
@@ -68,10 +68,9 @@ window.tryUpdateSetting = tryUpdateSetting;
 document.addEventListener('DOMContentLoaded', function () {
   const bcSessionsContainer = document.getElementById('batch_connect_sessions');
   if (bcSessionsContainer) {
-    const pollDelay = getPollDelay();
-    pollAndReplace(bcIndexUrl(), pollDelay, "batch_connect_sessions", () => {
+    pollAndReplace(bcIndexUrl(), getPollDelay, "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges();
-    }, getPollDelay);
+    });
   }
 });

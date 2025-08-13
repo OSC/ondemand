@@ -4,7 +4,9 @@
     <div
       id="bc_sessions_content"
       class="batch-connect sessions"
-      data-adjusted-poll-delay="<%= adjusted_poll_delay(@sessions) %>"
+      <% if (delay = adjusted_poll_delay(@sessions)) %>
+        data-poll-delay="<%= delay %>"
+      <% end %>
     >
       <% if @sessions.empty? %>
         <div class="ood-appkit markdown">
