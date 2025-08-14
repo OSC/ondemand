@@ -31,8 +31,8 @@
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
                 <ol id="favorites" class="list-group text-nowrap">
-                  <% homedir = FavoritePath.new Dir.home, title:'Home Directory' %>
-                  <%= render partial: 'favorites', collection: favorites.unshift(homedir), as: :path %>
+                  <% homedir = FavoritePath.new(Dir.home, title:'Home Directory') %>
+                  <%= render(partial: 'favorites', collection: favorites.unshift(homedir), as: :path) %>
                 </ol>
               </div>
             </div>
