@@ -1384,8 +1384,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       sleep 3
       favorites = get_favorites
       assert_equal(3, favorites.size)
-      assert_equal('/tmp', favorites[0].text.strip)
-      assert_equal('/var', favorites[1].text.strip)
+      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal('/tmp', favorites[1].text.strip)
+      assert_equal('/var', favorites[2].text.strip)
     end
   end
 
@@ -1419,9 +1420,10 @@ class BatchConnectTest < ApplicationSystemTestCase
       # favorites that have been configured in yml
       sleep 3
       favorites = get_favorites
-      assert_equal(2, favorites.size)
-      assert_equal('/fs/ess', favorites[0].text.strip)
-      assert_equal('/fs/scratch', favorites[1].text.strip)
+      assert_equal(3, favorites.size)
+      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal('/fs/ess', favorites[1].text.strip)
+      assert_equal('/fs/scratch', favorites[2].text.strip)
     end
   end
 
