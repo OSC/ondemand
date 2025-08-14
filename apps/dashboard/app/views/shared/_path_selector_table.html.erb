@@ -31,13 +31,13 @@
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
                 <ol id="favorites" class="list-group text-nowrap">
-                  <%= render partial: 'favorites', collection: favorites, as: :path %>
+                  <% homedir = FavoritePath.new(Dir.home, title:'Home Directory') %>
+                  <%= render(partial: 'favorites', collection: favorites.unshift(homedir), as: :path) %>
                 </ol>
               </div>
             </div>
           <% end %>
-        
-      
+
             <div class="<%= favorites ? 'col-sm-7' : 'col-sm-12' %>">
               <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter rounded">
               </ol>
