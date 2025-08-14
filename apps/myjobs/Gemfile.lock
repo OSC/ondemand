@@ -151,7 +151,7 @@ GEM
       ood_core (~> 0.1)
       rails (>= 6.0.0, < 7)
       redcarpet (~> 3.2)
-    ood_core (0.24.2)
+    ood_core (0.25.0)
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
@@ -278,4 +278,4 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
 
 BUNDLED WITH
-   2.3.6
+   2.5.23
