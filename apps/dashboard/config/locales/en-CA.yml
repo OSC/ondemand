@@ -1,5 +1,5 @@
 ---
-ja_JP:
+en-CA:
   activemodel:
     errors:
       messages:
@@ -10,7 +10,7 @@ ja_JP:
   dashboard:
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
-    add: 付け加え
+    add: Add
     all_apps_table_app_column: Name
     all_apps_table_category_column: Category
     all_apps_table_sub_category_column: Sub Category
@@ -30,9 +30,8 @@ ja_JP:
       <pre>%{exception_message}</pre>
       <h4>Stack trace:</h4>
       <pre>%{exception_trace}</pre>
-    apps_system_apps_title: System Apps
-    auto_log_location_title: ログの場所
-    back: Back
+    apps_system_apps_title: System Applications
+    auto_log_location_title: Log Location
     balance_additional_message: Consider requesting additional %{balanace_units}
     balance_message: "%{units_balance} is %{value}"
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
@@ -70,7 +69,7 @@ ja_JP:
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
-    batch_connect_sessions_delete_hover: 删除会话
+    batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: |
@@ -95,7 +94,7 @@ ja_JP:
     batch_connect_sessions_stats_undetermined_host: Undetermined
     batch_connect_sessions_status_bad: Your session has entered a bad state. Feel free to contact support for further information.
     batch_connect_sessions_status_blurb_cancel_failure: Failed to cancel session.
-    batch_connect_sessions_status_blurb_cancel_success: Session was successfully canceled.
+    batch_connect_sessions_status_blurb_cancel_success: Session was successfully cancelled.
     batch_connect_sessions_status_blurb_create_success: Session was successfully created.
     batch_connect_sessions_status_blurb_delete_failure: Failed to delete session.
     batch_connect_sessions_status_blurb_delete_success: Session was successfully deleted.
@@ -129,10 +128,10 @@ ja_JP:
     close: Close
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
-    delete: 消す
+    delete: Delete
     development_apps_caption: Sandbox App
     directory: Directory
-    edit: 編集する
+    edit: Edit
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
@@ -144,10 +143,8 @@ ja_JP:
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
-    import: Import
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
-    jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
@@ -159,7 +156,6 @@ ja_JP:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
-    jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
@@ -177,19 +173,7 @@ ja_JP:
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
-    jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
-    jobs_workflows: Workflows
-    jobs_workflow_submit: Submit Workflow
-    jobs_create_blank_workflow: New Workflow
-    jobs_workflow_created: Workflow successfully created!
-    jobs_workflow_name_placeholder: Workflow name
-    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
-    jobs_workflow_description_placeholder: Workflow description
-    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
-    jobs_workflow_deleted: Workflow successfully deleted!
-    launch: 起動する
-    module_browser_last_updated: "Last updated: %{last_updated}"
-    module_browser_title: Module Browser
+    launch: Launch
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     nav_all_apps: All Apps
@@ -200,12 +184,12 @@ ja_JP:
     nav_help_change_password: Change HPC Password
     nav_help_custom: Nav help custom
     nav_help_docs: Online Documentation
-    nav_help_support: Contact Support
+    nav_help_support: Contact Technical Support
     nav_help_support_ticket: Submit Support Ticket
     nav_help_title: Help
     nav_help_two_factor: Configure Two-Factor Authentication
     nav_limit_caption: showing %{subset_count} of %{total_count}
-    nav_logout: Log Out
+    nav_logout: Sign Out
     nav_restart_server: Restart Web Server
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
@@ -214,8 +198,6 @@ ja_JP:
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
-    project_zip_error_message: "zipファイルの作成エラー: %{error}"
-    project_zip_success_message: "成功: プロジェクト ディレクトリに project.zip が作成されました。"
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
@@ -224,12 +206,11 @@ ja_JP:
     quota_reload_message: Reload page to see updated quota. Quotas are updated every 5 minutes.
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
-    remove: 抜かす
-    reset: Reset
+    remove: Remove
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
-    save: 溜める
+    save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
     settings_invalid_request: Invalid settings submitted
@@ -247,7 +228,7 @@ ja_JP:
       Cluster access applications are available from the dropdown menus in the navbar above.
       <br>Custom shared apps are available below.
     shell_app_title: "%{cluster_title} Shell Access"
-    show: 見せる
+    show: Show
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
@@ -273,23 +254,3 @@ ja_JP:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
-    # unknown: "Unknown"
-    save: "溜める"
-    add: "付け加え"
-    remove: "抜かす"
-    delete: "消す"
-    edit: "編集する"
-    show: "見せる"
-    launch: "起動する"
-    type: 'タイプ'
-    name: '名前'
-    size: "サイズ"
-    owner: "所有者"
-    date: "日付"
-    mode: "モード"
-    project: "プロジェクト"
-    directory: "ディレクトリ"
-
-    # project: "Project"
-    # directory: "Directory"
-    auto_log_location_title: "ログの場所"

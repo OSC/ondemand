@@ -50,6 +50,15 @@ module BatchConnect::SessionsHelper
     end
   end
 
+  def minutes_remaining(session)
+    time_limit = session.info.wallclock_limit
+    time_used  = session.info.wallclock_time
+    return nil if time_limit.nil? || time_used.nil?
+
+    seconds_remaining = time_limit - time_used
+    (seconds_remaining / 60.0).floor
+  end
+
   def status(session)
     if session.starting?
       "Starting"

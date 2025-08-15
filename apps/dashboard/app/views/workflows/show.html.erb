@@ -1,0 +1,6 @@
+<%# TODO Add support to describe relationship among launchers via two drop down menu to select "To-Fro" edge %>
+<%# This will act as way to describe the DAG until we figure out which JS UI library to use %>
+
+<div class="d-flex justify-content-center mb-3">
+  <%= button_to t('dashboard.jobs_workflow_submit'), project_workflow_path(@project.id, @workflow.id), method: :post, class: "btn btn-primary" %>
+</div>

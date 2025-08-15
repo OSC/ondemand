@@ -390,6 +390,16 @@ module NginxStage
     # @return [String] user shell that is blocked
     attr_accessor :disabled_shell
 
+    # Define an error message that is displayed to users when they have a 
+    #     disabled_shell.
+    # @return [String] Error message
+    attr_accessor :disabled_shell_message
+
+    # Hide the stderr "Run 'nginx_stage --help' to see a full list of available 
+    #     command line options." message when calling nginx_stage
+    # @return [Boolean]
+    attr_accessor :show_nginx_stage_help_message
+
     # Set BUNDLE_USER_CONFIG to /dev/null in the PUN environment
     # NB: This prevents a user's ~/.bundle/config from affecting OnDemand applications
     # @return [Boolean] set BUNDLE_USER_CONFIG to /dev/null in PUN environment
@@ -512,6 +522,8 @@ module NginxStage
       self.user_regex     = '[\w@\.\-]+'
       self.min_uid        = 1000
       self.disabled_shell = '/access/denied'
+      self.disabled_shell_message = 'user has a disabled shell: %s'
+      self.show_nginx_stage_help_message = true
 
       self.disable_bundle_user_config = true
       self.nginx_file_upload_max = '10737420000'

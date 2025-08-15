@@ -469,17 +469,19 @@ module BatchConnect
 
       attribute_list.prepend('cluster') unless attribute_list.include?('cluster')
 
+      defined_cluster_attr = attributes[:cluster] || {}
+
       attributes[:cluster] = if clusters.size > 1
                                {
                                  widget:  'select',
                                  label:   'Cluster',
                                  options: clusters.map(&:id)
-                               }
+                               }.merge(defined_cluster_attr)
                              else
                                {
                                  value:  clusters.first.id.to_s,
                                  widget: 'hidden_field'
-                               }
+                               }.merge(defined_cluster_attr)
                              end
     end
   end

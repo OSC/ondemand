@@ -886,10 +886,10 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124'].to_set
+                             'pzs1117', 'pzs1118', 'pzs1124'].sort
 
         id = bc_ele_id('auto_accounts')
-        actual_accounts = page.all("##{id} option").map(&:value).to_set
+        actual_accounts = page.all("##{id} option").map(&:value).sort
 
         assert_equal expected_accounts, actual_accounts
       end
@@ -1383,9 +1383,10 @@ class BatchConnectTest < ApplicationSystemTestCase
       # shows the OodFilesApp.candidate_favorite_paths favorites
       sleep 3
       favorites = get_favorites
-      assert_equal(2, favorites.size)
-      assert_equal('/tmp', favorites[0].text.strip)
-      assert_equal('/var', favorites[1].text.strip)
+      assert_equal(3, favorites.size)
+      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal('/tmp', favorites[1].text.strip)
+      assert_equal('/var', favorites[2].text.strip)
     end
   end
 
@@ -1419,9 +1420,10 @@ class BatchConnectTest < ApplicationSystemTestCase
       # favorites that have been configured in yml
       sleep 3
       favorites = get_favorites
-      assert_equal(2, favorites.size)
-      assert_equal('/fs/ess', favorites[0].text.strip)
-      assert_equal('/fs/scratch', favorites[1].text.strip)
+      assert_equal(3, favorites.size)
+      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal('/fs/ess', favorites[1].text.strip)
+      assert_equal('/fs/scratch', favorites[2].text.strip)
     end
   end
 

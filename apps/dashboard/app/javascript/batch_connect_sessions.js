@@ -1,11 +1,16 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { bindFullPageSpinnerEvent } from './utils';
+import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
 import { pollAndReplace } from './turbo_shim';
-import { ariaNotify } from './aria_live_notify';
+import { 
+  notificationsEnabled, getNotifiedSessionIds, storeNotifiedSessionIds, 
+  pruneNotifiedSessionIds, setupNotificationToggle,
+} from './batch_connect/bc_notifications';
 
-const sessionStatusMap = new Map();
+function withinWarnLimit(minutesRemaining, threshold) {
+  return minutesRemaining <= threshold && minutesRemaining > 0;
+}
 
 function getPollDelay() {
   const bcSessionsContainer = document.getElementById('bc_sessions_content');
@@ -15,22 +20,46 @@ function getPollDelay() {
   return delayAttr !== undefined ? parseInt(delayAttr, 10) : null;
 }
 
-function checkStatusChanges() {
+function checkStatusChanges(sessions, notifiedSessionIds) {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
-  
-  sessionCards.forEach((card) => {
-    const sessionId = card.dataset.id;
-    const newStatus = card.dataset.status;
+  const notificationsOn = notificationsEnabled();
 
-    if(sessionStatusMap.has(sessionId)) {
-      const oldStatus = sessionStatusMap.get(sessionId);
-      if(oldStatus !== newStatus) {
-        sessionStatusMap.set(sessionId, newStatus);
-        const sessionTitle = card.dataset.title;
-        ariaNotify(`${sessionTitle} is now ${newStatus}.`);
+  sessionCards.forEach((card) => {
+    const sessionTitle = card.dataset.title;
+    const sessionId = card.dataset.id;
+    const jobId = card.dataset.jobId;
+    const currentStatus = card.dataset.status;
+
+    if (!sessions.has(sessionId)) {
+      sessions.set(sessionId, {
+        status: currentStatus, 
+        expNotified: notifiedSessionIds.has(sessionId)
+      });
+    }
+
+    const session = sessions.get(sessionId);
+
+    if (session.status !== currentStatus) {
+      session.status = currentStatus;
+      ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
+      if (notificationsOn) {
+        pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
+          tag: `session-${sessionId}`,
+        });
       }
-    } else {
-      sessionStatusMap.set(sessionId, newStatus);
+    }
+
+    // TODO: Add config option
+    const expWarnThreshold = 15;
+
+    const minutesRemaining = parseInt(card.dataset.minutesRemaining, 10) || 0;
+    if (notificationsOn && withinWarnLimit(minutesRemaining, expWarnThreshold) && !session.expNotified) {
+      pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
+        tag: `session-${sessionId}`,
+      });
+      session.expNotified = true;
+      notifiedSessionIds.add(sessionId);
+      storeNotifiedSessionIds([...notifiedSessionIds]);
     }
   });
 }
@@ -66,11 +95,17 @@ window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
 document.addEventListener('DOMContentLoaded', function () {
+  setupNotificationToggle('notification_toggle');
+  const sessions = new Map();
+  const notifiedSessionIds = new Set(getNotifiedSessionIds());
+  
   const bcSessionsContainer = document.getElementById('batch_connect_sessions');
   if (bcSessionsContainer) {
     pollAndReplace(bcIndexUrl(), getPollDelay, "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
-      checkStatusChanges();
+      checkStatusChanges(sessions, notifiedSessionIds);
     });
   }
+
+  pruneNotifiedSessionIds(sessions, notifiedSessionIds);
 });

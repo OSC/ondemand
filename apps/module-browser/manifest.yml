@@ -1,0 +1,8 @@
+---
+name: Module Browser
+category: Clusters
+description: |-
+  Browse modules on the clusters for detailed information on the modules.
+icon: fa://box
+url: module-browser
+new_window: false
