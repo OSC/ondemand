@@ -5,6 +5,9 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  issues: read
+
 jobs:
   # If the created issue does not have a milestone attached to it, assign the issue to the "Needs Triaged" milestone
   assign-milestone:
