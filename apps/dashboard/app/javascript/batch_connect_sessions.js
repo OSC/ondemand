@@ -12,6 +12,14 @@ function withinWarnLimit(minutesRemaining, threshold) {
   return minutesRemaining <= threshold && minutesRemaining > 0;
 }
 
+function getPollDelay() {
+  const bcSessionsContainer = document.getElementById('bc_sessions_content');
+  if (!bcSessionsContainer) return bcPollDelay();
+
+  const delayAttr = bcSessionsContainer.dataset.pollDelay;
+  return delayAttr !== undefined ? parseInt(delayAttr, 10) : null;
+}
+
 function checkStatusChanges(sessions, notifiedSessionIds) {
   const sessionCards = document.querySelectorAll('[data-bc-card]');
   const notificationsOn = notificationsEnabled();
@@ -90,9 +98,10 @@ document.addEventListener('DOMContentLoaded', function () {
   setupNotificationToggle('notification_toggle');
   const sessions = new Map();
   const notifiedSessionIds = new Set(getNotifiedSessionIds());
-
-  if (document.getElementById('batch_connect_sessions')) {
-    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
+  
+  const bcSessionsContainer = document.getElementById('batch_connect_sessions');
+  if (bcSessionsContainer) {
+    pollAndReplace(bcIndexUrl(), getPollDelay, "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges(sessions, notifiedSessionIds);
     });
