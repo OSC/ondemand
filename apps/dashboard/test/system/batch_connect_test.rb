@@ -503,7 +503,8 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert find("##{bc_ele_id('advanced_options')}").visible?
   end
 
-  test 'hiding using check boxes based on when checked' do
+  #Helper function allowing us to easily test all of the possible hideable elements
+  def data_hide_checkbox_test(form, checkbox_id, hidden_id, default_is_hidden)
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
@@ -511,80 +512,72 @@ class BatchConnectTest < ApplicationSystemTestCase
       stub_sacctmgr
       stub_git("#{dir}/app")
 
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - gpus
-          - checkbox_test
-        attributes:
-          gpus:
-            widget: 'number_field'
-          checkbox_test:
-            widget: 'check_box'
-            html_options:
-              data:
-                hide-gpus-when-checked: true
-      HEREDOC
-
       Pathname.new("#{dir}/app/").join('form.yml').write(form)
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      refute(find("##{bc_ele_id('checkbox_test')}").checked?)
-      assert(find("##{bc_ele_id('gpus')}").visible?)
+      refute(find("##{bc_ele_id(checkbox_id)}").checked?)
+      check_visibility(hidden_id, default_is_hidden)
 
-      # check the checkbox, and 'gpus' is hidden
-      check(bc_ele_id('checkbox_test'))
-      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+      # check the checkbox, and 'gpus' is visible
+      check(bc_ele_id(checkbox_id))
+      check_visibility(hidden_id, !default_is_hidden)
+      
 
-      # un-check the checkbox, and 'gpus' is back
-      uncheck(bc_ele_id('checkbox_test'))
-      assert(find("##{bc_ele_id('gpus')}").visible?)
+      # un-check the checkbox, and 'gpus' is back to being hidden
+      uncheck(bc_ele_id(checkbox_id))
+      check_visibility(hidden_id, default_is_hidden)
     end
   end
 
-  test 'hiding using check boxes based on when unchecked' do
-    Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol
-      stub_sacctmgr
-      stub_git("#{dir}/app")
-
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - gpus
-          - checkbox_test
-        attributes:
-          gpus:
-            widget: 'number_field'
-          checkbox_test:
-            widget: 'check_box'
-            html_options:
-              data:
-                hide-gpus-when-not-checked: true
-      HEREDOC
-
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
-      visit new_batch_connect_session_context_url('sys/app')
-
-      # defaults
-      refute(find("##{bc_ele_id('checkbox_test')}").checked?)
-      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
-
-      # check the checkbox, and 'gpus' is visible
-      check(bc_ele_id('checkbox_test'))
-      assert(find("##{bc_ele_id('gpus')}").visible?)
-
-      # un-check the checkbox, and 'gpus' is back to being hidden
-      uncheck(bc_ele_id('checkbox_test'))
-      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+  def check_visibility(hidden_id, expect_hidden)
+    if expect_hidden
+      refute(find("##{bc_ele_id(hidden_id)}", visible: :hidden).visible?)
+    else
+      assert(find("##{bc_ele_id(hidden_id)}").visible?)
     end
+  end
+
+  test 'hiding using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'number_field'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'number_field'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
 
   test 'options with hyphens set min & max' do
