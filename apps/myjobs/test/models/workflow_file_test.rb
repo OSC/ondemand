@@ -12,5 +12,6 @@ class WorkflowFileTest < ActiveSupport::TestCase
     assert WorkflowFile.new(
       Pathname.new('/home/johrstrom/wine/.drive_c'),
       Pathname.new('/home/johrstrom/ondemand/and/so/on')
-  ).is_dotfile?
+    ).is_dotfile?
+  end
 end
