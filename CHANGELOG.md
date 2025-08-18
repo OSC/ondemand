@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Implement notifications for interactive sessions view (#4405)\
+upgrade to rails 7.1.5.2 (#4537)\
+Hardcode home dir button in path selector favorites (#4526)\
+Update CONTRIBUTING.md (#4534)\
+Fix false values 4521 (#4522)\
+lock @uppy/dashboard to 4.3.4 (#4519)\
+bump ood_core (#4525)\
+lint a random file (#4531)\
+Update Changelog (#4529)\
+lint a random file (#4528)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
