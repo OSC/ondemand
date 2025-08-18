@@ -538,7 +538,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
-  test 'hiding using check boxes based on when checked' do
+  test 'hiding number field using check boxes based on when checked' do
     form = <<~HEREDOC
       ---
       cluster:
@@ -559,7 +559,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
   end
 
-  test 'hiding using check boxes based on when unchecked' do
+  test 'hiding number field using check boxes based on when unchecked' do
     form = <<~HEREDOC
       ---
       cluster:
@@ -580,6 +580,226 @@ class BatchConnectTest < ApplicationSystemTestCase
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
 
+  test 'hiding text area using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'text_area'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding text area using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'text_area'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding select using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'select'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding select using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'select'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding check box using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'check_box'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding check box using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'check_box'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+  
+  test 'hiding radio button using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'radio'
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+    # check each radio button separately
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_0', false)
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_1', false)
+  end
+
+  test 'hiding radio button using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'radio_button'
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+    # check each radio button separately
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_0', true)
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_1', true)
+  end
+
+  test 'hiding path selector using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'path_selector'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding path selector using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'path_selector'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+  
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
