@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Implement notifications for interactive sessions view (#4405)\
-upgrade to rails 7.1.5.2 (#4537)\
-Hardcode home dir button in path selector favorites (#4526)\
-Update CONTRIBUTING.md (#4534)\
-Fix false values 4521 (#4522)\
-lock @uppy/dashboard to 4.3.4 (#4519)\
-bump ood_core (#4525)\
-lint a random file (#4531)\
-Update Changelog (#4529)\
-lint a random file (#4528)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -49,6 +39,7 @@ lint a random file (#4528)
 - There's now a link to skip navigation for screen readers and keyboard users in [4403](https://github.com/OSC/ondemand/pull/4403).
 - Pinned apps now display all links for a given app in [4407](https://github.com/OSC/ondemand/pull/4407).
 - bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
+- The HOME directory now always shows in the path_selector favorites if they're enabled in [4526](https://github.com/OSC/ondemand/pull/4526).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -73,6 +64,7 @@ lint a random file (#4528)
 - Added OOD_SHELL_TERM environment variable to configure the shells terminal in [4504](https://github.com/OSC/ondemand/pull/4504).
 - Added two configurations to nginx_stage for help messages. show_nginx_stage_help_message to disable the --help message on failure and
   disabled_shell_message to reconfigure the message displayed when a disabled user attempts to login in [4511](https://github.com/OSC/ondemand/pull/4511).
+- Notifications can now be enabled for interactive sessions in [4405](https://github.com/OSC/ondemand/pull/4405).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
