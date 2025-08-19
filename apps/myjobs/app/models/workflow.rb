@@ -145,7 +145,7 @@ class Workflow < ApplicationRecord
       }.map {
         |f| WorkflowFile.new(f, self.staged_dir)
       }.reject {
-        |wf| wf.under_dotfile?
+        |wf| wf.is_dotfile?
       }
     else
       @folder_contents = []
