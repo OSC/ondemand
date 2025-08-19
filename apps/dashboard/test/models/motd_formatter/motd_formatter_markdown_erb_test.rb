@@ -4,7 +4,7 @@ class MotdFormatterMarkdownErbTest < ActiveSupport::TestCase
   test "motd-formatter-md-erb returns valid motd file when given a valid motd file" do
     with_modified_env({ 'MOTD_FORMAT': "markdown_erb",'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_valid" }) do
       motd_file = MotdFile.new
-      expected_file = File.read(Rails.root.join('/test/fixtures/files/motd_valid_html'))
+      expected_file = File.read(Rails.root.join('test/fixtures/files/motd_valid_html'))
 
       assert_equal expected_file, motd_file.formatter.content
     end
