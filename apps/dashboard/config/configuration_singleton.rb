@@ -398,6 +398,14 @@ class ConfigurationSingleton
     end
   end
 
+  def show_bc_card_memory?
+    if ENV['OOD_BC_CARD_MEMORY']
+      to_bool(ENV['OOD_BC_CARD_MEMORY'])
+    else
+      false
+    end
+  end
+
   # How many days before a Session record is considered old and ready to delete
   def ood_bc_card_time
     ood_bc_card_time = ENV['OOD_BC_CARD_TIME']
