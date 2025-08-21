@@ -4,6 +4,7 @@
   alert_class = "alert-#{session_class}"
   num_nodes = session.info.allocated_nodes.size
   num_cores = session.info.procs.to_i
+  num_gpus = session.info.gpus
 -%>
 
 <div class="card-heading">
@@ -20,6 +21,10 @@
       <%- end -%>
       <%- if num_cores.positive? -%>
       <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_cores, "core") %></span>
+      <span class="card-text"> | </span>
+      <%- end -%>
+      <%- if num_gpus.positive? -%>
+      <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_gpus, "gpu") %></span>
       <span class="card-text"> | </span>
       <%- end -%>
       <%- end -%>
