@@ -6,33 +6,22 @@ class MotdFormatterPlaintextTest < ActiveSupport::TestCase
   include MotdFormatter
   test 'test when motd formatter_plaintext_valid' do
     path = "#{Rails.root}/test/fixtures/files/motd_valid"
-    motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterPlaintext.new(motd_file)
-    expected_file = File.open(path).read
+    with_modified_env({ 'MOTD_FORMAT': "text", 'MOTD_PATH': path }) do
+      expected_file = File.open(path).read
 
-    assert_equal expected_file, formatted_motd.content
+      assert_equal expected_file, MotdFile.new.formatter.content
+    end
   end
 
   test 'test when motd_formatter_plaintext empty' do
-    path = "#{Rails.root}/test/fixtures/files/motd_empty"
-    motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterPlaintext.new(motd_file)
-
-    assert_equal '', formatted_motd.content
+    with_modified_env({ 'MOTD_FORMAT': "text", 'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_empty" }) do
+      assert_equal '', MotdFile.new.formatter.content
+    end
   end
 
   test 'test when motd formatter_plaintext_missing' do
-    path = "#{Rails.root}/test/fixtures/files/motd_missing"
-    motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterPlaintext.new(motd_file)
-
-    assert_equal '', formatted_motd.content
-  end
-
-  test 'test when motd formatter_plaintext_nil' do
-    motd_file = nil
-    formatted_motd = MotdFormatterPlaintext.new(motd_file)
-
-    assert_not_nil formatted_motd.content
+    with_modified_env({ 'MOTD_FORMAT': "text", 'MOTD_PATH': "#{Rails.root}/test/fixtures/files/motd_missing" }) do
+      assert_nil MotdFile.new.formatter
+    end
   end
 end
