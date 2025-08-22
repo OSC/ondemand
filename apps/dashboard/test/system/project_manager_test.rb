@@ -954,8 +954,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # use different accounts than what the template was generated with
       Open3
         .stubs(:capture3)
-        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,qos', 'where', 'user=me', stdin_data: '')
-        .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts_alt.txt'), '', exit_success])
+        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,qos', 'where', 'user=me', 'cluster=owens', stdin_data: '')
+        .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts_alt_owens.txt'), '', exit_success])
 
       Project.stubs(:dataroot).returns(Pathname.new(dir))
       Configuration.stubs(:project_template_dir).returns("#{Rails.root}/test/fixtures/projects")
@@ -972,7 +972,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_dir = Dir.children(dir).select { |p| Pathname.new("#{dir}/#{p}").directory? }.first
       project_dir = "#{dir}/#{project_dir}"
 
-      # NOTE: we're using pzs2124 from sacctmgr_show_accts_alt.txt instead of pzs1124
+      # NOTE: we're using pzs2124 from sacctmgr_show_accts_alt_owens.txt instead of pzs1124
       # from the template.
       Open3
         .stubs(:capture3)
