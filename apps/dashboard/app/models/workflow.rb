@@ -94,7 +94,7 @@ class Workflow
   end
 
   def submit(attributes = {})
-    graph = WorkflowsHelper::DAG.new(attributes)
+    graph = Dag.new(attributes)
     if graph.has_cycle
       errors.add("Submit", "Specified edges form a cycle not directed-acyclic graph")
       return false
@@ -104,28 +104,30 @@ class Workflow
     Rails.logger.info("Dependency list created by DAG #{dependency}")
     Rails.logger.info("Order in which launcher got submitted #{order}")
 
-    allLaunchers = Launcher.all(attributes[:project_dir])
-    jobIdHash = Hash.new { |h, k| }  # launcher-jobId hash
+    all_launchers = Launcher.all(attributes[:project_dir])
+    job_id_hash = {}  # launcher-job_id hash
 
     for id in order
-      launcher = allLaunchers.find { |l| l.id == id }
+      launcher = all_launchers.find { |l| l.id == id }
       unless launcher
         Rails.logger.warn("No launcher found for id #{id}, skipping...")
         next
       end
-      dependLauncher = dependency[id] || []
+      dependent_launchers = dependency[id] || []
 
       begin
-        jobs = dependLauncher.map { |id| jobIdHash[id] }.compact
+        jobs = dependent_launchers.map { |id| job_id_hash[id] }.compact
         opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
-        jobId = launcher.submit(opts)
-        if jobId.nil?
+        job_id = launcher.submit(opts)
+        if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
         else
-          jobIdHash[id] = jobId
+          job_id_hash[id] = job_id
         end
       rescue => e
-        Rails.logger.warn("Launcher #{id} with opts #{opts} failed to submit. Error: #{e.class}: #{e.message}")
+        error_msg = "Launcher #{id} with opts #{opts} failed to submit. Error: #{e.class}: #{e.message}"
+        errors.add("Submit", error_msg)
+        Rails.logger.warn(error_msg)
       end
     end
   end
