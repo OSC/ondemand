@@ -98,3 +98,22 @@ i.app-icon.fa-fw {
     text-decoration: none;
   }
 }
+
+.app-settings-popup {
+  margin-bottom: 0px;
+  
+  .row {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    width: 95%;
+  }
+
+  dd, dt {
+    display: inline;
+    margin: 0px;
+  }
+
+  hr {
+    margin:5px;
+  }
+}

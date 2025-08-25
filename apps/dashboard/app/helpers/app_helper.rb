@@ -16,10 +16,13 @@ module AppHelper
   end
 
   def recent_settings(app)
-    app.attributes.select(&:display?).map { |attr| "#{attr.label}: #{attr.value}" }.join(' <br> ')
+    content = app.attributes.select(&:display?).map do |attr| 
+      "<div class='row'> <dt>#{attr.label}:</dt> <dd>#{attr.value}</dd> </div>" 
+    end
+    content.empty? ? nil : ['<dl class="app-settings-popup">', content.join('<hr>'), '</dl>'].join
   end
 
   def displayable_settings?(app)
-    !recent_settings(app).empty?
+    !app.attributes.select(&:display?).empty?
   end
 end
