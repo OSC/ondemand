@@ -5,6 +5,7 @@
   num_nodes = session.info.allocated_nodes.size
   num_cores = session.info.procs.to_i
   num_gpus = session.info.gpus
+  info_labels = { 'node' => num_nodes, 'core' => num_cores, 'gpu' => num_gpus }
 -%>
 
 <div class="card-heading">
@@ -15,17 +16,11 @@
     <span class="card-text"> (<%= session.job_id %>)</span>
     <div class="float-end">
       <%- if session.starting? || session.running? -%>
-      <%- if num_nodes.positive? -%>
-      <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_nodes, "node") %></span>
-      <span class="card-text"> | </span>
-      <%- end -%>
-      <%- if num_cores.positive? -%>
-      <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_cores, "core") %></span>
-      <span class="card-text"> | </span>
-      <%- end -%>
-      <%- if num_gpus.positive? -%>
-      <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(num_gpus, "gpu") %></span>
-      <span class="card-text"> | </span>
+      <%- info_labels.each do |label,value| -%>
+        <%- if value.positive? -%>
+        <span class="badge <%= badge_class %> rounded-pill"><%= pluralize(value, label) %></span>
+        <span class="card-text"> | </span>
+        <%- end -%>
       <%- end -%>
       <%- end -%>
       <%= status(session) %>
