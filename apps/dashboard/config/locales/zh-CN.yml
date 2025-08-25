@@ -183,6 +183,8 @@ zh-CN:
     jobs_workflow_description_placeholder: Workflow description
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_deleted: Workflow successfully deleted!
+    jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_submitted: Workflow successfully submitted!
     launch: 启动
     module_browser_last_updated: "Last updated: %{last_updated}"
     module_browser_title: Module Browser
