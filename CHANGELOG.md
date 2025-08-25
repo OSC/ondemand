@@ -6,11 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add gpus to session card (#4553)\
-lint a random file (#4548)\
-refactored motd_formatter tests (#4497)\
-Disable compression level 0 as it breaks the clipboard (#4550)\
-Update Changelog (#4543)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -45,6 +40,7 @@ Update Changelog (#4543)
 - Pinned apps now display all links for a given app in [4407](https://github.com/OSC/ondemand/pull/4407).
 - bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
 - The HOME directory now always shows in the path_selector favorites if they're enabled in [4526](https://github.com/OSC/ondemand/pull/4526).
+- Disable NVC commpression level to 0 as it breaks the clipboard in [4550](https://github.com/OSC/ondemand/pull/4550).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -70,6 +66,7 @@ Update Changelog (#4543)
 - Added two configurations to nginx_stage for help messages. show_nginx_stage_help_message to disable the --help message on failure and
   disabled_shell_message to reconfigure the message displayed when a disabled user attempts to login in [4511](https://github.com/OSC/ondemand/pull/4511).
 - Notifications can now be enabled for interactive sessions in [4405](https://github.com/OSC/ondemand/pull/4405).
+- GPU count now shows in the session card in [4553](https://github.com/OSC/ondemand/pull/4553).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
