@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add gpus to session card (#4553)\
+lint a random file (#4548)\
+refactored motd_formatter tests (#4497)\
+Disable compression level 0 as it breaks the clipboard (#4550)\
+Update Changelog (#4543)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
