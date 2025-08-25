@@ -2,10 +2,11 @@
   session_class = status_context(session)
   badge_class = "bg-#{session_class}"
   alert_class = "alert-#{session_class}"
-  num_nodes = session.info.allocated_nodes.size
-  num_cores = session.info.procs.to_i
-  num_gpus = session.info.gpus
-  info_labels = { 'node' => num_nodes, 'core' => num_cores, 'gpu' => num_gpus }
+  info_labels = { 
+                  'node' => session.info.allocated_nodes.size, 
+                  'core' => session.info.procs.to_i, 
+                  'gpu' => session.info.gpus 
+                }
 -%>
 
 <div class="card-heading">
