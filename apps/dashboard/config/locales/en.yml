@@ -1,5 +1,6 @@
 ---
 en:
+  locale_text_encoding: 'en_US.utf8'
   activemodel:
     errors:
       messages:
