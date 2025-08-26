@@ -1,24 +1,24 @@
-require_relative "nginx_stage/version"
-require_relative "nginx_stage/configuration"
-require_relative "nginx_stage/errors"
-require_relative "nginx_stage/user"
-require_relative "nginx_stage/pid_file"
-require_relative "nginx_stage/socket_file"
-require_relative "nginx_stage/secret_key_base_file"
-require_relative "nginx_stage/session_finder"
-require_relative "nginx_stage/views/pun_config_view"
-require_relative "nginx_stage/views/app_config_view"
-require_relative "nginx_stage/generator"
-require_relative "nginx_stage/generators/pun_config_generator"
-require_relative "nginx_stage/generators/app_config_generator"
-require_relative "nginx_stage/generators/app_reset_generator"
-require_relative "nginx_stage/generators/app_list_generator"
-require_relative "nginx_stage/generators/app_clean_generator"
-require_relative "nginx_stage/generators/nginx_process_generator"
-require_relative "nginx_stage/generators/nginx_show_generator"
-require_relative "nginx_stage/generators/nginx_list_generator"
-require_relative "nginx_stage/generators/nginx_clean_generator"
-require_relative "nginx_stage/application"
+require_relative 'nginx_stage/version'
+require_relative 'nginx_stage/configuration'
+require_relative 'nginx_stage/errors'
+require_relative 'nginx_stage/user'
+require_relative 'nginx_stage/pid_file'
+require_relative 'nginx_stage/socket_file'
+require_relative 'nginx_stage/secret_key_base_file'
+require_relative 'nginx_stage/session_finder'
+require_relative 'nginx_stage/views/pun_config_view'
+require_relative 'nginx_stage/views/app_config_view'
+require_relative 'nginx_stage/generator'
+require_relative 'nginx_stage/generators/pun_config_generator'
+require_relative 'nginx_stage/generators/app_config_generator'
+require_relative 'nginx_stage/generators/app_reset_generator'
+require_relative 'nginx_stage/generators/app_list_generator'
+require_relative 'nginx_stage/generators/app_clean_generator'
+require_relative 'nginx_stage/generators/nginx_process_generator'
+require_relative 'nginx_stage/generators/nginx_show_generator'
+require_relative 'nginx_stage/generators/nginx_list_generator'
+require_relative 'nginx_stage/generators/nginx_clean_generator'
+require_relative 'nginx_stage/application'
 
 require 'etc'
 require 'syslog/logger'
@@ -34,7 +34,7 @@ module NginxStage
   # Path to the configuration file
   # @return [String] path to config file
   def self.config_file
-    ENV["NGINX_STAGE_CONFIG_FILE"] || '/etc/ood/config/nginx_stage.yml'
+    ENV['NGINX_STAGE_CONFIG_FILE'] || '/etc/ood/config/nginx_stage.yml'
   end
 
   extend Configuration
@@ -48,7 +48,7 @@ module NginxStage
   def self.ondemand_version
     version = File.read(ondemand_version_path).strip
     version.empty? ? nil : version
-  rescue
+  rescue StandardError
     nil
   end
 
@@ -59,12 +59,12 @@ module NginxStage
   # @example The AweSim portal is specified
   #   portal #=> "awesim"
   # @return [String] unique portal name
-  def self.portal(default: "ondemand")
+  def self.portal(default: 'ondemand')
     portal = ondemand_portal.to_s.strip
     if portal.empty?
       default
     else
-      portal.downcase.gsub(/\s+/, "_")
+      portal.downcase.gsub(/\s+/, '_')
     end
   end
 
@@ -74,7 +74,7 @@ module NginxStage
   # @example The OSC OnDemand portal
   #   title #=> "OSC OnDemand"
   # @return [String] portal title
-  def self.title(default: "Open OnDemand")
+  def self.title(default: 'Open OnDemand')
     title = ondemand_title.to_s.strip
     if title.empty?
       default
@@ -89,7 +89,7 @@ module NginxStage
   # @ example 20 gigabyte file size upload limit
   #   nginx_file_upload_max #=> "21474840000"
   # @return [String] Maximum upload size for nginx
-  def self.upload_max(default: "10737420000")
+  def self.upload_max(default: '10737420000')
     upload_max = nginx_file_upload_max.to_s.strip
     if upload_max.empty?
       default
@@ -111,13 +111,14 @@ module NginxStage
   def self.parse_app_request(request:)
     app_info = {}
     app_request_regex.each do |env, regex|
-      if matches = regex.match(request)
-        app_info[:env] = env
-        matches.names.each { |k| app_info[k.to_sym] = matches[k] }
-        break
-      end
+      next unless matches = regex.match(request)
+
+      app_info[:env] = env
+      matches.names.each { |k| app_info[k.to_sym] = matches[k] }
+      break
     end
     raise InvalidRequest, "invalid request: #{request}" if app_info.empty?
+
     app_info
   end
 
@@ -129,26 +130,28 @@ module NginxStage
   # @return [ENV] the environment used to execute the nginx process
   def self.clean_nginx_env(user:)
     ENV.replace({
-      "USER" => user,
-      "LOGNAME" => user,
-      "ONDEMAND_VERSION" => ondemand_version,
-      "ONDEMAND_PORTAL" => portal,
-      "ONDEMAND_TITLE" => title,
-      "SECRET_KEY_BASE" => SecretKeyBaseFile.new(user).secret,
-      "NGINX_FILE_UPLOAD_MAX" => upload_max,
+      'USER'                  => user,
+      'LOGNAME'               => user,
+      'ONDEMAND_VERSION'      => ondemand_version,
+      'ONDEMAND_PORTAL'       => portal,
+      'ONDEMAND_TITLE'        => title,
+      'SECRET_KEY_BASE'       => SecretKeyBaseFile.new(user).secret,
+      'NGINX_FILE_UPLOAD_MAX' => upload_max,
       # only set these if corresponding config is set in nginx_stage.yml
-      "OOD_DASHBOARD_TITLE" => title(default: nil),
-      "OOD_PORTAL" => portal(default: nil),
-      "OOD_DEV_APPS_ROOT" => apps_root(env: :dev, owner: user),
-      "OOD_FILES_URL" => "/pun/sys/dashboard/files",
+      'OOD_DASHBOARD_TITLE'   => title(default: nil),
+      'OOD_PORTAL'            => portal(default: nil),
+      'OOD_DEV_APPS_ROOT'     => apps_root(env: :dev, owner: user),
+      'OOD_FILES_URL'         => '/pun/sys/dashboard/files',
       # this is not a typo => the editor is /edit off of the base url
-      "OOD_EDITOR_URL" => "/pun/sys/dashboard/files",
-      "RAILS_LOG_TO_STDOUT" => "true",
+      'OOD_EDITOR_URL'        => '/pun/sys/dashboard/files',
+      'RAILS_LOG_TO_STDOUT'   => 'true',
       # name change here because only OOD_* from apache is allowed through sudo rules
-      "ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
+      'ALLOWED_HOSTS'         => ENV['OOD_ALLOWED_HOSTS'],
       # set the duplicate to keep clean_nginx_env idempotent
-      "OOD_ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
-    }.merge(pun_custom_env).merge(preserve_env_declarations.map { |k| [ k, ENV[k] ] }.to_h))
+      'OOD_ALLOWED_HOSTS'     => ENV['OOD_ALLOWED_HOSTS'],
+      # set LANG to utf-8, defaulting to US.
+      'LANG'                  => ENV['OOD_LANG_OVERRIDE'] || 'en_US.utf8'
+    }.merge(pun_custom_env).merge(preserve_env_declarations.map { |k| [k, ENV[k]] }.to_h))
   end
 
   # Array of env vars that should be preserved
@@ -161,7 +164,8 @@ module NginxStage
   # also declare in NGINX config using env directive
   # @return [Array<String>] list of env vars to declare in NGINX config
   def self.scl_env_declarations
-    %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHON PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB GEM_HOME GEM_PATH LANG)
+    ['PATH', 'LD_LIBRARY_PATH', 'X_SCLS', 'MANPATH', 'PCP_DIR', 'PERL5LIB', 'PKG_CONFIG_PATH', 'PYTHON', 'PYTHONPATH',
+     'XDG_DATA_DIRS', 'SCLS', 'RUBYLIB', 'GEM_HOME', 'GEM_PATH']
   end
 
   # Arguments used during execution of nginx binary
@@ -243,17 +247,20 @@ module NginxStage
   end
 
   private
-    # Switch user/group effective id's as well as secondary groups
-    def self.sudo(user, &block)
-      passwd = (user.is_a? Integer) ? Etc.getpwuid(user) : Etc.getpwnam(user)
-      name, uid, gid = passwd.name, passwd.uid, passwd.gid
-      Process.initgroups(name, gid)
-      Process::GID.grant_privilege(gid)
-      Process::UID.grant_privilege(uid)
-      block.call
-    ensure
-      Process::UID.grant_privilege(0)
-      Process::GID.grant_privilege(0)
-      Process.initgroups('root', 0)
-    end
+
+  # Switch user/group effective id's as well as secondary groups
+  def self.sudo(user, &block)
+    passwd = user.is_a?(Integer) ? Etc.getpwuid(user) : Etc.getpwnam(user)
+    name = passwd.name
+    uid = passwd.uid
+    gid = passwd.gid
+    Process.initgroups(name, gid)
+    Process::GID.grant_privilege(gid)
+    Process::UID.grant_privilege(uid)
+    block.call
+  ensure
+    Process::UID.grant_privilege(0)
+    Process::GID.grant_privilege(0)
+    Process.initgroups('root', 0)
+  end
 end
