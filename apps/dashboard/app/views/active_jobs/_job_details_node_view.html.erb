@@ -24,6 +24,11 @@
           <div class="card-body">
             <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'cpu', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
             <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'memory', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
+            
+            <% if data.gpus.positive? || data.jobname == 'interactive' %>
+              <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'gpu-util', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
+              <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'gpu-memory', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
+            <% end %>
           </div>
          
         <% end %>

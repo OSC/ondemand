@@ -30,7 +30,7 @@ module ActiveJobsHelper
         "var-#{server[:labels]['cluster']}": cluster,
         "var-#{server[:labels]['host']}": node_num.split('.')[0],
       }
-      if ['cpu','memory'].include?(report_type)
+      if ['cpu','memory','gpu-util','gpu-memory'].include?(report_type)
         url_base = 'd-solo'
         query_params[:panelId] = server[:dashboard]['panels'][report_type]
       else
