@@ -3,7 +3,9 @@
 module ActiveJobs
   module ActiveJobsTestHelper
     Node = Struct.new(:name)
-    Status = Struct.new(:state)
+    
+    # Status is a freestanding structure, so we simply alias it
+    Status = OodCore::Job::Status
 
     Metadata = Struct.new(:title)
 
@@ -31,6 +33,14 @@ module ActiveJobs
 
       def job_adapter
         FakeJobAdapter.new
+      end
+
+      def ==(other)
+        (other) ? id == other.to_sym : false
+      end
+
+      def to_sym
+        id
       end
     end
   end

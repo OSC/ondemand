@@ -76,7 +76,7 @@ module ActiveJobs
           wallclock_time: 3600,
           job_owner:      "not_#{ENV['USER']}",
           nodes:          [Node.new('node001'), Node.new('node002')],
-          status:         Status.new(:running)
+          status:         Status.new(state: :running)
         ),
         FakeJob.new(
           id:             '67890',
@@ -86,7 +86,7 @@ module ActiveJobs
           wallclock_time: 120,
           job_owner:      "not_#{ENV['USER']}",
           nodes:          [Node.new('node003')],
-          status:         Status.new(:queued)
+          status:         Status.new(state: :queued)
         )
       ]
 
@@ -177,7 +177,7 @@ module ActiveJobs
             wallclock_time: 3600,
             job_owner:      "not_#{ENV['USER']}",
             nodes:          [Node.new('node001'), Node.new('node002')],
-            status:         Status.new(:running)
+            status:         Status.new(state: :running)
           ),
           FakeJob.new(
             id:             '345',
@@ -187,7 +187,7 @@ module ActiveJobs
             wallclock_time: 120,
             job_owner:      "#{ENV['USER']}",
             nodes:          [Node.new('node003')],
-            status:         Status.new(:queued)
+            status:         Status.new(state: :queued)
           ),
           FakeJob.new(
             id:             '567',
@@ -197,7 +197,7 @@ module ActiveJobs
             wallclock_time: 120,
             job_owner:      "#{ENV['USER']}",
             nodes:          [Node.new('node001'), Node.new('node002')],
-            status:         Status.new(:queued)
+            status:         Status.new(state: :queued)
           ),
           FakeJob.new(
             id:             '789',
@@ -207,7 +207,7 @@ module ActiveJobs
             wallclock_time: 120,
             job_owner:      "not_#{ENV['USER']}",
             nodes:          [Node.new('node003')],
-            status:         Status.new(:queued)
+            status:         Status.new(state: :queued)
           )
         ]
 
