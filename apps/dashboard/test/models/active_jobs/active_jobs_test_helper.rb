@@ -2,10 +2,9 @@
 
 module ActiveJobs
   module ActiveJobsTestHelper
-    Node = Struct.new(:name)
-    
-    # Status is a freestanding structure, so we simply alias it
+    # Status and NodeInfo are freestanding structures, so we simply alias
     Status = OodCore::Job::Status
+    NodeInfo = OodCore::Job::NodeInfo
 
     Metadata = Struct.new(:title)
 

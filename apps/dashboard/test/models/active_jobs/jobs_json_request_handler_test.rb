@@ -35,21 +35,6 @@ module ActiveJobs
       end
     end
 
-    class FakeJob
-      attr_reader :id, :job_name, :accounting_id, :queue_name, :wallclock_time, :job_owner, :allocated_nodes, :status
-
-      def initialize(id:, job_name:, accounting_id:, queue_name:, wallclock_time:, job_owner:, nodes:, status:)
-        @id = id
-        @job_name = job_name
-        @accounting_id = accounting_id
-        @queue_name = queue_name
-        @wallclock_time = wallclock_time
-        @job_owner = job_owner
-        @allocated_nodes = nodes
-        @status = status
-      end
-    end
-
     test 'render writes successful json for all jobs' do
       # Build fake controller/response/stream
       stream = FakeStream.new(buffer: '', closed: false)
@@ -68,25 +53,25 @@ module ActiveJobs
       # Prepare fake cluster and jobs
       cluster = FakeCluster.new(id: :test, title: 'Test Cluster')
       jobs = [
-        FakeJob.new(
-          id:             '12345',
-          job_name:       'Sample',
-          accounting_id:  'account1',
-          queue_name:     'normal',
-          wallclock_time: 3600,
-          job_owner:      "not_#{ENV['USER']}",
-          nodes:          [Node.new('node001'), Node.new('node002')],
-          status:         Status.new(state: :running)
+        OodCore::Job::Info.new(
+          id:              '12345',
+          job_name:        'Sample',
+          accounting_id:   'account1',
+          queue_name:      'normal',
+          wallclock_time:  3600,
+          job_owner:       "not_#{ENV['USER']}",
+          allocated_nodes: [NodeInfo.new(name: 'node001'), NodeInfo.new(name: 'node002')],
+          status:          :running
         ),
-        FakeJob.new(
-          id:             '67890',
-          job_name:       'Example',
-          accounting_id:  'account2',
-          queue_name:     'short',
-          wallclock_time: 120,
-          job_owner:      "not_#{ENV['USER']}",
-          nodes:          [Node.new('node003')],
-          status:         Status.new(state: :queued)
+        OodCore::Job::Info.new(
+          id:              '67890',
+          job_name:        'Example',
+          accounting_id:   'account2',
+          queue_name:      'short',
+          wallclock_time:  120,
+          job_owner:       "not_#{ENV['USER']}",
+          allocated_nodes: [NodeInfo.new(name: 'node003')],
+          status:          :queued
         )
       ]
 
@@ -169,45 +154,45 @@ module ActiveJobs
         # Prepare fake cluster and jobs
         cluster = FakeCluster.new(id: :test, title: 'Test Cluster')
         jobs = [
-          FakeJob.new(
-            id:             '123',
-            job_name:       'Sample',
-            accounting_id:  'account1',
-            queue_name:     'normal',
-            wallclock_time: 3600,
-            job_owner:      "not_#{ENV['USER']}",
-            nodes:          [Node.new('node001'), Node.new('node002')],
-            status:         Status.new(state: :running)
+          OodCore::Job::Info.new(
+            id:              '123',
+            job_name:        'Sample',
+            accounting_id:   'account1',
+            queue_name:      'normal',
+            wallclock_time:  3600,
+            job_owner:       "not_#{ENV['USER']}",
+            allocated_nodes: [NodeInfo.new(name: 'node001'), NodeInfo.new(name: 'node002')],
+            status:          :running
           ),
-          FakeJob.new(
-            id:             '345',
-            job_name:       'Example',
-            accounting_id:  'account2',
-            queue_name:     'short',
-            wallclock_time: 120,
-            job_owner:      "#{ENV['USER']}",
-            nodes:          [Node.new('node003')],
-            status:         Status.new(state: :queued)
+          OodCore::Job::Info.new(
+            id:              '345',
+            job_name:        'Example',
+            accounting_id:   'account2',
+            queue_name:      'short',
+            wallclock_time:  120,
+            job_owner:       "#{ENV['USER']}",
+            allocated_nodes: [NodeInfo.new(name: 'node003')],
+            status:          :queued
           ),
-          FakeJob.new(
-            id:             '567',
-            job_name:       'Example',
-            accounting_id:  'account2',
-            queue_name:     'short',
-            wallclock_time: 120,
-            job_owner:      "#{ENV['USER']}",
-            nodes:          [Node.new('node001'), Node.new('node002')],
-            status:         Status.new(state: :queued)
+          OodCore::Job::Info.new(
+            id:              '567',
+            job_name:        'Example',
+            accounting_id:   'account2',
+            queue_name:      'short',
+            wallclock_time:  120,
+            job_owner:       "#{ENV['USER']}",
+            allocated_nodes: [NodeInfo.new(name: 'node001'), NodeInfo.new(name: 'node002')],
+            status:          :queued
           ),
-          FakeJob.new(
-            id:             '789',
-            job_name:       'Example',
-            accounting_id:  'account2',
-            queue_name:     'short',
-            wallclock_time: 120,
-            job_owner:      "not_#{ENV['USER']}",
-            nodes:          [Node.new('node003')],
-            status:         Status.new(state: :queued)
+          OodCore::Job::Info.new(
+            id:              '789',
+            job_name:        'Example',
+            accounting_id:   'account2',
+            queue_name:      'short',
+            wallclock_time:  120,
+            job_owner:       "not_#{ENV['USER']}",
+            allocated_nodes: [NodeInfo.new(name: 'node003')],
+            status:          :queued
           )
         ]
 
