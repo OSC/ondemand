@@ -22,7 +22,7 @@ module ActiveJobs
         @metadata = Metadata.new(title)
       end
 
-      def self.set_adapter(setting)
+      def set_adapter(setting)
         @adapter = setting
       end
 
@@ -32,6 +32,10 @@ module ActiveJobs
 
       def job_adapter
         FakeJobAdapter.new
+      end
+
+      def login_allow?
+        false
       end
 
       def ==(other)
