@@ -2,9 +2,12 @@ require 'test_helper'
 require 'json'
 require 'stringio'
 require 'logger'
+require Rails.application.root.join('test','models','active_jobs','active_jobs_test_helper.rb')
 
 module ActiveJobs
   class JobsJsonRequestHandlerTest < ActiveSupport::TestCase
+    include ActiveJobsTestHelper
+    
     FakeStream = Struct.new(:buffer, :closed, keyword_init: true) do
       def write(str)
         self.buffer ||= ''
@@ -32,9 +35,6 @@ module ActiveJobs
       end
     end
 
-    Node = Struct.new(:name)
-    Status = Struct.new(:state)
-
     class FakeJob
       attr_reader :id, :job_name, :accounting_id, :queue_name, :wallclock_time, :job_owner, :allocated_nodes, :status
 
@@ -47,31 +47,6 @@ module ActiveJobs
         @job_owner = job_owner
         @allocated_nodes = nodes
         @status = status
-      end
-    end
-
-    Metadata = Struct.new(:title)
-
-    class FakeJobAdapter
-      def supports_job_arrays?
-        true
-      end
-    end
-
-    class FakeCluster
-      attr_reader :id, :metadata
-
-      def initialize(id:, title:)
-        @id = id
-        @metadata = Metadata.new(title)
-      end
-
-      def job_config
-        { adapter: 'slurm' }
-      end
-
-      def job_adapter
-        FakeJobAdapter.new
       end
     end
 
