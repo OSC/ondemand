@@ -24,16 +24,17 @@ module ActiveJobs
       end
     end
     
-    # Redefine OODClusters constant to use dummy clusters
-    Object.send(:remove_const, :OODClusters) 
-
-    ActiveJobs::Jobstatusdata::OODClusters = FakeClusters.new([
-      FakeCluster.new(id: :test, title: 'Test Cluster'),
-      FakeCluster.new(id: :sample, title: 'Sample Cluster')
-    ])
-
-    # Alias constant for easy reference inside tests
-    OODClusters = ActiveJobs::Jobstatusdata::OODClusters
+    # def clusters
+    #   OodCore::Clusters.load_file('test/fixtures/config/clusters.d')
+    # end
+  
+    def setup
+      OODClusters.stubs(:[]).with('owens').returns(FakeCluster.new(id: :owens, title: 'Owens'))
+      OODClusters.stubs(:[]).with('oakley').returns(FakeCluster.new(id: :oakley, title: 'Oakley Cluster'))
+      OODClusters.stubs(:[]).with(nil).returns(nil)
+      OODClusters.stubs(:[]).with('').returns(nil)
+      OODClusters.stubs(:first).returns(OODClusters['owens'])
+    end
 
     test 'default no extensions' do 
       info = OodCore::Job::Info.new(
@@ -59,8 +60,10 @@ module ActiveJobs
 
       # Test defaults
       assert data.extended_available
-      assert_equal OODClusters.first.id.to_s,        data.cluster
-      assert_equal OODClusters.first.metadata.title, data.cluster_title
+      assert_equal OODClusters.first.id.to_s, data.cluster
+      # The title option can be set in metadata, so we make sure to grab that if set.
+      exp = OODClusters.first.metadata.title || OODClusters.first.id.to_s.titleize
+      assert_equal exp, data.cluster_title
     end
 
     test 'default with cluster supplied' do 
@@ -74,7 +77,7 @@ module ActiveJobs
         queue_name:     'regular'
       )
 
-      data = Jobstatusdata.new(info, 'sample')
+      data = Jobstatusdata.new(info, 'oakley')
       
       # Test supplied data
       assert_equal '12',          data.pbsid
@@ -89,8 +92,8 @@ module ActiveJobs
       assert data.extended_available
 
       # Test cluster data
-      assert_equal 'sample',         data.cluster
-      assert_equal 'Sample Cluster', data.cluster_title
+      assert_equal 'oakley', data.cluster
+      assert_equal 'Oakley Cluster', data.cluster_title
     end
 
     # To test native extensions, we define a plausible native class for each scheduler
@@ -111,7 +114,7 @@ module ActiveJobs
     # Special setup method to keep extension tests consistent
     def extensions_test_setup(adapter, native_data)
       # Set scheduler on cluster
-      OODClusters['sample'].set_adapter(adapter)
+      OODClusters['oakley'].set_adapter(adapter)
 
       # Define native
       native = DummyNative.new(native_data)
@@ -138,7 +141,7 @@ module ActiveJobs
       )
       
       # Run test
-      data = Jobstatusdata.new(samplejob, 'sample', true)
+      data = Jobstatusdata.new(samplejob, 'oakley', true)
     end  
 
     # Helper method to access native_attribs
@@ -148,7 +151,7 @@ module ActiveJobs
 
     # To consistently check attributes unaffected by extensions
     def assert_shared_attributes(data)
-      assert_equal 'Sample Cluster', data.cluster_title
+      assert_equal 'Oakley Cluster', data.cluster_title
       assert_equal '123450',         data.pbsid
       assert_equal 'TestJob1',       data.jobname
       assert_equal 'user1',          data.username
