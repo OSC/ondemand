@@ -442,6 +442,46 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python4nightly', find_value('hidden_change_thing', visible: false)
   end
 
+  test 'session responds to cluster in cache that no longer exists' do
+    Dir.mktmpdir('bc_old_cluster_removed_test') do |tmpdir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
+
+      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
+      cache_json.write({ cluster: 'old' }.to_json)
+      cache_json.close
+
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
+
+      # Only new cluster exists
+      BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
+      OodAppkit.stubs(:clusters).returns([new_cluster])
+      
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'new', find_value('cluster')
+
+    end
+  end
+
+  test 'session responds to cluster in cache that exists but is not wanted' do
+    Dir.mktmpdir('bc_old_cluster_not_configured_test') do |tmpdir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
+
+      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
+      cache_json.write({ cluster: 'old' }.to_json)
+      cache_json.close
+
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
+      old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config '}})
+
+      # Both clusters exist, but only new one is valid
+      BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
+      OodAppkit.stubs(:clusters).returns([new_cluster, old_cluster])
+      
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'new', find_value('cluster')
+    end
+  end
+
   test 'sessions respond to cache file' do
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
