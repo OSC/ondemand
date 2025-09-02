@@ -260,5 +260,50 @@ module ActiveJobs
         assert_equal '/activejobs?cluster=test&pbsid=567', second['delete_path']
       end
     end
+
+    test 'does not error when no jobs' do
+      stream = FakeStream.new(buffer: '', closed: false)
+      response = FakeResponse.new(stream)
+      controller = FakeController.new
+
+      # Build handler under test
+      handler = JobsJsonRequestHandler.new(
+        filter_id:  'all',
+        cluster_id: 'test',
+        controller: controller,
+        params:     {},
+        response:   response
+      )
+
+      cluster = FakeCluster.new(id: :test, title: 'Test Cluster')
+      jobs = Array.new
+
+      filter = Object.new
+      def filter.user?
+        false
+      end
+
+      def filter.apply(jobs)
+        jobs
+      end
+
+      handler.define_singleton_method(:clusters) { [cluster] }
+      handler.define_singleton_method(:filter) { filter }
+      handler.define_singleton_method(:job_info_enumerator) { |_cluster| jobs }
+
+      handler.render
+
+      # Verify content type set
+      assert_equal Mime[:json], response.content_type
+
+      # Verify stream closed
+      assert_equal true, stream.closed
+
+      # Verify JSON payload shape and values
+      payload = JSON.parse(stream.buffer)
+
+      assert_equal [], payload['errors']
+      assert_equal [], payload['data']
+    end
   end
 end
