@@ -9,8 +9,13 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
 
   test 'deliver_support_ticket should generate default payload' do
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = { username: 'username', email: 'email@example.com', cc: 'cc@example.com',
-subject: 'Subject', description: 'Description' }
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      cc:          'cc@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       payload[:caller_id] == support_ticket.email &&
@@ -37,8 +42,12 @@ subject: 'Subject', description: 'Description' }
     }
     target = SupportTicketServiceNowService.new(config)
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = { username: 'username', email: 'email@example.com', subject: 'Subject',
-description: 'Description' }
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       payload[:caller_id] == support_ticket.username &&
@@ -60,8 +69,12 @@ description: 'Description' }
     }
     target = SupportTicketServiceNowService.new(config)
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = { username: 'username', email: 'email@example.com', subject: 'Subject',
-description: 'Description' }
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       # cc is nil, so it should only be username and email
@@ -86,8 +99,12 @@ description: 'Description' }
     }
     target = SupportTicketServiceNowService.new(config)
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = { username: 'username', email: 'email@example.com', subject: 'Subject',
-description: 'Description' }
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       payload[:caller_id] == 'custom_caller_id' &&
