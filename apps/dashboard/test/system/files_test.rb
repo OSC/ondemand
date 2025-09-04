@@ -401,6 +401,24 @@ class FilesTest < ApplicationSystemTestCase
     find('tbody a', exact_text: 'config')
   end
 
+  test 'window.onpopstate does not overwrite browser state' do
+    visit files_url(Rails.root.to_s)
+    find('tbody a', exact_text: 'app').click
+    find('tbody a', exact_text: 'apps').click
+    find('tbody a', exact_text: 'ood_app.rb')
+
+    page.driver.go_back
+    find('tbody a', exact_text: 'assets')
+
+    page.driver.go_back
+    find('tbody a', exact_text: 'app')
+    find('tbody a', exact_text: 'config')
+
+    page.driver.go_forward
+    find('tbody a', exact_text: 'apps')
+    find('tbody a', exact_text: 'assets')
+  end
+
   test 'edit file' do
     OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
