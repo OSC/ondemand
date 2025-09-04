@@ -15,6 +15,7 @@
     <%= hidden_field_tag "workflow[launcher_ids][]", id %>
   <% end %>
 
+  <% num_test_edges = 7 %>
   <div class='card'>
     <div class='card-group'>
       <div class="card">
@@ -22,7 +23,7 @@
           <div class="field mt-3">
             <strong>Source Launcher (To)</strong><br>
               
-            <% 7.times do |i| %>
+            <% num_test_edges.times do %>
               <%= select_tag "workflow[source_ids][]", 
                     options_from_collection_for_select(@launchers, :id, :title),
                     include_blank: true, class: 'form-control mb-2' %>
@@ -36,7 +37,7 @@
           <div class="field mt-3">
             <strong>Target Launcher (Fro)</strong><br>
 
-            <% 7.times do |i| %>
+            <% num_test_edges.times do %>
               <%= select_tag "workflow[target_ids][]", 
                     options_from_collection_for_select(@launchers, :id, :title),
                     include_blank: true, class: 'form-control mb-2' %>

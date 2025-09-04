@@ -31,13 +31,14 @@ class Dag
 
   # This will give out list of launcher_ids whose job id current launcher depends upon
   def create_dependency_list(from_ids, to_ids, launcher_ids)
-    @dependency = Hash.new { |h, k| h[k] = [] }
+    @dependency = {}
 
     m = to_ids.size
     for i in 0...m
       next if from_ids[i].nil? || to_ids[i].nil?
       next unless launcher_ids.include?(from_ids[i]) && launcher_ids.include?(to_ids[i])
 
+      @dependency[to_ids[i]] ||= []
       @dependency[to_ids[i]] << from_ids[i]
     end
   end
