@@ -35,7 +35,7 @@ class Workflow
     end
   end
 
-  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids
+  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids
 
   def initialize(attributes = {})
     @id = attributes[:id]
@@ -44,6 +44,8 @@ class Workflow
     @project_dir = attributes[:project_dir]
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
+    @source_ids = attributes[:source_ids] || []
+    @target_ids = attributes[:target_ids] || []
   end
 
   def to_h
@@ -53,7 +55,9 @@ class Workflow
       :description => description,
       :created_at => created_at,
       :project_dir => project_dir,
-      :launcher_ids => launcher_ids
+      :launcher_ids => launcher_ids,
+      :source_ids => source_ids,
+      :target_ids => target_ids
     }
   end
 
@@ -89,8 +93,51 @@ class Workflow
     Workflow.workflow_dir(@project_dir).join("#{@id}.yml")
   end
 
-  # TODO: Add logic to save the DAG relation between launchers like array of <launcher #1, launcher #2>
+  def submit(attributes = {})
+    graph = Dag.new(attributes)
+    if graph.has_cycle
+      errors.add("Submit", "Specified edges form a cycle not directed-acyclic graph")
+      return false
+    end
+    dependency = graph.dependency
+    order = graph.order
+    Rails.logger.info("Dependency list created by DAG #{dependency}")
+    Rails.logger.info("Order in which launcher got submitted #{order}")
 
-  # TODO: Add logic to save launcher pairs in the <workflow_id>.yml file and use it in def show() from workflow_controller
+    all_launchers = Launcher.all(attributes[:project_dir])
+    job_id_hash = {}  # launcher-job_id hash
+
+    for id in order
+      launcher = all_launchers.find { |l| l.id == id }
+      unless launcher
+        Rails.logger.warn("No launcher found for id #{id}, skipping...")
+        next
+      end
+      dependent_launchers = dependency[id] || []
+
+      begin
+        jobs = dependent_launchers.map { |id| job_id_hash[id] }.compact
+        opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
+        job_id = launcher.submit(opts)
+        if job_id.nil?
+          Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
+        else
+          job_id_hash[id] = job_id
+        end
+      rescue => e
+        error_msg = "Launcher #{id} with opts #{opts} failed to submit. Error: #{e.class}: #{e.message}"
+        errors.add("Submit", error_msg)
+        Rails.logger.warn(error_msg)
+      end
+    end
+  end
+
+  def submit_launcher_params(launcher, dependent_jobs)
+    launcher_data = launcher.smart_attributes.each_with_object({}) do |attr, hash|
+      hash[attr.id.to_s] = attr.opts[:value]
+    end
+    launcher_data["afterok"] = Array(dependent_jobs)
+    launcher_data
+  end
 
 end
