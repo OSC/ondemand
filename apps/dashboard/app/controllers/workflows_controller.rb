@@ -5,8 +5,8 @@ class WorkflowsController < ApplicationController
 
   # GET /projects/:id/workflows/:id
   def show
-    @project = Project.find(params[:project_id])
-    @workflow = Workflow.find(params[:id], project_directory)
+    @project = Project.find(project_id)
+    @workflow = Workflow.find(workflow_id, project_directory)
     launcher_ids = @workflow.launcher_ids
 
     @launchers = Launcher.all(project_directory).select { |l| launcher_ids.include?(l.id) }
