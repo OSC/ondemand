@@ -20,12 +20,34 @@ class WorkflowsController < ApplicationController
 
   # GET /projects/:id/workflows/edit
   def edit
-    # TODO: Complete it
+    @workflow = Workflow.find(workflow_id, project_directory)
+    @launchers = Launcher.all(project_directory)
+
+    return unless @workflow.nil?
+    redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: workflow_id)
   end
 
   # PATCH /projects/:id/workflows/patch
   def update
-    # TODO: Complete it
+    @workflow = Workflow.find(workflow_id, project_directory)
+
+    if @workflow.nil?
+      redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: workflow_id)
+      return
+    end
+
+    if @workflow.update(update_params)
+      redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_manifest_updated')
+    else
+      # TODO: Rename "jobs_project_*"" to "jobs_*" to generalize
+      message = if @workflow.errors[:save].empty?
+                  I18n.t('dashboard.jobs_project_validation_error')
+                else
+                  I18n.t('dashboard.jobs_project_generic_error', error: @workflow.collect_errors)
+                end
+      flash.now[:alert] = message
+      render :edit
+    end
   end
 
   # POST /projects/:id/workflows/
@@ -95,6 +117,12 @@ class WorkflowsController < ApplicationController
       .require(:workflow)
       .permit(:name, :description, :id, launcher_ids: [])
       .merge(project_dir: project_directory)
+  end
+
+  def update_params
+    params
+      .require(:workflow)
+      .permit(:name, :description, :id, launcher_ids: [])
   end
 
   def submit_params

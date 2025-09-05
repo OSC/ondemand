@@ -90,40 +90,40 @@ class WorkflowsTest < ActiveSupport::TestCase
     end
   end
 
-  # Enable when you have added update method to Workflow model 
-  # test 'update workflow manifest file' do
-  #   Dir.mktmpdir do |tmp|
-  #     project_dir = Pathname.new(tmp)
-  #     workflow = create_workflow(id: "test-#{Workflow.next_id}", project_dir: project_dir)
+  test 'update workflow manifest file' do
+    Dir.mktmpdir do |tmp|
+      project_dir = Pathname.new(tmp)
+      workflow = create_workflow(id: "test-#{Workflow.next_id}", project_dir: project_dir)
 
-  #     name          = 'test-workflow-2'
-  #     description   = 'my test workflow'
-  #     test_attributes = { name: name, description: description }
+      name          = 'test-workflow-2'
+      description   = 'my test workflow'
+      test_attributes = { name: name, description: description }
 
-  #     assert workflow.update(test_attributes)
-  #     assert File.exist?(workflow.manifest_file)
+      assert workflow.update(test_attributes)
+      assert File.exist?(workflow.manifest_file)
 
-  #     manifest_data = YAML.safe_load(File.read(manifest_file), permitted_classes: [Pathname], aliases: true)
+      manifest_data = YAML.safe_load(File.read(workflow.manifest_file), permitted_classes: [Pathname], aliases: true)
 
-  #     assert_equal workflow.id, manifest_data["id"]
-  #     assert_equal name, manifest_data["name"]
-  #     assert_equal description, manifest_data["description"]
-  #     assert_equal project_dir, manifest_data["project_dir"]
-  #   end
-  # end
+      assert_equal workflow.id, manifest_data["id"]
+      assert_equal name, manifest_data["name"]
+      assert_equal description, manifest_data["description"]
+      assert_equal project_dir, manifest_data["project_dir"]
+    end
+  end
 
-  # test 'update workflow only updates name, and description' do
-  #   Dir.mktmpdir do |tmp|
-  #     project_dir = Pathname.new(tmp)
-  #     workflow = create_workflow(project_dir: project_dir)
-  #     old_id = workflow.id
+  test 'update workflow only updates name, and description' do
+    Dir.mktmpdir do |tmp|
+      project_dir = Pathname.new(tmp)
+      workflow = create_workflow(project_dir: project_dir)
+      old_id = workflow.id
 
-  #     assert workflow.update({ id: 'updated', name: 'updated', description: 'updated'})
-  #     assert_equal 'updated', workflow.name
-  #     assert_equal 'updated', workflow.description
-  #     assert_equal old_id, workflow.id
-  #   end
-  # end
+      assert workflow.update({ id: 'updated', name: 'updated', description: 'updated', project_dir: nil})
+      assert_equal 'updated', workflow.name
+      assert_equal 'updated', workflow.description
+      assert_equal old_id, workflow.id
+      assert_equal project_dir, workflow.project_dir
+    end
+  end
 
   def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [], source_ids: [], target_ids: [])
     attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids, source_ids: source_ids, target_ids: target_ids}
