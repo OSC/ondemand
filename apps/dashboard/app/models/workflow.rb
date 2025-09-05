@@ -64,6 +64,11 @@ class Workflow
   def save
     return false unless valid?(:create)
 
+    if @project_dir.nil?
+      errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
+      return false
+    end
+
     @created_at = Time.now.to_i if @created_at.nil?
     @id = Workflow.next_id if id.blank?
     save_manifest(:save)
