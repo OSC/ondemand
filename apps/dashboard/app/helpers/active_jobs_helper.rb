@@ -60,6 +60,16 @@ module ActiveJobsHelper
     OODClusters[host].try { |cluster| cluster.custom_allow?(:grafana) } || false
   end
 
+  def supports_grafana_panel?(cluster, panel)
+    begin 
+      config = OODClusters[cluster].custom_config(:grafana)
+      panel_config = config[:dashboard]['panels'][panel]
+      panel_config.instance_of?(Integer)
+    rescue
+      false
+    end
+  end
+
   def status_label(status)
     "<span class='badge #{status_class(status)}'>#{status_text(status)}</span>".html_safe
   end
