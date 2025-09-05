@@ -19,6 +19,12 @@
           <%= link_to I18n.t('dashboard.show'), project_workflow_path(@project.id, workflow.id),
                       class: "btn btn-info launcher-button" %>
         </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <%= link_to I18n.t('dashboard.edit'), edit_project_workflow_path(@project.id, workflow.id),
+                      class: "btn btn-primary launcher-button" %>
+        </div>
         <div class="col">
           <%= button_to I18n.t('dashboard.delete'), project_workflow_path(@project.id, workflow.id),
                         method: :delete,
