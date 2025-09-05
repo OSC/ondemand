@@ -7,7 +7,7 @@ describe 'Nginx stage' do
     @browser ||= new_browser
   end
 
-  after(:each) do
+  after do
     browser.close
     on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
   end

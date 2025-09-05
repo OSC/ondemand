@@ -1,7 +1,9 @@
+<% content_for :title, "#{t('dashboard.module_browser_title')} - #{@user_configuration.dashboard_title}" %>
+
 <h1 class="mb-4 d-flex justify-content-between">
-  Module Browser
+  <%= t('dashboard.module_browser_title') %>
   <span class="h4 text-muted">
-    (Last updated: <%= @modules_last_updated ? @modules_last_updated.strftime('%Y-%m-%d %H:%M:%S') : 'n/a' %>)
+    <%= t('dashboard.module_browser_last_updated', last_updated: @modules_last_updated) %>
   </span>
 </h1>
 

@@ -1,0 +1,56 @@
+<%# TODO Add support to describe relationship among launchers via two drop down menu to select "To-Fro" edge %>
+<%# This will act as way to describe the DAG until we figure out which JS UI library to use %>
+
+<div class='page-header text-center'>
+  <h1 class="my-2 h3"><%= @workflow.name %></h1>
+
+  <small class="text-muted"><%= @workflow.description %></small>
+</div>
+
+<br>
+
+<%= bootstrap_form_for(@workflow, url: submit_project_workflow_path(@project.id, @workflow.id), method: :post) do |form| %>
+  <%# This is a hidden field to store launcher ids for this workflow used inside the submit method %>
+  <% @workflow.launcher_ids.each do |id| %>
+    <%= hidden_field_tag "workflow[launcher_ids][]", id %>
+  <% end %>
+
+  <% num_test_edges = 7 %>
+  <div class='card'>
+    <div class='card-group'>
+      <div class="card">
+        <div class='card-body'>
+          <div class="field mt-3">
+            <strong>Source Launcher (To)</strong><br>
+              
+            <% num_test_edges.times do %>
+              <%= select_tag "workflow[source_ids][]", 
+                    options_from_collection_for_select(@launchers, :id, :title),
+                    include_blank: true, class: 'form-control mb-2' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class='card-body'>
+          <div class="field mt-3">
+            <strong>Target Launcher (Fro)</strong><br>
+
+            <% num_test_edges.times do %>
+              <%= select_tag "workflow[target_ids][]", 
+                    options_from_collection_for_select(@launchers, :id, :title),
+                    include_blank: true, class: 'form-control mb-2' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <p>
+    <%= form.submit I18n.t('dashboard.jobs_workflow_submit'), class: 'btn btn-primary', title: 'Save project' %>
+    <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+    <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
+  </p>
+<% end %>

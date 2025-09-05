@@ -81,6 +81,7 @@ if (process.env.OOD_SSHHOST_ALLOWLIST){
 const inactiveTimeout = (process.env.OOD_SHELL_INACTIVE_TIMEOUT_MS || 300000);
 const maxShellTime = (process.env.OOD_SHELL_MAX_DURATION_MS || 3600000);
 const pingPongEnabled = process.env.OOD_SHELL_PING_PONG ? true : false;
+const termName = (process.env.OOD_SHELL_TERM || 'xterm-16color');
 
 let hosts = helpers.definedHosts();
 let default_sshhost = hosts['default'];
@@ -142,6 +143,47 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
   }
 }
 
+// Combines duplicated lines into a single message (log message + number of skipped messages)
+function createLogger() {
+  // Combine logs for logInterval ms duration
+  const logInterval = 5000;
+  const messages = [];
+  let lastLog = 0;
+  let timer;
+
+  const logQueuedMessages = (immediate = false) => {
+    const now = Date.now();
+    clearTimeout(timer);
+    // Nothing logged since logInterval, log immediately
+    if (now - lastLog > logInterval || immediate) {
+      for (const { message, count } of messages) {
+        console.log(message);
+        if (count > 1) {
+          console.log(`Skipped ${count-1} previous duplicated messages`);
+        }
+      }
+      messages.length = 0;
+      lastLog = now;
+    } else if (messages.length > 0) {
+      // Log at most logInterval duration since current queue started
+      timer = setTimeout(logQueuedMessages, (lastLog + logInterval - now));
+    }
+  }
+
+  return {
+    log: (msg) => {
+      const lastMessage = messages.at(-1);
+      if (lastMessage && lastMessage.message == msg) {
+        lastMessage.count++;
+      } else {
+        messages.push({"message": msg, count: 1});
+      }
+      logQueuedMessages();
+    },
+    flush: () => logQueuedMessages(true),
+  };
+};
+
 wss.on('connection', function connection (ws, req) {
   var dir,
       term,
@@ -152,7 +194,8 @@ wss.on('connection', function connection (ws, req) {
   ws.isAlive = true;
   ws.startedAt = Date.now();
   ws.lastActivity = Date.now();
-  
+  ws.logger = createLogger();
+
   console.log('Connection established');
 
   [host, dir] = host_and_dir_from_url(req.url);
@@ -169,7 +212,7 @@ wss.on('connection', function connection (ws, req) {
     process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
     term = pty.spawn(cmd, args, {
-      name: 'xterm-16color',
+      name: termName,
       cols: 80,
       rows: 30
     });
@@ -179,7 +222,12 @@ wss.on('connection', function connection (ws, req) {
 
     term.onData(function (data) {
       ws.send(data, function (error) {
-        if (error) console.log('Send error: ' + error.message);
+        if(ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+          ws.logger.log('The websocket will not receive any more messages. Killing the terminal connection');
+          term.kill();
+        } else if (error) {
+          ws.logger.log('Send error: ' + error.message);
+        }
       });
       ws.lastActivity = Date.now();
     });
@@ -201,6 +249,7 @@ wss.on('connection', function connection (ws, req) {
       term.end();
       this.isAlive = false;
       console.log('Closed terminal: ' + term.pid);
+      ws.logger.flush();
     });
 
     ws.on('pong', function () {

@@ -51,7 +51,6 @@ of where to route your question, Discourse may be the best forum for it.
 There are other repositories to Open OnDemand that are important as well. You may want to check
 these out too.
 
-* [repository for the Open OnDemand website](https://github.com/OSC/openondemand.org)
 * [repository for the Open OnDemand documentation](https://github.com/OSC/ood-documentation)
 * [repository for the Open OnDemand core library](https://github.com/OSC/ood_core)
 
@@ -110,7 +109,7 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 ## Project StyleGuide
 
 * **Any new code *must* also include testing.**
-* If you need help with writing tests please include the `test help` tag.
+* If you need help with writing tests, please include the `test help` tag.
 
 ### Project Conventions
 
@@ -118,6 +117,8 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
   This means that `attr_writer` or `attr_accessor` are to be avoided and only `attr_reader` should be used.
   It follows then, that most objects should accept a large number of parameters in their initializers
   and set the attributes accordingly.
+* Simpler is better — if 30 lines of code can be written in 8, we prefer 8. Maintaining a large codebase
+  like Open OnDemand introduces complexity, so concise code makes life easier for maintainers.
 
 ### Linters
 
@@ -128,9 +129,11 @@ will remove them!
 
 ### Ruby Style
 
-In addition to the [RuboCop] styles configured described above, we follow common Ruby style
-and idioms. For example `snake_case` methods and variable names and favoring functional style
-methods.
+In addition to the [RuboCop] rules described above, we follow common Ruby style and idioms:
+
+* Use snake_case for method and variable names.
+* Favor a functional style for methods where appropriate.
+* Use parentheses more often than not, especially when it improves clarity.  
 
 ## Syntax and Layout
 

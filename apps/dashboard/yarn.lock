@@ -205,7 +205,7 @@
     nanoid "^5.0.9"
     preact "^10.5.13"
 
-"@uppy/dashboard@^4.0":
+"@uppy/dashboard@4.3.4":
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/@uppy/dashboard/-/dashboard-4.3.4.tgz#2b63c5424833cf311a396d4b35d6cc0dfab43c45"
   integrity sha512-SMPa5K3jZ2qNf110Hf8adN/cEAQLdpvXGjgl+R9c8AnUdpKE5f4XxaWSukdW6N7YYWmoBrLGesFvwRSPKZzCOw==

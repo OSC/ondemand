@@ -4,17 +4,23 @@ const id = 'product_cli_modal';
 const spinnerId = `${id}_spinner`;
 const headerId = `${id}_header`;
 const buttonId = `${id}_button`;
-const closeButton = `<button id="${buttonId}" class="btn-close float-end" data-bs-dismiss="modal"></button>`;
+const closeButton = `<button id="${buttonId}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>`;
+
+function modalHeader(title = null) {
+  if(title === null || title === undefined) {
+    title = 'no action';
+  }
+
+  return `<div class="modal-header">
+            <span class="h5 modal-title">${title}</span>
+            ${closeButton}
+          </div>`;
+}
 
 jQuery(function(){
   $('[data-toggle="cli"]').on('click', (event) => updateModal(event));
 
-  $(`#${headerId}`).replaceWith(`
-    <h2>
-      <span>no action</pan>
-      ${closeButton}
-    </h2>
-  `);
+  $(`#${headerId}`).replaceWith(modalHeader());
 });
 
 function updateModal(event){
@@ -26,12 +32,7 @@ function updateModal(event){
   const target = button.data('target');
   const header = `\$ <code><strong>${cmd}</strong></code>\n`
 
-  $(`#${headerId}`).replaceWith(`
-    <h2>
-      <span>${title}</pan>
-      ${closeButton}
-    </h2>
-  `);
+  $(`#${headerId}`).replaceWith(modalHeader(title));
 
   const xhr = new XMLHttpRequest;
   xhr.onreadystatechange = function() {
