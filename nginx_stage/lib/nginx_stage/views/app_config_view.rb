@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NginxStage
   # A view used as context for the app config ERB template file
   module AppConfigView
