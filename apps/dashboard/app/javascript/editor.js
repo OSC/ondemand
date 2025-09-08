@@ -73,8 +73,8 @@ jQuery(function () {
       // Set the caret at inside the editor on load.
       editor.focus();
 
-      // Set the edtor to unix style new lines (stops the `CRLF` or `\r\n` problem which Slurm can't parse)
-      editor.newLineMode("unix");
+      // Force Unix-style newlines to fix Windows copy-paste issues.
+      editor.getSession().setNewLineMode('unix'); 
     };
 
     function setSaveButtonState() {
