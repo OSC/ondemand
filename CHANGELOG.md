@@ -6,9 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-More modern look for the interactive apps list (#4456)\
-Backend for workflow class with minimalist UI (#4505)\
-test back-button functionality in files (#4574)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -70,6 +67,7 @@ test back-button functionality in files (#4574)
   disabled_shell_message to reconfigure the message displayed when a disabled user attempts to login in [4511](https://github.com/OSC/ondemand/pull/4511).
 - Notifications can now be enabled for interactive sessions in [4405](https://github.com/OSC/ondemand/pull/4405).
 - GPU count now shows in the session card in [4553](https://github.com/OSC/ondemand/pull/4553).
+- The Project Manager now has some UI support for workflows in [4505](https://github.com/OSC/ondemand/pull/4505).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
