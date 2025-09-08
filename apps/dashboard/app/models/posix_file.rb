@@ -203,7 +203,7 @@ class PosixFile
   end
 
   # This serves the same function as can_download_as_zip?, but for files
-  def can_download_file?(download_file_size_limit: Configuration.file_download_dir_max)
+  def can_download_file?(download_file_size_limit: Configuration.file_download_max)
     if !(file? && readable?)
       error = I18n.t('dashboard.files_directory_download_unauthorized')
       return [false, error]

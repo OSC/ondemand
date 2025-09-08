@@ -363,6 +363,13 @@ class ConfigurationSingleton
     ENV['OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS']&.to_i || 5
   end
 
+  # The maximum size of a file that can be downloaded.
+  #
+  # Default for OOD_DOWNLOAD_FILE_MAX is 10*1024*1024*1024 bytes.
+  # @return [Integer]
+  def file_download_max
+    ENV['OOD_DOWNLOAD_FILE_MAX']&.to_i || 10737418240
+  end
   # The maximum size of a .zip file that can be downloaded.
   #
   # Default for OOD_DOWNLOAD_DIR_MAX is 10*1024*1024*1024 bytes.
