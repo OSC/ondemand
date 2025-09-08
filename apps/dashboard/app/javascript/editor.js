@@ -72,6 +72,9 @@ jQuery(function () {
 
       // Set the caret at inside the editor on load.
       editor.focus();
+
+      // Force Unix-style newlines to fix Windows copy-paste issues.
+      editor.getSession().setNewLineMode('unix'); 
     };
 
     function setSaveButtonState() {
