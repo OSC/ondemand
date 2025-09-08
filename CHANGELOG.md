@@ -67,6 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   disabled_shell_message to reconfigure the message displayed when a disabled user attempts to login in [4511](https://github.com/OSC/ondemand/pull/4511).
 - Notifications can now be enabled for interactive sessions in [4405](https://github.com/OSC/ondemand/pull/4405).
 - GPU count now shows in the session card in [4553](https://github.com/OSC/ondemand/pull/4553).
+- The Project Manager now has some UI support for workflows in [4505](https://github.com/OSC/ondemand/pull/4505).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
