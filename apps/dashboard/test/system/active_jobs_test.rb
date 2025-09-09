@@ -31,8 +31,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
   # Define selector statements
   MainbodySelect = '#job_status_table tbody'
-  ButtonSelect = "#{MainbodySelect} .details-control"
-  DetailsSelect = "#{MainbodySelect} div.panel.panel-default"
+  PagerSelect = 'div#job_status_table_paginate'
   
   def setup
     # Enable routes guarded by this flag
@@ -85,7 +84,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
         wallclock_time:  120,
         job_owner:       "currentuser",
         allocated_nodes: [NodeInfo.new(name: 'node001'), NodeInfo.new(name: 'node002')],
-        status:          :queued
+        status:          :completed
       ),
       OodCore::Job::Info.new(
         id:              '789',
@@ -113,6 +112,17 @@ class ActiveJobsTest < ApplicationSystemTestCase
     OODClusters.stubs(:[]).with('all').returns(testclusters)
   end
 
+  def prepare_many_jobs(multiplier:)
+    # duplicate jobs and fix id overlap
+    current_jobs = OodCore::Job::Adapter.new.info_all_each
+    id = 0
+    new_jobs = (current_jobs*multiplier).map do |job|
+      id += 1
+      OodCore::Job::Info.new(**job.to_h.merge({id: id.to_s}))
+    end
+    OodCore::Job::Adapter.any_instance.stubs(:info_all_each).returns(new_jobs)
+  end
+
   test 'defaults to your jobs' do
     visit active_jobs_url
     
@@ -121,9 +131,8 @@ class ActiveJobsTest < ApplicationSystemTestCase
     # The UI should default to the "Your Jobs" filter
     assert_selector('#selected-filter-label', text: 'Your Jobs')
     # The list should have exactly two jobs in it
-    box = find(MainbodySelect)
-    rows = box.all('tr')
-    assert_equal 2, rows.length 
+    rows = all("#{MainbodySelect} tr")
+    assert_equal 2, rows.length
     # Test row content (dropping the button which has no text)
     first_row_text = rows[0].all('td').map(&:text).drop(1) 
     expected_fr = [
@@ -148,7 +157,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
       'account3',
       '00:02:00',
       'short',
-      'Queued',
+      'Completed',
       'Oakley',
       ''   
     ]
@@ -156,22 +165,24 @@ class ActiveJobsTest < ApplicationSystemTestCase
     assert_equal expected_sr, second_row_text
 
     # Check buttons
-    assert_equal 2, all(ButtonSelect).length
+    button_select = "#{MainbodySelect} .details-control"
+    assert_equal 2, all(button_select).length
 
     # Click buttons
-    all(ButtonSelect).map(&:click)
+    all(button_select).map(&:click)
     
 
     # Wait for load
-    assert_selector("#{DetailsSelect} tr")
+    details_select = "#{MainbodySelect} div.panel.panel-default"
+    assert_selector("#{details_select} tr")
     
     # Confirm details
-    card_header_items = all("#{DetailsSelect} div.card-header span")
+    card_header_items = all("#{details_select} div.card-header span")
     exp_header_data = ['Queued', 'Sample2', '345']
     assert_equal exp_header_data, card_header_items.map(&:text)
 
-    headers = all("#{DetailsSelect} div.card-body td.col-xs-2")
-    details = all("#{DetailsSelect} div.card-body td.col-xs-10")
+    headers = all("#{details_select} div.card-body td.col-xs-2")
+    details = all("#{details_select} div.card-body td.col-xs-10")
 
     exp_details = [
       'Oakley',
@@ -205,7 +216,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     visit active_jobs_url#(cluster_id: 'all')
 
     # Finish loading
-    assert_selector("#{MainbodySelect} tr", minimum: 2)
+    assert_selector("#{MainbodySelect} tr", count: 2)
 
     # Open the filters dropdown (first group is filters)
     first('div.btn-group').find('button.dropdown-toggle').click
@@ -216,7 +227,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     assert_selector('#selected-filter-label', text: 'All Jobs')
 
     # Check number of rows
-    assert_selector("#{MainbodySelect} tr", minimum: 4)
+    assert_selector("#{MainbodySelect} tr", count: 4)
 
     # Check non-user job info
     assert_text('Sample1')
@@ -242,19 +253,12 @@ class ActiveJobsTest < ApplicationSystemTestCase
   end
 
   test 'many jobs paginate' do 
-    # duplicate jobs and fix id overlap
-    current_jobs = OodCore::Job::Adapter.new.info_all_each
-    id = 0
-    new_jobs = (current_jobs*100).map do |job|
-      id += 1
-      OodCore::Job::Info.new(**job.to_h.merge({id: id.to_s}))
-    end
-    OodCore::Job::Adapter.any_instance.stubs(:info_all_each).returns(new_jobs)
+    prepare_many_jobs(multiplier: 100)
 
     visit active_jobs_url(jobfilter:'all')
 
     # Finish loading
-    assert_selector("#{MainbodySelect} tr", minimum: 50)
+    assert_selector("#{MainbodySelect} tr", count: 50)
     
     # Grab first row text
     first_row = first("#{MainbodySelect} tr")
@@ -264,26 +268,151 @@ class ActiveJobsTest < ApplicationSystemTestCase
     assert_text('Showing 1 to 50 of 400 entries')
 
     # check pager object
-    pager_select = 'div#job_status_table_paginate'
-    assert_selector(pager_select)
+    assert_selector(PagerSelect)
 
-    # check highlight
-    assert_selector("#{pager_select} li.active", text: '1')
+    # check highlight and prev button
+    assert_selector("#{PagerSelect} li.active", text: '1')
+    assert_selector("#{PagerSelect} li.paginate_button.disabled", text: 'Previous')
 
-    # Show next page
-    find("#{pager_select} li", text: '2').click
+    # Show next page and repeat
+    find("#{PagerSelect} li", text: '2').click
 
-    # Finish loading
-    assert_selector("#{MainbodySelect} tr", minimum: 50)
-
-    # Ensure rows changed
+    assert_selector("#{MainbodySelect} tr", count: 50)
     new_row = first("#{MainbodySelect} tr")
     new_row_text = new_row.all('td').map(&:text).drop(1)
-
-    # Ensure highlight changed
-    assert_selector("#{pager_select} li.active", text: '2')
-
-    # Ensure text changed
+    assert_selector("#{PagerSelect} li.active", text: '2')
+    refute_selector("#{PagerSelect} li.paginate_button.previous.disabled")
+    refute_selector("#{PagerSelect} li.paginate_button.next.disabled")
     assert_text('Showing 51 to 100 of 400 entries')
+
+    # click next button and repeat
+    find("#{PagerSelect} li", text: 'Next').click
+    assert_selector("#{MainbodySelect} tr", count: 50)
+    assert_selector("#{PagerSelect} li.active", text: '3')
+    assert_text('Showing 101 to 150 of 400 entries')
+
+    # Click last page
+    find("#{PagerSelect} li", text: '8').click
+    assert_selector("#{MainbodySelect} tr", count: 50)
+    assert_selector("#{PagerSelect} li.active", text: '8')
+    assert_selector("#{PagerSelect} li.paginate_button.disabled", text: 'Next') 
+    assert_text('Showing 351 to 400 of 400 entries')
+
+    # Click prev button
+    find("#{PagerSelect} li", text: 'Previous').click
+    assert_selector("#{MainbodySelect} tr", count: 50)
+    assert_selector("#{PagerSelect} li.active", text: '7')
+    assert_text('Showing 301 to 350 of 400 entries')
+  end
+
+  test 'results-per-page setting works' do
+    prepare_many_jobs(multiplier: 150)
+
+    visit active_jobs_url(jobfilter: 'all')
+
+    res_per_page_selector = 'div#job_status_table_length select'
+    assert_selector(res_per_page_selector, text: '50')
+    assert_selector("#{MainbodySelect} tr", count: 50)
+    assert_text('Showing 1 to 50 of 600 entries')
+    assert_selector("#{PagerSelect} li", text: '12')
+
+    # Change setting
+    find(res_per_page_selector).click
+    find("#{res_per_page_selector} option[value='10']").click
+    assert_selector(res_per_page_selector, text: '10')
+    assert_selector("#{MainbodySelect} tr", count: 10)
+    assert_text('Showing 1 to 10 of 600 entries')
+    assert_selector("#{PagerSelect} li", text: '60')
+
+    # Change setting
+    find(res_per_page_selector).click
+    find("#{res_per_page_selector} option[value='25']").click
+    assert_selector(res_per_page_selector, text: '25')
+    assert_selector("#{MainbodySelect} tr", count: 25)
+    assert_text('Showing 1 to 25 of 600 entries')
+    assert_selector("#{PagerSelect} li", text: '24')
+
+    # Move page and select setting
+    find("#{PagerSelect} li", text: '5').click
+    assert_text('Showing 101 to 125 of 600 entries')
+    # Now changes should stay starting at 101
+    find(res_per_page_selector).click
+    find("#{res_per_page_selector} option[value='50']").click
+    assert_text('Showing 101 to 150 of 600 entries')
+    assert_selector("#{PagerSelect} li.active", text: '3')
+
+    # Use all setting
+    find(res_per_page_selector).click
+    find("#{res_per_page_selector} option[value='-1']").click
+    assert_selector(res_per_page_selector, text: 'All')
+    assert_selector("#{MainbodySelect} tr", count: 600)
+    assert_text('Showing 1 to 600 of 600 entries')
+    assert_selector("#{PagerSelect} li.active", text: '1')
+    refute_selector("#{PagerSelect} li", text: '2')
+  end
+
+  test 'text filter works' do
+    visit active_jobs_url(jobfilter: 'all')
+
+    # Verify filter input is rendered
+    filter_selector = 'div#job_status_table_filter input'
+    assert_selector(filter_selector)
+
+    # Verify filter reads ids
+    find(filter_selector).set('345')
+    # Wait for load
+    assert_selector("#{MainbodySelect} tr")
+    assert_text '345'
+    assert_text 'Sample2'
+    assert_text 'account2'
+
+    # Verify filter reads job names
+    find(filter_selector).set('Sample4')
+    assert_selector("#{MainbodySelect} tr")
+    assert_text '789'
+    assert_text 'Sample4'
+    assert_text 'account4'
+
+    # Verify filter reads users
+    find(filter_selector).set('not_')
+    assert_selector("#{MainbodySelect} tr", count: 2)
+    assert_text '123'
+    assert_text 'Sample1'
+    assert_text 'account1'
+    assert_text '789'
+    assert_text 'Sample4'
+    assert_text 'account4'
+
+    # Verify filter reads accounts
+    find(filter_selector).set('account3')
+    assert_selector("#{MainbodySelect} tr", count: 1)
+    assert_text '567'
+    assert_text 'Sample3'
+    assert_text 'account3'
+
+    # Verify filter reads queue
+    find(filter_selector).set('normal')
+    assert_selector("#{MainbodySelect} tr", count: 1)
+    assert_text '123'
+    assert_text 'Sample1'
+    assert_text 'account1'
+
+    # Verify filter reads status
+    find(filter_selector).set('queue')
+    assert_selector("#{MainbodySelect} tr", count: 2)
+    assert_text '345'
+    assert_text 'Sample2'
+    assert_text 'account2'
+    assert_text '789'
+    assert_text 'Sample4'
+    assert_text 'account4'
+    
+    
+    # Verify filter finds text in middle/end of string
+    find(filter_selector).set('ple1')
+    assert_selector("#{MainbodySelect} tr", count: 1)
+    assert_text '123'
+    assert_text 'Sample1'
+    assert_text 'account1'
   end
 end
