@@ -91,6 +91,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   with errors via the shell application. The shell application now restricts log output and properly manages scenarios
   where the terminal remains open but the WebSocket connection is inactive in [4461](https://github.com/OSC/ondemand/pull/4461).
 
+## [4.0.7] - 08-14-2025
+
+### Added
+- Three new adapters have been added to support various schedulers. They are HTCondor, PSI/J and Coder/OpenStack.
+
+### Fixed
+- Interactive apps now correctly handle scripts that utilize `pipefail`, resolving issues where certain job scripts would terminate prematurely.
+
+### Security
+- Resolved **CVE-2025-58435**, VNC interactive apps now correctly rotate passwords for higher versions of TurboVNC, fixing
+  an issue where noVNC passwords could not be rotated on newer TurboVNC versions. This patch applies to **TurboVNC ≥ 3.1.2**.
+
+
+## [3.1.15] - 08-15-2025
+
+### Added
+- Three new adapters have been added to support various schedulers. They are HTCondor, PSI/J and Coder/OpenStack.
+
+### Fixed
+- Interactive apps now correctly handle scripts that utilize `pipefail`, resolving issues where certain job scripts would terminate prematurely.
+
+### Security
+- Resolved **CVE-2025-58435**, VNC interactive apps now correctly rotate passwords for higher versions of TurboVNC, fixing
+  an issue where noVNC passwords could not be rotated on newer TurboVNC versions. This patch applies to **TurboVNC ≥ 3.1.2**.
+
+
 ## [4.0.6] - 07-10-2025
 
 ### Security
@@ -1682,13 +1708,15 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.6...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.7...HEAD
+[4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
 [4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
 [4.0.5]: https://github.com/OSC/ondemand/compare/v4.0.3...v4.0.5
 [4.0.3]: https://github.com/OSC/ondemand/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.15]: https://github.com/OSC/ondemand/compare/v3.1.14...v3.1.15
 [3.1.14]: https://github.com/OSC/ondemand/compare/v3.1.13...v3.1.14
 [3.1.13]: https://github.com/OSC/ondemand/compare/v3.1.11...v3.1.13
 [3.1.11]: https://github.com/OSC/ondemand/compare/v3.1.10...v3.1.11
