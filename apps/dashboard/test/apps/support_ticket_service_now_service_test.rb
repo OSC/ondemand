@@ -147,9 +147,9 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
 
   def create_response(number, attachments_success = true)
     OpenStruct.new({
-                     number:              number,
-                     attachments:         1,
-                     attachments_success: attachments_success
-                   })
+      number:              number,
+      attachments:         1,
+      attachments_success: attachments_success
+    })
   end
 end
