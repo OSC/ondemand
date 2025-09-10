@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   resources :templates, only: [:new, :create, :destroy]
 
@@ -9,10 +11,10 @@ Rails.application.routes.draw do
     end
   end
 
-  post "create_default" => "workflows#create_default"
-  get "new_from_path" => "workflows#new_from_path"
-  post "create_from_path" => "workflows#create_from_path"
-  root "workflows#index"
+  post 'create_default' => 'workflows#create_default'
+  get 'new_from_path' => 'workflows#new_from_path'
+  post 'create_from_path' => 'workflows#create_from_path'
+  root 'workflows#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
