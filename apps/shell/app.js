@@ -10,10 +10,12 @@ const Tokens    = require('csrf');
 const url       = require('url');
 const yaml      = require('js-yaml');
 const glob      = require('glob');
+const os        = require('os');
 const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 const helpers   = require('./utils/helpers');
 
+const username  = os.userInfo().username;
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -144,11 +146,17 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
 }
 
 // Combines duplicated lines into a single message (log message + number of skipped messages)
-function createLogger() {
+function createLogger(host) {
   // Combine logs for logInterval ms duration
   const logInterval = 5000;
   const messages = [];
   let lastLog = 0;
+  // Prefix to each message from the given ws connection logger.
+  // One user might have multiple connections to the Shell app,
+  // and connect to many different hosts. The prefix is meant to
+  // identify these connections uniquely while they log something.
+  // Note: PID defaults to -1 until the pty-term PID becomes known.
+  let msgPrefix = `[User = ${username}; Host = ${host}; PID = -1]`;
   let timer;
 
   const logQueuedMessages = (immediate = false) => {
@@ -157,9 +165,9 @@ function createLogger() {
     // Nothing logged since logInterval, log immediately
     if (now - lastLog > logInterval || immediate) {
       for (const { message, count } of messages) {
-        console.log(message);
+        console.log(`${msgPrefix} ${message}`);
         if (count > 1) {
-          console.log(`Skipped ${count-1} previous duplicated messages`);
+          console.log(`${msgPrefix} Skipped ${count-1} previous duplicated messages`);
         }
       }
       messages.length = 0;
@@ -180,6 +188,9 @@ function createLogger() {
       }
       logQueuedMessages();
     },
+    setpid: (newpid) => {
+      msgPrefix = `[User = ${username}; Host = ${host}; PID = ${newpid}]`;
+    },
     flush: () => logQueuedMessages(true),
   };
 };
@@ -191,14 +202,15 @@ wss.on('connection', function connection (ws, req) {
       host,
       cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   
+  [host, dir] = host_and_dir_from_url(req.url);
+
   ws.isAlive = true;
   ws.startedAt = Date.now();
   ws.lastActivity = Date.now();
-  ws.logger = createLogger();
+  ws.logger = createLogger(host);
 
-  console.log('Connection established');
+  ws.logger.log('Web socket connection established from user');
 
-  [host, dir] = host_and_dir_from_url(req.url);
 
   // Verify authentication
   token = req.url.match(/csrf=([^&]*)/)[1];
@@ -216,9 +228,12 @@ wss.on('connection', function connection (ws, req) {
       cols: 80,
       rows: 30
     });
-    
 
-    console.log('Opened terminal: ' + term.pid);
+    // Now that the PID is known, add it to our logger.
+    ws.logger.setpid(term.pid);
+
+    ws.logger.log('Opened terminal');
+    ws.logger.flush();
 
     term.onData(function (data) {
       ws.send(data, function (error) {
@@ -248,7 +263,7 @@ wss.on('connection', function connection (ws, req) {
     ws.on('close', function () {
       term.end();
       this.isAlive = false;
-      console.log('Closed terminal: ' + term.pid);
+      ws.logger.log('Closed terminal');
       ws.logger.flush();
     });
 
@@ -284,5 +299,5 @@ server.on('upgrade', function upgrade(request, socket, head) {
 });
 
 server.listen(port, function () {
-  console.log('Listening on ' + port);
+  console.log(`Shell app for user '${username}' listening on port ${port}`);
 });
