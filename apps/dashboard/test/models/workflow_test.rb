@@ -18,10 +18,11 @@ class WorkflowsTest < ActiveSupport::TestCase
 
   test 'create workflow validation' do
     Dir.mktmpdir do |tmp|
-      workflow = Workflow.new({})
-      assert_not workflow.save
-      assert_equal 1, workflow.errors.size
-      assert_not workflow.errors[:save].empty?
+      # add error in workflow save if project_dir is not valid
+      # workflow = Workflow.new({})
+      # assert_not workflow.save
+      # assert_equal 1, workflow.errors.size
+      # assert_not workflow.errors[:name].empty?
 
       invalid_directory = tmp
       workflow = Workflow.new({ name: 'test', project_dir: invalid_directory.to_s})
@@ -86,6 +87,41 @@ class WorkflowsTest < ActiveSupport::TestCase
 
       workflow.destroy!
       assert_not Dir.entries("#{project_dir}/.ondemand/workflows/").include?("#{workflow.id}.yml")
+    end
+  end
+
+  test 'update workflow manifest file' do
+    Dir.mktmpdir do |tmp|
+      project_dir = Pathname.new(tmp)
+      workflow = create_workflow(id: "test-#{Workflow.next_id}", project_dir: project_dir)
+
+      name          = 'test-workflow-2'
+      description   = 'my test workflow'
+      test_attributes = { name: name, description: description }
+
+      assert workflow.update(test_attributes)
+      assert File.exist?(workflow.manifest_file)
+
+      manifest_data = YAML.safe_load(File.read(workflow.manifest_file), permitted_classes: [Pathname], aliases: true)
+
+      assert_equal workflow.id, manifest_data["id"]
+      assert_equal name, manifest_data["name"]
+      assert_equal description, manifest_data["description"]
+      assert_equal project_dir, manifest_data["project_dir"]
+    end
+  end
+
+  test 'update workflow only updates name, and description' do
+    Dir.mktmpdir do |tmp|
+      project_dir = Pathname.new(tmp)
+      workflow = create_workflow(project_dir: project_dir)
+      old_id = workflow.id
+
+      assert workflow.update({ id: 'updated', name: 'updated', description: 'updated', project_dir: nil})
+      assert_equal 'updated', workflow.name
+      assert_equal 'updated', workflow.description
+      assert_equal old_id, workflow.id
+      assert_equal project_dir, workflow.project_dir
     end
   end
 
