@@ -30,7 +30,7 @@ module ActiveJobsHelper
         "var-#{server[:labels]['cluster']}": cluster,
         "var-#{server[:labels]['host']}": node_num.split('.')[0],
       }
-      if ['cpu','memory'].include?(report_type)
+      if ['cpu','memory','gpu-util','gpu-memory'].include?(report_type)
         url_base = 'd-solo'
         query_params[:panelId] = server[:dashboard]['panels'][report_type]
       else
@@ -58,6 +58,16 @@ module ActiveJobsHelper
 
   def has_grafana(host)
     OODClusters[host].try { |cluster| cluster.custom_allow?(:grafana) } || false
+  end
+
+  def supports_grafana_panel?(cluster, panel)
+    begin 
+      config = OODClusters[cluster].custom_config(:grafana)
+      panel_config = config[:dashboard]['panels'][panel]
+      panel_config.instance_of?(Integer)
+    rescue
+      false
+    end
   end
 
   def status_label(status)
