@@ -40,7 +40,7 @@ module ActiveJobsHelper
         jobid = jobid.split('.')[0]
         query_params["var-#{server[:labels]['jobid']}"] = jobid unless server[:labels]['jobid'].nil?
       end
-      uri = Addressable::Template.new("#{server[:host]}{/segments*}/{?query*}")
+      uri = Addressable::Template.new("#{server[:host]}{/segments*}{?query*}")
       grafana_uri = uri.expand({
         'segments' => [url_base, server[:dashboard]['uid'], server[:dashboard]['name']],
         'query'    => query_params,
