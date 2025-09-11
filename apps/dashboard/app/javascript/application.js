@@ -60,7 +60,7 @@ jQuery(function(){
   $('[data-bs-toggle="tooltip"]').tooltip();
 
   // Popover overflow management
-  function checkWrapNecessity() {
+  $('body').on('inserted.bs.popover', function(){
     $('.app-settings-popup .row').each(function () {
       const $row = $(this);
       const rowWidth = $row.width();
@@ -72,7 +72,5 @@ jQuery(function(){
         $row.find('dt').css('max-width', rowWidth - ddWidth)
       }
     });
-  }
-
-  $('body').on('inserted.bs.popover', checkWrapNecessity);
+  });
 });
