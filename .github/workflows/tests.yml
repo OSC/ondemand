@@ -46,6 +46,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: 2.5.23
+          rubygems: 'latest'
 
       - name: Cache dependencies
         uses: actions/cache@v3
