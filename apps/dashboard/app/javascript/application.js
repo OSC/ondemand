@@ -58,4 +58,21 @@ jQuery(function(){
 
   $('[data-bs-toggle="popover"]').popover();
   $('[data-bs-toggle="tooltip"]').tooltip();
+
+  // Popover overflow management
+  function checkWrapNecessity() {
+    $('.app-settings-popup .row').each(function () {
+      const $row = $(this);
+      const rowWidth = $row.width();
+      dtWidth = $row.find('dt').outerWidth(true);
+      ddWidth = $row.find('dd').outerWidth(true);
+
+      totalContentWidth = ddWidth + dtWidth
+      if (totalContentWidth > rowWidth) {
+        $row.find('dt').css('max-width', rowWidth - ddWidth)
+      }
+    });
+  }
+
+  $('body').on('inserted.bs.popover', checkWrapNecessity);
 });

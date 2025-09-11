@@ -104,15 +104,22 @@ i.app-icon.fa-fw {
   
   .row {
     justify-content: space-between;
+    --bs-gutter-x: 0px;
+    margin-right: 0px;
     flex-wrap: nowrap;
-    width: 95%;
+    align-items: flex-end;
   }
 
   dd, dt {
     display: inline;
     margin: 0px;
+    width: auto;
   }
 
+  dd {
+    margin-left: 10px;
+  }
+  
   hr {
     margin:5px;
   }
