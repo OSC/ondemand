@@ -2,17 +2,8 @@
 <%= sanitize OodAppkit.markdown.render(@app.form_header) %>
 
 <%= render "prefill_templates" if Configuration.bc_saved_settings? %>
-<%= @session_context.inspect %>
-<%= bootstrap_form_for(
-      @session_context, 
-      html: { 
-        autocomplete: "off", 
-        aria: {
-          live:     'polite', 
-          relevant: 'additions removals' 
-        }
-      }
-    ) do |f| %>
+
+<%= bootstrap_form_for(@session_context, html: { autocomplete: "off", }) do |f| %>
   <% f.object.each do |attrib| %>
     <%= create_widget(f, attrib, format: @render_format) %>
   <% end %>
