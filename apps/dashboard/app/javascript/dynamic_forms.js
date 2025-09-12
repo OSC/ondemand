@@ -330,6 +330,9 @@ function setValue(event, changeId) {
 
   if(changeVal !== undefined) {
     const element = document.getElementById(changeId);
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`set ${elementInfo} to value ${changeVal}`);
+
     if(element['type'] == 'checkbox') {
       setCheckboxValue(element, changeVal);
     } else {
@@ -438,8 +441,7 @@ function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   let changeElement = undefined;
-  const elementText = `${$(`#${changeId}`).first().text()}`
-  
+
   $(`#${changeId}`).parents().each(function(_i, parent) {
     var classListValues = parent.classList.values();
     for (const val of classListValues) {
@@ -455,19 +457,18 @@ function updateVisibility(event, changeId) {
 
   if (changeElement === undefined || changeElement.length <= 0) return;
 
-  const widgetType = changeElement.nextAll('[data-widget-type]').first().data('widget-type')
-  const elementInfo = `${widgetType} with text ${elementText}`
+  const elementInfo = getWidgetInfo(changeId);
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
-  if((hide === false) || (hide === undefined && !initializing)) {
+  if ((hide === false) || (hide === undefined && !initializing)) {
     changeElement.show();
     // Pass text into the aria stream
-    const addMsg = `New form item ${elementInfo}`;
-    $('#aria_live_region').append(`<p>${addMsg}</p>`)//.attr('aria-label', addMsg);
-  }else if(hide === true) {
-    const rmMsg = `Hid form item ${elementInfo}`
+    const addMsg = `Revealed form item ${elementInfo}`;
+    ariaStream(addMsg)
+  } else if (hide === true) {
     changeElement.hide();
-    $('#aria_live_region').first().append(`<p>${rmMsg}</p>`)//.attr('aria-label', rmMsg);
+    const rmMsg = `Hid form item ${elementInfo}`;
+    ariaStream(rmMsg);
   }
 }
 
@@ -844,6 +845,33 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
   // now that we're done, propogate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
+}
+
+// get attributes based on widget id
+function getWidgetInfo(id){
+  console.log(id)
+  const type = getWidgetType(id)
+  const label = $(`label[for="${id}"]`);
+  const labelText = label.length ? label.text().trim() : null;
+
+  return `${type} with ${labelText ? ` label ${labelText}` : 'no label'}`;
+}
+
+function getWidgetType(id){
+  var finaltype = undefined;
+  $(`#${id}`).parents().each(function(_i, parent) {
+    type = $(parent).nextAll('[data-widget-type]').first().data('widget-type')
+
+    if (type && !finaltype) {
+      finaltype = type
+    }
+  })
+  return finaltype ? finaltype : null;
+}
+
+// sends a message that is immediately read by screenreaders
+function ariaStream(message) {
+  $('#aria_live_region').first().append(`<p>${message}</p>`)
 }
 
 function toggleOptionsFor(_event, elementId) {
