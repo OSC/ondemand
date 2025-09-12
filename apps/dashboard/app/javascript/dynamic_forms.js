@@ -200,7 +200,10 @@ function newLabel(changeElement, key) {
 };
 
 function updateLabel(changeId, changeElement, key) {
-  $(`label[for="${changeId}"]`)[0].innerHTML = newLabel(changeElement, key);
+  var labelContent = newLabel(changeElement, key);
+  const originalInfo = getWidgetInfo(changeId);
+  $(`label[for="${changeId}"]`)[0].innerHTML = labelContent;
+  ariaStream(`Change label on ${originalInfo} to new label ${labelContent}`);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
@@ -514,9 +517,15 @@ function toggleMinMax(event, changeId, otherId) {
     max: parseInt(changeElement.attr('max')),
   };
 
+  var ariaMsg = 'Set ';
+  var ariaMsgLength = ariaMsg.length;
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
+      if (ariaMsg.length > ariaMsgLength){
+        ariaMsg += ' and ';
+      }
+      ariaMsg += `${dim} limit to ${mm[dim]}`;
     }
   });
 
@@ -524,6 +533,12 @@ function toggleMinMax(event, changeId, otherId) {
   if (val !== undefined) {
     changeElement.attr('value', val);
     changeElement.val(val);
+    ariaMsg += ` and set current value to ${val}`;
+  }
+
+  if (ariaMsg.length > ariaMsgLength){
+    ariaMsg += ` for ${getWidgetInfo(changeId)}`;
+    ariaStream(ariaMsg);
   }
 }
 
@@ -875,7 +890,7 @@ function getWidgetType(id){
 
 // sends a message that is immediately read by screenreaders
 function ariaStream(message) {
-  $('#aria_live_region').first().append(`<p>${escapeHtml(message)}</p>`);
+  $('#aria_live_region').first().append(`<p>${escapeHtml(message)}.</p>`);
 }
 
 function escapeHtml(string) {
