@@ -790,6 +790,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
         hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
       } else if (contextStr == 'exclusiveOptionFor') {
         hide = !(option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`] === 'true')
+        ariaStream
       }
 
       if (hide) {
@@ -797,15 +798,18 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       }
     };
 
+    const elementInfo = getWidgetInfo(elementId);
     if(hide) {
       if(option.selected) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-
+      var prefix = option.selected ? 'Selected' : ''
+      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`)
       option.style.display = 'none';
       option.disabled = true;
     } else {
+      ariaStream(`Option ${option.value} enabled for ${elementInfo}`)
       option.style.display = '';
       option.disabled = false;
     }
