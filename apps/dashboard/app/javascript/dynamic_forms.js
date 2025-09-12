@@ -438,6 +438,7 @@ function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   let changeElement = undefined;
+  const elementText = `${$(`#${changeId}`).first().text()}`
   
   $(`#${changeId}`).parents().each(function(_i, parent) {
     var classListValues = parent.classList.values();
@@ -454,12 +455,19 @@ function updateVisibility(event, changeId) {
 
   if (changeElement === undefined || changeElement.length <= 0) return;
 
+  const widgetType = changeElement.nextAll('[data-widget-type]').first().data('widget-type')
+  const elementInfo = `${widgetType} with text ${elementText}`
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
   if((hide === false) || (hide === undefined && !initializing)) {
     changeElement.show();
+    // Pass text into the aria stream
+    const addMsg = `New form item ${elementInfo}`;
+    $('#aria_live_region').append(`<p>${addMsg}</p>`)//.attr('aria-label', addMsg);
   }else if(hide === true) {
+    const rmMsg = `Hid form item ${elementInfo}`
     changeElement.hide();
+    $('#aria_live_region').first().append(`<p>${rmMsg}</p>`)//.attr('aria-label', rmMsg);
   }
 }
 
