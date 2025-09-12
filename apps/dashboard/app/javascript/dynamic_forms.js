@@ -875,7 +875,16 @@ function getWidgetType(id){
 
 // sends a message that is immediately read by screenreaders
 function ariaStream(message) {
-  $('#aria_live_region').first().append(`<p>${message}</p>`)
+  $('#aria_live_region').first().append(`<p>${escapeHtml(message)}</p>`);
+}
+
+function escapeHtml(string) {
+  return String(string)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function toggleOptionsFor(_event, elementId) {
