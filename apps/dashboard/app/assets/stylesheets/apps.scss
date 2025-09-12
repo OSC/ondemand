@@ -103,15 +103,15 @@ i.app-icon.fa-fw {
   margin-bottom: 0px;
   
   .row {
-    justify-content: space-between;
     --bs-gutter-x: 0px;
     margin-right: 0px;
-    flex-wrap: nowrap;
-    align-items: flex-end;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-items: end;
+    align-items: end;
   }
 
   dd, dt {
-    display: inline;
     margin: 0px;
     width: auto;
   }
