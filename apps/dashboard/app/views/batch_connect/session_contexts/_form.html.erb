@@ -3,7 +3,7 @@
 
 <%= render "prefill_templates" if Configuration.bc_saved_settings? %>
 
-<%= bootstrap_form_for(@session_context, html: { autocomplete: "off" }) do |f| %>
+<%= bootstrap_form_for(@session_context, html: { autocomplete: "off", }) do |f| %>
   <% f.object.each do |attrib| %>
     <%= create_widget(f, attrib, format: @render_format) %>
   <% end %>
