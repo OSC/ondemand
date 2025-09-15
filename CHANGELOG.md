@@ -6,23 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Add widget popups 2781 (#4515)\
-Lint a random file (#4573)\
-Bump nokogiri from 1.18.8 to 1.18.9 in /apps/myjobs (#4591)\
-Manifest test for indifferent access (#4590)\
-allow lowercasing usernames via user_map_match (#4586)\
-Bump nokogiri from 1.18.8 to 1.18.9 in /apps/dashboard (#4487)\
-Added unit test for workflow class (#4577)\
-Dynamic forms detect radio buttons (#4540)\
-Fix grafana urls (#4585)\
-lint a random file (#4587)\
-Update CHANGELOG.md (#4584)\
-Added unit testing for directed acyclic graph (#4562)\
-Update Changelog (#4580)\
-add `newLineMode("unix")` option to editor (#4561)\
-lint a random file (#4579)
 
-### Fixed
+## Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
 - Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
   and show these if they're positive [4074](https://github.com/OSC/ondemand/pull/4074).
@@ -56,6 +41,8 @@ lint a random file (#4579)
 - bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
 - The HOME directory now always shows in the path_selector favorites if they're enabled in [4526](https://github.com/OSC/ondemand/pull/4526).
 - Disable NVC commpression level to 0 as it breaks the clipboard in [4550](https://github.com/OSC/ondemand/pull/4550).
+- The file editor now forces unix newline mode instead of the default auto in [4561](https://github.com/OSC/ondemand/pull/4561).
+- Grafana urls have been corrected for newer versions of Grafana in [4585](https://github.com/OSC/ondemand/pull/4585).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -83,6 +70,9 @@ lint a random file (#4579)
 - Notifications can now be enabled for interactive sessions in [4405](https://github.com/OSC/ondemand/pull/4405).
 - GPU count now shows in the session card in [4553](https://github.com/OSC/ondemand/pull/4553).
 - The Project Manager now has some UI support for workflows in [4505](https://github.com/OSC/ondemand/pull/4505).
+- user_map_match now allows for lowercasing usernames in [4586](https://github.com/OSC/ondemand/pull/4586).
+- Popups now appear for recently used apps with display settings in [4515](https://github.com/OSC/ondemand/pull/4515).
+- data-hide directives can now hide radio buttons in [4540](https://github.com/OSC/ondemand/pull/4540).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
