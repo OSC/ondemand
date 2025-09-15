@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Add widget popups 2781 (#4515)\
+Lint a random file (#4573)\
+Bump nokogiri from 1.18.8 to 1.18.9 in /apps/myjobs (#4591)\
+Manifest test for indifferent access (#4590)\
+allow lowercasing usernames via user_map_match (#4586)\
+Bump nokogiri from 1.18.8 to 1.18.9 in /apps/dashboard (#4487)\
+Added unit test for workflow class (#4577)\
+Dynamic forms detect radio buttons (#4540)\
+Fix grafana urls (#4585)\
+lint a random file (#4587)\
+Update CHANGELOG.md (#4584)\
+Added unit testing for directed acyclic graph (#4562)\
+Update Changelog (#4580)\
+add `newLineMode("unix")` option to editor (#4561)\
+lint a random file (#4579)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
