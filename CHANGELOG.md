@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## Fixed
+### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
 - Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
   and show these if they're positive [4074](https://github.com/OSC/ondemand/pull/4074).
