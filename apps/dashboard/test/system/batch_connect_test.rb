@@ -446,10 +446,10 @@ class BatchConnectTest < ApplicationSystemTestCase
     Dir.mktmpdir('bc_old_cluster_removed_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
 
-      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
-      cache_json.write({ cluster: 'old' }.to_json)
-      cache_json.close
-
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'old' }.to_json)
+      end 
+      
       new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
 
       # Only new cluster exists
@@ -466,9 +466,9 @@ class BatchConnectTest < ApplicationSystemTestCase
     Dir.mktmpdir('bc_old_cluster_not_configured_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
 
-      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
-      cache_json.write({ cluster: 'old' }.to_json)
-      cache_json.close
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'old' }.to_json)
+      end
 
       new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
       old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config '}})
@@ -491,9 +491,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'any', find_value('node_type')
       assert_equal '2.7', find_value('python_version')
 
-      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
-      cache_json.write({ cluster: 'oakley', node_type: 'gpu', python_version: '3.2' }.to_json)
-      cache_json.close
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'oakley', node_type: 'gpu', python_version: '3.2' }.to_json)
+      end
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'oakley', find_value('cluster')
