@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
 - The HOME directory now always shows in the path_selector favorites if they're enabled in [4526](https://github.com/OSC/ondemand/pull/4526).
 - Disable NVC commpression level to 0 as it breaks the clipboard in [4550](https://github.com/OSC/ondemand/pull/4550).
+- The file editor now forces unix newline mode instead of the default auto in [4561](https://github.com/OSC/ondemand/pull/4561).
+- Grafana urls have been corrected for newer versions of Grafana in [4585](https://github.com/OSC/ondemand/pull/4585).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -68,6 +70,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Notifications can now be enabled for interactive sessions in [4405](https://github.com/OSC/ondemand/pull/4405).
 - GPU count now shows in the session card in [4553](https://github.com/OSC/ondemand/pull/4553).
 - The Project Manager now has some UI support for workflows in [4505](https://github.com/OSC/ondemand/pull/4505).
+- user_map_match now allows for lowercasing usernames in [4586](https://github.com/OSC/ondemand/pull/4586).
+- Popups now appear for recently used apps with display settings in [4515](https://github.com/OSC/ondemand/pull/4515).
+- data-hide directives can now hide radio buttons in [4540](https://github.com/OSC/ondemand/pull/4540).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
