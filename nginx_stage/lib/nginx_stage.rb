@@ -148,6 +148,8 @@ module NginxStage
       "ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
       # set the duplicate to keep clean_nginx_env idempotent
       "OOD_ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
+      # set LANG to utf-8, defaulting to US.
+      'LANG' => ENV['OOD_LANG_OVERRIDE'] || 'en_US.utf8'
     }.merge(pun_custom_env).merge(preserve_env_declarations.map { |k| [ k, ENV[k] ] }.to_h))
   end
 
@@ -161,7 +163,7 @@ module NginxStage
   # also declare in NGINX config using env directive
   # @return [Array<String>] list of env vars to declare in NGINX config
   def self.scl_env_declarations
-    %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHON PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB GEM_HOME GEM_PATH LANG)
+    %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHON PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB GEM_HOME GEM_PATH)
   end
 
   # Arguments used during execution of nginx binary
