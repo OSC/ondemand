@@ -955,7 +955,8 @@ const UI = {
             .then(() => navigator.clipboard.readText())
             .then((clipboardText) => {
                 const text = document.getElementById('noVNC_clipboard_text').value;
-                if (clipboardText !== text) {
+                const nlClipboardText = clipboardText.replace(/\r\n/g, "\n");
+                if (clipboardText !== text && nlClipboardText !== text) {
                     document.getElementById('noVNC_clipboard_text').value = clipboardText;
                     UI.clipboardSend();
                 }
