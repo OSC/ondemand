@@ -1,56 +1,327 @@
-<%# TODO Add support to describe relationship among launchers via two drop down menu to select "To-Fro" edge %>
-<%# This will act as way to describe the DAG until we figure out which JS UI library to use %>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Infinite Launchers + Connections</title>
+<style>
+  :root {
+    --bg: #f7f7fb;
+    --ink: #222;
+    --ink-muted: #666;
+    --accent: #2266ff;
+    --accent-weak: #cfe0ff;
+    --danger: #c62828;
+    --box-selected: #ffecb3;
+  }
+  html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: var(--ink); }
 
-<div class='page-header text-center'>
-  <h1 class="my-2 h3"><%= @workflow.name %></h1>
+  .app {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    background: var(--bg);
+  }
 
-  <small class="text-muted"><%= @workflow.description %></small>
-</div>
+  .toolbar {
+    display: flex; gap: .5rem; align-items: center;
+    padding: .5rem .75rem; border-bottom: 1px solid #e6e8ee; background: #fff;
+    position: sticky; top: 0; z-index: 5;
+  }
+  .toolbar button {
+    border: 1px solid #d5d8e0; background: #fff; border-radius: 10px;
+    padding: .35rem .7rem; cursor: pointer; font-weight: 600;
+  }
+  .toolbar button.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-weak); }
+  .toolbar .danger { border-color: var(--danger); color: var(--danger); }
+  .hint { margin-left: auto; color: var(--ink-muted); font-size: .9rem; }
 
-<br>
+  .workspace {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    background: var(--bg);
+  }
 
-<%= bootstrap_form_for(@workflow, url: submit_project_workflow_path(@project.id, @workflow.id), method: :post) do |form| %>
-  <%# This is a hidden field to store launcher ids for this workflow used inside the submit method %>
-  <% @workflow.launcher_ids.each do |id| %>
-    <%= hidden_field_tag "workflow[launcher_ids][]", id %>
-  <% end %>
+  .stage {
+    position: relative;
+    width: 1200px;
+    height: 500px;
+    background: repeating-conic-gradient(#fafbff 0% 25%, #f5f7ff 0% 50%) 50%/20px 20px;
+  }
 
-  <% num_test_edges = 7 %>
-  <div class='card'>
-    <div class='card-group'>
-      <div class="card">
-        <div class='card-body'>
-          <div class="field mt-3">
-            <strong>Source Launcher (To)</strong><br>
-              
-            <% num_test_edges.times do %>
-              <%= select_tag "workflow[source_ids][]", 
-                    options_from_collection_for_select(@launchers, :id, :title),
-                    include_blank: true, class: 'form-control mb-2' %>
-            <% end %>
-          </div>
-        </div>
-      </div>
+  svg.edges {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  }
+  .edge {
+    stroke: var(--accent); stroke-width: 2.5; marker-end: url(#arrow);
+  }
 
-      <div class="card">
-        <div class='card-body'>
-          <div class="field mt-3">
-            <strong>Target Launcher (Fro)</strong><br>
+  .launcher-item {
+    position: absolute;
+    cursor: grab;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    user-select: none;
+    padding: 0.5rem;
+  }
 
-            <% num_test_edges.times do %>
-              <%= select_tag "workflow[target_ids][]", 
-                    options_from_collection_for_select(@launchers, :id, :title),
-                    include_blank: true, class: 'form-control mb-2' %>
-            <% end %>
-          </div>
-        </div>
-      </div>
+  .launcher-item.selected { outline: 3px solid var(--accent-weak); background: var(--box-selected); }
+  .launcher-item.connect-queued { outline: 3px dashed var(--accent); }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="toolbar" aria-label="toolbar">
+    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: true, class: 'form-control mb-2 w-50' %>
+    <button id="btn-add">Add Launcher</button>
+    <button id="btn-connect" aria-pressed="false">Connect Launchers</button>
+    <button id="btn-delete" class="danger" title="Delete selected (Del/Backspace)">Delete Launcher</button>
+    <span class="hint">Click to select and drag. Connect via clicking two launchers.</span>
+  </div>
+  <div class="workspace" id="workspace">
+    <div class="stage" id="stage" tabindex="0" aria-label="canvas">
+      <svg class="edges" id="edges" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7"></polygon>
+          </marker>
+        </defs>
+      </svg>
     </div>
   </div>
-  <br>
-  <p>
-    <%= form.submit I18n.t('dashboard.jobs_workflow_submit'), class: 'btn btn-primary', title: 'Save project' %>
-    <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
-    <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
-  </p>
-<% end %>
+</div>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const edges_svg = document.getElementById('edges');
+  const add_launcher_button = document.getElementById('btn-add');
+  const connect_launcher_button = document.getElementById('btn-connect');
+  const delete_launcher_button = document.getElementById('btn-delete');
+  const selected_launcher = document.getElementById('select_launcher');
+  const base_launcher_url = "<%= project_launchers_path(@project.id) %>";
+
+  const boxes = new Map();
+  const edges = [];
+  let selected_launcher_id = null;
+  let connect_mode = false;
+  let connect_queue = null;
+
+  function launcherSize() { return { w: 100, h: 50 }; }
+  function stageRect() { return stage.getBoundingClientRect(); }
+  function centerOf(box) { return { x: box.x + box.w / 2, y: box.y + box.h / 2 }; }
+
+  function randomSpawn() {
+    const rect = stageRect();
+    const x = Math.random() * (rect.width - launcherSize().w) + launcherSize().w/2;
+    const y = Math.random() * (rect.height - launcherSize().h) + launcherSize().h/2;
+    return {x, y};
+  }
+
+  function pointerInStage(e) {
+    const r = stageRect();
+    const x = (e.clientX ?? e.touches?.[0].clientX) - r.left;
+    const y = (e.clientY ?? e.touches?.[0].clientY) - r.top;
+    return { x, y };
+  }
+
+  function updateBoxPosition(id, x, y) {
+    const b = boxes.get(id);
+    if (!b) return;
+    b.x = x; b.y = y;
+    b.el.style.left = x + 'px';
+    b.el.style.top  = y + 'px';
+    edges.forEach(edge => { if (edge.fromId===id || edge.toId===id) updateEdgeLine(edge); });
+  }
+
+  function intersectRect(cx, cy, w, h, dx, dy) {
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    let scale = 0.5 / Math.max(absDx/w, absDy/h);
+    scale = Math.min(scale, 1);
+    return { x: cx + dx * scale, y: cy + dy * scale };
+  }
+
+  function updateEdgeLine(edge) {
+    const from = boxes.get(edge.fromId);
+    const to = boxes.get(edge.toId);
+    if (!from || !to) return;
+
+    const x1 = from.x, y1 = from.y, w1 = from.w, h1 = from.h;
+    const x2 = to.x, y2 = to.y, w2 = to.w, h2 = to.h;
+
+    // Center points and Direction vector
+    const cx1 = x1 + w1/2, cy1 = y1 + h1/2;
+    const cx2 = x2 + w2/2, cy2 = y2 + h2/2;
+    const dx = cx2 - cx1;
+    const dy = cy2 - cy1;
+
+    const start = intersectRect(cx1, cy1, w1, h1, dx, dy);
+    const end   = intersectRect(cx2, cy2, w2, h2, -dx, -dy);
+    edge.el.setAttribute('x1', start.x);
+    edge.el.setAttribute('y1', start.y);
+    edge.el.setAttribute('x2', end.x);
+    edge.el.setAttribute('y2', end.y);
+  }
+
+  function createEdge(fromId, toId) {
+    if (fromId === toId) return;
+    if (!boxes.has(fromId) || !boxes.has(toId)) return;
+    
+    const existingEdge = edges.find(e => e.fromId === fromId && e.toId === toId);
+    if (existingEdge) {
+      edges_svg.removeChild(existingEdge.el);
+      edges = edges.filter(e => e !== existingEdge);
+      boxes.get(fromId).connections.delete(toId);
+      boxes.get(toId).connections.delete(fromId);
+      return;
+    }
+  
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.classList.add('edge');
+    edges_svg.appendChild(line);
+    const edge = { fromId, toId, el: line };
+    edges.push(edge);
+    updateEdgeLine(edge);
+  }
+
+  async function makeLauncher(x, y, id, title) {
+    const url = `${base_launcher_url}/${id}/render_button`;
+    const response = await fetch(url, { headers: { "Accept": "text/html" } });
+    const html = await response.text();
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = `
+      <div class="launcher-item" id="launcher_${id}">
+        <div class="launcher-title">${title}</div>
+        ${html}
+      </div>`;
+    const el = wrapper.firstElementChild;
+    stage.appendChild(el);
+
+    const w = el.offsetWidth || launcherSize().w;
+    const h = el.offsetHeight || launcherSize().h;
+    const model = { el, x: x - w/2, y: y - h/2, w, h };
+    boxes.set(id, model);
+    updateBoxPosition(id, model.x, model.y);
+
+    function select() { 
+      selected_launcher_id = id; 
+      document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
+      el.classList.add('selected'); 
+    }
+
+    // Drag + select combined
+    el.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      select();
+      e.preventDefault();
+      el.setPointerCapture(e.pointerId);
+      const start = pointerInStage(e);
+      const startX = model.x;
+      const startY = model.y;
+
+      function onMove(ev) {
+        const p = pointerInStage(ev);
+        updateBoxPosition(id, startX + (p.x - start.x), startY + (p.y - start.y));
+      }
+
+      function onUp() {
+        el.releasePointerCapture(e.pointerId);
+        el.removeEventListener('pointermove', onMove);
+        el.removeEventListener('pointerup', onUp);
+      }
+
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerup', onUp);
+    });
+
+    // Connect mode
+    el.addEventListener('click', (e) => {
+      if (!connect_mode) return;
+      e.stopPropagation();
+      if (!connect_queue) {
+        connect_queue = id;
+        el.classList.add('connect-queued');
+      } else {
+        const fromId = connect_queue;
+        const toId = id;
+        document.querySelector(`#launcher_${fromId}`)?.classList.remove('connect-queued');
+        connect_queue = null;
+        createEdge(fromId, toId);
+      }
+    });
+  }
+
+  function deleteSelected() {
+    if (!selected_launcher_id) return;
+    const id = selected_launcher_id;
+    for (let i = edges.length-1; i>=0; i--) {
+      const e = edges[i];
+      if (e.fromId===id || e.toId===id) {
+        e.el.remove();
+        edges.splice(i,1);
+      }
+    }
+    boxes.get(id)?.el.remove();
+    boxes.delete(id);
+    selected_launcher_id = null;
+  }
+
+  add_launcher_button.addEventListener('click', () => {
+    const launcher_id = selected_launcher.value;
+    if (!launcher_id) return alert('Please select a launcher');
+    const launcher_exists = document.getElementById(`launcher_${launcher_id}`);
+    if(launcher_exists) return alert('Launcher already exists, please select a different launcher');
+
+    const title = selected_launcher.options[selected_launcher.selectedIndex].text;
+    const spawn = randomSpawn();
+    makeLauncher(spawn.x, spawn.y, launcher_id, title);
+  });
+
+  connect_launcher_button.addEventListener('click', () => {
+    connect_mode = !connect_mode;
+    connect_launcher_button.classList.toggle('active', connect_mode);
+    connect_launcher_button.setAttribute('aria-pressed', String(connect_mode));
+    if (!connect_mode && connect_queue) {
+      document.querySelector(`#launcher_${connect_queue}`)?.classList.remove('connect-queued');
+      connect_queue = null;
+    }
+  });
+
+  delete_launcher_button.addEventListener('click', deleteSelected);
+
+  stage.addEventListener('pointerdown', (e) => {
+    if (!e.target.closest('.launcher-item')) {
+      selected_launcher_id = null;
+      document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
+    }
+  });
+
+  stage.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      deleteSelected();
+    }
+    if (e.key === 'Escape' && connect_mode) connect_launcher_button.click();
+  });
+
+  const resizeObserver = new ResizeObserver(() => {
+    edges_svg.setAttribute('width', stage.offsetWidth);
+    edges_svg.setAttribute('height', stage.offsetHeight);
+    edges.forEach(updateEdgeLine);
+  });
+  resizeObserver.observe(stage);
+
+  function init() {
+    edges_svg.setAttribute('width', stage.offsetWidth);
+    edges_svg.setAttribute('height', stage.offsetHeight);
+  }
+  init();
+})();
+</script>
+</body>
+</html>
