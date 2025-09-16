@@ -1,5 +1,5 @@
 'use strict';
-
+import { ariaNotify } from './utils'
 // these are initialized in makeChangeHandlers
 var idPrefix = undefined;
 var shortNameRex = undefined;
@@ -805,7 +805,6 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
         hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
       } else if (contextStr == 'exclusiveOptionFor') {
         hide = !(option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`] === 'true')
-        ariaStream
       }
 
       if (hide) {
@@ -890,16 +889,7 @@ function getWidgetType(id){
 
 // sends a message that is immediately read by screenreaders
 function ariaStream(message) {
-  $('#aria_live_region').first().append(`<p>${escapeHtml(message)}.</p>`);
-}
-
-function escapeHtml(string) {
-  return String(string)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  ariaNotify(`${message}.`, false);
 }
 
 function toggleOptionsFor(_event, elementId) {
