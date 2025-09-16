@@ -64,11 +64,11 @@ function fetch_job_data(tr, row, options) {
 
     $.getJSON(jobDataUrl, function (data) {
       // Open this row
-      row.child(data.html_ganglia_graphs_table).show();
+      row.child(data.html_extended_panel).show();
       // Add the data panel to the view
       $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
         .hide()
-        .html(data.html_extended_panel)
+        .html(data.html_extended_data_table)
         .fadeIn(250);
       // Update the status label in the parent row
       tr.find(".status-label").html(data.status);

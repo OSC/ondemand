@@ -1,0 +1,52 @@
+<% if data.error %>
+  <div class="alert alert-warning" role="alert">
+    <%= data.error %>
+  </div>
+<% else %>
+<div class="card ms-5">
+  <div class="card-header">
+    <%# FIXME: ul/li with css %>
+    <strong>
+      <%= status_label(data.status) %>
+      <span class="text-break ms-3"><%= data.jobname %></span>
+      <span class="ms-3"><%= data.pbsid %></span>
+    </strong>
+  </div>
+  <div class="card-body">
+    <table class="table table-sm table-striped">
+      <tbody>
+      <% data.native_attribs.each do |attrib| %>
+        <tr>
+          <!-- FIXME: col-xs-2... -->
+        <td class="col-xs-2"><strong><%= attrib.name %></strong></td>
+        <td class="col-xs-10"><%= attrib.value %></td>
+      </tr>
+    <% end %>
+      </tbody>
+    </table>
+  </div>
+    <% if data.submit_args %>
+    <div class="card-body">
+      <p class="card-text">Submit Args: <pre class="card bg-light p-2 text-prewrap"><%= data.submit_args %></pre></p>
+    </div>
+    <% end %>
+    <% if data.output_path %>
+    <div class="card-body">
+      <%# FIXME: can use form element input with label and disabled %>
+      <p class="card-text">Output Location: <pre class="card bg-light p-2 text-prewrap"><%= data.output_path %></pre></p>
+    </div>
+    <% end %>
+    <div class="card-body">
+      <% if CurrentUser.name == data.username %>
+        <% if Configuration.can_access_files? %>
+          <%= link_to("#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-dark m-1", :target => "_blank") if data.file_explorer_url %>
+        <% end %>
+        <% if Configuration.ood_bc_ssh_to_compute_node && Configuration.can_access_shell? %>
+          <%= link_to("#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-dark m-1", :target => "_blank") if data.shell_url %>
+        <% end %>
+          <%= link_to("#{fa_icon("trash", classes: nil)} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-outline-danger pull-right m-1", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" }) %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<% end %>
