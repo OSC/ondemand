@@ -190,7 +190,7 @@ function addHideHandler(optionId, option, key, configValue) {
     hideHandlerCache[optionId].push(changeId);
   }
 
-  updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
+  updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId, false);
 };
 
 function newLabel(changeElement, key) {
@@ -199,11 +199,11 @@ function newLabel(changeElement, key) {
   return selectedOptionLabel.dataset[key];
 };
 
-function updateLabel(changeId, changeElement, key) {
+function updateLabel(changeId, changeElement, key, announce = true) {
   var labelContent = newLabel(changeElement, key);
   const originalInfo = getWidgetInfo(changeId);
   $(`label[for="${changeId}"]`)[0].innerHTML = labelContent;
-  ariaStream(`Change label on ${originalInfo} to new label ${labelContent}`);
+  ariaStream(`Change label on ${originalInfo} to new label ${labelContent}`, announce);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
@@ -222,7 +222,7 @@ function addLabelHandler(optionId, option, key, configValue) {
     });
   };
 
-  updateLabel(changeId, changeElement, key);
+  updateLabel(changeId, changeElement, key, false);
 };
 
 /**
@@ -281,7 +281,7 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
     minMaxHandlerCache.push(cacheKey);
   }
 
-  toggleMinMax({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
+  toggleMinMax({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId, false);
 }
 
 /**
@@ -320,10 +320,10 @@ function addSetHandler(optionId, option, key, configValue) {
     setHandlerCache.push(cacheKey);
   }
 
-  setValue({ target: document.querySelector(`#${optionId}`) }, id);
+  setValue({ target: document.querySelector(`#${optionId}`) }, id, false);
 }
 
-function setValue(event, changeId) {
+function setValue(event, changeId, announce = true) {
   const chosenVal = event.target.value;
   const cacheKey = `${changeId}_${event.target['id']}`
   const table = setValueLookup[cacheKey];
@@ -334,7 +334,7 @@ function setValue(event, changeId) {
   if(changeVal !== undefined) {
     const element = document.getElementById(changeId);
     const elementInfo = getWidgetInfo(changeId);
-    ariaStream(`set ${elementInfo} to value ${changeVal}`);
+    ariaStream(`set ${elementInfo} to value ${changeVal}`, announce);
 
     if(element['type'] == 'checkbox') {
       setCheckboxValue(element, changeVal);
@@ -440,7 +440,7 @@ class Table {
  * Update the visibility of `changeId` based on the
  * event and what's in the hideLookup table.
  */
-function updateVisibility(event, changeId) {
+function updateVisibility(event, changeId, announce = true) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   let changeElement = undefined;
@@ -467,11 +467,11 @@ function updateVisibility(event, changeId) {
     changeElement.show();
     // Pass text into the aria stream
     const addMsg = `Revealed form item ${elementInfo}`;
-    ariaStream(addMsg)
+    ariaStream(addMsg, announce)
   } else if (hide === true) {
     changeElement.hide();
     const rmMsg = `Hid form item ${elementInfo}`;
-    ariaStream(rmMsg);
+    ariaStream(rmMsg, announce);
   }
 }
 
@@ -488,7 +488,7 @@ function valueFromEvent(event) {
  * Update the min & max values of `changeId` based on the
  * event, the `otherId` and the settings in minMaxLookup table.
  */
-function toggleMinMax(event, changeId, otherId) {
+function toggleMinMax(event, changeId, otherId, announce = true) {
   let x = undefined, y = undefined;
 
   // many subjects can change the object, so we have to find the correct table
@@ -538,7 +538,7 @@ function toggleMinMax(event, changeId, otherId) {
 
   if (ariaMsg.length > ariaMsgLength){
     ariaMsg += ` for ${getWidgetInfo(changeId)}`;
-    ariaStream(ariaMsg);
+    ariaStream(ariaMsg, announce);
   }
 }
 
@@ -595,9 +595,9 @@ function sharedOptionForHandler(causeId, targetId, optionForType) {
 
     // fake an event to initialize
     if (optionForType == 'exclusiveOptionFor') {
-      toggleExclusiveOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
+      toggleExclusiveOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId, false);
     } else if (optionForType == 'optionFor') {
-      toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
+      toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId, false);
     }
   }
 }
@@ -769,7 +769,7 @@ function exclusiveOptionForFromToken(str) {
   return sharedOptionForFromToken(str, 'exclusiveOptionFor');
 }
 
-function sharedToggleOptionsFor(_event, elementId, contextStr) {
+function sharedToggleOptionsFor(_event, elementId, contextStr, announce = true) {
   const options = [...document.querySelectorAll(`#${elementId} option`)];
   let hideSelectedValue = undefined;
 
@@ -814,16 +814,17 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
     const elementInfo = getWidgetInfo(elementId);
     if(hide) {
+      var prefix = '';
       if(option.selected) {
+        prefix = 'Selected'
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-      var prefix = option.selected ? 'Selected' : ''
-      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`)
+      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`, announce);  
       option.style.display = 'none';
       option.disabled = true;
     } else {
-      ariaStream(`Option ${option.value} enabled for ${elementInfo}`)
+      ariaStream(`Option ${option.value} enabled for ${elementInfo}`, announce);
       option.style.display = '';
       option.disabled = false;
     }
@@ -866,16 +867,15 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 }
 
 // get attributes based on widget id
-function getWidgetInfo(id){
-  console.log(id)
+function getWidgetInfo(id) {
   const type = getWidgetType(id)
   const label = $(`label[for="${id}"]`);
   const labelText = label.length ? label.text().trim() : null;
 
-  return `${type} with ${labelText ? ` label ${labelText}` : 'no label'}`;
+  return `${type} with ${labelText ? `label ${labelText}` : 'no label'}`;
 }
 
-function getWidgetType(id){
+function getWidgetType(id) {
   var finaltype = undefined;
   $(`#${id}`).parents().each(function(_i, parent) {
     type = $(parent).nextAll('[data-widget-type]').first().data('widget-type')
@@ -888,16 +888,18 @@ function getWidgetType(id){
 }
 
 // sends a message that is immediately read by screenreaders
-function ariaStream(message) {
-  ariaNotify(`${message}.`, false);
+function ariaStream(message, announce = true) {
+  if (announce) {
+    ariaNotify(`${message}.`, false);
+  }
 }
 
-function toggleOptionsFor(_event, elementId) {
-  sharedToggleOptionsFor(_event, elementId, 'optionFor');
+function toggleOptionsFor(_event, elementId, announce = true) {
+  sharedToggleOptionsFor(_event, elementId, 'optionFor', announce);
 }
 
-function toggleExclusiveOptionsFor(_event, elementId) {
-  sharedToggleOptionsFor(_event, elementId, 'exclusiveOptionFor');
+function toggleExclusiveOptionsFor(_event, elementId, announce = true) {
+  sharedToggleOptionsFor(_event, elementId, 'exclusiveOptionFor', announce);
 };
 
 export {
