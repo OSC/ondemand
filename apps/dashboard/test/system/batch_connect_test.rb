@@ -758,6 +758,48 @@ class BatchConnectTest < ApplicationSystemTestCase
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus_1', true)
   end
 
+  test 'hiding file attachments using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - seeds
+        - checkbox_test
+      attributes:
+        seeds:
+          widget: 'file_attachments'
+          label: 'Seed Files'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-seeds-when-checked: true
+    HEREDOC
+    data_hide_checkbox_test(form, 'checkbox_test', 'seeds', false)
+  end
+
+  test 'hiding file attachments using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+    ---
+    cluster:
+      - owens
+    form:
+      - seeds
+      - checkbox_test
+    attributes:
+      seeds:
+        widget: 'file_attachments'
+        label: 'Seed Files'
+      checkbox_test:
+        widget: 'check_box'
+        html_options:
+          data:
+            hide-seeds-when-not-checked: true
+  HEREDOC
+  data_hide_checkbox_test(form, 'checkbox_test', 'seeds', true)
+  end
+
   test 'hiding path selector using check boxes based on when checked' do
     form = <<~HEREDOC
       ---
