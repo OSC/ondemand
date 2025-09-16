@@ -75,6 +75,14 @@ class LaunchersController < ApplicationController
     end
   end
 
+  # GET /projects/:project_id/launchers/:id/render_button
+  def render_button
+    launcher = Launcher.find(show_launcher_params[:id], @project.directory)
+    @valid_project = Launcher.clusters?
+    @remove_delete_button = true
+    render(partial: 'projects/launcher_buttons', locals: { launcher: launcher })
+  end
+
   private
 
   def find_launcher
