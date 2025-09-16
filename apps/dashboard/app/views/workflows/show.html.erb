@@ -1,56 +1,37 @@
-<%# TODO Add support to describe relationship among launchers via two drop down menu to select "To-Fro" edge %>
-<%# This will act as way to describe the DAG until we figure out which JS UI library to use %>
+<%= javascript_include_tag 'workflows', nonce: true, defer: true %>
 
-<div class='page-header text-center'>
-  <h1 class="my-2 h3"><%= @workflow.name %></h1>
+<input type="hidden" id="base-launcher-url" value="<%= project_launchers_path(@project.id) %>">
 
-  <small class="text-muted"><%= @workflow.description %></small>
-</div>
+<div class="app" id="app">
+  <div class="toolbar" aria-label="toolbar">
+    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: true, class: 'form-control mb-2 w-50' %>
+    <button id="btn-add">Add Launcher</button>
+    <button id="btn-connect" aria-pressed="false">Connect Launchers</button>
+    <button id="btn-delete-launcher" class="danger" title="Delete selected launcher (Del/Backspace)">Delete Launcher</button>
+    <button id="btn-delete-edge" class="danger" title="Delete selected edge (Del/Backspace)">Delete Edge</button>
+    <span class="hint">Click title to select and drag. Connect via clicking two launchers.</span>
+  </div>
 
-<br>
+  <div class="workspace-wrapper">
+    <div class="zoom-controls" id="zoom-controls" aria-label="Zoom controls">
+      <button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+      <button id="zoom-reset" title="Reset zoom" aria-label="Reset zoom">100%</button>
+      <button id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+    </div>
 
-<%= bootstrap_form_for(@workflow, url: submit_project_workflow_path(@project.id, @workflow.id), method: :post) do |form| %>
-  <%# This is a hidden field to store launcher ids for this workflow used inside the submit method %>
-  <% @workflow.launcher_ids.each do |id| %>
-    <%= hidden_field_tag "workflow[launcher_ids][]", id %>
-  <% end %>
-
-  <% num_test_edges = 7 %>
-  <div class='card'>
-    <div class='card-group'>
-      <div class="card">
-        <div class='card-body'>
-          <div class="field mt-3">
-            <strong>Source Launcher (To)</strong><br>
-
-            <% num_test_edges.times do %>
-              <%= select_tag "workflow[source_ids][]", 
-                    options_from_collection_for_select(@launchers, :id, :title),
-                    include_blank: true, class: 'form-control mb-2' %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class='card-body'>
-          <div class="field mt-3">
-            <strong>Target Launcher (Fro)</strong><br>
-
-            <% num_test_edges.times do %>
-              <%= select_tag "workflow[target_ids][]", 
-                    options_from_collection_for_select(@launchers, :id, :title),
-                    include_blank: true, class: 'form-control mb-2' %>
-            <% end %>
-          </div>
+    <div class="workspace" id="workspace">
+      <div class="stage-zoom" id="stage-zoom">
+        <div class="stage" id="stage" tabindex="0" aria-label="canvas">
+          <svg class="edges" id="edges" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7"></polygon>
+              </marker>
+            </defs>
+          </svg>
         </div>
       </div>
     </div>
   </div>
-  <br>
-  <p>
-    <%= form.submit I18n.t('dashboard.jobs_workflow_submit'), class: 'btn btn-primary', title: 'Save project' %>
-    <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
-    <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
-  </p>
-<% end %>
+
+</div>
