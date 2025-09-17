@@ -295,15 +295,15 @@ GEM
       rexml
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    rubyzip (3.1.0)
+    rubyzip (2.4.1)
     sdoc (2.6.2)
       rdoc (>= 5.0)
     securerandom (0.4.1)
-    selenium-webdriver (4.35.0)
+    selenium-webdriver (4.33.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 4.0)
+      rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     sinatra (4.1.1)
       logger (>= 1.6.0)
@@ -387,7 +387,7 @@ DEPENDENCIES
   rest-client (~> 2.0)
   rss (~> 0.2)
   sdoc
-  selenium-webdriver
+  selenium-webdriver (= 4.33.0)
   sinatra
   sinatra-contrib
   sprockets-rails (>= 2.0.0)
