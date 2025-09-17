@@ -799,6 +799,99 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
+
+  test 'data-help sets help field when unset' do
+    form = <<~HEREDOC
+      --
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard_choice: 'Choose yes']
+            - ['Second', data-help-hard_choice: 'Choose no']
+            - ['Third',  data-help-hard_choice: 'Choose whatever']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      
+      parent = find('#batch_connect_session_context_hard_choice')
+        .find(:xpath, './ancestor::div.mb-3')
+
+      help = parent.find(':scope > small')    
+      expect(help).to have_text(/\S/)
+      assert_equal 'Choose yes', help.text
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      expect(help).to have_text('Choose no')
+      
+      select 'Third', from: 'batch_connect_session_context_group'
+      expect(help).to have_text('Choose whatever')
+    end
+  end
+      
+  test 'data-help overrides initial setting' do
+    form = <<~HEREDOC
+    --
+    cluster:
+      - owens
+    form:
+      - group
+      - hard_choice
+    attributes:
+      group:
+        widget: 'select'
+        label: Membership group
+        help: 'you can find your group in your personal page'
+        options:
+          - ['First',  data-help-hard_choice: 'Choose yes']
+          - ['Second', data-help-hard_choice: 'Choose no']
+          - ['Third']
+      hard_choice:
+        widget: 'radio_button'
+        label: 'Make your choice'
+        help: 'Choose anything'
+        options:
+          - ["Yes",   "1"]
+          - ["No",    "0"]
+          - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      
+      parent = find('#batch_connect_session_context_hard_choice')
+        .find(:xpath, './ancestor::div.mb-3')
+
+      help = parent.find(':scope > small') 
+      expect(help).to have_text('Choose anything')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      expect(help).to have_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group' 
+      expect(help).to have_text('Choose no')
+
+      select 'Third', from: 'batch_connect_session_context_group' 
+      expect(help).to have_text('Choose anything')
+    end
+
   
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
