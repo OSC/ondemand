@@ -954,9 +954,9 @@ const UI = {
             navigator.permissions.query({name: 'clipboard-read'})
             .then(() => navigator.clipboard.readText())
             .then((clipboardText) => {
+                clipboardText = clipboardText.replace(/\r\n/g, "\n");
                 const text = document.getElementById('noVNC_clipboard_text').value;
-                const nlClipboardText = clipboardText.replace(/\r\n/g, "\n");
-                if (clipboardText !== text && nlClipboardText !== text) {
+                if (clipboardText !== text) {
                     document.getElementById('noVNC_clipboard_text').value = clipboardText;
                     UI.clipboardSend();
                 }
