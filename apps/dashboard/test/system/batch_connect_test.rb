@@ -800,7 +800,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
 
-  def data_help_basic_test(form, widget_type)
+  def data_help_basic_test(form)
     Dir.mktmpdir do |dir|
       make_bc_app(dir, form)
       visit new_batch_connect_session_context_url('sys/app')
@@ -845,7 +845,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         hard_choice:
           widget: 'number_field'
     HEREDOC
-    data_help_basic_test(form, 'number_field')
+    data_help_basic_test(form)
   end
 
   test 'data-help sets text area help field when unset' do
@@ -868,7 +868,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         hard_choice:
           widget: 'text_area'
     HEREDOC
-    data_help_basic_test(form, 'text_area')
+    data_help_basic_test(form)
   end
 
   test 'data-help sets select help field when unset' do
@@ -895,7 +895,7 @@ class BatchConnectTest < ApplicationSystemTestCase
           - ["No"]
           - ["Maybe"]
     HEREDOC
-    data_help_basic_test(form, 'select')
+    data_help_basic_test(form)
   end
 
   test 'data-help sets check-box area help field when unset' do
@@ -918,7 +918,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         hard_choice:
           widget: 'check_box'
     HEREDOC
-    data_help_basic_test(form, 'check_box')
+    data_help_basic_test(form)
   end
 
   test 'data-help sets radio button help field when unset' do
@@ -945,10 +945,10 @@ class BatchConnectTest < ApplicationSystemTestCase
             - ["No",    "0"]
             - ["Maybe", "i"]
     HEREDOC
-    data_help_basic_test(form, 'radio_button')
+    data_help_basic_test(form)
   end
 
-  test 'data-help sets path selector area help field when unset' do
+  test 'data-help sets path selector help field when unset' do
     form = <<~HEREDOC
       ---
       cluster:
@@ -968,7 +968,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         hard_choice:
           widget: 'path_selector'
     HEREDOC
-    data_help_basic_test(form, 'path_selector')
+    data_help_basic_test(form)
   end
 
   # We may want to change this behavior later, but this records current state
