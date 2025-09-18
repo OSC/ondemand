@@ -891,7 +891,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       select 'Third', from: 'batch_connect_session_context_group' 
       expect(help).to have_text('Choose anything')
     end
-
+  end
   
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')

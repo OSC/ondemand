@@ -20,13 +20,14 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-
+const helpHandlerCache = {};
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
+const helpLookup = {};
 
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
@@ -148,6 +149,9 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('help')) {
+                // console.log(element, key, data, opt);
+                addHelpHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -196,6 +200,7 @@ function addHideHandler(optionId, option, key, configValue) {
 function newLabel(changeElement, key) {
   const selectedOptionLabelIndex = changeElement[0].selectedIndex;
   const selectedOptionLabel = changeElement[0].options[selectedOptionLabelIndex];
+  console.log(selectedOptionLabel.dataset)
   return selectedOptionLabel.dataset[key];
 };
 
@@ -222,6 +227,44 @@ function addLabelHandler(optionId, option, key, configValue) {
   updateLabel(changeId, changeElement, key);
 };
 
+function getNewHelp(changeElement, key) {
+  const selectedOptionHelpIndex = changeElement[0].selectedIndex;
+  const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
+  console.log(selectedOptionHelp.dataset)
+  return selectedOptionHelp.dataset[key];
+}
+
+function updateHelp(changeId, changeElement, key) {
+  var helpContent = getNewHelp(changeElement, key);
+  console.log(changeId);
+  var parentElement = getItemParent(changeId);
+  var helpElement = parentElement.find('small p');
+  if (helpElement.length == 0) {
+    helpElement = $('<small class="form-text text-muted"></small>').appendTo(parentElement);
+  }
+  helpElement.text(helpContent);
+}
+
+function addHelpHandler(optionId, option, key, configValue) {
+  console.log(optionId, option, key, configValue);
+  const changeId = idFromToken(key.replace(/^help/, ''));
+  console.log(changeId);
+  const changeElement = $(`#${optionId}`);
+
+  if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
+  const table = helpLookup[optionId];
+  table.put(changeId, option, configValue);
+
+  if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
+
+  if(!helpHandlerCache[optionId].includes(changeId)) {
+    changeElement.on('change', (event) => {
+      updateHelp(changeId, changeElement, key);
+    });
+  };
+
+  updateHelp(changeId, changeElement, key);
+};
 /**
  *
  * @param {*} subjectId batch_connect_session_context_node_type
@@ -430,16 +473,9 @@ class Table {
   }
 }
 
-/**
- * Update the visibility of `changeId` based on the
- * event and what's in the hideLookup table.
- */
-function updateVisibility(event, changeId) {
-  const val = valueFromEvent(event);
-  const id = event.target['id'];
-  let changeElement = undefined;
-  
-  $(`#${changeId}`).parents().each(function(_i, parent) {
+function getItemParent(widgetId) {
+  let parentElement = undefined;
+  $(`#${widgetId}`).parents().each(function(_i, parent) {
     var classListValues = parent.classList.values();
     for (const val of classListValues) {
       // TODO: Using 'mb-3' here because 'form-group' was removed
@@ -447,11 +483,22 @@ function updateVisibility(event, changeId) {
       // is a grid class which could (??) apply to parent elements
       // in unpredictable parts of the chain - test for & resolve
       if (val.match('mb-3')) {
-        changeElement = $(parent);
+        parentElement = $(parent);
+        return parentElement;
       }
     }
   });
+  return parentElement;
+}
+/**
+ * Update the visibility of `changeId` based on the
+ * event and what's in the hideLookup table.
+ */
+function updateVisibility(event, changeId, announce = true) {
+  const val = valueFromEvent(event);
+  const id = event.target['id'];
 
+  var changeElement = getItemParent(changeId);
   if (changeElement === undefined || changeElement.length <= 0) return;
 
   // safe to access directly?
