@@ -802,7 +802,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'data-help sets help field when unset' do
     form = <<~HEREDOC
-      --
+      ---
       cluster:
         - owens
       form:
@@ -814,9 +814,9 @@ class BatchConnectTest < ApplicationSystemTestCase
           label: Membership group
           help: 'you can find your group in your personal page'
           options:
-            - ['First',  data-help-hard_choice: 'Choose yes']
-            - ['Second', data-help-hard_choice: 'Choose no']
-            - ['Third',  data-help-hard_choice: 'Choose whatever']
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
         hard_choice:
           widget: 'radio_button'
           label: 'Make your choice'
@@ -829,67 +829,72 @@ class BatchConnectTest < ApplicationSystemTestCase
       make_bc_app(dir, form)
       visit new_batch_connect_session_context_url('sys/app')
 
-      select 'First', from: 'batch_connect_session_context_group'
-      
-      parent = find('#batch_connect_session_context_hard_choice')
-        .find(:xpath, './ancestor::div.mb-3')
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
 
-      help = parent.find(':scope > small')    
-      expect(help).to have_text(/\S/)
-      assert_equal 'Choose yes', help.text
+      help = parent.find(':scope > small') 
+         
+      help.assert_text('Choose yes')
 
       select 'Second', from: 'batch_connect_session_context_group'
-      expect(help).to have_text('Choose no')
+      help.assert_text('Choose no')
       
       select 'Third', from: 'batch_connect_session_context_group'
-      expect(help).to have_text('Choose whatever')
+      help.assert_text('Choose whatever')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
     end
   end
       
   test 'data-help overrides initial setting' do
     form = <<~HEREDOC
-    --
-    cluster:
-      - owens
-    form:
-      - group
-      - hard_choice
-    attributes:
-      group:
-        widget: 'select'
-        label: Membership group
-        help: 'you can find your group in your personal page'
-        options:
-          - ['First',  data-help-hard_choice: 'Choose yes']
-          - ['Second', data-help-hard_choice: 'Choose no']
-          - ['Third']
-      hard_choice:
-        widget: 'radio_button'
-        label: 'Make your choice'
-        help: 'Choose anything'
-        options:
-          - ["Yes",   "1"]
-          - ["No",    "0"]
-          - ["Maybe", "i"]
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
     HEREDOC
     Dir.mktmpdir do |dir|
       make_bc_app(dir, form)
       visit new_batch_connect_session_context_url('sys/app')
       
-      parent = find('#batch_connect_session_context_hard_choice')
-        .find(:xpath, './ancestor::div.mb-3')
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
 
       help = parent.find(':scope > small') 
-      expect(help).to have_text('Choose anything')
-
-      select 'First', from: 'batch_connect_session_context_group'
-      expect(help).to have_text('Choose yes')
-
-      select 'Second', from: 'batch_connect_session_context_group' 
-      expect(help).to have_text('Choose no')
+      help.assert_text('Choose anything')
 
       select 'Third', from: 'batch_connect_session_context_group' 
-      expect(help).to have_text('Choose anything')
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group' 
+      help.assert_text('Choose no')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose anything')
     end
   end
   
