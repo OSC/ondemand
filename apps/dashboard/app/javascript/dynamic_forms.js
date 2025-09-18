@@ -150,7 +150,6 @@ function makeChangeHandlers(prefix){
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('help')) {
-                // console.log(element, key, data, opt);
                 addHelpHandler(element['id'], opt.value, key, data[key]);
               }
             });
@@ -200,7 +199,6 @@ function addHideHandler(optionId, option, key, configValue) {
 function newLabel(changeElement, key) {
   const selectedOptionLabelIndex = changeElement[0].selectedIndex;
   const selectedOptionLabel = changeElement[0].options[selectedOptionLabelIndex];
-  console.log(selectedOptionLabel.dataset)
   return selectedOptionLabel.dataset[key];
 };
 
@@ -230,25 +228,23 @@ function addLabelHandler(optionId, option, key, configValue) {
 function getNewHelp(changeElement, key) {
   const selectedOptionHelpIndex = changeElement[0].selectedIndex;
   const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
-  console.log(selectedOptionHelp.dataset)
   return selectedOptionHelp.dataset[key];
 }
 
 function updateHelp(changeId, changeElement, key) {
   var helpContent = getNewHelp(changeElement, key);
-  console.log(changeId);
   var parentElement = getItemParent(changeId);
   var helpElement = parentElement.find('small p');
   if (helpElement.length == 0) {
-    helpElement = $('<small class="form-text text-muted"></small>').appendTo(parentElement);
+    helpElement = $('<p></p>').appendTo(
+      $('<small class="form-text text-muted"></small>').appendTo(parentElement)
+    );
   }
   helpElement.text(helpContent);
 }
 
 function addHelpHandler(optionId, option, key, configValue) {
-  console.log(optionId, option, key, configValue);
   const changeId = idFromToken(key.replace(/^help/, ''));
-  console.log(changeId);
   const changeElement = $(`#${optionId}`);
 
   if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
@@ -256,8 +252,9 @@ function addHelpHandler(optionId, option, key, configValue) {
   table.put(changeId, option, configValue);
 
   if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
-
+  
   if(!helpHandlerCache[optionId].includes(changeId)) {
+    helpHandlerCache[optionId].push(changeId);
     changeElement.on('change', (event) => {
       updateHelp(changeId, changeElement, key);
     });
