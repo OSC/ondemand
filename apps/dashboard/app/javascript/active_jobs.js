@@ -39,6 +39,13 @@ function human_time(seconds_total) {
   return hours_str + ":" + minutes_str + ":" + seconds_str;
 }
 
+function clean_options(options) {
+  if (!options) options = {};
+  if (!options.doneCallback) options.doneCallback = null;
+  if (!options.base_uri) options.base_uri = window.location.pathname.replace('/activejobs','');
+  return options;
+}
+
 function fetch_job_data(tr, row, options) {
   let btn = tr.find('button.details-control');
   if (row.child.isShown()) {
@@ -89,9 +96,7 @@ function fetch_job_data(tr, row, options) {
 }
 
 function fetch_table_data(table, options){
-  if (!options) options = {};
-  if (!options.doneCallback) options.doneCallback = null;
-  if (!options.base_uri) options.base_uri = window.location.pathname;
+  options = clean_options(options);
 
   oboe({
     url: options.base_uri + '/activejobs.json?'+get_request_params(),
@@ -147,9 +152,7 @@ function status_label(status){
 }
 
 function create_datatable(options){
-    if (!options) options = {};
-    if (!options.drawCallback) options.drawCallback = null;
-    if (!options.base_uri) options.base_uri = window.location.pathname;
+    options = clean_options(options)
 
     $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
     $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());
