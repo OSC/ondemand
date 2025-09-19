@@ -28,7 +28,8 @@ end
 group :test do
   gem 'capybara'
 
-  gem "selenium-webdriver"
+  # lock selenium-webdriver to this version until we upgrade to Rails 8.
+  gem "selenium-webdriver", "4.26.0"
   gem "webrick"
   gem 'mocha', '~> 2.1'
 end
