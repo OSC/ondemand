@@ -1,0 +1,39 @@
+<div class='card'>
+  <div class='card-group'>
+    <div class='card'>
+      <div class='card-body'>
+        <div class="col">
+          <div class="field">
+            <%= form.text_field :name, placeholder: I18n.t('dashboard.jobs_workflow_name_placeholder'),
+                    help: I18n.t('dashboard.jobs_workflow_name_validation') %>
+          </div>
+
+          <div class="field">
+            <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_workflow_description_placeholder') %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class='card-body'>
+        <div class="field mt-3">
+          <strong>Pick Launchers</strong><br>
+          <% @launchers.each do |launcher| %>
+            <div class="form-check">
+              <%= check_box_tag "workflow[launcher_ids][]", launcher.id,
+                                @workflow.launcher_ids.include?(launcher.id),
+                                id: "launcher_#{launcher.id}", class: "form-check-input" %>
+              <%= label_tag "launcher_#{launcher.id}", launcher.title, class: "form-check-label" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<p>
+  <%= form.submit I18n.t('dashboard.save'), class: 'btn btn-primary', title: 'Save project' %>
+  <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+  <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
+</p>
