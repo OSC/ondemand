@@ -7,6 +7,7 @@
   --danger: #c62828;
   --box-selected: #ffecb3;
 }
+
 html, body {
   height: 100%;
   margin: 0;
@@ -32,6 +33,7 @@ html, body {
   top: 0;
   z-index: 5;
 }
+
 .toolbar button {
   border: 1px solid #d5d8e0;
   background: #fff;
@@ -40,14 +42,17 @@ html, body {
   cursor: pointer;
   font-weight: 600;
 }
+
 .toolbar button.active {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-weak);
 }
+
 .toolbar .danger {
   border-color: var(--danger);
   color: var(--danger);
 }
+
 .hint {
   margin-left: auto;
   color: var(--ink-muted);
@@ -75,10 +80,19 @@ svg.edges {
   pointer-events: none;
   z-index: 1;
 }
+
 .edge {
   stroke: var(--accent);
   stroke-width: 2.5;
   marker-end: url(#arrow);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.edge.selected {
+  stroke: var(--danger);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 4px var(--accent-weak));
 }
 
 .launcher-item {
@@ -95,8 +109,7 @@ svg.edges {
   outline: 3px solid var(--accent-weak);
   background: var(--box-selected);
 }
+
 .launcher-item.connect-queued {
   outline: 3px dashed var(--accent);
 }
-
-
