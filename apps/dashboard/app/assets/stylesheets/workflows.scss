@@ -1,0 +1,102 @@
+:root {
+  --bg: #f7f7fb;
+  --ink: #222;
+  --ink-muted: #666;
+  --accent: #2266ff;
+  --accent-weak: #cfe0ff;
+  --danger: #c62828;
+  --box-selected: #ffecb3;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--ink);
+}
+
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  background: var(--bg);
+}
+
+.toolbar {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid #e6e8ee;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.toolbar button {
+  border: 1px solid #d5d8e0;
+  background: #fff;
+  border-radius: 10px;
+  padding: .35rem .7rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+.toolbar button.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+.toolbar .danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.hint {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-size: .9rem;
+}
+
+.workspace {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  background: var(--bg);
+}
+
+.stage {
+  position: relative;
+  width: 1200px;
+  height: 500px;
+  background: repeating-conic-gradient(#fafbff 0% 25%, #f5f7ff 0% 50%) 50%/20px 20px;
+}
+
+svg.edges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.edge {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  marker-end: url(#arrow);
+}
+
+.launcher-item {
+  position: absolute;
+  cursor: grab;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  user-select: none;
+  padding: 0.5rem;
+}
+
+.launcher-item.selected {
+  outline: 3px solid var(--accent-weak);
+  background: var(--box-selected);
+}
+.launcher-item.connect-queued {
+  outline: 3px dashed var(--accent);
+}
+
+
