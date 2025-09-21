@@ -3,19 +3,20 @@
   const edges_svg = document.getElementById('edges');
   const add_launcher_button = document.getElementById('btn-add');
   const connect_launcher_button = document.getElementById('btn-connect');
-  const delete_launcher_button = document.getElementById('btn-delete');
+  const delete_launcher_button = document.getElementById('btn-delete-launcher');
+  const delete_edge_button = document.getElementById('btn-delete-edge');
   const selected_launcher = document.getElementById('select_launcher');
   const base_launcher_url = document.getElementById('base-launcher-url').value;
 
   const boxes = new Map();
   const edges = [];
   let selected_launcher_id = null;
+  let selected_edge = null;
   let connect_mode = false;
   let connect_queue = null;
 
   function launcherSize() { return { w: 100, h: 50 }; }
   function stageRect() { return stage.getBoundingClientRect(); }
-  function centerOf(box) { return { x: box.x + box.w / 2, y: box.y + box.h / 2 }; }
 
   function randomSpawn() {
     const rect = stageRect();
@@ -74,11 +75,12 @@
     if (!boxes.has(fromId) || !boxes.has(toId)) return;
     
     const existingEdge = edges.find(e => e.fromId === fromId && e.toId === toId);
-    if (existingEdge) {
-      edges_svg.removeChild(existingEdge.el);
-      edges.splice(edges.indexOf(existingEdge), 1);
-      return;
-    }
+    if (existingEdge) { return; }
+    
+    const reverseEdge = edges.find(e => e.fromId === toId && e.toId === fromId);
+    if (reverseEdge) { alert('Bidirectional edges are not allowed.') }
+
+    
   
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.classList.add('edge');
@@ -86,6 +88,16 @@
     const edge = { fromId, toId, el: line };
     edges.push(edge);
     updateEdgeLine(edge);
+
+    line.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
+      selected_launcher_id = null;
+
+      line.classList.add('selected');
+      selected_edge = edge;
+    });
   }
 
   function makeLauncher(x, y, id, title) {
@@ -145,7 +157,7 @@
     }, 'html');
   }
 
-  function deleteSelected() {
+  function deleteSelectedLauncher() {
     if (!selected_launcher_id) return;
     const id = selected_launcher_id;
     for (let i = edges.length-1; i>=0; i--) {
@@ -158,6 +170,13 @@
     boxes.get(id)?.el.remove();
     boxes.delete(id);
     selected_launcher_id = null;
+  }
+
+  function deleteSelectedEdge() {
+    if (!selected_edge) return;
+    selected_edge.el.remove();
+    edges.splice(edges.indexOf(selected_edge), 1);
+    selected_edge = null;
   }
 
   add_launcher_button.addEventListener('click', () => {
@@ -181,19 +200,26 @@
     }
   });
 
-  delete_launcher_button.addEventListener('click', deleteSelected);
+  delete_launcher_button.addEventListener('click', deleteSelectedLauncher);
+  delete_edge_button.addEventListener('click', deleteSelectedEdge);
 
   stage.addEventListener('pointerdown', (e) => {
     if (!e.target.closest('.launcher-item')) {
       selected_launcher_id = null;
       document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
+      selected_edge = null;
+      document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
     }
   });
 
   stage.addEventListener('keydown', (e) => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
-      deleteSelected();
+      if (selected_launcher_id) {
+        deleteSelectedLauncher();
+      } else if (selected_edge) {
+        deleteSelectedEdge();
+      }
     }
     if (e.key === 'Escape' && connect_mode) connect_launcher_button.click();
   });
