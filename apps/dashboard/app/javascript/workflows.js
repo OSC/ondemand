@@ -1,3 +1,5 @@
+import { DAG } from './dag.js';
+
 (() => {
   const stage = document.getElementById('stage');
   const edges_svg = document.getElementById('edges');
@@ -7,6 +9,7 @@
   const delete_edge_button = document.getElementById('btn-delete-edge');
   const selected_launcher = document.getElementById('select_launcher');
   const base_launcher_url = document.getElementById('base-launcher-url').value;
+  const dag = new DAG;
 
   const boxes = new Map();
   const edges = [];
@@ -78,9 +81,16 @@
     if (existingEdge) { return; }
     
     const reverseEdge = edges.find(e => e.fromId === toId && e.toId === fromId);
-    if (reverseEdge) { alert('Bidirectional edges are not allowed.') }
+    if (reverseEdge) { 
+      alert('Bidirectional edges are not allowed.');
+      return;
+    }
 
-    
+    dag.addEdge(fromId, toId)
+    if (dag.hasCycle()) { 
+      alert('Adding this edge will create a cyclic dependency among the launchers.');
+      return; 
+    }
   
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.classList.add('edge');
