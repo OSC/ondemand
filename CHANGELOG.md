@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add tests for missing or unneeded bc cache cluster entries (#4569)\
+Remove custom $grid-breakpoints definitions (#4592)\
+lint a random file (#4615)\
+lint a random file (#4600)\
+adds oidc_redirect_uri variable (#4582)\
+dashboard: noVNC: Handle newline representation mismatch (#4601)\
+Data-hide hides files attachments (#4599)\
+Add packaging instructions for module browser (#4565)\
+add loop for resource widgets (#4559)\
+Update Changelog (#4596)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
