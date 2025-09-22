@@ -889,7 +889,7 @@ function getWidgetType(id){
 
 // sends a message that is immediately read by screenreaders
 function ariaStream(message) {
-  ariaNotify(`${message}.`, false);
+  initializing ? null : ariaNotify(`${message}.`, false);
 }
 
 function toggleOptionsFor(_event, elementId) {
