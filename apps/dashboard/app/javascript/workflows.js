@@ -169,6 +169,7 @@ import { DAG } from './dag.js';
 
   function deleteSelectedLauncher() {
     if (!selected_launcher_id) return;
+    dag.removeLauncher(selected_launcher_id);
     const id = selected_launcher_id;
     for (let i = edges.length-1; i>=0; i--) {
       const e = edges[i];
@@ -185,6 +186,7 @@ import { DAG } from './dag.js';
   function deleteSelectedEdge() {
     if (!selected_edge) return;
     selected_edge.el.remove();
+    dag.removeEdge(selected_edge.fromId, selected_edge.toId);
     edges.splice(edges.indexOf(selected_edge), 1);
     selected_edge = null;
   }
