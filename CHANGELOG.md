@@ -73,6 +73,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - user_map_match now allows for lowercasing usernames in [4586](https://github.com/OSC/ondemand/pull/4586).
 - Popups now appear for recently used apps with display settings in [4515](https://github.com/OSC/ondemand/pull/4515).
 - data-hide directives can now hide radio buttons in [4540](https://github.com/OSC/ondemand/pull/4540).
+- The ood-portal-generator now has an oidc_redirect_uri variable in [4582](https://github.com/OSC/ondemand/pull/4582).
+- Data-hide works on files attachments now in [4599](https://github.com/OSC/ondemand/pull/4599).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
