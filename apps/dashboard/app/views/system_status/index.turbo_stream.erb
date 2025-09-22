@@ -2,14 +2,10 @@
   <template>
     <% Configuration.job_clusters.each do |c| %>
       <% job_adapter = c.job_adapter %>
-      <% if @source == 'app' %>
-        <div class="col-sm-6 col-xs-12">
-      <% end %>
-
+      <div class="col-sm-6 col-xs-12">
         <div class="col border rounded text-center p-2 m-2">
-        <div class="h4"><strong><%= title(c) %></strong></div>
-
-        <script>console.log("Rendering as: <%= @source %>")</script>
+          
+          <div class="h4"><strong><%= title(c) %></strong></div>
 
           <% components_status(job_adapter).each do |current_status| %>
             <div class="container py-2">
@@ -43,11 +39,7 @@
           </div>
 
         </div>
-
-      <% if @source == 'app' %>
-        </div>
-      <% end %>
-
+      </div>
     <% end %>
   </template>
 </turbo-stream>
