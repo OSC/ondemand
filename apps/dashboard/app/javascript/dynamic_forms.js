@@ -146,6 +146,8 @@ function makeChangeHandlers(prefix){
                 addSetHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('hide')) {
                 addHideHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('show')) {
+                addHideHandler(element['id'], opt.value, key, data[key], true);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
               }
@@ -171,12 +173,14 @@ function makeChangeHandlers(prefix){
   initializing = false;
 };
 
-function addHideHandler(optionId, option, key, configValue) {
-  const changeId = idFromToken(key.replace(/^hide/,''));
+function addHideHandler(optionId, option, key, configValue, hideByDefault = false) {
+  const optionExp = hideByDefault ? /^show/ : /^hide/
+  const changeId = idFromToken(key.replace(optionExp,''));
 
   if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, undefined);
   const table = hideLookup[optionId];
-  table.put(changeId, option, configValue);
+  const tableValue = hideByDefault ? !configValue : configValue
+  table.put(changeId, option, tableValue);
 
   if(hideHandlerCache[optionId] === undefined) hideHandlerCache[optionId] = [];
 
@@ -184,13 +188,13 @@ function addHideHandler(optionId, option, key, configValue) {
     const changeElement = $(`#${optionId}`);
 
     changeElement.on('change', (event) => {
-      updateVisibility(event, changeId);
+      updateVisibility(event, changeId, hideByDefault);
     });
 
     hideHandlerCache[optionId].push(changeId);
   }
 
-  updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
+  updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId, hideByDefault);
 };
 
 function newLabel(changeElement, key) {
@@ -434,7 +438,7 @@ class Table {
  * Update the visibility of `changeId` based on the
  * event and what's in the hideLookup table.
  */
-function updateVisibility(event, changeId) {
+function updateVisibility(event, changeId, hideByDefault = false) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   let changeElement = undefined;
@@ -456,9 +460,9 @@ function updateVisibility(event, changeId) {
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
-  if((hide === false) || (hide === undefined && !initializing)) {
+  if((hide === false) || (hide === undefined && !initializing && !hideByDefault)) {
     changeElement.show();
-  }else if(hide === true) {
+  }else if((hide === true) || (hide === undefined && hideByDefault)) {
     changeElement.hide();
   }
 }
