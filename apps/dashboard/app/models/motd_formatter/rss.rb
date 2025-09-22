@@ -24,7 +24,7 @@ module MotdFormatter
       RSS::Parser.parse(rss_content)
     rescue RSS::NotWellFormedError
       Rails.logger.warn 'MOTD is not parseable RSS'
-      RSS::Parser.parse('')
+      nil
     end
   end
 end
