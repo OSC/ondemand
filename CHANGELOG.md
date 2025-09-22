@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add tests for missing or unneeded bc cache cluster entries (#4569)\
-Remove custom $grid-breakpoints definitions (#4592)\
-lint a random file (#4615)\
-lint a random file (#4600)\
-adds oidc_redirect_uri variable (#4582)\
-dashboard: noVNC: Handle newline representation mismatch (#4601)\
-Data-hide hides files attachments (#4599)\
-Add packaging instructions for module browser (#4565)\
-add loop for resource widgets (#4559)\
-Update Changelog (#4596)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -83,6 +73,8 @@ Update Changelog (#4596)
 - user_map_match now allows for lowercasing usernames in [4586](https://github.com/OSC/ondemand/pull/4586).
 - Popups now appear for recently used apps with display settings in [4515](https://github.com/OSC/ondemand/pull/4515).
 - data-hide directives can now hide radio buttons in [4540](https://github.com/OSC/ondemand/pull/4540).
+- The ood-portal-generator now has an oidc_redirect_uri variable in [4582](https://github.com/OSC/ondemand/pull/4582).
+- Data-hide works on files attachments now in [4599](https://github.com/OSC/ondemand/pull/4599).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
