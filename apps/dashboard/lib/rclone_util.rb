@@ -67,21 +67,44 @@ class RcloneUtil
       if path.root?
         return true
       end
-      # List everything in parent and check if requested path ends with a slash and actually exists
-      full_path = remote_path(remote, path.parent.to_s)
-      o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
-      if s.success?
-        match = o.match(/^(?<entry>#{Regexp.escape(path.basename.to_s)}\/?)$/)
-        if match.nil?
-          raise StandardError, "Remote file or directory '#{path}' does not exist"
+
+      if remote_type(remote) == "s3"
+        # Alternative way to check if a path exists in S3 by looking at acceptable file sizes
+        full_path = remote_path(remote, path)
+        o, e, s = rclone( "test", "info", "--check-length", full_path)
+
+        if s.success?
+          match = o.match(/^(?<entry>maxFileLength = [0-9]+)/)
+          if match.nil?
+            raise StandardError, "Remote file or directory '#{path}' does not exist, CAN lsf '#{o}'"
+          else
+            return true
+          end
+        elsif s.exitstatus == 3 # directory not found
+          raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist OR can't lsf"
         else
-          match[:entry].end_with?("/")
+          raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
         end
-      elsif s.exitstatus == 3 # directory not found
-        raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+
       else
-        raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
+        # List everything in parent and check if requested path ends with a slash and actually exists
+        full_path = remote_path(remote, path.parent.to_s)
+        o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
+
+        if s.success?
+          match = o.match(/^(?<entry>#{Regexp.escape(path.basename.to_s)}\/?)$/)
+          if match.nil?
+            raise StandardError, "Remote file or directory '#{path}' does not exist"
+          else
+            match[:entry].end_with?("/")
+          end
+        elsif s.exitstatus == 3 # directory not found
+          raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+        else
+          raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
+        end
       end
+
     end
 
     def mime_type(remote, path)
