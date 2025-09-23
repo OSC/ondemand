@@ -76,12 +76,12 @@ class RcloneUtil
         if s.success?
           match = o.match(/^(?<entry>maxFileLength = [0-9]+)/)
           if match.nil?
-            raise StandardError, "Remote file or directory '#{path}' does not exist, CAN lsf '#{o}'"
+            raise StandardError, "Remote file or directory '#{path}' does not exist"
           else
             return true
           end
         elsif s.exitstatus == 3 # directory not found
-          raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist OR can't lsf"
+          raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
         else
           raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
         end
