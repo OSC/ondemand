@@ -22,7 +22,8 @@ module BatchConnect::SessionContextsHelper
                     form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
                   end
                 when 'radio', 'radio_button'
-                  form.form_group attrib.id, help: field_options[:help], **field_options[:wrapper] do
+                  wrapper_present = field_options[:wrapper].is_a?(Hash) && field_options[:wrapper].present?
+                  form.form_group(attrib.id, help: field_options[:help], **(wrapper_present ? field_options[:wrapper] : {})) do
                     opts = {
                       label:   label_tag(attrib.id, attrib.label),
                       checked: (attrib.value.presence || attrib.field_options[:checked])
@@ -46,7 +47,8 @@ module BatchConnect::SessionContextsHelper
   end
 
   def resolution_field(form, id, opts = {})
-    content_tag(:div, id: "#{id}_group", class: "mb-3", **opts[:wrapper]) do
+    wrapper_present = opts[:wrapper].is_a?(Hash) && opts[:wrapper].present?
+    content_tag(:div, id: "#{id}_group", class: "mb-3", **(wrapper_present ? opts[:wrapper] : {})) do
       concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
       concat(
