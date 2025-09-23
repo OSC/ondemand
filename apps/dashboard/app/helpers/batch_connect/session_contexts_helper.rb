@@ -14,7 +14,7 @@ module BatchConnect::SessionContextsHelper
 
     rendered =  case widget
                 when 'select'
-                  form.select(attrib.id, attrib.select_choices(hide_excludable: hide_excludable), field_options, attrib.html_options)
+                  form.select(attrib.id, attrib.select_choices(hide_excludable: hide_excludable), field_options, attrib.all_options)
                 when 'resolution_field'
                   resolution_field(form, attrib.id, all_options)
                 when 'check_box'
@@ -22,18 +22,18 @@ module BatchConnect::SessionContextsHelper
                     form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
                   end
                 when 'radio', 'radio_button'
-                  form.form_group attrib.id, help: field_options[:help] do
+                  form.form_group attrib.id, help: field_options[:help], **field_options[:wrapper] do
                     opts = {
                       label:   label_tag(attrib.id, attrib.label),
                       checked: (attrib.value.presence || attrib.field_options[:checked])
                     }
-                    content_tag(:div, id: [form.object_name, attrib.id].join('_')) do
+                    content_tag(:div, id: [form.object_name, attrib.id].join('_'), **field_options) do
                       form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)                  
                     end
                   end
                 when 'path_selector'
-                  form.form_group(attrib.id) do
-                    render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options })
+                  form.form_group(attrib.id, field_options[:wrapper]) do
+                    render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options.except(:wrapper) })
                   end
                 when 'file_attachments'
                   render :partial => "batch_connect/session_contexts/file_attachments", :locals => { form: form, attrib: attrib, field_options: field_options }
@@ -46,11 +46,11 @@ module BatchConnect::SessionContextsHelper
   end
 
   def resolution_field(form, id, opts = {})
-    content_tag(:div, id: "#{id}_group", class: "mb3") do
+    content_tag(:div, id: "#{id}_group", class: "mb-3", **opts[:wrapper]) do
       concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
       concat(
-        content_tag(:div, class: "row mb-3") do
+        content_tag(:div, id:[form.object_name, id].join('_'), class: "row mb-3", **opts) do
           concat (
             content_tag(:div, class: "col-sm-6") do
               concat (

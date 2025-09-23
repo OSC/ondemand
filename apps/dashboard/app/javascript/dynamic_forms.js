@@ -453,12 +453,12 @@ function updateVisibility(event, changeId) {
   });
 
   if (changeElement === undefined || changeElement.length <= 0) return;
-
+  const defaultHidden = $(`#${changeId}`).attr('hide_by_default') || false
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
-  if((hide === false) || (hide === undefined && !initializing)) {
+  if((hide === false) || (hide === undefined && !initializing && !defaultHidden)) {
     changeElement.show();
-  }else if(hide === true) {
+  }else if((hide === true) || (hide === undefined && !initializing && defaultHidden)) {
     changeElement.hide();
   }
 }
