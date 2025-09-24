@@ -508,6 +508,9 @@ function toggleMinMax(event, changeId, otherId) {
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
+    } else {
+      const defaultVal = dim == 'min' ? 1 : 999;
+      changeElement.attr(dim, defaultVal);
     }
   });
 
