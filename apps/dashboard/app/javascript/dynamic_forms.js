@@ -236,9 +236,9 @@ function updateHelp(changeId, changeElement, key) {
   const parentElement = getItemParent(changeId);
   var helpElement = parentElement.find('small p');
   if (helpElement.length == 0) {
-    const small = document.createElement('small')
+    const small = document.createElement('small');
     small.classList.add('form-text', 'text-muted');
-    helpElement = document.createElement('p')
+    helpElement = document.createElement('p');
     $(helpElement).appendTo($(small).appendTo(parentElement));  
   }
   $(helpElement).text(helpContent);
