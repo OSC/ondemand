@@ -1,6 +1,7 @@
 require 'pathname'
 require 'dotenv'
 require_relative '../lib/current_user'
+require_relative '../app/models/concerns/bool_reader.rb'
 
 # Dashboard app specific configuration singleton definition
 # following the first proposal in:
@@ -20,6 +21,7 @@ require_relative '../lib/current_user'
 # ConfigurationSingleton and defining it as a class method on Configuration.
 #
 class ConfigurationSingleton
+  include BoolReader
   attr_writer :app_development_enabled
   attr_writer :app_sharing_enabled
 
@@ -94,7 +96,7 @@ class ConfigurationSingleton
   end
 
   def ood_bc_ssh_to_compute_node
-    to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
+    read_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
   end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
@@ -142,7 +144,7 @@ class ConfigurationSingleton
   end
 
   def load_external_config?
-    to_bool(ENV['OOD_LOAD_EXTERNAL_CONFIG'] || (rails_env == 'production'))
+    read_bool(ENV['OOD_LOAD_EXTERNAL_CONFIG'] || (rails_env == 'production'))
   end
 
   # The root directory that holds configuration information for Batch Connect
@@ -152,7 +154,7 @@ class ConfigurationSingleton
   end
 
   def load_external_bc_config?
-    to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] || (rails_env == "production"))
+    read_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] || (rails_env == "production"))
   end
 
   # The paths to the JSON files that store the quota information
@@ -251,18 +253,18 @@ class ConfigurationSingleton
 
   def app_development_enabled?
     return @app_development_enabled if defined? @app_development_enabled
-    to_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.directory? || DevRouter.base_path.symlink?)
+    read_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.directory? || DevRouter.base_path.symlink?)
   end
   alias_method :app_development_enabled, :app_development_enabled?
 
   def app_sharing_enabled?
     return @app_sharing_enabled if defined? @app_sharing_enabled
-    @app_sharing_enabled = to_bool(ENV['OOD_APP_SHARING'])
+    @app_sharing_enabled = read_bool(ENV['OOD_APP_SHARING'])
   end
   alias_method :app_sharing_enabled, :app_sharing_enabled?
 
   def batch_connect_global_cache_enabled?
-    to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
+    read_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
   end
 
   def developer_docs_url
@@ -312,7 +314,7 @@ class ConfigurationSingleton
 
   # Setting terminal functionality in files app
   def files_enable_shell_button
-    can_access_shell? && to_bool(config.fetch(:files_enable_shell_button, true))
+    can_access_shell? && read_bool(config.fetch(:files_enable_shell_button, true))
   end
 
   # Report performance of activejobs table rendering
@@ -390,7 +392,7 @@ class ConfigurationSingleton
   # @return [Boolean] true if by default open apps in new window
   def open_apps_in_new_window?
     if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
-      to_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
+      read_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
     else
       true
     end
@@ -509,15 +511,6 @@ class ConfigurationSingleton
     files.reverse.map {|p| p.sub(/$/, '.overload')}
   end
 
-  FALSE_VALUES = [nil, false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO'].freeze
-
-  # Bool coersion pulled from ActiveRecord::Type::Boolean#cast_value
-  #
-  # @return [Boolean] false for falsy value, true for everything else
-  def to_bool(value)
-    !FALSE_VALUES.include?(value)
-  end
-
   # private method to add the boolean_config methods to this instances
   def add_boolean_configs
     boolean_configs.each do |cfg_item, default|
@@ -527,7 +520,7 @@ class ConfigurationSingleton
         if e.nil?
           config.fetch(cfg_item, default)
         else
-          to_bool(e.to_s)
+          read_bool(e.to_s)
         end
       end
     end.each do |cfg_item, _|

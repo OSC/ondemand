@@ -2,6 +2,8 @@
   data-id="<%= session.id %>" data-hash="<%= session.to_hash %>"
   data-status="<%= status(session).downcase %>"
   data-title="<%= session.title %>"
+  data-job-id="<%= session.job_id %>"
+  data-minutes-remaining="<%= minutes_remaining(session) %>"
   data-bc-card='true' >
   <%= render_card_partial('card_header', session) %>
   <%= render_card_partial('card_body', session) %>

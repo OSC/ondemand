@@ -81,6 +81,7 @@ if (process.env.OOD_SSHHOST_ALLOWLIST){
 const inactiveTimeout = (process.env.OOD_SHELL_INACTIVE_TIMEOUT_MS || 300000);
 const maxShellTime = (process.env.OOD_SHELL_MAX_DURATION_MS || 3600000);
 const pingPongEnabled = process.env.OOD_SHELL_PING_PONG ? true : false;
+const termName = (process.env.OOD_SHELL_TERM || 'xterm-16color');
 
 let hosts = helpers.definedHosts();
 let default_sshhost = hosts['default'];
@@ -211,7 +212,7 @@ wss.on('connection', function connection (ws, req) {
     process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
     term = pty.spawn(cmd, args, {
-      name: 'xterm-16color',
+      name: termName,
       cols: 80,
       rows: 30
     });
