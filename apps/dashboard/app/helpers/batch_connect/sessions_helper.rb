@@ -206,13 +206,7 @@ module BatchConnect::SessionsHelper
     end
   end
 
-  def adjusted_poll_delay(sessions)
-    return if sessions.all? { |s| s.completed? }
-
-    if sessions.any? { |s| s.queued? || s.starting? }
-      ConfigurationSingleton::MIN_POLL_DELAY
-    else
-      Configuration.bc_sessions_poll_delay
-    end
+  def should_poll?(sessions)
+    sessions.any? { |s| !s.completed? }
   end
 end

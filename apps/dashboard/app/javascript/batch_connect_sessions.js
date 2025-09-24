@@ -7,12 +7,10 @@ import { ariaNotify } from './aria_live_notify';
 
 const sessionStatusMap = new Map();
 
-function getPollDelay() {
+function continuePolling() {
   const bcSessionsContainer = document.getElementById('bc_sessions_content');
-  if (!bcSessionsContainer) return bcPollDelay();
-
-  const delayAttr = bcSessionsContainer.dataset.pollDelay;
-  return delayAttr !== undefined ? parseInt(delayAttr, 10) : null;
+  const shouldPoll = bcSessionsContainer?.dataset.shouldPoll ?? 'true';
+  return shouldPoll === 'true';
 }
 
 function checkStatusChanges() {
@@ -68,9 +66,9 @@ window.tryUpdateSetting = tryUpdateSetting;
 document.addEventListener('DOMContentLoaded', function () {
   const bcSessionsContainer = document.getElementById('batch_connect_sessions');
   if (bcSessionsContainer) {
-    pollAndReplace(bcIndexUrl(), getPollDelay, "batch_connect_sessions", () => {
+    pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges();
-    });
+    }, continuePolling);
   }
 });
