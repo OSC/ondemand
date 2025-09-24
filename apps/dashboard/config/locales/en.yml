@@ -256,6 +256,8 @@ en:
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
     skip_navigation: Skip Navigation
+    soft_tabs: Soft Tabs
+    soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
