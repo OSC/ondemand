@@ -232,15 +232,16 @@ function getNewHelp(changeElement, key) {
 }
 
 function updateHelp(changeId, changeElement, key) {
-  var helpContent = getNewHelp(changeElement, key);
-  var parentElement = getItemParent(changeId);
+  const helpContent = getNewHelp(changeElement, key);
+  const parentElement = getItemParent(changeId);
   var helpElement = parentElement.find('small p');
   if (helpElement.length == 0) {
-    helpElement = $('<p></p>').appendTo(
-      $('<small class="form-text text-muted"></small>').appendTo(parentElement)
-    );
+    const small = document.createElement('small')
+    small.classList.add('form-text', 'text-muted');
+    helpElement = document.createElement('p')
+    $(helpElement).appendTo($(small).appendTo(parentElement));  
   }
-  helpElement.text(helpContent);
+  $(helpElement).text(helpContent);
 }
 
 function addHelpHandler(optionId, option, key, configValue) {
