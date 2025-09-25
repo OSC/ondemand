@@ -146,7 +146,8 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
 }
 
 // Combines duplicated lines into a single message (log message + number of skipped messages)
-function createLogger(host) {
+// The host and pid parameters will be included in the msgPrefix before each logged message.
+function createLogger(host, pid) {
   // Combine logs for logInterval ms duration
   const logInterval = 5000;
   const messages = [];
@@ -155,8 +156,7 @@ function createLogger(host) {
   // One user might have multiple connections to the Shell app,
   // and connect to many different hosts. The prefix is meant to
   // identify these connections uniquely while they log something.
-  // Note: PID defaults to -1 until the pty-term PID becomes known.
-  let msgPrefix = `[User = ${username}; Host = ${host}; PID = -1]`;
+  const msgPrefix = `[User = ${username}; Host = ${host}; PID = ${pid}]`;
   let timer;
 
   const logQueuedMessages = (immediate = false) => {
@@ -188,9 +188,6 @@ function createLogger(host) {
       }
       logQueuedMessages();
     },
-    setpid: (newpid) => {
-      msgPrefix = `[User = ${username}; Host = ${host}; PID = ${newpid}]`;
-    },
     flush: () => logQueuedMessages(true),
   };
 };
@@ -207,9 +204,11 @@ wss.on('connection', function connection (ws, req) {
   ws.isAlive = true;
   ws.startedAt = Date.now();
   ws.lastActivity = Date.now();
-  ws.logger = createLogger(host);
 
-  ws.logger.log('Web socket connection established from user');
+  // Cannot use ws.logger here, as we don't know the pty-term PID.
+  // So do a one-off console.log(), with the info we have in the prefix.
+  console.log(`[User = ${username}; Host = ${host}] Web socket connection established from the user`);
+
 
 
   // Verify authentication
@@ -229,8 +228,8 @@ wss.on('connection', function connection (ws, req) {
       rows: 30
     });
 
-    // Now that the PID is known, add it to our logger.
-    ws.logger.setpid(term.pid);
+    // Now that the PID is known, we can initialize our logger.
+    ws.logger = createLogger(host, term.pid);
 
     ws.logger.log('Opened terminal');
     ws.logger.flush();
