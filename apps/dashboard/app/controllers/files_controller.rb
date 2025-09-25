@@ -215,7 +215,7 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        render :index
+        redirect_to(files_path(Dir.home), alert: exception.message.to_s)
       end
       format.json do
         @files = []

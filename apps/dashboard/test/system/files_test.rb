@@ -29,6 +29,13 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector '.selected', count: 2
   end
 
+  test 'visiting files app with bad directory does not duplicate errors' do
+    bad_path = Rails.root / "nonexistent"
+    visit files_url(bad_path.to_s)
+    find('table')
+    assert_selector '.alert-danger', count: 1
+  end
+
   test 'adding new file' do
     Dir.mktmpdir do |dir|
       visit files_url(dir)
@@ -614,7 +621,7 @@ class FilesTest < ApplicationSystemTestCase
         favorites = [FavoritePath.new(allowed_dir), FavoritePath.new(not_allowed_dir)]
         OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
 
-        visit files_url(dir)
+        visit files_url(allowed_dir)
         assert_selector('#favorites li', count: 2)
       end
     end
