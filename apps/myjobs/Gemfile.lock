@@ -198,7 +198,7 @@ GEM
     prettyprint (0.2.0)
     public_suffix (5.1.1)
     racc (1.8.1)
-    rack (2.2.17)
+    rack (2.2.18)
     rack-session (1.0.2)
       rack (< 3)
     rack-test (2.2.0)
