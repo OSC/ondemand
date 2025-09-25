@@ -30,7 +30,7 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   test 'visiting files app with bad directory does not duplicate errors' do
-    bad_path = Rails.root / "nonexistant"
+    bad_path = Rails.root / "nonexistent"
     visit files_url(bad_path.to_s)
     find('table')
     assert_selector '.alert-danger', count: 1
