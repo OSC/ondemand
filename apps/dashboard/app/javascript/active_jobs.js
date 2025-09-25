@@ -64,7 +64,7 @@ function fetch_job_data(tr, row, options) {
 
     $.getJSON(jobDataUrl, function (data) {
       // Open this row
-	    row.child(data.html_extended_layout).show();
+      row.child(data.html_extended_layout).show();
       // Add the data panel to the view
       $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
         .hide()
