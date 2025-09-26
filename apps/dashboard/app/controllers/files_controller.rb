@@ -287,6 +287,8 @@ class FilesController < ApplicationController
 
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
+    can_download, error = @path.can_download_file?
+    raise(StandardError, error) unless can_download
 
     if html_file? && ::Configuration.unsafe_render_html
       render(file: @path.realpath, layout: false)
