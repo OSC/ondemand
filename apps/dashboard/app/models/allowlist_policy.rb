@@ -34,7 +34,7 @@ class AllowlistPolicy
   def validate!(path)
     return if permitted?(path.to_s)
 
-    msg = "#{path} does not have an ancestor directory specified in ALLOWLIST_PATH"
+    msg = "Permission denied: '#{path}' does not have an ancestor directory specified in ALLOWLIST_PATH"
     Rails.logger.warn(msg)
     raise AllowlistPolicy::Forbidden, msg
   end
