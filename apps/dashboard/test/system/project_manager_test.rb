@@ -992,4 +992,21 @@ class ProjectManagerTest < ApplicationSystemTestCase
       sleep 2
     end
   end
+
+  test 'importing a shared project' do
+    Dir.mktmpdir do |dir|
+      Project.stubs(:dataroot).returns(Pathname.new(dir))
+
+      visit(projects_root_path)
+      click_on(I18n.t('dashboard.jobs_import_shared_project'))
+
+      fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
+      click_on(I18n.t('dashboard.import'))
+
+      # redirected back to the index and it has imported the project with a success notice
+      assert_current_path(projects_root_path)
+      assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
+    end
+  end
 end
