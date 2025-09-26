@@ -8,6 +8,12 @@ import {
   pruneNotifiedSessionIds, setupNotificationToggle,
 } from './batch_connect/bc_notifications';
 
+function continuePolling() {
+  const bcSessionsContainer = document.getElementById('bc_sessions_content');
+  const shouldPoll = bcSessionsContainer?.dataset.shouldPoll ?? 'true';
+  return shouldPoll === 'true';
+}
+
 function withinWarnLimit(minutesRemaining, threshold) {
   return minutesRemaining <= threshold && minutesRemaining > 0;
 }
@@ -90,12 +96,13 @@ document.addEventListener('DOMContentLoaded', function () {
   setupNotificationToggle('notification_toggle');
   const sessions = new Map();
   const notifiedSessionIds = new Set(getNotifiedSessionIds());
-
-  if (document.getElementById('batch_connect_sessions')) {
+  
+  const bcSessionsContainer = document.getElementById('batch_connect_sessions');
+  if (bcSessionsContainer) {
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
       bindFullPageSpinnerEvent();
       checkStatusChanges(sessions, notifiedSessionIds);
-    });
+    }, continuePolling);
   }
 
   pruneNotifiedSessionIds(sessions, notifiedSessionIds);
