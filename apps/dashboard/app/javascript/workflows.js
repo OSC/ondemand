@@ -9,7 +9,7 @@ import { DAG } from './dag.js';
   const delete_edge_button = document.getElementById('btn-delete-edge');
   const selected_launcher = document.getElementById('select_launcher');
   const base_launcher_url = document.getElementById('base-launcher-url').value;
-  const dag = new DAG;
+  const dag = new DAG();
   const styles = getComputedStyle(document.documentElement);
   const grid_cols = parseInt(styles.getPropertyValue('--grid_cols'));
   const grid_rows = parseInt(styles.getPropertyValue('--grid_rows'));
@@ -23,19 +23,21 @@ import { DAG } from './dag.js';
   let connect_mode = false;
   let connect_queue = null;
 
-  function stageRect() { return stage.getBoundingClientRect(); }
+  function stageRect() {
+    return stage.getBoundingClientRect();
+  }
 
   function gridSpawn() {
     const cols = 12;
     const rows = 6;
     for (let r = 1; r <= rows; r++) {
       for (let c = 1; c <= cols; c++) {
-        if (!document.querySelector(`.launcher-item[data-row="${r}"][data-col="${c}"]`)) {
+        if (!document.querySelector(`.launcher-item[data-row='${r}'][data-col='${c}']`)) {
           return { row: r, col: c };
         }
       }
     }
-    alert("No empty grid cells available!");
+    alert('No empty grid cells available!');
     return null;
   }
 
@@ -47,7 +49,7 @@ import { DAG } from './dag.js';
 
   function cellToXY(row, col) {
     return {
-      x: (col - 1) * cell_w + 10, // +padding
+      x: (col - 1) * cell_w + 10, //padding
       y: (row - 1) * cell_h + 10
     };
   }
@@ -71,16 +73,19 @@ import { DAG } from './dag.js';
   function updateBoxPosition(id, x, y) {
     const b = boxes.get(id);
     if (!b) return;
-    b.x = x; b.y = y;
+    b.x = x;
+    b.y = y;
     b.el.style.left = x + 'px';
-    b.el.style.top  = y + 'px';
-    edges.forEach(edge => { if (edge.fromId===id || edge.toId===id) updateEdgeLine(edge); });
+    b.el.style.top = y + 'px';
+    edges.forEach(edge => {
+      if (edge.fromId === id || edge.toId === id) updateEdgeLine(edge);
+    });
   }
 
   function intersectRect(cx, cy, w, h, dx, dy) {
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
-    let scale = 0.5 / Math.max(absDx/w, absDy/h);
+    let scale = 0.5 / Math.max(absDx / w, absDy / h);
     scale = Math.min(scale, 1);
     return { x: cx + dx * scale, y: cy + dy * scale };
   }
@@ -93,13 +98,13 @@ import { DAG } from './dag.js';
     const x1 = from.x, y1 = from.y, w1 = from.w, h1 = from.h;
     const x2 = to.x, y2 = to.y, w2 = to.w, h2 = to.h;
 
-    const cx1 = x1 + w1/2, cy1 = y1 + h1/2;
-    const cx2 = x2 + w2/2, cy2 = y2 + h2/2;
+    const cx1 = x1 + w1 / 2, cy1 = y1 + h1 / 2;
+    const cx2 = x2 + w2 / 2, cy2 = y2 + h2 / 2;
     const dx = cx2 - cx1;
     const dy = cy2 - cy1;
 
     const start = intersectRect(cx1, cy1, w1, h1, dx, dy);
-    const end   = intersectRect(cx2, cy2, w2, h2, -dx, -dy);
+    const end = intersectRect(cx2, cy2, w2, h2, -dx, -dy);
     edge.el.setAttribute('x1', start.x);
     edge.el.setAttribute('y1', start.y);
     edge.el.setAttribute('x2', end.x);
@@ -109,22 +114,22 @@ import { DAG } from './dag.js';
   function createEdge(fromId, toId) {
     if (fromId === toId) return;
     if (!boxes.has(fromId) || !boxes.has(toId)) return;
-    
+
     const existingEdge = edges.find(e => e.fromId === fromId && e.toId === toId);
-    if (existingEdge) { return; }
-    
+    if (existingEdge) return;
+
     const reverseEdge = edges.find(e => e.fromId === toId && e.toId === fromId);
-    if (reverseEdge) { 
+    if (reverseEdge) {
       alert('Bidirectional edges are not allowed.');
       return;
     }
 
-    dag.addEdge(fromId, toId)
-    if (dag.hasCycle()) { 
+    dag.addEdge(fromId, toId);
+    if (dag.hasCycle()) {
       alert('Adding this edge will create a cyclic dependency among the launchers.');
-      return; 
+      return;
     }
-  
+
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.classList.add('edge');
     edges_svg.appendChild(line);
@@ -148,15 +153,15 @@ import { DAG } from './dag.js';
 
     $.get(url, function(html) {
       const $launcher = $(`
-        <div class="launcher-item" id="launcher_${id}" data-row="${row}" data-col="${col}">
-          <div class="launcher-title">${title}</div>
+        <div class='launcher-item' id='launcher_${id}' data-row='${row}' data-col='${col}'>
+          <div class='launcher-title'>${title}</div>
           ${html}
         </div>
       `);
 
       $('#stage').append($launcher);
       const pos = cellToXY(row, col);
-      $launcher.css({ left: pos.x + "px", top: pos.y + "px" });
+      $launcher.css({ left: pos.x + 'px', top: pos.y + 'px' });
       const model = { el: $launcher[0], row, col, w: $launcher.outerWidth(), h: $launcher.outerHeight() };
       boxes.set(id, model);
       updateBoxPosition(id, pos.x, pos.y);
@@ -188,7 +193,7 @@ import { DAG } from './dag.js';
             model.col = snapped.col;
             const finalPos = cellToXY(snapped.row, snapped.col);
             updateBoxPosition(id, finalPos.x, finalPos.y);
-            $launcher.attr("data-row", snapped.row).attr("data-col", snapped.col);
+            $launcher.attr('data-row', snapped.row).attr('data-col', snapped.col);
           }
         });
       });
@@ -215,11 +220,11 @@ import { DAG } from './dag.js';
     if (!selected_launcher_id) return;
     dag.removeLauncher(selected_launcher_id);
     const id = selected_launcher_id;
-    for (let i = edges.length-1; i>=0; i--) {
+    for (let i = edges.length - 1; i >= 0; i--) {
       const e = edges[i];
-      if (e.fromId===id || e.toId===id) {
+      if (e.fromId === id || e.toId === id) {
         e.el.remove();
-        edges.splice(i,1);
+        edges.splice(i, 1);
       }
     }
     boxes.get(id)?.el.remove();
@@ -239,7 +244,7 @@ import { DAG } from './dag.js';
     const launcher_id = selected_launcher.value;
     if (!launcher_id) return alert('Please select a launcher');
     const launcher_exists = document.getElementById(`launcher_${launcher_id}`);
-    if(launcher_exists) return alert('Launcher already exists, please select a different launcher');
+    if (launcher_exists) return alert('Launcher already exists, please select a different launcher');
 
     const title = selected_launcher.options[selected_launcher.selectedIndex].text;
     const spawn = gridSpawn();

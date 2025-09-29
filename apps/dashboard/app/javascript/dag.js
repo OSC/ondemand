@@ -15,11 +15,11 @@ export class DAG {
   }
 
   addEdge(fromId, toId) {
-    if(!this.#launcher_list.has(fromId)) {
+    if (!this.#launcher_list.has(fromId)) {
       this.#launcher_list.add(fromId);
     }
 
-    if(!this.#launcher_list.has(toId)) {
+    if (!this.#launcher_list.has(toId)) {
       this.#launcher_list.add(toId);
     }
 
@@ -31,20 +31,18 @@ export class DAG {
     this.#has_cycle = false;
     this.#visited = new Set();
     this.#stack = new Set();
-    this.#launcher_list.forEach( l => this.#detectCycle(l) );
+    this.#launcher_list.forEach(l => this.#detectCycle(l));
 
-    // Remove the added edges form the adjacency list
-    if(this.#has_cycle === true) {
+    // Remove the added edge from the adjacency list if cycle detected
+    if (this.#has_cycle === true) {
       this.#adjacency_list[fromId].pop();
     }
   }
 
   removeEdge(fromId, toId) {
-    if (!this.#adjacency_list[fromId]) {
-      return;
-    }
+    if (!this.#adjacency_list[fromId]) return;
 
-    if(this.#adjacency_list[fromId].includes(toId)) {
+    if (this.#adjacency_list[fromId].includes(toId)) {
       this.#adjacency_list[fromId] = this.#adjacency_list[fromId].filter(x => x !== toId);
     }
   }
@@ -64,20 +62,17 @@ export class DAG {
 
   // Basic dfs on graph to find a cycle
   #detectCycle(id) {
-    if(this.#stack.has(id)) {
+    if (this.#stack.has(id)) {
       this.#has_cycle = true;
       return;
     }
-    if(this.#visited.has(id)) {
-      return;
-    }
+    if (this.#visited.has(id)) return;
 
     this.#stack.add(id);
     this.#visited.add(id);
     for (const l of this.#adjacency_list[id] || []) {
       this.#detectCycle(l);
     }
-
     this.#stack.delete(id);
   }
 }
