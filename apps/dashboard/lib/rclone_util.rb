@@ -68,7 +68,6 @@ class RcloneUtil
         return true
       end
 
-      # begin 
       full_path = remote_path(remote, path)
       o, e, s = rclone( "lsjson", "--low-level-retries=1", "--stat", full_path)
 
@@ -109,7 +108,7 @@ class RcloneUtil
           raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
         end
       end
-
+g
     end
 
     def mime_type(remote, path)
