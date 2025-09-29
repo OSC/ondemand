@@ -1,3 +1,10 @@
+// Update in workflows.js if you change these
+$cols: 12;
+$rows: 8;
+$cell_w: 200;
+$cell_h: 140;
+$gap: 20;
+
 :root {
   --bg: #f7f7fb;
   --ink: #222;
@@ -6,6 +13,12 @@
   --accent-weak: #cfe0ff;
   --danger: #c62828;
   --box-selected: #ffecb3;
+  // To pass on the variable to javascript
+  --grid_cols: #{$cols};
+  --grid_rows: #{$rows};
+  --cell_w: #{$cell_w};
+  --cell_h: #{$cell_h};
+  --gap: #{$gap};
 }
 
 html, body {
@@ -62,16 +75,26 @@ html, body {
 .workspace {
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow: scroll;
+  height: 600px;
+  overflow-x: auto;
+  overflow-y: auto;
   background: var(--bg);
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }
 
 .stage {
-  position: relative;
-  width: 1200px;
-  height: 500px;
+  display: grid;
+  grid-template-columns: repeat(#{$cols}, #{$cell_w});
+  grid-template-rows: repeat(#{$rows}, #{$cell_h});
+  gap: #{$gap};
   background: repeating-conic-gradient(#fafbff 0% 25%, #f5f7ff 0% 50%) 50%/20px 20px;
+  padding: 20px;
+  min-width: calc(#{$cols} * #{$cell_w}px + (#{$cols} - 1) * #{$gap}px);
+  min-height: calc(#{$rows} * #{$cell_h}px + (#{$rows} - 1) * #{$gap}px);
+  position: relative;
 }
 
 svg.edges {
@@ -103,6 +126,7 @@ svg.edges {
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   user-select: none;
   padding: 0.5rem;
+  transition: left 0.15s, top 0.15s;
 }
 
 .launcher-item.selected {

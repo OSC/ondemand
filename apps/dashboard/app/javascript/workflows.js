@@ -10,6 +10,11 @@ import { DAG } from './dag.js';
   const selected_launcher = document.getElementById('select_launcher');
   const base_launcher_url = document.getElementById('base-launcher-url').value;
   const dag = new DAG;
+  const styles = getComputedStyle(document.documentElement);
+  const grid_cols = parseInt(styles.getPropertyValue('--grid_cols'));
+  const grid_rows = parseInt(styles.getPropertyValue('--grid_rows'));
+  const cell_w = parseInt(styles.getPropertyValue('--cell_w')) + parseInt(styles.getPropertyValue('--gap'));
+  const cell_h = parseInt(styles.getPropertyValue('--cell_h')) + parseInt(styles.getPropertyValue('--gap'));
 
   const boxes = new Map();
   const edges = [];
@@ -18,14 +23,42 @@ import { DAG } from './dag.js';
   let connect_mode = false;
   let connect_queue = null;
 
-  function launcherSize() { return { w: 100, h: 50 }; }
   function stageRect() { return stage.getBoundingClientRect(); }
 
-  function randomSpawn() {
-    const rect = stageRect();
-    const x = Math.random() * (rect.width - launcherSize().w) + launcherSize().w/2;
-    const y = Math.random() * (rect.height - launcherSize().h) + launcherSize().h/2;
-    return {x, y};
+  function gridSpawn() {
+    const cols = 12;
+    const rows = 6;
+    for (let r = 1; r <= rows; r++) {
+      for (let c = 1; c <= cols; c++) {
+        if (!document.querySelector(`.launcher-item[data-row="${r}"][data-col="${c}"]`)) {
+          return { row: r, col: c };
+        }
+      }
+    }
+    alert("No empty grid cells available!");
+    return null;
+  }
+
+  function snapToGrid(x, y) {
+    const col = Math.max(1, Math.min(grid_cols, Math.round(x / cell_w) + 1));
+    const row = Math.max(1, Math.min(grid_rows, Math.round(y / cell_h) + 1));
+    return { row, col };
+  }
+
+  function cellToXY(row, col) {
+    return {
+      x: (col - 1) * cell_w + 10, // +padding
+      y: (row - 1) * cell_h + 10
+    };
+  }
+
+  function isCellOccupied(row, col, excludeId = null) {
+    for (const [id, box] of boxes.entries()) {
+      if (id !== excludeId && box.row === row && box.col === col) {
+        return true;
+      }
+    }
+    return false;
   }
 
   function pointerInStage(e) {
@@ -110,24 +143,23 @@ import { DAG } from './dag.js';
     });
   }
 
-  function makeLauncher(x, y, id, title) {
+  function makeLauncher(row, col, id, title) {
     const url = `${base_launcher_url}/${id}/render_button`;
 
     $.get(url, function(html) {
       const $launcher = $(`
-        <div class="launcher-item" id="launcher_${id}">
+        <div class="launcher-item" id="launcher_${id}" data-row="${row}" data-col="${col}">
           <div class="launcher-title">${title}</div>
           ${html}
         </div>
       `);
 
       $('#stage').append($launcher);
-      const w = $launcher.outerWidth() || 100;
-      const h = $launcher.outerHeight() || 50;
-      const model = { el: $launcher[0], x: x - w/2, y: y - h/2, w, h };
+      const pos = cellToXY(row, col);
+      $launcher.css({ left: pos.x + "px", top: pos.y + "px" });
+      const model = { el: $launcher[0], row, col, w: $launcher.outerWidth(), h: $launcher.outerHeight() };
       boxes.set(id, model);
-      $launcher.css({ left: model.x + 'px', top: model.y + 'px' });
-      updateBoxPosition(id, model.x, model.y);
+      updateBoxPosition(id, pos.x, pos.y);
 
       // Pointer / drag events
       $launcher.on('pointerdown', function(e) {
@@ -146,6 +178,18 @@ import { DAG } from './dag.js';
 
         $(document).on('pointerup.launcher', function() {
           $(document).off('.launcher');
+          const snapped = snapToGrid(model.x, model.y);
+
+          if (isCellOccupied(snapped.row, snapped.col, id)) {
+            const revertPos = cellToXY(model.row, model.col);
+            updateBoxPosition(id, revertPos.x, revertPos.y);
+          } else {
+            model.row = snapped.row;
+            model.col = snapped.col;
+            const finalPos = cellToXY(snapped.row, snapped.col);
+            updateBoxPosition(id, finalPos.x, finalPos.y);
+            $launcher.attr("data-row", snapped.row).attr("data-col", snapped.col);
+          }
         });
       });
 
@@ -198,8 +242,8 @@ import { DAG } from './dag.js';
     if(launcher_exists) return alert('Launcher already exists, please select a different launcher');
 
     const title = selected_launcher.options[selected_launcher.selectedIndex].text;
-    const spawn = randomSpawn();
-    makeLauncher(spawn.x, spawn.y, launcher_id, title);
+    const spawn = gridSpawn();
+    if (spawn) makeLauncher(spawn.row, spawn.col, launcher_id, title);
   });
 
   connect_launcher_button.addEventListener('click', () => {
