@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+System Status Dashboard Widget (#4532)\
+add option for soft tabs in file editor (#4508)\
+fix some activejobs bugs (#4576)\
+Added `update` functionality to workflow class with unit-tests (#4589)\
+add gpu panel to job stats (#4564)\
+Bump rexml from 3.4.1 to 3.4.2 (#4619)\
+Update Changelog (#4617)\
+Manual upgrade (#4603)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
