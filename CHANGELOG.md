@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-System Status Dashboard Widget (#4532)\
-add option for soft tabs in file editor (#4508)\
-fix some activejobs bugs (#4576)\
-Added `update` functionality to workflow class with unit-tests (#4589)\
-add gpu panel to job stats (#4564)\
-Bump rexml from 3.4.1 to 3.4.2 (#4619)\
-Update Changelog (#4617)\
-Manual upgrade (#4603)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -83,6 +75,9 @@ Manual upgrade (#4603)
 - data-hide directives can now hide radio buttons in [4540](https://github.com/OSC/ondemand/pull/4540).
 - The ood-portal-generator now has an oidc_redirect_uri variable in [4582](https://github.com/OSC/ondemand/pull/4582).
 - Data-hide works on files attachments now in [4599](https://github.com/OSC/ondemand/pull/4599).
+- Grafana now has support for a gpu panel in active jobs in [4564](https://github.com/OSC/ondemand/pull/4564).
+- The file editor now has the option for soft tabs in [4508](https://github.com/OSC/ondemand/pull/4508).
+- system_status is now a dashboard widget as well as it's own page in [4532](https://github.com/OSC/ondemand/pull/4532).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
