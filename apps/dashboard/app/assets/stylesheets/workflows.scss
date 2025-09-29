@@ -72,17 +72,58 @@ html, body {
   font-size: .9rem;
 }
 
-.workspace {
+.workspace-wrapper {
   position: relative;
   width: 100%;
   height: 600px;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.zoom-controls {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 20;
+  user-select: none;
+}
+
+.zoom-controls button {
+  width: 45px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #d5d8e0;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-controls button:active { transform: translateY(1px); }
+.zoom-controls button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--accent-weak); border-color: var(--accent); }
+
+.workspace {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
   background: var(--bg);
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
+}
+
+.stage-zoom {
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+  will-change: transform;
 }
 
 .stage {

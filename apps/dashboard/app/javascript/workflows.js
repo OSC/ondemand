@@ -1,12 +1,16 @@
 import { DAG } from './dag.js';
 
 (() => {
+  const workspace = document.getElementById('workspace');
   const stage = document.getElementById('stage');
   const edges_svg = document.getElementById('edges');
   const add_launcher_button = document.getElementById('btn-add');
   const connect_launcher_button = document.getElementById('btn-connect');
   const delete_launcher_button = document.getElementById('btn-delete-launcher');
   const delete_edge_button = document.getElementById('btn-delete-edge');
+  const zoom_in_button = document.getElementById('zoom-in');
+  const zoom_out_button = document.getElementById('zoom-out');
+  const zoom_reset_button = document.getElementById('zoom-reset');
   const selected_launcher = document.getElementById('select_launcher');
   const base_launcher_url = document.getElementById('base-launcher-url').value;
   const dag = new DAG();
@@ -15,6 +19,10 @@ import { DAG } from './dag.js';
   const grid_rows = parseInt(styles.getPropertyValue('--grid_rows'));
   const cell_w = parseInt(styles.getPropertyValue('--cell_w')) + parseInt(styles.getPropertyValue('--gap'));
   const cell_h = parseInt(styles.getPropertyValue('--cell_h')) + parseInt(styles.getPropertyValue('--gap'));
+  const stageZoom = document.getElementById('stage-zoom');
+  const zoom_max = 2.0;
+  const zoom_min = 0.5;
+  const zoom_step = 0.1;
 
   const boxes = new Map();
   const edges = [];
@@ -22,6 +30,14 @@ import { DAG } from './dag.js';
   let selected_edge = null;
   let connect_mode = false;
   let connect_queue = null;
+  let zoom = 1;
+
+  function applyZoom() {
+    stageZoom.style.transform = `scale(${zoom})`;
+    edges.forEach(updateEdgeLine);
+    const resetBtn = document.getElementById('zoom-reset');
+    if (resetBtn) resetBtn.textContent = `${Math.round(zoom * 100)}%`;
+  }
 
   function stageRect() {
     return stage.getBoundingClientRect();
@@ -65,8 +81,8 @@ import { DAG } from './dag.js';
 
   function pointerInStage(e) {
     const r = stageRect();
-    const x = (e.clientX ?? e.touches?.[0].clientX) - r.left;
-    const y = (e.clientY ?? e.touches?.[0].clientY) - r.top;
+    const x = ((e.clientX ?? e.touches?.[0].clientX) - r.left) / zoom;
+    const y = ((e.clientY ?? e.touches?.[0].clientY) - r.top) / zoom;
     return { x, y };
   }
 
@@ -263,6 +279,33 @@ import { DAG } from './dag.js';
 
   delete_launcher_button.addEventListener('click', deleteSelectedLauncher);
   delete_edge_button.addEventListener('click', deleteSelectedEdge);
+
+  zoom_in_button.addEventListener('click', () => {
+    zoom = Math.min(zoom + zoom_step, zoom_max);
+    applyZoom();
+  });
+
+  zoom_out_button.addEventListener('click', () => {
+    zoom = Math.max(zoom - zoom_step, zoom_min);
+    applyZoom();
+  });
+
+  zoom_reset_button.addEventListener('click', () => {
+    zoom = 1;
+    applyZoom();
+  });
+
+  workspace.addEventListener('wheel', (e) => {
+    if (e.ctrlKey) {
+      e.preventDefault(); // intercept zoom gesture
+      if (e.deltaY < 0) {
+        zoom = Math.min(zoom + zoom_step, zoom_max);
+      } else {
+        zoom = Math.max(zoom - zoom_step, zoom_min);
+      }
+      applyZoom();
+    }
+  }, { passive: false });
 
   stage.addEventListener('pointerdown', (e) => {
     if (!e.target.closest('.launcher-item')) {
