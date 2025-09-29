@@ -1802,7 +1802,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_text('real_directory')
 
         find('span.fa-arrow-up').click
-        error_text = "Permission denied: '#{dir}' does not have an ancestor directory specified in ALLOWLIST_PATH"
+        error_text = "Permission denied: #{dir} does not have an ancestor directory specified in ALLOWLIST_PATH"
         assert_selector('#forbidden-warning', text: error_text)
 
         # reset
@@ -1811,7 +1811,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_selector('#forbidden-warning', visible: :hidden)
 
         find_all('span.clickable', text: '/').first.click
-        error_text_root = "Permission denied: '/' does not have an ancestor directory specified in ALLOWLIST_PATH"
+        error_text_root = "Permission denied: / does not have an ancestor directory specified in ALLOWLIST_PATH"
         assert_selector('#forbidden-warning', text: error_text_root)
       end
     end

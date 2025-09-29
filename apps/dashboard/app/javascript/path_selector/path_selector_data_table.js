@@ -101,9 +101,13 @@ export class PathSelectorTable {
       this.resetTable();
     } catch (err) {
       this.resetTable();
-      if (err.message) {
+      if (msg = err.message) {
+        var prefix = '';
+        if (msg.match('ALLOWLIST_PATH')) {
+          prefix = 'Permission Denied: '
+        }
         $('#forbidden-warning').removeClass('d-none')
-          .text(err.message)
+          .text(`${prefix}${msg}`)
           .trigger('focus');
       }
       console.log(err);
