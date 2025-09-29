@@ -108,7 +108,6 @@ class RcloneUtil
           raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
         end
       end
-g
     end
 
     def mime_type(remote, path)
