@@ -68,18 +68,23 @@ class RcloneUtil
         return true
       end
 
-      if remote_type(remote) == "s3"
-        # Alternative way to check if a path exists in S3 by looking at acceptable file sizes
-        full_path = remote_path(remote, path)
-        o, e, s = rclone( "test", "info", "--check-length", full_path)
+      # begin 
+      full_path = remote_path(remote, path)
+      o, e, s = rclone( "lsjson", "--low-level-retries=1", "--stat", full_path)
+
+      if s.success? 
+        return JSON.parse(o)["IsDir"]
+      elsif s.exitstatus == 3 # directory not found
+        raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+      end
+      
+      # Fall back if lsjson fails
+      if (remote_type(remote) == "s3") && path.to_s.match(/^\/[^\/]*[\/]?$/)
+        o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
 
         if s.success?
-          match = o.match(/^(?<entry>maxFileLength = [0-9]+)/)
-          if match.nil?
-            raise StandardError, "Remote file or directory '#{path}' does not exist"
-          else
-            return true
-          end
+          # We assume that if an S3 remote returns true from one up from the root, the bucket exists
+          return true
         elsif s.exitstatus == 3 # directory not found
           raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
         else
