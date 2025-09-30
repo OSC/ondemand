@@ -75,6 +75,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - data-hide directives can now hide radio buttons in [4540](https://github.com/OSC/ondemand/pull/4540).
 - The ood-portal-generator now has an oidc_redirect_uri variable in [4582](https://github.com/OSC/ondemand/pull/4582).
 - Data-hide works on files attachments now in [4599](https://github.com/OSC/ondemand/pull/4599).
+- Grafana now has support for a gpu panel in active jobs in [4564](https://github.com/OSC/ondemand/pull/4564).
+- The file editor now has the option for soft tabs in [4508](https://github.com/OSC/ondemand/pull/4508).
+- system_status is now a dashboard widget as well as it's own page in [4532](https://github.com/OSC/ondemand/pull/4532).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
