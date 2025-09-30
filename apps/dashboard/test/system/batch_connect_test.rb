@@ -1132,7 +1132,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens', find_value('cluster')
 
       # these accounts are only on owens
@@ -1142,9 +1142,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       # pzs1124 exists on both, so it's available
       assert_equal '', find_option_style('auto_accounts', 'pzs1124')
 
-      # pzs0715 is available on oakely, so switching clusters should keep the same value.
+      # pzs1124 is available on oakely, so switching clusters should keep the same value.
       select('oakley', from: bc_ele_id('cluster'))
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
       # now these are hidden when oakley is chosen
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1754')
@@ -1176,7 +1176,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         visit new_batch_connect_session_context_url('sys/app')
 
-        assert_equal 'pzs0715', find_value('auto_accounts')
+        assert_equal 'pzs1124', find_value('auto_accounts')
         assert_equal 'owens', find_value('cluster')
 
         # notice that there are no duplicates. These accounts are not cluster aware
@@ -1254,7 +1254,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       # defaults
       assert_equal 'batch', find_value('auto_queues')
       assert_equal 'owens', find_value('cluster')
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
       select('oakley', from: bc_ele_id('cluster'))
 
@@ -1302,7 +1302,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens-default', find_value('auto_qos')
       assert_equal 'owens', find_value('cluster')
 
@@ -1315,6 +1315,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       # qos' available on owens cluster, but not with the selected account
+      select('pzs0715', from: bc_ele_id('auto_accounts'))
       assert_equal 'display: none;', find_option_style('auto_qos', 'staff')
       assert_equal 'display: none;', find_option_style('auto_qos', 'phoenix')
       assert_equal 'display: none;', find_option_style('auto_qos', 'geophys')
