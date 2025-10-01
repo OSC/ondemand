@@ -15,14 +15,15 @@ import { DAG } from './dag.js';
   const base_launcher_url = document.getElementById('base-launcher-url').value;
   const dag = new DAG();
   const styles = getComputedStyle(document.documentElement);
-  const grid_cols = parseInt(styles.getPropertyValue('--grid_cols'));
-  const grid_rows = parseInt(styles.getPropertyValue('--grid_rows'));
+
   const cell_w = parseInt(styles.getPropertyValue('--cell_w')) + parseInt(styles.getPropertyValue('--gap'));
   const cell_h = parseInt(styles.getPropertyValue('--cell_h')) + parseInt(styles.getPropertyValue('--gap'));
   const stageZoom = document.getElementById('stage-zoom');
   const zoom_max = 2.0;
-  const zoom_min = 0.5;
+  const zoom_min = 0.1; // 0.125 needed for 32x32 grid to fit
   const zoom_step = 0.1;
+  const fill_ratio_expand = 0.40;
+  const fill_ratio_shrink = 0.1; // 8x smaller than expand ratio
 
   const boxes = new Map();
   const edges = [];
@@ -30,7 +31,10 @@ import { DAG } from './dag.js';
   let selected_edge = null;
   let connect_mode = false;
   let connect_queue = null;
+  let gridExpanded = false;
   let zoom = 1;
+  let grid_cols = parseInt(styles.getPropertyValue('--grid_cols'));
+  let grid_rows = parseInt(styles.getPropertyValue('--grid_rows'));
 
   function applyZoom() {
     stageZoom.style.transform = `scale(${zoom})`;
@@ -77,6 +81,37 @@ import { DAG } from './dag.js';
       }
     }
     return false;
+  }
+
+  // Maximum we support 1024 launchers (32x32 grid)
+  function changeGridIfNeeded() {
+    const totalCells = grid_cols * grid_rows;
+    const usedCells = boxes.size;
+    const fillRatio = usedCells / totalCells;
+
+    if (fillRatio >= fill_ratio_expand && !gridExpanded) {
+      grid_cols *= 2;
+      grid_rows *= 2;
+
+      stage.style.gridTemplateColumns = `repeat(${grid_cols}, ${cell_w}px)`;
+      stage.style.gridTemplateRows = `repeat(${grid_rows}, ${cell_h}px)`;
+      stage.style.minWidth = `${grid_cols * cell_w}px`;
+      stage.style.minHeight = `${grid_rows * cell_h}px`;
+
+      edges.forEach(updateEdgeLine);
+      gridExpanded = true;
+    } else if (fillRatio < fill_ratio_shrink && gridExpanded) {  
+      grid_cols /= 2;
+      grid_rows /= 2;
+
+      stage.style.gridTemplateColumns = `repeat(${grid_cols}, ${cell_w}px)`;
+      stage.style.gridTemplateRows = `repeat(${grid_rows}, ${cell_h}px)`;
+      stage.style.minWidth = `${grid_cols * cell_w}px`;
+      stage.style.minHeight = `${grid_rows * cell_h}px`;
+
+      edges.forEach(updateEdgeLine);
+      gridExpanded = false;
+    }
   }
 
   function pointerInStage(e) {
@@ -246,6 +281,7 @@ import { DAG } from './dag.js';
     boxes.get(id)?.el.remove();
     boxes.delete(id);
     selected_launcher_id = null;
+    changeGridIfNeeded();
   }
 
   function deleteSelectedEdge() {
@@ -264,7 +300,10 @@ import { DAG } from './dag.js';
 
     const title = selected_launcher.options[selected_launcher.selectedIndex].text;
     const spawn = gridSpawn();
-    if (spawn) makeLauncher(spawn.row, spawn.col, launcher_id, title);
+    if (spawn) {
+      makeLauncher(spawn.row, spawn.col, launcher_id, title);
+      changeGridIfNeeded(); 
+    }
   });
 
   connect_launcher_button.addEventListener('click', () => {

@@ -1,8 +1,8 @@
-// Update in workflows.js if you change these
-$cols: 12;
-$rows: 8;
-$cell_w: 200;
-$cell_h: 140;
+$cols: 16;
+$rows: 16;
+// Now we can increse grid size in 1:1 ratio to keep workspace wrapper size same
+$cell_w: 204; // (204+20) * 4 = 900px width for workspace wrapper
+$cell_h: 130; // (130+20) * 4 = 600px height for workspace wrapper
 $gap: 20;
 
 :root {
@@ -106,8 +106,14 @@ html, body {
   justify-content: center;
 }
 
-.zoom-controls button:active { transform: translateY(1px); }
-.zoom-controls button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--accent-weak); border-color: var(--accent); }
+.zoom-controls button:active { 
+  transform: translateY(1px); 
+}
+
+.zoom-controls button[aria-pressed="true"] { 
+  box-shadow: 0 0 0 3px var(--accent-weak); 
+  border-color: var(--accent); 
+}
 
 .workspace {
   position: absolute;
@@ -133,6 +139,7 @@ html, body {
   gap: #{$gap};
   background: repeating-conic-gradient(#fafbff 0% 25%, #f5f7ff 0% 50%) 50%/20px 20px;
   padding: 20px;
+  // count * width + (count-1) * gap
   min-width: calc(#{$cols} * #{$cell_w}px + (#{$cols} - 1) * #{$gap}px);
   min-height: calc(#{$rows} * #{$cell_h}px + (#{$rows} - 1) * #{$gap}px);
   position: relative;
