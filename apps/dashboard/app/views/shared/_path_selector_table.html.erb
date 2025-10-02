@@ -3,7 +3,7 @@
 <div
     class="modal fade"
     id="<%= path_selector_id %>" tabindex="-1" role="dialog"
-    aria-labelledby="modal-path-selector" aria-hidden="true"
+    aria-labelledby="modal-path-selector"
     data-show-files="<%= show_files %>"
     data-show-hidden="<%= show_hidden %>"
     data-initial-directory="<%= initial_directory %>"
@@ -30,17 +30,19 @@
             <div class="col-sm-5">
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
-                <ol id="favorites" class="list-group text-nowrap">
+                <div id="favorites" class="list-group text-nowrap">
                   <% homedir = FavoritePath.new(Dir.home, title:'Home Directory') %>
                   <%= render(partial: 'favorites', collection: favorites.unshift(homedir), as: :path) %>
-                </ol>
+                </div>
               </div>
             </div>
           <% end %>
 
             <div class="<%= favorites ? 'col-sm-7' : 'col-sm-12' %>">
-              <ol role="navigation" id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter rounded">
-              </ol>
+              <nav>
+                <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter rounded">
+                </ol>
+              </nav>
 
               <div class="d-none alert alert-warning" role="alert" id="forbidden-warning">
                 <%= t('dashboard.batch_connect_sessions_path_selector_forbidden_error') %>
