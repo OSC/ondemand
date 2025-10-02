@@ -1,6 +1,6 @@
-<li role='button'
-  class='clickable text-wrap list-group-item list-group-item-action'
-  data-api-url=<%= files_path(path.to_s, fs: path.filesystem) %>>
-  <%= fa_icon((path.to_s == Dir.home ? 'home' : path.icon), classes: '') %>
-  <%= path.title || path %>
-</li>
+<a href="#"
+class='text-wrap list-group-item list-group-item-action link-dark'
+data-api-url=<%= files_path(path.to_s, fs: path.filesystem) %>>
+<%= fa_icon((path.to_s == Dir.home ? 'home' : path.icon), classes: '') %>
+<%= path.title || path %>
+</a>

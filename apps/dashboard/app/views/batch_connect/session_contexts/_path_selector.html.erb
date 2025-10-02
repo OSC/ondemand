@@ -21,7 +21,7 @@
 
 <%= form.text_field(attrib.id, class: 'form-control', **options) %>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>" aria-label="<%= I18n.t('dashboard.select_path_for', element: attrib.label) %>">
   <%= I18n.t('dashboard.select_path') %>
 </button>
 
