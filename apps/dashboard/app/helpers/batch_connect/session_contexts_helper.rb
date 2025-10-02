@@ -40,6 +40,10 @@ module BatchConnect::SessionContextsHelper
                 else
                   form.send widget, attrib.id, all_options
                 end
+    # Append a hidden marker div to identify the widget type in the DOM
+    hidden_marker = content_tag(:div, '', hidden: true, data: { widget_type: widget })
+    rendered = safe_join([rendered, hidden_marker])
+
     header = sanitize(OodAppkit.markdown.render(attrib.header))
     "#{header}#{rendered}".html_safe
 
