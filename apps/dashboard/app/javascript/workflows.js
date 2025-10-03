@@ -345,7 +345,7 @@ class DragController {
     line.addEventListener('click', (e) => {
       e.stopPropagation();
       document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
-      document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.launcher-box.selected').forEach(el => el.classList.remove('selected'));
       selectedLauncherId = null;
 
       line.classList.add('selected');
@@ -358,7 +358,7 @@ class DragController {
     addLauncherButton.disabled = true;
     $.get(url, function(html) {
       const $launcher = $(`
-        <div class='launcher-item' id='launcher_${id}' data-row='${row}' data-col='${col}'>
+        <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
           <div class='row'>
             <div class='col launcher-title-grab'>${title}</div>
           </div>
@@ -377,7 +377,7 @@ class DragController {
       $launcher.on('pointerdown', function(e) {
         e.stopPropagation();
         selectedLauncherId = id;
-        $('.launcher-item.selected').removeClass('selected');
+        $('.launcher-box.selected').removeClass('selected');
         $launcher.addClass('selected');
         pointer.update(e);
         drag.beginDrag(box);
@@ -467,9 +467,9 @@ class DragController {
   workspace.addEventListener('wheel', e => pointer.handleWheel(e), { passive: false });
 
   stage.addEventListener('pointerdown', (e) => {
-    if (!e.target.closest('.launcher-item')) {
+    if (!e.target.closest('.launcher-box')) {
       selectedLauncherId = null;
-      document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.launcher-box.selected').forEach(el => el.classList.remove('selected'));
       selectedEdge = null;
       document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
     }

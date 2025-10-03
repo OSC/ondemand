@@ -166,7 +166,7 @@ svg.edges {
   filter: drop-shadow(0 0 4px var(--accent-weak));
 }
 
-.launcher-item {
+.launcher-box {
   position: absolute;
   background: #fff;
   border-radius: 10px;
@@ -183,11 +183,11 @@ svg.edges {
   user-select: none;  
 }
 
-.launcher-item.selected {
+.launcher-box.selected {
   outline: 3px solid var(--accent-weak);
   background: var(--box-selected);
 }
 
-.launcher-item.connect-queued {
+.launcher-box.connect-queued {
   outline: 3px dashed var(--accent);
 }
