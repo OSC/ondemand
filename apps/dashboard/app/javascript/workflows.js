@@ -1,76 +1,194 @@
 import { DAG } from './dag.js';
+/*
+ * Helper Classes to support Drag and Drop UI 
+ */
+// Box represents a draggable launcher box
+class Box {
+  constructor(id, el, row, col, w, h) {
+    this.id = id;
+    this.el = el;
+    this.row = row;
+    this.col = col;
+    this.x = 0;
+    this.y = 0;
+    this.w = w;
+    this.h = h;
+  }
+
+  moveTo(x, y) {
+    this.x = x;
+    this.y = y;
+    this.el.style.left = x + 'px';
+    this.el.style.top = y + 'px';
+  }
+}
+
+// Edge represents a connection between two launcher boxes
+class Edge {
+  constructor(fromBox, toBox, el) {
+    this.fromBox = fromBox;
+    this.toBox = toBox;
+    this.el = el;
+  }
+
+  intersectRect(cx, cy, w, h, dx, dy) {
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    let scale = 0.5 / Math.max(absDx / w, absDy / h);
+    scale = Math.min(scale, 1);
+    return { x: cx + dx * scale, y: cy + dy * scale };
+  }
+
+  update() {
+    const { fromBox, toBox } = this;
+    const cx1 = fromBox.x + fromBox.w / 2, cy1 = fromBox.y + fromBox.h / 2;
+    const cx2 = toBox.x + toBox.w / 2, cy2 = toBox.y + toBox.h / 2;
+    const dx = cx2 - cx1, dy = cy2 - cy1;
+    const start = this.intersectRect(cx1, cy1, fromBox.w, fromBox.h, dx, dy);
+    const end = this.intersectRect(cx2, cy2, toBox.w, toBox.h, -dx, -dy);
+    this.el.setAttribute('x1', start.x);
+    this.el.setAttribute('y1', start.y);
+    this.el.setAttribute('x2', end.x);
+    this.el.setAttribute('y2', end.y);
+  }
+}
+
+// Pointer tracks mouse on screen and translates to stage coordinates
+class Pointer {
+  constructor(stage, zoomRef) {
+    this.stage = stage;
+    this.zoomRef = zoomRef; // pass a reference to the current zoom
+    this.x = 0;
+    this.y = 0;
+  }
+
+  update(e) {
+    const r = this.stage.getBoundingClientRect();
+    const clientX = e.clientX ?? e.touches?.[0].clientX;
+    const clientY = e.clientY ?? e.touches?.[0].clientY;
+    this.x = (clientX - r.left) / this.zoomRef.value;
+    this.y = (clientY - r.top) / this.zoomRef.value;
+  }
+
+  pos() {
+    return { x: this.x, y: this.y };
+  }
+}
 
 (() => {
   const workspace = document.getElementById('workspace');
   const stage = document.getElementById('stage');
-  const edges_svg = document.getElementById('edges');
-  const add_launcher_button = document.getElementById('btn-add');
-  const connect_launcher_button = document.getElementById('btn-connect');
-  const delete_launcher_button = document.getElementById('btn-delete-launcher');
-  const delete_edge_button = document.getElementById('btn-delete-edge');
-  const zoom_in_button = document.getElementById('zoom-in');
-  const zoom_out_button = document.getElementById('zoom-out');
-  const zoom_reset_button = document.getElementById('zoom-reset');
-  const selected_launcher = document.getElementById('select_launcher');
-  const base_launcher_url = document.getElementById('base-launcher-url').value;
+  const edgesSvg = document.getElementById('edges');
+  const addLauncherButton = document.getElementById('btn-add');
+  const connectLauncherButton = document.getElementById('btn-connect');
+  const deleteLauncherButton = document.getElementById('btn-delete-launcher');
+  const deleteEdgeButton = document.getElementById('btn-delete-edge');
+  const zoomInButton = document.getElementById('zoom-in');
+  const zoomOutButton = document.getElementById('zoom-out');
+  const zoomResetButton = document.getElementById('zoom-reset');
+  const selectedLauncher = document.getElementById('select_launcher');
+  const baseLauncherUrl = document.getElementById('base-launcher-url').value;
   const dag = new DAG();
   const styles = getComputedStyle(document.documentElement);
+  const zoomState = {value: 1};
+  const pointer = new Pointer(stage, zoomState);
 
   const cell_w = parseInt(styles.getPropertyValue('--cell_w')) + parseInt(styles.getPropertyValue('--gap'));
   const cell_h = parseInt(styles.getPropertyValue('--cell_h')) + parseInt(styles.getPropertyValue('--gap'));
+  const halfGap = parseInt(styles.getPropertyValue('--gap')) / 2;
   const stageZoom = document.getElementById('stage-zoom');
-  const zoom_max = 2.0;
-  const zoom_min = 0.1; // 0.125 needed for 32x32 grid to fit
-  const zoom_step = 0.1;
-  const fill_ratio_expand = 0.40;
-  const fill_ratio_shrink = 0.1; // 8x smaller than expand ratio
+  const zoomMax = 2.0;
+  const zoomMin = 0.1; // 0.125 needed for 32x32 grid to fit
+  const zoomStep = 0.1;
+  const fillRatioExpand = 0.40;
+  const fillRatioShrink = 0.1; // 8x smaller than expand ratio
 
   const boxes = new Map();
   const edges = [];
-  let selected_launcher_id = null;
-  let selected_edge = null;
-  let connect_mode = false;
-  let connect_queue = null;
+  let selectedLauncherId = null;
+  let selectedEdge = null;
+  let connectMode = false;
+  let connectQueue = null;
   let gridExpanded = false;
-  let zoom = 1;
-  let grid_cols = parseInt(styles.getPropertyValue('--grid_cols'));
-  let grid_rows = parseInt(styles.getPropertyValue('--grid_rows'));
+  let gridCols = parseInt(styles.getPropertyValue('--grid_cols'));
+  let gridRows = parseInt(styles.getPropertyValue('--grid_rows'));
 
   function applyZoom() {
-    stageZoom.style.transform = `scale(${zoom})`;
-    edges.forEach(updateEdgeLine);
-    const resetBtn = document.getElementById('zoom-reset');
-    if (resetBtn) resetBtn.textContent = `${Math.round(zoom * 100)}%`;
-  }
-
-  function stageRect() {
-    return stage.getBoundingClientRect();
+    stageZoom.style.transform = `scale(${zoomState.value})`;
+    edges.forEach(edge => edge.update());
+    zoomResetButton.textContent = `${Math.round(zoomState.value * 100)}%`;
   }
 
   function gridSpawn() {
-    const cols = 12;
-    const rows = 6;
-    for (let r = 1; r <= rows; r++) {
-      for (let c = 1; c <= cols; c++) {
-        if (!document.querySelector(`.launcher-item[data-row='${r}'][data-col='${c}']`)) {
-          return { row: r, col: c };
+    for (let r = 1; r <= gridRows; r++) {
+      for (let c = 1; c <= gridCols; c++) {
+        let occupied = false;
+        for (let box of boxes.values()) {
+          if (box.row === r && box.col === c) {
+            occupied = true;
+            break;
+          }
         }
+        if (!occupied) return { row: r, col: c };
       }
     }
     alert('No empty grid cells available!');
     return null;
   }
 
+  // No launcher box should be outside [1...row][1..col] to resize
+  // else will lead to launchers left outisde the workflow-stage
+  function checkIfBoxOutside(newRows, newCols) {
+    for (const box of boxes.values()) {
+      if (box.row > newRows || box.col > newCols) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Maximum we support 1024 launchers (32x32 grid)
+  function changeGridIfNeeded() {
+    const totalCells = gridCols * gridRows;
+    const usedCells = boxes.size;
+    const fillRatio = usedCells / totalCells;
+
+    if (fillRatio >= fillRatioExpand && !gridExpanded) {
+      gridCols *= 2;
+      gridRows *= 2;
+
+      stage.style.gridTemplateColumns = `repeat(${gridCols}, ${cell_w}px)`;
+      stage.style.gridTemplateRows = `repeat(${gridRows}, ${cell_h}px)`;
+      stage.style.minWidth = `${gridCols * cell_w}px`;
+      stage.style.minHeight = `${gridRows * cell_h}px`;
+
+      edges.forEach(edge => edge.update());
+      gridExpanded = true;
+    } else if (fillRatio < fillRatioShrink && gridExpanded) { 
+      if (checkIfBoxOutside(gridRows/2, gridCols/2)) return;
+      gridCols /= 2;
+      gridRows /= 2;
+
+      stage.style.gridTemplateColumns = `repeat(${gridCols}, ${cell_w}px)`;
+      stage.style.gridTemplateRows = `repeat(${gridRows}, ${cell_h}px)`;
+      stage.style.minWidth = `${gridCols * cell_w}px`;
+      stage.style.minHeight = `${gridRows * cell_h}px`;
+
+      edges.forEach(edge => edge.update());
+      gridExpanded = false;
+    }
+  }
+
   function snapToGrid(x, y) {
-    const col = Math.max(1, Math.min(grid_cols, Math.round(x / cell_w) + 1));
-    const row = Math.max(1, Math.min(grid_rows, Math.round(y / cell_h) + 1));
+    const col = Math.max(1, Math.min(gridCols, Math.round((x - halfGap) / cell_w) + 1));
+    const row = Math.max(1, Math.min(gridRows, Math.round((y - halfGap) / cell_h) + 1));
     return { row, col };
   }
 
   function cellToXY(row, col) {
     return {
-      x: (col - 1) * cell_w + 10, //padding
-      y: (row - 1) * cell_h + 10
+      x: (col - 1) * cell_w + halfGap, //padding
+      y: (row - 1) * cell_h + halfGap
     };
   }
 
@@ -83,93 +201,23 @@ import { DAG } from './dag.js';
     return false;
   }
 
-  // Maximum we support 1024 launchers (32x32 grid)
-  function changeGridIfNeeded() {
-    const totalCells = grid_cols * grid_rows;
-    const usedCells = boxes.size;
-    const fillRatio = usedCells / totalCells;
-
-    if (fillRatio >= fill_ratio_expand && !gridExpanded) {
-      grid_cols *= 2;
-      grid_rows *= 2;
-
-      stage.style.gridTemplateColumns = `repeat(${grid_cols}, ${cell_w}px)`;
-      stage.style.gridTemplateRows = `repeat(${grid_rows}, ${cell_h}px)`;
-      stage.style.minWidth = `${grid_cols * cell_w}px`;
-      stage.style.minHeight = `${grid_rows * cell_h}px`;
-
-      edges.forEach(updateEdgeLine);
-      gridExpanded = true;
-    } else if (fillRatio < fill_ratio_shrink && gridExpanded) {  
-      grid_cols /= 2;
-      grid_rows /= 2;
-
-      stage.style.gridTemplateColumns = `repeat(${grid_cols}, ${cell_w}px)`;
-      stage.style.gridTemplateRows = `repeat(${grid_rows}, ${cell_h}px)`;
-      stage.style.minWidth = `${grid_cols * cell_w}px`;
-      stage.style.minHeight = `${grid_rows * cell_h}px`;
-
-      edges.forEach(updateEdgeLine);
-      gridExpanded = false;
-    }
-  }
-
-  function pointerInStage(e) {
-    const r = stageRect();
-    const x = ((e.clientX ?? e.touches?.[0].clientX) - r.left) / zoom;
-    const y = ((e.clientY ?? e.touches?.[0].clientY) - r.top) / zoom;
-    return { x, y };
-  }
-
   function updateBoxPosition(id, x, y) {
     const b = boxes.get(id);
     if (!b) return;
-    b.x = x;
-    b.y = y;
-    b.el.style.left = x + 'px';
-    b.el.style.top = y + 'px';
+    b.moveTo(x, y);
     edges.forEach(edge => {
-      if (edge.fromId === id || edge.toId === id) updateEdgeLine(edge);
+      if (edge.fromBox.id === id || edge.toBox.id === id) edge.update();
     });
-  }
-
-  function intersectRect(cx, cy, w, h, dx, dy) {
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-    let scale = 0.5 / Math.max(absDx / w, absDy / h);
-    scale = Math.min(scale, 1);
-    return { x: cx + dx * scale, y: cy + dy * scale };
-  }
-
-  function updateEdgeLine(edge) {
-    const from = boxes.get(edge.fromId);
-    const to = boxes.get(edge.toId);
-    if (!from || !to) return;
-
-    const x1 = from.x, y1 = from.y, w1 = from.w, h1 = from.h;
-    const x2 = to.x, y2 = to.y, w2 = to.w, h2 = to.h;
-
-    const cx1 = x1 + w1 / 2, cy1 = y1 + h1 / 2;
-    const cx2 = x2 + w2 / 2, cy2 = y2 + h2 / 2;
-    const dx = cx2 - cx1;
-    const dy = cy2 - cy1;
-
-    const start = intersectRect(cx1, cy1, w1, h1, dx, dy);
-    const end = intersectRect(cx2, cy2, w2, h2, -dx, -dy);
-    edge.el.setAttribute('x1', start.x);
-    edge.el.setAttribute('y1', start.y);
-    edge.el.setAttribute('x2', end.x);
-    edge.el.setAttribute('y2', end.y);
   }
 
   function createEdge(fromId, toId) {
     if (fromId === toId) return;
     if (!boxes.has(fromId) || !boxes.has(toId)) return;
 
-    const existingEdge = edges.find(e => e.fromId === fromId && e.toId === toId);
+    const existingEdge = edges.find(e => e.fromBox.id === fromId && e.toBox.id === toId);
     if (existingEdge) return;
 
-    const reverseEdge = edges.find(e => e.fromId === toId && e.toId === fromId);
+    const reverseEdge = edges.find(e => e.fromBox.id === toId && e.toBox.id === fromId);
     if (reverseEdge) {
       alert('Bidirectional edges are not allowed.');
       return;
@@ -177,30 +225,32 @@ import { DAG } from './dag.js';
 
     dag.addEdge(fromId, toId);
     if (dag.hasCycle()) {
+      dag.removeEdge(fromId, toId);
       alert('Adding this edge will create a cyclic dependency among the launchers.');
       return;
     }
 
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.classList.add('edge');
-    edges_svg.appendChild(line);
-    const edge = { fromId, toId, el: line };
+    edgesSvg.appendChild(line);
+    
+    const edge = new Edge(boxes.get(fromId), boxes.get(toId), line);
     edges.push(edge);
-    updateEdgeLine(edge);
+    edge.update();
 
     line.addEventListener('click', (e) => {
       e.stopPropagation();
       document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
       document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
-      selected_launcher_id = null;
+      selectedLauncherId = null;
 
       line.classList.add('selected');
-      selected_edge = edge;
+      selectedEdge = edge;
     });
   }
 
   function makeLauncher(row, col, id, title) {
-    const url = `${base_launcher_url}/${id}/render_button`;
+    const url = `${baseLauncherUrl}/${id}/render_button`;
 
     $.get(url, function(html) {
       const $launcher = $(`
@@ -213,22 +263,24 @@ import { DAG } from './dag.js';
       $('#stage').append($launcher);
       const pos = cellToXY(row, col);
       $launcher.css({ left: pos.x + 'px', top: pos.y + 'px' });
-      const model = { el: $launcher[0], row, col, w: $launcher.outerWidth(), h: $launcher.outerHeight() };
+      const model = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
       boxes.set(id, model);
       updateBoxPosition(id, pos.x, pos.y);
 
       // Pointer / drag events
       $launcher.on('pointerdown', function(e) {
         e.stopPropagation();
-        selected_launcher_id = id;
+        selectedLauncherId = id;
         $('.launcher-item.selected').removeClass('selected');
         $launcher.addClass('selected');
 
-        const start = pointerInStage(e);
+        pointer.update(e);
+        const start = pointer.pos();
         const startX = model.x, startY = model.y;
 
         $(document).on('pointermove.launcher', function(ev) {
-          const p = pointerInStage(ev);
+          pointer.update(ev);
+          const p = pointer.pos();
           updateBoxPosition(id, startX + (p.x - start.x), startY + (p.y - start.y));
         });
 
@@ -251,16 +303,16 @@ import { DAG } from './dag.js';
 
       // Connect mode click
       $launcher.on('click', function(e) {
-        if (!connect_mode) return;
+        if (!connectMode) return;
         e.stopPropagation();
-        if (!connect_queue) {
-          connect_queue = id;
+        if (!connectQueue) {
+          connectQueue = id;
           $launcher.addClass('connect-queued');
         } else {
-          const fromId = connect_queue;
+          const fromId = connectQueue;
           const toId = id;
           $(`#launcher_${fromId}`).removeClass('connect-queued');
-          connect_queue = null;
+          connectQueue = null;
           createEdge(fromId, toId);
         }
       });
@@ -268,79 +320,81 @@ import { DAG } from './dag.js';
   }
 
   function deleteSelectedLauncher() {
-    if (!selected_launcher_id) return;
-    dag.removeLauncher(selected_launcher_id);
-    const id = selected_launcher_id;
+    if (!selectedLauncherId) return;
+    dag.removeLauncher(selectedLauncherId);
     for (let i = edges.length - 1; i >= 0; i--) {
       const e = edges[i];
-      if (e.fromId === id || e.toId === id) {
+      if (e.fromBox.id === selectedLauncherId || e.toBox.id === selectedLauncherId) {
         e.el.remove();
         edges.splice(i, 1);
       }
     }
-    boxes.get(id)?.el.remove();
-    boxes.delete(id);
-    selected_launcher_id = null;
+    boxes.get(selectedLauncherId)?.el.remove();
+    boxes.delete(selectedLauncherId);
+    selectedLauncherId = null;
     changeGridIfNeeded();
   }
 
   function deleteSelectedEdge() {
-    if (!selected_edge) return;
-    selected_edge.el.remove();
-    dag.removeEdge(selected_edge.fromId, selected_edge.toId);
-    edges.splice(edges.indexOf(selected_edge), 1);
-    selected_edge = null;
+    if (!selectedEdge) return;
+    selectedEdge.el.remove();
+    dag.removeEdge(selectedEdge.fromBox.id, selectedEdge.toBox.id);
+    edges.splice(edges.indexOf(selectedEdge), 1);
+    selectedEdge = null;
   }
 
-  add_launcher_button.addEventListener('click', () => {
-    const launcher_id = selected_launcher.value;
-    if (!launcher_id) return alert('Please select a launcher');
-    const launcher_exists = document.getElementById(`launcher_${launcher_id}`);
-    if (launcher_exists) return alert('Launcher already exists, please select a different launcher');
+  addLauncherButton.addEventListener('click', () => {
+    const launcherId = selectedLauncher.value;
+    if (!launcherId) return alert('Please select a launcher');
+    const launcherExists = document.getElementById(`launcher_${launcherId}`);
+    if (launcherExists) return alert('Launcher already exists, please select a different launcher');
 
-    const title = selected_launcher.options[selected_launcher.selectedIndex].text;
+    const title = selectedLauncher.options[selectedLauncher.selectedIndex].text;
     const spawn = gridSpawn();
     if (spawn) {
-      makeLauncher(spawn.row, spawn.col, launcher_id, title);
+      makeLauncher(spawn.row, spawn.col, launcherId, title);
       changeGridIfNeeded(); 
     }
   });
 
-  connect_launcher_button.addEventListener('click', () => {
-    connect_mode = !connect_mode;
-    connect_launcher_button.classList.toggle('active', connect_mode);
-    connect_launcher_button.setAttribute('aria-pressed', String(connect_mode));
-    if (!connect_mode && connect_queue) {
-      document.querySelector(`#launcher_${connect_queue}`)?.classList.remove('connect-queued');
-      connect_queue = null;
+  connectLauncherButton.addEventListener('click', () => {
+    connectMode = !connectMode;
+    connectLauncherButton.classList.toggle('active', connectMode);
+    connectLauncherButton.setAttribute('aria-pressed', String(connectMode));
+    if (!connectMode && connectQueue) {
+      document.querySelector(`#launcher_${connectQueue}`)?.classList.remove('connect-queued');
+      connectQueue = null;
     }
   });
 
-  delete_launcher_button.addEventListener('click', deleteSelectedLauncher);
-  delete_edge_button.addEventListener('click', deleteSelectedEdge);
+  deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
+  deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  zoom_in_button.addEventListener('click', () => {
-    zoom = Math.min(zoom + zoom_step, zoom_max);
+  zoomInButton.addEventListener('click', () => {
+    zoomState.value = Math.min(zoomState.value + zoomStep, zoomMax);
     applyZoom();
   });
 
-  zoom_out_button.addEventListener('click', () => {
-    zoom = Math.max(zoom - zoom_step, zoom_min);
+  zoomOutButton.addEventListener('click', () => {
+    zoomState.value = Math.max(zoomState.value - zoomStep, zoomMin);
     applyZoom();
   });
 
-  zoom_reset_button.addEventListener('click', () => {
-    zoom = 1;
+  zoomResetButton.addEventListener('click', () => {
+    zoomState.value = 1;
     applyZoom();
   });
+
+  workspace.addEventListener('pointermove', e => pointer.update(e));
+  workspace.addEventListener('touchmove', e => pointer.update(e));
 
   workspace.addEventListener('wheel', (e) => {
     if (e.ctrlKey) {
       e.preventDefault(); // intercept zoom gesture
       if (e.deltaY < 0) {
-        zoom = Math.min(zoom + zoom_step, zoom_max);
+        zoomState.value = Math.min(zoomState.value + zoomStep, zoomMax);
       } else {
-        zoom = Math.max(zoom - zoom_step, zoom_min);
+        zoomState.value = Math.max(zoomState.value - zoomStep, zoomMin);
       }
       applyZoom();
     }
@@ -348,9 +402,9 @@ import { DAG } from './dag.js';
 
   stage.addEventListener('pointerdown', (e) => {
     if (!e.target.closest('.launcher-item')) {
-      selected_launcher_id = null;
+      selectedLauncherId = null;
       document.querySelectorAll('.launcher-item.selected').forEach(el => el.classList.remove('selected'));
-      selected_edge = null;
+      selectedEdge = null;
       document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
     }
   });
@@ -358,25 +412,25 @@ import { DAG } from './dag.js';
   stage.addEventListener('keydown', (e) => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
-      if (selected_launcher_id) {
+      if (selectedLauncherId) {
         deleteSelectedLauncher();
-      } else if (selected_edge) {
+      } else if (selectedEdge) {
         deleteSelectedEdge();
       }
     }
-    if (e.key === 'Escape' && connect_mode) connect_launcher_button.click();
+    if (e.key === 'Escape' && connectMode) connectLauncherButton.click();
   });
 
   const resizeObserver = new ResizeObserver(() => {
-    edges_svg.setAttribute('width', stage.offsetWidth);
-    edges_svg.setAttribute('height', stage.offsetHeight);
-    edges.forEach(updateEdgeLine);
+    edgesSvg.setAttribute('width', stage.offsetWidth);
+    edgesSvg.setAttribute('height', stage.offsetHeight);
+    edges.forEach(edge => edge.update());
   });
   resizeObserver.observe(stage);
 
   function init() {
-    edges_svg.setAttribute('width', stage.offsetWidth);
-    edges_svg.setAttribute('height', stage.offsetHeight);
+    edgesSvg.setAttribute('width', stage.offsetWidth);
+    edgesSvg.setAttribute('height', stage.offsetHeight);
   }
   init();
 })();
