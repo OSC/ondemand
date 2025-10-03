@@ -81,7 +81,8 @@ logging_send_syslog_msg(ood_pun_t)
 type ood_pun_config_t;
 allow ood_pun_t config_home_t:dir { add_name write create };
 manage_dirs_pattern(ood_pun_t, config_home_t, config_home_t)
-manage_files_pattern(ood_pun_t, "~/.config/ondemand(/.*)?", ood_pun_config_t)
+manage_files_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t)
+manage_dirs_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t) 
 type_transition ood_pun_t config_home_t:dir ood_pun_config_t;
 type_transition ood_pun_t ood_pun_config_t:dir ood_pun_config_t;
 
