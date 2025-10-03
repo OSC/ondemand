@@ -1,7 +1,9 @@
 import { DAG } from './dag.js';
+
 /*
  * Helper Classes to support Drag and Drop UI 
  */
+
 // Box represents a draggable launcher box
 class Box {
   constructor(id, el, row, col, w, h) {
@@ -55,9 +57,13 @@ class Edge {
 
 // Pointer tracks mouse on screen and translates to stage coordinates
 class Pointer {
-  constructor(stage, zoomRef) {
+  constructor(stage, zoomRef, step, max, min, applyZoomCb) {
     this.stage = stage;
-    this.zoomRef = zoomRef; // pass a reference to the current zoom
+    this.zoomRef = zoomRef;
+    this.step = step;
+    this.max = max;
+    this.min = min;
+    this.applyZoomCb = applyZoomCb;
     this.x = 0;
     this.y = 0;
   }
@@ -73,9 +79,133 @@ class Pointer {
   pos() {
     return { x: this.x, y: this.y };
   }
+
+  zoomIn() {
+    this.zoomRef.value = Math.min(this.zoomRef.value + this.step, this.max);
+    this.applyZoomCb();
+  }
+
+  zoomOut() {
+    this.zoomRef.value = Math.max(this.zoomRef.value - this.step, this.min);
+    this.applyZoomCb();
+  }
+
+  resetZoom() {
+    this.zoomRef.value = 1;
+    this.applyZoomCb();
+  }
+
+  handleWheel(e) {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      if (e.deltaY < 0) {
+        this.zoomIn();
+      } else {
+        this.zoomOut();
+      }
+    }
+  }
 }
 
+// DragController manages dragging of launcher boxes
+class DragController {
+  constructor(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap) {
+    this.pointer = pointer;
+    this.boxes = boxes;
+    this.edges = edges;
+    this.gridCols = gridCols;
+    this.gridRows = gridRows;
+    this.cell_w = cell_w;
+    this.cell_h = cell_h;
+    this.halfGap = halfGap;
+    this.dragging = null;
+    this.start = null;
+
+    document.addEventListener('pointermove', e => this.onMove(e));
+    document.addEventListener('pointerup', e => this.onUp(e));
+  }
+
+  update(gridCols, gridRows) {
+    this.gridCols = gridCols;
+    this.gridRows = gridRows;
+  }
+
+  beginDrag(box) {
+    this.start = {
+      px: this.pointer.x,
+      py: this.pointer.y,
+      x: box.x,
+      y: box.y
+    };
+    this.dragging = box;
+  }
+
+  onMove(e) {
+    if (!this.dragging) return;
+    this.pointer.update(e);
+    const dx = this.pointer.x - this.start.px;
+    const dy = this.pointer.y - this.start.py;
+    this.updateBoxPosition(this.dragging, this.start.x + dx, this.start.y + dy);
+  }
+
+  onUp(e) {
+    if (!this.dragging) return;
+    const box = this.dragging;
+    const snapped = this.snapToGrid(box.x, box.y);
+
+    if (this.isCellOccupied(snapped.row, snapped.col, box.id)) {
+      const revertPos = this.cellToXY(box.row, box.col);
+      this.updateBoxPosition(box, revertPos.x, revertPos.y);
+    } else {
+      box.row = snapped.row;
+      box.col = snapped.col;
+      const finalPos = this.cellToXY(snapped.row, snapped.col);
+      this.updateBoxPosition(box, finalPos.x, finalPos.y);
+      box.el.setAttribute('data-row', snapped.row);
+      box.el.setAttribute('data-col', snapped.col);
+    }
+
+    this.dragging = null;
+    this.start = null;
+  }
+
+  snapToGrid(x, y) {
+    const col = Math.max(1, Math.min(this.gridCols, Math.round((x - this.halfGap) / this.cell_w) + 1));
+    const row = Math.max(1, Math.min(this.gridRows, Math.round((y - this.halfGap) / this.cell_h) + 1));
+    return { row, col };
+  }
+
+  cellToXY(row, col) {
+    return {
+      x: (col - 1) * this.cell_w + this.halfGap,
+      y: (row - 1) * this.cell_h + this.halfGap
+    };
+  }
+
+  isCellOccupied(row, col, excludeId = null) {
+    for (const [id, box] of this.boxes.entries()) {
+      if (id !== excludeId && box.row === row && box.col === col) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  updateBoxPosition(box, x, y) {
+    box.moveTo(x, y);
+    this.edges.forEach(edge => {
+      if (edge.fromBox === box || edge.toBox === box) {
+        edge.update();
+      }
+    });
+  }
+}
+
+/*
+ * Immediately Invoked Function Expression (IIFE) to encapsulate the workflow logic
+*/
 (() => {
+  // Document elements
   const workspace = document.getElementById('workspace');
   const stage = document.getElementById('stage');
   const edgesSvg = document.getElementById('edges');
@@ -88,23 +218,19 @@ class Pointer {
   const zoomResetButton = document.getElementById('zoom-reset');
   const selectedLauncher = document.getElementById('select_launcher');
   const baseLauncherUrl = document.getElementById('base-launcher-url').value;
-  const dag = new DAG();
   const styles = getComputedStyle(document.documentElement);
-  const zoomState = {value: 1};
-  const pointer = new Pointer(stage, zoomState);
+  const stageZoom = document.getElementById('stage-zoom');
 
+  // State variables and constants
+  const zoomState = {value: 1};
   const cell_w = parseInt(styles.getPropertyValue('--cell_w')) + parseInt(styles.getPropertyValue('--gap'));
   const cell_h = parseInt(styles.getPropertyValue('--cell_h')) + parseInt(styles.getPropertyValue('--gap'));
   const halfGap = parseInt(styles.getPropertyValue('--gap')) / 2;
-  const stageZoom = document.getElementById('stage-zoom');
   const zoomMax = 2.0;
   const zoomMin = 0.1; // 0.125 needed for 32x32 grid to fit
   const zoomStep = 0.1;
   const fillRatioExpand = 0.40;
   const fillRatioShrink = 0.1; // 8x smaller than expand ratio
-
-  const boxes = new Map();
-  const edges = [];
   let selectedLauncherId = null;
   let selectedEdge = null;
   let connectMode = false;
@@ -112,6 +238,13 @@ class Pointer {
   let gridExpanded = false;
   let gridCols = parseInt(styles.getPropertyValue('--grid_cols'));
   let gridRows = parseInt(styles.getPropertyValue('--grid_rows'));
+
+  // Class instances
+  const dag = new DAG();
+  const boxes = new Map();
+  const edges = [];
+  const pointer = new Pointer(stage, zoomState, zoomStep, zoomMax, zoomMin, applyZoom);
+  const drag = new DragController(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap);
 
   function applyZoom() {
     stageZoom.style.transform = `scale(${zoomState.value})`;
@@ -156,6 +289,7 @@ class Pointer {
     if (fillRatio >= fillRatioExpand && !gridExpanded) {
       gridCols *= 2;
       gridRows *= 2;
+      drag.update(gridCols, gridRows);
 
       stage.style.gridTemplateColumns = `repeat(${gridCols}, ${cell_w}px)`;
       stage.style.gridTemplateRows = `repeat(${gridRows}, ${cell_h}px)`;
@@ -166,8 +300,9 @@ class Pointer {
       gridExpanded = true;
     } else if (fillRatio < fillRatioShrink && gridExpanded) { 
       if (checkIfBoxOutside(gridRows/2, gridCols/2)) return;
-      gridCols /= 2;
-      gridRows /= 2;
+      gridCols = Math.floor(gridCols / 2);
+      gridRows = Math.floor(gridRows / 2);
+      drag.update(gridCols, gridRows);
 
       stage.style.gridTemplateColumns = `repeat(${gridCols}, ${cell_w}px)`;
       stage.style.gridTemplateRows = `repeat(${gridRows}, ${cell_h}px)`;
@@ -177,37 +312,6 @@ class Pointer {
       edges.forEach(edge => edge.update());
       gridExpanded = false;
     }
-  }
-
-  function snapToGrid(x, y) {
-    const col = Math.max(1, Math.min(gridCols, Math.round((x - halfGap) / cell_w) + 1));
-    const row = Math.max(1, Math.min(gridRows, Math.round((y - halfGap) / cell_h) + 1));
-    return { row, col };
-  }
-
-  function cellToXY(row, col) {
-    return {
-      x: (col - 1) * cell_w + halfGap, //padding
-      y: (row - 1) * cell_h + halfGap
-    };
-  }
-
-  function isCellOccupied(row, col, excludeId = null) {
-    for (const [id, box] of boxes.entries()) {
-      if (id !== excludeId && box.row === row && box.col === col) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function updateBoxPosition(id, x, y) {
-    const b = boxes.get(id);
-    if (!b) return;
-    b.moveTo(x, y);
-    edges.forEach(edge => {
-      if (edge.fromBox.id === id || edge.toBox.id === id) edge.update();
-    });
   }
 
   function createEdge(fromId, toId) {
@@ -251,7 +355,7 @@ class Pointer {
 
   function makeLauncher(row, col, id, title) {
     const url = `${baseLauncherUrl}/${id}/render_button`;
-
+    addLauncherButton.disabled = true;
     $.get(url, function(html) {
       const $launcher = $(`
         <div class='launcher-item' id='launcher_${id}' data-row='${row}' data-col='${col}'>
@@ -261,11 +365,11 @@ class Pointer {
       `);
 
       $('#stage').append($launcher);
-      const pos = cellToXY(row, col);
+      const pos = drag.cellToXY(row, col);
       $launcher.css({ left: pos.x + 'px', top: pos.y + 'px' });
-      const model = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
-      boxes.set(id, model);
-      updateBoxPosition(id, pos.x, pos.y);
+      const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
+      boxes.set(id, box);
+      drag.updateBoxPosition(box, pos.x, pos.y);
 
       // Pointer / drag events
       $launcher.on('pointerdown', function(e) {
@@ -273,32 +377,8 @@ class Pointer {
         selectedLauncherId = id;
         $('.launcher-item.selected').removeClass('selected');
         $launcher.addClass('selected');
-
         pointer.update(e);
-        const start = pointer.pos();
-        const startX = model.x, startY = model.y;
-
-        $(document).on('pointermove.launcher', function(ev) {
-          pointer.update(ev);
-          const p = pointer.pos();
-          updateBoxPosition(id, startX + (p.x - start.x), startY + (p.y - start.y));
-        });
-
-        $(document).on('pointerup.launcher', function() {
-          $(document).off('.launcher');
-          const snapped = snapToGrid(model.x, model.y);
-
-          if (isCellOccupied(snapped.row, snapped.col, id)) {
-            const revertPos = cellToXY(model.row, model.col);
-            updateBoxPosition(id, revertPos.x, revertPos.y);
-          } else {
-            model.row = snapped.row;
-            model.col = snapped.col;
-            const finalPos = cellToXY(snapped.row, snapped.col);
-            updateBoxPosition(id, finalPos.x, finalPos.y);
-            $launcher.attr('data-row', snapped.row).attr('data-col', snapped.col);
-          }
-        });
+        drag.beginDrag(box);
       });
 
       // Connect mode click
@@ -316,7 +396,11 @@ class Pointer {
           createEdge(fromId, toId);
         }
       });
-    }, 'html');
+    }).fail(function() {
+      alert('Failed to load launcher HTML. Please try again.');
+    }).always(function() {
+      addLauncherButton.disabled = false;
+    });;
   }
 
   function deleteSelectedLauncher() {
@@ -352,7 +436,9 @@ class Pointer {
     const title = selectedLauncher.options[selectedLauncher.selectedIndex].text;
     const spawn = gridSpawn();
     if (spawn) {
+      addLauncherButton.disabled = true;
       makeLauncher(spawn.row, spawn.col, launcherId, title);
+      addLauncherButton.disabled = false;
       changeGridIfNeeded(); 
     }
   });
@@ -370,35 +456,13 @@ class Pointer {
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  zoomInButton.addEventListener('click', () => {
-    zoomState.value = Math.min(zoomState.value + zoomStep, zoomMax);
-    applyZoom();
-  });
-
-  zoomOutButton.addEventListener('click', () => {
-    zoomState.value = Math.max(zoomState.value - zoomStep, zoomMin);
-    applyZoom();
-  });
-
-  zoomResetButton.addEventListener('click', () => {
-    zoomState.value = 1;
-    applyZoom();
-  });
+  zoomInButton.addEventListener('click', () => { pointer.zoomIn(); });
+  zoomOutButton.addEventListener('click', () => { pointer.zoomOut(); });
+  zoomResetButton.addEventListener('click', () => { pointer.resetZoom();});
 
   workspace.addEventListener('pointermove', e => pointer.update(e));
   workspace.addEventListener('touchmove', e => pointer.update(e));
-
-  workspace.addEventListener('wheel', (e) => {
-    if (e.ctrlKey) {
-      e.preventDefault(); // intercept zoom gesture
-      if (e.deltaY < 0) {
-        zoomState.value = Math.min(zoomState.value + zoomStep, zoomMax);
-      } else {
-        zoomState.value = Math.max(zoomState.value - zoomStep, zoomMin);
-      }
-      applyZoom();
-    }
-  }, { passive: false });
+  workspace.addEventListener('wheel', e => pointer.handleWheel(e), { passive: false });
 
   stage.addEventListener('pointerdown', (e) => {
     if (!e.target.closest('.launcher-item')) {
