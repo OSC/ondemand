@@ -78,14 +78,15 @@ allow ood_pun_t self:udp_socket { create_stream_socket_perms };
 logging_send_syslog_msg(ood_pun_t)
 
 # config
-optional type config_home_t;
-type ood_pun_config_t;
-allow ood_pun_t config_home_t:dir { add_name write create };
-manage_dirs_pattern(ood_pun_t, config_home_t, config_home_t)
-manage_files_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t)
-manage_dirs_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t) 
-type_transition ood_pun_t config_home_t:dir ood_pun_config_t;
-type_transition ood_pun_t ood_pun_config_t:dir ood_pun_config_t;
+ifdef(`config_home_t',`
+  type ood_pun_config_t;
+  allow ood_pun_t config_home_t:dir { add_name write create };
+  manage_dirs_pattern(ood_pun_t, config_home_t, config_home_t)
+  manage_files_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t)
+  manage_dirs_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t) 
+  type_transition ood_pun_t config_home_t:dir ood_pun_config_t;
+  type_transition ood_pun_t ood_pun_config_t:dir ood_pun_config_t;
+')
 
 # When an httpd_t process executes a file with context ood_pun_exec_t, 
 # then the resulting process should run in the ood_pun_t context.
