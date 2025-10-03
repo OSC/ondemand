@@ -357,9 +357,12 @@ class DragController {
     const url = `${baseLauncherUrl}/${id}/render_button`;
     addLauncherButton.disabled = true;
     $.get(url, function(html) {
+      console.log('Loaded launcher HTML:', html);
       const $launcher = $(`
         <div class='launcher-item' id='launcher_${id}' data-row='${row}' data-col='${col}'>
-          <div class='launcher-title'>${title}</div>
+          <div class='row launcher-item'>
+            <div class='col launcher-title'>${title}</div>
+          </div>
           ${html}
         </div>
       `);
