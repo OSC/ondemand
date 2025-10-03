@@ -168,13 +168,19 @@ svg.edges {
 
 .launcher-item {
   position: absolute;
-  cursor: grab;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   user-select: none;
   padding: 0.5rem;
   transition: left 0.15s, top 0.15s;
+}
+
+.launcher-title-grab {
+  font-size: 1em;
+  font-weight: bold;
+  cursor: grab;
+  user-select: none;  
 }
 
 .launcher-item.selected {
