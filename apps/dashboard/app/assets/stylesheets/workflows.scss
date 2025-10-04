@@ -173,7 +173,9 @@ svg.edges {
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   user-select: none;
   padding: 0.5rem;
-  transition: left 0.15s, top 0.15s;
+  transform-origin: top left;
+  transition: transform 0.15s;
+  will-change: transform;
 }
 
 .launcher-title-grab {

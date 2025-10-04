@@ -20,8 +20,7 @@ class Box {
   moveTo(x, y) {
     this.x = x;
     this.y = y;
-    this.el.style.left = x + 'px';
-    this.el.style.top = y + 'px';
+    this.el.style.transform = `translate(${x}px, ${y}px)`;
   }
 }
 
@@ -368,7 +367,7 @@ class DragController {
 
       $('#stage').append($launcher);
       const pos = drag.cellToXY(row, col);
-      $launcher.css({ left: pos.x + 'px', top: pos.y + 'px' });
+      $launcher.css({ transform: `translate(${pos.x}px, ${pos.y}px)` });
       const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
       boxes.set(id, box);
       drag.updateBoxPosition(box, pos.x, pos.y);
