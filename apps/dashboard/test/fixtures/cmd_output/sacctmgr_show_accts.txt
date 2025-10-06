@@ -20,3 +20,6 @@ pzs0714|oakley||oakley-default
 pde0006|oakley||oakley-default
 pas2051|oakley||oakley-default
 pas1871|oakley||oakley-default
+p_s1.71|oakley||oakley-default
+p-s1.71|oakley||oakley-default
+p.s1.71|oakley||oakley-default

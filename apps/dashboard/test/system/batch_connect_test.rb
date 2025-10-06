@@ -1181,7 +1181,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124'].sort
+                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).sort
@@ -1215,7 +1215,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       # defaults
       assert_equal 'batch', find_value('auto_queues')
       assert_equal 'owens', find_value('cluster')
-
+      # expected_queues = ['batch', 'serial-40core', 'serial-48core', 'gpudebug-48core']
+      # assert_equal(expected_queues, page.all("##{bc_ele_id('auto_queues')} option").map(&:value))
       # just a queues that exist only on oakley
       assert_equal 'display: none;', find_option_style('auto_queues', 'serial-40core')
       assert_equal 'display: none;', find_option_style('auto_queues', 'serial-48core')
@@ -1276,6 +1277,24 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
+
+      # Special character accounts should function the same as pas2051
+
+      ['p_s1.71', 'p-s1.71', 'p.s.171'].each do |acct|
+        # We start by resetting back to the starting point
+        select('owens', from: bc_ele_id('cluster'))
+        select('oakley', from: bc_ele_id('cluster'))
+        select(acct, from: bc_ele_id('auto_accounts'))
+
+
+        
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-48core'))
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
+      end
     end
   end
 
