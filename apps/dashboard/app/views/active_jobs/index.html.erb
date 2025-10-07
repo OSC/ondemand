@@ -59,12 +59,12 @@
 
 <div hidden=true
   id="active_jobs_config"
-  data-filter-id=<%= @jobfilter ? "#{@jobfilter}" : "null" %>
-  data-default-filter-id=<%= default_filter_id %> 
+  data-filter-id='<%= @jobfilter ? "#{@jobfilter}" : "null" %>'
+  data-default-filter-id='<%= default_filter_id %>'
   data-cluster-id=<%= @jobcluster ? "#{@jobcluster}" : "null" %> 
-  data-console-log-performance-report=<%= Configuration.console_log_performance_report? %>
-  data-base-uri=<%= controller.relative_url_root %>
-  data-ood-version=<%= Configuration.ood_version %>
+  data-console-log-performance-report='<%= Configuration.console_log_performance_report? %>'
+  data-base-uri='<%= controller.relative_url_root %>'
+  data-ood-version='<%= Configuration.ood_version %>'
 >
 </div>
 

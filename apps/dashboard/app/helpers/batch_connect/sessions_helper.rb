@@ -214,4 +214,8 @@ module BatchConnect::SessionsHelper
       end
     end
   end
+
+  def should_poll?(sessions)
+    sessions.any? { |s| !s.completed? }
+  end
 end

@@ -30,7 +30,7 @@ module OodPortalGenerator
       return false if os_release_file.nil?
 
       env = Dotenv.parse(os_release_file)
-      return true if env['ID'] =~ (/(ubuntu|debian)/) || (env['ID_LIKE'] == 'debian')
+      return true if env['ID'] =~ /(ubuntu|debian)/ || (env['ID_LIKE'] == 'debian')
 
       false
     end

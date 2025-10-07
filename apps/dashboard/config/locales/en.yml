@@ -70,7 +70,7 @@ en:
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
-    batch_connect_sessions_delete_hover: 删除会话
+    batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: |
@@ -191,6 +191,7 @@ en:
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_submitted: Workflow successfully submitted!
     launch: Launch
     module_browser_last_updated: "Last updated: %{last_updated}"
@@ -217,6 +218,7 @@ en:
     not_grouped: Other Apps
     path_selector_home: home
     path_selector_parent_directory: parent directory
+    path_selector_default_popup_title: 'Select Your Working Directory'
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
@@ -259,6 +261,8 @@ en:
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
     skip_navigation: Skip Navigation
+    soft_tabs: Soft Tabs
+    soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'

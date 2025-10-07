@@ -1,5 +1,11 @@
 
 <!-- Modal -->
+
+<%-
+  # force initialize some values if they're nil
+  popup_title = popup_title || t('dashboard.path_selector_default_popup_title')
+-%>
+
 <div
     class="modal fade"
     id="<%= path_selector_id %>" tabindex="-1" role="dialog"
@@ -13,7 +19,7 @@
     data-select-button-id="<%= button_id %>"
     data-input-field-id="<%= input_field_id %>"
     data-file-pattern="<%= file_pattern %>"
-    data-popup_title="<%= popup_title %>"
+    data-popup-title="<%= popup_title %>"
     >
 
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">

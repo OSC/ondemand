@@ -98,6 +98,19 @@ class Workflow
     Workflow.workflow_dir(@project_dir).join("#{@id}.yml")
   end
 
+  def update(attributes)
+    update_attrs(attributes)
+    return false unless valid?(:update)
+
+    save_manifest(:update)
+  end
+
+  def update_attrs(attributes)
+    [:name, :description, :launcher_ids].each do |attribute|
+      instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
+    end
+  end
+
   def submit(attributes = {})
     graph = Dag.new(attributes)
     if graph.has_cycle
