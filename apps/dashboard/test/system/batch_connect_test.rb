@@ -1041,6 +1041,149 @@ class BatchConnectTest < ApplicationSystemTestCase
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
 
+  test 'option-for allows for special characters with alias-value' do 
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - account
+        - python_version
+        - gpu_size
+      attributes:
+        account:
+          widget: 'select'
+          options:
+            - ['name_lastname@school.edu']
+            - ['namelastname_school']
+        python_version
+          widget: 'select'
+          options:
+            - ['3.3@2025_|b|']
+            - ['3.4@2-&3']
+            - ['4.0@#$%*()^!']
+            - ['<>?/\\:;[}{]']
+            - ['control']
+        gpu_size:
+          widget: 'select'
+          options:
+            - ['tiny', 
+               0, 
+               data-option-for-python-version-default:false, 
+               data-alias-default-value:'3.3@2025_|b|'
+              ]
+            - ['small', 
+               data-option-for-python-version-control:false, 
+               data-option-for-python-version-other-name:false, 
+               data-alias-other-name-value:'3.4@2-&3'
+              ]
+            - ['medium',
+               data-exclusive-option-for-python-version-strange:true,
+               data-alias-strange-value:'<>?/\\:;[}{]'
+              ]
+            - ['large',
+               data-option-for-account-namelastname_school:false,
+               data-option-for-python-version-four:false,
+               data-alias-four-value:'4.0@#$%*()^!'
+              ]
+            - ['super',
+               data-option-for-account-personal:false,
+               data-alias-personal-value:'name_lastname@school.edu'
+               data-option-for-python-version-default:false
+              ]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # Assert defaults
+      assert_selector("##{bc_ele_id('account')}", value: 'name_lastname@school.edu')
+      assert_selector("##{bc_ele_id('python_version')}", value: '3.3@2025_|b|')
+      # Default gpu size value should be disabled
+      assert_selector("##{bc_ele_id('gpu_size')}", value: 'small')
+
+      # Check things hidden by default
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('<>?/\\:;[}{]', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('control', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('namelastname_school', from: "#{bc_ele_id('account')}")
+      select('3.3@2025_|b|', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+      
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+      
+      select('<>?/\\:;[}{]', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+      
+      select('control', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+    end
+  end
+  
   test 'auto generated modules are dynamic' do
     with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
