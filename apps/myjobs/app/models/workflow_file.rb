@@ -50,7 +50,7 @@ class WorkflowFile
   end
 
   def is_dotfile?
-    @path.to_s.split('/')[-1].to_s.start_with?('.')
+    @path.basename.to_s.start_with?('.')
   end
 
   def path
