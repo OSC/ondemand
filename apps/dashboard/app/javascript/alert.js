@@ -1,13 +1,14 @@
 
-export function OODAlert(message) {
-  const div = alertDiv(message, 'danger');
-  const main = document.getElementById('main_container');
-  main.prepend(div);
-  div.scrollIntoView({ behavior: 'smooth' });
+export function OODAlertError(message) {
+  OODAlert(message, 'danger');
 }
 
 export function OODAlertSuccess(message) {
-  const div = alertDiv(message, 'success');
+  OODAlert(message, 'success');
+}
+
+function OODAlert(message, type) {
+  const div = alertDiv(message, type);
   const main = document.getElementById('main_container');
   main.prepend(div);
   div.scrollIntoView({ behavior: 'smooth' });

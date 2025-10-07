@@ -1,5 +1,5 @@
 import { CONTENTID } from './data_table.js';
-import { OODAlert, OODAlertSuccess } from '../alert';
+import { OODAlertError, OODAlertSuccess } from '../alert';
 
 export function initSendToTarget() {
   const button = document.getElementById('send-to-target-btn');
@@ -20,7 +20,7 @@ function handleSend(button, endpoint) {
   const selection = table.rows({ selected: true }).data().toArray();
 
   if (selection.length === 0) {
-    OODAlert('Select at least one file or directory to send.');
+    OODAlertError('Select at least one file or directory to send.');
     return;
   }
 
@@ -44,7 +44,7 @@ function handleSend(button, endpoint) {
       OODAlertSuccess('Files sent successfully.');
     })
     .catch(() => {
-      OODAlert('Failed to send files.');
+      OODAlertError('Failed to send files.');
     })
     .finally(() => {
       button.removeAttribute('disabled');
