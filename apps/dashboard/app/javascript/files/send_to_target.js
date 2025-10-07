@@ -12,10 +12,10 @@ export function initSendToTarget() {
     return;
   }
 
-  button.addEventListener('click', () => handleSend(button, endpoint));
+  button.addEventListener('click', () => handleSendToTarget(button, endpoint));
 }
 
-function handleSend(button, endpoint) {
+function handleSendToTarget(button, endpoint) {
   const table = $(CONTENTID).DataTable();
   const selection = table.rows({ selected: true }).data().toArray();
 
@@ -41,7 +41,7 @@ function handleSend(button, endpoint) {
         throw new Error();
       }
 
-      OODAlertSuccess('Files sent successfully.');
+      OODAlertSuccess('Selected file information sent successfully.');
     })
     .catch(() => {
       OODAlertError('Failed to send files.');
