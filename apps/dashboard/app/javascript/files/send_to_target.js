@@ -1,6 +1,8 @@
 import { CONTENTID } from './data_table.js';
 import { OODAlertError, OODAlertSuccess } from '../alert';
 
+const TOKEN_KEY = 'files_select_target_token';
+
 export function initSendToTarget() {
   const button = document.getElementById('send-to-target-btn');
   if (!button) {
@@ -8,14 +10,40 @@ export function initSendToTarget() {
   }
 
   const endpoint = button.dataset.filesSelectTargetEndpoint;
-  if (!endpoint) {
+  const expirationMinutes = parseInt(button.dataset.tokenExpiration);
+  if (!endpoint || !expirationMinutes) {
     return;
   }
 
-  button.addEventListener('click', () => handleSendToTarget(button, endpoint));
+  const tokenFromUrl = getUrlToken();
+  const storedToken = getStoredToken(expirationMinutes);
+
+  // If token in URL, store it
+  if (tokenFromUrl) {
+    storeToken(tokenFromUrl);
+  }
+
+  const effectiveToken = tokenFromUrl || storedToken;
+
+  // Disable if no token
+  if (!effectiveToken) {
+    disableButton(button);
+  }
+
+  button.addEventListener('click', () =>
+      handleSendToTarget(button, endpoint, expirationMinutes)
+  );
 }
 
-function handleSendToTarget(button, endpoint) {
+function handleSendToTarget(button, endpoint, expirationMinutes) {
+  const targetToken = getStoredToken(expirationMinutes);
+
+  if (!targetToken) {
+    disableButton(button);
+    OODAlertError('Application token is missing or expired. Start again');
+    return;
+  }
+
   const table = $(CONTENTID).DataTable();
   const selection = table.rows({ selected: true }).data().toArray();
 
@@ -24,9 +52,9 @@ function handleSendToTarget(button, endpoint) {
     return;
   }
 
-  button.setAttribute('disabled', 'disabled');
+  disableButton(button);
 
-  const payload = buildPayload(selection);
+  const payload = buildPayload(selection, targetToken);
 
   fetch(endpoint, {
     method: 'POST',
@@ -36,22 +64,22 @@ function handleSendToTarget(button, endpoint) {
     credentials: 'same-origin',
     body: JSON.stringify(payload)
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error();
-      }
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error();
+        }
 
-      OODAlertSuccess('Selected file information sent successfully.');
-    })
-    .catch(() => {
-      OODAlertError('Failed to send files.');
-    })
-    .finally(() => {
-      button.removeAttribute('disabled');
-    });
+        OODAlertSuccess('Selected file information sent successfully.');
+      })
+      .catch(() => {
+        OODAlertError('Failed to send file information.');
+      })
+      .finally(() => {
+        button.removeAttribute('disabled');
+      });
 }
 
-function buildPayload(selection) {
+function buildPayload(selection, token) {
   const baseDirectory = history.state.currentDirectory;
   const directoryUrl = history.state.currentDirectoryUrl;
   const filesystem = history.state.currentFilesystem;
@@ -78,11 +106,46 @@ function buildPayload(selection) {
   });
 
   return {
+    token: token,
     filesystem: filesystem,
     directory: baseDirectory,
     directory_url: directoryUrl,
     files: files
   };
+}
+
+function getUrlToken() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(TOKEN_KEY);
+}
+
+function storeToken(token) {
+  const data = {
+    value: token,
+    stored_at: Date.now()
+  };
+  sessionStorage.setItem(TOKEN_KEY, JSON.stringify(data));
+}
+
+function getStoredToken(expirationMinutes) {
+  const raw = sessionStorage.getItem(TOKEN_KEY);
+  if (!raw) return null;
+  try {
+    const tokenData = JSON.parse(raw);
+    const ageMinutes = (Date.now() - tokenData.stored_at) / 1000 / 60;
+    if (ageMinutes > expirationMinutes) {
+      sessionStorage.removeItem(TOKEN_KEY);
+      return null;
+    }
+    return tokenData.value;
+  } catch {
+    sessionStorage.removeItem(TOKEN_KEY);
+    return null;
+  }
+}
+
+function disableButton(button) {
+  button.setAttribute('disabled', 'disabled');
 }
 
 function joinPath(base, name) {
