@@ -1,0 +1,7 @@
+<span id="loop-wrapper">
+  <button id="send-to-target-btn" type="button" class="btn btn-primary btn-sm align-middle"
+          data-files-select-target-endpoint="<%= @user_configuration.files_select_target[:endpoint] %>">
+    <%= icon_tag(@user_configuration.files_select_target[:icon] || 'fas://paper-plane', classes: nil) %>
+    <%= @user_configuration.files_select_target[:label] %>
+  </button>
+</span>
