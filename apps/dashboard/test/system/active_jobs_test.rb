@@ -7,7 +7,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
   # Set alias
   NodeInfo = OodCore::Job::NodeInfo
 
-  DetailsHeaders = [
+  DETAILS_HEADERS = [
     'Cluster',
     'Job Id',
     'Array Job Id',
@@ -204,7 +204,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
       'gpu:2'
     ]
 
-    assert_equal DetailsHeaders, headers.map(&:text)
+    assert_equal DETAILS_HEADERS, headers.map(&:text)
     assert_equal exp_details, details.map(&:text)
 
     assert_selector('div.alert-warning')
