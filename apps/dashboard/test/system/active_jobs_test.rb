@@ -29,8 +29,8 @@ class ActiveJobsTest < ApplicationSystemTestCase
   ]
 
   # Define selector statements
-  MainbodySelect = '#job_status_table tbody'
-  PagerSelect = 'div#job_status_table_paginate'
+  MAINBODY_SELECT = '#job_status_table tbody'
+  PAGER_SELECT = 'div#job_status_table_paginate'
   
   def setup
     # Enable routes guarded by this flag
@@ -126,11 +126,11 @@ class ActiveJobsTest < ApplicationSystemTestCase
     visit active_jobs_url
     
     # Finish loading
-    assert_selector("#{MainbodySelect} tr", minimum: 2)
+    assert_selector("#{MAINBODY_SELECT} tr", minimum: 2)
     # The UI should default to the "Your Jobs" filter
     assert_selector('#selected-filter-label', text: 'Your Jobs')
     # The list should have exactly two jobs in it
-    rows = all("#{MainbodySelect} tr")
+    rows = all("#{MAINBODY_SELECT} tr")
     assert_equal 2, rows.length
     # Test row content (dropping the button which has no text)
     first_row_text = rows[0].all('td').map(&:text).drop(1) 
@@ -164,7 +164,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     assert_equal expected_sr, second_row_text
 
     # Check buttons
-    button_select = "#{MainbodySelect} .details-control"
+    button_select = "#{MAINBODY_SELECT} .details-control"
     assert_equal 2, all(button_select).length
 
     # Click buttons
@@ -172,7 +172,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     
 
     # Wait for load
-    details_select = "#{MainbodySelect} div.panel.panel-default"
+    details_select = "#{MAINBODY_SELECT} div.panel.panel-default"
     assert_selector("#{details_select} tr")
     
     # Confirm details
@@ -215,7 +215,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     visit active_jobs_url#(cluster_id: 'all')
 
     # Finish loading
-    assert_selector("#{MainbodySelect} tr", count: 2)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 2)
 
     # Open the filters dropdown (first group is filters)
     first('div.btn-group').find('button.dropdown-toggle').click
@@ -226,7 +226,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     assert_selector('#selected-filter-label', text: 'All Jobs')
 
     # Check number of rows
-    assert_selector("#{MainbodySelect} tr", count: 4)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 4)
 
     # Check non-user job info
     assert_text('Sample1')
@@ -257,50 +257,50 @@ class ActiveJobsTest < ApplicationSystemTestCase
     visit active_jobs_url(jobfilter:'all')
 
     # Finish loading
-    assert_selector("#{MainbodySelect} tr", count: 50)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 50)
     
     # Grab first row text
-    first_row = first("#{MainbodySelect} tr")
+    first_row = first("#{MAINBODY_SELECT} tr")
     first_row_text = first_row.all('td').map(&:text).drop(1)
 
     # check pager text
     assert_text('Showing 1 to 50 of 400 entries')
 
     # check pager object
-    assert_selector(PagerSelect)
+    assert_selector(PAGER_SELECT)
 
     # check highlight and prev button
-    assert_selector("#{PagerSelect} li.active", text: '1')
-    assert_selector("#{PagerSelect} li.paginate_button.disabled", text: 'Previous')
+    assert_selector("#{PAGER_SELECT} li.active", text: '1')
+    assert_selector("#{PAGER_SELECT} li.paginate_button.disabled", text: 'Previous')
 
     # Show next page and repeat
-    find("#{PagerSelect} li", text: '2').click
+    find("#{PAGER_SELECT} li", text: '2').click
 
-    assert_selector("#{MainbodySelect} tr", count: 50)
-    new_row = first("#{MainbodySelect} tr")
+    assert_selector("#{MAINBODY_SELECT} tr", count: 50)
+    new_row = first("#{MAINBODY_SELECT} tr")
     new_row_text = new_row.all('td').map(&:text).drop(1)
-    assert_selector("#{PagerSelect} li.active", text: '2')
-    refute_selector("#{PagerSelect} li.paginate_button.previous.disabled")
-    refute_selector("#{PagerSelect} li.paginate_button.next.disabled")
+    assert_selector("#{PAGER_SELECT} li.active", text: '2')
+    refute_selector("#{PAGER_SELECT} li.paginate_button.previous.disabled")
+    refute_selector("#{PAGER_SELECT} li.paginate_button.next.disabled")
     assert_text('Showing 51 to 100 of 400 entries')
 
     # click next button and repeat
-    find("#{PagerSelect} li", text: 'Next').click
-    assert_selector("#{MainbodySelect} tr", count: 50)
-    assert_selector("#{PagerSelect} li.active", text: '3')
+    find("#{PAGER_SELECT} li", text: 'Next').click
+    assert_selector("#{MAINBODY_SELECT} tr", count: 50)
+    assert_selector("#{PAGER_SELECT} li.active", text: '3')
     assert_text('Showing 101 to 150 of 400 entries')
 
     # Click last page
-    find("#{PagerSelect} li", text: '8').click
-    assert_selector("#{MainbodySelect} tr", count: 50)
-    assert_selector("#{PagerSelect} li.active", text: '8')
-    assert_selector("#{PagerSelect} li.paginate_button.disabled", text: 'Next') 
+    find("#{PAGER_SELECT} li", text: '8').click
+    assert_selector("#{MAINBODY_SELECT} tr", count: 50)
+    assert_selector("#{PAGER_SELECT} li.active", text: '8')
+    assert_selector("#{PAGER_SELECT} li.paginate_button.disabled", text: 'Next') 
     assert_text('Showing 351 to 400 of 400 entries')
 
     # Click prev button
-    find("#{PagerSelect} li", text: 'Previous').click
-    assert_selector("#{MainbodySelect} tr", count: 50)
-    assert_selector("#{PagerSelect} li.active", text: '7')
+    find("#{PAGER_SELECT} li", text: 'Previous').click
+    assert_selector("#{MAINBODY_SELECT} tr", count: 50)
+    assert_selector("#{PAGER_SELECT} li.active", text: '7')
     assert_text('Showing 301 to 350 of 400 entries')
   end
 
@@ -311,43 +311,43 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
     res_per_page_selector = 'div#job_status_table_length select'
     assert_selector(res_per_page_selector, text: '50')
-    assert_selector("#{MainbodySelect} tr", count: 50)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 50)
     assert_text('Showing 1 to 50 of 600 entries')
-    assert_selector("#{PagerSelect} li", text: '12')
+    assert_selector("#{PAGER_SELECT} li", text: '12')
 
     # Change setting
     find(res_per_page_selector).click
     find("#{res_per_page_selector} option[value='10']").click
     assert_selector(res_per_page_selector, text: '10')
-    assert_selector("#{MainbodySelect} tr", count: 10)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 10)
     assert_text('Showing 1 to 10 of 600 entries')
-    assert_selector("#{PagerSelect} li", text: '60')
+    assert_selector("#{PAGER_SELECT} li", text: '60')
 
     # Change setting
     find(res_per_page_selector).click
     find("#{res_per_page_selector} option[value='25']").click
     assert_selector(res_per_page_selector, text: '25')
-    assert_selector("#{MainbodySelect} tr", count: 25)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 25)
     assert_text('Showing 1 to 25 of 600 entries')
-    assert_selector("#{PagerSelect} li", text: '24')
+    assert_selector("#{PAGER_SELECT} li", text: '24')
 
     # Move page and select setting
-    find("#{PagerSelect} li", text: '5').click
+    find("#{PAGER_SELECT} li", text: '5').click
     assert_text('Showing 101 to 125 of 600 entries')
     # Now changes should stay starting at 101
     find(res_per_page_selector).click
     find("#{res_per_page_selector} option[value='50']").click
     assert_text('Showing 101 to 150 of 600 entries')
-    assert_selector("#{PagerSelect} li.active", text: '3')
+    assert_selector("#{PAGER_SELECT} li.active", text: '3')
 
     # Use all setting
     find(res_per_page_selector).click
     find("#{res_per_page_selector} option[value='-1']").click
     assert_selector(res_per_page_selector, text: 'All')
-    assert_selector("#{MainbodySelect} tr", count: 600)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 600)
     assert_text('Showing 1 to 600 of 600 entries')
-    assert_selector("#{PagerSelect} li.active", text: '1')
-    refute_selector("#{PagerSelect} li", text: '2')
+    assert_selector("#{PAGER_SELECT} li.active", text: '1')
+    refute_selector("#{PAGER_SELECT} li", text: '2')
   end
 
   test 'text filter works' do
@@ -360,21 +360,21 @@ class ActiveJobsTest < ApplicationSystemTestCase
     # Verify filter reads ids
     find(filter_selector).set('345')
     # Wait for load
-    assert_selector("#{MainbodySelect} tr")
+    assert_selector("#{MAINBODY_SELECT} tr")
     assert_text '345'
     assert_text 'Sample2'
     assert_text 'account2'
 
     # Verify filter reads job names
     find(filter_selector).set('Sample4')
-    assert_selector("#{MainbodySelect} tr")
+    assert_selector("#{MAINBODY_SELECT} tr")
     assert_text '789'
     assert_text 'Sample4'
     assert_text 'account4'
 
     # Verify filter reads users
     find(filter_selector).set('not_')
-    assert_selector("#{MainbodySelect} tr", count: 2)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 2)
     assert_text '123'
     assert_text 'Sample1'
     assert_text 'account1'
@@ -384,21 +384,21 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
     # Verify filter reads accounts
     find(filter_selector).set('account3')
-    assert_selector("#{MainbodySelect} tr", count: 1)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 1)
     assert_text '567'
     assert_text 'Sample3'
     assert_text 'account3'
 
     # Verify filter reads queue
     find(filter_selector).set('normal')
-    assert_selector("#{MainbodySelect} tr", count: 1)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 1)
     assert_text '123'
     assert_text 'Sample1'
     assert_text 'account1'
 
     # Verify filter reads status
     find(filter_selector).set('queue')
-    assert_selector("#{MainbodySelect} tr", count: 2)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 2)
     assert_text '345'
     assert_text 'Sample2'
     assert_text 'account2'
@@ -409,7 +409,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     
     # Verify filter finds text in middle/end of string
     find(filter_selector).set('ple1')
-    assert_selector("#{MainbodySelect} tr", count: 1)
+    assert_selector("#{MAINBODY_SELECT} tr", count: 1)
     assert_text '123'
     assert_text 'Sample1'
     assert_text 'account1'
