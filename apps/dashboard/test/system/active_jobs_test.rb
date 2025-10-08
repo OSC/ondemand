@@ -4,7 +4,6 @@ require 'application_system_test_case'
 require 'ood_core/job/adapters/slurm'
 
 class ActiveJobsTest < ApplicationSystemTestCase
-  JavascriptWaitTime = 5
   # Set alias
   NodeInfo = OodCore::Job::NodeInfo
 
