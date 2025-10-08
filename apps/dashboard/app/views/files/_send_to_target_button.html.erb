@@ -1,4 +1,4 @@
-<span id="loop-wrapper" data-bs-toggle="tooltip" title="<%= @user_configuration.files_select_target[:title] || 'Send selected files to the external application' %>">
+<span data-bs-toggle="tooltip" title="<%= @user_configuration.files_select_target[:title] || 'Send selected files to the external application' %>">
   <button id="send-to-target-btn" type="button" class="btn btn-primary btn-sm align-middle"
           data-files-select-target-endpoint="<%= @user_configuration.files_select_target[:endpoint] %>"
           data-token-expiration="<%= @user_configuration.files_select_target[:expiration] || 10 %>">
