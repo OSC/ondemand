@@ -31,6 +31,7 @@ class ConfigurationSingleton
     load_dotenv_files
     add_boolean_configs
     add_string_configs
+    add_int_configs
   end
 
   # All the boolean configurations that can be read through
@@ -80,6 +81,16 @@ class ConfigurationSingleton
       :novnc_default_compression      => '6',
       :novnc_default_quality          => '2',
       :plugins_directory              => '/etc/ood/config/plugins'
+    }.freeze
+  end
+
+  # All the int configs can be read through environment variables 
+  # or through the config file.
+  #
+  # @return [Hash] key/value pairs of defaults
+  def int_configs
+    {
+      :file_download_max => 10737418240
     }.freeze
   end
 
@@ -363,13 +374,6 @@ class ConfigurationSingleton
     ENV['OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS']&.to_i || 5
   end
 
-  # The maximum size of a file that can be downloaded.
-  #
-  # Default for OOD_DOWNLOAD_FILE_MAX is 10*1024*1024*1024 bytes.
-  # @return [Integer]
-  def file_download_max
-    ENV['OOD_DOWNLOAD_FILE_MAX']&.to_i || 10737418240
-  end
   # The maximum size of a .zip file that can be downloaded.
   #
   # Default for OOD_DOWNLOAD_DIR_MAX is 10*1024*1024*1024 bytes.
@@ -548,6 +552,20 @@ class ConfigurationSingleton
         e = ENV["OOD_#{cfg_item.to_s.upcase}"]
 
         e.nil? ? config.fetch(cfg_item, default) : e.to_s
+      end
+    end.each do |cfg_item, _|
+      define_singleton_method("#{cfg_item}?".to_sym) do
+        send(cfg_item).nil?
+      end
+    end
+  end
+
+  def add_int_configs
+    int_configs.each do |cfg_item, default|
+      define_singleton_method(cfg_item.to_sym) do
+        e = ENV["OOD_#{cfg_item.to_s.upcase}"]
+
+        e.nil? ? config.fetch(cfg_item, default) : e.to_s.to_i
       end
     end.each do |cfg_item, _|
       define_singleton_method("#{cfg_item}?".to_sym) do
