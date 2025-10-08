@@ -90,7 +90,7 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def int_configs
     {
-      :file_download_max => 10737418240
+      :file_download_max => 10_737_418_240
     }.freeze
   end
 
@@ -555,7 +555,7 @@ class ConfigurationSingleton
       end
     end.each do |cfg_item, _|
       define_singleton_method("#{cfg_item}?".to_sym) do
-        send(cfg_item).nil?
+        !send(cfg_item).nil?
       end
     end
   end
@@ -564,12 +564,7 @@ class ConfigurationSingleton
     int_configs.each do |cfg_item, default|
       define_singleton_method(cfg_item.to_sym) do
         e = ENV["OOD_#{cfg_item.to_s.upcase}"]
-
-        e.nil? ? config.fetch(cfg_item, default) : e.to_s.to_i
-      end
-    end.each do |cfg_item, _|
-      define_singleton_method("#{cfg_item}?".to_sym) do
-        send(cfg_item).nil?
+        (e.nil? ? config.fetch(cfg_item, default) : e).to_i
       end
     end
   end
