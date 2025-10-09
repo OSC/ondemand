@@ -469,7 +469,7 @@ function updateVisibility(event, changeId) {
     // Pass text into the aria stream
     const addMsg = `Revealed form item ${elementInfo}`;
     ariaStream(addMsg)
-  }else if((hide === true) || (hide === undefined && !initializing && defaultHidden)) {
+  } else if ((hide === true) || (hide === undefined && !initializing && defaultHidden)) {
     changeElement.hide();
     const rmMsg = `Hid form item ${elementInfo}`;
     ariaStream(rmMsg);
