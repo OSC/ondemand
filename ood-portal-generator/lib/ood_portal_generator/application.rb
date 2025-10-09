@@ -182,7 +182,7 @@ module OodPortalGenerator
         dex = Dex.new(context, view, insecure)
         dex_enabled = Dex.installed? && dex.enabled?
 
-        # convienence defaults for folks who are using dex or OIDC
+        # convenience defaults for folks who are using dex or OIDC
         view.auth = Dex.default_auth if dex_enabled && !view.auth?
         content = view.auth? ? view.render(template.read) : view.render(no_auth_template.read)
 

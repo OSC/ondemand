@@ -42,7 +42,7 @@
 #ssl: null
 
 # Disable logging entirely. With this you can have custom log directives
-# in a seperate configuration file.
+# in a separate configuration file.
 # Example:
 #     disable_logs: true
 # Default: false (logs are enabled)

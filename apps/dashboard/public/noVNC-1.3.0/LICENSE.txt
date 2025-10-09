@@ -11,7 +11,7 @@ is not limited to):
     test/playback.js
 
 The HTML, CSS, font and images files that included with the noVNC
-source distibution (or repository) are not considered part of the
+source distribution (or repository) are not considered part of the
 noVNC core library and are licensed under more permissive licenses.
 The intent is to allow easy integration of noVNC into existing web
 sites and web applications.

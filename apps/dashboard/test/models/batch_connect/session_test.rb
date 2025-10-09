@@ -473,7 +473,7 @@ module BatchConnect
       refute session.ssh_to_compute_node?
     end
 
-    test 'ssh_to_compute_node? handles non-existant cluster and disabled globally' do
+    test 'ssh_to_compute_node? handles non-existent cluster and disabled globally' do
       session = BatchConnect::Session.new
       session.stubs(:token).returns('rstudio')
       session.stubs(:cluster).raises(BatchConnect::Session::ClusterNotFound, 'Session specifies nonexistent')
@@ -718,7 +718,7 @@ module BatchConnect
       end
     end
 
-    test 'return correct values if bc days old cant be converted to integer' do
+    test 'return correct values if bc days old can't be converted to integer' do
       with_modified_env({ OOD_BC_CARD_TIME: 'three' }) do
         assert_equal 7, BatchConnect::Session.old_in_days
       end

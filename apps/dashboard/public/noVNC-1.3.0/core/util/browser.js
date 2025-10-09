@@ -12,7 +12,7 @@ import * as Log from './logging.js';
 
 // Touch detection
 export let isTouchDevice = ('ontouchstart' in document.documentElement) ||
-                                 // requried for Chrome debugger
+                                 // required for Chrome debugger
                                  (document.ontouchstart !== undefined) ||
                                  // required for MS Surface
                                  (navigator.maxTouchPoints > 0) ||

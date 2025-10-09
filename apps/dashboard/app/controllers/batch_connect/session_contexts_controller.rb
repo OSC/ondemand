@@ -158,7 +158,7 @@ module BatchConnect
       save_bc_template(@app, params[:template_name], @session_context.to_h)
     end
 
-    # Only permit certian parameters
+    # Only permit certain parameters
     def session_contexts_param
       if params[:batch_connect_session_context].present?
         params.require(:batch_connect_session_context).permit(@session_context.attributes.keys)

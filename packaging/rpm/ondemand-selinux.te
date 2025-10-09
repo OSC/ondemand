@@ -293,7 +293,7 @@ tunable_policy(`ondemand_use_smtp', `
   corenet_sendrecv_smtp_client_packets(ood_pun_t)
 ')
 
-# Allow Apache to acces PUN socket
+# Allow Apache to access PUN socket
 allow httpd_t ood_pun_t:unix_stream_socket connectto;
 
 # Allow PUN to access socket for passenger
