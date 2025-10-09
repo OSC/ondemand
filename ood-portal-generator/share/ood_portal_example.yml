@@ -417,7 +417,7 @@
 #oidc_settings: {}
 
 # The Dex URI behind Apache reverse proxy
-# Set to false or null to disable Dex behing the Apache reverse proxy
+# Set to false or null to disable Dex behind the Apache reverse proxy
 # Example:
 #   dex_uri: /auth
 # Default: /dex

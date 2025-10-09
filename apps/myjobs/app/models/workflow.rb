@@ -159,7 +159,7 @@ class Workflow < ApplicationRecord
   #
   # Files grouped under the same category are in the same array: [[relative_file_path, file_path]]
   #
-  # Valid abd suggested files are grouped under "Suggested file(s)" in the dropdown
+  # Valid and suggested files are grouped under "Suggested file(s)" in the dropdown
   # They are at index 1 of the array with "Suggested file(s)" at index 0: ["Suggested file(s)", [[relative_file_path, file_path]]]
   #
   # Valid but not suggested files are grouped under "Valid file(s)" in the dropdown

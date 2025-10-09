@@ -40,7 +40,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "makes the directory if it doesnt exist" do
+  test "makes the directory if it does not exist" do
     Dir.mktmpdir do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
       assert !Dir.exist?("#{dir}/projects")
