@@ -40,7 +40,7 @@ group :development do
   gem 'i18n-tasks', '~> 1.0.15'
   gem 'highline', '2.1.0'
   # gem 'easy_translate'
-  gem 'ruby-openai', ''
+  gem 'ruby-openai'
 end
 
 # lock gems to versions that are compatible with ruby 2.7.0,
