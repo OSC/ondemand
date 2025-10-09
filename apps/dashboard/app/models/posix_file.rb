@@ -202,6 +202,18 @@ class PosixFile
     return can_download, error
   end
 
+  # This serves the same function as can_download_as_zip?, but for files
+  def can_download_file?
+    download_file_size_limit = Configuration.file_download_max
+    unless file? && readable?
+      error = I18n.t('dashboard.files_directory_download_unauthorized')
+      return [false, error]
+    end
+    can_download = stat.size <= download_file_size_limit
+    error = can_download ? nil : I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
+    [can_download, error]
+  end
+
   def mime_type
     type = %x[ file -b --mime-type #{path.to_s.shellescape} ].strip
 

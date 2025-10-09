@@ -49,8 +49,8 @@ class WorkflowFile
     @path.relative_path_from(@staged_dir).to_s
   end
 
-  def under_dotfile?
-    @path.ascend.to_a.any? { |entry| entry.basename.to_s.start_with?('.') }
+  def is_dotfile?
+    @path.basename.to_s.start_with?('.')
   end
 
   def path

@@ -70,7 +70,7 @@ en:
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
-    batch_connect_sessions_delete_hover: 删除会话
+    batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: |
@@ -136,11 +136,12 @@ en:
     edit: Edit
     file_quotas: 'File Quotas'
     files_directory_download_error_modal_title: Directory too large to download
-    files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
+    files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
@@ -191,6 +192,7 @@ en:
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_submitted: Workflow successfully submitted!
     launch: Launch
     module_browser_last_updated: "Last updated: %{last_updated}"
@@ -215,6 +217,7 @@ en:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     not_grouped: Other Apps
+    path_selector_default_popup_title: 'Select Your Working Directory'
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
@@ -255,6 +258,8 @@ en:
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
     skip_navigation: Skip Navigation
+    soft_tabs: Soft Tabs
+    soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'

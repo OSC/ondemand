@@ -108,7 +108,7 @@ Rails.application.routes.draw do
 
   # ActiveJobs which can be disabled in production
   if Configuration.can_access_activejobs?
-    get '/activejobs' => 'active_jobs#index'
+    get '/activejobs' => 'active_jobs#index', :as => 'active_jobs'
     get '/activejobs/json' => 'active_jobs#json', :defaults => { :format => 'json' }
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end

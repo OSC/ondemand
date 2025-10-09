@@ -21,13 +21,18 @@
               </a>
             </span>
           </div>
+          <% grafana_panels = %w[ cpu memory ] %>
+          <% grafana_panels.push(*%w[ gpu-util gpu-memory ]) if data.gpus.positive? %>
           <div class="card-body">
-            <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'cpu', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
-            <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'memory', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
-          </div>
-         
+            <% grafana_panels.each do |name| %>
+              <% if supports_grafana_panel?(data.cluster, name) %>
+                <iframe src="<%= build_grafana_link(data.cluster, data.starttime, name, node, data.pbsid) %>" 
+                  width="450" height="200" frameborder="0">
+                </iframe>
+              <% end %>
+            <% end%>
+          </div>       
         <% end %>
-  
 </div>
        
 
