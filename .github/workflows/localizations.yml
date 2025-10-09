@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Setup Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
@@ -29,7 +29,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
