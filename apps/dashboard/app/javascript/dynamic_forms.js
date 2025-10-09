@@ -525,7 +525,7 @@ function toggleMinMax(event, changeId, otherId) {
       if (ariaMsg.length > ariaMsgLength){
         ariaMsg += ' and ';
       }
-      ariaMsg += `${dim} limit to ${mm[dim]}`;
+      ariaMsg += `${dim}imum limit to ${mm[dim]}`;
     }
   });
 
