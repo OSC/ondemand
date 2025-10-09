@@ -1,0 +1,64 @@
+name: Update Localizations
+
+on:
+  workflow_dispatch:
+  schedule:
+    # every Monday morning
+    - cron:  '0 3 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  update-dependencies:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        ruby: ["3"]
+    runs-on: ${{ matrix.os }}
+    name: Update Dependencies
+
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/vendor/bundle
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
+
+      - name: Setup os dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev
+      - name: Setup Bundler
+        run: |
+          bundle config path ~/vendor/bundle
+          bundle install
+      - name: Remove unused 
+        run: bundle exec i18n-tools remove-unused
+      - name: Update translations
+        run: bundle exec i18n-tools translate-missing
+        env:
+          OPENAI_API_TOKEN: ${{ secrets.CHATGPT_API_KEY }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
+          commit-message: update dependencies
+          committer: OSC ROBOT <osc.robot@gmail.com>
+          author: osc-bot <osc.robot@gmail.com>
+          delete-branch: true
+          title: 'Update Localizations'
+          push-to-fork: osc-bot/ondemand
+          branch: osc-bot/dep-updates
+          body: |
+            Update localizations with `i18n-tools`
