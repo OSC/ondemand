@@ -1,5 +1,3 @@
-import { accessEventsData } from "./nsf_access_events_data";
-
 document.addEventListener('DOMContentLoaded', () => {
   listEvents();
 });
@@ -8,12 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
 const eventsAPI = "https://support.access-ci.org/api/2.1/events";
 
 function listEvents() {
-  const events = getEvents();
-  const container = eventsContainer();
+  getEvents()
+    .then(events => { 
+      const container = eventsContainer();
 
-  fillContainer(container, events);
-  const ele = document.getElementById('nsf_access_events');
-  ele.appendChild(container);
+      fillContainer(container, events);
+      const ele = document.getElementById('nsf_access_events');
+      ele.appendChild(container);
+    });
 }
 
 function fillContainer(container, events) {
@@ -46,22 +46,18 @@ function eventsContainer() {
 }
 
 function getEvents() {
-  // fetch(eventsAPI, {
-  //   headers: {
-  //     'Cache-Control': 'max-age=604800'
-  //   }
-  //  })
-  //   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response)))
-  //   .then(response => response.json())
-  //   .then(data => console.log(data))
-  //   .catch((err) => {
-  //     // TODO: put error in HTML div
-  //     console.log('Cannot not NSF Access event details due to error:');
-  //     console.log(err);
-  //   })
-
-  const data = accessEventsData();
-  return filterEvents(data);
+  return fetch(eventsAPI, {
+            headers: {
+              'Cache-Control': 'max-age=604800'
+            }
+          })
+            .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response)))
+            .then(response => { return response.json() })
+            .catch((err) => {
+              // TODO: put error in HTML div
+              console.log('Cannot not NSF Access event details due to error:');
+              console.log(err);
+            });
 }
 
 function filterEvents(events) {
