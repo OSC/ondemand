@@ -63,7 +63,7 @@ function pollForJobInfo(element) {
       }
     })
     .catch((err) => {
-      console.log('Cannot not retrive job details due to error:');
+      console.log('Cannot not retrieve job details due to error:');
       console.log(err);
     });
 }

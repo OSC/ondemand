@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BatchConnect
-  # The context of a given batch connect session. It encapsulates all the paramters
+  # The context of a given batch connect session. It encapsulates all the parameters
   # available from the app and the choices made by the user.
   class SessionContext
     include Enumerable

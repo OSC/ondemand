@@ -45,7 +45,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - handle job arrays submitted through app gracefully for Torque, Slurm, and SGE
-- removed unnused .env file
+- removed unused .env file
 
 ## [2.10.2] - 2019-01-11
 ### Fixed

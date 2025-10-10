@@ -5,7 +5,7 @@
   What we get from the user mapping script can be an actual
   alphanumeric username, UID, or numeric username.
   This helper distinguishes between numeric values that are usernames
-  and numeric values that are infact UIDs.
+  and numeric values that are in fact UIDs.
 --]]
 function actual_username(username)
 

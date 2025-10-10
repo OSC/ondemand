@@ -9,7 +9,7 @@ require 'active_support/core_ext/module/delegation'
 #
 #
 # It is a singleton for the simple reason that this is ran in a single
-# user context (i.e., the Per User Nginx).  And for convienence to do stuff
+# user context (i.e., the Per User Nginx).  And for convenience to do stuff
 # like User.home instead of User.new.home or OodSupport::User.new.home.
 class CurrentUser
   include Singleton
@@ -43,7 +43,7 @@ class CurrentUser
   def groups
     @groups ||= begin
 
-      # let's guarentee that the first item in this list is the primary group
+      # let's guarantee that the first item in this list is the primary group
       groups = Process.groups
       groups.delete(primary_group.gid)
       groups.unshift(primary_group.gid).map { |gid| Etc.getgrgid(gid) }

@@ -936,7 +936,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal('small', find_value('classroom_size'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the classroom and see large dissappear
+    # now change the classroom and see large disappear
     select('123ABC', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
 
@@ -944,7 +944,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('Physics 1234', from: bc_ele_id('classroom'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the lowercase classroom and see large dissappear again.
+    # now change the lowercase classroom and see large disappear again.
     select('456def', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
   end
@@ -1267,7 +1267,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
 
       # change the account to pas2051 and now it's flipped.
-      # this is becuase pas2051 is on the condo-osumed queues' allow list and
+      # this is because pas2051 is on the condo-osumed queues' allow list and
       # on the backfill variants' deny list
       select('pas2051', from: bc_ele_id('auto_accounts'))
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
