@@ -459,16 +459,17 @@ function updateVisibility(event, changeId) {
   });
 
   if (changeElement === undefined || changeElement.length <= 0) return;
-
+  
+  const defaultHidden = $(`#${changeId}`).attr('hide_by_default') || false
   const elementInfo = getWidgetInfo(changeId);
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
-  if ((hide === false) || (hide === undefined && !initializing)) {
+  if((hide === false) || (hide === undefined && !initializing && !defaultHidden)) {
     changeElement.show();
     // Pass text into the aria stream
     const addMsg = `Revealed form item ${elementInfo}`;
     ariaStream(addMsg)
-  } else if (hide === true) {
+  } else if ((hide === true) || (hide === undefined && !initializing && defaultHidden)) {
     changeElement.hide();
     const rmMsg = `Hid form item ${elementInfo}`;
     ariaStream(rmMsg);
