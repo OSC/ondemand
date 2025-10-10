@@ -37,10 +37,10 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   # gem 'web-console', '~> 2.0'
-  gem 'i18n-tasks'
+  gem 'i18n-tasks', '~> 1.0.15'
   gem 'highline', '2.1.0'
   # gem 'easy_translate'
-  # gem 'ruby-openai'
+  gem 'ruby-openai'
 end
 
 # lock gems to versions that are compatible with ruby 2.7.0,
