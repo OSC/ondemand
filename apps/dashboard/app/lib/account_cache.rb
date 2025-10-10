@@ -112,12 +112,9 @@ module AccountCache
 
         available_accounts = account_tuples.map { |tuple| tuple[0] }.uniq
         unavailable_accounts = account_names.reject { |c| available_accounts.include?(c) }
+        account_data = disabled_account_data(unavailable_accounts)
 
-        unavailable_accounts.each do |account|
-          data["data-option-for-auto-accounts-#{account}"] = false
-        end
-
-        [qos, qos, data]
+        [qos, qos, data.merge(account_data)]
       end
     end
   end
@@ -154,9 +151,10 @@ module AccountCache
   end
 
   def queue_account_data(queue)
-    account_names.map do |account|
-      ["data-option-for-auto-accounts-#{account}", false] unless account_allowed?(queue, account)
-    end.compact.to_h
+    unavailable_accounts = account_names.reject do |account| 
+      account_allowed?(queue, account)
+    end
+    disabled_account_data(unavailable_accounts)
   end
 
   def account_allowed?(queue, account_name)
@@ -167,5 +165,22 @@ module AccountCache
     else
       queue.allow_accounts.any? { |account| account == account_name }
     end
+  end
+
+  def disabled_account_data(disabled_accounts)
+    # check if account contains anything other than digits and lowercase letters
+    counter = 0
+    disabled_accounts.map do |account|
+      counter += 1
+      if !!(account =~ /\A[a-z0-9]+\z/)
+        [["data-option-for-auto-accounts-#{account}", false]] 
+      else
+        acct_alias = "account#{counter}"
+        [
+          ["data-alias-#{acct_alias}", account],
+          ["data-option-for-auto-accounts-#{acct_alias}", false]
+        ]
+      end
+    end.flatten(1).compact.to_h
   end
 end
