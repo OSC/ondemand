@@ -230,7 +230,7 @@ GEM
       stringio
     public_suffix (5.1.1)
     racc (1.8.1)
-    rack (3.2.1)
+    rack (3.2.2)
     rack-protection (4.1.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -276,9 +276,10 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.0)
-    rdoc (6.14.2)
+    rdoc (6.15.0)
       erb
       psych (>= 4.0.0)
+      tsort
     redcarpet (3.6.1)
     regexp_parser (2.11.3)
     reline (0.6.2)
@@ -333,6 +334,7 @@ GEM
     tilt (2.6.1)
     timecop (0.9.10)
     timeout (0.4.3)
+    tsort (0.2.0)
     turbo-rails (2.0.7)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)

@@ -52,6 +52,13 @@ class RemoteFile
     [false, 'Downloading remote files as zip is currently not supported']
   end
 
+  def can_download_file?
+    download_file_size_limit = Configuration.file_download_max
+    can_download = size <= download_file_size_limit
+    error = can_download ? nil : I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
+    [can_download, error]
+  end
+
   def editable?
     # Assume file is editable if it exists and isn't a directory even though it
     # might not actually be (e.g. permissions)
