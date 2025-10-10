@@ -387,7 +387,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal 'pzs1124', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
@@ -434,7 +434,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal 'pzs1124', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
@@ -476,7 +476,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal 'pzs1124', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
@@ -674,18 +674,18 @@ class ProjectManagerTest < ApplicationSystemTestCase
         attributes:
           auto_accounts:
             options:
-            - pzs0715
-            - pzs0714
             - pzs1124
             - pzs1118
             - pzs1117
             - pzs1010
+            - pzs0715
+            - pzs0714
             - pde0006
             - pas2051
             - pas1871
             - pas1754
             - pas1604
-            value: pzs0715
+            value: pzs1124
             label: Account
             help: ''
             required: false
@@ -954,7 +954,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # use different accounts than what the template was generated with
       Open3
         .stubs(:capture3)
-        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', stdin_data: '')
+        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,qos', 'where', 'user=me', stdin_data: '')
         .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts_alt.txt'), '', exit_success])
 
       Project.stubs(:dataroot).returns(Pathname.new(dir))
@@ -972,11 +972,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_dir = Dir.children(dir).select { |p| Pathname.new("#{dir}/#{p}").directory? }.first
       project_dir = "#{dir}/#{project_dir}"
 
-      # NOTE: we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
+      # NOTE: we're using pzs2124 from sacctmgr_show_accts_alt.txt instead of pzs1124
       # from the template.
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-D', project_dir, '-A', 'pzs1715', '--export', 'NONE', '--parsable', '-M', 'owens',
+        .with({}, 'sbatch', '-D', project_dir, '-A', 'pzs2124', '--export', 'NONE', '--parsable', '-M', 'owens',
               stdin_data: input_data)
         .returns(['job-id-123', '', exit_success])
 
