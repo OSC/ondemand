@@ -80,6 +80,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       custom_pages: {},
       support_ticket: {},
       apps_datatable: { page_length: 10 },
+      files_select_target: nil,
     }
 
     # ensure all properties are tested
