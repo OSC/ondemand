@@ -172,7 +172,6 @@ function makeChangeHandlers(prefix){
       }
     }
   });
-  console.log('initialization finished')
   initializing = false;
 };
 
@@ -796,15 +795,12 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   const options = [...document.querySelectorAll(`#${elementId} option`)];
   let hideSelectedValue = undefined;
 
-  console.log('Checking directive: ', contextStr)
   options.forEach(option => {
     let hide = false;
-    console.log('Processing option: ',option);
     // even though an event occured - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
-      console.log('Handling key: ', key)
       let optionFor = '';
 
       if (contextStr == 'optionFor') {
@@ -825,19 +821,16 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       if ((elementId in aliasLookup) && (value in aliasLookup[elementId])) {
         optionForAlias = aliasLookup[elementId][value]
       }
-      console.log(aliasLookup, value, optionForAlias)
       // handle special case where the very first token here is a number.
       // browsers expect a prefix of hyphens as if it's the next token.
       if (optionForValue.match(/^\d/)) {
         optionForValue = `-${optionForValue}`;
       }
-      console.log(option.dataset)
       if (contextStr == 'optionFor') {
         let key = `optionFor${optionFor}${optionForValue}`
         if (!(key in option.dataset)) {
           key = `optionFor${optionFor}${optionForAlias}`
         }
-        console.log(key, option.dataset[key])
         hide = option.dataset[key] === 'false';
       } else if (contextStr == 'exclusiveOptionFor') {
         let key = `exclusiveOptionFor${optionFor}${optionForValue}`
@@ -847,7 +840,6 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
         hide = !(option.dataset[key] === 'true')
       }
       if (hide) {
-        console.log('hiding option: ', option)
         break;
       }
     };
@@ -862,12 +854,10 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`)
       option.style.display = 'none';
       option.disabled = true;
-      console.log('hid option ', option)
     } else {
       ariaStream(`Option ${option.value} enabled for ${elementInfo}`)
       option.style.display = '';
       option.disabled = false;
-      console.log('revealed option ', option)
     }
   });
 
@@ -909,7 +899,6 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
 // get attributes based on widget id
 function getWidgetInfo(id){
-  console.log(id)
   const type = getWidgetType(id)
   const label = $(`label[for="${id}"]`);
   const labelText = label.length ? label.text().trim() : null;
