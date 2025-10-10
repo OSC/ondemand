@@ -28,6 +28,8 @@ const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
 
+const aliasLookup = {};
+
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
 
@@ -130,8 +132,10 @@ function makeChangeHandlers(prefix){
           // the variable 'opt' is just a data structure, not a jQuery result. 
           // it has no attr, data, show or hide methods so we have to query
           // for it again
-          let data = $(`${optionSearch}[value='${opt.value}']`).data();
-          let keys = Object.keys(data);
+          let data = $(`${optionSearch}`).filter(function() {
+            return (this.value === opt.value);
+          }).data();
+          let keys = Object.keys(data).sort();
           if(keys.length !== 0) {
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
@@ -148,7 +152,8 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
-              }
+              } else if(key.startsWith('alias'))
+                cacheAliases(element['id']);
             });
           }
       });
@@ -167,7 +172,7 @@ function makeChangeHandlers(prefix){
       }
     }
   });
-
+  console.log('initialization finished')
   initializing = false;
 };
 
@@ -715,6 +720,24 @@ function idFromToken(str) {
   }
 }
 
+function cacheAliases(elementId) {
+  // This should only run once on each select with an alias defined
+  if (!Object.keys(aliasLookup).includes(elementId)) {
+    aliasLookup[elementId] = {};
+    const options = [...document.querySelectorAll(`#${elementId} option`)];
+    options.forEach(option => {
+      const data = option.dataset;
+      Object.keys(data).forEach(key => {
+        if (key.startsWith('alias')){
+          const alias = key.replace(/^alias/, '');
+          const value = data[key]//.replace(/\\/g, '\\\\') // Escape backslashes
+          aliasLookup[elementId][value] = alias;
+        }
+      })
+    })
+  }
+}
+
 /**
  * Extract the option for out of an option for directive.
  *
@@ -749,13 +772,15 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   const options = [...document.querySelectorAll(`#${elementId} option`)];
   let hideSelectedValue = undefined;
 
+  console.log('Checking directive: ', contextStr)
   options.forEach(option => {
     let hide = false;
-
+    console.log('Processing option: ',option);
     // even though an event occured - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
+      console.log('Handling key: ', key)
       let optionFor = '';
 
       if (contextStr == 'optionFor') {
@@ -767,23 +792,38 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
       // it's some other directive type, so just keep going and/or not real
       if(!key.startsWith(contextStr) || optionForId === undefined) {
-        continue;
+        continue
       }
+      const value = document.getElementById(optionForId).value;
+      let optionForValue = mountainCaseWords(value);
 
-      let optionForValue = mountainCaseWords(document.getElementById(optionForId).value);
+      let optionForAlias = '';
+      if ((elementId in aliasLookup) && (value in aliasLookup[elementId])) {
+        optionForAlias = aliasLookup[elementId][value]
+      }
+      console.log(aliasLookup, value, optionForAlias)
       // handle special case where the very first token here is a number.
       // browsers expect a prefix of hyphens as if it's the next token.
       if (optionForValue.match(/^\d/)) {
         optionForValue = `-${optionForValue}`;
       }
-
+      console.log(option.dataset)
       if (contextStr == 'optionFor') {
-        hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
+        let key = `optionFor${optionFor}${optionForValue}`
+        if (!(key in option.dataset)) {
+          key = `optionFor${optionFor}${optionForAlias}`
+        }
+        console.log(key, option.dataset[key])
+        hide = option.dataset[key] === 'false';
       } else if (contextStr == 'exclusiveOptionFor') {
-        hide = !(option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`] === 'true')
+        let key = `exclusiveOptionFor${optionFor}${optionForValue}`
+        if (!(key in option.dataset)){
+          key = `exclusiveOptionFor${optionFor}${optionForAlias}`
+        }
+        hide = !(option.dataset[key] === 'true')
       }
-
       if (hide) {
+        console.log('hiding option: ', option)
         break;
       }
     };
@@ -793,12 +833,13 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-
       option.style.display = 'none';
       option.disabled = true;
+      console.log('hid option ', option)
     } else {
       option.style.display = '';
       option.disabled = false;
+      console.log('revealed option ', option)
     }
   });
 
