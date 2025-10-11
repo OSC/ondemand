@@ -17,6 +17,8 @@ Rails.application.routes.draw do
       resources :workflows do
         member do
           post 'submit'
+          post 'save'
+          get 'load'
         end
       end
 

@@ -38,6 +38,7 @@ html, body {
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: .5rem;
   align-items: center;
   padding: .5rem .75rem;
@@ -46,6 +47,14 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 5;
+}
+
+.toolbar .workflow-actions {
+  display: flex;
+  flex-basis: 100%;
+  gap: .5rem;
+  margin-top: .5rem;
+  justify-content: flex-start;
 }
 
 .toolbar button {
