@@ -1,4 +1,5 @@
 import { DAG } from './dag.js';
+import { rootPath } from './config.js';
 
 /*
  * Helper Classes to support Drag and Drop UI 
@@ -57,6 +58,9 @@ class WorkflowState {
       const data = await response.json();
       if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
       alert(data.message);
+      if(submit) {
+        this.#setJobDescription(data);
+      }
     } catch (err) {
       console.error('Error saving workflow:', err);
       alert('Failed to save workflow. Check console for details.');
@@ -70,15 +74,15 @@ class WorkflowState {
     let metadata = null;
     const sessionTs = this.#parseTime(sessionMetadata?.saved_at);
     const backendTs = this.#parseTime(backendMetadata?.saved_at);
-    if (sessionTs == null || (backendTs != null && sessionTs < backendTs)) {
-      metadata = backendMetadata;
-      console.log('Restoring workflow from backend metadata.');
-    } else if (backendTs == null){
-      metadata = sessionMetadata;
-      console.log('Restoring workflow from session metadata.');
-    } else {
+    if (sessionTs == null && backendTs == null) {
       console.log('No saved workflow found in session or backend.');
       return;
+    } else if (sessionTs < backendTs) {
+      metadata = backendMetadata;
+      console.log('Restoring workflow from backend metadata.');
+    } else {
+      metadata = sessionMetadata;
+      console.log('Restoring workflow from session metadata.');
     }
 
     try {
@@ -149,6 +153,82 @@ class WorkflowState {
       console.error('Failed to load workflow from backend:', err);
       return null;
     }
+  }
+
+  #setJobDescription(json_data) {
+    $.each(json_data.job_hash, function (launcherId, jobInfo) {
+      const $launcher = $(`#launcher_${launcherId}`);
+
+      if ($launcher.length && jobInfo) {
+        $launcher.attr({
+          "data-job-poller": "true",
+          "data-job-id": jobInfo.job_id,
+          "data-job-cluster": jobInfo.cluster_id
+        });
+        $launcher.addClass("pending");
+      }
+    });
+  }
+}
+
+// Polling class to update job status
+class JobPoller {
+  constructor(projectId) {
+    this.projectId = projectId;
+  }
+  jobDetailsPath(cluster, jobId) {
+    const baseUrl = rootPath();
+    return `${baseUrl}/projects/${this.projectId}/jobs/${cluster}/${jobId}`;
+  }
+  
+  stringToHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = html.trim();
+    return template.content.firstChild;
+  }
+
+  async pollForJobInfo(element) {
+    const cluster = element.dataset['jobCluster'];
+    const jobId = element.dataset['jobId'];
+    const el = element.jquery ? element[0] : element;
+  
+    if(cluster === undefined || jobId === undefined){ return; }
+  
+    const url = this.jobDetailsPath(cluster, jobId);
+  
+    fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
+      .then((r) => r.text())
+      .then((html) => {
+        const responseElement = this.stringToHtml(html);
+        const jobState = responseElement.dataset['jobNativeState'];
+
+        el.classList.remove('running', 'completed', 'failed', 'pending');
+        if( jobState === 'COMPLETED' ) {
+          el.classList.add('completed');
+        } else if ( jobState === 'FAILED' || jobState === 'CANCELLED' || jobState === 'TIMEOUT' ) {
+          el.classList.add('failed');
+        } else if ( jobState === 'RUNNING' || jobState === 'COMPLETING' ) {
+          el.classList.add('running');
+        } else if ( jobState === 'PENDING' || jobState === 'QUEUED' || jobState === 'SUSPENDED' ) {
+          el.classList.add('pending');
+        }
+        
+        console.log(`Job ${jobId} on cluster ${cluster} native state: ${jobState}`);
+        return jobState;
+      })
+      .then((state) => {
+        const endStates = ['COMPLETED', 'FAILED', 'CANCELLED', 'TIMEOUT', 'undefined'];
+        if(!endStates.includes(state)) {
+          setTimeout(() => this.pollForJobInfo(element), 5000);
+        } else {
+          element.dataset.jobPoller = "false";
+        }
+      })
+      .catch((err) => {
+        console.log('Cannot not retrieve job details due to error:');
+        console.log(err);
+      });
   }
 }
 
@@ -478,7 +558,6 @@ class DragController {
   }
 
   function createEdge(fromId, toId) {
-    console.log(  `Creating edge from ${fromId} to ${toId}`);
     if (fromId === toId) return;
     if (!boxes.has(fromId) || !boxes.has(toId)) return;
 
@@ -651,7 +730,14 @@ class DragController {
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
+  submitWorkflowButton.addEventListener('click', debounce(async () => {
+    await workflowState.saveToBackend(true);
+
+    const poller = new JobPoller(projectId);
+    $('[data-job-poller="true"]').each((_index, ele) => {
+      poller.pollForJobInfo(ele);
+    });
+  }, 300));
   resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
   saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));
 

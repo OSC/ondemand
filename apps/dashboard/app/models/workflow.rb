@@ -119,7 +119,7 @@ class Workflow
     graph = Dag.new(attributes)
     if graph.has_cycle
       errors.add("Submit", "Specified edges form a cycle not directed-acyclic graph")
-      return false
+      return nil
     end
     dependency = graph.dependency
     order = graph.order
@@ -138,13 +138,16 @@ class Workflow
       dependent_launchers = dependency[id] || []
 
       begin
-        jobs = dependent_launchers.map { |id| job_id_hash[id] }.compact
+        jobs = dependent_launchers.map { |id| job_id_hash.dig(id, :job_id) }.compact
         opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
         job_id = launcher.submit(opts)
         if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
         else
-          job_id_hash[id] = job_id
+          job_id_hash[id] = {
+            job_id: job_id,
+            cluster_id: opts[:auto_batch_clusters]
+          }
         end
       rescue => e
         error_msg = "Launcher #{id} with opts #{opts} failed to submit. Error: #{e.class}: #{e.message}"
@@ -152,6 +155,8 @@ class Workflow
         Rails.logger.warn(error_msg)
       end
     end
+    return job_id_hash unless errors.any?
+    nil
   end
 
   def submit_launcher_params(launcher, dependent_jobs)
