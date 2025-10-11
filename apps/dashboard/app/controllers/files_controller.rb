@@ -215,7 +215,9 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        render :index
+        next_valid = @path.path.ascend.find(&:readable?)
+        redirected_location = next_valid.nil? ? Dir.home : next_valid
+        redirect_to(files_path(redirected_location), alert: exception.message.to_s)
       end
       format.json do
         @files = []
