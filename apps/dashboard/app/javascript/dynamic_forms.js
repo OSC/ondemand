@@ -443,35 +443,24 @@ class Table {
 function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
-  let changeElement = undefined;
-
-  $(`#${changeId}`).parents().each(function(_i, parent) {
-    var classListValues = parent.classList.values();
-    for (const val of classListValues) {
-      // TODO: Using 'mb-3' here because 'form-group' was removed
-      // from Bootstrap 5 and replaced with 'mb-3' - however, this
-      // is a grid class which could (??) apply to parent elements
-      // in unpredictable parts of the chain - test for & resolve
-      if (val.match('mb-3')) {
-        changeElement = $(parent);
-      }
-    }
-  });
-
-  if (changeElement === undefined || changeElement.length <= 0) return;
-
   const elementInfo = getWidgetInfo(changeId);
-  // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
+  
   if ((hide === false) || (hide === undefined && !initializing)) {
-    changeElement.show();
-    // Pass text into the aria stream
-    const addMsg = `Revealed form item ${elementInfo}`;
-    ariaStream(addMsg)
+    toggleItemVisible(changeId, true);
+    ariaStream(`Revealed form item ${elementInfo}`);
   } else if (hide === true) {
-    changeElement.hide();
-    const rmMsg = `Hid form item ${elementInfo}`;
-    ariaStream(rmMsg);
+    toggleItemVisible(changeId, false);
+    ariaStream(`Hid form item ${elementInfo}`);
+  }
+}
+
+function toggleItemVisible(id, makeVisible) {
+  const wrapper = $(`#${id}_wrapper`);
+  if (makeVisible) {
+    wrapper.removeClass('d-none')
+  } else {
+    wrapper.addClass('d-none')
   }
 }
 
@@ -876,15 +865,7 @@ function getWidgetInfo(id){
 }
 
 function getWidgetType(id){
-  var finaltype = undefined;
-  $(`#${id}`).parents().each(function(_i, parent) {
-    type = $(parent).nextAll('[data-widget-type]').first().data('widget-type')
-
-    if (type && !finaltype) {
-      finaltype = type
-    }
-  })
-  return finaltype ? finaltype : null;
+  return $(`#${id}_wrapper`).data('widgetType')
 }
 
 // sends a message that is immediately read by screenreaders
