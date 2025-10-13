@@ -812,7 +812,6 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # now let's check launchers#show to see if they've actually been excluded.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
-      puts show_account_options
       exclude_accounts.each do |acct|
         assert(!show_account_options.include?(acct))
       end
