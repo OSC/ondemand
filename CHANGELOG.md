@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fix missing activejobs sorting chevrons  (#4670)\
+Announce dynamic form actions (#4594)\
+System tests for ActiveJobs (#4583)\
+added file download limits (#4535)\
+Bump rack from 2.2.18 to 2.2.19 in /apps/myjobs (#4660)\
+Update delete app panel to use Bootstrap 5 (#4661)\
+Show files under hidden directories in job composer (#4547)\
+Bump rack from 3.2.1 to 3.2.2 in /apps/dashboard (#4659)\
+Fix ActiveJobs error reporting (#4578)\
+Update Changelog (#4653)\
+lint a random file (#4655)\
+update dependencies (#4654)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
