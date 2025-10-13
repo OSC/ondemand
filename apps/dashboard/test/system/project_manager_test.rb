@@ -785,7 +785,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
 
       find('#edit_launcher_auto_accounts').click
-      counter = 0
+
+      # There are 7 allowed accounts before the 4 excluded ones
+      counter = 7
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
       exclude_accounts.each do |acct|
         counter += 1
@@ -810,6 +812,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # now let's check launchers#show to see if they've actually been excluded.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
+      puts show_account_options
       exclude_accounts.each do |acct|
         assert(!show_account_options.include?(acct))
       end
@@ -817,7 +820,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
       find('#edit_launcher_auto_accounts').click
 
-      counter = 0
+      counter = 7
       exclude_accounts.each do |acct|
         counter += 1
         html_acct = "option#{counter}"
