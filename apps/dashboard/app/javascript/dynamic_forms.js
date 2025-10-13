@@ -753,7 +753,7 @@ function cacheAliases(elementId) {
       Object.keys(data).forEach(key => {
         if (key.startsWith('alias')){
           const alias = key.replace(/^alias/, '');
-          const value = data[key]//.replace(/\\/g, '\\\\') // Escape backslashes
+          const value = data[key]
           aliasLookup[elementId][value] = alias;
         }
       })
