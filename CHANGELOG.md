@@ -6,18 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Fix missing activejobs sorting chevrons  (#4670)\
-Announce dynamic form actions (#4594)\
-System tests for ActiveJobs (#4583)\
-added file download limits (#4535)\
-Bump rack from 2.2.18 to 2.2.19 in /apps/myjobs (#4660)\
-Update delete app panel to use Bootstrap 5 (#4661)\
-Show files under hidden directories in job composer (#4547)\
-Bump rack from 3.2.1 to 3.2.2 in /apps/dashboard (#4659)\
-Fix ActiveJobs error reporting (#4578)\
-Update Changelog (#4653)\
-lint a random file (#4655)\
-update dependencies (#4654)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -55,6 +43,7 @@ update dependencies (#4654)
 - Disable NVC commpression level to 0 as it breaks the clipboard in [4550](https://github.com/OSC/ondemand/pull/4550).
 - The file editor now forces unix newline mode instead of the default auto in [4561](https://github.com/OSC/ondemand/pull/4561).
 - Grafana urls have been corrected for newer versions of Grafana in [4585](https://github.com/OSC/ondemand/pull/4585).
+- JobComposer projects under hidden directories now show correctly in [4547](https://github.com/OSC/ondemand/pull/4547).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -90,6 +79,8 @@ update dependencies (#4654)
 - Grafana now has support for a gpu panel in active jobs in [4564](https://github.com/OSC/ondemand/pull/4564).
 - The file editor now has the option for soft tabs in [4508](https://github.com/OSC/ondemand/pull/4508).
 - system_status is now a dashboard widget as well as it's own page in [4532](https://github.com/OSC/ondemand/pull/4532).
+- File downloads now have limits in [4535](https://github.com/OSC/ondemand/pull/4535).
+- Dynamic form changes now announce their actions to screen readers in [4594](https://github.com/OSC/ondemand/pull/4594).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
