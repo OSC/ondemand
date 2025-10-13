@@ -6,7 +6,7 @@
 */
 
 import { setInnerHTML } from './utils';
-import { OODAlert } from './alert';
+import { OODAlertError } from './alert';
 
 export function replaceHTML(id, html) {
   const ele = document.getElementById(id);
@@ -45,9 +45,9 @@ export function pollAndReplace(url, delay, id, callback, continuePolling = () =>
     })
     .catch((err) => {
       if (typeof err == 'string') {
-        OODAlert(err);
+        OODAlertError(err);
       } else {
-        OODAlert('This page has encountered an unexpected error. Please refresh the page.');
+        OODAlertError('This page has encountered an unexpected error. Please refresh the page.');
       }
       console.log(err);
     });
