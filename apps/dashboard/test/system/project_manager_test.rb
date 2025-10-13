@@ -4,7 +4,6 @@ require 'application_system_test_case'
 
 # Tests /projects URL and the associated code paths
 class ProjectManagerTest < ApplicationSystemTestCase
-  include OptionEncoder
   def setup
     stub_clusters
     stub_user
@@ -786,10 +785,13 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
 
       find('#edit_launcher_auto_accounts').click
+      counter = 0
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
       exclude_accounts.each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
@@ -815,9 +817,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
       find('#edit_launcher_auto_accounts').click
 
+      counter = 0
       exclude_accounts.each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # now add is enabled and rm is disabled. (opposite of the above)
         assert_equal('false', add_btn[:disabled])
@@ -858,8 +863,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # Validate that UI changes when field is fixed.
       assert_equal('true', accounts_select[:disabled])
+      counter = 0 # mimic id logic
       account_options.each do |option|
-        html_option = encode(option.text)
+        counter += 1
+        html_option = "option#{counter}"
         rm_btn = find("#launcher_auto_accounts_remove_#{html_option}")
         add_btn = find("#launcher_auto_accounts_add_#{html_option}")
 
@@ -887,9 +894,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.add'))
       find('#edit_launcher_auto_accounts').click
 
+      counter = 0
       ['pas2051', 'pas1871', 'pas1754', 'pas1604'].each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
