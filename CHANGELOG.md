@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Disable NVC commpression level to 0 as it breaks the clipboard in [4550](https://github.com/OSC/ondemand/pull/4550).
 - The file editor now forces unix newline mode instead of the default auto in [4561](https://github.com/OSC/ondemand/pull/4561).
 - Grafana urls have been corrected for newer versions of Grafana in [4585](https://github.com/OSC/ondemand/pull/4585).
+- JobComposer projects under hidden directories now show correctly in [4547](https://github.com/OSC/ondemand/pull/4547).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -78,6 +79,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Grafana now has support for a gpu panel in active jobs in [4564](https://github.com/OSC/ondemand/pull/4564).
 - The file editor now has the option for soft tabs in [4508](https://github.com/OSC/ondemand/pull/4508).
 - system_status is now a dashboard widget as well as it's own page in [4532](https://github.com/OSC/ondemand/pull/4532).
+- File downloads now have limits in [4535](https://github.com/OSC/ondemand/pull/4535).
+- Dynamic form changes now announce their actions to screen readers in [4594](https://github.com/OSC/ondemand/pull/4594).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
