@@ -189,7 +189,7 @@ class ConfigurationSingleton
 
   FALSE_VALUES=[nil, false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
 
-  # Bool conversion pulled from ActiveRecord::Type::Boolean#cast_value
+  # Bool coercion pulled from ActiveRecord::Type::Boolean#cast_value
   #
   # @return [Boolean] false for falsy value, true for everything else
   def to_bool(value)
