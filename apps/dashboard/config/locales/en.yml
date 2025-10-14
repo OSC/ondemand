@@ -219,6 +219,8 @@ en:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     not_grouped: Other Apps
+    path_selector_home: home
+    path_selector_parent_directory: parent directory
     path_selector_default_popup_title: 'Select Your Working Directory'
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
@@ -243,6 +245,8 @@ en:
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
+    select_path_for: |
+      %{element} select path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
