@@ -428,10 +428,9 @@ we'll follow this style.
   which we use quite extensively.
 * classes should mostly use relative sizes (`em` and `rem`), rarely pixel values (`px`).
 
-[Discourse]: https://discourse.osc.edu
-[yardoc]: https://yardoc.org/
+[Discourse]: https://discourse.openondemand.org/
 [Fork this repo]: https://help.github.com/articles/fork-a-repo/
-[code of conduct]: CODE_OF_CONDUCT.md
+[code of conduct]: https://github.com/OSC/ondemand/blob/master/CODE_OF_CONDUCT.md
 [issue labels]: https://github.com/OSC/ondemand/labels
 [good first issues]: https://github.com/OSC/ondemand/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+
 [RuboCop]: https://docs.rubocop.org/
