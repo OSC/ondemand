@@ -10,14 +10,14 @@ permissions:
   contents: read
 
 jobs:
-  update-dependencies:
+  update-localizations:
     strategy:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
         ruby: ["3"]
     runs-on: ${{ matrix.os }}
-    name: Update Dependencies
+    name: Update Localizations
 
     steps:
       - name: Checkout ${{ github.sha	}}
@@ -53,7 +53,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
-          commit-message: update dependencies
+          commit-message: update localizations
           committer: OSC ROBOT <osc.robot@gmail.com>
           author: osc-bot <osc.robot@gmail.com>
           delete-branch: true
