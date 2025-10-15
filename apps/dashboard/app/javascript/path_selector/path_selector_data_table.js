@@ -105,7 +105,7 @@ export class PathSelectorTable {
         const msg = err.message;	    
         var prefix = '';
         if (msg.match('ALLOWLIST_PATH')) {
-          prefix = 'Permission denied: '
+          prefix = 'Permission denied: ';
         }
         $('#forbidden-warning').removeClass('d-none')
           .text(`${prefix}${msg}`)
