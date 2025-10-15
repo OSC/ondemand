@@ -59,6 +59,6 @@ jobs:
           delete-branch: true
           title: 'Update Localizations'
           push-to-fork: osc-bot/ondemand
-          branch: osc-bot/dep-updates
+          branch: osc-bot/localization-updates
           body: |
             Update localizations with `i18n-tools`
