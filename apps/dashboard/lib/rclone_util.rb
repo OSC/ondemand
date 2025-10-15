@@ -78,7 +78,7 @@ class RcloneUtil
       end
       
       # Fall back if lsjson fails
-      if (remote_type(remote) == "s3") && path.to_s.match(/^\/[^\/]*[\/]?$/)
+      if (remote_type(remote) == "s3") && path.each_filename.count <= 1
         o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
 
         if s.success?
