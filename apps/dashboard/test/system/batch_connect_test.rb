@@ -1797,11 +1797,12 @@ class BatchConnectTest < ApplicationSystemTestCase
         # verify location
         assert_text('other_real_file')
 
-        find('span.fa-arrow-up').click
+        assert_selector('.fa-arrow-up')
+        find('.fa-arrow-up').click
         assert_text('real_file')
         assert_text('real_directory')
 
-        find('span.fa-arrow-up').click
+        find('.fa-arrow-up').click
         error_text = "Permission denied: #{dir} does not have an ancestor directory specified in ALLOWLIST_PATH"
         assert_selector('#forbidden-warning', text: error_text)
 
