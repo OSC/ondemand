@@ -1,7 +1,7 @@
-<p>
+<p class='session-buttons-list'>
   <strong>
     <%= t('dashboard.batch_connect_sessions_stats_support_ticket') %>
   </strong>
-  <%= link_to(t('dashboard.batch_connect_sessions_stats_support_ticket_link_text'), support_path(session_id: session.id), class: 'btn btn-warning') %>
+  <%= link_to(t('dashboard.batch_connect_sessions_stats_support_ticket_link_text'), support_path(session_id: session.id), class: 'btn btn-warning mx-3') %>
   <%= link_to(t('dashboard.files_download_zip'), "#{OodAppkit.files.url(path: session.staged_root).to_s}?download=1", class:'btn btn-primary') if session.completed? %>
 </p>
