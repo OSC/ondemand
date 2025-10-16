@@ -7,8 +7,6 @@ module BatchConnect::SessionContextsHelper
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
     all_options = attrib.all_options(fmt: format)
-    wrapper_present = field_options[:wrapper].is_a?(Hash) && field_options[:wrapper].present?
-    wrap_params = (wrapper_present ? field_options[:wrapper] : {})
 
     if attrib.fixed?
       return render :partial => "batch_connect/session_contexts/fixed", :locals => { form: form, attrib: attrib, field_options: field_options, format: format }
@@ -16,26 +14,26 @@ module BatchConnect::SessionContextsHelper
 
     rendered =  case widget
                 when 'select'
-                  form.select(attrib.id, attrib.select_choices(hide_excludable: hide_excludable), field_options, attrib.all_options)
+                  form.select(attrib.id, attrib.select_choices(hide_excludable: hide_excludable), field_options, attrib.html_options)
                 when 'resolution_field'
                   resolution_field(form, attrib.id, all_options)
                 when 'check_box'
-                  form.form_group(attrib.id, help: field_options[:help], **wrap_params) do
+                  form.form_group attrib.id, help: field_options[:help] do
                     form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
                   end
                 when 'radio', 'radio_button'
-                  form.form_group(attrib.id, help: field_options[:help], **wrap_params) do
+                  form.form_group attrib.id, help: field_options[:help] do
                     opts = {
                       label:   label_tag(attrib.id, attrib.label),
                       checked: (attrib.value.presence || attrib.field_options[:checked])
                     }
-                    content_tag(:div, id: [form.object_name, attrib.id].join('_'), **field_options) do
+                    content_tag(:div, id: [form.object_name, attrib.id].join('_')) do
                       form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)                  
                     end
                   end
                 when 'path_selector'
-                  form.form_group(attrib.id, field_options[:wrapper]) do
-                    render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options.except(:wrapper) })
+                  form.form_group(attrib.id) do
+                    render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options })
                   end
                 when 'file_attachments'
                   render :partial => "batch_connect/session_contexts/file_attachments", :locals => { form: form, attrib: attrib, field_options: field_options }
@@ -44,7 +42,15 @@ module BatchConnect::SessionContextsHelper
                 end
                 
     # Append a wrapper div to hold additional info
-    wrapped = content_tag(:div, id:[form.object_name, attrib.id, 'wrapper'].join('_'), data: { widget_type: widget }) do
+    wrapped = content_tag(
+      :div, 
+      id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
+      class: attrib.hide_by_default? ? 'd-none' : '',
+      data: {
+        widget_type: widget,
+        hide_by_default: attrib.hide_by_default?
+      }
+    ) do
       rendered
     end
 
@@ -53,12 +59,11 @@ module BatchConnect::SessionContextsHelper
   end
 
   def resolution_field(form, id, opts = {})
-    wrapper_present = opts[:wrapper].is_a?(Hash) && opts[:wrapper].present?
-    content_tag(:div, id: "#{id}_group", class: "mb-3", **(wrapper_present ? opts[:wrapper] : {})) do
+    content_tag(:div, id: "#{id}_group", class: "mb-3") do
       concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
       concat(
-        content_tag(:div, id:[form.object_name, id].join('_'), class: "row mb-3", **opts) do
+        content_tag(:div, class: "row mb-3") do
           concat (
             content_tag(:div, class: "col-sm-6") do
               concat (

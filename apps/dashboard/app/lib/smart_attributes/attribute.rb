@@ -93,8 +93,8 @@ module SmartAttributes
       OodAppkit.markdown.render(help(fmt: fmt)).html_safe
     end
 
-    def default_hide_wrapper
-      !opts[:hide_by_default] ? '' : {style: 'display: none'}
+    def hide_by_default?
+      !!opts[:hide_by_default]
     end
     # Whether this attribute is required
     # @return [Boolean] is required
@@ -151,8 +151,7 @@ module SmartAttributes
       end.merge({
                   label:    label(fmt: fmt),
                   help:     help_html(fmt: fmt),
-                  required: required,
-                  wrapper:  default_hide_wrapper 
+                  required: required
                 })
     end
 

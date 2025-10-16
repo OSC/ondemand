@@ -444,6 +444,7 @@ function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   const elementInfo = getWidgetInfo(changeId);
+  const defaultHidden = $(`#${changeId}_wrapper`).data('hideByDefault')
   const hide = hideLookup[id].get(changeId, val);
   
   if((hide === false) || (hide === undefined && !initializing && !defaultHidden)) {
@@ -856,8 +857,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
 // get attributes based on widget id
 function getWidgetInfo(id){
-  console.log(id)
-  const type = getWidgetType(id)
+  const type = getWidgetType(id);
   const label = $(`label[for="${id}"]`);
   const labelText = label.length ? label.text().trim() : null;
 
