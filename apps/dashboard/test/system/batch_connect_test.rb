@@ -1811,8 +1811,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_text('other_real_file')
         assert_selector('#forbidden-warning', visible: :hidden)
 
-        assert_selector('span.clickable', text: '/')
-        find_all('span.clickable', text: '/').first.click
+        find_all('a', text: '/').first.click
         error_text_root = "Permission denied: / does not have an ancestor directory specified in ALLOWLIST_PATH"
         assert_selector('#forbidden-warning', text: error_text_root)
       end
