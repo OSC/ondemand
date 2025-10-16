@@ -32,7 +32,7 @@ export class PathSelectorTable {
       this.reloadTable(this.initialUrl());
 
       $(`#${this.tableId} tbody`).on('click', 'tr', (event) => { this.clickRow(event) });
-      $('#favorites').on('click', 'li', (event) => { this.clickRow(event) });
+      $('#favorites').on('click', 'a', (event) => { this.clickRow(event) });
       $(`#${this.breadcrumbId}`).on('click', 'li', (event) => { this.clickBreadcrumb(event) });
       $(`#${this.selectButtonId}`).on('click', (event) => { this.selectPath(event) });
   }

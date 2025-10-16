@@ -85,7 +85,7 @@ GEM
       execjs (> 0)
     base64 (0.3.0)
     benchmark (0.4.1)
-    bigdecimal (3.2.3)
+    bigdecimal (3.3.1)
     bootstrap_form (5.0.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
@@ -126,9 +126,18 @@ GEM
       activesupport
       i18n
     drb (2.2.3)
-    erb (5.0.2)
+    erb (5.1.1)
     erubi (1.13.1)
+    event_stream_parser (1.0.0)
     execjs (2.10.0)
+    faraday (2.14.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-multipart (1.1.1)
+      multipart-post (~> 2.0)
+    faraday-net_http (3.4.1)
+      net-http (>= 0.5.0)
     ffi (1.16.3)
     globalid (1.3.0)
       activesupport (>= 6.1)
@@ -159,6 +168,7 @@ GEM
       activesupport (>= 7.0.0)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
+    json (2.15.1)
     local_time (1.0.3)
       coffee-rails
     logger (1.7.0)
@@ -184,13 +194,16 @@ GEM
     mime-types-data (3.2025.0924)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (5.25.5)
+    minitest (5.26.0)
     mocha (2.7.1)
       ruby2_keywords (>= 0.0.5)
     multi_json (1.17.0)
+    multipart-post (2.4.1)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
+    net-http (0.6.0)
+      uri
     net-imap (0.3.9)
       date
       net-protocol
@@ -219,7 +232,7 @@ GEM
     parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
-    pp (0.6.2)
+    pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
     pry (0.15.2)
@@ -230,8 +243,8 @@ GEM
       stringio
     public_suffix (5.1.1)
     racc (1.8.1)
-    rack (3.2.2)
-    rack-protection (4.1.1)
+    rack (3.2.3)
+    rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
@@ -294,6 +307,10 @@ GEM
     rexml (3.4.4)
     rss (0.3.1)
       rexml
+    ruby-openai (8.3.0)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
@@ -306,18 +323,18 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sinatra (4.1.1)
+    sinatra (4.2.1)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
       rack (>= 3.0.0, < 4)
-      rack-protection (= 4.1.1)
+      rack-protection (= 4.2.1)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
-    sinatra-contrib (4.1.1)
+    sinatra-contrib (4.2.1)
       multi_json (>= 0.0.2)
       mustermann (~> 3.0)
-      rack-protection (= 4.1.1)
-      sinatra (= 4.1.1)
+      rack-protection (= 4.2.1)
+      sinatra (= 4.2.1)
       tilt (~> 2.0)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
@@ -344,6 +361,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
+    uri (1.0.4)
     webrick (1.9.1)
     websocket (1.2.11)
     websocket-driver (0.8.0)
@@ -372,7 +390,7 @@ DEPENDENCIES
   dotiw
   erubi
   highline (= 2.1.0)
-  i18n-tasks
+  i18n-tasks (~> 1.0.15)
   jbuilder (~> 2.0)
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
@@ -388,6 +406,7 @@ DEPENDENCIES
   redcarpet (~> 3.3)
   rest-client (~> 2.0)
   rss (~> 0.2)
+  ruby-openai
   sdoc
   selenium-webdriver (= 4.26.0)
   sinatra

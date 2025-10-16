@@ -147,6 +147,8 @@ en:
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    files_shell: Open in Terminal
+    files_shell_dropdown: Select Cluster to Open in Terminal
     import: Import
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
@@ -217,6 +219,8 @@ en:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     not_grouped: Other Apps
+    path_selector_home: home
+    path_selector_parent_directory: parent directory
     path_selector_default_popup_title: 'Select Your Working Directory'
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
@@ -241,6 +245,8 @@ en:
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
+    select_path_for: |
+      %{element} select path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
