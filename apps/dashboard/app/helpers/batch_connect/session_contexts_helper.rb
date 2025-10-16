@@ -65,7 +65,7 @@ module BatchConnect::SessionContextsHelper
       concat(
         content_tag(:div, class: "row mb-3") do
           concat (
-            content_tag(:div, class: "col-sm-6") do
+            content_tag(:div, id: [form.object_name, id].join('_'), class: "col-sm-6") do
               concat (
                 content_tag(:div, class: "input-group") do
                   concat (content_tag(:div, class: "input-group-prepend") do
