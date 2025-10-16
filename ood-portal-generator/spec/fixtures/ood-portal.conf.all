@@ -145,7 +145,7 @@ Listen 8080
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
@@ -168,7 +168,7 @@ Listen 8080
     # ProxyPassReverse implementation
     Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
