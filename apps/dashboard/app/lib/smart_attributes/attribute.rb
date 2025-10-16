@@ -93,6 +93,9 @@ module SmartAttributes
       OodAppkit.markdown.render(help(fmt: fmt)).html_safe
     end
 
+    def hide_by_default?
+      !!opts[:hide_by_default]
+    end
     # Whether this attribute is required
     # @return [Boolean] is required
     def required
