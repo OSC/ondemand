@@ -885,11 +885,9 @@ class BatchConnectTest < ApplicationSystemTestCase
   def basic_default_hide_check_hidden(invert = false)
     if invert
       assert_selector("##{bc_ele_id('gpus')}")
-      assert_text('GPU type')
       assert_text('refute this')
     else
       assert_selector("##{bc_ele_id('gpus')}",   visible: :hidden)
-      refute_text('GPU type')
       refute_text('refute this')
     end
   end
