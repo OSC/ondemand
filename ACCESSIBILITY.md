@@ -66,8 +66,7 @@ This is the landing page and what the root URL `/` redirects to.
 
 The landing page allows for site administrators to create panels. The panels we
 distribute are covered in this document. Panels specifically created at any
-given site are unknown to us (the developers), have not and will not be assessed
-for accessibility.
+given site, being unknown to us (the developers), have not and will not be assessed for accessibility.
 
 - [The welcome logo does not provide alt text.](https://github.com/OSC/ondemand/issues/2067)
 - [Message of the Day and pinned apps use heading levels 3 & 4 instead of 2 & 3.](https://github.com/OSC/ondemand/issues/2074).
@@ -131,7 +130,7 @@ The underlying library `hterm` does have support for accessibility but
 we need some mechanism to turn it on.
 
 We have this ticket concerning [shell accessibility](https://github.com/OSC/ondemand/issues/672)
-to tracks this.
+to track this.
 
 ### /pun/sys/myjobs and sub URLs
 

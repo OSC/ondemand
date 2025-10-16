@@ -40,9 +40,14 @@ module BatchConnect::SessionContextsHelper
                 else
                   form.send widget, attrib.id, all_options
                 end
-    header = sanitize(OodAppkit.markdown.render(attrib.header))
-    "#{header}#{rendered}".html_safe
+                
+    # Append a wrapper div to hold additional info
+    wrapped = content_tag(:div, id:[form.object_name, attrib.id, 'wrapper'].join('_'), data: { widget_type: widget }) do
+      rendered
+    end
 
+    header = sanitize(OodAppkit.markdown.render(attrib.header))
+    safe_join([header, wrapped])
   end
 
   def resolution_field(form, id, opts = {})
