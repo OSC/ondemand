@@ -1765,6 +1765,59 @@ class BatchConnectTest < ApplicationSystemTestCase
     # puts favorites.map{|i| i['innerHTML']}.join('')
   end
 
+  test 'path_selector respects allowlist' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({OOD_ALLOWLIST_PATH: allowed_dir}) do
+        `mkdir -p #{allowed_dir}/real_directory`
+        `touch #{allowed_dir}/real_file`
+        `touch #{allowed_dir}/real_directory/other_real_file`
+        `mkdir -p #{dir}/not_allowed`
+        `touch #{dir}/not_allowed/bad_file`
+
+        form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: '#{allowed_dir}/real_directory'
+        HEREDOC
+
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+
+        # await load
+        assert_selector("##{bc_ele_id('path_path_selector_table_wrapper')}")
+        # verify location
+        assert_text('other_real_file')
+
+        assert_selector('.fa-arrow-up')
+        find('.fa-arrow-up').click
+        assert_text('real_file')
+        assert_text('real_directory')
+
+        find('.fa-arrow-up').click
+        error_text = "Permission denied: #{dir} does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text)
+
+        # reset
+        find('tr.clickable td span', text: 'real_directory').click
+        assert_text('other_real_file')
+        assert_selector('#forbidden-warning', visible: :hidden)
+
+        find_all('a', text: '/').first.click
+        error_text_root = "Permission denied: / does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text_root)
+      end
+    end
+  end
+
   test 'launches and saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
