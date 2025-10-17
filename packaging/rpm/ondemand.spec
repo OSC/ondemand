@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}.3
+%define runtime_version %{major_version}.%{minor_version}.0
 %define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 # Use hardcoded RHEL 9.5 for a short period while downstream RHEL clones get RHEL 9.6 release
@@ -67,7 +67,12 @@ BuildRequires:   ondemand-ruby = %{runtime_version_full}
 BuildRequires:   ondemand-nodejs = %{runtime_version_full}
 BuildRequires:   rsync
 BuildRequires:   git
+# Force Python 3.12 for EL8 as Python 3.6 does not work with node-gyp
+%if 0%{?rhel} == 8
+BuildRequires:   python3.12
+%else
 BuildRequires:   python3
+%endif
 BuildRequires:   libffi-devel
 BuildRequires:   libyaml-devel
 
@@ -79,8 +84,8 @@ Requires:        python3
 Requires:        rclone
 %endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.26.1-3.p6.0.23.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.0.23-3.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.26.3-1.p6.1.0.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.1.0-1.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}

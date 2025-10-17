@@ -53,7 +53,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.0)
     net-telnet (0.2.0)
-    ood_packaging (0.17.1)
+    ood_packaging (0.18.0)
       rake (~> 13.0.1)
     parallel (1.27.0)
     parser (3.3.8.0)
@@ -137,7 +137,7 @@ DEPENDENCIES
   beaker-docker (~> 1.4.0)
   beaker-rspec
   dotenv (~> 2.1)
-  ood_packaging (~> 0.17.1)
+  ood_packaging (~> 0.18.0)
   rake
   rspec
   rubocop
