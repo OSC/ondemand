@@ -78,12 +78,7 @@ BuildRequires:   libyaml-devel
 
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
-# Force Python 3.12 for EL8 as Python 3.6 does not work with node-gyp
-%if 0%{?rhel} == 8
-Requires:        python3.12
-%else
 Requires:        python3
-%endif
 # rclone is not available for Amazon Linux 2023
 %if 0%{?rhel}
 Requires:        rclone
