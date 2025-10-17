@@ -10,8 +10,8 @@ module AccountCache
   def accounts
     Rails.cache.fetch('account_info', expires_in: 4.hours) do
       # only Slurm support in ood_core
-      cluster = Configuration.job_clusters.select(&:slurm?).first
-      cluster.nil? ? [] : cluster.job_adapter.accounts
+      clusters = Configuration.job_clusters.select(&:slurm?)
+      clusters.empty? ? [] : clusters.map(&:job_adapter).flat_map(&:accounts).uniq
     rescue StandardError => e
       Rails.logger.warn("Did not get accounts from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
