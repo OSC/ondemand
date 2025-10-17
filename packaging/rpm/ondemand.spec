@@ -161,6 +161,7 @@ rake --trace install DESTDIR=%{buildroot}
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
+%__install -m 644 LICENSE.txt %{buildroot}/opt/ood/LICENSE.txt
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
