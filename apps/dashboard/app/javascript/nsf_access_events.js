@@ -7,11 +7,13 @@ const eventsAPI = "https://support.access-ci.org/api/2.1/events";
 
 function listEvents() {
   getEvents()
-    .then(events => { 
+    .then(events => {
+      const filteredEvents = filterEvents(events);
       const container = eventsContainer();
 
-      fillContainer(container, events);
+      fillContainer(container, filteredEvents);
       const ele = document.getElementById('nsf_access_events');
+      ele.innerHTML = null;
       ele.appendChild(container);
     });
 }
@@ -19,7 +21,7 @@ function listEvents() {
 function fillContainer(container, events) {
   const list = container.querySelector('ul');
   for (const event of events) {
-    const listItem = eventToElement2(event);
+    const listItem = eventToElement(event);
     list.appendChild(listItem);
   }
 }
@@ -76,18 +78,11 @@ function filterEvents(events) {
   return mapped.values();
 }
 
-function eventToElement(event) {
-  const li = document.createElement('li');
-  li.classList.add('list-group-item');
-  li.innerHTML = event['description'];
-
-  return li;
-}
 
 //   <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
 // Link with href
 // </a>
-function eventToElement2(event) {
+function eventToElement(event) {
   const li = document.createElement('li');
   li.classList.add('list-group-item');
 
@@ -105,9 +100,10 @@ function eventToElement2(event) {
 
   const date = document.createElement('span');
   date.textContent = new Date(event['date']).toDateString();
-  date.classList.add('mx-2', 'd-flex');
+  date.classList.add('m-2', 'd-flex');
 
   const content = document.createElement('div');
+  content.classList.add('my-2');
   content.id = contentId;
   // TODO: sanitize this so there's no potentially malicous tags.
   content.innerHTML = event['description'];
@@ -116,6 +112,22 @@ function eventToElement2(event) {
   li.appendChild(title);
   li.appendChild(date);
   li.appendChild(content);
+  li.appendChild(registerElement(event));
 
   return li;
+}
+
+function registerElement(event) {
+  const registration = event['registration'];
+  const p = document.createElement('p');
+
+  if(registration !== undefined) {
+    const a = document.createElement('a');
+
+    a.href = registration;
+    a.innerText = 'Register for this event';
+    p.appendChild(a);
+  }
+
+  return p;
 }
