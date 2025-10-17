@@ -63,19 +63,14 @@ function getEvents() {
 }
 
 function filterEvents(events) {
-  const now = Date.now();
-  const timeFiltered = events.filter((event) => {
+  const now = new Date();
+  const futureLimit = new Date();
+  futureLimit.setMonth(futureLimit.getMonth() + 1);
+
+  return events.filter((event) => {
     const eventDate = new Date(event['date']);
-    return eventDate > now;
-  });
-
-  // map them to keys to filter out unique events.
-  const mapped = new Map(timeFiltered.map((item) => {
-    key = `${item['date']}_${item['title']}`;
-    return [key, item];
-  }));
-
-  return mapped.values();
+    return eventDate > now && eventDate < futureLimit;
+  })
 }
 
 
@@ -121,7 +116,7 @@ function registerElement(event) {
   const registration = event['registration'];
   const p = document.createElement('p');
 
-  if(registration !== undefined) {
+  if(registration !== undefined && registration !== "") {
     const a = document.createElement('a');
 
     a.href = registration;
