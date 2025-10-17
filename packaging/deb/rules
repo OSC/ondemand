@@ -66,6 +66,7 @@ override_dh_auto_install:
 
 	# ood config files
 	rake package:version > $(DESTDIR)/opt/ood/VERSION
+	install -m 644 LICENSE.txt $(DESTDIR)/opt/ood/LICENSE.txt
 	install -m 644 nginx_stage/share/nginx_stage_example.yml $(CONFIG_DIR)/nginx_stage.yml
 	install -m 640 ood-portal-generator/share/ood_portal_example.yml $(CONFIG_DIR)/ood_portal.yml
 	install -m 644 ood-portal-generator/share/maintenance.html $(APACHE_DIR)/public/maintenance/index.html
