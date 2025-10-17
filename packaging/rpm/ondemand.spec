@@ -273,6 +273,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %defattr(-,root,root)
 
 /opt/ood/VERSION
+/opt/ood/LICENSE.txt
 /opt/ood/mod_ood_proxy
 /opt/ood/nginx_stage
 /opt/ood/ood-portal-generator
