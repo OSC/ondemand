@@ -116,7 +116,7 @@ export default class Mouse {
 
     // Mouse wheel events are sent in steps over VNC. This means that the VNC
     // protocol can't handle a wheel event with specific distance or speed.
-    // Therefor, if we get a lot of small mouse wheel events we combine them.
+    // Therefore, if we get a lot of small mouse wheel events we combine them.
     _generateWheelStepX() {
 
         if (this._accumulatedWheelDeltaX < 0) {

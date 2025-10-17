@@ -308,7 +308,7 @@ class RcloneUtil
     end
 
     def rclone(*args, env: extra_config, **kwargs)
-      # config/initalizers/open3_extensions.rb overrides Open3.capture3 to log calls.
+      # config/initializers/open3_extensions.rb overrides Open3.capture3 to log calls.
       # Get a reference to the original method to avoid logging the sensitive env vars.
       Open3.singleton_method(:capture3).call(env, rclone_cmd, *args, **kwargs)
     end

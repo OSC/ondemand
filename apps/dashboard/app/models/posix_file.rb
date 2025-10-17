@@ -142,7 +142,7 @@ class PosixFile
     path.parent.mkpath unless path.parent.directory?
 
     mode = if path.exist?
-             # file aleady exists, so use it's existing permissions
+             # file already exists, so use it's existing permissions
              path.stat.mode
            else
              # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.

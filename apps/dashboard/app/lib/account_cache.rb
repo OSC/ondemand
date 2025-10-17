@@ -29,7 +29,7 @@ module AccountCache
   end
 
   # To be used with dynamic forms. This method stithes together data
-  # about the account's availablity WRT clusters, queues & QoS'.
+  # about the account's availability WRT clusters, queues & QoS'.
   #
   # @return [Array] - the dynamic form options
   def dynamic_accounts
@@ -53,7 +53,7 @@ module AccountCache
   end
 
   # To be used with dynamic forms. This method stithes together data
-  # about the queue's availablity WRT clusters.
+  # about the queue's availability WRT clusters.
   #
   # @return [Array] - the dynamic form options
   def queues

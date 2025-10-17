@@ -3,7 +3,7 @@ class ErrorsController < ApplicationController
   # https://mattbrictson.com/dynamic-rails-error-pages
   #
   # to test in development, comment out this line in
-  # config/environments/devleopment.rb:
+  # config/environments/development.rb:
   #
   #     config.consider_all_requests_local       = true
   #

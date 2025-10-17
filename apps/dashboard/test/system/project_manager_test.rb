@@ -272,7 +272,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'creates new laucher with default items' do
+  test 'creates new launcher with default items' do
     Dir.mktmpdir do |dir|
       Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
       project_id = setup_project(dir)

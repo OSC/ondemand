@@ -42,7 +42,7 @@
 #ssl: null
 
 # Disable logging entirely. With this you can have custom log directives
-# in a seperate configuration file.
+# in a separate configuration file.
 # Example:
 #     disable_logs: true
 # Default: false (logs are enabled)
@@ -417,7 +417,7 @@
 #oidc_settings: {}
 
 # The Dex URI behind Apache reverse proxy
-# Set to false or null to disable Dex behing the Apache reverse proxy
+# Set to false or null to disable Dex behind the Apache reverse proxy
 # Example:
 #   dex_uri: /auth
 # Default: /dex

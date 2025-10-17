@@ -237,7 +237,7 @@ Listen <%= addr_port %>
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
@@ -266,7 +266,7 @@ Listen <%= addr_port %>
     # ProxyPassReverse implementation
     Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "<%= @rnode_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
