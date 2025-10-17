@@ -13,14 +13,16 @@
     <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
     <ol class="list-group text-center col-md-4 mb-3">
+      <%- counter = 0 -%>
       <%- attrib.select_choices(hide_excludable: false).each do |select_data| %>
         <%- 
+          counter += 1
           choice = parse_select_data(select_data)
           disabled = attrib.exclude_select_choices.include?(choice)
           last_option = attrib.exclude_select_choices.length + 1 == attrib.select_choices(hide_excludable: false).length
           li_classes = disabled ? 'list-group-item list-group-item-danger text-strike' : 'list-group-item'
-          add_id = "#{field_id}_add_#{choice}"
-          remove_id = "#{field_id}_remove_#{choice}"
+          add_id = "#{field_id}_add_option#{counter}"
+          remove_id = "#{field_id}_remove_option#{counter}"
         -%>
 
         <li class="<%= li_classes %>">
