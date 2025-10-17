@@ -273,7 +273,6 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %defattr(-,root,root)
 
 /opt/ood/VERSION
-/opt/ood/LICENSE.txt
 /opt/ood/mod_ood_proxy
 /opt/ood/nginx_stage
 /opt/ood/ood-portal-generator
@@ -341,6 +340,8 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 %files -n %{name}-selinux
 %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
+
+%license /opt/ood/LICENSE.txt
 
 %changelog
 * Fri Feb 08 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.4-2
