@@ -1,0 +1,206 @@
+$cols: 16;
+$rows: 16;
+// Now we can increse grid size in 1:1 ratio to keep workspace wrapper size same
+$cell_w: 204; // (204+20) * 4 = 900px width for workspace wrapper
+$cell_h: 130; // (130+20) * 4 = 600px height for workspace wrapper
+$gap: 20;
+
+:root {
+  --bg: #f7f7fb;
+  --ink: #222;
+  --ink-muted: #666;
+  --accent: #2266ff;
+  --accent-weak: #cfe0ff;
+  --danger: #b71c1c;
+  --danger-weak: #c628285c;
+  --box-selected: #ffecb3;
+  // To pass on the variable to javascript
+  --grid_cols: #{$cols};
+  --grid_rows: #{$rows};
+  --cell_w: #{$cell_w};
+  --cell_h: #{$cell_h};
+  --gap: #{$gap};
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--ink);
+}
+
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  background: var(--bg);
+}
+
+.toolbar {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid #e6e8ee;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.toolbar button {
+  border: 1.5px solid #d5d8e0;
+  background: #fff;
+  border-radius: 10px;
+  padding: .35rem .7rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
+}
+
+.toolbar button.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-weak);
+  transform: scale(0.98);
+}
+
+.toolbar .danger:active {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px var(--danger-weak);
+  transform: scale(0.98);
+}
+
+.hint {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-size: .9rem;
+}
+
+.workspace-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.zoom-controls {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 20;
+  user-select: none;
+}
+
+.zoom-controls button {
+  width: 45px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #d5d8e0;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-controls button:active { 
+  transform: translateY(1px); 
+}
+
+.zoom-controls button[aria-pressed="true"] { 
+  box-shadow: 0 0 0 3px var(--accent-weak); 
+  border-color: var(--accent); 
+}
+
+.workspace {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  background: var(--bg);
+}
+
+.stage-zoom {
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+  will-change: transform;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: repeat(#{$cols}, #{$cell_w});
+  grid-template-rows: repeat(#{$rows}, #{$cell_h});
+  gap: #{$gap};
+  background: repeating-conic-gradient(#fafbff 0% 25%, #f5f7ff 0% 50%) 50%/20px 20px;
+  padding: 20px;
+  // count * width + (count-1) * gap
+  min-width: calc(#{$cols} * #{$cell_w}px + (#{$cols} - 1) * #{$gap}px);
+  min-height: calc(#{$rows} * #{$cell_h}px + (#{$rows} - 1) * #{$gap}px);
+  position: relative;
+}
+
+svg.edges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.edge {
+  stroke: var(--accent);
+  stroke-width: 2;
+  marker-end: url(#arrow);
+  pointer-events: none;
+}
+
+.edge.click-area {
+  stroke: transparent;
+  stroke-width: 20px;
+  pointer-events: stroke;
+  cursor: pointer;
+  marker-end: none; 
+}
+
+.edge.selected {
+  stroke: var(--danger);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 4px var(--danger-weak));
+}
+
+.launcher-box {
+  position: absolute;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  user-select: none;
+  padding: 0.5rem;
+  transform-origin: top left;
+  transition: transform 0.15s;
+  will-change: transform;
+}
+
+.launcher-title-grab {
+  font-size: 1em;
+  font-weight: bold;
+  cursor: grab;
+  user-select: none;  
+}
+
+.launcher-box.selected {
+  outline: 3px solid var(--accent-weak);
+  background: var(--box-selected);
+}
+
+.launcher-box.connect-queued {
+  outline: 3px dashed var(--accent);
+}
