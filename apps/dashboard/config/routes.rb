@@ -17,12 +17,15 @@ Rails.application.routes.draw do
       resources :workflows do
         member do
           post 'submit'
+          post 'save'
+          get 'load'
         end
       end
 
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
+        get 'render_button', on: :member
       end
     end
   end
