@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'test_helper'
 
 class UserConfigurationTest < ActiveSupport::TestCase
@@ -81,7 +79,8 @@ class UserConfigurationTest < ActiveSupport::TestCase
       interactive_apps_menu:             [],
       custom_pages:                      {},
       support_ticket:                    {},
-      apps_datatable:                    { page_length: 10 }
+      apps_datatable:                    { page_length: 10 },
+      files_select_target:               nil
     }
 
     # ensure all properties are tested
