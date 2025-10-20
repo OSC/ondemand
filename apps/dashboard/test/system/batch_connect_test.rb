@@ -1106,6 +1106,59 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-help skips over malformed options' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Broken', data-help-bad-widget: 'oops']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
+
+      help = parent.find(':scope > small') 
+      help.assert_text('Choose anything')
+
+      select 'Third', from: 'batch_connect_session_context_group' 
+      help.assert_text('Choose yes')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group' 
+      help.assert_text('Choose no')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+    end
+  end
+
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
