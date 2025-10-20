@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Report allowlist errors in path selector (#4645)\
+fix: add ood_pun_config_t to fix compatibility with SELinux (#4651)\
+Add S3-Specific Directory Check (#4623)\
+add widget wrapper divs (#4682)\
+lint a random file (#4691)\
+Automatically update localizations (#4665)\
+Update broken links in markdown files (#4685)\
+Path selector accessibility (#4621)\
+Shell app: log via ws.logger and add username, hostname and pty-term … (#4628)\
+Make "Open in Terminal" button accessible (#4631)\
+Update Changelog (#4678)\
+lint a random file (#4677)\
+update dependencies (#4679)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
