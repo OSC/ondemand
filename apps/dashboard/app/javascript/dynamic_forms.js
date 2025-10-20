@@ -1,5 +1,5 @@
 'use strict';
-
+import { ariaNotify } from './utils'
 // these are initialized in makeChangeHandlers
 var idPrefix = undefined;
 var shortNameRex = undefined;
@@ -203,7 +203,10 @@ function newLabel(changeElement, key) {
 };
 
 function updateLabel(changeId, changeElement, key) {
-  $(`label[for="${changeId}"]`)[0].innerHTML = newLabel(changeElement, key);
+  var labelContent = newLabel(changeElement, key);
+  const originalInfo = getWidgetInfo(changeId);
+  $(`label[for="${changeId}"]`)[0].innerHTML = labelContent;
+  ariaStream(`Change label on ${originalInfo} to new label ${labelContent}`);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
@@ -371,6 +374,9 @@ function setValue(event, changeId) {
 
   if(changeVal !== undefined) {
     const element = document.getElementById(changeId);
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`set ${elementInfo} to value ${changeVal}`);
+
     if(element['type'] == 'checkbox') {
       setCheckboxValue(element, changeVal);
     } else {
@@ -471,40 +477,31 @@ class Table {
   }
 }
 
-function getItemParent(widgetId) {
-  let parentElement = undefined;
-  $(`#${widgetId}`).parents().each(function(_i, parent) {
-    var classListValues = parent.classList.values();
-    for (const val of classListValues) {
-      // TODO: Using 'mb-3' here because 'form-group' was removed
-      // from Bootstrap 5 and replaced with 'mb-3' - however, this
-      // is a grid class which could (??) apply to parent elements
-      // in unpredictable parts of the chain - test for & resolve
-      if (val.match('mb-3')) {
-        parentElement = $(parent);
-        return parentElement;
-      }
-    }
-  });
-  return parentElement;
-}
 /**
  * Update the visibility of `changeId` based on the
  * event and what's in the hideLookup table.
  */
-function updateVisibility(event, changeId, announce = true) {
+function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
-
-  var changeElement = getItemParent(changeId);
-  if (changeElement === undefined || changeElement.length <= 0) return;
-
-  // safe to access directly?
+  const elementInfo = getWidgetInfo(changeId);
   const hide = hideLookup[id].get(changeId, val);
-  if((hide === false) || (hide === undefined && !initializing)) {
-    changeElement.show();
-  }else if(hide === true) {
-    changeElement.hide();
+  
+  if ((hide === false) || (hide === undefined && !initializing)) {
+    toggleItemVisible(changeId, true);
+    ariaStream(`Revealed form item ${elementInfo}`);
+  } else if (hide === true) {
+    toggleItemVisible(changeId, false);
+    ariaStream(`Hid form item ${elementInfo}`);
+  }
+}
+
+function toggleItemVisible(id, makeVisible) {
+  const wrapper = $(`#${id}_wrapper`);
+  if (makeVisible) {
+    wrapper.removeClass('d-none')
+  } else {
+    wrapper.addClass('d-none')
   }
 }
 
@@ -550,9 +547,15 @@ function toggleMinMax(event, changeId, otherId) {
     max: parseInt(changeElement.attr('max')),
   };
 
+  var ariaMsg = 'Set ';
+  var ariaMsgLength = ariaMsg.length;
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
+      if (ariaMsg.length > ariaMsgLength){
+        ariaMsg += ' and ';
+      }
+      ariaMsg += `${dim}imum limit to ${mm[dim]}`;
     }
   });
 
@@ -560,6 +563,12 @@ function toggleMinMax(event, changeId, otherId) {
   if (val !== undefined) {
     changeElement.attr('value', val);
     changeElement.val(val);
+    ariaMsg += ` and set current value to ${val}`;
+  }
+
+  if (ariaMsg.length > ariaMsgLength){
+    ariaMsg += ` for ${getWidgetInfo(changeId)}`;
+    ariaStream(ariaMsg);
   }
 }
 
@@ -833,15 +842,18 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       }
     };
 
+    const elementInfo = getWidgetInfo(elementId);
     if(hide) {
       if(option.selected) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-
+      var prefix = option.selected ? 'Selected' : ''
+      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`)
       option.style.display = 'none';
       option.disabled = true;
     } else {
+      ariaStream(`Option ${option.value} enabled for ${elementInfo}`)
       option.style.display = '';
       option.disabled = false;
     }
@@ -881,6 +893,25 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
   // now that we're done, propogate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
+}
+
+// get attributes based on widget id
+function getWidgetInfo(id){
+  console.log(id)
+  const type = getWidgetType(id)
+  const label = $(`label[for="${id}"]`);
+  const labelText = label.length ? label.text().trim() : null;
+
+  return `${type} with ${labelText ? ` label ${labelText}` : 'no label'}`;
+}
+
+function getWidgetType(id){
+  return $(`#${id}_wrapper`).data('widgetType')
+}
+
+// sends a message that is immediately read by screenreaders
+function ariaStream(message) {
+  initializing ? null : ariaNotify(`${message}.`, false);
 }
 
 function toggleOptionsFor(_event, elementId) {

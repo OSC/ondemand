@@ -101,6 +101,22 @@ read_lnk_files_pattern(httpd_t, ood_apps_public_t, ood_apps_public_t)
 
 ## <desc>
 ## <p>
+## Allow OnDemand to manage user .config directories labelled with config_home_t
+## </p>
+## </desc>
+gen_tunable(ondemand_manage_config_dir, false)
+tunable_policy(`ondemand_manage_config_dir',`
+  ifdef(`config_home_t',`
+    type ood_pun_config_t;
+    allow ood_pun_t config_home_t:dir { add_name write create };
+    manage_files_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t)
+    manage_dirs_pattern(ood_pun_t, ood_pun_config_t, ood_pun_config_t)
+    filetrans_pattern(ood_pun_t, config_home_t, ood_pun_config_t, dir, "ondemand")
+  ')
+')
+
+## <desc>
+## <p>
 ## Allow OnDemand to manage user home directories
 ## </p>
 ## </desc>

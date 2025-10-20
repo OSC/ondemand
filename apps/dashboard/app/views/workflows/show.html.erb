@@ -22,7 +22,7 @@
         <div class='card-body'>
           <div class="field mt-3">
             <strong>Source Launcher (To)</strong><br>
-              
+
             <% num_test_edges.times do %>
               <%= select_tag "workflow[source_ids][]", 
                     options_from_collection_for_select(@launchers, :id, :title),

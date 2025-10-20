@@ -149,6 +149,12 @@ jQuery(function () {
       setUserPreference('wordwrap', $("#wordwrap").is(':checked'));
     });
 
+    // Change the soft tab setting
+    $("#soft_tabs").on('change', function () {
+      editor.getSession().setUseSoftTabs(this.checked);
+      setUserPreference('soft_tabs', this.checked);
+    });
+
     // Save button onclick handler
     // sends the content to the cloudcmd api via PUT request
     $("#save-button").on('click', function () {
@@ -203,6 +209,14 @@ jQuery(function () {
       editor.setTheme($("#theme option:selected").val());
       $("#wordwrap").prop("checked", getUserPreference('wordwrap') === "true");
       editor.getSession().setUseWrapMode($("#wordwrap").is(':checked'));
+
+      // default to use soft tabs for backward compatability.
+      let tabs = getUserPreference('soft_tabs');
+      if(tabs === null) {
+        tabs = "true";
+      }
+      $("#soft_tabs").prop("checked", tabs === "true");
+      editor.getSession().setUseSoftTabs($("#soft_tabs").is(':checked'));
     };
 
     initializeEditor();

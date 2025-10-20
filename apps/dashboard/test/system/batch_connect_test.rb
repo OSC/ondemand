@@ -442,6 +442,46 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python4nightly', find_value('hidden_change_thing', visible: false)
   end
 
+  test 'session responds to cluster in cache that no longer exists' do
+    Dir.mktmpdir('bc_old_cluster_removed_test') do |tmpdir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
+
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'old' }.to_json)
+      end 
+      
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
+
+      # Only new cluster exists
+      BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
+      OodAppkit.stubs(:clusters).returns([new_cluster])
+      
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'new', find_value('cluster')
+
+    end
+  end
+
+  test 'session responds to cluster in cache that exists but is not wanted' do
+    Dir.mktmpdir('bc_old_cluster_not_configured_test') do |tmpdir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
+
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'old' }.to_json)
+      end
+
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
+      old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config '}})
+
+      # Both clusters exist, but only new one is valid
+      BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
+      OodAppkit.stubs(:clusters).returns([new_cluster, old_cluster])
+      
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'new', find_value('cluster')
+    end
+  end
+
   test 'sessions respond to cache file' do
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
@@ -451,9 +491,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'any', find_value('node_type')
       assert_equal '2.7', find_value('python_version')
 
-      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
-      cache_json.write({ cluster: 'oakley', node_type: 'gpu', python_version: '3.2' }.to_json)
-      cache_json.close
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'oakley', node_type: 'gpu', python_version: '3.2' }.to_json)
+      end
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'oakley', find_value('cluster')
@@ -756,6 +796,48 @@ class BatchConnectTest < ApplicationSystemTestCase
     # check each radio button separately
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus_0', true)
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus_1', true)
+  end
+
+  test 'hiding file attachments using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - seeds
+        - checkbox_test
+      attributes:
+        seeds:
+          widget: 'file_attachments'
+          label: 'Seed Files'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-seeds-when-checked: true
+    HEREDOC
+    data_hide_checkbox_test(form, 'checkbox_test', 'seeds', false)
+  end
+
+  test 'hiding file attachments using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+    ---
+    cluster:
+      - owens
+    form:
+      - seeds
+      - checkbox_test
+    attributes:
+      seeds:
+        widget: 'file_attachments'
+        label: 'Seed Files'
+      checkbox_test:
+        widget: 'check_box'
+        html_options:
+          data:
+            hide-seeds-when-not-checked: true
+  HEREDOC
+  data_hide_checkbox_test(form, 'checkbox_test', 'seeds', true)
   end
 
   test 'hiding path selector using check boxes based on when checked' do
@@ -1902,9 +1984,62 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   def get_favorites
     # For debugging flaky tests
-    all('#favorites li', wait: 30)
+    all('#favorites a', wait: 30)
     # puts "FAVORITES: "
     # puts favorites.map{|i| i['innerHTML']}.join('')
+  end
+
+  test 'path_selector respects allowlist' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({OOD_ALLOWLIST_PATH: allowed_dir}) do
+        `mkdir -p #{allowed_dir}/real_directory`
+        `touch #{allowed_dir}/real_file`
+        `touch #{allowed_dir}/real_directory/other_real_file`
+        `mkdir -p #{dir}/not_allowed`
+        `touch #{dir}/not_allowed/bad_file`
+
+        form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: '#{allowed_dir}/real_directory'
+        HEREDOC
+
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+
+        # await load
+        assert_selector("##{bc_ele_id('path_path_selector_table_wrapper')}")
+        # verify location
+        assert_text('other_real_file')
+
+        assert_selector('.fa-arrow-up')
+        find('.fa-arrow-up').click
+        assert_text('real_file')
+        assert_text('real_directory')
+
+        find('.fa-arrow-up').click
+        error_text = "Permission denied: #{dir} does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text)
+
+        # reset
+        find('tr.clickable td span', text: 'real_directory').click
+        assert_text('other_real_file')
+        assert_selector('#forbidden-warning', visible: :hidden)
+
+        find_all('a', text: '/').first.click
+        error_text_root = "Permission denied: / does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text_root)
+      end
+    end
   end
 
   test 'launches and saves settings as a template' do

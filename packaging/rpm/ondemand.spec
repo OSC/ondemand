@@ -161,6 +161,7 @@ rake --trace install DESTDIR=%{buildroot}
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
+%__install -m 644 LICENSE.txt %{buildroot}/opt/ood/LICENSE.txt
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
@@ -177,6 +178,7 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
 %__mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
+%__mv %{buildroot}/opt/ood/apps/module-browser %{buildroot}%{_localstatedir}/www/ood/apps/sys/module-browser
 %__rm -rf %{buildroot}/opt/ood/apps
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/puns
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
@@ -287,7 +289,10 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/projects/manifest.yml
 %{_localstatedir}/www/ood/apps/sys/system-status
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
+%{_localstatedir}/www/ood/apps/sys/module-browser
 %exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
+
+%license /opt/ood/LICENSE.txt
 
 %dir %{_localstatedir}/www/ood
 %dir %{_localstatedir}/www/ood/public

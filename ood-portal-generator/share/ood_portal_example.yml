@@ -306,6 +306,12 @@
 # Default: null (disable OpenID Connect support)
 #oidc_uri: null
 
+# Sub-uri used by mod_auth_openidc to populate OIDCRedirectURI
+# Example:
+#     oidc_redirect_uri: '/oidc'
+# Default: '/oidc'
+#oidc_redirect_uri: '/oidc'
+
 # Sub-uri user is redirected to if they are not authenticated. This is used to
 # *discover* what ID provider the user will login through.
 # Example:

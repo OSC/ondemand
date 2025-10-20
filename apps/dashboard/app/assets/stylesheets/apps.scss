@@ -98,3 +98,29 @@ i.app-icon.fa-fw {
     text-decoration: none;
   }
 }
+
+.app-settings-popup {
+  margin-bottom: 0px;
+  
+  .row {
+    --bs-gutter-x: 0px;
+    margin-right: 0px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-items: end;
+    align-items: end;
+  }
+
+  dd, dt {
+    margin: 0px;
+    width: auto;
+  }
+
+  dd {
+    margin-left: 10px;
+  }
+  
+  hr {
+    margin:5px;
+  }
+}

@@ -7,6 +7,8 @@ module BatchConnect
     include UserSettingStore
     include EncryptedCache
 
+    before_action :set_no_cache_headers, only: [:new]
+
     # GET /batch_connect/<app_token>/session_contexts/new
     def new
       set_app
@@ -112,6 +114,10 @@ module BatchConnect
     end
 
     private
+
+    def set_no_cache_headers
+      response.headers['Cache-Control'] = 'private, no-store'
+    end
 
     # Set the app from the token
     def set_app
