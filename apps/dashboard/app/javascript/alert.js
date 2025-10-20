@@ -1,17 +1,25 @@
 
-export function OODAlert(message) {
-  const div = alertDiv(message);
+export function OODAlertError(message) {
+  OODAlert(message, 'danger');
+}
+
+export function OODAlertSuccess(message) {
+  OODAlert(message, 'success');
+}
+
+function OODAlert(message, type) {
+  const div = alertDiv(message, type);
   const main = document.getElementById('main_container');
   main.prepend(div);
   div.scrollIntoView({ behavior: 'smooth' });
 }
 
-function alertDiv(message) {
+function alertDiv(message, type) {
   const span = document.createElement('span');
   span.innerText = message;
 
   const div = document.createElement('div');
-  div.classList.add('alert', 'alert-danger', 'alert-dismissible');
+  div.classList.add('alert', `alert-${type}`, 'alert-dismissible');
   div.setAttribute('role', 'alert');
   div.appendChild(span);
   div.appendChild(closeButton());
