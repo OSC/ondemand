@@ -236,15 +236,17 @@ function getNewHelp(changeElement, key) {
 
 function updateHelp(changeId, changeElement, key) {
   const helpContent = getNewHelp(changeElement, key);
-  const parentElement = getItemParent(changeId);
-  var helpElement = parentElement.find('small p');
+  if (helpContent === undefined || changeId === undefined) return;
+  const wrapper_id = `#${changeId}_wrapper`;
+  var helpElement = $(`${wrapper_id} small p`);
   if (helpElement.length == 0) {
     const small = document.createElement('small');
     small.classList.add('form-text', 'text-muted');
     helpElement = document.createElement('p');
-    $(helpElement).appendTo($(small).appendTo(parentElement));  
+    $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
   }
   $(helpElement).text(helpContent);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
 }
 
 function addHelpHandler(optionId, option, key, configValue) {
