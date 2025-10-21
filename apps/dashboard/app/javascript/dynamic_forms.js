@@ -92,7 +92,7 @@ function mountainCaseWords(str) {
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
 function snakeCaseWords(str) {
-  if(str === undefined) return undefined;
+  if(str === undefined || str === "") return "";
 
   // find all the captial case words and if none are found, we'll just bascially
   // return the same string.
@@ -385,7 +385,7 @@ class Table {
     y = snakeCaseWords(y);
 
     if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
-    if(y && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
+    if((y || y === "") && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
 
     const xIdx = this.xIdxLookup[x];
     const yIdx = this.yIdxLookup[y];
