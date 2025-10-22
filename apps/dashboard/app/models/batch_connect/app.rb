@@ -257,7 +257,7 @@ module BatchConnect
           attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
 
           # Hide resolution if not using native vnc clients
-          if attribute_id.to_s == 'bc_vnc_resolution' && !ENV['ENABLE_NATIVE_VNC']
+          if ['bc_vnc_resolution', 'bc_hide_resolution'].include?(attribute_id.to_s) && !ENV['ENABLE_NATIVE_VNC']
             attribute_opts = { value: nil, fixed: true }
           end
 
