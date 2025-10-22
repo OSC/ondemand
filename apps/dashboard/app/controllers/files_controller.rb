@@ -215,8 +215,8 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        next_valid = @path.path.ascend.map(&method(:new_path)).find(&:readable?)
-        redirected_location = next_valid.nil? ? Dir.home : next_valid.path
+        next_valid = @path.path.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
+        redirected_location = next_valid.nil? ? Dir.home : next_valid
         redirect_to(files_path(redirected_location), alert: exception.message.to_s)
       end
       format.json do
@@ -224,15 +224,6 @@ class FilesController < ApplicationController
 
         render :index
       end
-    end
-  end
-
-  def new_path(path)
-    normal_path = normalized_path(path)
-    if ::Configuration.remote_files_enabled? && filesystem != 'fs'
-      RemoteFile.new(normal_path, filesystem)
-    else
-      PosixFile.new(normal_path)
     end
   end
 
