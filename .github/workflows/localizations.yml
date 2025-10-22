@@ -29,6 +29,11 @@ jobs:
           ruby-version: 3.3
           bundler-cache: true
 
+      - name: Install Dashboard's gems
+        run: | 
+          cd apps/dashboard
+          bundle install
+
       - name: Remove unused 
         run: bundle exec i18n-tools remove-unused
 
