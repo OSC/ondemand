@@ -1,75 +1,29 @@
 #!/usr/bin/env ruby
-require "pathname"
 require "fileutils"
-require "rake"
 
-include FileUtils
+APP_ROOT = File.expand_path("..", __dir__)
+APP_NAME = "dashboard"
 
-ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
-ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
-
-# force the default relative urls so that assets compile correctly.
-if ENV['RAILS_ENV'] == 'development'
-  ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/dev/dashboard"
-else
-  ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/dashboard"
+def system!(*args)
+  system(*args, exception: true)
 end
 
-# define application object
-class App
-  attr_accessor :env, :url
+FileUtils.chdir APP_ROOT do
+  # This script is a way to set up or update your development environment automatically.
+  # This script is idempotent, so that you can run it at any time and get an expectable outcome.
+  # Add necessary setup steps to this file.
 
-  def initialize(env:, url:)
-    @env    = env
-    @url    = url
-  end
-
-  def production?
-    env == "production"
-  end
-
-  def development?
-    env == "development"
-  end
-
-  def test?
-    env == "test"
-  end
-end
-
-# set application settings
-APP = App.new(
-  env:    ENV["RAILS_ENV"],
-  url:    ENV["RAILS_RELATIVE_URL_ROOT"],
-)
-
-# path to your application root.
-APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
-CACHE = "#{ENV['HOME']}/.cache/yarn/ood-dashboard-app"
-
-chdir APP_ROOT do
-  # This script is a starting point to setup your application.
-  # Add necessary setup steps to this file:
-
-  puts "\n== Building Dashboard App =="
-  puts "RAILS_ENV               = #{APP.env}"
-  puts "RAILS_RELATIVE_URL_ROOT = #{APP.url    || "not set"}"
-
-  puts "\n== Installing dependencies =="
-  sh "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
-
-  puts "\n== Installing yarn =="
-  sh "npm install --production --prefix tmp yarn"
-  sh "tmp/node_modules/yarn/bin/yarn --production install --cache-folder #{CACHE}"
-
-  puts "\n== Compiling assets =="
-  sh "bin/rails assets:clobber"
-  sh "bin/rails assets:precompile"
+  puts "== Installing dependencies =="
+  system! "gem install bundler --conservative"
+  system("bundle check") || system!("bundle install")
 
   puts "\n== Removing old logs and tempfiles =="
-  sh "bin/rake log:clear tmp:clear"
+  system! "bin/rails log:clear tmp:clear"
 
   puts "\n== Restarting application server =="
-  touch "tmp/restart.txt"
-  puts ""
+  system! "bin/rails restart"
+
+  # puts "\n== Configuring puma-dev =="
+  # system "ln -nfs #{APP_ROOT} ~/.puma-dev/#{APP_NAME}"
+  # system "curl -Is https://#{APP_NAME}.test/up | head -n 1"
 end

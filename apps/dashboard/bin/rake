@@ -1,10 +1,4 @@
 #!/usr/bin/env ruby
-
-# ensure local .env.* files are ignored during testing.
-if (ARGV.first.nil? || ARGV.first.to_s == "test") && ENV['RAILS_ENV'].nil?
-  ENV['RAILS_ENV'] = "test"
-end
-
-require_relative '../config/boot'
-require 'rake'
+require_relative "../config/boot"
+require "rake"
 Rake.application.run

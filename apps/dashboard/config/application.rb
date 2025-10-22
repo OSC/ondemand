@@ -1,4 +1,4 @@
-require_relative 'boot'
+require_relative "boot"
 
 require "rails"
 # Pick the frameworks you want:
@@ -12,7 +12,6 @@ require "action_mailer/railtie"
 # require "action_text/engine"
 require "action_view/railtie"
 # require "action_cable/engine"
-require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -22,12 +21,12 @@ Bundler.require(*Rails.groups)
 module Dashboard
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults(7.0)
+    config.load_defaults 7.0
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w(assets tasks))
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -36,48 +35,5 @@ module Dashboard
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-
-    config.autoload_paths << Rails.root.join('lib')
-
-    # Locales are handled in config/initializers/locales.rb.
-
-    # Custom error pages
-    config.exceptions_app = self.routes
-
-    if ::Configuration.load_external_config?
-      # Ensuring OOD initializers run last so that user's cannot override what we 
-      # specify unless we allow the override as well in our own initializers.
-      config.paths["config/initializers"] << ::Configuration.config_root.join("initializers").to_s
-      config.autoload_paths << ::Configuration.config_root.join("lib").to_s
-      config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
-    end
-
-    # Determine if this path is safe to load. I.e., are all the files root owned.
-    def safe_load_path?(path)
-      path.exist? && path.children.all? { |f| File.stat(f).uid.zero? }
-    end
-
-    # Enable installed plugins only if configured by administrator
-    plugins_dir = Pathname.new(::Configuration.plugins_directory)
-    if plugins_dir.directory?
-      plugins_dir.children.select(&:directory?).each do |installed_plugin|
-        next unless installed_plugin.readable?
-
-        initers = installed_plugin.join('initializers')
-        lib = installed_plugin.join('lib')
-        views = installed_plugin.join('views')
-
-        production = ::Configuration.rails_env_production?
-
-        # only load paths in production if every single file in the directory is root owned.
-        safe_load_initers = production ? safe_load_path?(initers) : true
-        safe_load_lib = production ? safe_load_path?(lib) : true
-        safe_load_views = production ? safe_load_path?(views) : true
-
-        config.paths['config/initializers'] << initers.to_s if safe_load_initers
-        config.autoload_paths << lib.to_s if safe_load_lib
-        config.paths["app/views"].unshift(views.to_s) if safe_load_views
-      end
-    end
   end
 end
