@@ -833,4 +833,34 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal(label.text, 'New Label')
     end
   end
+
+  test 'empty string values in select widgets hide' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - select_that_hides
+          - thing_to_hide_or_show
+        attributes:
+          select_that_hides:
+            widget: select
+            options:
+              - ["None", "", data-hide-thing-to-hide-or-show: true]
+              - ["Some", "some"]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # None is selected by default and 'thing_to_hide_or_show' is hidden
+      assert_equal('', find_value('select_that_hides'))
+      refute(find("##{bc_ele_id('thing_to_hide_or_show')}", visible: :hidden).visible?)
+
+      # now choose 'some' and 'thing_to_hide_or_show' is visible
+      select('Some', from: bc_ele_id('select_that_hides'))
+      assert(find("##{bc_ele_id('thing_to_hide_or_show')}").visible?)
+    end
+  end
 end
