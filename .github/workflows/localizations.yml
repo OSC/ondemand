@@ -11,41 +11,38 @@ permissions:
 
 jobs:
   update-localizations:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
-        ruby: ["3"]
-    runs-on: ${{ matrix.os }}
+    runs-on: "ubuntu-latest"
     name: Update Localizations
 
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v5
 
-      - name: Setup Ruby ${{ matrix.ruby }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
-
       - name: Setup os dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libsqlite3-dev
-      - name: Setup Bundler
-        run: |
-          bundle config path ~/vendor/bundle
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+
+      - name: Install Dashboard's gems
+        run: | 
+          cd apps/dashboard
           bundle install
+
       - name: Remove unused 
-        run: bundle exec i18n-tools remove-unused
+        run: |
+          cd apps/dashboard
+          bundle exec i18n-tools remove-unused
+
       - name: Update translations
-        run: bundle exec i18n-tools translate-missing
+        run: |
+          cd apps/dashboard
+          bundle exec i18n-tools translate-missing
         env:
           OPENAI_API_TOKEN: ${{ secrets.CHATGPT_API_KEY }}
 
