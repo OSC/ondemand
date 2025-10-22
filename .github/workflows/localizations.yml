@@ -35,10 +35,14 @@ jobs:
           bundle install
 
       - name: Remove unused 
-        run: bundle exec i18n-tools remove-unused
+        run: |
+          cd apps/dashboard
+          bundle exec i18n-tools remove-unused
 
       - name: Update translations
-        run: bundle exec i18n-tools translate-missing
+        run: |
+          cd apps/dashboard
+          bundle exec i18n-tools translate-missing
         env:
           OPENAI_API_TOKEN: ${{ secrets.CHATGPT_API_KEY }}
 
