@@ -9,7 +9,7 @@ stages:
   - deploy
 
 variables:
-  OOD_BUILD_REPO: '4.0'
+  OOD_BUILD_REPO: '4.1'
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
   OOD_PACKAGING_DEBUG: 'true'
