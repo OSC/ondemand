@@ -36,7 +36,7 @@ class HpcModuleTest < ActiveSupport::TestCase
     end
   end
 
-  test 'all versions returns empty array when it can't find' do
+  test 'all versions returns empty array when it cannot find' do
     stub_sys_apps
     with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
       assert_equal([], HpcModule.all_versions('wont_find').map(&:to_s))
