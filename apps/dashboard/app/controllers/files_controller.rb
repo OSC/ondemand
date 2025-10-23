@@ -63,7 +63,7 @@ class FilesController < ApplicationController
             send_stream(filename: zipname, disposition: 'attachment', type: :zip) do |stream|
               ZipKit::Streamer.open(stream) do |zip|
                 @path.files_to_zip.each do |file|
-                  next unless File.readable?(file.realpath)
+                  next unless File.readable?(file.realpath) && AllowlistPolicy.default.permitted?(file.realpath.to_s)
 
                   if File.file?(file.realpath)
                     zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
