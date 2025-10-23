@@ -73,7 +73,7 @@ FileUtils.chdir APP_ROOT do
   system! "bin/rails assets:precompile"
 
   puts "\n== Removing old logs and tempfiles =="
-  system! "bin/rake log:clear tmp:clear"
+  system! "bin/rails log:clear tmp:clear"
 
   puts "\n== Restarting application server =="
   touch "tmp/restart.txt"
