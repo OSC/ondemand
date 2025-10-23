@@ -60,10 +60,6 @@ class RemoteFile
     false
   end
 
-  def readable?
-    RcloneUtil.readable?(remote, path)
-  end
-
   def read(&block)
     RcloneUtil.cat(remote, path, &block)
   end
