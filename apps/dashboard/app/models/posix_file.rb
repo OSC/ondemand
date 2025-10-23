@@ -170,7 +170,7 @@ class PosixFile
       error = I18n.t('dashboard.files_directory_download_unauthorized')
     else
       # Determine the size of the directory.
-      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
+      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbLs", path.to_s)
 
       # Catch SIGTERM.
       if s.exitstatus == 124
