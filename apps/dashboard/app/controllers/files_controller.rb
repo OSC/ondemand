@@ -215,9 +215,7 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        next_valid = @path.path.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
-        redirected_location = next_valid.nil? ? Dir.home : next_valid
-        redirect_to(files_path(redirected_location), alert: exception.message.to_s)
+        redirect_to(files_path(next_valid), alert: exception.message.to_s)
       end
       format.json do
         @files = []
@@ -271,6 +269,12 @@ class FilesController < ApplicationController
 
   def download?
     fs_params[:download]
+  end
+
+  def next_valid
+    next_valid = @path.path.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
+    present_path = next_valid.nil? ? Dir.home : next_valid
+    AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home
   end
 
   def uppy_upload_path
