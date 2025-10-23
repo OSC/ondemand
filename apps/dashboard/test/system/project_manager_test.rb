@@ -335,7 +335,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
@@ -685,6 +685,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - pas1871
             - pas1754
             - pas1604
+            - p_s1.71
+            - p-s1.71
+            - p.s1.71
             value: pzs0715
             label: Account
             help: ''
@@ -782,10 +785,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
 
       find('#edit_launcher_auto_accounts').click
+
+      # There are 7 allowed accounts before the 4 excluded ones
+      counter = 7
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
       exclude_accounts.each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
@@ -811,9 +819,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
       find('#edit_launcher_auto_accounts').click
 
+      counter = 7
       exclude_accounts.each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # now add is enabled and rm is disabled. (opposite of the above)
         assert_equal('false', add_btn[:disabled])
@@ -854,12 +865,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # Validate that UI changes when field is fixed.
       assert_equal('true', accounts_select[:disabled])
+      counter = 0 # mimic id logic
       account_options.each do |option|
-        rm_btn = find("#launcher_auto_accounts_remove_#{option.text}")
-        add_btn = find("#launcher_auto_accounts_add_#{option.text}")
+        counter += 1
+        html_option = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_option}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_option}")
 
         option_text_strike = option.selected? ? 0 : 1
-        assert_selector("li.text-strike > button#launcher_auto_accounts_add_#{option.text}", count: option_text_strike)
+        assert_selector("li.text-strike > button#launcher_auto_accounts_add_#{html_option}", count: option_text_strike)
         assert_equal(true, option.disabled?)
         assert_equal('true', add_btn[:disabled])
         assert_equal('true', rm_btn[:disabled])
@@ -882,9 +896,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.add'))
       find('#edit_launcher_auto_accounts').click
 
+      counter = 0
       ['pas2051', 'pas1871', 'pas1754', 'pas1604'].each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
