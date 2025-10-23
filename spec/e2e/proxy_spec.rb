@@ -165,21 +165,21 @@ describe 'Node and Rnode proxies' do
     expect(browser.url).to eq(url)
   end
 
-  it '/nginx/stop won't redirect to another host' do
+  it '/nginx/stop will not redirect to another host' do
     url = "#{ctr_base_url}/nginx/stop?redir=github.com"
     browser.goto url
     expect(browser.text).to eq('Error -- bad `redir` request (github.com)')
     expect(browser.url).to eq(url)
   end
 
-  it '/nginx/stop won't redirect to a url with a scheme' do
+  it '/nginx/stop will not redirect to a url with a scheme' do
     url = "#{ctr_base_url}/nginx/stop?redir=https://github.com"
     browser.goto url
     expect(browser.text).to eq('Error -- bad `redir` request (https://github.com)')
     expect(browser.url).to eq(url)
   end
 
-  it '/nginx/stop won't redirect to /node' do
+  it '/nginx/stop will not redirect to /node' do
     url = "#{ctr_base_url}/nginx/stop?redir=/node/localhost/5001"
     browser.goto url
     expect(browser.text).to eq('Error -- bad `redir` request (/node/localhost/5001)')
