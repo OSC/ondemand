@@ -3,7 +3,7 @@
 This app is a Rails app we ship with Open OnDemand that used to create and manage batch jobs
 from template directories. Like all Open OnDemand apps, it's meant to run as a non-root user.
 
-This is a guide for developing this aplication and assumes you have nodejs & ruby available on the system.
+This is a guide for developing this application and assumes you have nodejs & ruby available on the system.
 
 You can find [template documentation here](https://osc.github.io/ood-documentation/latest/customization.html#custom-job-composer-templates).
 

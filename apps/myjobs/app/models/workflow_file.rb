@@ -18,7 +18,7 @@ class WorkflowFile
     @valid_script ||= valid_size?
   end
 
-  # Return true if file name extention is in the recommended extension list
+  # Return true if file name extension is in the recommended extension list
   def has_suggested_extensions?
     suggested_job_script_file_extensions = ['.sh', '.job', '.slurm', '.batch', '.qsub', '.sbatch', '.srun', '.bsub']
     suggested_job_script_file_extensions.include? File.extname(path)

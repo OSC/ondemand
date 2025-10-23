@@ -40,7 +40,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "makes the directory if it doesnt exist" do
+  test "makes the directory if it does not exist" do
     Dir.mktmpdir do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
       assert !Dir.exist?("#{dir}/projects")
@@ -52,7 +52,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "gets JSON reponse" do
+  test "gets JSON response" do
     project_dir = Rails.root.join('test/fixtures/projects/json_response')
     OodAppkit.stubs(:dataroot).returns(project_dir)
     Project.stubs(:lookup_table).returns({ 'json_response' => project_dir.to_s })
@@ -70,7 +70,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_equal '2 MB', json['human_size']
   end
 
-  test "project size is not added to JSON reponse when Configuration.project_size_enabled is false" do
+  test "project size is not added to JSON response when Configuration.project_size_enabled is false" do
     project_dir = Rails.root.join('test/fixtures/projects/json_response')
     OodAppkit.stubs(:dataroot).returns(project_dir)
     Configuration.stubs(:project_size_enabled).returns(false)

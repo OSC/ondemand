@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix modal bug when file transfer fails in [4084](https://github.com/OSC/ondemand/pull/4084).
 - Require latest ondemand-passenger and ondemand-nginx to fix a proc-ps dependency issue in [4089](https://github.com/OSC/ondemand/pull/4089).
 - Native VNC tabs work correctly in [4115](https://github.com/OSC/ondemand/pull/4115).
-- The path_selector corretly handles files with spaces in [4107](https://github.com/OSC/ondemand/pull/4107).
+- The path_selector correctly handles files with spaces in [4107](https://github.com/OSC/ondemand/pull/4107).
 - mod_ood_proxy correctly accounts for numeric usernames in [4128](https://github.com/OSC/ondemand/pull/4128).
 - Application Manifests with external URLs use external hrefs in [#4140](https://github.com/OSC/ondemand/pull/4140).
 - Add user_home_t to SELinux tunable [4142](https://github.com/OSC/ondemand/pull/4142).
@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Pinned apps now display all links for a given app in [4407](https://github.com/OSC/ondemand/pull/4407).
 - bin/setup-production now handles the case when it's not executable in [4492](https://github.com/OSC/ondemand/pull/4492).
 - The HOME directory now always shows in the path_selector favorites if they're enabled in [4526](https://github.com/OSC/ondemand/pull/4526).
-- Disable NVC commpression level to 0 as it breaks the clipboard in [4550](https://github.com/OSC/ondemand/pull/4550).
+- Disable NVC compression level to 0 as it breaks the clipboard in [4550](https://github.com/OSC/ondemand/pull/4550).
 - The file editor now forces unix newline mode instead of the default auto in [4561](https://github.com/OSC/ondemand/pull/4561).
 - Grafana urls have been corrected for newer versions of Grafana in [4585](https://github.com/OSC/ondemand/pull/4585).
 - JobComposer projects under hidden directories now show correctly in [4547](https://github.com/OSC/ondemand/pull/4547).
@@ -65,7 +65,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Passenger telemetry is now disabled by default with an option to turn it back on in [4355](https://github.com/OSC/ondemand/pull/4355).
 - The project Manager now shows files in [3981](https://github.com/OSC/ondemand/pull/3981).
 - OnDemand can now render unsafe html files through a configuration in [4416](https://github.com/OSC/ondemand/pull/4416).
-- The path_selector widget wording now suppports changing the title through popup_title in [4426](https://github.com/OSC/ondemand/pull/4426).
+- The path_selector widget wording now supports changing the title through popup_title in [4426](https://github.com/OSC/ondemand/pull/4426).
 - Added en-CA and fr-CA localizations in [4512](https://github.com/OSC/ondemand/pull/4512).
 - Added OOD_SHELL_TERM environment variable to configure the shells terminal in [4504](https://github.com/OSC/ondemand/pull/4504).
 - Added two configurations to nginx_stage for help messages. show_nginx_stage_help_message to disable the --help message on failure and
@@ -237,7 +237,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   and show these if they're positive [4087](https://github.com/OSC/ondemand/pull/4087).
 - Require latest ondemand-passenger and ondemand-nginx to fix a proc-ps dependency issue in [4089](https://github.com/OSC/ondemand/pull/4089).
 - Native VNC tabs work correctly in [4124](https://github.com/OSC/ondemand/pull/4124).
-- The path_selector corretly handles files with spaces in [4126](https://github.com/OSC/ondemand/pull/4126).
+- The path_selector correctly handles files with spaces in [4126](https://github.com/OSC/ondemand/pull/4126).
 - mod_ood_proxy correctly accounts for numeric usernames in [4134](https://github.com/OSC/ondemand/pull/4134).
 - Files app correctly handles filenames with non UTF-8 characters in [4135](https://github.com/OSC/ondemand/pull/4135).
 - Apps#show route correctly handles usernames with periods in [4133](https://github.com/OSC/ondemand/pull/4133).
@@ -273,7 +273,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - XDMoD jobs widget now shows CPU, Memory and walltime in [3789](https://github.com/OSC/ondemand/pull/3789).
 - Global batch connect form items can now be defined in ondemand.d files in [3840](https://github.com/OSC/ondemand/pull/3840).
 - The path_selector widget now supports filtering results in [3992](https://github.com/OSC/ondemand/pull/3992).
-- OOD now responds to `/etc/ood/config/plugins` to support eaiser customizations in
+- OOD now responds to `/etc/ood/config/plugins` to support easier customizations in
   [3991](https://github.com/OSC/ondemand/pull/3991) and [4020](https://github.com/OSC/ondemand/pull/4020).
 - Dynamic batch connect support for data-exclusive-option-for in [4025](https://github.com/OSC/ondemand/pull/4025).
 - Better localization support in [4003](https://github.com/OSC/ondemand/pull/4003).
@@ -290,19 +290,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Passenger and NGINX have been updated 6.0.20 and 1.24.0 respectively in [3535](https://github.com/OSC/ondemand/pull/3535).
 - The dashboard now uses Bootstrap 5 in [3541](https://github.com/OSC/ondemand/pull/3541).
 - The file editor now uses the default layout in [3646](https://github.com/OSC/ondemand/pull/3646).
-- Announcemnts are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
+- Announcements are now dismissible with the option to make them required in [3667](https://github.com/OSC/ondemand/pull/3667).
 - Ace is now a yarn dependency in [3629](https://github.com/OSC/ondemand/pull/3629).
 - Pages now expect a string instead of a URI for icons in [3682](https://github.com/OSC/ondemand/pull/3682).
 - MOTD format markdown_erb will also sanitize html and respond to the motd_render_html configuration
   in [3675](https://github.com/OSC/ondemand/pull/3675).
-- The files api no longer reponds with human_sizs. Instead this is converted to human sizes in
+- The files api no longer responds with human_sizs. Instead this is converted to human sizes in
   javascript on the client in [3723](https://github.com/OSC/ondemand/pull/3723).
 - XDMoD jobs panel uses plain js now in [3706](https://github.com/OSC/ondemand/pull/3706).
 - Esbuild now has a plugin for to use source code for minified dependencies in [3693](https://github.com/OSC/ondemand/pull/3693).
-- Remote file uploads now move the tempfile asychronously in [3739](https://github.com/OSC/ondemand/pull/3739).
+- Remote file uploads now move the tempfile asynchronously in [3739](https://github.com/OSC/ondemand/pull/3739).
 - Modals no longer pop up for some errors in the files app in [3769](https://github.com/OSC/ondemand/pull/3769).
 - The shell app now has configurations for ping ponging. Ping pongs are disabled by default, will only ping pong
-  for a certain duration after inactivity and the connections will close altogether after a certian duration regardless
+  for a certain duration after inactivity and the connections will close altogether after a certain duration regardless
   of activity in [3805](https://github.com/OSC/ondemand/pull/3805) and [3810](https://github.com/OSC/ondemand/pull/3810).
 - Empty directories can now be downloaded in [3841](https://github.com/OSC/ondemand/pull/3841).
 - Batch Connect applications always lowercase ids for normalization for dynamic javascript in [3867](https://github.com/OSC/ondemand/pull/3867).
@@ -318,7 +318,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Ensure that the asset directory is clean when building in [3356](https://github.com/OSC/ondemand/pull/3356).
-- The path_selector can now inheret configurations in [3375](https://github.com/OSC/ondemand/pull/3375).
+- The path_selector can now inherit configurations in [3375](https://github.com/OSC/ondemand/pull/3375).
 - The files app no longer searches over the actions column [3443](https://github.com/OSC/ondemand/pull/3443).
 - data-hide correctly hides the path_selector's button in [3460](https://github.com/OSC/ondemand/pull/3460).
 - Dynamic bc now supports fields with numbers in them in [3507](https://github.com/OSC/ondemand/pull/3507).
@@ -338,20 +338,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Exceptions in dashboard widgets are correct rescued in [3873](https://github.com/OSC/ondemand/pull/3873).
 - Select all in the files app will only select the visible rows in [3925](https://github.com/OSC/ondemand/pull/3925).
 - Batch jobs now specify workdir, fixing issues with submit_host jobs in [3913](https://github.com/OSC/ondemand/pull/3913).
-- Javascript that queires for atch connect sessions will create an alert div and stop polling if it fails in [3915](https://github.com/OSC/ondemand/pull/3915).
+- Javascript that queries for atch connect sessions will create an alert div and stop polling if it fails in [3915](https://github.com/OSC/ondemand/pull/3915).
 - auto_qos correctly returns one option for each qos in [3955](https://github.com/OSC/ondemand/pull/3955).
 - The download button will now disable when users have selected non-downloadable files in [4008](https://github.com/OSC/ondemand/pull/4008)
 - Fixed a bug where the icon shows up on 2nd path_selector in [4009](https://github.com/OSC/ondemand/pull/4009).
-- nginx_stage no longer caclulates the users' groups in [#4012](https://github.com/OSC/ondemand/pull/4012).
+- nginx_stage no longer calculates the users' groups in [#4012](https://github.com/OSC/ondemand/pull/4012).
 
 ### Security
 
-- Jobs will now be submitted after sanitizing the envionment in
+- Jobs will now be submitted after sanitizing the environment in
   [3627](https://github.com/OSC/ondemand/pull/3627).  This prevents
   the leaking of sensitive environment variables to the job when `copy_environment`
   is used.
 - The shell app now has several configurations to stop or extend ssh sessions. This is
-  a security issue becuase an ssh session can remain open long after the authentication
+  a security issue because an ssh session can remain open long after the authentication
   system has ended that session. I.e., it can go on forever. So, the shell app now
   disables ping pong by default and has configurations for how long sessions can
   exist with and without activity in [3810](https://github.com/OSC/ondemand/pull/3815)
@@ -376,7 +376,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 
 - The shell app now has several configurations to stop or extend ssh sessions. This is
-  a security issue becuase an ssh session can remain open long after the authentication
+  a security issue because an ssh session can remain open long after the authentication
   system has ended that session. I.e., it can go on forever. So, the shell app now
   disables ping pong by default and has configurations for how long sessions can
   exist with and without activity in [3815](https://github.com/OSC/ondemand/pull/3815).
@@ -385,7 +385,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
-- Jobs will now be submitted after sanitizing the envionment in
+- Jobs will now be submitted after sanitizing the environment in
   [3628](https://github.com/OSC/ondemand/pull/3628).  This prevents
   the leaking of sensitive environment variables to the job when `copy_environment`
   is used.
@@ -437,7 +437,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - An option for Google analytics javascript has been added to dashboard in 
   in [2795](https://github.com/OSC/ondemand/pull/2795).
 - `oidc_crypto_passphrase` can be set in ood_portal in [2807](https://github.com/OSC/ondemand/pull/2807).
-- Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
+- Titles for menus can now be overridden in [2804](https://github.com/OSC/ondemand/pull/2804).
 - Sites can now configure `passenger_log_file` in [2835](https://github.com/OSC/ondemand/pull/2835).
 - Support for aarch64 builds in [2873](https://github.com/OSC/ondemand/pull/2873).
 - The File browser now has a Globus button to link to Globus endpoints in [2858](https://github.com/OSC/ondemand/pull/2858).
@@ -448,7 +448,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Subapps can now override category, subcategory, and metadata in [3006](https://github.com/OSC/ondemand/pull/3006).
 - Rclone now supports extra configuration in [2956](https://github.com/OSC/ondemand/pull/2956).
 - RSS and MD MOTD formats can now render unsafe HTML in [3007](https://github.com/OSC/ondemand/pull/3007).
-- `CurrentUser` should now be availalbe in ondemand.d config rendering in [3035](https://github.com/OSC/ondemand/pull/3035).
+- `CurrentUser` should now be available in ondemand.d config rendering in [3035](https://github.com/OSC/ondemand/pull/3035).
 - Icons are now present in favorite paths [3076](https://github.com/OSC/ondemand/pull/3076).
 - Debian 12 is now supported in [3127](https://github.com/OSC/ondemand/pull/3127).
 - Sites can now use a japanese locale in [3180](https://github.com/OSC/ondemand/pull/3180).
@@ -472,18 +472,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Quality and compression settings correctly set in noVNC pages in [2995](https://github.com/OSC/ondemand/pull/2995).
 - auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
 - Sites using ips instead of hostnames correctly populate allowed hosts in [2998](https://github.com/OSC/ondemand/pull/2998).
-- ActiveJobs correclty parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
+- ActiveJobs correctly parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
 - `ondemand.d` files are now sorted before loaded in [2944](https://github.com/OSC/ondemand/pull/2944).
 - The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
 - auto_queues are account aware in [3123](https://github.com/OSC/ondemand/pull/3123).
 - auto_modules can correctly set their label in [3139](https://github.com/OSC/ondemand/pull/3139).
 - Gnome desktops correctly work in [3188](https://github.com/OSC/ondemand/pull/3188).
 - `staged_root` is created as 700 to ensure it's writable by the user in [3202](https://github.com/OSC/ondemand/pull/3202).
-- MOTD correclty shows up in custom pages in [3216](https://github.com/OSC/ondemand/pull/3216).
+- MOTD correctly shows up in custom pages in [3216](https://github.com/OSC/ondemand/pull/3216).
 - Open OnDemand no longer builds el7 packages in [3232](https://github.com/OSC/ondemand/pull/3232).
 - BatchConnect apps now use rsync with safer arguments in [3239](https://github.com/OSC/ondemand/pull/3239).
 - Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
-- Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
+- Multiple domains correctly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 - MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
 - The navigation bar now follows the menubar pattern to increase accessibility in [3300](https://github.com/OSC/ondemand/pull/3300).
 - nav_bar configurations correctly sort menu items in [3344](https://github.com/OSC/ondemand/pull/3344).
@@ -491,7 +491,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
 - Packaging adds `nodistro` nodejs repos in [3158](https://github.com/OSC/ondemand/pull/3158).
-- The user usetting file is now in an XDG dirrectory instead of the dataroot in [3308](https://github.com/OSC/ondemand/pull/3308).
+- The user usetting file is now in an XDG directory instead of the dataroot in [3308](https://github.com/OSC/ondemand/pull/3308).
 
 ## [3.0.3] - 11-09-2023
 
@@ -576,11 +576,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Yaml files now preview in [1758](https://github.com/OSC/ondemand/pull/1758).
 - Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1941).
 - The file explorer table has been heavily refactored to be more reusable in [1883](https://github.com/OSC/ondemand/pull/1883).
-- The shell app will now diplay specific errors in [#1966](https://github.com/OSC/ondemand/pull/1966).
+- The shell app will now display specific errors in [#1966](https://github.com/OSC/ondemand/pull/1966).
 - The default authentication scheme for the ood portal generator has been changed to an empty array in
   [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
 - Packages now rely on python3 in [#2011](https://github.com/OSC/ondemand/pull/2011).
-- Passenger and NGINX dependencies are now 6.0.14 and NGINX repectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
+- Passenger and NGINX dependencies are now 6.0.14 and NGINX respectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
 - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
 - noNVC is now 1.3.0, up from 1.1.0 in [2295](https://github.com/OSC/ondemand/pull/2295).
 - NavConfig should now use allowlist, deprecating whitelist in [2380](https://github.com/OSC/ondemand/pull/2380).
@@ -588,7 +588,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
 - NavConfig is deprecated in favor of an ondeman.d setting `nav_categories` in [2454](https://github.com/OSC/ondemand/pull/2454).
 - Passenger security update checks are disabled because users can't update outside of OSC packages in [2660](https://github.com/OSC/ondemand/pull/2660).
-- Sites can now server assets out of public/maintanence in [2443](https://github.com/OSC/ondemand/pull/2443).
+- Sites can now server assets out of public/maintenance in [2443](https://github.com/OSC/ondemand/pull/2443).
 
 ### Added
 
@@ -651,7 +651,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Home directories can now change in [1854](https://github.com/OSC/ondemand/pull/1854).
 - Activejobs now correctly sorts the time column in [2420](https://github.com/OSC/ondemand/pull/2420).
 - Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722).
-- The job composers' setup script now recoginizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
+- The job composers' setup script now recognizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
 - The file browser now filters files with non-utf-8 characters in [2626](https://github.com/OSC/ondemand/issues/2626).
 - Safari disables form select options because it cannot hide them in [2640](https://github.com/OSC/ondemand/issues/2640).
 - RSS MOTD correctly read feeds from a url in [2681](https://github.com/OSC/ondemand/issues/2681).
@@ -663,7 +663,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   and [1437](https://github.com/OSC/ondemand/pull/1437)
 - Selinux updates in [1496](https://github.com/OSC/ondemand/pull/1496).
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
-- Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
+- Nginx PUNs correctly start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
 
 ## [2.1.0] - 03-09-2023
 
@@ -682,7 +682,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 ### Fixed
 
-- The linux Host adapter is now compatabile with apptainer in [2548](https://github.com/OSC/ondemand/pull/2548).
+- The linux Host adapter is now compatible with apptainer in [2548](https://github.com/OSC/ondemand/pull/2548).
 
 ## [2.0.30] - 02-02-2023
 
@@ -692,13 +692,13 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 ### Added
 
-- Maintanence pages can serve assets in [2436](https://github.com/OSC/ondemand/pull/2436).
+- Maintenance pages can serve assets in [2436](https://github.com/OSC/ondemand/pull/2436).
 
 ## [2.0.29] - 10-31-2022
 
 ### Fixed
 
-- Maintanence pages are no longer the default 503 pages in [2202](https://github.com/OSC/ondemand/pull/2202).
+- Maintenance pages are no longer the default 503 pages in [2202](https://github.com/OSC/ondemand/pull/2202).
 - Open terminal buttons do not appear when ssh to compute node is turn off in [2210](https://github.com/OSC/ondemand/pull/2210).
 - Fujitsu TCS shows in active jobs in [2208](https://github.com/OSC/ondemand/pull/2208).
 - Libraries use SHA1 instead of MD5 to support FIPS systems in [2328](https://github.com/OSC/ondemand/pull/2328).
@@ -717,7 +717,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Fixed
 
 - `passenger_options` are now safe to use in [2016](https://github.com/OSC/ondemand/pull/2016).
-- Interactive jobs now have compatability with turbovnc 3.0+ in [2153](https://github.com/OSC/ondemand/pull/2153).
+- Interactive jobs now have compatibility with turbovnc 3.0+ in [2153](https://github.com/OSC/ondemand/pull/2153).
   Through the `ood_core` update.
 - PUNs now start with only the environment variables required in [2156](https://github.com/OSC/ondemand/pull/2156).
 
@@ -841,7 +841,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Security
 
 - .svg files in the file browser are now being forced to be downloaded as they could
-  contain malicous javascript that would execute in the browser within a site's context.
+  contain malicious javascript that would execute in the browser within a site's context.
 
 ## [2.0.16] - 2021-08-25
 
@@ -903,7 +903,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Fixed
 
 - Fixed [1273](https://github.com/OSC/ondemand/issues/1273) where the sessions page crashes when the
-  db file contains a nonexistant cluster in [1247](https://github.com/OSC/ondemand/pull/1274).
+  db file contains a nonexistent cluster in [1247](https://github.com/OSC/ondemand/pull/1274).
 
 ## [2.0.11] - 2021-06-21
 
@@ -970,7 +970,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 ### Fixed
 
-- Fixed an issue the in the files app where the wrong file ownder was being shown in
+- Fixed an issue the in the files app where the wrong file owner was being shown in
   [1125](https://github.com/OSC/ondemand/pull/1125).
 
 ### Added
@@ -981,7 +981,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 ### Fixed
 
-- node and rnode proxies now gaurentees a URL in the request in
+- node and rnode proxies now guarantees a URL in the request in
   [1105](https://github.com/OSC/ondemand/pull/1105).
 - Uploading files now respects the users umask in [1110](https://github.com/OSC/ondemand/pull/1110).
 
@@ -1048,7 +1048,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
   - Pinned apps can be grouped by known fields in [996](https://github.com/OSC/ondemand/pull/996) and by
     metadata in [1026](https://github.com/OSC/ondemand/pull/1026). This adds the `pinned_apps_group_by`
     configuration item.
-- Apps can now supply a metadata map in their mainfest files in [903](https://github.com/OSC/ondemand/pull/903).
+- Apps can now supply a metadata map in their manifest files in [903](https://github.com/OSC/ondemand/pull/903).
 - Read configurations from an ondemand.d directory in [893](https://github.com/OSC/ondemand/pull/893).
   This directory is configurable through the `OOD_CONFIG_D_DIRECTORY` environment variable.
 - The shell app now supports themes in [630](https://github.com/OSC/ondemand/pull/630).
@@ -1061,7 +1061,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - Nginx no longer returns the versions in the Server and X-Powered-By headers in [891](https://github.com/OSC/ondemand/pull/891).
 - All rails apps now use the secure cookies in [897](https://github.com/OSC/ondemand/pull/897).
 - Corrected a broken link in the footer in [899](https://github.com/OSC/ondemand/pull/899)
-- Users can now speicfy the dex frontend theme in [929](https://github.com/OSC/ondemand/pull/929).
+- Users can now specify the dex frontend theme in [929](https://github.com/OSC/ondemand/pull/929).
 - Users with specialized conda environments will no longer have issues launching an XFCE desktop
   in [942](https://github.com/OSC/ondemand/pull/942).
 - Potential XSS with the Job composer in [949](https://github.com/OSC/ondemand/pull/949).
@@ -1079,7 +1079,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
   [1034](https://github.com/OSC/ondemand/pull/1034). This breaks some previous behaviour regarding
   this app. See the PR's initial comment for details.
 - The files app has been completely replaced in [1040](https://github.com/OSC/ondemand/pull/1040)
-  and is now a part of the dashboard. The file-editor was also migrated in into the dashbaord in
+  and is now a part of the dashboard. The file-editor was also migrated in into the dashboard in
   this change. The old files app's source files were removed in [1051](https://github.com/OSC/ondemand/pull/1051).
 - The PUN will now redirect old app URLs to new apps in [1056](https://github.com/OSC/ondemand/pull/1056).
 - `ood_core` version bumped from 0.15.0 to 0.16.0. See
@@ -1115,7 +1115,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Fixed
 - Ensure that LOGNAME is set correctly in the PUN in [837](https://github.com/OSC/ondemand/pull/837).
 - Remove unused SELinux dependencies in [853](https://github.com/OSC/ondemand/pull/853).
-- Fixed specifiying dex custom frontend themes in [930](https://github.com/OSC/ondemand/pull/930).
+- Fixed specifying dex custom frontend themes in [930](https://github.com/OSC/ondemand/pull/930).
 
 ### Changed
 - Hide Nginx and Passenger versions in the http headers in [892](https://github.com/OSC/ondemand/pull/892).
@@ -1124,7 +1124,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ## [1.8.19] - 2020-12-14
 ### Fixed
  - don't use cached cluster value if it's not available [#748](https://github.com/OSC/ondemand/pull/748)
- - fix accessability of buttons in active jobs table [#732](https://github.com/OSC/ondemand/pull/732)
+ - fix accessibility of buttons in active jobs table [#732](https://github.com/OSC/ondemand/pull/732)
 
 ### Changed
 - use specific versions of packaging repo in [#735](https://github.com/OSC/ondemand/pull/735)
@@ -1167,7 +1167,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - ood_core 0.14.0 additions
    - Added: Kubernetes adapter in PR [156](https://github.com/OSC/ood_core/pull/156)
    - Fixed: Handle Slurm timeouts [209](https://github.com/OSC/ood_core/pull/209)
-   - Fixed: Linux Host Adapter race condition in deleteing tmp files [212](https://github.com/OSC/ood_core/pull/212)
+   - Fixed: Linux Host Adapter race condition in deleting tmp files [212](https://github.com/OSC/ood_core/pull/212)
 
 ### Fixed
 - Fixed XDMoD queries for staff users [#688](https://github.com/OSC/ondemand/pull/688).
@@ -1316,7 +1316,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - Dockerfile for help with development [#309](https://github.com/OSC/ondemand/pull/309)
 - Configurable logo height using OOD_DASHBOARD_LOGO_HEIGHT set to a value like `100px` which
   enables using SVG for logos on the dashboard
-- Add TurboLinks dependeny to the dashboard in decrease loading time
+- Add TurboLinks dependency to the dashboard in decrease loading time
   [498](https://github.com/OSC/ondemand/pull/498)
 
 ### Changed
@@ -1334,7 +1334,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ## [1.7.13] - 2020-05-27
 ### Fixed
 - update to latest ood_core, 0.11.4 (up from 0.11.3) for SLURM bug fixes in [#193](https://github.com/OSC/ood_core/pull/193).
-- updated rails to 5.2.4.3 (up from 5.2.4.2) for security vulnerabilites in several rails libraries.
+- updated rails to 5.2.4.3 (up from 5.2.4.2) for security vulnerabilities in several rails libraries.
 
 ### Added
 - KDE bc_desktop in [#482](https://github.com/OSC/ondemand/pull/482)
@@ -1406,7 +1406,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Added
 - use Async ClipboardAPI for better copy and paste with Chrome and NoVNC [#335](https://github.com/OSC/ondemand/pull/335)
 - restrictions on what can be set as a job script in Job Composer to mitigate
-  problem with accidently choosing input file as job script [#310](https://github.com/OSC/ondemand/pull/310)
+  problem with accidentally choosing input file as job script [#310](https://github.com/OSC/ondemand/pull/310)
 
 ### Fixed
 - fix URL used for file-editor assets [#343](https://github.com/OSC/ondemand/pull/343)
@@ -1641,7 +1641,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 ## [1.5.0] - 2019-01-30 [YANKED]
 ### Added
-- Dasboard
+- Dashboard
   - version string to footer
   - add support for localization of home page welcome text and motd title with added setup to be able to add support for more localization options in the future
   - the home page html (both logo and text) can now be customized using a single html formatted string in /etc/ood/config/locales/en.yml with the welcome_html key

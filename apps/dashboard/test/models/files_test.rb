@@ -2,7 +2,7 @@ require 'test_helper'
 
 class FilesTest < ActiveSupport::TestCase
   test "mime_type raises exception for non-file" do
-    assert_raises { PosixFile.new("/dev/nulll").mime_type }
+    assert_raises { PosixFile.new("/dev/nonexistent").mime_type }
   end
 
   test "mime_type handles default types" do

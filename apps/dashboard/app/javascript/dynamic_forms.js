@@ -54,8 +54,8 @@ function shortId(elementId) {
  * Mountain case the words from a string, by tokenizing on [-_].  In the
  * simplest case it just capitalizes.
  *
- * There is a special case where seperators are followed numbers. In this case
- * The seperator is kept as a hyphen because that's how jQuery expects it.
+ * There is a special case where separators are followed numbers. In this case
+ * The separator is kept as a hyphen because that's how jQuery expects it.
  *
  * @param      {string}  str     The word string to mountain case
  *
@@ -94,12 +94,12 @@ function mountainCaseWords(str) {
 function snakeCaseWords(str) {
   if(str === undefined || str === "") return "";
 
-  // find all the captial case words and if none are found, we'll just bascially
+  // find all the capital case words and if none are found, we'll just basically
   // return the same string.
   const rex = /([A-Z]{1}[a-z]*[0-9]*)|([^-_]+)/g;
   const words = str.match(rex);
 
-  // filter out emtpy matches to avoid having a _ at the end.
+  // filter out empty matches to avoid having a _ at the end.
   return words.filter(word => word != '').map(word => word.toLowerCase()).join('_');
 }
 
@@ -765,7 +765,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   options.forEach(option => {
     let hide = false;
 
-    // even though an event occured - an option may be hidden based on the value of
+    // even though an event occurred - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
@@ -835,7 +835,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       });
     }
 
-    // no duplciates are visible, so just pick the first visible option
+    // no duplicates are visible, so just pick the first visible option
     if (newSelectedOption === undefined) {
       others = document.querySelectorAll(`#${elementId} option`);
       others.forEach(ele => {
@@ -850,7 +850,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
     }
   }
 
-  // now that we're done, propogate this change to data-set or data-hide handlers
+  // now that we're done, propagate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 }
 

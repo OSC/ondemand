@@ -106,7 +106,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "rails_env specific env var overloads have precendent over env overloads" do
+  test "rails_env specific env var overloads have precedent over env overloads" do
     Dir.mktmpdir do |dir|
       environment = "test"
       with_modified_env(FOO: '123') do

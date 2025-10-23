@@ -19,7 +19,7 @@ class FilesAppTest < ActionDispatch::IntegrationTest
     assert_select "div[id='shell-wrapper']", 0
   end
 
-  test 'Files app shows error when tring to access remote files when remote files are disabled' do
+  test 'Files app shows error when trying to access remote files when remote files are disabled' do
     get files_url('s3', '/')
     assert_equal I18n.t('dashboard.files_remote_disabled'), flash[:alert]
 

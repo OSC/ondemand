@@ -170,14 +170,14 @@ class ConfigurationSingleton
 
   # The paths to the JSON files that store the quota information
   # Can be URL or File path. colon delimited string; though colon in URL is
-  # ignored if URL has format: scheme://path (colons preceeding // are ignored)
+  # ignored if URL has format: scheme://path (colons preceding // are ignored)
   #
   # /path/to/quota.json:https://osc.edu/quota.json
   #
   #
   # @return [Array<String>] quota paths
   def quota_paths
-    # regex uses negative lookahead to ignore : preceeding //
+    # regex uses negative lookahead to ignore : preceding //
     ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
   end
 
@@ -189,14 +189,14 @@ class ConfigurationSingleton
 
   # The paths to the JSON files that store the balance information
   # Can be URL or File path. colon delimited string; though colon in URL is
-  # ignored if URL has format: scheme://path (colons preceeding // are ignored)
+  # ignored if URL has format: scheme://path (colons preceding // are ignored)
   #
   # /path/to/balance.json:https://osc.edu/balance.json
   #
   #
   # @return [Array<String>] balance paths
   def balance_paths
-    # regex uses negative lookahead to ignore : preceeding //
+    # regex uses negative lookahead to ignore : preceding //
     ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
   end
 
@@ -463,7 +463,7 @@ class ConfigurationSingleton
   end
 
   def shared_projects_root
-    # This environment varible will support ':' colon separated paths
+    # This environment variable will support ':' colon separated paths
     ENV['OOD_SHARED_PROJECT_PATH'].to_s.split(":").map { |p| Pathname.new(p) }
   end
 
