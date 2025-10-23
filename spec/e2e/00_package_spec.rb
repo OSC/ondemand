@@ -107,4 +107,8 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_owned_by('root') }
     it { is_expected.to be_grouped_into('root') }
   end
+
+  describe command("find #{ood_gems_path} -perm /002") do
+    its(:stdout) { is_expected.to be_empty }
+  end
 end
