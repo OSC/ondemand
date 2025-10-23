@@ -56,8 +56,8 @@ function shortId(elementId) {
  * Mountain case the words from a string, by tokenizing on [-_].  In the
  * simplest case it just capitalizes.
  *
- * There is a special case where seperators are followed numbers. In this case
- * The seperator is kept as a hyphen because that's how jQuery expects it.
+ * There is a special case where separators are followed numbers. In this case
+ * The separator is kept as a hyphen because that's how jQuery expects it.
  *
  * @param      {string}  str     The word string to mountain case
  *
@@ -94,14 +94,14 @@ function mountainCaseWords(str) {
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
 function snakeCaseWords(str) {
-  if(str === undefined) return undefined;
+  if(str === undefined || str === "") return "";
 
-  // find all the captial case words and if none are found, we'll just bascially
+  // find all the capital case words and if none are found, we'll just basically
   // return the same string.
   const rex = /([A-Z]{1}[a-z]*[0-9]*)|([^-_]+)/g;
   const words = str.match(rex);
 
-  // filter out emtpy matches to avoid having a _ at the end.
+  // filter out empty matches to avoid having a _ at the end.
   return words.filter(word => word != '').map(word => word.toLowerCase()).join('_');
 }
 
@@ -389,7 +389,7 @@ class Table {
     y = snakeCaseWords(y);
 
     if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
-    if(y && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
+    if((y || y === "") && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
 
     const xIdx = this.xIdxLookup[x];
     const yIdx = this.yIdxLookup[y];
@@ -447,35 +447,24 @@ class Table {
 function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
-  let changeElement = undefined;
-
-  $(`#${changeId}`).parents().each(function(_i, parent) {
-    var classListValues = parent.classList.values();
-    for (const val of classListValues) {
-      // TODO: Using 'mb-3' here because 'form-group' was removed
-      // from Bootstrap 5 and replaced with 'mb-3' - however, this
-      // is a grid class which could (??) apply to parent elements
-      // in unpredictable parts of the chain - test for & resolve
-      if (val.match('mb-3')) {
-        changeElement = $(parent);
-      }
-    }
-  });
-
-  if (changeElement === undefined || changeElement.length <= 0) return;
-
   const elementInfo = getWidgetInfo(changeId);
-  // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
+  
   if ((hide === false) || (hide === undefined && !initializing)) {
-    changeElement.show();
-    // Pass text into the aria stream
-    const addMsg = `Revealed form item ${elementInfo}`;
-    ariaStream(addMsg)
+    toggleItemVisible(changeId, true);
+    ariaStream(`Revealed form item ${elementInfo}`);
   } else if (hide === true) {
-    changeElement.hide();
-    const rmMsg = `Hid form item ${elementInfo}`;
-    ariaStream(rmMsg);
+    toggleItemVisible(changeId, false);
+    ariaStream(`Hid form item ${elementInfo}`);
+  }
+}
+
+function toggleItemVisible(id, makeVisible) {
+  const wrapper = $(`#${id}_wrapper`);
+  if (makeVisible) {
+    wrapper.removeClass('d-none')
+  } else {
+    wrapper.addClass('d-none')
   }
 }
 
@@ -797,7 +786,8 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
   options.forEach(option => {
     let hide = false;
-    // even though an event occured - an option may be hidden based on the value of
+
+    // even though an event occurred - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
@@ -878,7 +868,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       });
     }
 
-    // no duplciates are visible, so just pick the first visible option
+    // no duplicates are visible, so just pick the first visible option
     if (newSelectedOption === undefined) {
       others = document.querySelectorAll(`#${elementId} option`);
       others.forEach(ele => {
@@ -893,7 +883,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
     }
   }
 
-  // now that we're done, propogate this change to data-set or data-hide handlers
+  // now that we're done, propagate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 }
 
@@ -907,15 +897,7 @@ function getWidgetInfo(id){
 }
 
 function getWidgetType(id){
-  var finaltype = undefined;
-  $(`#${id}`).parents().each(function(_i, parent) {
-    type = $(parent).nextAll('[data-widget-type]').first().data('widget-type')
-
-    if (type && !finaltype) {
-      finaltype = type
-    }
-  })
-  return finaltype ? finaltype : null;
+  return $(`#${id}_wrapper`).data('widgetType')
 }
 
 // sends a message that is immediately read by screenreaders

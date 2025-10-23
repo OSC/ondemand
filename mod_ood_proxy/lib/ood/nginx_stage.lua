@@ -147,7 +147,7 @@ end
 
 --[[
   export_table
-  Given exports to be a comma seperated list of environment variable
+  Given exports to be a comma separated list of environment variable
   names: split that string, extract the variable values from the request's
   environment and return a table of the environment variable key:value pairs
 --]]

@@ -936,7 +936,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal('small', find_value('classroom_size'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the classroom and see large dissappear
+    # now change the classroom and see large disappear
     select('123ABC', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
 
@@ -944,7 +944,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('Physics 1234', from: bc_ele_id('classroom'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the lowercase classroom and see large dissappear again.
+    # now change the lowercase classroom and see large disappear again.
     select('456def', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
   end
@@ -1502,7 +1502,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
 
       # change the account to pas2051 and now it's flipped.
-      # this is becuase pas2051 is on the condo-osumed queues' allow list and
+      # this is because pas2051 is on the condo-osumed queues' allow list and
       # on the backfill variants' deny list
       select('pas2051', from: bc_ele_id('auto_accounts'))
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
@@ -2013,9 +2013,62 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   def get_favorites
     # For debugging flaky tests
-    all('#favorites li', wait: 30)
+    all('#favorites a', wait: 30)
     # puts "FAVORITES: "
     # puts favorites.map{|i| i['innerHTML']}.join('')
+  end
+
+  test 'path_selector respects allowlist' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({OOD_ALLOWLIST_PATH: allowed_dir}) do
+        `mkdir -p #{allowed_dir}/real_directory`
+        `touch #{allowed_dir}/real_file`
+        `touch #{allowed_dir}/real_directory/other_real_file`
+        `mkdir -p #{dir}/not_allowed`
+        `touch #{dir}/not_allowed/bad_file`
+
+        form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: '#{allowed_dir}/real_directory'
+        HEREDOC
+
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+
+        # await load
+        assert_selector("##{bc_ele_id('path_path_selector_table_wrapper')}")
+        # verify location
+        assert_text('other_real_file')
+
+        assert_selector('.fa-arrow-up')
+        find('.fa-arrow-up').click
+        assert_text('real_file')
+        assert_text('real_directory')
+
+        find('.fa-arrow-up').click
+        error_text = "Permission denied: #{dir} does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text)
+
+        # reset
+        find('tr.clickable td span', text: 'real_directory').click
+        assert_text('other_real_file')
+        assert_selector('#forbidden-warning', visible: :hidden)
+
+        find_all('a', text: '/').first.click
+        error_text_root = "Permission denied: / does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text_root)
+      end
+    end
   end
 
   test 'launches and saves settings as a template' do

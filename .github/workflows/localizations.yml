@@ -1,0 +1,61 @@
+name: Update Localizations
+
+on:
+  workflow_dispatch:
+  schedule:
+    # every Monday morning
+    - cron:  '0 3 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  update-localizations:
+    runs-on: "ubuntu-latest"
+    name: Update Localizations
+
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v5
+
+      - name: Setup os dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+
+      - name: Install Dashboard's gems
+        run: | 
+          cd apps/dashboard
+          bundle install
+
+      - name: Remove unused 
+        run: |
+          cd apps/dashboard
+          bundle exec i18n-tools remove-unused
+
+      - name: Update translations
+        run: |
+          cd apps/dashboard
+          bundle exec i18n-tools translate-missing
+        env:
+          OPENAI_API_TOKEN: ${{ secrets.CHATGPT_API_KEY }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
+          commit-message: update localizations
+          committer: OSC ROBOT <osc.robot@gmail.com>
+          author: osc-bot <osc.robot@gmail.com>
+          delete-branch: true
+          title: 'Update Localizations'
+          push-to-fork: osc-bot/ondemand
+          branch: osc-bot/localization-updates
+          body: |
+            Update localizations with `i18n-tools`

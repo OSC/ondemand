@@ -181,7 +181,7 @@ jQuery(function () {
             setBeforeUnloadState();
           },
           error: function (request, status, error) {
-            alert("An error occured attempting to save this file!\n" + error);
+            alert("An error occurred attempting to save this file!\n" + error);
             toggleSaveSpinner();
           }
         });
@@ -210,7 +210,7 @@ jQuery(function () {
       $("#wordwrap").prop("checked", getUserPreference('wordwrap') === "true");
       editor.getSession().setUseWrapMode($("#wordwrap").is(':checked'));
 
-      // default to use soft tabs for backward compatability.
+      // default to use soft tabs for backward compatibility.
       let tabs = getUserPreference('soft_tabs');
       if(tabs === null) {
         tabs = "true";

@@ -1,5 +1,5 @@
 /***
- This file was generated just by quering all the css available
+ This file was generated just by querying all the css available
 
  function all_icons() {
   return [...document.styleSheets].flatMap(styleSheet => {
