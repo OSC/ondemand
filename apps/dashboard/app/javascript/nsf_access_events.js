@@ -1,5 +1,3 @@
-const { divide } = require("lodash");
-
 document.addEventListener('DOMContentLoaded', () => {
   listEvents();
 });
@@ -70,10 +68,6 @@ function filterEvents(events) {
   })
 }
 
-
-//   <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-// Link with href
-// </a>
 function eventToElement(event) {
   const element = document.createElement('div');
   element.classList.add('accordion-item');
