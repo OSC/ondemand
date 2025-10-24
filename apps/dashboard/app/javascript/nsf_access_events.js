@@ -1,3 +1,5 @@
+const { divide } = require("lodash");
+
 document.addEventListener('DOMContentLoaded', () => {
   listEvents();
 });
@@ -14,37 +16,32 @@ function listEvents() {
       fillContainer(container, filteredEvents);
       const ele = document.getElementById('nsf_access_events');
       ele.innerHTML = null;
+      ele.appendChild(widgetHeader());
       ele.appendChild(container);
     });
 }
 
 function fillContainer(container, events) {
-  const list = container.querySelector('ul');
   for (const event of events) {
     const listItem = eventToElement(event);
-    list.appendChild(listItem);
+    container.appendChild(listItem);
   }
 }
 
 function eventsContainer() {
   const container = document.createElement('div');
-  container.classList.add('card');
-
-  const header = document.createElement('div');
-  header.classList.add('card-header');
-  header.textContent = "NSF ACCESS Events";
-
-  list = document.createElement('ul');
-  list.classList.add('list-group');
-
-  body = document.createElement('div');
-  body.classList.add('card-body');
-  body.appendChild(list);
-
-  container.appendChild(header);
-  container.appendChild(body);
+  container.classList.add('accordion');
+  container.id = widgetId();
 
   return container;
+}
+
+function widgetHeader(){ 
+  const header = document.createElement('div');
+  header.textContent = 'NSF ACESS Events';
+  header.classList.add('justify-text-center', 'h2', 'd-flex', 'justify-content-center');
+
+  return header;
 }
 
 function getEvents() {
@@ -78,43 +75,71 @@ function filterEvents(events) {
 // Link with href
 // </a>
 function eventToElement(event) {
-  const li = document.createElement('li');
-  li.classList.add('list-group-item');
+  const element = document.createElement('div');
+  element.classList.add('accordion-item');
 
-  const contentId = `nsf_access_event_${event['id']}`;
+  element.appendChild(eventHeader(event));
+  element.appendChild(eventBody(event));
 
-  const title = document.createElement('a');
-  title.textContent = event['title'];
-  title.dataset.bsToggle = 'collapse';
-  title.href = `#${contentId}`;
-  title.role = 'button';
-  title.classList.add('btn', 'btn-primary');
-  title.ariaExpanded = false;
-  title.setAttribute('aria-expanded', false);
-  title.setAttribute('aria-controls', contentId);
+  return element;
+}
 
-  const date = document.createElement('span');
-  date.textContent = new Date(event['date']).toDateString();
-  date.classList.add('m-2', 'd-flex');
+function eventHeader(event) {
+  const header = document.createElement('div');
+  header.classList.add('h5', 'accordion-header');
+  header.id = eventHeaderId(event);
 
-  const content = document.createElement('div');
-  content.classList.add('my-2');
-  content.id = contentId;
+  const button = document.createElement('button');
+  button.classList.add('accordion-button', 'collapsed');
+  button.role = 'button';
+  button.dataset.bsToggle = 'collapse';
+  button.dataset.bsTarget = `#${eventBodyId(event)}`;
+
+  const date = new Date(event['date']).toDateString();
+  button.textContent = `${event['title']} - ${date}`;
+
+  button.setAttribute('aria-expanded', false);
+  button.setAttribute('aria-controls', eventBodyId(event));
+
+  header.appendChild(button);
+
+  return header;
+}
+
+function eventBody(event) {
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('accordion-collapse', 'collapse');
+  wrapper.id = eventBodyId(event);
+  wrapper.setAttribute('aria-labelledby', eventHeaderId(event));
+  wrapper.dataset.bsParent = `${widgetId()}`;
+
+  const body = document.createElement('div');
+  body.classList.add('accordion-body');
   // TODO: sanitize this so there's no potentially malicous tags.
-  content.innerHTML = event['description'];
-  content.classList.add('collapse');
+  body.innerHTML = event['description'];
 
-  li.appendChild(title);
-  li.appendChild(date);
-  li.appendChild(content);
-  li.appendChild(registerElement(event));
+  wrapper.appendChild(body);
+  wrapper.appendChild(registerElement(event));
 
-  return li;
+  return wrapper;
+}
+
+function widgetId() {
+  return 'nsf_access_events_container';
+}
+
+function eventBodyId(event) {
+  return `nsf_access_event_body_${event['id']}`;
+}
+
+function eventHeaderId(event) {
+  return `nsf_access_event_header_${event['id']}`;
 }
 
 function registerElement(event) {
   const registration = event['registration'];
   const p = document.createElement('p');
+  p.classList.add('ps-4');
 
   if(registration !== undefined && registration !== "") {
     const a = document.createElement('a');
