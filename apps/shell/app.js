@@ -285,7 +285,8 @@ const interval = setInterval(function ping() {
       ws.ping();
     }
   });
-}, 30000);
+}, pingPongEnabled ? 10000 : 30000); // If ping/pong is needed, then 30 seconds is probably too long
+
 
 wss.on('close', function close() {
   clearInterval(interval);
