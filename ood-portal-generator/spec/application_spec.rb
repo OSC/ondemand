@@ -120,6 +120,10 @@ describe OodPortalGenerator::Application do
       test_generate('input/no_logs_w_log_config.yml', 'output/no_logs.conf')
     end
 
+    it 'skip logroot if using piped logs' do
+      test_generate('input/piped_logs.yml', 'output/piped_logs.conf')
+    end
+
     it 'templates custom vhost directives' do
       test_generate('input/custom_vhost_directives.yml', 'output/custom_vhost_directives.conf')
     end
