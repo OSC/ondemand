@@ -275,7 +275,7 @@ class DragController {
   }
 
   // No launcher box should be outside [1...row][1..col] to resize
-  // else will lead to launchers left outisde the workflow-stage
+  // else will lead to launchers left outside the workflow-stage
   function checkIfBoxOutside(newRows, newCols) {
     for (const box of boxes.values()) {
       if (box.row > newRows || box.col > newCols) {
