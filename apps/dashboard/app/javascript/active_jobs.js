@@ -128,7 +128,7 @@ function fetch_table_data(table, options){
     }
     else{
       //FIXME: this error appears even when the above 404 occurs, for example
-      // that is because a 404 responce for json request returns a plain text response
+      // that is because a 404 response for json request returns a plain text response
       // and parsing that as json fails
        show_errors(["Request for jobs failed due to body parsing error."])
     }

@@ -41,7 +41,7 @@ class UserWithSharedApps
 
   def apps
     # filter shared apps list so only those appear that
-    # are both URL accessible and have a vaild manifest
+    # are both URL accessible and have a valid manifest
     @apps ||= DashboardRouter.new(username).shared_apps
       .select {|app| app.url_accessible_to_current_user? && app.manifest.valid? }
   end

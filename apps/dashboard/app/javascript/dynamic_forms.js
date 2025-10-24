@@ -20,13 +20,14 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-
+const helpHandlerCache = {};
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
+const helpLookup = {};
 
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
@@ -54,8 +55,8 @@ function shortId(elementId) {
  * Mountain case the words from a string, by tokenizing on [-_].  In the
  * simplest case it just capitalizes.
  *
- * There is a special case where seperators are followed numbers. In this case
- * The seperator is kept as a hyphen because that's how jQuery expects it.
+ * There is a special case where separators are followed numbers. In this case
+ * The separator is kept as a hyphen because that's how jQuery expects it.
  *
  * @param      {string}  str     The word string to mountain case
  *
@@ -92,14 +93,14 @@ function mountainCaseWords(str) {
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
 function snakeCaseWords(str) {
-  if(str === undefined) return undefined;
+  if(str === undefined || str === "") return "";
 
-  // find all the captial case words and if none are found, we'll just bascially
+  // find all the capital case words and if none are found, we'll just basically
   // return the same string.
   const rex = /([A-Z]{1}[a-z]*[0-9]*)|([^-_]+)/g;
   const words = str.match(rex);
 
-  // filter out emtpy matches to avoid having a _ at the end.
+  // filter out empty matches to avoid having a _ at the end.
   return words.filter(word => word != '').map(word => word.toLowerCase()).join('_');
 }
 
@@ -148,6 +149,8 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('help')) {
+                addHelpHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -225,6 +228,46 @@ function addLabelHandler(optionId, option, key, configValue) {
   updateLabel(changeId, changeElement, key);
 };
 
+function getNewHelp(changeElement, key) {
+  const selectedOptionHelpIndex = changeElement[0].selectedIndex;
+  const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
+  return selectedOptionHelp.dataset[key];
+}
+
+function updateHelp(changeId, changeElement, key) {
+  const helpContent = getNewHelp(changeElement, key);
+  if (helpContent === undefined || changeId === undefined) return;
+  const wrapper_id = `#${changeId}_wrapper`;
+  var helpElement = $(`${wrapper_id} small p`);
+  if (helpElement.length == 0) {
+    const small = document.createElement('small');
+    small.classList.add('form-text', 'text-muted');
+    helpElement = document.createElement('p');
+    $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
+  }
+  $(helpElement).text(helpContent);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+}
+
+function addHelpHandler(optionId, option, key, configValue) {
+  const changeId = idFromToken(key.replace(/^help/, ''));
+  const changeElement = $(`#${optionId}`);
+
+  if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
+  const table = helpLookup[optionId];
+  table.put(changeId, option, configValue);
+
+  if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
+  
+  if(!helpHandlerCache[optionId].includes(changeId)) {
+    helpHandlerCache[optionId].push(changeId);
+    changeElement.on('change', (event) => {
+      updateHelp(changeId, changeElement, key);
+    });
+  };
+
+  updateHelp(changeId, changeElement, key);
+};
 /**
  *
  * @param {*} subjectId batch_connect_session_context_node_type
@@ -385,7 +428,7 @@ class Table {
     y = snakeCaseWords(y);
 
     if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
-    if(y && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
+    if((y || y === "") && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
 
     const xIdx = this.xIdxLookup[x];
     const yIdx = this.yIdxLookup[y];
@@ -766,7 +809,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   options.forEach(option => {
     let hide = false;
 
-    // even though an event occured - an option may be hidden based on the value of
+    // even though an event occurred - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
@@ -836,7 +879,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       });
     }
 
-    // no duplciates are visible, so just pick the first visible option
+    // no duplicates are visible, so just pick the first visible option
     if (newSelectedOption === undefined) {
       others = document.querySelectorAll(`#${elementId} option`);
       others.forEach(ele => {
@@ -851,7 +894,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
     }
   }
 
-  // now that we're done, propogate this change to data-set or data-hide handlers
+  // now that we're done, propagate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 }
 

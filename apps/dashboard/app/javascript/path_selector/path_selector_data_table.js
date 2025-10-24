@@ -101,9 +101,15 @@ export class PathSelectorTable {
       this.resetTable();
     } catch (err) {
       this.resetTable();
-      if (err.message.match("Permission denied")) {
+      if (err.message) {
+        const msg = err.message;	    
+        var prefix = '';
+        if (msg.match('ALLOWLIST_PATH')) {
+          prefix = 'Permission denied: ';
+        }
         $('#forbidden-warning').removeClass('d-none')
-        $('#forbidden-warning').trigger('focus');
+          .text(`${prefix}${msg}`)
+          .trigger('focus');
       }
       console.log(err);
     }

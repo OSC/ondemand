@@ -1,4 +1,4 @@
-# PosixTransfer is a class for transfering local files.
+# PosixTransfer is a class for transferring local files.
 class PosixTransfer < Transfer
 
   validates_each :files do |record, _attr, files|

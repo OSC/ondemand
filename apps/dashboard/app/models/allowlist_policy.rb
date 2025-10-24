@@ -50,7 +50,7 @@ class AllowlistPolicy
   def real_expanded_path(path)
     path = Pathname.new(path).expand_path
 
-    # if it exsists, then you can just call realpath
+    # if it exists, then you can just call realpath
     return Pathname.new(path).expand_path.realpath if path.exist?
 
     real_expanded_path_not_exist(path)

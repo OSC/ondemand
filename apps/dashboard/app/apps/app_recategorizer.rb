@@ -33,7 +33,7 @@ class AppRecategorizer < SimpleDelegator
   def links
     if has_sub_apps?
       # Recategorized Apps (i.e., pinned apps) are one app - singular. So they
-      # only have 1 link becuase they _are_ the configured sub-app.
+      # only have 1 link because they _are_ the configured sub-app.
       #
       # As an example, we've configured sys/bc_desktop/pitzer.  Pitzer is a sub-app
       # of bc_desktop. We don't care if there are multiple bc_desktops sub-app links,
