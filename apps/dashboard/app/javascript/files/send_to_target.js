@@ -4,7 +4,7 @@ import { OODAlertError, OODAlertSuccess } from '../alert';
 const TOKEN_KEY = 'files_select_target_token';
 
 export function initSendToTarget() {
-  const button = document.getElementById('send-to-target-btn');
+  const button = document.getElementById('send_to_target_btn');
   if (!button) {
     return;
   }
