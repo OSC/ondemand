@@ -886,7 +886,7 @@ class FilesTest < ApplicationSystemTestCase
     visit files_url(Rails.root.to_s, files_select_target_token: token_value)
 
     # Verify button is present and enabled
-    button = find('#send-to-target-btn')
+    button = find('#send_to_target_btn')
     assert button.present?
     refute button.disabled?
 
