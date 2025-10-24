@@ -254,20 +254,20 @@ wss.on('connection', function connection (ws, req) {
       msg = JSON.parse(msg);
       if (msg.input)  {
         term.write(msg.input);
-        this.lastActivity = Date.now();
+        ws.lastActivity = Date.now();
       }
       if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
     });
 
     ws.on('close', function () {
       term.end();
-      this.isAlive = false;
+      ws.isAlive = false;
       ws.logger.log('Closed terminal');
       ws.logger.flush();
     });
 
     ws.on('pong', function () {
-      this.isAlive = true;
+      ws.isAlive = true;
     });
   }
 });
