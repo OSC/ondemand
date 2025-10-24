@@ -108,10 +108,7 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_grouped_into('root') }
   end
 
-  it 'dumps gems with world write' do
-    on hosts, "find #{ood_gems_path} -perm /002 ! -type l -exec ls -la {} \\;"
-  end
-  describe command("find #{ood_gems_path} -perm /002 ! -type l") do
+  describe command("find #{ood_gems_path} -perm /002 ! -type l -exec ls -la {} \\;") do
     its(:stdout) { is_expected.to be_empty }
   end
 end
