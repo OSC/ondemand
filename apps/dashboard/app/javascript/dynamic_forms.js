@@ -20,13 +20,14 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-
+const helpHandlerCache = {};
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
+const helpLookup = {};
 
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
@@ -148,6 +149,8 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('help')) {
+                addHelpHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -225,6 +228,46 @@ function addLabelHandler(optionId, option, key, configValue) {
   updateLabel(changeId, changeElement, key);
 };
 
+function getNewHelp(changeElement, key) {
+  const selectedOptionHelpIndex = changeElement[0].selectedIndex;
+  const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
+  return selectedOptionHelp.dataset[key];
+}
+
+function updateHelp(changeId, changeElement, key) {
+  const helpContent = getNewHelp(changeElement, key);
+  if (helpContent === undefined || changeId === undefined) return;
+  const wrapper_id = `#${changeId}_wrapper`;
+  var helpElement = $(`${wrapper_id} small p`);
+  if (helpElement.length == 0) {
+    const small = document.createElement('small');
+    small.classList.add('form-text', 'text-muted');
+    helpElement = document.createElement('p');
+    $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
+  }
+  $(helpElement).text(helpContent);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+}
+
+function addHelpHandler(optionId, option, key, configValue) {
+  const changeId = idFromToken(key.replace(/^help/, ''));
+  const changeElement = $(`#${optionId}`);
+
+  if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
+  const table = helpLookup[optionId];
+  table.put(changeId, option, configValue);
+
+  if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
+  
+  if(!helpHandlerCache[optionId].includes(changeId)) {
+    helpHandlerCache[optionId].push(changeId);
+    changeElement.on('change', (event) => {
+      updateHelp(changeId, changeElement, key);
+    });
+  };
+
+  updateHelp(changeId, changeElement, key);
+};
 /**
  *
  * @param {*} subjectId batch_connect_session_context_node_type

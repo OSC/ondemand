@@ -881,7 +881,284 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
-  
+
+  def data_help_basic_test(form)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
+
+      help = parent.find(':scope > small') 
+         
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose whatever')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+    end
+  end
+
+  test 'data-help sets number field help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'number_field'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets text area help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'text_area'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets select help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'select'
+          options:
+          - ["Yes"]
+          - ["No"]
+          - ["Maybe"]
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets check-box area help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'check_box'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets radio button help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'radio_button'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets path selector help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'path_selector'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  # We may want to change this behavior later, but this records current state
+  test 'data-help overrides initial setting for all options' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
+
+      help = parent.find(':scope > small') 
+      help.assert_text('Choose anything')
+
+      select 'Third', from: 'batch_connect_session_context_group' 
+      help.assert_text('Choose yes')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group' 
+      help.assert_text('Choose no')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+    end
+  end
+
+  test 'data-help skips over malformed options' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Broken', data-help-bad-widget: 'oops']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
+
+      help = parent.find(':scope > small') 
+      help.assert_text('Choose anything')
+
+      select 'Third', from: 'batch_connect_session_context_group' 
+      help.assert_text('Choose yes')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group' 
+      help.assert_text('Choose no')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+    end
+  end
+
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
