@@ -95,11 +95,12 @@ class WorkflowsController < ApplicationController
     metadata = metadata_params(permit_json_data)
     @workflow.update(metadata)
     result = @workflow.submit(submit_params(metadata))
-    if result
-      render json: { status: "ok", message: "Workflow submitted successfully" }
+    Rails.logger.warn(result)
+    if !result.nil?
+      render json: { status: "ok", message: I18n.t('dashboard.jobs_workflow_submitted'), job_hash: result }
     else
       msg = I18n.t('dashboard.jobs_workflow_failed', error: @workflow.collect_errors)
-      render json: { status: "ok", message: msg }, status: :unprocessable_entity
+      render json: { status: "error", message: msg }, status: :unprocessable_entity
     end
   end
 

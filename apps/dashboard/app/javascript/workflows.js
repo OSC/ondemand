@@ -1,4 +1,5 @@
 import { DAG } from './dag.js';
+import { rootPath } from './config.js';
 
 /*
  * Helper Classes to support Drag and Drop UI 
@@ -56,6 +57,8 @@ class WorkflowState {
 
       if (!response.ok) throw new Error(`Server error: ${response.status}`);
       if(submit) {
+        const data = await response.json();
+        this.#setJobDescription(data);
         alert('Workflow submitted successfully!');
       } else {
         alert('Workflow saved successfully!');
@@ -153,6 +156,78 @@ class WorkflowState {
       console.error('Failed to load workflow from backend:', err);
       return null;
     }
+  }
+
+  #setJobDescription(json_data) {
+    $.each(json_data.job_hash, function (launcherId, jobInfo) {
+      const $launcher = $(`#launcher_${launcherId}`);
+
+      if ($launcher.length && jobInfo) {
+        $launcher.attr({
+          "data-job-poller": "true",
+          "data-job-id": jobInfo.job_id,
+          "data-job-cluster": jobInfo.cluster_id,
+          "data-job-status": "queued"
+        });
+        $launcher.addClass("queued");
+      }
+    });
+  }
+}
+
+// Polling class to update job status
+class JobPoller {
+  constructor(projectId) {
+    this.projectId = projectId;
+  }
+  jobDetailsPath(cluster, jobId) {
+    const baseUrl = rootPath();
+    return `${baseUrl}/projects/${this.projectId}/jobs/${cluster}/${jobId}`;
+  }
+  
+  stringToHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = html.trim();
+    return template.content.firstChild;
+  }
+
+  async pollForJobInfo(element) {
+    const cluster = element.dataset['jobCluster'];
+    const jobId = element.dataset['jobId'];
+    const el = element.jquery ? element[0] : element;
+  
+    if(cluster === undefined || jobId === undefined){ return; }
+  
+    const url = this.jobDetailsPath(cluster, jobId);
+  
+    fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
+      .then((r) => r.text())
+      .then((html) => {
+        const responseElement = this.stringToHtml(html);
+        const jobStatus = responseElement.dataset['jobStatus'];
+
+        el.classList.remove('running', 'completed', 'failed', 'canceled', 'queued');
+        if(jobStatus === 'completed') {
+          el.classList.add('completed');
+        } else if (jobStatus === 'failed' || jobStatus === 'canceled') {
+          el.classList.add('failed');
+        } else if ( jobStatus === 'running') {
+          el.classList.add('running');
+        } else if ( jobStatus === 'queued') {
+          el.classList.add('queued');
+        }
+        return jobStatus;
+      })
+      .then((status) => {
+        if(status != 'completed') {
+          setTimeout(() => this.pollForJobInfo(element), 30000);
+        }
+      })
+      .catch((err) => {
+        console.log('Cannot not retrive job details due to error:');
+        console.log(err);
+      });
   }
 }
 
@@ -482,7 +557,6 @@ class DragController {
   }
 
   function createEdge(fromId, toId) {
-    console.log(  `Creating edge from ${fromId} to ${toId}`);
     if (fromId === toId) return;
     if (!boxes.has(fromId) || !boxes.has(toId)) return;
 
@@ -655,7 +729,14 @@ class DragController {
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  submitWorkflowButton.addEventListener('click', () => workflowState.saveToBackend(true));
+  submitWorkflowButton.addEventListener('click', async () => {
+    await workflowState.saveToBackend(true);
+
+    const poller = new JobPoller(projectId);
+    $('[data-job-poller="true"]').each((_index, ele) => {
+      poller.pollForJobInfo(ele);
+    });
+  });
   resetWorkflowButton.addEventListener('click', e => workflowState.resetWorkflow(e));
   saveWorkflowButton.addEventListener('click', () => workflowState.saveToBackend());
 
