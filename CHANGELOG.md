@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add hide_by_default attribute (#4620)\
+Add link to Software License page in dashboard footer (#4722)\
+Fix typos in comments (#4724)\
+Interactive UI for workflows (#4604)\
+Add data help option (#4611)\
+redirect from invalid file url (#4633)\
+Add codespell support (config, workflow to detect/not fix) and make it fix some typos (#4671)\
+get accounts from all clusters (#4698)\
+Allow custom PATHs in SAFE_PATH\
+simplify workflow to get i18n-tools on the PATH (#4704)\
+Prep OnDemand 4.1 dependencies (#4646)\
+Update Changelog (#4701)\
+write a file instead of using Tempfile (#4708)\
+fix dynamic forms with empty string values (#4706)\
+update dependencies (#4702)\
+lint a random file (#4700)\
+distribute the LICENSE.txt in packages (#4696)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
