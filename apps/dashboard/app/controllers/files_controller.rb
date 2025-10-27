@@ -63,11 +63,16 @@ class FilesController < ApplicationController
             send_stream(filename: zipname, disposition: 'attachment', type: :zip) do |stream|
               ZipKit::Streamer.open(stream) do |zip|
                 @path.files_to_zip.each do |file|
-                  next unless File.readable?(file.realpath) && AllowlistPolicy.default.permitted?(file.realpath.to_s)
+                  next unless File.readable?(file.realpath)
 
                   if File.file?(file.realpath)
-                    zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                      IO.copy_stream(file.realpath, zip_file)
+                    File.open(file.realpath, 'rb') do |opened_file|
+                      real_path = File.readlink("/proc/self/fd/#{opened_file.fileno}")
+                      next unless AllowlistPolicy.default.permitted?(real_path)
+
+                      zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                        IO.copy_stream(opened_file, zip_file)
+                      end
                     end
                   else
                     zip.add_empty_directory(dirname: file.relative_path.to_s)
