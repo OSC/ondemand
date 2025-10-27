@@ -6,23 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add hide_by_default attribute (#4620)\
-Add link to Software License page in dashboard footer (#4722)\
-Fix typos in comments (#4724)\
-Interactive UI for workflows (#4604)\
-Add data help option (#4611)\
-redirect from invalid file url (#4633)\
-Add codespell support (config, workflow to detect/not fix) and make it fix some typos (#4671)\
-get accounts from all clusters (#4698)\
-Allow custom PATHs in SAFE_PATH\
-simplify workflow to get i18n-tools on the PATH (#4704)\
-Prep OnDemand 4.1 dependencies (#4646)\
-Update Changelog (#4701)\
-write a file instead of using Tempfile (#4708)\
-fix dynamic forms with empty string values (#4706)\
-update dependencies (#4702)\
-lint a random file (#4700)\
-distribute the LICENSE.txt in packages (#4696)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -63,6 +46,7 @@ distribute the LICENSE.txt in packages (#4696)
 - JobComposer projects under hidden directories now show correctly in [4547](https://github.com/OSC/ondemand/pull/4547).
 - Allowlist errors are correctly reporting in path selector in [4645](https://github.com/OSC/ondemand/pull/4645).
 - Fix S3-Specific directory traversal bug in [4623](https://github.com/OSC/ondemand/pull/4623).
+- bc_deskop now removes HOME paths from the PATH in [4703](https://github.com/OSC/ondemand/pull/4703).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -101,6 +85,9 @@ distribute the LICENSE.txt in packages (#4696)
 - File downloads now have limits in [4535](https://github.com/OSC/ondemand/pull/4535).
 - Dynamic form changes now announce their actions to screen readers in [4594](https://github.com/OSC/ondemand/pull/4594).
 - The shell app now prefixes logs with the username and hostname in [4628](https://github.com/OSC/ondemand/pull/4628).
+- Batch connect applications now respond to hide_by_default attribute in [4620](https://github.com/OSC/ondemand/pull/4620).
+- Batch connect applications can now use data-help directives to change help messages in [4611](https://github.com/OSC/ondemand/pull/4611).
+- The CI now includes codespell support to checked spelling errors in [4671](https://github.com/OSC/ondemand/pull/4671).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -118,6 +105,7 @@ distribute the LICENSE.txt in packages (#4696)
 - The shell app has accessibility features turned on in [4451](https://github.com/OSC/ondemand/pull/4451).
 - Batch connect forms now send private no-store headers in [4638](https://github.com/OSC/ondemand/pull/4638).
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
+- OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
