@@ -48,6 +48,7 @@ override_dh_auto_install:
 	# install gems
 	mkdir -p $(DESTDIR)/opt/ood/gems
 	mv $(GEM_HOME)/* $(DESTDIR)/opt/ood/gems
+	chmod -R o-w $(DESTDIR)/opt/ood/gems
 
 	# make some directories
 	mkdir -p "$(APACHE_DIR)/public/maintenance"
