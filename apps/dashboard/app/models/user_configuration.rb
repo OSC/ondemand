@@ -80,7 +80,10 @@ class UserConfiguration
     ConfigurationProperty.property(name: :support_ticket, default_value: {}),
 
     # Datatables configuration for the apps pages
-    ConfigurationProperty.property(name: :apps_datatable, default_value: { page_length: 10 })
+    ConfigurationProperty.property(name: :apps_datatable, default_value: { page_length: 10 }),
+
+    # Files app integration button configuration
+    ConfigurationProperty.property(name: :files_select_target)
   ].freeze
 
   def initialize(request_hostname: nil)
