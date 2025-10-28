@@ -338,6 +338,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_tmpfilesdir}/ondemand-nginx.conf
 
 %files -n %{gems_name}
+%defattr(644, root, root, 755)
 %{gem_home}/*
 
 %files -n ondemand-gems
