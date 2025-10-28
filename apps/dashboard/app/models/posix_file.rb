@@ -177,17 +177,13 @@ class PosixFile
       # Catch SIGTERM.
       if s.exitstatus == 124
         error = I18n.t('dashboard.files_directory_size_calculation_timeout')
-      elsif ! s.success?
+      elsif !(s.success? || s.exitstatus == 1) # du exits with status 1 if it encounters a broken symlink
         error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s.exitstatus, error: e)
       else
-        # Example output from: du -cbs $path
+        # Example output from: du -cbLs $path
         #
-        #    496184  .
-        #    64      ./ood-portal-generator/lib/ood_portal_generator
-        #    72      ./ood-portal-generator/lib
-        #    24      ./ood-portal-generator/templates
-        #    40      ./ood-portal-generator/share
-        #    576     ./ood-portal-generator
+        #    496184  $path
+        #    496184  total
         #
         size = o&.split&.first
 
