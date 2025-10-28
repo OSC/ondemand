@@ -126,6 +126,7 @@ module OodPortalGenerator
 
     # Helper method to set the filename and path for access and error logs
     def log_filename(value,log_type)
+      return value.to_s if value.to_s.start_with?('|')
       return "#{@logroot}/#{value}" unless value.nil?
 
       prefix = "#{servername}_#{log_type}"
