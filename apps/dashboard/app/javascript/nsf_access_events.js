@@ -19,7 +19,6 @@ function listEvents() {
       ele.classList.remove('spinner-border');
       ele.role = null;
 
-      ele.appendChild(widgetHeader());
       ele.appendChild(container);
     });
 }
@@ -37,14 +36,6 @@ function eventsContainer() {
   container.id = widgetId();
 
   return container;
-}
-
-function widgetHeader(){ 
-  const header = document.createElement('div');
-  header.textContent = 'NSF ACCESS Events';
-  header.classList.add('justify-text-center', 'h2', 'd-flex', 'justify-content-start');
-
-  return header;
 }
 
 function getEvents() {
