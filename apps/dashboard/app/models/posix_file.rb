@@ -93,6 +93,8 @@ class PosixFile
       PATHS_TO_FILTER.include?(p.basename.to_s)
     end.select do |path|
       AllowlistPolicy.default.permitted?(path.realpath.to_s)
+    rescue StandardError
+      false
     end.map do |path|
       FileToZip.new(path.to_s, path.relative_path_from(expanded).to_s, path.realpath.to_s)
     end
