@@ -13,7 +13,12 @@ function listEvents() {
 
       fillContainer(container, filteredEvents);
       const ele = document.getElementById('nsf_access_events');
+
+      // reset the element
       ele.innerHTML = null;
+      ele.classList.remove('spinner-border');
+      ele.role = null;
+
       ele.appendChild(widgetHeader());
       ele.appendChild(container);
     });
@@ -36,8 +41,8 @@ function eventsContainer() {
 
 function widgetHeader(){ 
   const header = document.createElement('div');
-  header.textContent = 'NSF ACESS Events';
-  header.classList.add('justify-text-center', 'h2', 'd-flex', 'justify-content-center');
+  header.textContent = 'NSF ACCESS Events';
+  header.classList.add('justify-text-center', 'h2', 'd-flex', 'justify-content-start');
 
   return header;
 }
@@ -109,7 +114,7 @@ function eventBody(event) {
 
   const body = document.createElement('div');
   body.classList.add('accordion-body');
-  // TODO: sanitize this so there's no potentially malicous tags.
+  // TODO: sanitize this so there's no potentially malicious tags.
   body.innerHTML = event['description'];
 
   wrapper.appendChild(body);
