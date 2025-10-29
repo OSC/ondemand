@@ -106,6 +106,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect forms now send private no-store headers in [4638](https://github.com/OSC/ondemand/pull/4638).
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
+- Updated ood-portal-generator README.md to reflect the repository and the documentation URL changes
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
@@ -224,12 +225,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Active navigation correctly changes link colors in [4184](https://github.com/OSC/ondemand/pull/4184) (backport of
   [4183](https://github.com/OSC/ondemand/pull/4183)).
 - Desktops now use a safer PATH to avoid issues with python installations in [4187](https://github.com/OSC/ondemand/pull/4187) (backport of
-  [4160](https://github.com/OSC/ondemand/pull/4160)). 
+  [4160](https://github.com/OSC/ondemand/pull/4160)).
 - Clusters with titles now safely render in the navigation bar in [4200](https://github.com/OSC/ondemand/pull/4200) (backport of
-  [4196](https://github.com/OSC/ondemand/pull/4196)). 
+  [4196](https://github.com/OSC/ondemand/pull/4196)).
 - Dynamic batch connect forms correctly respond to clusters with hyphens (-) in [4249](https://github.com/OSC/ondemand/pull/4249) (backport of
-  [4245](https://github.com/OSC/ondemand/pull/4245)). 
-        
+  [4245](https://github.com/OSC/ondemand/pull/4245)).
+
 ### Added
 - "Select Path" in the path_selector widget is now internationalizable in [4199](https://github.com/OSC/ondemand/pull/4199) (backport of
   [4176](https://github.com/OSC/ondemand/pull/4176)).
@@ -248,7 +249,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Apps#show route correctly handles usernames with periods in [4133](https://github.com/OSC/ondemand/pull/4133).
 - Add user_home_t to SELinux tunable [4143](https://github.com/OSC/ondemand/pull/4143).
 - Application Manifests with external URLs use external hrefs in [#4149](https://github.com/OSC/ondemand/pull/4149).
-  
+
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4136](https://github.com/OSC/ondemand/pull/4136).
 
@@ -439,7 +440,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
   in [2791](https://github.com/OSC/ondemand/pull/2791).
-- An option for Google analytics javascript has been added to dashboard in 
+- An option for Google analytics javascript has been added to dashboard in
   in [2795](https://github.com/OSC/ondemand/pull/2795).
 - `oidc_crypto_passphrase` can be set in ood_portal in [2807](https://github.com/OSC/ondemand/pull/2807).
 - Titles for menus can now be overridden in [2804](https://github.com/OSC/ondemand/pull/2804).
@@ -500,7 +501,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [3.0.3] - 11-09-2023
 
-### Fixed 
+### Fixed
 
 - Fixed markdown MOTD in [3119](https://github.com/OSC/ondemand/pull/3119).
 
@@ -537,7 +538,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Only depend on the selinux-policy version, not full version including release in
   [2738](https://github.com/OSC/ondemand/pull/2738).
-- Fix [2715](https://github.com/OSC/ondemand/pull/2715) by moving the error partial in 
+- Fix [2715](https://github.com/OSC/ondemand/pull/2715) by moving the error partial in
   [2731](https://github.com/OSC/ondemand/pull/2731).
 - Duplicate applications are now filtered in the interactive apps menu
   in [2730](https://github.com/OSC/ondemand/pull/2730).
@@ -548,7 +549,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
      clusters with the cluster field set.
 - The panels for development apps will always show in interactive sessions in
   [2757](https://github.com/OSC/ondemand/pull/2757).
-  
+
 ### Changed
 
 - Upgrade to rails 6.1.7.3 in [2747](https://github.com/OSC/ondemand/pull/2747).
@@ -826,8 +827,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 ### Fixed
 
-- Fixed CSS issue where the noVNC range sliders looked washed out and hard to notice - 
-  [1384](https://github.com/OSC/ondemand/issues/1384). 
+- Fixed CSS issue where the noVNC range sliders looked washed out and hard to notice -
+  [1384](https://github.com/OSC/ondemand/issues/1384).
 - Selinux updates mostly for k8s - [1497](https://github.com/OSC/ondemand/pull/1497)
 
 ### Added
@@ -1039,7 +1040,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 ## [2.0.1] - 2021-22-04
 ### Added
-- The ability to add pinned apps to the dashboard along with a new menu item titled 'Apps' in 
+- The ability to add pinned apps to the dashboard along with a new menu item titled 'Apps' in
   [870](https://github.com/OSC/ondemand/pull/870). This change also started added a new general
   purpose configuration file. It added the `pinned_apps` configuration item.
   Other additions to this feature are:
@@ -1072,7 +1073,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 - Potential XSS with the Job composer in [949](https://github.com/OSC/ondemand/pull/949).
 - Wrong link to docs in ood-portal.conf comments in [1010](https://github.com/OSC/ondemand/pull/1010).
 - ood-portal-generator now supports Oracle Linux in [1049](https://github.com/OSC/ondemand/pull/1049).
-- Job composer can now store more than 1000 workflows which would previously cause crashes 
+- Job composer can now store more than 1000 workflows which would previously cause crashes
   in [1039](https://github.com/OSC/ondemand/pull/1039).
 
 ### Changed
