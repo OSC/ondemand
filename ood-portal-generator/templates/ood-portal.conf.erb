@@ -27,16 +27,11 @@
 #
 # 3. Finally, restart Apache to have the changes take effect:
 #
-#      # For CentOS 6
-#      sudo service httpd24-httpd condrestart
-#      sudo service httpd24-htcacheclean condrestart
-#
-#      # For CentOS 7
-#      sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service
-#
 #      # For CentOS 8
 #      sudo systemctl try-restart httpd.service htcacheclean.service
 #
+#      # For Ubuntu
+#      sudo systemctl try-restart apache2.service
 
 <% if @listen_addr_port -%>
 # Listen should always be one of:

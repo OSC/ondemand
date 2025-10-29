@@ -108,6 +108,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 - Updated ood-portal-generator README.md to reflect the repository and the documentation URL changes
+- Updated ood-portal-generator ood-portal.conf template apache restart instructions.
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
