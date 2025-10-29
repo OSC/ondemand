@@ -223,10 +223,18 @@
           </optgroup>
         </select>
       </li>
-      <li class="list-group-item hidden-xs px-2 form-group form-inline m-0 border-bottom-0">
+      <li class="list-group-item hidden-xs px-2 form-group form-inline m-0">
         <label class="control-label hidden-md hidden-lg navbar-text px-1" for="wordwrap">Wrap</label>
-        <div class="form-group">
-          <input type="checkbox" id="wordwrap" value="">
+        <div class="form-switch">
+          <input class="form-check-input" role="switch" type="checkbox" id="wordwrap" value="">
+        </div>
+      </li>
+
+      <li class="list-group-item hidden-xs px-2 form-group form-inline m-0 border-bottom-0">
+        <i class="fa fa-question-circle fa-1" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= t('dashboard.soft_tabs_info') %>"></i>
+        <label class="form-check-label hidden-md hidden-lg navbar-text px-1" for="soft_tabs"><%= t('dashboard.soft_tabs') %></label>
+        <div class="form-switch">
+          <input class="form-check-input" role="switch" type="checkbox" id="soft_tabs" value="">
         </div>
       </li>
     </ul>

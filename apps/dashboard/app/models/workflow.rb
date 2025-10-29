@@ -64,6 +64,11 @@ class Workflow
   def save
     return false unless valid?(:create)
 
+    if @project_dir.nil?
+      errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
+      return false
+    end
+
     @created_at = Time.now.to_i if @created_at.nil?
     @id = Workflow.next_id if id.blank?
     save_manifest(:save)
@@ -91,6 +96,19 @@ class Workflow
 
   def manifest_file
     Workflow.workflow_dir(@project_dir).join("#{@id}.yml")
+  end
+
+  def update(attributes)
+    update_attrs(attributes)
+    return false unless valid?(:update)
+
+    save_manifest(:update)
+  end
+
+  def update_attrs(attributes)
+    [:name, :description, :launcher_ids].each do |attribute|
+      instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
+    end
   end
 
   def submit(attributes = {})

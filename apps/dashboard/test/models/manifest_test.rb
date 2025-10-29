@@ -93,6 +93,19 @@ class ManifestTest < ActiveSupport::TestCase
     assert_equal "", manifest_three.role, "nil role should return empty string"
   end
 
+  test 'hash has indifferent access' do
+    opts1 = { :name => "OnDemand", "description" => "Open" }
+    opts2 = { "name" => "OnDemand", :description => "Open"}
+    manifest1 = Manifest.new(opts2)
+    manifest2 = Manifest.new(opts2)
+
+    assert_equal "OnDemand", manifest1.name, "Name was not set"
+    assert_equal "Open", manifest1.description, "Description was not set"
+
+    assert_equal "OnDemand", manifest2.name, "Name was not set"
+    assert_equal "Open", manifest2.description, "Description was not set"
+  end
+
   test "keys are read correctly" do
     manifest = Manifest.load("test/fixtures/files/manifest_valid")
     metadata = {

@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}.3
+%define runtime_version %{major_version}.%{minor_version}.0
 %define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 # Use hardcoded RHEL 9.5 for a short period while downstream RHEL clones get RHEL 9.6 release
@@ -67,7 +67,12 @@ BuildRequires:   ondemand-ruby = %{runtime_version_full}
 BuildRequires:   ondemand-nodejs = %{runtime_version_full}
 BuildRequires:   rsync
 BuildRequires:   git
+# Force Python 3.12 for EL8 as Python 3.6 does not work with node-gyp
+%if 0%{?rhel} == 8
+BuildRequires:   python3.12
+%else
 BuildRequires:   python3
+%endif
 BuildRequires:   libffi-devel
 BuildRequires:   libyaml-devel
 
@@ -79,8 +84,8 @@ Requires:        python3
 Requires:        rclone
 %endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.26.1-3.p6.0.23.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.0.23-3.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.26.3-1.p6.1.0.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.1.0-1.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}
@@ -161,6 +166,7 @@ rake --trace install DESTDIR=%{buildroot}
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
+%__install -m 644 LICENSE.txt %{buildroot}/opt/ood/LICENSE.txt
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
@@ -177,6 +183,7 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
 %__mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
+%__mv %{buildroot}/opt/ood/apps/module-browser %{buildroot}%{_localstatedir}/www/ood/apps/sys/module-browser
 %__rm -rf %{buildroot}/opt/ood/apps
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/puns
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
@@ -287,7 +294,10 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/projects/manifest.yml
 %{_localstatedir}/www/ood/apps/sys/system-status
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
+%{_localstatedir}/www/ood/apps/sys/module-browser
 %exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
+
+%license /opt/ood/LICENSE.txt
 
 %dir %{_localstatedir}/www/ood
 %dir %{_localstatedir}/www/ood/public
@@ -331,6 +341,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_tmpfilesdir}/ondemand-nginx.conf
 
 %files -n %{gems_name}
+%defattr(644, root, root, 755)
 %{gem_home}/*
 
 %files -n ondemand-gems

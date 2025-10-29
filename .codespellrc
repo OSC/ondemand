@@ -1,0 +1,7 @@
+[codespell]
+# Ref: https://github.com/codespell-project/codespell#using-a-config-file
+skip = .git*,*.svg,locale,vendor,*.lock,*.css,*.min.*,.codespellrc,legacy,fixtures,locales,./apps/shell/public,ondemand.spec
+check-hidden = true
+ignore-regex = \b(Fro|Ownes|Requestor|forIn|afterAll|File::WRONLY)\b|/sombody/
+# dne == do-not-exists
+ignore-words-list = dne

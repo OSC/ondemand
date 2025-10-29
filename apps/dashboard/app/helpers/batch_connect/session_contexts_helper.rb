@@ -27,7 +27,9 @@ module BatchConnect::SessionContextsHelper
                       label:   label_tag(attrib.id, attrib.label),
                       checked: (attrib.value.presence || attrib.field_options[:checked])
                     }
-                    form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)
+                    content_tag(:div, id: [form.object_name, attrib.id].join('_')) do
+                      form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)                  
+                    end
                   end
                 when 'path_selector'
                   form.form_group(attrib.id) do
@@ -38,19 +40,32 @@ module BatchConnect::SessionContextsHelper
                 else
                   form.send widget, attrib.id, all_options
                 end
-    header = sanitize(OodAppkit.markdown.render(attrib.header))
-    "#{header}#{rendered}".html_safe
+                
+    # Append a wrapper div to hold additional info
+    wrapped = content_tag(
+      :div, 
+      id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
+      class: attrib.hide_by_default? ? 'd-none' : '',
+      data: {
+        widget_type: widget,
+        hide_by_default: attrib.hide_by_default?
+      }
+    ) do
+      rendered
+    end
 
+    header = sanitize(OodAppkit.markdown.render(attrib.header))
+    safe_join([header, wrapped])
   end
 
   def resolution_field(form, id, opts = {})
-    content_tag(:div, id: "#{id}_group", class: "mb3") do
+    content_tag(:div, id: "#{id}_group", class: "mb-3") do
       concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
       concat(
         content_tag(:div, class: "row mb-3") do
           concat (
-            content_tag(:div, class: "col-sm-6") do
+            content_tag(:div, id: [form.object_name, id].join('_'), class: "col-sm-6") do
               concat (
                 content_tag(:div, class: "input-group") do
                   concat (content_tag(:div, class: "input-group-prepend") do

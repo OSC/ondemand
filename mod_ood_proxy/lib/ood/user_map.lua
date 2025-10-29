@@ -5,7 +5,7 @@
   What we get from the user mapping script can be an actual
   alphanumeric username, UID, or numeric username.
   This helper distinguishes between numeric values that are usernames
-  and numeric values that are infact UIDs.
+  and numeric values that are in fact UIDs.
 --]]
 function actual_username(username)
 
@@ -41,7 +41,14 @@ function map(r, user_map_match, user_map_cmd, remote_user)
   local sys_user = ""
   -- match string
   if user_map_match ~= nil then
-    sys_user = string.match(remote_user, user_map_match)
+    -- if match string ends in :lower, lowercase the username
+    local pat = string.match(user_map_match, "^(.*):lower$")
+    if pat then
+        sys_user = string.match(remote_user, pat)
+        sys_user = string.lower(sys_user)
+    else
+        sys_user = string.match(remote_user, user_map_match)
+    end
   -- run user_map_cmd and read in stdout
   elseif user_map_cmd ~= nil then
     local handle = io.popen(user_map_cmd .. " '" .. r:escape(remote_user) .. "'")

@@ -142,7 +142,7 @@ class PosixFile
     path.parent.mkpath unless path.parent.directory?
 
     mode = if path.exist?
-             # file aleady exists, so use it's existing permissions
+             # file already exists, so use it's existing permissions
              path.stat.mode
            else
              # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.
@@ -170,7 +170,7 @@ class PosixFile
       error = I18n.t('dashboard.files_directory_download_unauthorized')
     else
       # Determine the size of the directory.
-      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
+      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbLs", path.to_s)
 
       # Catch SIGTERM.
       if s.exitstatus == 124
@@ -200,6 +200,18 @@ class PosixFile
     end
 
     return can_download, error
+  end
+
+  # This serves the same function as can_download_as_zip?, but for files
+  def can_download_file?
+    download_file_size_limit = Configuration.file_download_max
+    unless file? && readable?
+      error = I18n.t('dashboard.files_directory_download_unauthorized')
+      return [false, error]
+    end
+    can_download = stat.size <= download_file_size_limit
+    error = can_download ? nil : I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
+    [can_download, error]
   end
 
   def mime_type

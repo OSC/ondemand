@@ -46,6 +46,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: 2.5.23
+          rubygems: 'latest'
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -136,7 +137,7 @@ jobs:
           - x86_64
           - aarch64
           - ppc64le
-        version: ["4.0"]
+        version: ["4.1"]
         exclude:
           # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023

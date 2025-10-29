@@ -10,8 +10,9 @@ module AccountCache
   def accounts
     Rails.cache.fetch('account_info', expires_in: 4.hours) do
       # only Slurm support in ood_core
-      cluster = Configuration.job_clusters.select(&:slurm?).first
-      cluster.nil? ? [] : cluster.job_adapter.accounts
+      # job_clusters: not to be confused with clusters
+      slurm_job_clusters = Configuration.job_clusters.select(&:slurm?)
+      slurm_job_clusters.empty? ? [] : slurm_job_clusters.map(&:job_adapter).flat_map(&:accounts).uniq
     rescue StandardError => e
       Rails.logger.warn("Did not get accounts from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
@@ -29,7 +30,7 @@ module AccountCache
   end
 
   # To be used with dynamic forms. This method stithes together data
-  # about the account's availablity WRT clusters, queues & QoS'.
+  # about the account's availability WRT clusters, queues & QoS'.
   #
   # @return [Array] - the dynamic form options
   def dynamic_accounts
@@ -53,7 +54,7 @@ module AccountCache
   end
 
   # To be used with dynamic forms. This method stithes together data
-  # about the queue's availablity WRT clusters.
+  # about the queue's availability WRT clusters.
   #
   # @return [Array] - the dynamic form options
   def queues

@@ -70,7 +70,7 @@ en:
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
-    batch_connect_sessions_delete_hover: 删除会话
+    batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: |
@@ -135,17 +135,22 @@ en:
     directory: Directory
     edit: Edit
     file_quotas: 'File Quotas'
+    files_download_zip: 'Download as zip'
     files_directory_download_error_modal_title: Directory too large to download
-    files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
+    files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    files_send_to_target_title_default: 'Send selected files metadata to the external application'
+    files_shell: Open in Terminal
+    files_shell_dropdown: Select Cluster to Open in Terminal
     import: Import
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
@@ -166,6 +171,7 @@ en:
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
+    jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_placeholder: Project directory absolute path
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
     jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
@@ -190,6 +196,7 @@ en:
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_submitted: Workflow successfully submitted!
     launch: Launch
     module_browser_last_updated: "Last updated: %{last_updated}"
@@ -214,6 +221,9 @@ en:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     not_grouped: Other Apps
+    path_selector_home: home
+    path_selector_parent_directory: parent directory
+    path_selector_default_popup_title: 'Select Your Working Directory'
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
@@ -237,6 +247,8 @@ en:
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
+    select_path_for: |
+      %{element} select path
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
@@ -254,6 +266,8 @@ en:
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
     skip_navigation: Skip Navigation
+    soft_tabs: Soft Tabs
+    soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'

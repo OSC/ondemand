@@ -205,7 +205,7 @@ class RouterTest < ActiveSupport::TestCase
     assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
-  test "pinned apps wont duplicate entries" do
+  test "pinned apps won't duplicate entries" do
     SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     cfg = ['sys/bc_jupyter', 'sys/*', 'sys/bc_jupyter', 'sys/pseudofun']
@@ -278,7 +278,7 @@ class RouterTest < ActiveSupport::TestCase
     assert_equal desktops.to_set, pinned_apps.map(&:token).to_set
   end
 
-  test "specifying non existant categories and subcategories" do
+  test "specifying non existent categories and subcategories" do
     SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     cfg = [{ type: 'sys', category: 'Fiction', subcategory: 'Science Fiction' }]
@@ -420,7 +420,7 @@ class RouterTest < ActiveSupport::TestCase
     assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
-  test "bad metadata returns emtpy" do
+  test "bad metadata returns empty" do
     SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     cfg = [

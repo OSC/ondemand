@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Changed location of default YAML configuration file to the well-defined
   global location `/etc/ood/config/ood-portal.yml`.
   [#11](https://github.com/OSC/ood-portal-generator/issues/11)
-- Refactored code out of `Rakefile` into a separate library for code re-use.
+- Refactored code out of `Rakefile` into a separate library for code reuse.
 
 ## [0.4.0] - 2017-07-25
 ### Added

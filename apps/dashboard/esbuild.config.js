@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const faDir = 'node_modules/@fortawesome/fontawesome-free/webfonts/';
 
-// could just glob and pass this in the cli, but glob support is shell dependant
+// could just glob and pass this in the cli, but glob support is shell dependent
 const entryPoints = filesFromDir('app/javascript');
 const buildDir = 'app/assets/builds';
 
@@ -37,34 +37,6 @@ const prepPlugin = {
   },
 }
 
-// We can run into conflicts if we use the minified
-// version of some dependencies. So this plugin ensures
-// that we compile the source code of a given dependency
-// instead of the minified version.
-//
-// See https://github.com/OSC/ondemand/issues/3688 for more information.
-const minifiedSrcResolvePlugin = {
-  name: 'minifiedSrcResolvePlugin',
-  setup(build) {
-
-    build.onResolve({ filter: /preact|exifr.*/ }, args => {
-
-      const preactBase = `${__dirname}/node_modules/preact`;
-      const lookup = {
-        'preact': `${preactBase}/src/index.js`,
-        'preact/hooks': `${preactBase}/hooks/src/index.js`,
-        'exifr/dist/mini.esm.mjs': `${__dirname}/node_modules/exifr/src/bundles/mini.mjs`,
-      }
-
-      for (const [key, value] of Object.entries(lookup)) {
-        if(args.path == key) {
-          return { path: value }
-        }
-      }
-    })
-  },
-}
-
 esbuild.build({
   entryPoints: entryPoints,
   bundle: true,
@@ -72,7 +44,7 @@ esbuild.build({
   format: 'esm',
   outdir: buildDir,
   external: ['fs'],
-  plugins: [prepPlugin, minifiedSrcResolvePlugin],
+  plugins: [prepPlugin],
   minify: process.env.RAILS_ENV == 'production' || process.env.MINIFY == 'false' ? true : false,
 }).catch((e) => { 
   console.error(e.message);

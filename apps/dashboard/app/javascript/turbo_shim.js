@@ -6,7 +6,7 @@
 */
 
 import { setInnerHTML } from './utils';
-import { OODAlert } from './alert';
+import { OODAlertError } from './alert';
 
 export function replaceHTML(id, html) {
   const ele = document.getElementById(id);
@@ -21,7 +21,7 @@ export function replaceHTML(id, html) {
   setInnerHTML(ele, newHTML);
 }
 
-export function pollAndReplace(url, delay, id, callback) {
+export function pollAndReplace(url, delay, id, callback, continuePolling = () => true) {
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
     .then((response) => {
       if(response.status == 200) {
@@ -35,16 +35,19 @@ export function pollAndReplace(url, delay, id, callback) {
     .then((r) => r.text())
     .then((html) => replaceHTML(id, html))
     .then(() => {
-      setTimeout(pollAndReplace, delay, url, delay, id, callback);
+      if (continuePolling()) {
+        setTimeout(pollAndReplace, delay, url, delay, id, callback, continuePolling);
+      }
+
       if (typeof callback == 'function') {
         callback();
       }
     })
     .catch((err) => {
       if (typeof err == 'string') {
-        OODAlert(err);
+        OODAlertError(err);
       } else {
-        OODAlert('This page has encountered an unexpected error. Please refresh the page.');
+        OODAlertError('This page has encountered an unexpected error. Please refresh the page.');
       }
       console.log(err);
     });
