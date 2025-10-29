@@ -88,6 +88,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect applications now respond to hide_by_default attribute in [4620](https://github.com/OSC/ondemand/pull/4620).
 - Batch connect applications can now use data-help directives to change help messages in [4611](https://github.com/OSC/ondemand/pull/4611).
 - The CI now includes codespell support to checked spelling errors in [4671](https://github.com/OSC/ondemand/pull/4671).
+- ood-portal-generator now supports different register methods and extra options to support ScriptAlias WSGIScriptAlias etc
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).

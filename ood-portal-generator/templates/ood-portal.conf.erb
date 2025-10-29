@@ -401,7 +401,14 @@ Listen <%= addr_port %>
   #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @register_uri %>
   #     #=> <%= @register_root %>/
   #
-  Alias "<%= @register_uri %>" "<%= @register_root %>"
+  <%- if @register_method %>
+  <%= @register_method %> "<%= @register_uri %>" "<% if @register_path %><%= @register_path %><% else %><%= @register_root %><% end %>"
+  <%- if @register_method_options -%><%- @register_method_options.each do |line| -%>
+  <%= line %>
+  <%- end -%><%- end -%>
+  <%- else %>
+  Alias "<%= @register_uri %>" "<% if @register_path %><%= @register_path %><% else %><%= @register_root %><% end %>"
+  <%- end %>
   <Directory "<%= @register_root %>">
     Options FollowSymLinks
     AllowOverride None
