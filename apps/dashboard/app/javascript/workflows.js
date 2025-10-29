@@ -655,9 +655,9 @@ class DragController {
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  submitWorkflowButton.addEventListener('click', () => workflowState.saveToBackend(true));
-  resetWorkflowButton.addEventListener('click', e => workflowState.resetWorkflow(e));
-  saveWorkflowButton.addEventListener('click', () => workflowState.saveToBackend());
+  submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
+  resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
+  saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));
 
   zoomInButton.addEventListener('click', () => { pointer.zoomIn(); });
   zoomOutButton.addEventListener('click', () => { pointer.zoomOut(); });
