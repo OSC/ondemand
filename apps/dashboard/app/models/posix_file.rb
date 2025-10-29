@@ -189,6 +189,8 @@ class PosixFile
 
         if size.blank?
           error = I18n.t('dashboard.files_directory_size_calculation_error')
+        elsif s.exitstatus == 1 && size.to_i.to_s != size # du may have been successful, check if size really is an integer
+          error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s.exitstatus, error: e)
         elsif size.to_i > download_directory_size_limit
           error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
         else
