@@ -145,7 +145,7 @@ icon: 'fas://test')
       assert Dir.glob(cache_json_path).present? && 
         Dir.glob("#{project.directory}/.ondemand/launchers/*/cache.json").empty?
       assert Dir.glob(job_log_path).present? &&
-        Dir.glob("#{project.directory}/.ondemand/*").exclude?("#{project.directory}/.ondemand/job_log.yml")
+        Dir.glob("#{project.directory}/.ondemand/job_log.yml").empty?
     end
   end
 
