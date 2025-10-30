@@ -303,6 +303,7 @@ class Project
     project_dataroot.mkpath         unless project_dataroot.exist?
     configuration_directory.mkpath  unless configuration_directory.exist?
     Workflow.workflow_dir(project_dataroot)
+    JobLoggerHelper.log_file(project_dataroot)
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
