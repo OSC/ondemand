@@ -54,12 +54,9 @@ class WorkflowState {
         body: JSON.stringify(workflow)
       });
 
-      if (!response.ok) throw new Error(`Server error: ${response.status}`);
-      if(submit) {
-        alert('Workflow submitted successfully!');
-      } else {
-        alert('Workflow saved successfully!');
-      }
+      const data = await response.json();
+      if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
+      alert(data.message);
     } catch (err) {
       console.error('Error saving workflow:', err);
       alert('Failed to save workflow. Check console for details.');
@@ -145,9 +142,8 @@ class WorkflowState {
   async #loadWorkflowFromBackend() {
     try {
       const response = await fetch(this.loadUrl);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      if (data.status !== 'ok') throw new Error(data.message);
+      if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
       return data;
     } catch (err) {
       console.error('Failed to load workflow from backend:', err);

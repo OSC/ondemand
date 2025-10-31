@@ -63,9 +63,9 @@ class WorkflowsController < ApplicationController
     return unless load_project_and_workflow_objects(render_json: true)
     status = @workflow.update(metadata_params(permit_json_data))
     if status
-      render json: { status: "ok", message: "Workflow saved successfully" }
+      render json: { message: "Workflow saved successfully" }
     else
-      render json: { status: "error", message: @workflow.collect_errors }, status: :unprocessable_entity
+      render json: { message: @workflow.collect_errors }, status: :unprocessable_entity
     end
   end
 
@@ -74,13 +74,12 @@ class WorkflowsController < ApplicationController
     return unless load_project_and_workflow_objects(render_json: true)
     manifest_path = @workflow.manifest_file
     unless File.exist?(manifest_path)
-      return render json: { status: 'error', message: 'No saved workflow manifest found.' }, status: :not_found
+      return render json: { message: 'No saved workflow manifest found.' }, status: :not_found
     end
 
     data = YAML.load_file(manifest_path)
     metadata = data['metadata'] || {}
     render json: {
-      status: 'ok',
       boxes: metadata['boxes'] || [],
       edges: metadata['edges'] || [],
       zoom: metadata['zoom'] || 1.0,
@@ -96,10 +95,10 @@ class WorkflowsController < ApplicationController
     @workflow.update(metadata)
     result = @workflow.submit(submit_params(metadata))
     if result
-      render json: { status: "ok", message: "Workflow submitted successfully" }
+      render json: { message: "Workflow submitted successfully" }
     else
       msg = I18n.t('dashboard.jobs_workflow_failed', error: @workflow.collect_errors)
-      render json: { status: "ok", message: msg }, status: :unprocessable_entity
+      render json: { message: msg }, status: :unprocessable_entity
     end
   end
 
@@ -111,7 +110,7 @@ class WorkflowsController < ApplicationController
     return true if @workflow.present?
     
     if render_json
-      render json: { status: 'error', message: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: workflow_id) }, status: :not_found
+      render json: { message: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: workflow_id) }, status: :not_found
     else 
       redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_not_found', workflow_id: workflow_id)
     end
