@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
+        get 'render_button', on: :member
       end
     end
   end

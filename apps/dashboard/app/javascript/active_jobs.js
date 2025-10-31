@@ -71,11 +71,11 @@ function fetch_job_data(tr, row, options) {
 
     $.getJSON(jobDataUrl, function (data) {
       // Open this row
-      row.child(data.html_ganglia_graphs_table).show();
+      row.child(data.html_extended_layout).show();
       // Add the data panel to the view
       $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
         .hide()
-        .html(data.html_extended_panel)
+        .html(data.html_extended_data_table)
         .fadeIn(250);
       // Update the status label in the parent row
       tr.find(".status-label").html(data.status);
@@ -128,7 +128,7 @@ function fetch_table_data(table, options){
     }
     else{
       //FIXME: this error appears even when the above 404 occurs, for example
-      // that is because a 404 responce for json request returns a plain text response
+      // that is because a 404 response for json request returns a plain text response
       // and parsing that as json fails
        show_errors(["Request for jobs failed due to body parsing error."])
     }

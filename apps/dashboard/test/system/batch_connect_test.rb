@@ -448,17 +448,16 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
         cache_json.write({ cluster: 'old' }.to_json)
-      end 
-      
-      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
+      end
+
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
 
       # Only new cluster exists
       BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
       OodAppkit.stubs(:clusters).returns([new_cluster])
-      
+
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'new', find_value('cluster')
-
     end
   end
 
@@ -470,13 +469,13 @@ class BatchConnectTest < ApplicationSystemTestCase
         cache_json.write({ cluster: 'old' }.to_json)
       end
 
-      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' }})
-      old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config '}})
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
+      old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config ' } })
 
       # Both clusters exist, but only new one is valid
       BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
       OodAppkit.stubs(:clusters).returns([new_cluster, old_cluster])
-      
+
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'new', find_value('cluster')
     end
@@ -543,7 +542,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert find("##{bc_ele_id('advanced_options')}").visible?
   end
 
-  #Helper function allowing us to easily test all of the possible hideable elements
+  # Helper function allowing us to easily test all of the possible hideable elements
   def data_hide_checkbox_test(form, checkbox_id, hidden_id, default_is_hidden)
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
@@ -562,7 +561,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       # check the checkbox, and 'gpus' is visible
       check(bc_ele_id(checkbox_id))
       check_visibility(hidden_id, !default_is_hidden)
-      
 
       # un-check the checkbox, and 'gpus' is back to being hidden
       uncheck(bc_ele_id(checkbox_id))
@@ -745,7 +743,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
-  
+
   test 'hiding radio button using check boxes based on when checked' do
     form = <<~HEREDOC
       ---
@@ -821,23 +819,23 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'hiding file attachments using check boxes based on when unchecked' do
     form = <<~HEREDOC
-    ---
-    cluster:
-      - owens
-    form:
-      - seeds
-      - checkbox_test
-    attributes:
-      seeds:
-        widget: 'file_attachments'
-        label: 'Seed Files'
-      checkbox_test:
-        widget: 'check_box'
-        html_options:
-          data:
-            hide-seeds-when-not-checked: true
-  HEREDOC
-  data_hide_checkbox_test(form, 'checkbox_test', 'seeds', true)
+      ---
+      cluster:
+        - owens
+      form:
+        - seeds
+        - checkbox_test
+      attributes:
+        seeds:
+          widget: 'file_attachments'
+          label: 'Seed Files'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-seeds-when-not-checked: true
+    HEREDOC
+    data_hide_checkbox_test(form, 'checkbox_test', 'seeds', true)
   end
 
   test 'hiding path selector using check boxes based on when checked' do
@@ -881,7 +879,784 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
-  
+
+  def basic_default_hide_check_hidden(invert = false)
+    if invert
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_text('refute this')
+    else
+      assert_selector("##{bc_ele_id('gpus')}", visible: :hidden)
+      refute_text('refute this')
+    end
+  end
+
+  def basic_hide_by_default_test(form, invert: false)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      basic_default_hide_check_hidden(invert)
+
+      select 'Account2', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(!invert)
+
+      select 'Account3', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(invert)
+
+      select 'Account4', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(!invert)
+
+      select 'Account1', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(invert)
+    end
+  end
+
+  test 'hide_by_default changes default behavior on check box' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: check_box
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on check box' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: check_box
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on number field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: number_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on number field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: check_box
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on radio button' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: 'radio'
+          hide_by_default: true
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_selector("##{bc_ele_id('gpus')}",   visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_0')}", visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_1')}", visible: :hidden)
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_selector("##{bc_ele_id('gpus_0')}")
+      assert_selector("##{bc_ele_id('gpus_1')}")
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}",   visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_0')}", visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_1')}", visible: :hidden)
+    end
+  end
+
+  test 'data-hide false overrides hide_by_default on radio button' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: 'radio'
+          hide_by_default: true
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_selector("##{bc_ele_id('gpus_0')}")
+      assert_selector("##{bc_ele_id('gpus_1')}")
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}",   visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_0')}", visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_1')}", visible: :hidden)
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_selector("##{bc_ele_id('gpus_0')}")
+      assert_selector("##{bc_ele_id('gpus_1')}")
+    end
+  end
+
+  def assert_resolution_field_visibility(field, visible:)
+    opts = (visible ? {} : { visible: :hidden })
+
+    assert_selector("##{field}_group",      **opts)
+    assert_selector("##{bc_ele_id(field)}", **opts)
+    assert_selector("##{field}_x_field",    **opts)
+    assert_selector("##{field}_y_field",    **opts)
+  end
+
+  test 'hide_by_default changes default behavior on resolution field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: resolution_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    # Test help and label first, then specific resolution_field structure
+    basic_hide_by_default_test(form)
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account3', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account4', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+    end
+  end
+
+  test 'data-hide false overrides hide_by_default on resolution field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: resolution_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+          - ['Account1', 'account1', data-hide-gpus: false]
+          - ['Account2', 'account2']
+          - ['Account3', 'account3', data-hide-gpus: false]
+          - ['Account4', 'account4']
+    HEREDOC
+    # Test help and label first, then specific resolution_field structure
+    basic_hide_by_default_test(form, invert: true)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account3', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account4', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+    end
+  end
+
+  test 'hide_by_default changes default behavior on select' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: select
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+          options:
+            - ['Type 1']
+            - ['Type 2']
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on select' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: select
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+          options:
+            - ['Type 1']
+            - ['Type 2']
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on text field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: text_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+          - ['Account1', 'account1']
+          - ['Account2', 'account2', data-hide-gpus: false]
+          - ['Account3', 'account3']
+          - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on text field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: text_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+          - ['Account1', 'account1', data-hide-gpus: false]
+          - ['Account2', 'account2']
+          - ['Account3', 'account3', data-hide-gpus: false]
+          - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on path selector' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: path_selector
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      refute_text('Select Path')
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_text('Select Path')
+
+      select 'Account3', from: bc_ele_id('account')
+      refute_text('Select Path')
+
+      select 'Account4', from: bc_ele_id('account')
+      assert_text('Select Path')
+
+      select 'Account1', from: bc_ele_id('account')
+      refute_text('Select Path')
+    end
+  end
+
+  test 'data-hide false overrides hide_by_default on path selector' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: path_selector
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      assert_text('Select Path')
+
+      select 'Account2', from: bc_ele_id('account')
+      refute_text('Select Path')
+
+      select 'Account3', from: bc_ele_id('account')
+      assert_text('Select Path')
+
+      select 'Account4', from: bc_ele_id('account')
+      refute_text('Select Path')
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_text('Select Path')
+    end
+  end
+
+  def data_help_basic_test(form)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
+
+      help = parent.find(':scope > small')
+
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose whatever')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+    end
+  end
+
+  test 'data-help sets number field help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'number_field'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets text area help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'text_area'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets select help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'select'
+          options:
+          - ["Yes"]
+          - ["No"]
+          - ["Maybe"]
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets check-box area help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'check_box'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets radio button help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'radio_button'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets path selector help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'path_selector'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  # We may want to change this behavior later, but this records current state
+  test 'data-help overrides initial setting for all options' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose anything')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+    end
+  end
+
+  test 'data-help skips over malformed options' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Broken', data-help-bad-widget: 'oops']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose anything')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+    end
+  end
+
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -936,7 +1711,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal('small', find_value('classroom_size'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the classroom and see large dissappear
+    # now change the classroom and see large disappear
     select('123ABC', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
 
@@ -944,7 +1719,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('Physics 1234', from: bc_ele_id('classroom'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the lowercase classroom and see large dissappear again.
+    # now change the lowercase classroom and see large disappear again.
     select('456def', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
   end
@@ -1267,7 +2042,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
 
       # change the account to pas2051 and now it's flipped.
-      # this is becuase pas2051 is on the condo-osumed queues' allow list and
+      # this is because pas2051 is on the condo-osumed queues' allow list and
       # on the backfill variants' deny list
       select('pas2051', from: bc_ele_id('auto_accounts'))
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
@@ -1760,9 +2535,62 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   def get_favorites
     # For debugging flaky tests
-    all('#favorites li', wait: 30)
+    all('#favorites a', wait: 30)
     # puts "FAVORITES: "
     # puts favorites.map{|i| i['innerHTML']}.join('')
+  end
+
+  test 'path_selector respects allowlist' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({ OOD_ALLOWLIST_PATH: allowed_dir }) do
+        `mkdir -p #{allowed_dir}/real_directory`
+        `touch #{allowed_dir}/real_file`
+        `touch #{allowed_dir}/real_directory/other_real_file`
+        `mkdir -p #{dir}/not_allowed`
+        `touch #{dir}/not_allowed/bad_file`
+
+        form = <<~HEREDOC
+          ---
+          cluster:
+            - owens
+          form:
+            - path
+          attributes:
+            path:
+              widget: 'path_selector'
+              directory: '#{allowed_dir}/real_directory'
+        HEREDOC
+
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+
+        # await load
+        assert_selector("##{bc_ele_id('path_path_selector_table_wrapper')}")
+        # verify location
+        assert_text('other_real_file')
+
+        assert_selector('.fa-arrow-up')
+        find('.fa-arrow-up').click
+        assert_text('real_file')
+        assert_text('real_directory')
+
+        find('.fa-arrow-up').click
+        error_text = "Permission denied: #{dir} does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text)
+
+        # reset
+        find('tr.clickable td span', text: 'real_directory').click
+        assert_text('other_real_file')
+        assert_selector('#forbidden-warning', visible: :hidden)
+
+        find_all('a', text: '/').first.click
+        error_text_root = 'Permission denied: / does not have an ancestor directory specified in ALLOWLIST_PATH'
+        assert_selector('#forbidden-warning', text: error_text_root)
+      end
+    end
   end
 
   test 'launches and saves settings as a template' do

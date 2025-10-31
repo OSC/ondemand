@@ -103,6 +103,15 @@ def apache_log_dir
   "/var/log/#{apache_service.split('-').first}"
 end
 
+def ood_gems_path
+  case host_inventory['platform']
+  when 'redhat'
+    return '/opt/ood/ondemand/root/usr/share/gems'
+  when 'ubuntu', 'debian'
+    return '/opt/ood/gems'
+  end
+end
+
 def install_packages(packages)
   on hosts, "#{packager} install -y #{packages.join(' ')}"
 end
@@ -120,7 +129,7 @@ def bootstrap_repos
   when 'redhat'
     repos << 'epel-release'
     on hosts, 'dnf -y module enable ruby:3.3'
-    on hosts, 'dnf -y module enable nodejs:20'
+    on hosts, 'dnf -y module enable nodejs:22'
   when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
   end
@@ -161,7 +170,7 @@ def ondemand_repo
 end
 
 def build_repo_version
-  ENV['OOD_BUILD_REPO'] || '4.0'
+  ENV['OOD_BUILD_REPO'] || '4.1'
 end
 
 def install_ondemand
@@ -182,8 +191,8 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex'])
   end
   if host_inventory['platform'] == 'amazon'
-    on hosts, 'alternatives --install /usr/bin/node node /usr/bin/node-20 1'
-    on hosts, 'alternatives --install /usr/bin/npm npm /usr/bin/npm-20 1'
+    on hosts, 'alternatives --install /usr/bin/node node /usr/bin/node-22 1'
+    on hosts, 'alternatives --install /usr/bin/npm npm /usr/bin/npm-22 1'
   end
   # Avoid 'update_ood_portal --rpm' so that --insecure can be used
   on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"

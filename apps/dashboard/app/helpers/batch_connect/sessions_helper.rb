@@ -1,6 +1,6 @@
 # Helper for active batch connect sessions.
 #
-# Note that this module programatically generates the cards for
+# Note that this module programmatically generates the cards for
 # active batch connect sessions.
 module BatchConnect::SessionsHelper
 
@@ -213,5 +213,9 @@ module BatchConnect::SessionsHelper
         )
       end
     end
+  end
+
+  def should_poll?(sessions)
+    sessions.any? { |s| !s.completed? }
   end
 end

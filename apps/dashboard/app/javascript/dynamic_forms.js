@@ -1,5 +1,5 @@
 'use strict';
-
+import { ariaNotify } from './utils'
 // these are initialized in makeChangeHandlers
 var idPrefix = undefined;
 var shortNameRex = undefined;
@@ -20,13 +20,14 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-
+const helpHandlerCache = {};
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
+const helpLookup = {};
 
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
@@ -54,8 +55,8 @@ function shortId(elementId) {
  * Mountain case the words from a string, by tokenizing on [-_].  In the
  * simplest case it just capitalizes.
  *
- * There is a special case where seperators are followed numbers. In this case
- * The seperator is kept as a hyphen because that's how jQuery expects it.
+ * There is a special case where separators are followed numbers. In this case
+ * The separator is kept as a hyphen because that's how jQuery expects it.
  *
  * @param      {string}  str     The word string to mountain case
  *
@@ -92,14 +93,14 @@ function mountainCaseWords(str) {
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
 function snakeCaseWords(str) {
-  if(str === undefined) return undefined;
+  if(str === undefined || str === "") return "";
 
-  // find all the captial case words and if none are found, we'll just bascially
+  // find all the capital case words and if none are found, we'll just basically
   // return the same string.
   const rex = /([A-Z]{1}[a-z]*[0-9]*)|([^-_]+)/g;
   const words = str.match(rex);
 
-  // filter out emtpy matches to avoid having a _ at the end.
+  // filter out empty matches to avoid having a _ at the end.
   return words.filter(word => word != '').map(word => word.toLowerCase()).join('_');
 }
 
@@ -148,6 +149,8 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('help')) {
+                addHelpHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -200,7 +203,10 @@ function newLabel(changeElement, key) {
 };
 
 function updateLabel(changeId, changeElement, key) {
-  $(`label[for="${changeId}"]`)[0].innerHTML = newLabel(changeElement, key);
+  var labelContent = newLabel(changeElement, key);
+  const originalInfo = getWidgetInfo(changeId);
+  $(`label[for="${changeId}"]`)[0].innerHTML = labelContent;
+  ariaStream(`Change label on ${originalInfo} to new label ${labelContent}`);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
@@ -222,6 +228,46 @@ function addLabelHandler(optionId, option, key, configValue) {
   updateLabel(changeId, changeElement, key);
 };
 
+function getNewHelp(changeElement, key) {
+  const selectedOptionHelpIndex = changeElement[0].selectedIndex;
+  const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
+  return selectedOptionHelp.dataset[key];
+}
+
+function updateHelp(changeId, changeElement, key) {
+  const helpContent = getNewHelp(changeElement, key);
+  if (helpContent === undefined || changeId === undefined) return;
+  const wrapper_id = `#${changeId}_wrapper`;
+  var helpElement = $(`${wrapper_id} small p`);
+  if (helpElement.length == 0) {
+    const small = document.createElement('small');
+    small.classList.add('form-text', 'text-muted');
+    helpElement = document.createElement('p');
+    $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
+  }
+  $(helpElement).text(helpContent);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+}
+
+function addHelpHandler(optionId, option, key, configValue) {
+  const changeId = idFromToken(key.replace(/^help/, ''));
+  const changeElement = $(`#${optionId}`);
+
+  if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
+  const table = helpLookup[optionId];
+  table.put(changeId, option, configValue);
+
+  if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
+  
+  if(!helpHandlerCache[optionId].includes(changeId)) {
+    helpHandlerCache[optionId].push(changeId);
+    changeElement.on('change', (event) => {
+      updateHelp(changeId, changeElement, key);
+    });
+  };
+
+  updateHelp(changeId, changeElement, key);
+};
 /**
  *
  * @param {*} subjectId batch_connect_session_context_node_type
@@ -330,6 +376,9 @@ function setValue(event, changeId) {
 
   if(changeVal !== undefined) {
     const element = document.getElementById(changeId);
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`set ${elementInfo} to value ${changeVal}`);
+
     if(element['type'] == 'checkbox') {
       setCheckboxValue(element, changeVal);
     } else {
@@ -379,7 +428,7 @@ class Table {
     y = snakeCaseWords(y);
 
     if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
-    if(y && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
+    if((y || y === "") && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
 
     const xIdx = this.xIdxLookup[x];
     const yIdx = this.yIdxLookup[y];
@@ -437,29 +486,25 @@ class Table {
 function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
-  let changeElement = undefined;
-  
-  $(`#${changeId}`).parents().each(function(_i, parent) {
-    var classListValues = parent.classList.values();
-    for (const val of classListValues) {
-      // TODO: Using 'mb-3' here because 'form-group' was removed
-      // from Bootstrap 5 and replaced with 'mb-3' - however, this
-      // is a grid class which could (??) apply to parent elements
-      // in unpredictable parts of the chain - test for & resolve
-      if (val.match('mb-3')) {
-        changeElement = $(parent);
-      }
-    }
-  });
-
-  if (changeElement === undefined || changeElement.length <= 0) return;
-
-  // safe to access directly?
+  const elementInfo = getWidgetInfo(changeId);
+  const defaultHidden = $(`#${changeId}_wrapper`).data('hideByDefault')
   const hide = hideLookup[id].get(changeId, val);
-  if((hide === false) || (hide === undefined && !initializing)) {
-    changeElement.show();
-  }else if(hide === true) {
-    changeElement.hide();
+  
+  if((hide === false) || (hide === undefined && !initializing && !defaultHidden)) {
+    toggleItemVisible(changeId, true);
+    ariaStream(`Revealed form item ${elementInfo}`);
+  } else if ((hide === true) || (hide === undefined && !initializing && defaultHidden)) {
+    toggleItemVisible(changeId, false);
+    ariaStream(`Hid form item ${elementInfo}`);
+  }
+}
+
+function toggleItemVisible(id, makeVisible) {
+  const wrapper = $(`#${id}_wrapper`);
+  if (makeVisible) {
+    wrapper.removeClass('d-none')
+  } else {
+    wrapper.addClass('d-none')
   }
 }
 
@@ -505,9 +550,15 @@ function toggleMinMax(event, changeId, otherId) {
     max: parseInt(changeElement.attr('max')),
   };
 
+  var ariaMsg = 'Set ';
+  var ariaMsgLength = ariaMsg.length;
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
+      if (ariaMsg.length > ariaMsgLength){
+        ariaMsg += ' and ';
+      }
+      ariaMsg += `${dim}imum limit to ${mm[dim]}`;
     }
   });
 
@@ -515,6 +566,12 @@ function toggleMinMax(event, changeId, otherId) {
   if (val !== undefined) {
     changeElement.attr('value', val);
     changeElement.val(val);
+    ariaMsg += ` and set current value to ${val}`;
+  }
+
+  if (ariaMsg.length > ariaMsgLength){
+    ariaMsg += ` for ${getWidgetInfo(changeId)}`;
+    ariaStream(ariaMsg);
   }
 }
 
@@ -752,7 +809,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   options.forEach(option => {
     let hide = false;
 
-    // even though an event occured - an option may be hidden based on the value of
+    // even though an event occurred - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
@@ -788,15 +845,18 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       }
     };
 
+    const elementInfo = getWidgetInfo(elementId);
     if(hide) {
       if(option.selected) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-
+      var prefix = option.selected ? 'Selected' : ''
+      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`)
       option.style.display = 'none';
       option.disabled = true;
     } else {
+      ariaStream(`Option ${option.value} enabled for ${elementInfo}`)
       option.style.display = '';
       option.disabled = false;
     }
@@ -819,7 +879,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       });
     }
 
-    // no duplciates are visible, so just pick the first visible option
+    // no duplicates are visible, so just pick the first visible option
     if (newSelectedOption === undefined) {
       others = document.querySelectorAll(`#${elementId} option`);
       others.forEach(ele => {
@@ -834,8 +894,26 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
     }
   }
 
-  // now that we're done, propogate this change to data-set or data-hide handlers
+  // now that we're done, propagate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
+}
+
+// get attributes based on widget id
+function getWidgetInfo(id){
+  const type = getWidgetType(id);
+  const label = $(`label[for="${id}"]`);
+  const labelText = label.length ? label.text().trim() : null;
+
+  return `${type} with ${labelText ? ` label ${labelText}` : 'no label'}`;
+}
+
+function getWidgetType(id){
+  return $(`#${id}_wrapper`).data('widgetType')
+}
+
+// sends a message that is immediately read by screenreaders
+function ariaStream(message) {
+  initializing ? null : ariaNotify(`${message}.`, false);
 }
 
 function toggleOptionsFor(_event, elementId) {

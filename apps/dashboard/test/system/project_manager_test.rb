@@ -272,7 +272,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'creates new laucher with default items' do
+  test 'creates new launcher with default items' do
     Dir.mktmpdir do |dir|
       Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
       project_id = setup_project(dir)
@@ -990,6 +990,23 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # sleep here because this test can error with Errno::ENOTEMPTY: Directory not empty @ dir_s_rmdir
       # something still has a hold on these files.
       sleep 2
+    end
+  end
+
+  test 'importing a shared project' do
+    Dir.mktmpdir do |dir|
+      Project.stubs(:dataroot).returns(Pathname.new(dir))
+
+      visit(projects_root_path)
+      click_on(I18n.t('dashboard.jobs_import_shared_project'))
+
+      fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
+      click_on(I18n.t('dashboard.import'))
+
+      # redirected back to the index and it has imported the project with a success notice
+      assert_current_path(projects_root_path)
+      assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
     end
   end
 end

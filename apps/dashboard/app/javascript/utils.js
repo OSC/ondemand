@@ -101,11 +101,18 @@ export function openLinkInJs(event) {
 }
 
 // Sets a custom message for a generic ARIA live region
-export function ariaNotify(message) {
+export function ariaNotify(message, interrupt = true) {
   const liveRegion = document.getElementById("aria_live_region");
 
   if(liveRegion) {
-    liveRegion.textContent = message;
+    if(interrupt) {
+      liveRegion.textContent = message;
+    }
+    else {
+      const messageBlock = document.createElement('p');
+      messageBlock.textContent = message;
+      liveRegion.appendChild(messageBlock);
+    }
   }
 }
 

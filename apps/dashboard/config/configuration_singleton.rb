@@ -33,6 +33,7 @@ class ConfigurationSingleton
     load_dotenv_files
     add_boolean_configs
     add_string_configs
+    add_int_configs
   end
 
   # All the boolean configurations that can be read through
@@ -82,6 +83,16 @@ class ConfigurationSingleton
       :novnc_default_compression      => '6',
       :novnc_default_quality          => '2',
       :plugins_directory              => '/etc/ood/config/plugins'
+    }.freeze
+  end
+
+  # All the int configs can be read through environment variables 
+  # or through the config file.
+  #
+  # @return [Hash] key/value pairs of defaults
+  def int_configs
+    {
+      :file_download_max => 10_737_418_240
     }.freeze
   end
 
@@ -159,14 +170,14 @@ class ConfigurationSingleton
 
   # The paths to the JSON files that store the quota information
   # Can be URL or File path. colon delimited string; though colon in URL is
-  # ignored if URL has format: scheme://path (colons preceeding // are ignored)
+  # ignored if URL has format: scheme://path (colons preceding // are ignored)
   #
   # /path/to/quota.json:https://osc.edu/quota.json
   #
   #
   # @return [Array<String>] quota paths
   def quota_paths
-    # regex uses negative lookahead to ignore : preceeding //
+    # regex uses negative lookahead to ignore : preceding //
     ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
   end
 
@@ -178,14 +189,14 @@ class ConfigurationSingleton
 
   # The paths to the JSON files that store the balance information
   # Can be URL or File path. colon delimited string; though colon in URL is
-  # ignored if URL has format: scheme://path (colons preceeding // are ignored)
+  # ignored if URL has format: scheme://path (colons preceding // are ignored)
   #
   # /path/to/balance.json:https://osc.edu/balance.json
   #
   #
   # @return [Array<String>] balance paths
   def balance_paths
-    # regex uses negative lookahead to ignore : preceeding //
+    # regex uses negative lookahead to ignore : preceding //
     ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
   end
 
@@ -407,12 +418,14 @@ class ConfigurationSingleton
     (ood_bc_card_time_int < 0) ? 0 : ood_bc_card_time_int
   end
 
+  MIN_POLL_DELAY = 10_000
+
   # Returns the number of milliseconds to wait between calls to the system status page
   # The default is 30s and the minimum is 10s.
   def status_poll_delay
     status_poll_delay = ENV['OOD_STATUS_POLL_DELAY']
     status_poll_delay_int = status_poll_delay.nil? ? config.fetch(:status_poll_delay, '30000').to_i : status_poll_delay.to_i
-    status_poll_delay_int < 10_000 ? 10_000 : status_poll_delay_int
+    status_poll_delay_int < MIN_POLL_DELAY ? MIN_POLL_DELAY : status_poll_delay_int
   end
 
   # Returns the number of milliseconds to wait between calls to the BatchConnect Sessions resource
@@ -421,7 +434,7 @@ class ConfigurationSingleton
   def bc_sessions_poll_delay
     bc_poll_delay = ENV['OOD_BC_SESSIONS_POLL_DELAY'] || ENV['POLL_DELAY']
     bc_poll_delay_int = bc_poll_delay.nil? ? config.fetch(:bc_sessions_poll_delay, '10000').to_i : bc_poll_delay.to_i
-    bc_poll_delay_int < 10_000 ? 10_000 : bc_poll_delay_int
+    bc_poll_delay_int < MIN_POLL_DELAY ? MIN_POLL_DELAY : bc_poll_delay_int
   end
 
   def config
@@ -450,7 +463,7 @@ class ConfigurationSingleton
   end
 
   def shared_projects_root
-    # This environment varible will support ':' colon separated paths
+    # This environment variable will support ':' colon separated paths
     ENV['OOD_SHARED_PROJECT_PATH'].to_s.split(":").map { |p| Pathname.new(p) }
   end
 
@@ -537,7 +550,16 @@ class ConfigurationSingleton
       end
     end.each do |cfg_item, _|
       define_singleton_method("#{cfg_item}?".to_sym) do
-        send(cfg_item).nil?
+        !send(cfg_item).nil?
+      end
+    end
+  end
+
+  def add_int_configs
+    int_configs.each do |cfg_item, default|
+      define_singleton_method(cfg_item.to_sym) do
+        e = ENV["OOD_#{cfg_item.to_s.upcase}"]
+        (e.nil? ? config.fetch(cfg_item, default) : e).to_i
       end
     end
   end

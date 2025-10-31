@@ -93,6 +93,8 @@ class PosixFile
       PATHS_TO_FILTER.include?(p.basename.to_s)
     end.select do |path|
       AllowlistPolicy.default.permitted?(path.realpath.to_s)
+    rescue StandardError
+      false
     end.map do |path|
       FileToZip.new(path.to_s, path.relative_path_from(expanded).to_s, path.realpath.to_s)
     end
@@ -142,7 +144,7 @@ class PosixFile
     path.parent.mkpath unless path.parent.directory?
 
     mode = if path.exist?
-             # file aleady exists, so use it's existing permissions
+             # file already exists, so use it's existing permissions
              path.stat.mode
            else
              # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.
@@ -170,27 +172,25 @@ class PosixFile
       error = I18n.t('dashboard.files_directory_download_unauthorized')
     else
       # Determine the size of the directory.
-      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
+      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbLs", path.to_s)
 
       # Catch SIGTERM.
       if s.exitstatus == 124
         error = I18n.t('dashboard.files_directory_size_calculation_timeout')
-      elsif ! s.success?
+      elsif !(s.success? || s.exitstatus == 1) # du exits with status 1 if it encounters a broken symlink
         error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s.exitstatus, error: e)
       else
-        # Example output from: du -cbs $path
+        # Example output from: du -cbLs $path
         #
-        #    496184  .
-        #    64      ./ood-portal-generator/lib/ood_portal_generator
-        #    72      ./ood-portal-generator/lib
-        #    24      ./ood-portal-generator/templates
-        #    40      ./ood-portal-generator/share
-        #    576     ./ood-portal-generator
+        #    496184  $path
+        #    496184  total
         #
         size = o&.split&.first
 
         if size.blank?
           error = I18n.t('dashboard.files_directory_size_calculation_error')
+        elsif s.exitstatus == 1 && size.to_i.to_s != size # du may have been successful, check if size really is an integer
+          error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s.exitstatus, error: e)
         elsif size.to_i > download_directory_size_limit
           error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
         else
@@ -200,6 +200,18 @@ class PosixFile
     end
 
     return can_download, error
+  end
+
+  # This serves the same function as can_download_as_zip?, but for files
+  def can_download_file?
+    download_file_size_limit = Configuration.file_download_max
+    unless file? && readable?
+      error = I18n.t('dashboard.files_directory_download_unauthorized')
+      return [false, error]
+    end
+    can_download = stat.size <= download_file_size_limit
+    error = can_download ? nil : I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
+    [can_download, error]
   end
 
   def mime_type

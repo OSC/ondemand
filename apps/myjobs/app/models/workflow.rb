@@ -145,7 +145,7 @@ class Workflow < ApplicationRecord
       }.map {
         |f| WorkflowFile.new(f, self.staged_dir)
       }.reject {
-        |wf| wf.under_dotfile?
+        |wf| wf.is_dotfile?
       }
     else
       @folder_contents = []
@@ -157,9 +157,9 @@ class Workflow < ApplicationRecord
   # Relative file path to the staged dir is at index 0, which will be used as the text for the option element
   # Full file path is at index 1, which will be used as the value for the option element
   #
-  # Files grouped under the same categroy are in the same array: [[relative_file_path, file_path]]
+  # Files grouped under the same category are in the same array: [[relative_file_path, file_path]]
   #
-  # Valid abd suggested files are grouped under "Suggested file(s)" in the dropdown
+  # Valid and suggested files are grouped under "Suggested file(s)" in the dropdown
   # They are at index 1 of the array with "Suggested file(s)" at index 0: ["Suggested file(s)", [[relative_file_path, file_path]]]
   #
   # Valid but not suggested files are grouped under "Valid file(s)" in the dropdown

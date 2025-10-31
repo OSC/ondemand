@@ -3,6 +3,7 @@
   disabled_class = disabled ? 'disabled' : ''
   edit_title = "#{t('dashboard.edit')} launcher #{launcher.title}"
   delete_title = "#{t('dashboard.delete')} launcher #{launcher.title}"
+  remove_delete_button = @remove_delete_button
 -%>
 
 <div class="row">
@@ -44,16 +45,18 @@
     <%- end %>
   </div>
 
-  <div class="col">
-    <%= button_to(
-      project_launcher_path(@project.id, launcher.id),
-      id: "delete_#{launcher.id}",
-      class: "btn btn-danger launcher-button",
-      title: delete_title,
-      data: { confirm: I18n.t('dashboard.jobs_launchers_delete_script_confirmation') },
-      method: :delete) do
-    %>
-      <%= I18n.t('dashboard.delete') %>
-    <%- end -%>
-  </div>
+  <% unless remove_delete_button %>
+    <div class="col">
+      <%= button_to(
+        project_launcher_path(@project.id, launcher.id),
+        id: "delete_#{launcher.id}",
+        class: "btn btn-danger launcher-button",
+        title: delete_title,
+        data: { confirm: I18n.t('dashboard.jobs_launchers_delete_script_confirmation') },
+        method: :delete) do
+      %>
+        <%= I18n.t('dashboard.delete') %>
+      <%- end -%>
+    </div>
+  <% end %>
 </div>
