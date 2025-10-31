@@ -5,9 +5,7 @@ class Workflow
 
   class << self
     def workflow_dir(project_dir)
-      dir = Pathname.new("#{project_dir}/.ondemand/workflows")
-      FileUtils.mkdir_p(dir) unless dir.exist?
-      dir
+      Pathname.new("#{project_dir}/.ondemand/workflows")
     end
 
     def find(id, project_dir)
