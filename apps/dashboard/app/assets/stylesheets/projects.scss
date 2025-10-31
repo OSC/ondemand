@@ -1,10 +1,14 @@
 
 .project-icon {
-  padding: 0.3rem;
+  padding: 2rem;
   margin: 0.5rem;
 
   outline: 0.25em solid rgb(26, 118, 211);
   border-radius: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 20rem;
 
   &:hover {
     outline: 0.4em solid rgb(26, 118, 211);
@@ -16,6 +20,11 @@
 
   button {
     text-decoration: none !important;
+  }
+
+  h5 {
+    margin: 1rem 0rem;
+    font-weight: bold;
   }
 }
 

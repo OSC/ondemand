@@ -7,12 +7,12 @@
   <div class="col-md-9">
     <div class="row">
       <% @projects.each do |project| %>
-        <div id="<%= project.id %>" class="col-md-3 project-icon project-card">
+        <div id="<%= project.id %>" class="project-icon project-card">
           <%= link_to(project_path(project.id), class: 'text-dark') do %>
             <div class="text-center d-flex justify-content-center">
               <strong>
                 <%= icon_tag(URI.parse(project.icon)) %>
-                <%= content_tag(:p, project.title) %>
+                <%= content_tag(:h5, project.title) %>
               </strong>
             </div>
             <div class="row">
