@@ -103,6 +103,15 @@ def apache_log_dir
   "/var/log/#{apache_service.split('-').first}"
 end
 
+def ood_gems_path
+  case host_inventory['platform']
+  when 'redhat'
+    return '/opt/ood/ondemand/root/usr/share/gems'
+  when 'ubuntu', 'debian'
+    return '/opt/ood/gems'
+  end
+end
+
 def install_packages(packages)
   on hosts, "#{packager} install -y #{packages.join(' ')}"
 end

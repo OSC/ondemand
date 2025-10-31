@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - JobComposer projects under hidden directories now show correctly in [4547](https://github.com/OSC/ondemand/pull/4547).
 - Allowlist errors are correctly reporting in path selector in [4645](https://github.com/OSC/ondemand/pull/4645).
 - Fix S3-Specific directory traversal bug in [4623](https://github.com/OSC/ondemand/pull/4623).
+- bc_deskop now removes HOME paths from the PATH in [4703](https://github.com/OSC/ondemand/pull/4703).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -84,6 +85,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - File downloads now have limits in [4535](https://github.com/OSC/ondemand/pull/4535).
 - Dynamic form changes now announce their actions to screen readers in [4594](https://github.com/OSC/ondemand/pull/4594).
 - The shell app now prefixes logs with the username and hostname in [4628](https://github.com/OSC/ondemand/pull/4628).
+- Batch connect applications now respond to hide_by_default attribute in [4620](https://github.com/OSC/ondemand/pull/4620).
+- Batch connect applications can now use data-help directives to change help messages in [4611](https://github.com/OSC/ondemand/pull/4611).
+- The CI now includes codespell support to checked spelling errors in [4671](https://github.com/OSC/ondemand/pull/4671).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -101,6 +105,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The shell app has accessibility features turned on in [4451](https://github.com/OSC/ondemand/pull/4451).
 - Batch connect forms now send private no-store headers in [4638](https://github.com/OSC/ondemand/pull/4638).
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
+- OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).

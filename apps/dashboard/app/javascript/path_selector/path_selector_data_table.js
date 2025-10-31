@@ -1,4 +1,4 @@
-import { OODAlert } from '../alert';
+import { OODAlertError } from '../alert';
 import { hide, show } from "../utils";
 
 export class PathSelectorTable {
@@ -226,7 +226,7 @@ export class PathSelectorTable {
         regex = RegExp(this.filePattern);
       }
     } catch {
-      OODAlert("The regular expression provided for this path selector did not compile");
+      OODAlertError("The regular expression provided for this path selector did not compile");
     }
 
     const filteredFiles = data.files.filter((file) => {

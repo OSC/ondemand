@@ -20,13 +20,14 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-
+const helpHandlerCache = {};
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
+const helpLookup = {};
 
 // aliasLookup is a nested hash of the form
 // {optionId: {value: alias}}
@@ -157,6 +158,9 @@ function makeChangeHandlers(prefix){
                 addLabelHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('alias'))
                 cacheAliases(element['id']);
+              } else if(key.startsWith('help')) {
+                addHelpHandler(element['id'], opt.value, key, data[key]);
+              }
             });
           }
       });
@@ -232,6 +236,46 @@ function addLabelHandler(optionId, option, key, configValue) {
   updateLabel(changeId, changeElement, key);
 };
 
+function getNewHelp(changeElement, key) {
+  const selectedOptionHelpIndex = changeElement[0].selectedIndex;
+  const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
+  return selectedOptionHelp.dataset[key];
+}
+
+function updateHelp(changeId, changeElement, key) {
+  const helpContent = getNewHelp(changeElement, key);
+  if (helpContent === undefined || changeId === undefined) return;
+  const wrapper_id = `#${changeId}_wrapper`;
+  var helpElement = $(`${wrapper_id} small p`);
+  if (helpElement.length == 0) {
+    const small = document.createElement('small');
+    small.classList.add('form-text', 'text-muted');
+    helpElement = document.createElement('p');
+    $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
+  }
+  $(helpElement).text(helpContent);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+}
+
+function addHelpHandler(optionId, option, key, configValue) {
+  const changeId = idFromToken(key.replace(/^help/, ''));
+  const changeElement = $(`#${optionId}`);
+
+  if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
+  const table = helpLookup[optionId];
+  table.put(changeId, option, configValue);
+
+  if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
+  
+  if(!helpHandlerCache[optionId].includes(changeId)) {
+    helpHandlerCache[optionId].push(changeId);
+    changeElement.on('change', (event) => {
+      updateHelp(changeId, changeElement, key);
+    });
+  };
+
+  updateHelp(changeId, changeElement, key);
+};
 /**
  *
  * @param {*} subjectId batch_connect_session_context_node_type
@@ -451,12 +495,13 @@ function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
   const elementInfo = getWidgetInfo(changeId);
+  const defaultHidden = $(`#${changeId}_wrapper`).data('hideByDefault')
   const hide = hideLookup[id].get(changeId, val);
   
-  if ((hide === false) || (hide === undefined && !initializing)) {
+  if((hide === false) || (hide === undefined && !initializing && !defaultHidden)) {
     toggleItemVisible(changeId, true);
     ariaStream(`Revealed form item ${elementInfo}`);
-  } else if (hide === true) {
+  } else if ((hide === true) || (hide === undefined && !initializing && defaultHidden)) {
     toggleItemVisible(changeId, false);
     ariaStream(`Hid form item ${elementInfo}`);
   }
@@ -892,7 +937,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
 // get attributes based on widget id
 function getWidgetInfo(id){
-  const type = getWidgetType(id)
+  const type = getWidgetType(id);
   const label = $(`label[for="${id}"]`);
   const labelText = label.length ? label.text().trim() : null;
 

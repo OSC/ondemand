@@ -6,7 +6,7 @@ module MotdFormatter
   class OscTest < ActiveSupport::TestCase
     include MotdFormatter
     # test date order of example Motd file
-    # 
+    #
     test 'motd message date format' do
       date = Date.new(2016, 5, 4)
       # assume year month day
@@ -24,7 +24,7 @@ module MotdFormatter
 
     test 'test when motd formatter_osc_valid' do
       path = "#{Rails.root}/test/fixtures/files/motd_valid"
-      with_modified_env({ 'MOTD_FORMAT': "osc", 'MOTD_PATH': path }) do
+      with_modified_env({ 'MOTD_FORMAT': 'osc', 'MOTD_PATH': path }) do
         motd_file = MotdFile.new
         expected_file = File.open(path).read
 
@@ -34,12 +34,12 @@ module MotdFormatter
         assert_equal 3, motd_file.formatter.messages.count
       end
     end
-    
+
     test 'test when motd_formatter_osc empty' do
       path = "#{Rails.root}/test/fixtures/files/motd_empty"
-      with_modified_env({ 'MOTD_FORMAT': "osc", 'MOTD_PATH': path }) do
+      with_modified_env({ 'MOTD_FORMAT': 'osc', 'MOTD_PATH': path }) do
         motd_file = MotdFile.new
-        
+
         assert_equal true, motd_file.exist?
         assert_equal path, motd_file.motd_path
         assert_equal '', motd_file.content
@@ -49,7 +49,7 @@ module MotdFormatter
 
     test 'test when motd formatter_osc_missing' do
       path = "#{Rails.root}/test/fixtures/files/motd_missing"
-      with_modified_env({ 'MOTD_FORMAT': "osc", 'MOTD_PATH': path }) do
+      with_modified_env({ 'MOTD_FORMAT': 'osc', 'MOTD_PATH': path }) do
         motd_file = MotdFile.new
 
         assert_equal false, motd_file.exist?
