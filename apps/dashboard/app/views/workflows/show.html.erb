@@ -1,15 +1,25 @@
 <%= javascript_include_tag 'workflows', nonce: true, defer: true %>
 
+<input type="hidden" id="project-id" value="<%= @project.id %>">
+<input type="hidden" id="workflow-id" value="<%= @workflow.id %>">
+<input type="hidden" id="base-workflow-url" value="<%= project_workflow_path(@project.id, @workflow.id) %>">
 <input type="hidden" id="base-launcher-url" value="<%= project_launchers_path(@project.id) %>">
 
 <div class="app" id="app">
   <div class="toolbar" aria-label="toolbar">
-    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: true, class: 'form-control mb-2 w-50' %>
+    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: true, class: 'form-control mb-2 w-25' %>
     <button id="btn-add">Add Launcher</button>
     <button id="btn-connect" aria-pressed="false">Connect Launchers</button>
     <button id="btn-delete-launcher" class="danger" title="Delete selected launcher (Del/Backspace)">Delete Launcher</button>
     <button id="btn-delete-edge" class="danger" title="Delete selected edge (Del/Backspace)">Delete Edge</button>
-    <span class="hint">Click title to select and drag. Connect via clicking two launchers.</span>
+    
+    <div class="workflow-actions">
+      <button id="btn-submit-workflow" class: 'btn btn-primary'><%= I18n.t('dashboard.jobs_workflow_submit') %></button>
+      <button id="btn-reset-workflow" class: 'btn btn-danger'><%= I18n.t('dashboard.reset') %></button>
+      <button id="btn-save-workflow" class: 'btn btn-info'><%= I18n.t('dashboard.save') %></button>
+      <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
+      <span class="hint">Click title to select and drag. Connect via clicking two launchers.</span>
+    </div>
   </div>
 
   <div class="workspace-wrapper">
@@ -33,5 +43,4 @@
       </div>
     </div>
   </div>
-
 </div>

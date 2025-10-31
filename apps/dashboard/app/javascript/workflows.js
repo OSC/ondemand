@@ -4,6 +4,154 @@ import { DAG } from './dag.js';
  * Helper Classes to support Drag and Drop UI 
  */
 
+// Handles boxes, edges, auto-save, auto-load and saving to workflow model
+class WorkflowState {
+  constructor(projectId, workflowId, boxes, edges, dag, pointer, baseUrl) {
+    this.projectId = projectId;
+    this.workflowId = workflowId;
+    this.boxes = boxes;
+    this.edges = edges;
+    this.dag = dag;
+    this.pointer = pointer;
+    this.baseUrl = baseUrl;
+    this.saveUrl = `${baseUrl}/save`;
+    this.submitUrl = `${baseUrl}/submit`;
+    this.loadUrl = `${baseUrl}/load`;
+    this.STORAGE_KEY = `project_${projectId}_workflow_${workflowId}_state`;
+  }
+
+  resetWorkflow(e) {
+    this.boxes.forEach(b => b.el.remove());
+    this.boxes.clear();
+    this.edges.forEach(e => e.el.remove());
+    this.edges.length = 0;
+    this.dag.reset();
+    this.pointer.resetZoom();
+    this.#clearSession();
+    alert('Workflow reset.');
+  }
+
+  saveToSession() {
+    try {
+      sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.#serialize()));
+    } catch (err) {
+      console.error('Failed to save workflow in session:', err);
+    }
+  }
+
+  async saveToBackend(submit=false) {
+    const workflow = this.#serialize();
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+      let url = submit ? this.submitUrl : this.saveUrl;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify(workflow)
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
+      alert(data.message);
+    } catch (err) {
+      console.error('Error saving workflow:', err);
+      alert('Failed to save workflow. Check console for details.');
+    }
+  }
+
+  async restorePreviousState(makeLauncher, createEdge) {
+    const sessionMetadata = await this.#restoreFromSession();
+    const backendMetadata = await this.#loadWorkflowFromBackend();
+    
+    let metadata = null;
+    const sessionTs = this.#parseTime(sessionMetadata?.saved_at);
+    const backendTs = this.#parseTime(backendMetadata?.saved_at);
+    if (sessionTs == null || (backendTs != null && sessionTs < backendTs)) {
+      metadata = backendMetadata;
+      console.log('Restoring workflow from backend metadata.');
+    } else if (backendTs == null){
+      metadata = sessionMetadata;
+      console.log('Restoring workflow from session metadata.');
+    } else {
+      console.log('No saved workflow found in session or backend.');
+      return;
+    }
+
+    try {
+      if (metadata.boxes) {
+        await Promise.all(
+          metadata.boxes.map(b => makeLauncher(b.row, b.col, b.id, b.title))
+        );
+      }
+      if (metadata.edges) {
+        metadata.edges.forEach(e => createEdge(e.from, e.to));
+      }
+      if (metadata.zoom) {
+        this.pointer.zoomRef.value = metadata.zoom;
+        this.pointer.applyZoomCb();
+      }
+      console.info('Workflow restored correctly.');
+    } catch (err) {
+      console.error('Failed to apply stored workflow:', err);
+    }
+  }
+
+  #serialize() {
+    return {
+      boxes: Array.from(this.boxes.values()).map(b => ({
+        id: b.id,
+        title: b.el.querySelector('.launcher-title-grab')?.textContent?.trim() || '',
+        row: b.row,
+        col: b.col
+      })),
+      edges: this.edges.map(e => ({
+        from: e.fromBox.id,
+        to: e.toBox.id
+      })),
+      zoom: this.pointer.zoomRef.value,
+      saved_at: new Date().toISOString()
+    };
+  }
+
+  #clearSession() {
+    sessionStorage.removeItem(this.STORAGE_KEY);
+  }
+
+  #parseTime(ts) {
+    if (!ts) return null;
+    const d = new Date(ts);
+    return isNaN(d) ? null : d;
+  }
+
+  async #restoreFromSession() {
+    const json = sessionStorage.getItem(this.STORAGE_KEY);
+    if (!json) return null;
+    try {
+      const data = JSON.parse(json);
+      return data;
+    } catch (err) {
+      console.error('Failed to restore workflow from session:', err);
+      return null;
+    }
+  }
+
+  async #loadWorkflowFromBackend() {
+    try {
+      const response = await fetch(this.loadUrl);
+      const data = await response.json();
+      if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
+      return data;
+    } catch (err) {
+      console.error('Failed to load workflow from backend:', err);
+      return null;
+    }
+  }
+}
+
 // Box represents a draggable launcher box
 class Box {
   constructor(id, el, row, col, w, h) {
@@ -114,7 +262,7 @@ class Pointer {
 
 // DragController manages dragging of launcher boxes
 class DragController {
-  constructor(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap) {
+  constructor(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap, saveToSession) {
     this.pointer = pointer;
     this.boxes = boxes;
     this.edges = edges;
@@ -125,6 +273,7 @@ class DragController {
     this.halfGap = halfGap;
     this.dragging = null;
     this.start = null;
+    this.workflowSaveCb = saveToSession;
 
     document.addEventListener('pointermove', e => this.onMove(e));
     document.addEventListener('pointerup', e => this.onUp(e));
@@ -172,6 +321,7 @@ class DragController {
 
     this.dragging = null;
     this.start = null;
+    this.workflowSaveCb();
   }
 
   snapToGrid(x, y) {
@@ -209,7 +359,7 @@ class DragController {
 /*
  * Immediately Invoked Function Expression (IIFE) to encapsulate the workflow logic
 */
-(() => {
+(async () => {
   // Document elements
   const workspace = document.getElementById('workspace');
   const stage = document.getElementById('stage');
@@ -222,6 +372,12 @@ class DragController {
   const zoomOutButton = document.getElementById('zoom-out');
   const zoomResetButton = document.getElementById('zoom-reset');
   const selectedLauncher = document.getElementById('select_launcher');
+  const submitWorkflowButton = document.getElementById('btn-submit-workflow');
+  const resetWorkflowButton = document.getElementById('btn-reset-workflow');
+  const saveWorkflowButton = document.getElementById('btn-save-workflow');
+  const projectId = document.getElementById('project-id').value;
+  const workflowId = document.getElementById('workflow-id').value;
+  const baseWorkflowUrl = document.getElementById('base-workflow-url').value;
   const baseLauncherUrl = document.getElementById('base-launcher-url').value;
   const styles = getComputedStyle(document.documentElement);
   const stageZoom = document.getElementById('stage-zoom');
@@ -249,7 +405,9 @@ class DragController {
   const boxes = new Map();
   const edges = [];
   const pointer = new Pointer(stage, zoomState, zoomStep, zoomMax, zoomMin, applyZoom);
-  const drag = new DragController(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap);
+  const workflowState = new WorkflowState(projectId, workflowId, boxes, edges, dag, pointer, baseWorkflowUrl);
+  const workflowSaveCb = () => workflowState.saveToSession();
+  const drag = new DragController(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap, workflowSaveCb);
 
   function applyZoom() {
     stageZoom.style.transform = `scale(${zoomState.value})`;
@@ -364,51 +522,57 @@ class DragController {
   }
 
   function makeLauncher(row, col, id, title) {
-    const url = `${baseLauncherUrl}/${id}/render_button`;
-    $.get(url, function(html) {
-      const $launcher = $(`
-        <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
-          <div class='row'>
-            <div class='col launcher-title-grab'>${title}</div>
+    return new Promise((resolve, reject) => {
+      const url = `${baseLauncherUrl}/${id}/render_button`;
+      $.get(url, function(html) {
+        const $launcher = $(`
+          <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
+            <div class='row'>
+              <div class='col launcher-title-grab'>${title}</div>
+            </div>
+            ${html}
           </div>
-          ${html}
-        </div>
-      `);
+        `);
 
-      $('#stage').append($launcher);
-      const pos = drag.cellToXY(row, col);
-      $launcher.css({ transform: `translate(${pos.x}px, ${pos.y}px)` });
-      const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
-      boxes.set(id, box);
-      drag.updateBoxPosition(box, pos.x, pos.y);
+        $('#stage').append($launcher);
+        const pos = drag.cellToXY(row, col);
+        $launcher.css({ transform: `translate(${pos.x}px, ${pos.y}px)` });
+        const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
+        boxes.set(id, box);
+        drag.updateBoxPosition(box, pos.x, pos.y);
 
-      // Pointer / drag events
-      $launcher.on('pointerdown', function(e) {
-        e.stopPropagation();
-        selectedLauncherId = id;
-        $('.launcher-box.selected').removeClass('selected');
-        $launcher.addClass('selected');
-        pointer.update(e);
-        drag.beginDrag(box);
+        // Pointer / drag events
+        $launcher.on('pointerdown', function(e) {
+          e.stopPropagation();
+          selectedLauncherId = id;
+          $('.launcher-box.selected').removeClass('selected');
+          $launcher.addClass('selected');
+          pointer.update(e);
+          drag.beginDrag(box);
+        });
+
+        // Connect mode click
+        $launcher.on('click', function(e) {
+          if (!connectMode) return;
+          e.stopPropagation();
+          if (!connectQueue) {
+            connectQueue = id;
+            $launcher.addClass('connect-queued');
+          } else {
+            const fromId = connectQueue;
+            const toId = id;
+            $(`#launcher_${fromId}`).removeClass('connect-queued');
+            connectQueue = null;
+            createEdge(fromId, toId);
+            workflowSaveCb();
+          }
+        });
+
+        resolve();
+      }).fail(function() {
+        alert('Failed to load launcher HTML. Please try again.');
+        reject();
       });
-
-      // Connect mode click
-      $launcher.on('click', function(e) {
-        if (!connectMode) return;
-        e.stopPropagation();
-        if (!connectQueue) {
-          connectQueue = id;
-          $launcher.addClass('connect-queued');
-        } else {
-          const fromId = connectQueue;
-          const toId = id;
-          $(`#launcher_${fromId}`).removeClass('connect-queued');
-          connectQueue = null;
-          createEdge(fromId, toId);
-        }
-      });
-    }).fail(function() {
-      alert('Failed to load launcher HTML. Please try again.');
     });
   }
 
@@ -426,6 +590,7 @@ class DragController {
     boxes.delete(selectedLauncherId);
     selectedLauncherId = null;
     changeGridIfNeeded();
+    workflowSaveCb();
   }
 
   function deleteSelectedEdge() {
@@ -434,6 +599,7 @@ class DragController {
     dag.removeEdge(selectedEdge.fromBox.id, selectedEdge.toBox.id);
     edges.splice(edges.indexOf(selectedEdge), 1);
     selectedEdge = null;
+    workflowSaveCb();
   }
 
   // This helps to bounce rapid button clicks ie. accidental double clicks
@@ -462,7 +628,8 @@ class DragController {
       const spawn = gridSpawn();
       if (spawn) {
         await makeLauncher(spawn.row, spawn.col, launcherId, title);
-        changeGridIfNeeded(); 
+        changeGridIfNeeded();
+        workflowSaveCb();
       }
     } finally {
       addLauncherButton.disabled = false;
@@ -483,6 +650,10 @@ class DragController {
 
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
+
+  submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
+  resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
+  saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));
 
   zoomInButton.addEventListener('click', () => { pointer.zoomIn(); });
   zoomOutButton.addEventListener('click', () => { pointer.zoomOut(); });
@@ -524,5 +695,7 @@ class DragController {
     edgesSvg.setAttribute('width', stage.offsetWidth);
     edgesSvg.setAttribute('height', stage.offsetHeight);
   }
+
+  await workflowState.restorePreviousState(makeLauncher, createEdge);
   init();
 })();
