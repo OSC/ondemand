@@ -156,7 +156,7 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
-              } else if(key.startsWith('alias'))
+              } else if(key.startsWith('alias')) {
                 cacheAliases(element['id']);
               } else if(key.startsWith('help')) {
                 addHelpHandler(element['id'], opt.value, key, data[key]);
