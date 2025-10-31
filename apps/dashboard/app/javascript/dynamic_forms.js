@@ -28,6 +28,9 @@ const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
 
+// aliasLookup is a nested hash of the form
+// {optionId: {value: alias}}
+// Note that values can have special characters so you must access with [] operator
 const aliasLookup = {};
 
 // the regular expression for mountain casing
@@ -734,7 +737,7 @@ function idFromToken(str) {
 
 function cacheAliases(elementId) {
   // This should only run once on each select with an alias defined
-  if (!Object.keys(aliasLookup).includes(elementId)) {
+  if (aliasLookup[elementId] === undefined) {
     aliasLookup[elementId] = {};
     const options = [...document.querySelectorAll(`#${elementId} option`)];
     options.forEach(option => {
@@ -802,7 +805,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
       // it's some other directive type, so just keep going and/or not real
       if(!key.startsWith(contextStr) || optionForId === undefined) {
-        continue
+        continue;
       }
       const value = document.getElementById(optionForId).value;
       let optionForValue = mountainCaseWords(value);
