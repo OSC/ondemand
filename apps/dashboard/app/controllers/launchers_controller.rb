@@ -80,6 +80,7 @@ class LaunchersController < ApplicationController
     launcher = Launcher.find(show_launcher_params[:id], @project.directory)
     @valid_project = Launcher.clusters?
     @remove_delete_button = true
+    @show_job_details_button = true
     render(partial: 'projects/launcher_buttons', locals: { launcher: launcher })
   end
 

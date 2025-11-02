@@ -19,6 +19,8 @@ class WorkflowState {
     this.submitUrl = `${baseUrl}/submit`;
     this.loadUrl = `${baseUrl}/load`;
     this.STORAGE_KEY = `project_${projectId}_workflow_${workflowId}_state`;
+    this.poller = new JobPoller(projectId);
+    this.job_hash = {};
   }
 
   resetWorkflow(e) {
@@ -41,7 +43,9 @@ class WorkflowState {
   }
 
   async saveToBackend(submit=false) {
+    if (submit) this.job_hash = {}; // This will save a state where the submit call failed in between
     const workflow = this.#serialize();
+    console.log('Saving workflow:', workflow);
     try {
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -58,8 +62,11 @@ class WorkflowState {
       const data = await response.json();
       if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
       alert(data.message);
-      if(submit) {
-        this.#setJobDescription(data);
+      if (submit) {
+        this.job_hash = data.job_hash;
+        await this.#setJobDescription();
+        await this.#setupJobPoller();
+        this.saveToSession();
       }
     } catch (err) {
       console.error('Error saving workflow:', err);
@@ -98,6 +105,9 @@ class WorkflowState {
         this.pointer.zoomRef.value = metadata.zoom;
         this.pointer.applyZoomCb();
       }
+      this.job_hash = metadata.job_hash;
+      await this.#setJobDescription();
+      await this.#setupJobPoller();
       console.info('Workflow restored correctly.');
     } catch (err) {
       console.error('Failed to apply stored workflow:', err);
@@ -117,6 +127,7 @@ class WorkflowState {
         to: e.toBox.id
       })),
       zoom: this.pointer.zoomRef.value,
+      job_hash: this.job_hash,
       saved_at: new Date().toISOString()
     };
   }
@@ -155,8 +166,11 @@ class WorkflowState {
     }
   }
 
-  #setJobDescription(json_data) {
-    $.each(json_data.job_hash, function (launcherId, jobInfo) {
+  async #setJobDescription() {
+    if(!this.job_hash || Object.keys(this.job_hash).length === 0)
+      return;
+
+    $.each(this.job_hash, function (launcherId, jobInfo) {
       const $launcher = $(`#launcher_${launcherId}`);
 
       if ($launcher.length && jobInfo) {
@@ -165,8 +179,14 @@ class WorkflowState {
           "data-job-id": jobInfo.job_id,
           "data-job-cluster": jobInfo.cluster_id
         });
-        $launcher.addClass("pending");
       }
+    });
+  }
+
+  async #setupJobPoller() {
+    const self = this;
+    $('[data-job-poller="true"]').each((_index, ele) => {
+      this.poller.pollForJobInfo(ele);
     });
   }
 }
@@ -176,6 +196,7 @@ class JobPoller {
   constructor(projectId) {
     this.projectId = projectId;
   }
+
   jobDetailsPath(cluster, jobId) {
     const baseUrl = rootPath();
     return `${baseUrl}/projects/${this.projectId}/jobs/${cluster}/${jobId}`;
@@ -200,8 +221,8 @@ class JobPoller {
       .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
       .then((r) => r.text())
       .then((html) => {
-        const responseElement = this.stringToHtml(html);
-        const jobState = responseElement.dataset['jobNativeState'];
+        const responseHtml = this.stringToHtml(html);
+        const jobState = responseHtml.dataset['jobNativeState'];
 
         el.classList.remove('running', 'completed', 'failed', 'pending');
         if( jobState === 'COMPLETED' ) {
@@ -215,20 +236,74 @@ class JobPoller {
         }
         
         console.log(`Job ${jobId} on cluster ${cluster} native state: ${jobState}`);
-        return jobState;
+        return { jobState, html };
       })
-      .then((state) => {
+      .then(({jobState, html}) => {
         const endStates = ['COMPLETED', 'FAILED', 'CANCELLED', 'TIMEOUT', 'undefined'];
-        if(!endStates.includes(state)) {
-          setTimeout(() => this.pollForJobInfo(element), 5000);
+        if(!endStates.includes(jobState)) {
+          setTimeout(() => this.pollForJobInfo(element), 30000);
         } else {
           element.dataset.jobPoller = "false";
+          
+          // This needs not to be persistant with the session storage which we save to backend
+          const launcherId = el.id.replace('launcher_', '');
+          if (!launcherId) return;
+          const jobSessionKey = `job_details_html_${launcherId}`;
+          sessionStorage.setItem(jobSessionKey, html);
+
+          const detailsBtn = document.getElementById(`job_details_${launcherId}`);
+          if (detailsBtn) {
+            detailsBtn.disabled = false;
+            detailsBtn.classList.remove('disabled');
+
+            if (!detailsBtn.dataset.listenerAttached) {
+              detailsBtn.addEventListener('click', () => {
+                const html = sessionStorage.getItem(jobSessionKey);
+                this.showJobDetailsOverlay(html);
+              });
+              detailsBtn.dataset.listenerAttached = "true";
+            }
+          }
         }
       })
       .catch((err) => {
         console.log('Cannot not retrieve job details due to error:');
         console.log(err);
       });
+  }
+
+  showJobDetailsOverlay(html) {
+    const existing = document.getElementById('job-details-overlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'job-details-overlay';
+    const content = document.createElement('div');
+    content.className = 'job-details-content';
+
+    const template = this.stringToHtml(html).querySelector('template');
+    const fragment = template.content.cloneNode(true);
+    const collapseDiv = fragment.querySelector('.collapse');
+    if (collapseDiv) { // So save one extra click from user
+      collapseDiv.classList.remove('collapse');
+      collapseDiv.classList.add('show');
+    }
+    content.appendChild(fragment);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'job-details-close';
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => overlay.remove());
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    content.prepend(closeBtn);
+    overlay.appendChild(content);
+
+    const stage = document.getElementById('stage');
+    stage.appendChild(overlay);
   }
 }
 
@@ -732,11 +807,6 @@ class DragController {
 
   submitWorkflowButton.addEventListener('click', debounce(async () => {
     await workflowState.saveToBackend(true);
-
-    const poller = new JobPoller(projectId);
-    $('[data-job-poller="true"]').each((_index, ele) => {
-      poller.pollForJobInfo(ele);
-    });
   }, 300));
   resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
   saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));

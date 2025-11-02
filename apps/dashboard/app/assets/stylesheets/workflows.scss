@@ -238,3 +238,41 @@ svg.edges {
   color: #9e9e9e;
   opacity: 0.9;
 }
+
+.job-details-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.job-details-content {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  max-height: 90%;
+  overflow: auto;
+  padding: 1.25rem;
+}
+
+.job-details-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--danger);
+  }
+}

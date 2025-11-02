@@ -4,6 +4,7 @@
   edit_title = "#{t('dashboard.edit')} launcher #{launcher.title}"
   delete_title = "#{t('dashboard.delete')} launcher #{launcher.title}"
   remove_delete_button = @remove_delete_button
+  show_job_details_button = @show_job_details_button
 -%>
 
 <div class="row">
@@ -57,6 +58,19 @@
       %>
         <%= I18n.t('dashboard.delete') %>
       <%- end -%>
+    </div>
+  <% end %>
+  
+  <% if show_job_details_button %>
+    <div class="col">
+      <button
+        class="btn btn-secondary launcher-button disabled"
+        id="job_details_<%= launcher.id %>"
+        data-launcher-id="<%= launcher.id %>"
+        disabled
+      >
+        <%= I18n.t('dashboard.job_details') %>
+      </button>
     </div>
   <% end %>
 </div>
