@@ -91,7 +91,7 @@ class Project
     def possible_imports
       Rails.cache.fetch('possible_imports', expires_in: 1.hour) do
         importable_directories
-      end
+      end.reject{ |p| lookup_table.include?(p.id) }
     end
 
     private
