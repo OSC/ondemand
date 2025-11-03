@@ -245,7 +245,7 @@ class JobPoller {
         } else {
           element.dataset.jobPoller = "false";
           
-          // This needs not to be persistant with the session storage which we save to backend
+          // This needs not to be persistent with the session storage which we save to backend
           const launcherId = el.id.replace('launcher_', '');
           if (!launcherId) return;
           const jobSessionKey = `job_details_html_${launcherId}`;
