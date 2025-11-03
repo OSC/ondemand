@@ -107,7 +107,7 @@ class Project
             Project.from_directory("#{child_dir}/#{possible_project}")
           end
         end.flatten
-      end.flatten.compact.reject{ |p| p.errors.any? || p.owned_by_user? }
+      end.flatten.compact.reject{ |p| p.errors.any? }
     end
   end
 
@@ -150,10 +150,6 @@ class Project
     return true unless directory
 
     id && directory && !File.exist?(manifest_path)
-  end
-
-  def owned_by_user?
-    File.stat(project_dataroot).uid == CurrentUser.uid
   end
 
   def save
