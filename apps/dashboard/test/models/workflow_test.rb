@@ -26,7 +26,8 @@ class WorkflowsTest < ActiveSupport::TestCase
 
       invalid_directory = tmp
       workflow = Workflow.new({ name: 'test', project_dir: invalid_directory.to_s})
-
+      # this step is done by the project
+      Workflow.workflow_dir(invalid_directory).mkpath
       assert workflow.save
       assert_equal 0, workflow.errors.size
     end
@@ -128,6 +129,8 @@ class WorkflowsTest < ActiveSupport::TestCase
   def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [], source_ids: [], target_ids: [])
     attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids, source_ids: source_ids, target_ids: target_ids}
     workflow = Workflow.new(attrs)
+    # this directory is usually created by the project
+    Workflow.workflow_dir(project_dir).mkpath
     assert workflow.save
 
     workflow
