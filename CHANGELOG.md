@@ -6,20 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Patched the workflow's GUI with backend (#4676)\
-Fix unhandled exception with broken symlink in directory (#4735)\
-lint a random file (#4752)\
-Provide view override for batch connect sub apps (#4694)\
-Merge pull request #4710 from jgoodson/piped_logs\
-add 'download as zip' button to sessions (#4693)\
-reference ws instead of this (#4721)\
-lint a random file (#4734)\
-Dereference symlinks for du check (#4715)\
-Remove world writable from files in OOD packaged gems (#4717)\
-Files app external integration (#4662)\
-Update Changelog (#4730)\
-update dependencies (#4731)\
-lint a random file (#4728)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -61,6 +47,7 @@ lint a random file (#4728)
 - Allowlist errors are correctly reporting in path selector in [4645](https://github.com/OSC/ondemand/pull/4645).
 - Fix S3-Specific directory traversal bug in [4623](https://github.com/OSC/ondemand/pull/4623).
 - bc_deskop now removes HOME paths from the PATH in [4703](https://github.com/OSC/ondemand/pull/4703).
+- Remove world writable from files in OOD packaged gems in [4717](https://github.com/OSC/ondemand/pull/4717).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -102,6 +89,9 @@ lint a random file (#4728)
 - Batch connect applications now respond to hide_by_default attribute in [4620](https://github.com/OSC/ondemand/pull/4620).
 - Batch connect applications can now use data-help directives to change help messages in [4611](https://github.com/OSC/ondemand/pull/4611).
 - The CI now includes codespell support to checked spelling errors in [4671](https://github.com/OSC/ondemand/pull/4671).
+- Sub apps can now provide a different view.html.erb in [4694](https://github.com/OSC/ondemand/pull/4694).
+- A button to 'download as zip' is now present on completed batch connect cards in [4693](https://github.com/OSC/ondemand/pull/4693).
+- The files app can now create a payload to POST to a separate application in [4662](https://github.com/OSC/ondemand/pull/4662).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -120,6 +110,7 @@ lint a random file (#4728)
 - Batch connect forms now send private no-store headers in [4638](https://github.com/OSC/ondemand/pull/4638).
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
+- Apache logs will now correctly respond to | commands in [4710](https://github.com/OSC/ondemand/pull/4710).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
