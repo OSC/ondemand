@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Patched the workflow's GUI with backend (#4676)\
+Fix unhandled exception with broken symlink in directory (#4735)\
+lint a random file (#4752)\
+Provide view override for batch connect sub apps (#4694)\
+Merge pull request #4710 from jgoodson/piped_logs\
+add 'download as zip' button to sessions (#4693)\
+reference ws instead of this (#4721)\
+lint a random file (#4734)\
+Dereference symlinks for du check (#4715)\
+Remove world writable from files in OOD packaged gems (#4717)\
+Files app external integration (#4662)\
+Update Changelog (#4730)\
+update dependencies (#4731)\
+lint a random file (#4728)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
