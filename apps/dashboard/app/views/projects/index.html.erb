@@ -7,8 +7,8 @@
   <div class="col-md-9">
     <div class="row">
       <% @projects.each do |project| %>
-        <div id="<%= project.id %>" class="project-icon project-card">
-          <%= link_to(project_path(project.id), class: 'text-dark') do %>
+        <div id="<%= project.id %>" class="project-card">
+          <%= link_to(project_path(project.id), class: 'text-dark project-icon') do %>
             <div class="text-center d-flex justify-content-center">
               <strong>
                 <%= icon_tag(URI.parse(project.icon)) %>
@@ -36,14 +36,14 @@
   </div>
   <div class="col-md-3">
 
-      <div class="mt-5 justify-content-center text-center project-icon">
+      <div class="mt-5 justify-content-center text-center">
         <%= link_to(new_project_path,
                       title: I18n.t('dashboard.jobs_create_blank_project'),
-                      class: 'text-dark btn btn-link') do
+                      class: 'text-dark btn btn-link project-icon') do
         %>
           <div class="text-center d-flex justify-content-center">
             <strong>
-              <%= icon_tag(URI.parse("fas://file-medical")) %><br>
+              <%= icon_tag(URI.parse("fas://file-medical"), classes:['app-icon', 'mb-2']) %><br>
               <%= I18n.t('dashboard.jobs_create_blank_project') %>
             </strong>
           </div>
@@ -51,14 +51,14 @@
       </div>
 
       <%- if @templates.size.positive? -%>
-        <div class="mt-5 justify-content-center text-center project-icon">
+        <div class="mt-5 justify-content-center text-center">
           <%= link_to(new_project_path({template: true}),
                         title: I18n.t('dashboard.jobs_create_template_project'),
-                        class: 'text-dark btn btn-link') do
+                        class: 'text-dark btn btn-link project-icon') do
           %>
             <div class="text-center d-flex justify-content-center">
               <strong>
-                <%= icon_tag(URI.parse("fas://copy")) %><br>
+                <%= icon_tag(URI.parse("fas://copy"), classes:['app-icon', 'mb-2']) %><br>
                 <%= I18n.t('dashboard.jobs_create_template_project') %>
               </strong>
             </div>
@@ -66,14 +66,14 @@
         </div> 
       <%- end -%>
 
-      <div class="mt-5 justify-content-center text-center project-icon">
+      <div class="mt-5 justify-content-center text-center">
         <%= link_to(project_import_path,
                       title: I18n.t('dashboard.jobs_import_shared_project'),
-                      class: 'text-dark btn btn-link') do
+                      class: 'text-dark btn btn-link project-icon') do
         %>
           <div class="text-center d-flex justify-content-center">
             <strong>
-              <%= icon_tag(URI.parse("fas://file-import")) %><br>
+              <%= icon_tag(URI.parse("fas://file-import"), classes:['app-icon', 'mb-2']) %><br>
               <%= I18n.t('dashboard.jobs_import_shared_project') %>
             </strong>
           </div>
