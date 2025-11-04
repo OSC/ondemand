@@ -84,7 +84,8 @@
       <%= turbo_frame_tag 'project_directory', 
             src: directory_frame_path(
               files: @files,
-              path: @project&.directory
+              path: @project&.directory,
+              edit_regex: '^(?!.*\.(log|out)$).+'
            ) do
       %>
         <div class="d-flex justify-content-center">

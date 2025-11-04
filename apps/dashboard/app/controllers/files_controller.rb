@@ -114,11 +114,12 @@ class FilesController < ApplicationController
     validate_path!
     @path.raise_if_cant_access_directory_contents
     @files = @path.ls
-
+    @edit_regex = directory_frame_params[:edit_regex]
     render( partial: 'files/turbo_frames/directory',
             locals: { 
-              path: @path,
-              files: @files
+              path:       @path,
+              files:      @files,
+              edit_regex: @edit_regex
             }
     )
   rescue StandardError => e
@@ -386,6 +387,6 @@ class FilesController < ApplicationController
   end
 
   def directory_frame_params
-    params.permit(:format, :path)
+    params.permit(:format, :path, :edit_regex)
   end
 end
