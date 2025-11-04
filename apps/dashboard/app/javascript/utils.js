@@ -42,11 +42,7 @@ export function today() {
   return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
 }
 
-function showSpinner() {
-  $('body').addClass('modal-open');
-  $('#full-page-spinner').removeClass('d-none');
-}
-
+// the next two functions, using #full_page_spinner, are only used in sweet_alert.js
 export function pageSpin() {
   const ele = document.getElementById('full_page_spinner');
   ele.classList.remove('d-none');
@@ -59,6 +55,17 @@ export function stopPageSpin() {
   ariaNotify('Loading complete.');
 }
 
+// The next three functions use #full-page-spinner, and are used more widely
+function showSpinner() {
+  $('body').addClass('modal-open');
+  $('#full-page-spinner').removeClass('d-none');
+}
+
+function hideSpinner() {
+  $('body').removeClass('modal-open');
+  $('#full-page-spinner').addClass('d-none');
+}
+
 export function bindFullPageSpinnerEvent() {
   $('.full-page-spinner').each((index, element) => {
     const $element = $(element);
@@ -68,6 +75,9 @@ export function bindFullPageSpinnerEvent() {
       $element.closest('form').on('submit', showSpinner);
     }
   });
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) hideSpinner();
+  })
 }
 
 // open links in javascript and display an alert
