@@ -248,38 +248,38 @@ class JobPoller {
           // This needs not to be persistent with the session storage which we save to backend
           const launcherId = el.id.replace('launcher_', '');
           if (!launcherId) return;
-          const jobSessionKey = `job_details_html_${launcherId}`;
+          const jobSessionKey = `job_info_html_${launcherId}`;
           sessionStorage.setItem(jobSessionKey, html);
 
-          const detailsBtn = document.getElementById(`job_details_${launcherId}`);
-          if (detailsBtn) {
-            detailsBtn.disabled = false;
-            detailsBtn.classList.remove('disabled');
+          const infoBtn = document.getElementById(`job_info_${launcherId}`);
+          if (infoBtn) {
+            infoBtn.disabled = false;
+            infoBtn.classList.remove('disabled');
 
-            if (!detailsBtn.dataset.listenerAttached) {
-              detailsBtn.addEventListener('click', () => {
+            if (!infoBtn.dataset.listenerAttached) {
+              infoBtn.addEventListener('click', () => {
                 const html = sessionStorage.getItem(jobSessionKey);
-                this.showJobDetailsOverlay(html);
+                this.showJobInfoOverlay(html);
               });
-              detailsBtn.dataset.listenerAttached = "true";
+              infoBtn.dataset.listenerAttached = "true";
             }
           }
         }
       })
       .catch((err) => {
-        console.log('Cannot not retrieve job details due to error:');
+        console.log('Cannot not retrieve job info due to error:');
         console.log(err);
       });
   }
 
-  showJobDetailsOverlay(html) {
-    const existing = document.getElementById('job-details-overlay');
+  showJobInfoOverlay(html) {
+    const existing = document.getElementById('job-info-overlay');
     if (existing) existing.remove();
 
     const overlay = document.createElement('div');
-    overlay.id = 'job-details-overlay';
+    overlay.id = 'job-info-overlay';
     const content = document.createElement('div');
-    content.className = 'job-details-content';
+    content.className = 'job-info-content';
 
     const template = this.stringToHtml(html).querySelector('template');
     const fragment = template.content.cloneNode(true);
@@ -291,7 +291,7 @@ class JobPoller {
     content.appendChild(fragment);
 
     const closeBtn = document.createElement('button');
-    closeBtn.className = 'job-details-close';
+    closeBtn.className = 'job-info-close';
     closeBtn.textContent = '×';
     closeBtn.addEventListener('click', () => overlay.remove());
 
@@ -301,8 +301,7 @@ class JobPoller {
 
     content.prepend(closeBtn);
     overlay.appendChild(content);
-
-    const stage = document.getElementById('stage');
+    const stage = document.getElementById('workspace-wrapper');
     stage.appendChild(overlay);
   }
 }

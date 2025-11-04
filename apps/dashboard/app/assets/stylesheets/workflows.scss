@@ -239,8 +239,8 @@ svg.edges {
   opacity: 0.9;
 }
 
-.job-details-overlay {
-  position: fixed;
+.job-info-overlay {
+  position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
   display: flex;
@@ -249,18 +249,20 @@ svg.edges {
   z-index: 9999;
 }
 
-.job-details-content {
+.job-info-content {
   position: relative;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  max-width: 600px;
-  max-height: 90%;
+  max-width: 400px;
+  max-height: 400px;
   overflow: auto;
   padding: 1.25rem;
+  font-size: 0.7rem;
+  transform: translate(20px, 20px);
 }
 
-.job-details-close {
+.job-info-close {
   position: absolute;
   top: 10px;
   right: 15px;
