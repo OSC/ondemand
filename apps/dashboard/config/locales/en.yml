@@ -221,6 +221,7 @@ en:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     not_grouped: Other Apps
+    nsf_access_events: 'NSF ACCESS Events'
     path_selector_home: home
     path_selector_parent_directory: parent directory
     path_selector_default_popup_title: 'Select Your Working Directory'
