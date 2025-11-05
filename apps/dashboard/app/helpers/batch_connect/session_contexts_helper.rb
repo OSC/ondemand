@@ -42,21 +42,14 @@ module BatchConnect::SessionContextsHelper
                 end
                 
     # Append a wrapper div to hold additional info
-    data = {
-      widget_type: widget,
-      hide_by_default: attrib.hide_by_default?
-    }
-
-    min_val = attrib.opts[:min]
-    max_val = attrib.opts[:max]
-    data[:min_default] = min_val if min_val
-    data[:max_default] = max_val if max_val
-
     wrapped = content_tag(
       :div, 
       id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
       class: attrib.hide_by_default? ? 'd-none' : '',
-      data: data
+      data: {
+        widget_type: widget,
+        hide_by_default: attrib.hide_by_default?
+      }
     ) do
       rendered
     end

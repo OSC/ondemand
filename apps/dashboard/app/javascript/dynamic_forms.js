@@ -553,19 +553,12 @@ function toggleMinMax(event, changeId, otherId) {
   var ariaMsg = 'Set ';
   var ariaMsgLength = ariaMsg.length;
   [ 'max', 'min' ].forEach((dim) => {
-    const defaultVal = $(`#${changeId}_wrapper`).data(`${dim}Default`);
-    let newVal = undefined;
     if(mm && mm[dim] !== undefined) {
-      newVal = mm[dim];
-    } else if (defaultVal !== undefined) {
-      newVal = defaultVal;
-    }
-    if (newVal !== undefined) {
-      changeElement.attr(dim, newVal);
+      changeElement.attr(dim, mm[dim]);
       if (ariaMsg.length > ariaMsgLength){
         ariaMsg += ' and ';
       }
-      ariaMsg += `${dim}imum limit to ${newVal}`;
+      ariaMsg += `${dim}imum limit to ${mm[dim]}`;
     }
   });
 
