@@ -118,7 +118,6 @@ class FilesController < ApplicationController
             locals: { 
               path:       @path,
               files:      @files,
-              edit_regex: '^(?!.*\.(log|out)$).+'
             }
     )
   rescue StandardError => e
