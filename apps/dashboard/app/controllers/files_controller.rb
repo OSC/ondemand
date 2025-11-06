@@ -114,6 +114,7 @@ class FilesController < ApplicationController
     validate_path!
     @path.raise_if_cant_access_directory_contents
     @files = @path.ls
+    
     render( partial: 'files/turbo_frames/directory',
             locals: { 
               path: @path,
