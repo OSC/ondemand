@@ -116,8 +116,8 @@ class FilesController < ApplicationController
     @files = @path.ls
     render( partial: 'files/turbo_frames/directory',
             locals: { 
-              path:       @path,
-              files:      @files,
+              path: @path,
+              files: @files,
             }
     )
   rescue StandardError => e
