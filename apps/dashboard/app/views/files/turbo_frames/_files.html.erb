@@ -37,9 +37,7 @@
         )
         %>
       <%- else -%>
-        <% make_edit = !edit_regex.to_s.empty? && Regexp.new(edit_regex.to_s).match?(file[:name].to_s) %>
-        <% path_constructor = make_edit ? :edit_files_path : :files_path %>
-        <% puts edit_regex.class, file[:name], edit_regex.match?(file[:name].to_s),  %>
+        <%- path_constructor = show_edit_url?("#{path}/#{file[:name]}") ? :edit_files_path : :files_path -%>
         <%= 
           link_to(
             file[:name],

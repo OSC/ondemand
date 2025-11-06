@@ -27,5 +27,11 @@ module FilesHelper
   def frame_path(path)
     path.to_s
   end
+
+  def show_edit_url?(string_path)
+    path = Pathname.new(string_path)
+    return false if ['.log','.out','.yml'].include?(path.extname)
+    File.writable?(path)
+  end  
 end
 
