@@ -790,7 +790,7 @@ function cacheAliases(elementId) {
       Object.keys(data).forEach(key => {
         if (key.startsWith('alias')){
           const alias = key.replace(/^alias/, '');
-          const value = data[key]
+          const value = data[key];
           aliasLookup[elementId][value] = alias;
         }
       })
@@ -857,7 +857,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
       let optionForAlias = '';
       if ((elementId in aliasLookup) && (value in aliasLookup[elementId])) {
-        optionForAlias = aliasLookup[elementId][value]
+        optionForAlias = aliasLookup[elementId][value];
       }
       // handle special case where the very first token here is a number.
       // browsers expect a prefix of hyphens as if it's the next token.
@@ -865,17 +865,17 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
         optionForValue = `-${optionForValue}`;
       }
       if (contextStr == 'optionFor') {
-        let key = `optionFor${optionFor}${optionForValue}`
+        let key = `optionFor${optionFor}${optionForValue}`;
         if (!(key in option.dataset)) {
-          key = `optionFor${optionFor}${optionForAlias}`
+          key = `optionFor${optionFor}${optionForAlias}`;
         }
         hide = option.dataset[key] === 'false';
       } else if (contextStr == 'exclusiveOptionFor') {
-        let key = `exclusiveOptionFor${optionFor}${optionForValue}`
+        let key = `exclusiveOptionFor${optionFor}${optionForValue}`;
         if (!(key in option.dataset)){
-          key = `exclusiveOptionFor${optionFor}${optionForAlias}`
+          key = `exclusiveOptionFor${optionFor}${optionForAlias}`;
         }
-        hide = !(option.dataset[key] === 'true')
+        hide = !(option.dataset[key] === 'true');
       }
       if (hide) {
         break;
@@ -888,12 +888,12 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-      var prefix = option.selected ? 'Selected' : ''
-      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`)
+      var prefix = option.selected ? 'Selected' : '';
+      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`);
       option.style.display = 'none';
       option.disabled = true;
     } else {
-      ariaStream(`Option ${option.value} enabled for ${elementInfo}`)
+      ariaStream(`Option ${option.value} enabled for ${elementInfo}`);
       option.style.display = '';
       option.disabled = false;
     }
