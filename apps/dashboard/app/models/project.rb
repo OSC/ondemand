@@ -302,6 +302,10 @@ class Project
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
     configuration_directory.mkpath  unless configuration_directory.exist?
+    workflow_directory = Workflow.workflow_dir(project_dataroot)
+    workflow_directory.mkpath unless workflow_directory.exist?
+    logfile_path = JobLogger::JobLoggerHelper.log_file(project_dataroot)
+    FileUtils.touch(logfile_path.to_s) unless logfile_path.exist?
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
