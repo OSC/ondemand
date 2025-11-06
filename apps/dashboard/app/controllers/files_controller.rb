@@ -386,6 +386,6 @@ class FilesController < ApplicationController
   end
 
   def directory_frame_params
-    params.permit(:format, :path, :edit_regex)
+    params.permit(:format, :path)
   end
 end
