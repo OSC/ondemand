@@ -106,13 +106,43 @@ function snakeCaseWords(str) {
 
 /**
  *
+ * @param {HTMLElement} element
+ */
+function memorizeElement(element) {
+  formTokens.push(mountainCaseWords(shortId(element['id'])));
+};
+
+/**
+ *
+ * @param {HTMLElement} element
+ */
+function storeDefaults(element) {
+  const wrapper = document.getElementById(`${element.id}_wrapper`);
+  if (!wrapper) return;
+
+  ['max', 'min'].forEach((dim) => {
+    const defaultVal = element.getAttribute(dim);
+    if (defaultVal !== null) {
+      const n = parseInt(defaultVal, 10);
+      if (!Number.isNaN(n)) {
+        wrapper.dataset[`${dim}Default`] = n;
+        console.log(`Stored default ${dim}=${n} for ${element.id}`); // DEBUG
+      }
+    }
+  });
+}
+
+/**
+ * Memorize element ID tokens and store default values
+ *
  * @param {Array} elements
  */
-function memorizeElements(elements) {
+function initFormMetadata(elements) {
   elements.each((_i, ele) => {
-    formTokens.push(mountainCaseWords(shortId(ele['id'])));
+    memorizeElement(ele);
+    storeDefaults(ele);
   });
-};
+}
 
 function makeChangeHandlers(prefix){
 
@@ -121,7 +151,7 @@ function makeChangeHandlers(prefix){
   shortNameRex = new RegExp(`${idPrefix}_([\\w\\-]+)`);
 
   const allElements = $(`[id^=${idPrefix}]`);
-  memorizeElements(allElements);
+  initFormMetadata(allElements);
 
   allElements.each((_i, element) => {
     if (element['type'] == "select-one"){
@@ -553,12 +583,19 @@ function toggleMinMax(event, changeId, otherId) {
   var ariaMsg = 'Set ';
   var ariaMsgLength = ariaMsg.length;
   [ 'max', 'min' ].forEach((dim) => {
+    const defaultVal = $(`#${changeId}_wrapper`).data(`${dim}Default`);
+    let newVal = undefined;
     if(mm && mm[dim] !== undefined) {
-      changeElement.attr(dim, mm[dim]);
+      newVal = mm[dim];
+    } else if (defaultVal !== undefined) {
+      newVal = defaultVal;
+    }
+    if (newVal !== undefined) {
+      changeElement.attr(dim, newVal);
       if (ariaMsg.length > ariaMsgLength){
         ariaMsg += ' and ';
       }
-      ariaMsg += `${dim}imum limit to ${mm[dim]}`;
+      ariaMsg += `${dim}imum limit to ${newVal}`;
     }
   });
 
