@@ -37,11 +37,10 @@
         )
         %>
       <%- else -%>
-        <%- path_constructor = show_edit_url?("#{path}/#{file[:name]}") ? :edit_files_path : :files_path -%>
         <%= 
           link_to(
             file[:name],
-            send(path_constructor, "#{path}/#{file[:name]}"),
+            project_dir_files_url("#{path}/#{file[:name]}"),
             format: :html,
             target: "_top",
           )
