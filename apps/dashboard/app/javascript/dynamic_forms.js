@@ -126,7 +126,6 @@ function storeDefaults(element) {
       const n = parseInt(defaultVal, 10);
       if (!Number.isNaN(n)) {
         wrapper.dataset[`${dim}Default`] = n;
-        console.log(`Stored default ${dim}=${n} for ${element.id}`); // DEBUG
       }
     }
   });
