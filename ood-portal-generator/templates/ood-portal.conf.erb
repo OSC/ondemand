@@ -390,14 +390,17 @@ Listen <%= addr_port %>
   </Directory>
   <%- end -%>
 
-  <%- if @register_uri && @register_root %>
+  <%- if @register_uri && @register_root && @register_method && @register_path %>
   # Register and/or unregister the mapping of an authenticated-user to a system-user
   # NB: This is not needed for regular expression mapping
   #
   #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @register_uri %>
   #     #=> <%= @register_root %>/
   #
-  Alias "<%= @register_uri %>" "<%= @register_root %>"
+  <%= @register_method %> "<%= @register_uri %>" "<%= @register_path %>"
+  <%- if @register_method_options -%><%- @register_method_options.each do |line| -%>
+  <%= line %>
+  <%- end -%><%- end -%>
   <Directory "<%= @register_root %>">
     Options FollowSymLinks
     AllowOverride None

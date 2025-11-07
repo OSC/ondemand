@@ -1,0 +1,12 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+map_fail_uri: "/register"
+register_uri: "/register"
+register_root: "/var/www/flask-apps/register"
+register_path: "/var/www/flask-apps/register/register.wsgi"
+register_method: "WSGIScriptAlias"
+register_method_options:
+- "WSGIDaemonProcess register user=www-data group=www-data threads=5 home=/var/www/flask-apps/register"

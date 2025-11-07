@@ -306,6 +306,27 @@ register_uri: '/register'
 # Default: null (display error to user if mapping fails)
 register_root: '/var/www/ood/register'
 
+# Path to file or directory on filesystem that serves the HTML code used to register
+# an unmapped user
+# Example:
+#     register_root: '/var/www/ood/register/register.wsgi'
+# Default: @register_root
+#register_path: '/var/www/ood/register/register.wsgi'
+
+# Method for url used to register an unmapped user
+# Example:
+#     register_method: 'ScriptAlias'
+# Default: 'Alias'
+#register_method: 'WSGIScriptAlias'
+
+# List of SSL Apache directives added to register an unmapped user
+# Example:
+#     register_method:
+#     - 'WSGIDaemonProcess register user=www-data group=www-data threads=5 home=/var/www/flask-apps/register'
+# Default: null
+#register_method_options:
+#- 'WSGIDaemonProcess register user=www-data group=www-data threads=5 home=/var/www/flask-apps/register'
+
 # OIDC metadata URL
 # Example:
 #     oidc_provider_metadata_url: https://example.com:5554/.well-known/openid-configuration

@@ -200,6 +200,18 @@ describe OodPortalGenerator::Application do
       test_generate('input/auth.yml', 'output/auth_deb.conf')
     end
 
+    it 'generates defaults for register' do
+      test_generate('input/register-defaults.yml', 'output/register-defaults.conf')
+    end
+
+    it 'generates scriptalias for register' do
+      test_generate('input/register-scriptalias.yml', 'output/register-scriptalias.conf')
+    end
+
+    it 'generates wsgiscriptalias for register' do
+      test_generate('input/register-wsgiscriptalias.yml', 'output/register-wsgiscriptalias.conf')
+    end
+
     context 'dex' do
       let(:config_dir) do
         Dir.mktmpdir
