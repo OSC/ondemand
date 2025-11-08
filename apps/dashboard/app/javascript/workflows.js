@@ -244,7 +244,9 @@ class JobPoller {
           setTimeout(() => this.pollForJobInfo(element), 30000);
         } else {
           element.dataset.jobPoller = "false";
-          
+        }
+        
+        if (jobState !== 'undefined' && html) {
           // This needs not to be persistent with the session storage which we save to backend
           const launcherId = el.id.replace('launcher_', '');
           if (!launcherId) return;
