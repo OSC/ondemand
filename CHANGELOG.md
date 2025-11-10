@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+enhanced register options (#4763)\
+lint a random file (#4766)\
+Initialize directory structure with project (#4750)\
+Clean up page spinners on revisit\
+Access events widget (#4726)\
+lint a random file (#4762)\
+update and correct ood-portal-generator README.md (#4740)\
+update ood portal restart instructions (#4747)\
+exclude owned/imported projects from import list (#4751)\
+Zip check allowlist (#4758)\
+Update Changelog (#4756)\
+lint a random file (#4755)\
+update dependencies (#4757)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
