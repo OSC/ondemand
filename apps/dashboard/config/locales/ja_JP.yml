@@ -145,7 +145,6 @@ ja_JP:
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
     import: Import
-    job_info: Job Info
     jobs_create_blank_project: Create a new project
     jobs_create_template_project: Create a new project from a template
     jobs_import_shared_project: Import a shared project
