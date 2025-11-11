@@ -18,12 +18,6 @@ class WorkflowsController < ApplicationController
     @launchers = Launcher.all(project_directory)
   end
 
-  # GET /projects/:id/workflows/edit
-  def edit
-    return unless load_project_and_workflow_objects
-    @launchers = Launcher.all(project_directory)
-  end
-
   # TODO to remove this with launcher_ids as we will need them after new UI
   # PATCH /projects/:id/workflows/patch
   def update

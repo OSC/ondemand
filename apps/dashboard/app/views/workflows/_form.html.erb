@@ -17,15 +17,16 @@
     <div class="card">
       <div class='card-body'>
         <div class="field mt-3">
-          <strong>Pick Launchers</strong><br>
-          <% @launchers.each do |launcher| %>
-            <div class="form-check">
-              <%= check_box_tag "workflow[launcher_ids][]", launcher.id,
-                                @workflow.launcher_ids.include?(launcher.id),
-                                id: "launcher_#{launcher.id}", class: "form-check-input" %>
-              <%= label_tag "launcher_#{launcher.id}", launcher.title, class: "form-check-label" %>
-            </div>
-          <% end %>
+          <strong>Pick from Existing Workflows</strong><br>
+          
+          <select id="existing_workflow_select" class="form-select">
+            <option value="">-- Select a workflow --</option>
+            <% @workflows.each do |wf| %>
+              <option value="<%= wf.name %>" data-description="<%= wf.description %>">
+                <%= wf.name %>
+              </option>
+            <% end %>
+          </select>
         </div>
       </div>
     </div>
