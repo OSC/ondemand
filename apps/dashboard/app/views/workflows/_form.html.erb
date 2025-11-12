@@ -18,11 +18,12 @@
       <div class='card-body'>
         <div class="field mt-3">
           <strong>Pick from Existing Workflows</strong><br>
-          
+
+          <input type="hidden" name="workflow[copy_from_id]" id="copy_from_id">
           <select id="existing_workflow_select" class="form-select">
             <option value="">-- Select a workflow --</option>
             <% @workflows.each do |wf| %>
-              <option value="<%= wf.name %>" data-description="<%= wf.description %>">
+              <option value="<%= wf.id %>" data-name="<%= wf.name %>" data-description="<%= wf.description %>">
                 <%= wf.name %>
               </option>
             <% end %>

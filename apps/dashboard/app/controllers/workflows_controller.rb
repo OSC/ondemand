@@ -7,9 +7,7 @@ class WorkflowsController < ApplicationController
   # GET /projects/:id/workflows/:id
   def show
     return unless load_project_and_workflow_objects
-    launcher_ids = @workflow.launcher_ids
-
-    @launchers = Launcher.all(project_directory).select { |l| launcher_ids.include?(l.id) }
+    @launchers = Launcher.all(project_directory)
   end
 
   # GET /projects/:id/workflows/new
@@ -18,23 +16,26 @@ class WorkflowsController < ApplicationController
     @launchers = Launcher.all(project_directory)
   end
 
-  # TODO to remove this with launcher_ids as we will need them after new UI
-  # PATCH /projects/:id/workflows/patch
-  def update
-    return unless load_project_and_workflow_objects
-
-    if @workflow.update(update_params, true)
-      redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_manifest_updated')
-    else
-      handle_workflow_error(:update)
-    end
-  end
-
   # POST /projects/:id/workflows/
   def create
     @workflow = Workflow.new(permit_params)
 
     if @workflow.save
+      copy_from_id = permit_params[:copy_from_id]
+      if copy_from_id.present?
+        begin
+          source_wf = Workflow.find(copy_from_id, project_directory)
+          raise "Source workflow not found or missing manifest." unless source_wf&.manifest_file&.exist?
+
+          data = YAML.safe_load(File.read(source_wf.manifest_file))
+          success = @workflow.update({ metadata: data['metadata'] || {} })
+          raise @workflow.collect_errors unless success
+        rescue => e
+          Rails.logger.warn("Failed to copy metadata from workflow #{copy_from_id}: #{e.class}: #{e.message}")
+          return handle_workflow_error(:create)
+        end
+      end
+
       redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_created')
     else
       handle_workflow_error(:create)
@@ -87,7 +88,8 @@ class WorkflowsController < ApplicationController
     return unless load_project_and_workflow_objects(render_json: true)
     metadata = metadata_params(permit_json_data)
     @workflow.update(metadata)
-    result = @workflow.submit(submit_params(metadata))
+    submit_param = Workflow.build_submit_params(metadata, project_directory)
+    result = @workflow.submit(submit_param)
     if !result.nil?
       render json: { message: I18n.t('dashboard.jobs_workflow_submitted'), job_hash: result }
     else
@@ -126,24 +128,8 @@ class WorkflowsController < ApplicationController
   def permit_params
     params
       .require(:workflow)
-      .permit(:name, :description, :id, launcher_ids: [])
+      .permit(:name, :description, :id, :copy_from_id)
       .merge(project_dir: project_directory)
-  end
-
-  def update_params
-    params
-      .require(:workflow)
-      .permit(:name, :description, :id, launcher_ids: [])
-  end
-
-  def submit_params(metadata)
-    meta = metadata[:metadata] || {}
-    { 
-      launcher_ids: meta[:boxes].map { |b| b["id"] },
-      source_ids: meta[:edges].map { |e| e["from"] },
-      target_ids: meta[:edges].map { |e| e["to"] },
-      project_dir: project_directory 
-    }
   end
 
   def project_directory
