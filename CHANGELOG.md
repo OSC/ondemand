@@ -6,19 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-enhanced register options (#4763)\
-lint a random file (#4766)\
-Initialize directory structure with project (#4750)\
-Clean up page spinners on revisit\
-Access events widget (#4726)\
-lint a random file (#4762)\
-update and correct ood-portal-generator README.md (#4740)\
-update ood portal restart instructions (#4747)\
-exclude owned/imported projects from import list (#4751)\
-Zip check allowlist (#4758)\
-Update Changelog (#4756)\
-lint a random file (#4755)\
-update dependencies (#4757)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -105,6 +92,8 @@ update dependencies (#4757)
 - Sub apps can now provide a different view.html.erb in [4694](https://github.com/OSC/ondemand/pull/4694).
 - A button to 'download as zip' is now present on completed batch connect cards in [4693](https://github.com/OSC/ondemand/pull/4693).
 - The files app can now create a payload to POST to a separate application in [4662](https://github.com/OSC/ondemand/pull/4662).
+- register_path, register_method and register_method_options have been added to ood_portal.yml in [4763](https://github.com/OSC/ondemand/pull/4763).
+- nsf_access_events widget has been added in [4726](https://github.com/OSC/ondemand/pull/4726).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
