@@ -31,7 +31,7 @@
           </div>
           <% unless launcher_error.nil? %>
             <div class="invalid-feedback">
-              select at least <%= launcher_error.options.count %>
+              <%= I18n.t('dashboard.jobs_workflow_missing_launchers', count: launcher_error.options.count) %>
             </div>
           <% end %>
         </div>
