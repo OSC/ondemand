@@ -1,0 +1,43 @@
+<%
+require 'etc'
+quota_path = ENV['OOD_QUOTA_PATH']
+
+#gets an individual quota info
+def user_block_quotas(quota_path)
+    Quota.find(quota_path, Etc.getlogin).select { |q| q.resource_type == "block"}
+end
+
+# compiles all the quota information and returns them
+def block_quota_statuses(quota_path)
+    user_block_quotas(quota_path).map do |quota|
+        {
+            quota: quota,
+            usage_percent: ((quota.total_usage.to_f / quota.limit.to_f) * 100).round(2)
+        }
+    end
+end
+%>
+
+<div class="row justify-content-center" id="quota-status">
+    <div class="col border rounded text-center p-2 m-2 overflow-auto" style="max-height: 400px;">
+        <div class="h4"><strong>Quota Status</strong></div>
+
+        <% if block_quota_statuses(quota_path).any? %>
+            <% block_quota_statuses(quota_path).each do |status| %>
+                <div class="container py-2">
+
+                  <span><%= status[:quota].path %></span>
+                    <div class="progress">
+                      <div <% if status[:usage_percent].to_i > 80 %> style="background-color: OrangeRed;" <% end %> class="progress-bar w-<%= status[:usage_percent].to_i %>" role="progressbar"></div>
+                    </div>
+                    <span class="text-muted"><%= status[:quota] %>.</span>
+
+                </div>
+            <% end %>
+
+        <% else %>
+            <span><strong>Your quota data is not found.</strong></span>
+        <% end %>
+
+    </div>
+</div>
