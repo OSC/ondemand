@@ -5,9 +5,7 @@ class Workflow
 
   class << self
     def workflow_dir(project_dir)
-      dir = Pathname.new("#{project_dir}/.ondemand/workflows")
-      FileUtils.mkdir_p(dir) unless dir.exist?
-      dir
+      Pathname.new("#{project_dir}/.ondemand/workflows")
     end
 
     def find(id, project_dir)
@@ -35,7 +33,8 @@ class Workflow
     end
   end
 
-  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids
+  # TODO: Remove launcher_ids, source_ids, target_ids and use metadata only
+  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids, :metadata
 
   def initialize(attributes = {})
     @id = attributes[:id]
@@ -46,6 +45,7 @@ class Workflow
     @launcher_ids = attributes[:launcher_ids] || []
     @source_ids = attributes[:source_ids] || []
     @target_ids = attributes[:target_ids] || []
+    @metadata = attributes[:metadata] || {}
   end
 
   def to_h
@@ -57,7 +57,8 @@ class Workflow
       :project_dir => project_dir,
       :launcher_ids => launcher_ids,
       :source_ids => source_ids,
-      :target_ids => target_ids
+      :target_ids => target_ids,
+      :metadata => metadata
     }
   end
 
@@ -98,15 +99,16 @@ class Workflow
     Workflow.workflow_dir(@project_dir).join("#{@id}.yml")
   end
 
-  def update(attributes)
-    update_attrs(attributes)
+  def update(attributes, override = false)
+    update_attrs(attributes, override)
     return false unless valid?(:update)
 
     save_manifest(:update)
   end
 
-  def update_attrs(attributes)
-    [:name, :description, :launcher_ids].each do |attribute|
+  def update_attrs(attributes, override = false)
+    [:name, :description, :launcher_ids, :metadata].each do |attribute|
+      next unless override || attributes.key?(attribute)
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
   end
@@ -115,7 +117,7 @@ class Workflow
     graph = Dag.new(attributes)
     if graph.has_cycle
       errors.add("Submit", "Specified edges form a cycle not directed-acyclic graph")
-      return false
+      return nil
     end
     dependency = graph.dependency
     order = graph.order
@@ -134,13 +136,16 @@ class Workflow
       dependent_launchers = dependency[id] || []
 
       begin
-        jobs = dependent_launchers.map { |id| job_id_hash[id] }.compact
+        jobs = dependent_launchers.map { |id| job_id_hash.dig(id, :job_id) }.compact
         opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
         job_id = launcher.submit(opts)
         if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
         else
-          job_id_hash[id] = job_id
+          job_id_hash[id] = {
+            job_id: job_id,
+            cluster_id: opts[:auto_batch_clusters]
+          }
         end
       rescue => e
         error_msg = "Launcher #{id} with opts #{opts} failed to submit. Error: #{e.class}: #{e.message}"
@@ -148,6 +153,8 @@ class Workflow
         Rails.logger.warn(error_msg)
       end
     end
+    return job_id_hash unless errors.any?
+    nil
   end
 
   def submit_launcher_params(launcher, dependent_jobs)

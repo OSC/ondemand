@@ -99,6 +99,9 @@ module OodPortalGenerator
       # Register unmapped user sub-uri
       @register_uri  = opts.fetch(:register_uri, nil)
       @register_root = opts.fetch(:register_root, nil)
+      @register_path = opts.fetch(:register_path, @register_root)
+      @register_method = opts.fetch(:register_method, 'Alias')
+      @register_method_options = opts.fetch(:register_method_options, nil)
 
       @dex_uri                          = opts.fetch(:dex_uri, '/dex')
       @dex_http_port                    = opts.fetch(:dex_http_port, nil)

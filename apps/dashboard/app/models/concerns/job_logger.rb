@@ -49,9 +49,7 @@ module JobLogger
   class JobLoggerHelper
     class << self
       def log_file(directory)
-        Pathname.new("#{directory}/.ondemand/job_log.yml").tap do |path|
-          FileUtils.touch(path.to_s) unless path.exist?
-        end
+        Pathname.new("#{directory}/.ondemand/job_log.yml")
       end
 
       def write_log(directory, jobs)

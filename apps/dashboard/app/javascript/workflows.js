@@ -1,8 +1,312 @@
 import { DAG } from './dag.js';
+import { rootPath } from './config.js';
 
 /*
  * Helper Classes to support Drag and Drop UI 
  */
+
+// Handles boxes, edges, auto-save, auto-load and saving to workflow model
+class WorkflowState {
+  constructor(projectId, workflowId, boxes, edges, dag, pointer, baseUrl) {
+    this.projectId = projectId;
+    this.workflowId = workflowId;
+    this.boxes = boxes;
+    this.edges = edges;
+    this.dag = dag;
+    this.pointer = pointer;
+    this.baseUrl = baseUrl;
+    this.saveUrl = `${baseUrl}/save`;
+    this.submitUrl = `${baseUrl}/submit`;
+    this.loadUrl = `${baseUrl}/load`;
+    this.STORAGE_KEY = `project_${projectId}_workflow_${workflowId}_state`;
+    this.poller = new JobPoller(projectId);
+    this.job_hash = {};
+  }
+
+  resetWorkflow(e) {
+    this.boxes.forEach(b => b.el.remove());
+    this.boxes.clear();
+    this.edges.forEach(e => e.el.remove());
+    this.edges.length = 0;
+    this.dag.reset();
+    this.pointer.resetZoom();
+    this.#clearSession();
+    alert('Workflow reset.');
+  }
+
+  saveToSession() {
+    try {
+      sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.#serialize()));
+    } catch (err) {
+      console.error('Failed to save workflow in session:', err);
+    }
+  }
+
+  async saveToBackend(submit=false) {
+    if (submit) this.job_hash = {}; // This will save a state where the submit call failed in between
+    const workflow = this.#serialize();
+    console.log('Saving workflow:', workflow);
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+      let url = submit ? this.submitUrl : this.saveUrl;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify(workflow)
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
+      alert(data.message);
+      if (submit) {
+        this.job_hash = data.job_hash;
+        await this.#setJobDescription();
+        await this.#setupJobPoller();
+        this.saveToSession();
+      }
+    } catch (err) {
+      console.error('Error saving workflow:', err);
+      alert('Failed to save workflow. Check console for details.');
+    }
+  }
+
+  async restorePreviousState(makeLauncher, createEdge) {
+    const sessionMetadata = await this.#restoreFromSession();
+    const backendMetadata = await this.#loadWorkflowFromBackend();
+    
+    let metadata = null;
+    const sessionTs = this.#parseTime(sessionMetadata?.saved_at);
+    const backendTs = this.#parseTime(backendMetadata?.saved_at);
+    if (sessionTs == null && backendTs == null) {
+      console.log('No saved workflow found in session or backend.');
+      return;
+    } else if (sessionTs < backendTs) {
+      metadata = backendMetadata;
+      console.log('Restoring workflow from backend metadata.');
+    } else {
+      metadata = sessionMetadata;
+      console.log('Restoring workflow from session metadata.');
+    }
+
+    try {
+      if (metadata.boxes) {
+        await Promise.all(
+          metadata.boxes.map(b => makeLauncher(b.row, b.col, b.id, b.title))
+        );
+      }
+      if (metadata.edges) {
+        metadata.edges.forEach(e => createEdge(e.from, e.to));
+      }
+      if (metadata.zoom) {
+        this.pointer.zoomRef.value = metadata.zoom;
+        this.pointer.applyZoomCb();
+      }
+      this.job_hash = metadata.job_hash;
+      await this.#setJobDescription();
+      await this.#setupJobPoller();
+      console.info('Workflow restored correctly.');
+    } catch (err) {
+      console.error('Failed to apply stored workflow:', err);
+    }
+  }
+
+  #serialize() {
+    return {
+      boxes: Array.from(this.boxes.values()).map(b => ({
+        id: b.id,
+        title: b.el.querySelector('.launcher-title-grab')?.textContent?.trim() || '',
+        row: b.row,
+        col: b.col
+      })),
+      edges: this.edges.map(e => ({
+        from: e.fromBox.id,
+        to: e.toBox.id
+      })),
+      zoom: this.pointer.zoomRef.value,
+      job_hash: this.job_hash,
+      saved_at: new Date().toISOString()
+    };
+  }
+
+  #clearSession() {
+    sessionStorage.removeItem(this.STORAGE_KEY);
+  }
+
+  #parseTime(ts) {
+    if (!ts) return null;
+    const d = new Date(ts);
+    return isNaN(d) ? null : d;
+  }
+
+  async #restoreFromSession() {
+    const json = sessionStorage.getItem(this.STORAGE_KEY);
+    if (!json) return null;
+    try {
+      const data = JSON.parse(json);
+      return data;
+    } catch (err) {
+      console.error('Failed to restore workflow from session:', err);
+      return null;
+    }
+  }
+
+  async #loadWorkflowFromBackend() {
+    try {
+      const response = await fetch(this.loadUrl);
+      const data = await response.json();
+      if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
+      return data;
+    } catch (err) {
+      console.error('Failed to load workflow from backend:', err);
+      return null;
+    }
+  }
+
+  async #setJobDescription() {
+    if(!this.job_hash || Object.keys(this.job_hash).length === 0)
+      return;
+
+    $.each(this.job_hash, function (launcherId, jobInfo) {
+      const $launcher = $(`#launcher_${launcherId}`);
+
+      if ($launcher.length && jobInfo) {
+        $launcher.attr({
+          "data-job-poller": "true",
+          "data-job-id": jobInfo.job_id,
+          "data-job-cluster": jobInfo.cluster_id
+        });
+      }
+    });
+  }
+
+  async #setupJobPoller() {
+    const self = this;
+    $('[data-job-poller="true"]').each((_index, ele) => {
+      this.poller.pollForJobInfo(ele);
+    });
+  }
+}
+
+// Polling class to update job status
+class JobPoller {
+  constructor(projectId) {
+    this.projectId = projectId;
+  }
+
+  jobDetailsPath(cluster, jobId) {
+    const baseUrl = rootPath();
+    return `${baseUrl}/projects/${this.projectId}/jobs/${cluster}/${jobId}`;
+  }
+  
+  stringToHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = html.trim();
+    return template.content.firstChild;
+  }
+
+  async pollForJobInfo(element) {
+    const cluster = element.dataset['jobCluster'];
+    const jobId = element.dataset['jobId'];
+    const el = element.jquery ? element[0] : element;
+  
+    if(cluster === undefined || jobId === undefined){ return; }
+  
+    const url = this.jobDetailsPath(cluster, jobId);
+  
+    fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
+      .then((r) => r.text())
+      .then((html) => {
+        const responseHtml = this.stringToHtml(html);
+        const jobState = responseHtml.dataset['jobNativeState'];
+
+        el.classList.remove('running', 'completed', 'failed', 'pending');
+        if( jobState === 'COMPLETED' ) {
+          el.classList.add('completed');
+        } else if ( jobState === 'FAILED' || jobState === 'CANCELLED' || jobState === 'TIMEOUT' ) {
+          el.classList.add('failed');
+        } else if ( jobState === 'RUNNING' || jobState === 'COMPLETING' ) {
+          el.classList.add('running');
+        } else if ( jobState === 'PENDING' || jobState === 'QUEUED' || jobState === 'SUSPENDED' ) {
+          el.classList.add('pending');
+        }
+        
+        console.log(`Job ${jobId} on cluster ${cluster} native state: ${jobState}`);
+        return { jobState, html };
+      })
+      .then(({jobState, html}) => {
+        const endStates = ['COMPLETED', 'FAILED', 'CANCELLED', 'TIMEOUT', 'undefined'];
+        if(!endStates.includes(jobState)) {
+          setTimeout(() => this.pollForJobInfo(element), 30000);
+        } else {
+          element.dataset.jobPoller = "false";
+        }
+        
+        if (jobState !== 'undefined' && html) {
+          // This needs not to be persistent with the session storage which we save to backend
+          const launcherId = el.id.replace('launcher_', '');
+          if (!launcherId) return;
+          const jobSessionKey = `job_info_html_${launcherId}`;
+          sessionStorage.setItem(jobSessionKey, html);
+
+          const infoBtn = document.getElementById(`job_info_${launcherId}`);
+          if (infoBtn) {
+            infoBtn.disabled = false;
+            infoBtn.classList.remove('disabled');
+
+            if (!infoBtn.dataset.listenerAttached) {
+              infoBtn.addEventListener('click', () => {
+                const html = sessionStorage.getItem(jobSessionKey);
+                this.showJobInfoOverlay(html);
+              });
+              infoBtn.dataset.listenerAttached = "true";
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        console.log('Cannot not retrieve job info due to error:');
+        console.log(err);
+      });
+  }
+
+  showJobInfoOverlay(html) {
+    const existing = document.getElementById('job-info-overlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'job-info-overlay';
+    const content = document.createElement('div');
+    content.className = 'job-info-content';
+
+    const template = this.stringToHtml(html).querySelector('template');
+    const fragment = template.content.cloneNode(true);
+    const collapseDiv = fragment.querySelector('.collapse');
+    if (collapseDiv) { // So save one extra click from user
+      collapseDiv.classList.remove('collapse');
+      collapseDiv.classList.add('show');
+    }
+    content.appendChild(fragment);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'job-info-close';
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => overlay.remove());
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    content.prepend(closeBtn);
+    overlay.appendChild(content);
+    const stage = document.getElementById('workspace-wrapper');
+    stage.appendChild(overlay);
+  }
+}
 
 // Box represents a draggable launcher box
 class Box {
@@ -114,7 +418,7 @@ class Pointer {
 
 // DragController manages dragging of launcher boxes
 class DragController {
-  constructor(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap) {
+  constructor(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap, saveToSession) {
     this.pointer = pointer;
     this.boxes = boxes;
     this.edges = edges;
@@ -125,6 +429,7 @@ class DragController {
     this.halfGap = halfGap;
     this.dragging = null;
     this.start = null;
+    this.workflowSaveCb = saveToSession;
 
     document.addEventListener('pointermove', e => this.onMove(e));
     document.addEventListener('pointerup', e => this.onUp(e));
@@ -172,6 +477,7 @@ class DragController {
 
     this.dragging = null;
     this.start = null;
+    this.workflowSaveCb();
   }
 
   snapToGrid(x, y) {
@@ -209,7 +515,7 @@ class DragController {
 /*
  * Immediately Invoked Function Expression (IIFE) to encapsulate the workflow logic
 */
-(() => {
+(async () => {
   // Document elements
   const workspace = document.getElementById('workspace');
   const stage = document.getElementById('stage');
@@ -222,6 +528,12 @@ class DragController {
   const zoomOutButton = document.getElementById('zoom-out');
   const zoomResetButton = document.getElementById('zoom-reset');
   const selectedLauncher = document.getElementById('select_launcher');
+  const submitWorkflowButton = document.getElementById('btn-submit-workflow');
+  const resetWorkflowButton = document.getElementById('btn-reset-workflow');
+  const saveWorkflowButton = document.getElementById('btn-save-workflow');
+  const projectId = document.getElementById('project-id').value;
+  const workflowId = document.getElementById('workflow-id').value;
+  const baseWorkflowUrl = document.getElementById('base-workflow-url').value;
   const baseLauncherUrl = document.getElementById('base-launcher-url').value;
   const styles = getComputedStyle(document.documentElement);
   const stageZoom = document.getElementById('stage-zoom');
@@ -249,7 +561,9 @@ class DragController {
   const boxes = new Map();
   const edges = [];
   const pointer = new Pointer(stage, zoomState, zoomStep, zoomMax, zoomMin, applyZoom);
-  const drag = new DragController(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap);
+  const workflowState = new WorkflowState(projectId, workflowId, boxes, edges, dag, pointer, baseWorkflowUrl);
+  const workflowSaveCb = () => workflowState.saveToSession();
+  const drag = new DragController(pointer, boxes, edges, gridCols, gridRows, cell_w, cell_h, halfGap, workflowSaveCb);
 
   function applyZoom() {
     stageZoom.style.transform = `scale(${zoomState.value})`;
@@ -320,7 +634,6 @@ class DragController {
   }
 
   function createEdge(fromId, toId) {
-    console.log(  `Creating edge from ${fromId} to ${toId}`);
     if (fromId === toId) return;
     if (!boxes.has(fromId) || !boxes.has(toId)) return;
 
@@ -364,51 +677,57 @@ class DragController {
   }
 
   function makeLauncher(row, col, id, title) {
-    const url = `${baseLauncherUrl}/${id}/render_button`;
-    $.get(url, function(html) {
-      const $launcher = $(`
-        <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
-          <div class='row'>
-            <div class='col launcher-title-grab'>${title}</div>
+    return new Promise((resolve, reject) => {
+      const url = `${baseLauncherUrl}/${id}/render_button`;
+      $.get(url, function(html) {
+        const $launcher = $(`
+          <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
+            <div class='row'>
+              <div class='col launcher-title-grab'>${title}</div>
+            </div>
+            ${html}
           </div>
-          ${html}
-        </div>
-      `);
+        `);
 
-      $('#stage').append($launcher);
-      const pos = drag.cellToXY(row, col);
-      $launcher.css({ transform: `translate(${pos.x}px, ${pos.y}px)` });
-      const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
-      boxes.set(id, box);
-      drag.updateBoxPosition(box, pos.x, pos.y);
+        $('#stage').append($launcher);
+        const pos = drag.cellToXY(row, col);
+        $launcher.css({ transform: `translate(${pos.x}px, ${pos.y}px)` });
+        const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
+        boxes.set(id, box);
+        drag.updateBoxPosition(box, pos.x, pos.y);
 
-      // Pointer / drag events
-      $launcher.on('pointerdown', function(e) {
-        e.stopPropagation();
-        selectedLauncherId = id;
-        $('.launcher-box.selected').removeClass('selected');
-        $launcher.addClass('selected');
-        pointer.update(e);
-        drag.beginDrag(box);
+        // Pointer / drag events
+        $launcher.on('pointerdown', function(e) {
+          e.stopPropagation();
+          selectedLauncherId = id;
+          $('.launcher-box.selected').removeClass('selected');
+          $launcher.addClass('selected');
+          pointer.update(e);
+          drag.beginDrag(box);
+        });
+
+        // Connect mode click
+        $launcher.on('click', function(e) {
+          if (!connectMode) return;
+          e.stopPropagation();
+          if (!connectQueue) {
+            connectQueue = id;
+            $launcher.addClass('connect-queued');
+          } else {
+            const fromId = connectQueue;
+            const toId = id;
+            $(`#launcher_${fromId}`).removeClass('connect-queued');
+            connectQueue = null;
+            createEdge(fromId, toId);
+            workflowSaveCb();
+          }
+        });
+
+        resolve();
+      }).fail(function() {
+        alert('Failed to load launcher HTML. Please try again.');
+        reject();
       });
-
-      // Connect mode click
-      $launcher.on('click', function(e) {
-        if (!connectMode) return;
-        e.stopPropagation();
-        if (!connectQueue) {
-          connectQueue = id;
-          $launcher.addClass('connect-queued');
-        } else {
-          const fromId = connectQueue;
-          const toId = id;
-          $(`#launcher_${fromId}`).removeClass('connect-queued');
-          connectQueue = null;
-          createEdge(fromId, toId);
-        }
-      });
-    }).fail(function() {
-      alert('Failed to load launcher HTML. Please try again.');
     });
   }
 
@@ -426,6 +745,7 @@ class DragController {
     boxes.delete(selectedLauncherId);
     selectedLauncherId = null;
     changeGridIfNeeded();
+    workflowSaveCb();
   }
 
   function deleteSelectedEdge() {
@@ -434,6 +754,7 @@ class DragController {
     dag.removeEdge(selectedEdge.fromBox.id, selectedEdge.toBox.id);
     edges.splice(edges.indexOf(selectedEdge), 1);
     selectedEdge = null;
+    workflowSaveCb();
   }
 
   // This helps to bounce rapid button clicks ie. accidental double clicks
@@ -462,7 +783,8 @@ class DragController {
       const spawn = gridSpawn();
       if (spawn) {
         await makeLauncher(spawn.row, spawn.col, launcherId, title);
-        changeGridIfNeeded(); 
+        changeGridIfNeeded();
+        workflowSaveCb();
       }
     } finally {
       addLauncherButton.disabled = false;
@@ -483,6 +805,12 @@ class DragController {
 
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
+
+  submitWorkflowButton.addEventListener('click', debounce(async () => {
+    await workflowState.saveToBackend(true);
+  }, 300));
+  resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
+  saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));
 
   zoomInButton.addEventListener('click', () => { pointer.zoomIn(); });
   zoomOutButton.addEventListener('click', () => { pointer.zoomOut(); });
@@ -524,5 +852,7 @@ class DragController {
     edgesSvg.setAttribute('width', stage.offsetWidth);
     edgesSvg.setAttribute('height', stage.offsetHeight);
   }
+
+  await workflowState.restorePreviousState(makeLauncher, createEdge);
   init();
 })();
