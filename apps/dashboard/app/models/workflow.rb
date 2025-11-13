@@ -5,7 +5,9 @@ class Workflow
 
   class << self
     def workflow_dir(project_dir)
-      Pathname.new("#{project_dir}/.ondemand/workflows")
+      dir = Pathname.new("#{project_dir}/.ondemand/workflows")
+      FileUtils.mkdir_p(dir) unless dir.exist?
+      dir
     end
 
     def find(id, project_dir)
@@ -60,7 +62,7 @@ class Workflow
       :name => name,
       :description => description,
       :created_at => created_at,
-      :project_dir => project_dir
+      :project_dir => project_dir,
       :metadata => metadata
     }
   end

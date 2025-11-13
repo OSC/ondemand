@@ -13,7 +13,7 @@ class WorkflowsController < ApplicationController
   # GET /projects/:id/workflows/new
   def new
     @workflow = Workflow.new(index_params)
-    @launchers = Launcher.all(project_directory)
+    @workflows = Workflow.all(project_directory)
   end
 
   # POST /projects/:id/workflows/
@@ -78,6 +78,7 @@ class WorkflowsController < ApplicationController
       boxes: metadata['boxes'] || [],
       edges: metadata['edges'] || [],
       zoom: metadata['zoom'] || 1.0,
+      job_hash: metadata["job_hash"] || {},
       saved_at: metadata['saved_at'] || nil
     }
   end
@@ -147,6 +148,7 @@ class WorkflowsController < ApplicationController
         boxes: json["boxes"] || [], 
         edges: json["edges"] || [], 
         zoom: json["zoom"] || 1.0, 
+        job_hash: json["job_hash"] || {},
         saved_at: json["saved_at"] || Time.now.to_i
       } 
     }
