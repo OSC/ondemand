@@ -26,8 +26,7 @@ class WorkflowsTest < ActiveSupport::TestCase
 
       invalid_directory = tmp
       workflow = Workflow.new({ name: 'test', project_dir: invalid_directory.to_s})
-      # this step is done by the project
-      Workflow.workflow_dir(invalid_directory).mkpath
+
       assert workflow.save
       assert_equal 0, workflow.errors.size
     end
