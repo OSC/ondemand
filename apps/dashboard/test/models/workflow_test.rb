@@ -11,9 +11,6 @@ class WorkflowsTest < ActiveSupport::TestCase
     assert_nil workflow.name
     assert_nil workflow.description
     assert_nil workflow.created_at
-    assert_equal [], workflow.launcher_ids
-    assert_equal [], workflow.source_ids
-    assert_equal [], workflow.target_ids
   end
 
   test 'create workflow validation' do
@@ -125,11 +122,9 @@ class WorkflowsTest < ActiveSupport::TestCase
     end
   end
 
-  def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [], source_ids: [], target_ids: [])
-    attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids, source_ids: source_ids, target_ids: target_ids}
+  def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil)
+    attrs = { name: name, id: id, description: description, project_dir: project_dir}
     workflow = Workflow.new(attrs)
-    # this directory is usually created by the project
-    Workflow.workflow_dir(project_dir).mkpath
     assert workflow.save
 
     workflow
