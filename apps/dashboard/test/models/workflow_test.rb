@@ -25,7 +25,11 @@ class WorkflowsTest < ActiveSupport::TestCase
       # assert_not workflow.errors[:name].empty?
 
       invalid_directory = tmp
-      workflow = Workflow.new({ name: 'test', project_dir: invalid_directory.to_s})
+      workflow = Workflow.new({ 
+        name:         'test',
+        project_dir:  invalid_directory.to_s,
+        launcher_ids: ['sample']
+      })
       # this step is done by the project
       Workflow.workflow_dir(invalid_directory).mkpath
       assert workflow.save
@@ -37,7 +41,12 @@ class WorkflowsTest < ActiveSupport::TestCase
     stub_du
     Dir.mktmpdir do |tmp|
       project_dir = Pathname.new(tmp)
-      workflow = create_workflow(name: 'MyLocalName', description: 'MyLocalDescription', project_dir: project_dir)
+      workflow = create_workflow(
+        name:         'MyLocalName',
+        description:  'MyLocalDescription',
+        project_dir:  project_dir,
+        launcher_ids: ['sample']
+      )
 
       # Check id and directory defaults
       assert_not_nil workflow.id
@@ -50,20 +59,32 @@ class WorkflowsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       project_dir = Pathname.new(tmp)
       workflow_id = Workflow.next_id
-      workflow = create_workflow(id: workflow_id, name: 'MyLocalName', description: 'MyLocalDescription', project_dir: project_dir)
+      workflow = create_workflow(
+        id:           workflow_id,
+        name:         'MyLocalName',
+        description:  'MyLocalDescription',
+        project_dir:  project_dir,
+        launcher_ids: ['sample']
+      )
 
       assert workflow.errors.inspect
       assert Dir.entries("#{project_dir}/.ondemand/workflows").include?("#{workflow_id}.yml")
-      assert_equal workflow_id, workflow.id
-      assert_equal 'MyLocalName', workflow.name
+      assert_equal workflow_id,          workflow.id
+      assert_equal 'MyLocalName',        workflow.name
       assert_equal 'MyLocalDescription', workflow.description
+      assert_equal ['sample'],           workflow.launcher_ids
     end
   end
 
   test 'creates manifest file in .ondemand/workflows config directory' do
     Dir.mktmpdir do |tmp|
       project_dir = Pathname.new(tmp)
-      workflow = create_workflow(id: "test-#{Workflow.next_id}", project_dir: project_dir)
+      workflow = create_workflow(
+        name:         'test-workflow',
+        id:           "test-#{Workflow.next_id}",
+        project_dir:  project_dir,
+        launcher_ids: ['sample']
+      )
 
       assert workflow.errors.inspect
       manifest_file = Pathname.new("#{project_dir}/.ondemand/workflows/#{workflow.id}.yml")
@@ -82,7 +103,7 @@ class WorkflowsTest < ActiveSupport::TestCase
   test 'deletes workflow' do
     Dir.mktmpdir do |tmp|
       project_dir = Pathname.new(tmp)
-      workflow = create_workflow(project_dir: project_dir)
+      workflow = create_workflow(project_dir: project_dir, launcher_ids: ['sample'])
 
       assert Dir.entries("#{project_dir}/.ondemand/workflows/").include?("#{workflow.id}.yml")
 
@@ -94,11 +115,16 @@ class WorkflowsTest < ActiveSupport::TestCase
   test 'update workflow manifest file' do
     Dir.mktmpdir do |tmp|
       project_dir = Pathname.new(tmp)
-      workflow = create_workflow(id: "test-#{Workflow.next_id}", project_dir: project_dir)
+      workflow = create_workflow(
+        id:           "test-#{Workflow.next_id}",
+        project_dir:  project_dir,
+        launcher_ids: ['sample']
+      )
 
-      name          = 'test-workflow-2'
-      description   = 'my test workflow'
-      test_attributes = { name: name, description: description }
+      name            = 'test-workflow-2'
+      description     = 'my test workflow'
+      launchers       = ['sample1', 'sample2']
+      test_attributes = { name: name, description: description, launcher_ids: launchers }
 
       assert workflow.update(test_attributes)
       assert File.exist?(workflow.manifest_file)
@@ -106,23 +132,32 @@ class WorkflowsTest < ActiveSupport::TestCase
       manifest_data = YAML.safe_load(File.read(workflow.manifest_file), permitted_classes: [Pathname], aliases: true)
 
       assert_equal workflow.id, manifest_data["id"]
-      assert_equal name, manifest_data["name"]
+      assert_equal name,        manifest_data["name"]
       assert_equal description, manifest_data["description"]
       assert_equal project_dir, manifest_data["project_dir"]
+      assert_equal launchers,   manifest_data["launcher_ids"]
     end
   end
 
-  test 'update workflow only updates name, and description' do
+  test 'update workflow only updates name, description, and launchers' do
     Dir.mktmpdir do |tmp|
       project_dir = Pathname.new(tmp)
-      workflow = create_workflow(project_dir: project_dir)
+      workflow = create_workflow(project_dir: project_dir, launcher_ids:['sample'])
       old_id = workflow.id
 
-      assert workflow.update({ id: 'updated', name: 'updated', description: 'updated', project_dir: nil})
-      assert_equal 'updated', workflow.name
-      assert_equal 'updated', workflow.description
-      assert_equal old_id, workflow.id
+      assert workflow.update({ 
+        id: 'updated',
+        name: 'updated',
+        description: 'updated',
+        project_dir: nil,
+        launcher_ids: ['sample2']
+      })
+      
+      assert_equal 'updated',   workflow.name
+      assert_equal 'updated',   workflow.description
+      assert_equal old_id,      workflow.id
       assert_equal project_dir, workflow.project_dir
+      assert_equal ['sample2'], workflow.launcher_ids
     end
   end
 
@@ -131,7 +166,7 @@ class WorkflowsTest < ActiveSupport::TestCase
     workflow = Workflow.new(attrs)
     # this directory is usually created by the project
     Workflow.workflow_dir(project_dir).mkpath
-    assert workflow.save
+    assert workflow.save, "failed to save workflow due to #{workflow.errors.full_messages}"
 
     workflow
   end
