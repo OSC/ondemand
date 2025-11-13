@@ -16,7 +16,8 @@
     </div>
     <div class="card">
       <div class='card-body'>
-        <div class="field mt-3">
+        <% errors = @workflow.errors.select{|e| e.attribute.to_s == 'launcher_ids'} %>
+        <div class="field mt-3 <%= errors.empty? ? '' : 'border border-danger is-invalid'%>">
           <strong>Pick Launchers</strong><br>
           <% @launchers.each do |launcher| %>
             <div class="form-check">
@@ -27,6 +28,11 @@
             </div>
           <% end %>
         </div>
+        <% unless errors.empty? %>
+          <div class="invalid-feedback">
+            Select at least <%= errors.first.options.count %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
