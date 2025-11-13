@@ -84,6 +84,13 @@ class FilesTest < ActiveSupport::TestCase
     end 
   end
 
+  test 'can_download_as_zip handles broken symlinks' do
+    Dir.mktmpdir do |dir|
+      File.symlink(File.join(dir, 'missing_file'), File.join(dir, 'link_to_missing_file'))
+      assert_equal [true, nil], PosixFile.new(dir).can_download_as_zip?
+    end
+  end
+
   test "can_download_as_zip handles directory size exceeding limit" do
     download_directory_size_limit = Configuration.file_download_dir_max
     Dir.mktmpdir do |dir|

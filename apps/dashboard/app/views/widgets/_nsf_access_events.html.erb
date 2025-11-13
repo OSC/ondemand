@@ -1,0 +1,9 @@
+<%=  javascript_include_tag('nsf_access_events', nonce: true) %>
+<div>
+  <div class="h2 d-flex justify-content-start">
+    <%= t('dashboard.nsf_access_events') %>
+  </div>
+  <div id="nsf_access_events" class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>

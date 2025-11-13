@@ -76,7 +76,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     click_on(I18n.t('dashboard.save'))
   end
 
-  def add_auto_environment_variable(project_id, launcher_id, save: true)
+  def add_auto_environment_variable(_project_id, _launcher_id, save: true)
     # now add 'auto_environment_variable'
     click_on('Add new option')
     select('Environment Variable', from: 'add_new_field_select')
@@ -156,7 +156,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 'test-description', project_data[:description]
       assert_equal 'fas://arrow-right', project_data[:icon]
       assert_equal "#{dir}/projects/#{project_id}", project_data[:directory]
-      assert_equal 2097152, project_data[:size]
+      assert_equal 2_097_152, project_data[:size]
       assert_equal '2 MB', project_data[:human_size]
     end
   end
@@ -278,7 +278,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       launcher_id = setup_launcher(project_id)
 
-      # note that bc_num_hours is in this YAML.
+      # NOTE: that bc_num_hours is in this YAML.
       expected_yml = <<~HEREDOC
         ---
         title: the launcher title
@@ -513,7 +513,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       expected_new_options = [
         'bc_num_hours', 'auto_queues', 'bc_num_nodes', 'auto_cores',
         'auto_accounts', 'auto_job_name', 'auto_environment_variable',
-        'auto_log_location',
+        'auto_log_location'
       ].to_set
       assert_equal expected_new_options, actual_new_options
     end
@@ -562,7 +562,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_environment_variable').click
 
       find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
-      find("#launcher_auto_environment_variable_SOME_VARIABLE").fill_in(with: 'some_value')
+      find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'some_value')
 
       find('#save_launcher_auto_environment_variable').click
 
@@ -572,7 +572,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
-      # note that bc_num_hours has default, min & max
+      # NOTE: that bc_num_hours has default, min & max
       expected_yml = <<~HEREDOC
         ---
         title: the launcher title
@@ -850,7 +850,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_accounts').click
       accounts_select = find('#launcher_auto_accounts')
       account_options = accounts_select.all('option')
-      find("#launcher_auto_accounts_fixed").click
+      find('#launcher_auto_accounts_fixed').click
 
       # Validate that UI changes when field is fixed.
       assert_equal('true', accounts_select[:disabled])
@@ -983,7 +983,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
-      find("#launch_8woi7ghd").click
+      find('#launch_8woi7ghd').click
 
       assert_selector('.alert-success', text: 'job-id-123')
 

@@ -14,6 +14,11 @@ export class DAG {
     this.#adjacency_list = {};
   }
 
+  reset() {
+    this.#launcher_list = new Set();
+    this.#adjacency_list = {};
+  }
+
   addEdge(fromId, toId) {
     if (!this.#launcher_list.has(fromId)) {
       this.#launcher_list.add(fromId);

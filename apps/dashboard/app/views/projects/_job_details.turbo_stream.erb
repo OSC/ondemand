@@ -3,7 +3,7 @@
   id = "job_#{job.cluster}_#{job.id}"
 -%>
 
-<turbo-stream action="replace" target="<%= id %>" data-job-status="<%= job.status %>">
+<turbo-stream action="replace" target="<%= id %>" data-job-status="<%= job.status %>" data-job-native-state="<%= job.native.dig(:state).to_s %>">
   <template>
     <%= render(partial: 'job_details_content', locals: { job: job, project: project }, :formats=>[:html]) %>
   </template>
