@@ -2224,8 +2224,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       # defaults
       assert_equal 'batch', find_value('auto_queues')
       assert_equal 'owens', find_value('cluster')
-      # expected_queues = ['batch', 'serial-40core', 'serial-48core', 'gpudebug-48core']
-      # assert_equal(expected_queues, page.all("##{bc_ele_id('auto_queues')} option").map(&:value))
+
       # just a queues that exist only on oakley
       assert_equal 'display: none;', find_option_style('auto_queues', 'serial-40core')
       assert_equal 'display: none;', find_option_style('auto_queues', 'serial-48core')
