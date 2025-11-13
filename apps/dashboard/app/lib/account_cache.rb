@@ -173,7 +173,7 @@ module AccountCache
     disabled_accounts.map do |account|
       counter += 1
       # check if account contains anything other than digits and lowercase letters
-      if !!(account =~ /\A[a-z0-9]+\z/)
+      if /\A[a-z0-9]+\z/.match?(account)
         [["data-option-for-auto-accounts-#{account}", false]] 
       else
         acct_alias = "account#{counter}"
