@@ -43,7 +43,6 @@ class WorkflowsController < ApplicationController
     if @workflow.save
       redirect_to project_path(project_id), notice: I18n.t('dashboard.jobs_workflow_created')
     else
-      @launchers = Launcher.all(project_directory) 
       handle_workflow_error(:create)
     end
   end
@@ -183,6 +182,7 @@ class WorkflowsController < ApplicationController
       end
 
     flash.now[:alert] = message
+    @launchers = Launcher.all(project_directory)
     render operation == :create ? :new : :edit
   end
 end
