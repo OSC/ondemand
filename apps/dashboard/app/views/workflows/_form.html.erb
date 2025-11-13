@@ -16,10 +16,10 @@
     </div>
     <div class="card">
       <div class='card-body'>
-        <% errors = @workflow.errors.select{|e| e.attribute.to_s == 'launcher_ids'} %>
+        <% launcher_error = @workflow.errors.select{|e| e.attribute.to_s == 'launcher_ids' }.first %>
         <div class="field">
           <strong>Pick Launchers</strong><br>
-          <div class="p-3 <%= errors.empty? ? '' : 'border border-danger rounded is-invalid'%>">
+          <div class="p-3 <%= launcher_error.nil? ? '' : 'border border-danger rounded is-invalid'%>">
           <% @launchers.each do |launcher| %>
             <div class="form-check">
               <%= check_box_tag "workflow[launcher_ids][]", launcher.id,
@@ -29,9 +29,9 @@
             </div>
           <% end %>
           </div>
-          <% unless errors.empty? %>
+          <% unless launcher_error.nil? %>
             <div class="invalid-feedback">
-              select at least <%= errors.first.options.count %>
+              select at least <%= launcher_error.options.count %>
             </div>
           <% end %>
         </div>
