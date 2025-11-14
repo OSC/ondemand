@@ -56,6 +56,7 @@
         <%= t('dashboard.jobs_new_launcher') %>
       </a>
     </div>
+    <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
   </div>
   
   <div class="col-md-4">
@@ -94,9 +95,6 @@
         </div>
       <%- end -%>
     </div>
-  </div>
-  <div class="col-md-2">
-    <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
   </div>
 </div>
 
