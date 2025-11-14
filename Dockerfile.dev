@@ -18,7 +18,7 @@ RUN dnf -y update && \
     dnf -y module enable nodejs:20 ruby:3.3 && \
     dnf install -y epel-release && \
     dnf install -y ondemand ondemand-dex && \
-    dnf install -y gcc gcc-c++ libyaml-devel nc && \
+    dnf install -y gcc gcc-c++ libyaml-devel nc xz && \
     dnf clean all && rm -rf /var/cache/dnf/*
 
 RUN chmod 600 /etc/shadow
