@@ -50,6 +50,15 @@
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
+
+          <% groups = edit_project_action ? possible_user_groups(@project) : [] %>
+          <% unless groups.empty? %>
+            <div class="field">
+              <%= form.select :group_owner, groups.unshift('None'), label: 'Group owner', value: @project.get_group_owner %>
+            </div>
+          <% end %>
+
+          <%= @project.get_group_owner %>
         </div>
       </div>
       </div>

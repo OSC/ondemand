@@ -31,4 +31,39 @@ module ProjectsHelper
       status
     end
   end
+
+  def possible_user_groups(project)
+    user_groups = Process.groups.map{|id| Etc.getgrgid(id).name}
+    # accept path arg directly for debugging
+    root_dir = project.is_a?(Pathname) ? project : project.project_dataroot
+
+    ancestors = []
+    root_dir.ascend do |parent|
+      ancestors.push(parent) unless parent == root_dir
+    end
+
+    candidates = user_groups.dup
+
+    # check that ancestors are not restricted to specific groups
+    ancestors.each do |a|
+      st = a.stat
+      mode = st.mode & 0o777
+      other_x = (mode & 0o001) != 0
+      group_x = (mode & 0o010) != 0
+
+      next if other_x
+
+      if group_x
+        gname = Etc.getgrgid(st.gid).name rescue nil
+        return [] unless gname
+        # if they are, restrict candidates to that group
+        candidates &= [gname]
+      else
+        return []
+      end
+      break if candidates.empty?
+    end
+
+    candidates.sort.uniq
+  end
 end

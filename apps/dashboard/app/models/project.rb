@@ -111,7 +111,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template, :files
+  attr_reader :id, :name, :description, :icon, :directory, :template, :files, :group_owner
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -128,7 +128,7 @@ class Project
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
     @template = attributes[:template]
-
+    @group_owner = get_group_owner
     return if new_record?
 
     contents = File.read(manifest_path)
@@ -201,6 +201,18 @@ class Project
   rescue StandardError => e
     errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
     false
+  end
+
+  def get_group_owner
+    if project_dataroot.grpowned?
+      Etc.getgrgid(project_dataroot.stat.gid).name
+    else
+      'None'
+    end
+  end
+
+  def set_group_owner(group)
+    FileUtils.chown(nil, Etc.getgrnam(group).gid, project_dataroot)
   end
 
   def icon_class
@@ -296,6 +308,11 @@ class Project
   def update_attrs(attributes)
     [:name, :description, :icon, :files].each do |attribute|
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
+    end
+    new_group = attributes.fetch(:group_owner, false)
+    if new_group
+      new_group = (new_group == 'None') ? CurrentUser.name : new_group
+      set_group_owner(new_group)
     end
   end
 
