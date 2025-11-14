@@ -182,6 +182,7 @@ class WorkflowsController < ApplicationController
       end
 
     flash.now[:alert] = message
+    @launchers = Launcher.all(project_directory)
     render operation == :create ? :new : :edit
   end
 end
