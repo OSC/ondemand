@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
-        get 'render_button', on: :member
+        get 'render_button/:workflow_id', on: :member, action: :render_button
       end
     end
   end

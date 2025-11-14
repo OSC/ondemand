@@ -5,11 +5,13 @@
   delete_title = "#{t('dashboard.delete')} launcher #{launcher.title}"
   remove_delete_button = @remove_delete_button
   show_job_info_button = @show_job_info_button
+  redirect_workflow = @source_workflow
 -%>
 
 <div class="row">
   <div class="col">
     <%= button_to(
+      # fix this for workflow
       submit_project_launcher_path(@project.id, launcher.id),
       class: 'btn btn-success launcher-button',
       title: 'Launch script with cached or default values',
@@ -24,6 +26,7 @@
 
   <div class="col">
     <%= link_to(
+      # fix this for workflow
       project_launcher_path(@project.id, launcher.id),
       class: "btn btn-info launcher-button #{disabled_class}",
       id: "show_#{launcher.id}"
@@ -37,6 +40,7 @@
 <div class="row">
   <div class="col">
     <%= link_to(
+      # fix this for workflow
       edit_project_launcher_path(@project.id, launcher.id),
       class: "btn btn-primary launcher-button #{disabled_class}",
       id: "edit_#{launcher.id}",

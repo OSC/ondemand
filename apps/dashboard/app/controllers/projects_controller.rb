@@ -148,6 +148,7 @@ class ProjectsController < ApplicationController
 
     @project = project
 
+    # Todo have a flag that it was called from the workflow page and pass it on to fix the path
     render(partial: 'job_details', locals: { job: hpc_job, project: @project })
   end
 

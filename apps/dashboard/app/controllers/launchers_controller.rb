@@ -75,13 +75,14 @@ class LaunchersController < ApplicationController
     end
   end
 
-  # GET /projects/:project_id/launchers/:id/render_button
+  # GET /projects/:project_id/launchers/:id/render_button/:workflow_id
   def render_button
     launcher = Launcher.find(show_launcher_params[:id], @project.directory)
     @valid_project = Launcher.clusters?
     @remove_delete_button = true
     @show_job_info_button = true
-    render(partial: 'projects/launcher_buttons', locals: { launcher: launcher })
+    @source_workflow = true
+    render(partial: 'projects/launcher_buttons', locals: { launcher: launcher, workflow_id: id })
   end
 
   private
