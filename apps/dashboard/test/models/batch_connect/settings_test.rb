@@ -5,19 +5,23 @@ require 'test_helper'
 module BatchConnect
   class SettingsTest < ActionView::TestCase
 
-    test 'can set values' do
-      target = BatchConnect::Settings.new('app/token', 'settings name', { name: 'value' })
+    def setup
+      stub_sys_apps
+    end
 
-      assert_equal('app/token', target.token)
+    test 'can set values' do
+      target = BatchConnect::Settings.new('sys/bc_jupyter', 'settings name', { name: 'value' })
+
+      assert_equal('sys/bc_jupyter', target.token)
       assert_equal('settings name', target.name)
       assert_equal({ name: 'value' }, target.values)
     end
 
     test 'app returns BatchConnect::App based on token' do
-      target = BatchConnect::Settings.new('sys/token', 'settings name', { name: 'value' })
+      target = BatchConnect::Settings.new('sys/bc_jupyter', 'settings name', { name: 'value' })
 
       assert_instance_of(BatchConnect::App, target.app)
-      assert_equal('sys/token', target.app.token)
+      assert_equal('sys/bc_jupyter', target.app.token)
     end
 
     test 'outdated? returns true when settings keys do not match app attribute ids' do

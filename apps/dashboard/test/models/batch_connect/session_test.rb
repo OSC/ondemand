@@ -4,6 +4,11 @@ require 'test_helper'
 
 module BatchConnect
   class SessionTest < ActiveSupport::TestCase
+
+    def setup
+      stub_sys_apps
+    end
+
     def bc_jupyter_app
       r = PathRouter.new('test/fixtures/sys_with_gateway_apps/bc_jupyter')
       BatchConnect::App.new(router: r)
@@ -261,7 +266,7 @@ module BatchConnect
       BatchConnect::SessionContext.any_instance.stubs(:cluster).returns('owens')
       BatchConnect::App.any_instance.stubs(:submit_opts).returns({})
 
-      app = BatchConnect::App.from_token('dev/test')
+      app = BatchConnect::App.from_token('sys/bc_jupyter')
       session = BatchConnect::Session.new
 
       session.save(app: app, context: BatchConnect::SessionContext.new)
@@ -273,7 +278,7 @@ module BatchConnect
       BatchConnect::Session.any_instance.stubs(:submit).returns(true)
       BatchConnect::App.any_instance.stubs(:submit_opts).returns({ :cluster => 'owens' })
 
-      app = BatchConnect::App.from_token('dev/test')
+      app = BatchConnect::App.from_token('sys/bc_jupyter')
       session = BatchConnect::Session.new
 
       session.save(app: app, context: BatchConnect::SessionContext.new)
@@ -281,7 +286,7 @@ module BatchConnect
     end
 
     test 'session throws exception when no cluster is available' do
-      app = BatchConnect::App.from_token('dev/test')
+      app = BatchConnect::App.from_token('sys/bc_jupyter')
       session = BatchConnect::Session.new
 
       save = session.save(app: app, context: BatchConnect::SessionContext.new)
@@ -437,7 +442,7 @@ module BatchConnect
 
     test 'ssh_to_compute_node? disabled globally' do
       session = BatchConnect::Session.new
-      session.stubs(:token).returns('rstudio')
+      session.stubs(:token).returns('sys/bc_jupyter')
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' } }))
       Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
@@ -475,7 +480,7 @@ module BatchConnect
 
     test 'ssh_to_compute_node? handles non-existent cluster and disabled globally' do
       session = BatchConnect::Session.new
-      session.stubs(:token).returns('rstudio')
+      session.stubs(:token).returns('sys/bc_jupyter')
       session.stubs(:cluster).raises(BatchConnect::Session::ClusterNotFound, 'Session specifies nonexistent')
       Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?

@@ -25,19 +25,19 @@ module BatchConnect
       # @param token [String] the token
       # @return [App] generated object
       def from_token(token)
-        type, *app = token.split('/')
-        case type
-        when 'dev'
-          name, sub_app = app
-          router = DevRouter.new(name)
-        when 'usr'
-          owner, name, sub_app = app
-          router = UsrRouter.new(name, owner)
-        else # "sys"
-          name, sub_app = app
-          router = SysRouter.new(name)
-        end
-        new(router: router, sub_app: sub_app)
+        type, = token.split('/')
+
+        # the routers have everything cached, so just find it there.
+        clazz = case type
+                when 'dev'
+                  DevRouter
+                when 'usr'
+                  UsrRouter
+                else # "sys"
+                  SysRouter
+                end
+
+        clazz.apps.find { |app| app.token == token }
       end
     end
 
