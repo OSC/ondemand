@@ -45,6 +45,8 @@ en:
     batch_connect_form_launch: Launch
     batch_connect_form_prefill: Use saved settings
     batch_connect_form_prefill_error: Oops... Something is wrong with your template
+    batch_connect_form_resolution_label: Resolution
+    batch_connect_form_resolution_help: Resolution setting is only used by native VNC connections
     batch_connect_form_reset_resolution: Reset Resolution
     batch_connect_form_save: Save settings
     batch_connect_form_save_new_template: save new settings

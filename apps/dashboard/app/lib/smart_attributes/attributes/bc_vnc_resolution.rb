@@ -22,7 +22,11 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        (opts[:label] || 'Resolution').to_s
+        (opts[:label] || I18n.t('dashboard.batch_connect_form_resolution_label')).to_s
+      end
+
+      def help(fmt: nil)
+        (opts[:help] || I18n.t('dashboard.batch_connect_form_resolution_help')).to_s
       end
 
       # Submission hash describing how to submit this attribute
