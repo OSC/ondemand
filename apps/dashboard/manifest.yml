@@ -1,3 +1,6 @@
 ---
-name: Ood Dashboard
-description: stuff
+name: Open OnDemand Dashboard
+description: "The Open OnDemand Dashboard is the main component of Open OnDemand.\r\n\r\nSee
+  [DEVELOPMENT.md](https://github.com/OSC/ondemand/blob/master/DEVELOPMENT.md) for
+  instructions on developing\r\nthis component.\r\n"
+icon: fas://cog
