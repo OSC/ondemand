@@ -18,8 +18,11 @@ function definedHosts() {
   glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
     .map((yml) => {
       try {
-        return yaml.safeLoad(fs.readFileSync(yml));
-      } catch(err) { /** just keep going. dashboard should have an alert about it */}
+        return yaml.load(fs.readFileSync(yml));
+      } catch(err) {
+        console.log(`error reading ${yml}`);
+        console.log(err);
+      }
     }).filter(config => (config && config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
     .forEach((config) => {
       let host = config.v2.login.host; //Already did checking above
