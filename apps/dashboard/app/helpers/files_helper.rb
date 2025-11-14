@@ -27,5 +27,27 @@ module FilesHelper
   def frame_path(path)
     path.to_s
   end
+
+  def project_dir_files_url(path)
+    if use_edit_url?(path)
+      edit_files_path(path)
+    else  
+      files_path(path)
+    end
+  end
+
+  private
+
+  def use_edit_url?(string_path)
+    path = Pathname.new(string_path)
+    return false if ['.log','.out'].include?(path.extname)
+    return false unless File.writable?(path)
+    if ['.yml','.json'].include?(path.extname)
+      path.ascend do |parent|
+        return false if parent.basename.to_s == '.ondemand'
+      end
+    end
+    true
+  end  
 end
 
