@@ -54,7 +54,7 @@
           <% groups = edit_project_action ? possible_user_groups(@project) : [] %>
           <% unless groups.empty? %>
             <div class="field">
-              <%= form.select :group_owner, groups.unshift('None'), label: 'Group owner', value: @project.get_group_owner %>
+              <%= form.select :group_owner, groups.unshift('None'), label: 'Group owner' %>
             </div>
           <% end %>
         </div>
