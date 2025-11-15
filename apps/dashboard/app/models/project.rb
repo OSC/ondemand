@@ -166,6 +166,7 @@ class Project
   def update(attributes)
     update_attrs(attributes)
 
+    return false unless update_ownership(attributes)
     return false unless valid?(:update)
 
     store_manifest(:update)
@@ -212,7 +213,12 @@ class Project
   end
 
   def set_group_owner(group)
-    FileUtils.chown(nil, Etc.getgrnam(group).gid, project_dataroot)
+    begin 
+      FileUtils.chown(nil, Etc.getgrnam(group).gid, project_dataroot)
+    rescue StandardError => e
+      errors.add(:update, "Unable to modify group ownership with error #{e.class}:#{e.message}")
+      false
+    end
   end
 
   def icon_class
@@ -309,10 +315,14 @@ class Project
     [:name, :description, :icon, :files].each do |attribute|
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
+  end
+
+  def update_ownership(attributes)
     new_group = attributes.fetch(:group_owner, false)
     if new_group
-      new_group = (new_group == 'None') ? CurrentUser.name : new_group
-      set_group_owner(new_group)
+      (new_group == 'None') ? true : set_group_owner(new_group)
+    else
+      true
     end
   end
 
