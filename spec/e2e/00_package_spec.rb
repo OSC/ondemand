@@ -108,7 +108,7 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_grouped_into('root') }
   end
 
-  describe file('/etc/ood/ondemand.d') do
+  describe file('/etc/ood/config/ondemand.d') do
     it { is_expected.to be_directory }
     it { is_expected.to be_mode(755) }
     it { is_expected.to be_owned_by('root') }
