@@ -191,7 +191,7 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 %__mkdir_p %{buildroot}%{_tmppath}/ondemand-nginx
 %__mkdir_p %{buildroot}%{_rundir}/ondemand-nginx
-%__mkdir_p %{_sysconfdir}/ood/config/ondemand.d
+%__mkdir_p %{buildroot}%{_sysconfdir}/ood/config/ondemand.d
 
 %__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
