@@ -76,6 +76,10 @@ Listen 8080
   RewriteCond %{REMOTE_ADDR} !^192\.168\.1\..*
   RewriteRule ^.*$ /assets/maintenance/index.html [R=302,L]
 
+  <FilesMatch "/var/www/ood/public/maintenance/.*">
+    Header Set Cache-Control "max-age=0, no-store"
+  </FilesMatch>
+
   TraceEnable off
 
   Header always set Content-Security-Policy "frame-ancestors https://test.proxy.name;"

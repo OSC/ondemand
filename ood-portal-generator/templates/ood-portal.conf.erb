@@ -105,6 +105,10 @@ Listen <%= addr_port %>
   <%- end -%>
   RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=302,L]
 
+  <FilesMatch "/var/www/ood/public/maintenance/.*">
+    Header Set Cache-Control "max-age=0, no-store"
+  </FilesMatch>
+
   <%- end -%>
   TraceEnable off
 

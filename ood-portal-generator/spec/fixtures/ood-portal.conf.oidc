@@ -55,6 +55,10 @@
   RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
   RewriteRule ^.*$ /public/maintenance/index.html [R=302,L]
 
+  <FilesMatch "/var/www/ood/public/maintenance/.*">
+    Header Set Cache-Control "max-age=0, no-store"
+  </FilesMatch>
+
   TraceEnable off
 
   Header always set Content-Security-Policy "frame-ancestors http://ondemand.example.com;"
