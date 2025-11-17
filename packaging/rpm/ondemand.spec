@@ -315,6 +315,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 %dir %{_sysconfdir}/ood
 %dir %{_sysconfdir}/ood/config
+%dir %{_sysconfdir}/ood/config/ondemand.d
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/hook.env
