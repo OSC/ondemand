@@ -211,6 +211,8 @@ tunable_policy(`ondemand_use_slurm',`
   corenet_tcp_connect_generic_port(ood_pun_t)
   # Access munge socket
   allow ood_pun_t var_run_t:sock_file { getattr write };
+  # Allow configless Slurm in /var/run
+  allow ood_pun_t var_run_t:file { read getattr open };
   # SLURM commands like squeue
   allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
   allow ood_pun_t unconfined_service_t:unix_stream_socket { connectto };
