@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Install NodeJS 22 in dev container (#4786)\
+Format project dashboard (#4761)\
+Add xz to dev container (#4785)\
+Update Changelog (#4771)\
+Add progress/error reporting in the workflow UI\
+update dependencies (#4772)\
+lint a random file (#4770)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
