@@ -29,6 +29,11 @@ const hideLookup = {};
 const labelLookup = {};
 const helpLookup = {};
 
+// aliasLookup is a nested hash of the form
+// {optionId: {value: alias}}
+// Note that values can have special characters so you must access with [] operator
+const aliasLookup = {};
+
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
 
@@ -131,8 +136,10 @@ function makeChangeHandlers(prefix){
           // the variable 'opt' is just a data structure, not a jQuery result. 
           // it has no attr, data, show or hide methods so we have to query
           // for it again
-          let data = $(`${optionSearch}[value='${opt.value}']`).data();
-          let keys = Object.keys(data);
+          let data = $(`${optionSearch}`).filter(function() {
+            return (this.value === opt.value);
+          }).data();
+          let keys = Object.keys(data).sort();
           if(keys.length !== 0) {
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
@@ -149,6 +156,8 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('alias')) {
+                cacheAliases(element['id']);
               } else if(key.startsWith('help')) {
                 addHelpHandler(element['id'], opt.value, key, data[key]);
               }
@@ -170,7 +179,6 @@ function makeChangeHandlers(prefix){
       }
     }
   });
-
   initializing = false;
 };
 
@@ -772,6 +780,24 @@ function idFromToken(str) {
   }
 }
 
+function cacheAliases(elementId) {
+  // This should only run once on each select with an alias defined
+  if (aliasLookup[elementId] === undefined) {
+    aliasLookup[elementId] = {};
+    const options = [...document.querySelectorAll(`#${elementId} option`)];
+    options.forEach(option => {
+      const data = option.dataset;
+      Object.keys(data).forEach(key => {
+        if (key.startsWith('alias')){
+          const alias = key.replace(/^alias/, '');
+          const value = data[key];
+          aliasLookup[elementId][value] = alias;
+        }
+      })
+    })
+  }
+}
+
 /**
  * Extract the option for out of an option for directive.
  *
@@ -826,20 +852,31 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       if(!key.startsWith(contextStr) || optionForId === undefined) {
         continue;
       }
+      const value = document.getElementById(optionForId).value;
+      let optionForValue = mountainCaseWords(value);
 
-      let optionForValue = mountainCaseWords(document.getElementById(optionForId).value);
+      let optionForAlias = '';
+      if ((elementId in aliasLookup) && (value in aliasLookup[elementId])) {
+        optionForAlias = aliasLookup[elementId][value];
+      }
       // handle special case where the very first token here is a number.
       // browsers expect a prefix of hyphens as if it's the next token.
       if (optionForValue.match(/^\d/)) {
         optionForValue = `-${optionForValue}`;
       }
-
       if (contextStr == 'optionFor') {
-        hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
+        let key = `optionFor${optionFor}${optionForValue}`;
+        if (!(key in option.dataset)) {
+          key = `optionFor${optionFor}${optionForAlias}`;
+        }
+        hide = option.dataset[key] === 'false';
       } else if (contextStr == 'exclusiveOptionFor') {
-        hide = !(option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`] === 'true')
+        let key = `exclusiveOptionFor${optionFor}${optionForValue}`;
+        if (!(key in option.dataset)){
+          key = `exclusiveOptionFor${optionFor}${optionForAlias}`;
+        }
+        hide = !(option.dataset[key] === 'true');
       }
-
       if (hide) {
         break;
       }
@@ -851,12 +888,12 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-      var prefix = option.selected ? 'Selected' : ''
-      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`)
+      var prefix = option.selected ? 'Selected' : '';
+      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`);
       option.style.display = 'none';
       option.disabled = true;
     } else {
-      ariaStream(`Option ${option.value} enabled for ${elementInfo}`)
+      ariaStream(`Option ${option.value} enabled for ${elementInfo}`);
       option.style.display = '';
       option.disabled = false;
     }
