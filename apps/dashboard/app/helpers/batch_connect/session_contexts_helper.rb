@@ -60,12 +60,12 @@ module BatchConnect::SessionContextsHelper
 
   def resolution_field(form, id, opts = {})
     content_tag(:div, id: "#{id}_group", class: "mb-3") do
-      concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
+      concat form.label(id, opts[:label], class: 'form-label')
       concat(
-        content_tag(:div, class: "row mb-3") do
+        content_tag(:div, id: [form.object_name, id].join('_'), class: "row mb-3") do
           concat (
-            content_tag(:div, id: [form.object_name, id].join('_'), class: "col-sm-6") do
+            content_tag(:div, class: "col-sm-6") do
               concat (
                 content_tag(:div, class: "input-group") do
                   concat (content_tag(:div, class: "input-group-prepend") do
@@ -94,10 +94,15 @@ module BatchConnect::SessionContextsHelper
               )
             end
           )
+          concat content_tag(:small, opts[:help], class: 'form-text text-muted') if opts[:help]
+          concat (
+            content_tag(:div) do 
+              button_tag(t('dashboard.batch_connect_form_reset_resolution'), id: "#{id}_reset", type: "button", class: "btn btn-light")
+            end
+          )
         end
       )
-      concat content_tag(:span, opts[:help], class: "help-block") if opts[:help]
-      concat button_tag(t('dashboard.batch_connect_form_reset_resolution'), id: "#{id}_reset", type: "button", class: "btn btn-light")
+      
       concat(
         content_tag(:script) do
           <<-EOT.html_safe
