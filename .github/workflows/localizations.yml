@@ -37,7 +37,7 @@ jobs:
       - name: Remove unused 
         run: |
           cd apps/dashboard
-          bundle exec i18n-tasks remove-unused
+          bundle exec i18n-tasks remove-unused -y
 
       - name: Update translations
         run: |
