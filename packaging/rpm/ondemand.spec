@@ -6,7 +6,7 @@
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
 %define runtime_version %{major_version}.%{minor_version}.0
-%define runtime_release 1
+%define runtime_release 2
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 # Use hardcoded RHEL 9.5 for a short period while downstream RHEL clones get RHEL 9.6 release
 %if 0%{?rhel} == 9
@@ -84,8 +84,8 @@ Requires:        python3
 Requires:        rclone
 %endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.26.3-1.p6.1.0.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.1.0-1.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.26.3-2.p6.1.0.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.1.0-2.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}
