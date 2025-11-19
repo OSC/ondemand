@@ -11,7 +11,12 @@
 # Use hardcoded RHEL 9.5 for a short period while downstream RHEL clones get RHEL 9.6 release
 %if 0%{?rhel} == 9
 %define selinux_policy_ver 38.1.45
-%else
+%endif
+# We test against a older version of Amazon Linux 2023 so use older version
+%if 0%{?amzn} == 2023
+%define selinux_policy_ver 38.1.50
+%endif
+%if 0%{?rhel} != 9 && 0%{?amzn} != 2023
 %define selinux_policy_ver %(rpm --qf "%%{version}" -q selinux-policy)
 %endif
 %global selinux_module_version %{package_version}.%{package_release}
@@ -51,7 +56,7 @@ Source2:   ondemand-selinux.fc
 # %%global __brp_strip /bin/true
 # %%global __brp_strip_comment_note /bin/true
 # %%global __brp_strip_static_archive /bin/true
-# %%global __os_install_post %{nil}
+# %%global __os_install_post <nil macro>
 
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
