@@ -37,12 +37,12 @@ jobs:
       - name: Remove unused 
         run: |
           cd apps/dashboard
-          bundle exec i18n-tools remove-unused
+          bundle exec i18n-tasks remove-unused
 
       - name: Update translations
         run: |
           cd apps/dashboard
-          bundle exec i18n-tools translate-missing
+          bundle exec i18n-tasks translate-missing
         env:
           OPENAI_API_TOKEN: ${{ secrets.CHATGPT_API_KEY }}
 
@@ -58,4 +58,4 @@ jobs:
           push-to-fork: osc-bot/ondemand
           branch: osc-bot/localization-updates
           body: |
-            Update localizations with `i18n-tools`
+            Update localizations with `i18n-tasks`
