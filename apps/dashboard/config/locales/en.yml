@@ -1,12 +1,5 @@
 ---
 en:
-  activemodel:
-    errors:
-      messages:
-        format: "%{attribute} format invalid or missing"
-        invalid: "%{attribute} is invalid"
-        required: "%{attribute} is required"
-        used: "%{attribute} is already used"
   dashboard:
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
@@ -30,7 +23,6 @@ en:
       <pre>%{exception_message}</pre>
       <h4>Stack trace:</h4>
       <pre>%{exception_trace}</pre>
-    apps_system_apps_title: System Apps
     auto_log_location_title: Log Location
     back: Back
     balance_additional_message: Consider requesting additional %{balanace_units}
@@ -70,7 +62,6 @@ en:
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
-    batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: |
@@ -115,45 +106,40 @@ en:
       delete_title: Delete %{settings_name} saved settings
       deleted_message: Saved settings %{settings_name} deleted.
       edit_title: Edit %{settings_name} saved settings
-      launch_title: Launch %{app_title} with %{settings_name} parameters
       missing_settings: Selected saved settings not found.
       no_settings_title: You have no saved settings.
       outdated_message: "%{app_title} parameters have changed since these settings were created."
       saved_message: "%{settings_name} settings saved"
-      settings_values_label: Values
       title: Saved Settings
     breadcrumbs_all_apps: All Apps
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
     close: Close
-    ok: OK
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     delete: Delete
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
-    file_quotas: 'File Quotas'
-    files_download_zip: 'Download as zip'
+    file_quotas: File Quotas
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
-    files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
     files_download_not_enabled: Downloading files is not enabled on this server.
-    files_remote_dir_not_created: Did not create directory %{path}
+    files_download_zip: Download as zip
+    files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
     files_remote_disabled: Remote file support is not enabled
-    files_remote_empty_dir_unsupported: Remote does not support empty directories
-    files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
-    files_send_to_target_title_default: 'Send selected files metadata to the external application'
+    files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
     import: Import
     job_info: Job Info
     jobs_create_blank_project: Create a new project
+    jobs_create_blank_workflow: New Workflow
     jobs_create_template_project: Create a new project from a template
     jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
@@ -162,19 +148,17 @@ en:
     jobs_launchers_delete_script_confirmation: Delete all contents of launcher?
     jobs_launchers_deleted: Launcher successfully deleted!
     jobs_launchers_fixed_field: Fixed Value
-    jobs_launchers_not_found: Cannot find Launcher %{launcher_id}
     jobs_launchers_submitted: Successfully submitted job %{job_id}.
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
-    jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
-    jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_placeholder: Project directory absolute path
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
+    jobs_project_imported: Project successfully imported!
     jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
     jobs_project_invalid_configuration_scripts: An executable script is required for your project. Upload a script using the file application.
     jobs_project_job_deleted: Successfully deleted job %{job_id}
@@ -187,20 +171,19 @@ en:
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
-    jobs_workflows: Workflows
-    jobs_workflow_submit: Submit Workflow
-    jobs_create_blank_workflow: New Workflow
     jobs_workflow_created: Workflow successfully created!
-    jobs_workflow_name_placeholder: Workflow name
-    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
-    jobs_workflow_description_placeholder: Workflow description
-    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_deleted: Workflow successfully deleted!
+    jobs_workflow_description_placeholder: Workflow description
     jobs_workflow_failed: Workflow failed with error %{error}
     jobs_workflow_manifest_updated: Workflow manifest updated!
+    jobs_workflow_name_placeholder: Workflow name
+    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
+    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
+    jobs_workflow_submit: Submit Workflow
     jobs_workflow_submitted: Workflow successfully submitted!
+    jobs_workflows: Workflows
     launch: Launch
-    module_browser_last_updated: "Last updated: %{last_updated}"
+    module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
@@ -222,17 +205,18 @@ en:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     not_grouped: Other Apps
-    nsf_access_events: 'NSF ACCESS Events'
+    nsf_access_events: NSF ACCESS Events
+    ok: OK
+    path_selector_default_popup_title: Select Your Working Directory
     path_selector_home: home
     path_selector_parent_directory: parent directory
-    path_selector_default_popup_title: 'Select Your Working Directory'
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
     project_balances: Project Balances
-    project_zip_error_message: "Error creating ZIP file: %{error}"
-    project_zip_success_message: "SUCCESS: project.zip was created in your project directory."
+    project_zip_error_message: 'Error creating ZIP file: %{error}'
+    project_zip_success_message: 'SUCCESS: project.zip was created in your project directory.'
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
@@ -249,22 +233,11 @@ en:
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
-    select_path_for: |
-      %{element} select path
-    settings_invalid_request: Invalid settings submitted
+    select_path_for: "%{element} select path\n"
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
     shared_apps_caption_short: Shared by %{owner}
     shared_apps_title: Shared Apps
-    sharing_catalog_msg_html: "<br>A subset of the apps available can be viewed on the %{catalog_link_tag}.\n"
-    sharing_catalog_title: App Catalog
-    sharing_no_shared_apps_html: "<strong>No custom shared apps available.</strong>\n"
-    sharing_support_msg_html: |
-      If you don't see the app you are looking for, please
-      <a href="%{support_url}">contact support</a>.
-    sharing_welcome_msg_html: |
-      Cluster access applications are available from the dropdown menus in the navbar above.
-      <br>Custom shared apps are available below.
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
     skip_navigation: Skip Navigation
@@ -277,8 +250,8 @@ en:
       rt:
         creation_success: 'Support ticket created in RequestTracker system. TicketId: %{ticket_id}'
       servicenow:
-        creation_success: "Support ticket created in ServiceNow. Number: %{number}"
-        attachments_failure: "Support ticket created in ServiceNow. Number: %{number}. But unable to add the attachments."
+        attachments_failure: 'Support ticket created in ServiceNow. Number: %{number}. But unable to add the attachments.'
+        creation_success: 'Support ticket created in ServiceNow. Number: %{number}'
       title: Support Ticket
       validation:
         attachments_items: The %{id} are invalid. %{items} added, maximum number of attachments is %{max}
@@ -291,27 +264,9 @@ en:
           attachments_js: Max attachment size is %{max}. Selected file size is %{size}
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
-    unknown: Unknown
     uppy: Uppy
     user_configuration:
       support_ticket_error: support_ticket is misconfigured. Please add a backend implementation in the configuration YAML.
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
-    unknown: "Unknown"
-    save: "Save"
-    add: "Add"
-    remove: "Remove"
-    delete: "Delete"
-    edit: "Edit"
-    show: "Show"
-    launch: "Launch"
-    project: "Project"
-    directory: "Directory"
-    close: "Close"
-    type: "Type"
-    name: "Name"
-    size: "Size"
-    owner: "Owner"
-    date: "Date"
-    mode: "Mode"
