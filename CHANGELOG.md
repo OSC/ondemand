@@ -128,7 +128,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Resolved **CVE-2025-64185**. Open OnDemand RPMs on RHEL 8 systems erroneously created two gem directories
   with world-writable (777) permissions. This release patches the issue by ensuring these directories are now
   owned by root:root and set to 755 permissions.
-- Resovled **CVE-2025-62724**. Previous releases were vulnerable to a TOCTOU flaw that allowed files outside
+- Resolved **CVE-2025-62724**. Previous releases were vulnerable to a TOCTOU flaw that allowed files outside
   the allowlist to be included when downloading zip directories. This release remediates that vulnerability.
 
 ## [3.1.16] - 11-04-2025
