@@ -121,6 +121,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   with errors via the shell application. The shell application now restricts log output and properly manages scenarios
   where the terminal remains open but the WebSocket connection is inactive in [4461](https://github.com/OSC/ondemand/pull/4461).
 
+## [4.0.8] - 11-03-2025
+
+### Security
+
+- Resolved **CVE-2025-64185**. Open OnDemand RPMs on RHEL 8 systems erroneously created two gem directories
+  with world-writable (777) permissions. This release patches the issue by ensuring these directories are now
+  owned by root:root and set to 755 permissions.
+- Resolved **CVE-2025-62724**. Previous releases were vulnerable to a TOCTOU flaw that allowed files outside
+  the allowlist to be included when downloading zip directories. This release remediates that vulnerability.
+
+## [3.1.16] - 11-04-2025
+
+### Security
+
+- Resolved **CVE-2025-64185**. Open OnDemand RPMs on RHEL 8 systems erroneously created two gem directories
+  with world-writable (777) permissions. This release patches the issue by ensuring these directories are now
+  owned by root:root and set to 755 permissions.
+- Resolved **CVE-2025-62724**. Previous releases were vulnerable to a TOCTOU flaw that allowed files outside
+  the allowlist to be included when downloading zip directories. This release remediates that vulnerability.
+
 ## [4.0.7] - 08-14-2025
 
 ### Added
@@ -1738,7 +1758,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.7...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.8...HEAD
+[4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
 [4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
 [4.0.5]: https://github.com/OSC/ondemand/compare/v4.0.3...v4.0.5
@@ -1746,6 +1767,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.16]: https://github.com/OSC/ondemand/compare/v3.1.15...v3.1.16
 [3.1.15]: https://github.com/OSC/ondemand/compare/v3.1.14...v3.1.15
 [3.1.14]: https://github.com/OSC/ondemand/compare/v3.1.13...v3.1.14
 [3.1.13]: https://github.com/OSC/ondemand/compare/v3.1.11...v3.1.13

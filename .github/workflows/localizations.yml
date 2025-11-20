@@ -41,7 +41,7 @@ jobs:
           cd apps/dashboard
           bundle exec i18n-tasks translate-missing
         env:
-          OPENAI_API_TOKEN: ${{ secrets.CHATGPT_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
