@@ -131,7 +131,7 @@ Requires: %{gems_name}
 Metapackage to include Rubygems for OnDemand
 
 %prep
-%setup -q -n %{package_name}-%{git_tag_minus_v}
+%setup -n %{package_name}-%{git_tag_minus_v}
 
 
 %build
