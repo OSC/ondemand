@@ -131,8 +131,11 @@ Requires: %{gems_name}
 Metapackage to include Rubygems for OnDemand
 
 %prep
-%setup -n %{package_name}-%{git_tag_minus_v}
-
+%if 0%{?rhel} >= 10
+%autosetup -n %{package_name}-%{git_tag_minus_v}
+%else
+%setup -q -n %{package_name}-%{git_tag_minus_v}
+%endif
 
 %build
 %__mkdir selinux
