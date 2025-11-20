@@ -132,6 +132,8 @@ Metapackage to include Rubygems for OnDemand
 
 %prep
 %if 0%{?rhel} >= 10
+# The chmod command from _fixperms is causing issues so just avoid for now
+%define _fixperms echo
 %autosetup -n %{package_name}-%{git_tag_minus_v}
 %else
 %setup -q -n %{package_name}-%{git_tag_minus_v}
