@@ -3,6 +3,7 @@ import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import _ from 'lodash';
 import { transfersPath, csrfToken } from '../config.js';
+import { OODAlertError } from '../alert';
 
 export {EVENTNAME};
 
@@ -367,7 +368,7 @@ class FileOps {
         myFileOp.reloadTable();
       })
       .catch(function (e) {
-        myFileOp.alertError('Error occurred when attempting to create new file', e.message);
+        OODAlertError(`Error occurred when attempting to create new file: ${e.message}`);
       });
   }
 
@@ -401,7 +402,7 @@ class FileOps {
         myFileOp.reloadTable();
       })
       .catch(function (e) {
-        myFileOp.alertError('Error occurred when attempting to create new directory', e.message);
+        OODAlertError(`Error occurred when attempting to create new directory: ${e.message}`);
       });
   }
 
@@ -435,12 +436,12 @@ class FileOps {
           this.downloadFile(file)
         } else {
           this.doneLoading();
-          this.alertError('Error while downloading', data.error_message);
+          OODAlertError(`Error while downloading: ${data.error_message}`);
         }
       })
       .catch(e => {
         this.doneLoading();
-        this.alertError('Error while downloading', e.message);
+        OODAlertError(`Error while downloading: ${e.message}`);
       })
   }
   
@@ -524,7 +525,7 @@ class FileOps {
     .then(() => this.doneLoading())
     .catch(e => {
       this.doneLoading();
-      this.alertError('Error occurred when attempting to ' + summary, e.message);
+      OODAlertError(`Error occurred when attempting to ${summary}: ${e.message}`);
     })
   }
   
@@ -601,7 +602,7 @@ class FileOps {
       }
     }).fail(function() {
       if (that._failures >= 3) {
-        that.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
+        OODAlertError('Operation may not have happened', 'Failed to retrieve file operation status.');
       } else {
         setTimeout(function(){
           that._failures++;
@@ -624,16 +625,6 @@ class FileOps {
 
   copy(files, token, from_fs, to_fs) {
     this.transferFiles(files, 'cp', 'copy files', from_fs, to_fs);
-  }
-
-  alertError(title, message) {
-    const eventData = {
-      'title': title,
-      'message': message,
-    };
-
-    $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-
   }
 
   doneLoading() {
