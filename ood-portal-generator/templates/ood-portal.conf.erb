@@ -230,6 +230,13 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
+    <%- end -%>
+
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
@@ -257,6 +264,13 @@ Listen <%= addr_port %>
 
     <%- @custom_location_directives.to_a.each do |line| -%>
     <%= line %>
+    <%- end -%>
+
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
     <%- end -%>
 
     # ProxyPassReverse implementation
