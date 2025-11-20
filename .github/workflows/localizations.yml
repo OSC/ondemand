@@ -34,10 +34,7 @@ jobs:
           cd apps/dashboard
           bundle install
 
-      - name: Remove unused 
-        run: |
-          cd apps/dashboard
-          bundle exec i18n-tasks remove-unused
+      # could invoke 'i18n-tasks remove-unused' here, but it doesn't seem to work correctly.
 
       - name: Update translations
         run: |
