@@ -128,8 +128,11 @@ def bootstrap_repos
   case host_inventory['platform']
   when 'redhat'
     repos << 'epel-release'
-    on hosts, 'dnf -y module enable ruby:3.3'
-    on hosts, 'dnf -y module enable nodejs:22'
+    # Avoid DNF modules for el10 until Ruby and NodeJS use modules
+    if host_inventory['platform_version'] !~ /^10/
+      on hosts, 'dnf -y module enable ruby:3.3'
+      on hosts, 'dnf -y module enable nodejs:22'
+    end
   when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
   end
