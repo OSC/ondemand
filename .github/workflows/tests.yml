@@ -31,7 +31,7 @@ jobs:
           # Test versions from Amazon Linux 2023 and Ubuntu 24.04
           - os: ubuntu-latest
             ruby: "3.2"
-          # Test versions from RHEL8 & RHEL9
+          # Test versions from RHEL8 & RHEL9 & RHEL10
           - os: ubuntu-latest
             ruby: "3.3"
     runs-on: ${{ matrix.os }}
@@ -129,6 +129,7 @@ jobs:
         dist:
           - el8
           - el9
+          - el10
           - amzn2023
           - ubuntu-22.04
           - ubuntu-24.04
@@ -139,6 +140,9 @@ jobs:
           - ppc64le
         version: ["4.1"]
         exclude:
+          # el10 on aarch64 times out
+          - dist: el10
+            arch: aarch64
           # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023
             arch: aarch64
