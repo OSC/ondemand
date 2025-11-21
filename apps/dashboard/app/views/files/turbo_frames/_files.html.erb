@@ -40,7 +40,7 @@
         <%= 
           link_to(
             file[:name],
-            files_path("#{path}/#{file[:name]}"),
+            project_dir_files_url("#{path}/#{file[:name]}"),
             format: :html,
             target: "_top",
           )
