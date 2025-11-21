@@ -175,13 +175,7 @@ jQuery(function() {
 
   $(CONTENTID).on(EVENTNAME.download, function (e, options) {
     if(options.selection.length == 0) {
-      const eventData = {
-          'title': 'Select a file, files, or directory to download',
-          'message': 'You have selected none.',
-      };
-
-      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-
+      OODAlertError('Select a file, files, or directory to download. You have selected none.');
     } else {
       fileOps.download(options.selection);
     }
@@ -189,13 +183,7 @@ jQuery(function() {
 
   $(CONTENTID).on(EVENTNAME.deletePrompt, function (e, options) {
     if(options.files.length == 0) {
-      const eventData = {
-          'title': 'Select a file, files, or directory to delete.',
-          'message': 'You have selected none.',
-      };
-
-      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-
+      $(CONTENTID).trigger('Select a file, files, or directory to delete. You have selected none.');
     } else {
       fileOps.deletePrompt(options.files);
     }
