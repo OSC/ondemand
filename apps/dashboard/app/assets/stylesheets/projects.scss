@@ -36,6 +36,15 @@
   }
 }
 
+.thin-outline {
+  outline: 0.25em solid rgb(26, 118, 211);
+}
+
+.button-icon {
+  font-size: 175%;
+  margin-left: 2rem;
+}
+
 .job-info {
   cursor: default;
 }

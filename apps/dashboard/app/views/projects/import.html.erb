@@ -1,5 +1,6 @@
 <%= javascript_include_tag('projects_import', nonce: true, type: 'module') %>
 
+<%= turbo_frame_tag(:import_pane) do %>
 <div class='page-header text-center pb-3'>
   <h1>
     Import a Shared Project
@@ -80,3 +81,4 @@
     </div>
   </div>
 </div>  
+<% end %>
