@@ -18,6 +18,6 @@ group :test do
   gem 'watir'
 
   gem 'beaker'
-  gem 'beaker-docker', '~> 1.4.0'
+  gem 'beaker-docker', '~> 2.2.0'
   gem 'beaker-rspec'
 end
