@@ -6,21 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-dont run remove-unused (#4810)\
-add 4.0.8 and 3.1.16 to changelog (#4808)\
-should be openai_api_key (#4806)\
-accept remove-unused so it can progress (#4805)\
-move workflows into same col as launchers (#4769)\
-should be i18n-tasks not tools (#4801)\
-Allow special characters in auto_accounts by adding data-alias (#4673)\
-Add help to resolution fields (#4765)\
-Cache maintanence (#4799)\
-RPMs to create ondemand.d directory and add a spec test for the same (#4796)\
-Update ondemand-selinux.te allowing configless Slurm (#4791)\
-upgrade to rails 7.1.6 (#4788)\
-update dependencies (#4795)\
-Update dashboard app manifest with full name, description (#4790)\
-Bump js-yaml from 3.14.1 to 4.1.1 in /apps/shell (#4787)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -63,6 +48,8 @@ Bump js-yaml from 3.14.1 to 4.1.1 in /apps/shell (#4787)
 - Fix S3-Specific directory traversal bug in [4623](https://github.com/OSC/ondemand/pull/4623).
 - bc_deskop now removes HOME paths from the PATH in [4703](https://github.com/OSC/ondemand/pull/4703).
 - Remove world writable from files in OOD packaged gems in [4717](https://github.com/OSC/ondemand/pull/4717).
+- Special characters can now appear in auto_accounts by adding data-alias in [4673](https://github.com/OSC/ondemand/pull/4673).
+- Maintenance and needs auth pages are never cached in [4799](https://github.com/OSC/ondemand/pull/4799).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -109,6 +96,7 @@ Bump js-yaml from 3.14.1 to 4.1.1 in /apps/shell (#4787)
 - The files app can now create a payload to POST to a separate application in [4662](https://github.com/OSC/ondemand/pull/4662).
 - register_path, register_method and register_method_options have been added to ood_portal.yml in [4763](https://github.com/OSC/ondemand/pull/4763).
 - nsf_access_events widget has been added in [4726](https://github.com/OSC/ondemand/pull/4726).
+- Resolution widgets now have a help field for clarity in [4765](https://github.com/OSC/ondemand/pull/4765).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
