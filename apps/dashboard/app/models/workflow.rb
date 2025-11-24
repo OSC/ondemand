@@ -36,6 +36,9 @@ class Workflow
   # TODO: Remove launcher_ids, source_ids, target_ids and use metadata only
   attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids, :metadata
 
+  validates :name, presence: true
+  validates :launcher_ids, length: {minimum: 1}
+
   def initialize(attributes = {})
     @id = attributes[:id]
     @name = attributes[:name]
