@@ -106,9 +106,9 @@ end
 def ood_gems_path
   case host_inventory['platform']
   when 'redhat'
-    return '/opt/ood/ondemand/root/usr/share/gems'
+    '/opt/ood/ondemand/root/usr/share/gems'
   when 'ubuntu', 'debian'
-    return '/opt/ood/gems'
+    '/opt/ood/gems'
   end
 end
 
