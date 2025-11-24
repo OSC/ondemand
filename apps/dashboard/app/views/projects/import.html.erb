@@ -39,7 +39,7 @@
         </div>
       </div>
     <p>
-      <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project' %>
+      <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project', data: {turbo_frame: '_top'} %>
       <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
     </p>
   <% end %>
@@ -54,6 +54,7 @@
 	  <div id="<%= project.id %>" class="col-md-3 w-40">
           <%= button_to project_import_save_path, method: :post,
                 params: { project: { directory: project.directory } }, 
+                data: { turbo_frame: '_top' },
                 class: 'project-icon p-2 w-100 border-0 bg-transparent' do %>
               <div class="text-center d-flex justify-content-center">
 		<strong>
