@@ -1,11 +1,6 @@
 <%= javascript_include_tag('projects_import', nonce: true, type: 'module') %>
 
 <%= turbo_frame_tag(:import_pane) do %>
-<div class='page-header text-center pb-3'>
-  <h1>
-    Import a Shared Project
-  </h1>
-</div>
 
 <%
   path_selector_id = "project_directory_path_selector"
@@ -23,16 +18,17 @@
     favorites: false,
   }
 %>
-
-<%= bootstrap_form_for(@project, url: project_import_save_path, method: :post) do |form| %>
-<div class='card'>
-  <div class='card-group'>
-    <div class='card'>
-      <div class='card-body'>
-        <div class="col">
+<div id='import-wrapper' class='justify-content-center bg-light'>
+  <%= bootstrap_form_for(@project, url: project_import_save_path, method: :post) do |form| %>
+      <br>
+      <div class='card mx-4 my-2'>
+        <div class='card-body'>
           <div class="field">
-            <%= form.text_field(:directory, placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
-                                data: { 'path-selector': true }) %>
+            <%= form.text_field(
+              :directory,
+              placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
+              data: { 'path-selector': true })
+            %>
 
             <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
               <%= I18n.t('dashboard.select_path') %>
@@ -42,43 +38,34 @@
           </div>
         </div>
       </div>
-      </div>
-    </div>
-  </div>
-  <br>
-  <p>
-    <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project' %>
-    <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
-    <%= link_to I18n.t('dashboard.back'), projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
-  </p>
-</div>
-<% end %>
+    <p>
+      <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project' %>
+      <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+    </p>
+  <% end %>
 
-<div class='card'>
-  <div class='card-group'>
-    <div class='card'>
-      <div class='card-body'>
-        <strong>
-          <%= label :directory, I18n.t('dashboard.jobs_select_directory_placeholder') %>
-        </strong>
-        <div class="d-flex flex-wrap justify-content-start">
-          <% @projects.each do |project| %>
-            <%= button_to project_import_save_path, method: :post, 
+  <div class='card mx-4 mb-2'>
+    <div class='card-body'>
+      <strong>
+        <%= label :directory, I18n.t('dashboard.jobs_select_directory_placeholder') %>
+      </strong>
+      <div class="d-flex flex-wrap justify-content-start">
+        <% @projects.each do |project| %>
+	  <div id="<%= project.id %>" class="col-md-3 w-40">
+          <%= button_to project_import_save_path, method: :post,
                 params: { project: { directory: project.directory } }, 
-                class: 'btn p-0 border-0 bg-transparent' do %>
-              <div id="<%= project.id %>" class="col-md-3 project-icon project-card" style="width: 150px;">
-                <div class="text-center d-flex justify-content-center">
-                  <strong>
-                    <%= icon_tag(URI.parse(project.icon)) %>
-                    <%= content_tag(:p, project.title) %>
-                  </strong>
-                </div>
+                class: 'project-icon p-2 w-100 border-0 bg-transparent' do %>
+              <div class="text-center d-flex justify-content-center">
+		<strong>
+		  <%= icon_tag(URI.parse(project.icon)) %>
+                  <%= content_tag(:div, project.title, class:'project-title my-2') %>
+                </strong>
               </div>
-            <% end %>
           <% end %>
-        </div>
+	  </div>
+        <% end %>
       </div>
     </div>
   </div>
-</div>  
+</div>
 <% end %>

@@ -39,29 +39,29 @@
       <div class="mt-5 justify-content-center text-center">
         <%= link_to(new_project_path,
                       title: I18n.t('dashboard.jobs_create_blank_project'),
-                      class: 'text-dark btn btn-link bg-light font-weight-bold thin-outline') do
+                      class: 'text-dark btn btn-link bg-light font-weight-bold thin-outline w-100') do
         %>
-          <div class="text-center d-flex align-items-center">
+          <div class="text-center d-flex align-items-center justify-content-between">
             <strong>
               <%= I18n.t('dashboard.jobs_create_blank_project') %>
             </strong>
-	    <%= icon_tag(URI.parse("fas://file-medical"), classes:['button-icon']) %>
+	          <%= icon_tag(URI.parse("fas://file-medical"), classes:['button-icon']) %>
           </div>
         <% end %>
       </div>
       
       <div class="mt-5 justify-content-center text-center">
-        <a  class="text-dark btn btn-link bg-light font-weight-bold thin-outline" data-bs-toggle="collapse" data-bs-target="#load-import-pane"
+        <a  class="text-dark btn btn-link bg-light font-weight-bold thin-outline w-100" data-bs-toggle="collapse" data-bs-target="#load-import-pane"
          title="<%= I18n.t('dashboard.jobs_import_shared_project')%>">
         
-          <div class="text-center d-flex align-items-center">
+          <div class="text-center d-flex align-items-center justify-content-between">
             <strong>
               <%= I18n.t('dashboard.jobs_import_shared_project') %>
             </strong>
-	          <%= icon_tag(URI.parse("fas://file-import"), classes:['button-icon']) %><br>
+	          <%= icon_tag(URI.parse("fas://file-import"), classes:['button-icon']) %>
           </div>
         </a>
-        <div id="load-import-pane" class="collapse bg-light">
+        <div id="load-import-pane" class="collapse">
           <%= turbo_frame_tag(:import_pane, src: project_import_path, loading: :lazy) do %>
             <%= render partial: "files/spinner", locals:{show_on_load: true} %>
           <% end %>
