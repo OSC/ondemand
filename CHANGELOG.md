@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+dont run remove-unused (#4810)\
+add 4.0.8 and 3.1.16 to changelog (#4808)\
+should be openai_api_key (#4806)\
+accept remove-unused so it can progress (#4805)\
+move workflows into same col as launchers (#4769)\
+should be i18n-tasks not tools (#4801)\
+Allow special characters in auto_accounts by adding data-alias (#4673)\
+Add help to resolution fields (#4765)\
+Cache maintanence (#4799)\
+RPMs to create ondemand.d directory and add a spec test for the same (#4796)\
+Update ondemand-selinux.te allowing configless Slurm (#4791)\
+upgrade to rails 7.1.6 (#4788)\
+update dependencies (#4795)\
+Update dashboard app manifest with full name, description (#4790)\
+Bump js-yaml from 3.14.1 to 4.1.1 in /apps/shell (#4787)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
