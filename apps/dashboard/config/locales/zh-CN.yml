@@ -65,14 +65,14 @@ zh-CN:
     batch_connect_sessions_cancel_title: Cancel
     batch_connect_sessions_data_html: '你可以通过%{data_link_tag}来获取会话数据%{title}。
 
-'
+      '
     batch_connect_sessions_delete_confirm: 你确定吗？
     batch_connect_sessions_delete_hover: 删除会话
     batch_connect_sessions_delete_title: 删除
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: '如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
 
-'
+      '
     batch_connect_sessions_errors_staging: 无法调用模板，并显示以下错误：
     batch_connect_sessions_errors_submission: 提交会话失败，出现以下错误：
     batch_connect_sessions_novnc_launch: 启动%{app_title}
@@ -98,13 +98,13 @@ zh-CN:
     batch_connect_sessions_status_completed: For debugging purposes, this card will be retained for %{days} more days
     batch_connect_sessions_status_missing_connection: '此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。
 
-'
+      '
     batch_connect_sessions_status_queued: '由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。
 
-'
+      '
     batch_connect_sessions_status_starting: '您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。
 
-'
+      '
     batch_connect_sessions_word: Session
     bc_saved_settings:
       delete_confirm: Are you sure?
@@ -125,10 +125,12 @@ zh-CN:
     close: Close
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
+    date: 日期
     delete: 删除
     development_apps_caption: Sandbox App
-    directory: Directory
+    directory: 目录
     edit: 编辑
+    file_quotas: 文件配额
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
@@ -136,12 +138,19 @@ zh-CN:
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
     files_download_not_enabled: Downloading files is not enabled on this server.
+    files_download_zip: 下载为 zip
+    files_file_too_large: 文件太大，无法下载。文件下载应小于 %{download_file_size_limit} 字节。
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    files_send_to_target_title_default: 将选定的文件元数据发送到外部应用程序
+    files_shell: 在终端中打开
+    files_shell_dropdown: 选择要在终端中打开的集群
     import: Import
+    job_info: 作业信息
     jobs_create_blank_project: Create a new project
+    jobs_create_blank_workflow: New Workflow
     jobs_create_template_project: Create a new project from a template
     jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
@@ -155,14 +164,14 @@ zh-CN:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
-    jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
-    jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_error: Project directory path is not set for this workflow
+    jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
+    jobs_project_imported: Project successfully imported!
     jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
     jobs_project_invalid_configuration_scripts: An executable script is required for your project. Upload a script using the file application.
     jobs_project_job_deleted: Successfully deleted job %{job_id}
@@ -175,23 +184,24 @@ zh-CN:
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
-    jobs_workflows: Workflows
-    jobs_workflow_submit: Submit Workflow
-    jobs_create_blank_workflow: New Workflow
     jobs_workflow_created: Workflow successfully created!
-    jobs_workflow_name_placeholder: Workflow name
-    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
-    jobs_workflow_description_placeholder: Workflow description
-    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_deleted: Workflow successfully deleted!
+    jobs_workflow_description_placeholder: Workflow description
     jobs_workflow_failed: Workflow failed with error %{error}
     jobs_workflow_manifest_updated: Workflow manifest updated!
+    jobs_workflow_name_placeholder: Workflow name
+    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
+    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
+    jobs_workflow_submit: Submit Workflow
     jobs_workflow_submitted: Workflow successfully submitted!
+    jobs_workflows: Workflows
     launch: 启动
-    module_browser_last_updated: "Last updated: %{last_updated}"
+    mode: 模式
+    module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: 每日信息
+    name: 名称
     nav_all_apps: 所有应用
     nav_develop_docs: 开发者文档
     nav_develop_my_sandbox_apps_dev: 我的沙盒应用 (Development)
@@ -210,12 +220,19 @@ zh-CN:
     nav_sessions: 我的交互会话
     nav_user: 以用户名：%{username}登陆
     not_grouped: Other Apps
+    nsf_access_events: NSF 访问事件
+    ok: 好的
+    owner: 所有者
+    path_selector_default_popup_title: 选择您的工作目录
+    path_selector_home: 主页
+    path_selector_parent_directory: 父目录
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
-    project: Project
-    project_zip_error_message: "创建 ZIP 文件时出错：%{error}"
-    project_zip_success_message: "成功：project.zip 已在您的项目目录中创建。"
+    project: 项目
+    project_balances: 项目余额
+    project_zip_error_message: 创建 ZIP 文件时出错：%{error}
+    project_zip_success_message: 成功：project.zip 已在您的项目目录中创建。
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
     quota_block: 配额使用量%{used} 可用 %{available}
     quota_block_shared: "(您的配额%{used_exclusive} )"
@@ -232,6 +249,7 @@ zh-CN:
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
+    select_path_for: "%{element} 选择路径\n"
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
@@ -248,12 +266,19 @@ zh-CN:
       <br>自定义共享应用程序可以在下面使用。
     shell_app_title: "%{cluster_title} Shell Access"
     show: 显示
+    size: 大小
+    skip_navigation: 跳过导航
+    soft_tabs: 软制表符
+    soft_tabs_info: 软制表符是文件中的空格，而不是实际的制表符字符。
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
       header: Support Ticket
       rt:
         creation_success: 'Support ticket created in RequestTracker system. TicketId: %{ticket_id}'
+      servicenow:
+        attachments_failure: 在 ServiceNow 中创建的支持票。编号：%{number}。但无法添加附件。
+        creation_success: 在 ServiceNow 中创建的支持票。编号：%{number}
       title: Support Ticket
       validation:
         attachments_items: The %{id} are invalid. %{items} added, maximum number of attachments is %{max}
@@ -266,6 +291,7 @@ zh-CN:
           attachments_js: Max attachment size is %{max}. Selected file size is %{size}
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
+    type: 类型
     unknown: Unknown
     uppy: Uppy
     user_configuration:
@@ -273,18 +299,3 @@ zh-CN:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
-    # unknown: "Unknown"
-    delete: "删除"
-    edit: "编辑"
-    show: "显示" 
-    launch: "启动" 
-    type: "类型"
-    name: "名称"
-    size: "大小"
-    owner: "所有者"
-    date: "日期"
-    mode: "模式"
-    project: "项目"
-    directory: "目录"
-  
-    auto_log_location_title: "日志位置"

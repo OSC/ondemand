@@ -32,6 +32,7 @@ en-CA:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: System Applications
     auto_log_location_title: Log Location
+    back: Retour
     balance_additional_message: Consider requesting additional %{balanace_units}
     balance_message: "%{units_balance} is %{value}"
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
@@ -128,10 +129,12 @@ en-CA:
     close: Close
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
+    date: Date
     delete: Delete
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    file_quotas: Quotas de fichiers
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
@@ -139,12 +142,21 @@ en-CA:
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
     files_download_not_enabled: Downloading files is not enabled on this server.
+    files_download_zip: Télécharger en tant que zip
+    files_file_too_large: Le fichier est trop volumineux pour être téléchargé. Les téléchargements de fichiers doivent être inférieurs à %{download_file_size_limit} octets.
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    files_send_to_target_title_default: Envoyer les métadonnées des fichiers sélectionnés à l'application externe
+    files_shell: Ouvrir dans le terminal
+    files_shell_dropdown: Sélectionner le cluster à ouvrir dans le terminal
+    import: Importer
+    job_info: Informations sur le travail
     jobs_create_blank_project: Create a new project
+    jobs_create_blank_workflow: Nouveau flux de travail
     jobs_create_template_project: Create a new project from a template
+    jobs_import_shared_project: Importer un projet partagé
     jobs_launchers: Launchers
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
@@ -159,9 +171,11 @@ en-CA:
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
+    jobs_project_directory_error: Le chemin du répertoire du projet n'est pas défini pour ce flux de travail
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
+    jobs_project_imported: Projet importé avec succès !
     jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
     jobs_project_invalid_configuration_scripts: An executable script is required for your project. Upload a script using the file application.
     jobs_project_job_deleted: Successfully deleted job %{job_id}
@@ -173,9 +187,25 @@ en-CA:
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
+    jobs_select_directory_placeholder: Cliquez sur le projet ci-dessous pour l'importer sur votre page d'accueil (facultatif)
+    jobs_workflow_created: Flux de travail créé avec succès !
+    jobs_workflow_deleted: Flux de travail supprimé avec succès !
+    jobs_workflow_description_placeholder: Description du flux de travail
+    jobs_workflow_failed: Le flux de travail a échoué avec l'erreur %{error}
+    jobs_workflow_manifest_updated: Manifeste du flux de travail mis à jour !
+    jobs_workflow_name_placeholder: Nom du flux de travail
+    jobs_workflow_name_validation: Le nom du flux de travail ne peut contenir que des lettres, des chiffres, des tirets, des traits de soulignement et des espaces
+    jobs_workflow_not_found: Impossible de trouver le flux de travail %{workflow_id}
+    jobs_workflow_submit: Soumettre le flux de travail
+    jobs_workflow_submitted: Flux de travail soumis avec succès !
+    jobs_workflows: Flux de travail
     launch: Launch
+    mode: Mode
+    module_browser_last_updated: 'Dernière mise à jour : %{last_updated}'
+    module_browser_title: Navigateur de modules
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
+    name: Nom
     nav_all_apps: All Apps
     nav_develop_docs: Developer Documentation
     nav_develop_my_sandbox_apps_dev: My Sandbox Apps (Development)
@@ -194,10 +224,19 @@ en-CA:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     not_grouped: Other Apps
+    nsf_access_events: Événements d'accès NSF
+    ok: OK
+    owner: Propriétaire
+    path_selector_default_popup_title: Sélectionnez votre répertoire de travail
+    path_selector_home: accueil
+    path_selector_parent_directory: répertoire parent
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
+    project_balances: Soldes de projet
+    project_zip_error_message: 'Erreur lors de la création du fichier ZIP : %{error}'
+    project_zip_success_message: 'SUCCÈS : project.zip a été créé dans votre répertoire de projet.'
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
@@ -207,12 +246,14 @@ en-CA:
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
     remove: Remove
+    reset: Réinitialiser
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
+    select_path_for: "%{element} sélectionner le chemin\n"
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
@@ -229,12 +270,19 @@ en-CA:
       <br>Custom shared apps are available below.
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
+    size: Taille
+    skip_navigation: Ignorer la navigation
+    soft_tabs: Tabulations souples
+    soft_tabs_info: Les tabulations souples sont des espaces dans le fichier au lieu de véritables caractères de tabulation.
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
       header: Support Ticket
       rt:
         creation_success: 'Support ticket created in RequestTracker system. TicketId: %{ticket_id}'
+      servicenow:
+        attachments_failure: 'Ticket de support créé dans ServiceNow. Numéro : %{number}. Mais impossible d''ajouter les pièces jointes.'
+        creation_success: 'Ticket de support créé dans ServiceNow. Numéro : %{number}'
       title: Support Ticket
       validation:
         attachments_items: The %{id} are invalid. %{items} added, maximum number of attachments is %{max}
@@ -247,6 +295,7 @@ en-CA:
           attachments_js: Max attachment size is %{max}. Selected file size is %{size}
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
+    type: Type
     unknown: Unknown
     uppy: Uppy
     user_configuration:
