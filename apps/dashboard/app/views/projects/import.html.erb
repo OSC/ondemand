@@ -43,7 +43,7 @@
       <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
     </p>
   <% end %>
-
+  <% unless @projects.empty? %>
   <div class='card mx-4 mb-2'>
     <div class='card-body'>
       <strong>
@@ -68,5 +68,6 @@
       </div>
     </div>
   </div>
+  <% end %>
 </div>
 <% end %>
