@@ -9,11 +9,13 @@
     show_hidden: false,
     file_pattern: '',
     initial_directory: CurrentUser.home,
+    favorites: pathselector_favorites(nil),
+    popup_title: 'Select project directory',
+  
     table_id: "#{path_selector_id}_table",
     breadcrumb_id: "#{path_selector_id}_breadcrumb",
     button_id: "#{path_selector_id}_button",
-    input_field_id: 'project_directory',
-    favorites: false,
+    input_field_id: 'project_directory'
   }
 %>
 <div id='import-wrapper' class='justify-content-center bg-light'>
