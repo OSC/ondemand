@@ -74,14 +74,10 @@ class ConfigurationSingleton
       :user_settings_file             => Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s,
       :facl_domain                    => nil,
       :auto_groups_filter             => nil,
-      :bc_clean_old_dirs_days         => '30',
       :google_analytics_tag_id        => nil,
       :project_template_dir           => "#{config_root}/projects",
       :rclone_extra_config            => nil,
       :default_profile                => nil,
-      :project_size_timeout           => '15',
-      :novnc_default_compression      => '6',
-      :novnc_default_quality          => '2',
       :plugins_directory              => '/etc/ood/config/plugins'
     }.freeze
   end
@@ -92,7 +88,11 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def int_configs
     {
-      :file_download_max => 10_737_418_240
+      :bc_clean_old_dirs_days    => 30,
+      :file_download_max         => 10_737_418_240,
+      :project_size_timeout      => 15,
+      :novnc_default_compression => 6,
+      :novnc_default_quality     => 2,
     }.freeze
   end
 
