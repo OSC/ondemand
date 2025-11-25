@@ -88,11 +88,14 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def int_configs
     {
-      :bc_clean_old_dirs_days    => 30,
-      :file_download_max         => 10_737_418_240,
-      :project_size_timeout      => 15,
-      :novnc_default_compression => 6,
-      :novnc_default_quality     => 2,
+      :bc_clean_old_dirs_days       => 30,
+      :download_dir_timeout_seconds => 5,
+      :download_dir_max             => 10_737_418_240, # 10*1024*1024*1024 bytes
+      :file_editor_max_size         => 12_582_912,     # 12*1024*1024 bytes
+      :file_download_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
+      :project_size_timeout         => 15,
+      :novnc_default_compression    => 6,
+      :novnc_default_quality        => 2,
     }.freeze
   end
 
@@ -366,30 +369,6 @@ class ConfigurationSingleton
   # @return [String] Maximum upload size for nginx.
   def file_upload_max
     [ENV['FILE_UPLOAD_MAX']&.to_i, ENV['NGINX_FILE_UPLOAD_MAX']&.to_i].compact.min || 10737420000
-  end
-
-  # The timeout (seconds) for "generating" a .zip from a directory.
-  #
-  # Default for OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS is "5" (seconds).
-  # @return [Integer]
-  def file_download_dir_timeout
-    ENV['OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS']&.to_i || 5
-  end
-
-  # The maximum size of a .zip file that can be downloaded.
-  #
-  # Default for OOD_DOWNLOAD_DIR_MAX is 10*1024*1024*1024 bytes.
-  # @return [Integer]
-  def file_download_dir_max
-    ENV['OOD_DOWNLOAD_DIR_MAX']&.to_i || 10737418240
-  end
-
-  # The maximum size of a file that can be opened in the file editor.
-  #
-  # Default for OOD_FILE_EDITOR_MAX_SIZE is 12*1024*1024 bytes.
-  # @return [Integer]
-  def file_editor_max_size
-    ENV['OOD_FILE_EDITOR_MAX_SIZE']&.to_i || 12582912 
   end
 
   def allowlist_paths
