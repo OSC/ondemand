@@ -128,8 +128,12 @@ class Project
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
     @template = attributes[:template]
-    @group_owner = get_group_owner
-    return if new_record?
+    @group_owner = attributes[:group_owner] || get_group_owner
+
+    if new_record?
+      set_group_owner(@group_owner)
+      return
+    end
 
     contents = File.read(manifest_path)
     raw_opts = YAML.safe_load(contents)
@@ -166,7 +170,6 @@ class Project
   def update(attributes)
     update_attrs(attributes)
 
-    return false unless update_ownership(attributes)
     return false unless valid?(:update)
 
     store_manifest(:update)
@@ -204,6 +207,10 @@ class Project
     false
   end
 
+  def private?
+    project_dataroot.to_s.start_with?(CurrentUser.home)
+  end
+  
   def get_group_owner
     if project_dataroot.grpowned?
       Etc.getgrgid(project_dataroot.stat.gid).name
@@ -318,12 +325,8 @@ class Project
   end
 
   def update_ownership(attributes)
-    new_group = attributes.fetch(:group_owner, false)
-    if new_group
-      (new_group == 'None') ? true : set_group_owner(new_group)
-    else
-      true
-    end
+    new_group = attributes.fetch(:group_owner, 'None')
+    (new_group == get_group_owner) ? true : set_group_owner(new_group)
   end
 
   def make_dir

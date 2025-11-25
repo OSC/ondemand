@@ -50,13 +50,14 @@
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
-
-          <% groups = edit_project_action ? possible_user_groups(@project) : [] %>
-          <% unless groups.empty? %>
+          <% unless @project.private? && edit_project_action %>
             <div class="field">
-              <%= form.select :group_owner, groups.unshift('None'), label: 'Group owner' %>
+              <%= form.select(:group_owner,
+                              user_groups,
+                              { label: I18n.t('dashboard.jobs_project_group_owner') },
+                              { disabled: edit_project_action })%>
             </div>
-          <% end %>
+	  <% end %>
         </div>
       </div>
       </div>
