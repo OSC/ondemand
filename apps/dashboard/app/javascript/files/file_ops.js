@@ -183,7 +183,7 @@ jQuery(function() {
 
   $(CONTENTID).on(EVENTNAME.deletePrompt, function (e, options) {
     if(options.files.length == 0) {
-      $(CONTENTID).trigger('Select a file, files, or directory to delete. You have selected none.');
+      OODAlertError('Select a file, files, or directory to delete. You have selected none.');
     } else {
       fileOps.deletePrompt(options.files);
     }

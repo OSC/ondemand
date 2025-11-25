@@ -310,7 +310,7 @@ class DataTable {
 
             return result;
         } catch (e) {
-            OODAlertError(`Error occurred when attempting to access ${request_url}: ${e.message}`);
+            OODAlertError(e.message);
 
             $('#open-in-terminal-btn').addClass('disabled');
 

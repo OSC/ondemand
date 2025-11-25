@@ -48,7 +48,7 @@ jQuery(function () {
   $(CONTENTID).on(EVENTNAME.updateClipboard, function (e, options) {
     if (options.selection.length == 0) {
       OODAlertError('Select a file, files, or directory to copy or move. You have selected none.');
-      $(CONTENTID).trigger(EVENTNAME.clearClipboard, eventData);
+      $(CONTENTID).trigger(EVENTNAME.clearClipboard);
 
     } else {
       clipBoard.updateClipboardFromSelection(options.selection);
