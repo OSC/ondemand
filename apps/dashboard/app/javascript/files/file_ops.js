@@ -590,7 +590,7 @@ class FileOps {
       }
     }).fail(function() {
       if (that._failures >= 3) {
-        OODAlertError('Operation may not have happened', 'Failed to retrieve file operation status.');
+        OODAlertError('Operation may not have happened. Failed to retrieve file operation status.');
       } else {
         setTimeout(function(){
           that._failures++;
