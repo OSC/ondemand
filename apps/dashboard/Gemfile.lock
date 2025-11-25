@@ -386,7 +386,6 @@ PLATFORMS
 DEPENDENCIES
   addressable (~> 2.4)
   autoprefixer-rails (~> 10.2.5)
-  bigdecimal
   bootstrap_form (= 5.0)
   browser (~> 2.2)
   byebug
@@ -403,7 +402,6 @@ DEPENDENCIES
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
   mocha (~> 2.1)
-  mutex_m
   net-imap (~> 0.3, < 0.4)
   nokogiri
   ood_appkit (~> 2)
