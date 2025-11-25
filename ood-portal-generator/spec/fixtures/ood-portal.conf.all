@@ -142,6 +142,28 @@ Listen 8080
     Require valid-user
 
 
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
+
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
@@ -164,6 +186,28 @@ Listen 8080
     AuthType openid-connect
     Require valid-user
 
+
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
 
     # ProxyPassReverse implementation
     Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"

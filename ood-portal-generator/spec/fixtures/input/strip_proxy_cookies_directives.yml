@@ -1,0 +1,13 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+node_uri: '/node'
+rnode_uri: '/rnode'
+
+strip_proxy_cookies:
+  - "mod_auth_openidc_session_\\d+"
+  - JSESSIONID
+
+strip_proxy_headers: []
