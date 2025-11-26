@@ -28,26 +28,25 @@ module FilesHelper
     path.to_s
   end
 
-  def project_dir_files_url(path)
-    if use_edit_url?(path)
+  def project_dir_files_url(path, editable_exts)
+    editable_exts ||= Project.editable_extensions
+
+    if use_edit_url?(path, editable_exts)
       edit_files_path(path)
-    else  
+    else
       files_path(path)
     end
   end
 
   private
 
-  def use_edit_url?(string_path)
+  def use_edit_url?(string_path, editable_extensions)
     path = Pathname.new(string_path)
-    return false if ['.log','.out'].include?(path.extname)
     return false unless File.writable?(path)
-    if ['.yml','.json'].include?(path.extname)
-      path.ascend do |parent|
-        return false if parent.basename.to_s == '.ondemand'
-      end
-    end
-    true
+    return true if editable_extensions.include?(path.extname)
+    return true if path.basename.to_s == '.editable_extensions.yml'
+
+    false
   end  
 end
 

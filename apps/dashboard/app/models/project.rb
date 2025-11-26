@@ -94,6 +94,10 @@ class Project
       end.reject{ |p| lookup_table.include?(p.id) }
     end
 
+    def editable_extensions
+      ['.awk', '.bash', '.js', '.ksh', '.md', '.mk', '.py', '.r', '.R', '.rb', '.sed', '.sh', '.ts', '.txt', '', '.zsh']
+    end
+
     private
 
     def importable_directories
@@ -221,6 +225,15 @@ class Project
     Project.dataroot.join(directory.to_s)
   end
 
+  def editable_extensions_file
+    Pathname.new("#{project_dataroot}/.editable_extensions.yml")
+  end
+
+  def editable_extensions
+    content = File.read(editable_extensions_file)
+    YAML.safe_load(content)
+  end
+
   def title
     name.to_s.titleize
   end
@@ -302,10 +315,17 @@ class Project
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
     configuration_directory.mkpath  unless configuration_directory.exist?
+    write_editable_extensions       unless editable_extensions_file.exist?
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
     false
+  end
+
+  def write_editable_extensions
+    File.open(editable_extensions_file, 'w') do |f|
+      f.write(Project.editable_extensions.to_yaml)
+    end
   end
 
   def update_permission

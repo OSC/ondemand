@@ -30,7 +30,8 @@
         <%= link_to(
           file[:name], 
           directory_frame_path(
-            path: "#{path}/#{file[:name]}"
+            path: "#{path}/#{file[:name]}",
+            editable_exts: editable_exts
           ),
           title: "Show #{file[:name]} directory",
           data: { turbo_frame: "project_directory" }
@@ -40,7 +41,7 @@
         <%= 
           link_to(
             file[:name],
-            project_dir_files_url("#{path}/#{file[:name]}"),
+            project_dir_files_url("#{path}/#{file[:name]}", editable_exts.split('/')),
             format: :html,
             target: "_top",
           )

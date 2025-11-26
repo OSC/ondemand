@@ -114,11 +114,13 @@ class FilesController < ApplicationController
     validate_path!
     @path.raise_if_cant_access_directory_contents
     @files = @path.ls
+    @editable_exts = directory_frame_params[:editable_exts]
 
     render( partial: 'files/turbo_frames/directory',
             locals: { 
-              path: @path,
-              files: @files
+              path:          @path,
+              files:         @files,
+              editable_exts: @editable_exts
             }
     )
   rescue StandardError => e
@@ -386,6 +388,6 @@ class FilesController < ApplicationController
   end
 
   def directory_frame_params
-    params.permit(:format, :path)
+    params.permit(:format, :path, :editable_exts)
   end
 end
