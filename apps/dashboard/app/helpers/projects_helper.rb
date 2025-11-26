@@ -31,4 +31,8 @@ module ProjectsHelper
       status
     end
   end
+
+  def user_groups
+    CurrentUser.groups.map(&:name)
+  end
 end

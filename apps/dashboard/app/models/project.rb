@@ -111,7 +111,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template, :files
+  attr_reader :id, :name, :description, :icon, :directory, :template, :files, :group_owner
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -128,8 +128,12 @@ class Project
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
     @template = attributes[:template]
+    @group_owner = attributes[:group_owner] || get_group_owner
 
-    return if new_record?
+    if new_record?
+      set_group_owner(@group_owner)
+      return
+    end
 
     contents = File.read(manifest_path)
     raw_opts = YAML.safe_load(contents)
@@ -201,6 +205,27 @@ class Project
   rescue StandardError => e
     errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
     false
+  end
+
+  def private?
+    project_dataroot.to_s.start_with?(CurrentUser.home)
+  end
+  
+  def get_group_owner
+    if project_dataroot.grpowned?
+      Etc.getgrgid(project_dataroot.stat.gid).name
+    else
+      'None'
+    end
+  end
+
+  def set_group_owner(group)
+    begin 
+      FileUtils.chown(nil, Etc.getgrnam(group).gid, project_dataroot)
+    rescue StandardError => e
+      errors.add(:update, "Unable to modify group ownership with error #{e.class}:#{e.message}")
+      false
+    end
   end
 
   def icon_class
@@ -297,6 +322,11 @@ class Project
     [:name, :description, :icon, :files].each do |attribute|
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
+  end
+
+  def update_ownership(attributes)
+    new_group = attributes.fetch(:group_owner, 'None')
+    (new_group == get_group_owner) ? true : set_group_owner(new_group)
   end
 
   def make_dir

@@ -50,6 +50,14 @@
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
+          <% unless @project.private? && edit_project_action %>
+            <div class="field">
+              <%= form.select(:group_owner,
+                              user_groups,
+                              { label: I18n.t('dashboard.jobs_project_group_owner') },
+                              { disabled: edit_project_action })%>
+            </div>
+	  <% end %>
         </div>
       </div>
       </div>
