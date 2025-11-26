@@ -1,4 +1,5 @@
 import { DAG } from './dag.js';
+import { rootPath } from './config.js';
 
 /*
  * Helper Classes to support Drag and Drop UI 
@@ -18,6 +19,8 @@ class WorkflowState {
     this.submitUrl = `${baseUrl}/submit`;
     this.loadUrl = `${baseUrl}/load`;
     this.STORAGE_KEY = `project_${projectId}_workflow_${workflowId}_state`;
+    this.poller = new JobPoller(projectId);
+    this.job_hash = {};
   }
 
   resetWorkflow(e) {
@@ -40,7 +43,9 @@ class WorkflowState {
   }
 
   async saveToBackend(submit=false) {
+    if (submit) this.job_hash = {}; // This will save a state where the submit call failed in between
     const workflow = this.#serialize();
+    console.log('Saving workflow:', workflow);
     try {
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -57,6 +62,12 @@ class WorkflowState {
       const data = await response.json();
       if (!response.ok) throw new Error(`Server error: ${response.status} message: ${data.message}`);
       alert(data.message);
+      if (submit) {
+        this.job_hash = data.job_hash;
+        await this.#setJobDescription();
+        await this.#setupJobPoller();
+        this.saveToSession();
+      }
     } catch (err) {
       console.error('Error saving workflow:', err);
       alert('Failed to save workflow. Check console for details.');
@@ -70,15 +81,15 @@ class WorkflowState {
     let metadata = null;
     const sessionTs = this.#parseTime(sessionMetadata?.saved_at);
     const backendTs = this.#parseTime(backendMetadata?.saved_at);
-    if (sessionTs == null || (backendTs != null && sessionTs < backendTs)) {
-      metadata = backendMetadata;
-      console.log('Restoring workflow from backend metadata.');
-    } else if (backendTs == null){
-      metadata = sessionMetadata;
-      console.log('Restoring workflow from session metadata.');
-    } else {
+    if (sessionTs == null && backendTs == null) {
       console.log('No saved workflow found in session or backend.');
       return;
+    } else if (sessionTs < backendTs) {
+      metadata = backendMetadata;
+      console.log('Restoring workflow from backend metadata.');
+    } else {
+      metadata = sessionMetadata;
+      console.log('Restoring workflow from session metadata.');
     }
 
     try {
@@ -94,6 +105,9 @@ class WorkflowState {
         this.pointer.zoomRef.value = metadata.zoom;
         this.pointer.applyZoomCb();
       }
+      this.job_hash = metadata.job_hash;
+      await this.#setJobDescription();
+      await this.#setupJobPoller();
       console.info('Workflow restored correctly.');
     } catch (err) {
       console.error('Failed to apply stored workflow:', err);
@@ -113,6 +127,7 @@ class WorkflowState {
         to: e.toBox.id
       })),
       zoom: this.pointer.zoomRef.value,
+      job_hash: this.job_hash,
       saved_at: new Date().toISOString()
     };
   }
@@ -149,6 +164,147 @@ class WorkflowState {
       console.error('Failed to load workflow from backend:', err);
       return null;
     }
+  }
+
+  async #setJobDescription() {
+    if(!this.job_hash || Object.keys(this.job_hash).length === 0)
+      return;
+
+    $.each(this.job_hash, function (launcherId, jobInfo) {
+      const $launcher = $(`#launcher_${launcherId}`);
+
+      if ($launcher.length && jobInfo) {
+        $launcher.attr({
+          "data-job-poller": "true",
+          "data-job-id": jobInfo.job_id,
+          "data-job-cluster": jobInfo.cluster_id
+        });
+      }
+    });
+  }
+
+  async #setupJobPoller() {
+    const self = this;
+    $('[data-job-poller="true"]').each((_index, ele) => {
+      this.poller.pollForJobInfo(ele);
+    });
+  }
+}
+
+// Polling class to update job status
+class JobPoller {
+  constructor(projectId) {
+    this.projectId = projectId;
+  }
+
+  jobDetailsPath(cluster, jobId) {
+    const baseUrl = rootPath();
+    return `${baseUrl}/projects/${this.projectId}/jobs/${cluster}/${jobId}`;
+  }
+  
+  stringToHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = html.trim();
+    return template.content.firstChild;
+  }
+
+  async pollForJobInfo(element) {
+    const cluster = element.dataset['jobCluster'];
+    const jobId = element.dataset['jobId'];
+    const el = element.jquery ? element[0] : element;
+  
+    if(cluster === undefined || jobId === undefined){ return; }
+  
+    const url = this.jobDetailsPath(cluster, jobId);
+  
+    fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(response.text()))
+      .then((r) => r.text())
+      .then((html) => {
+        const responseHtml = this.stringToHtml(html);
+        const jobState = responseHtml.dataset['jobNativeState'];
+
+        el.classList.remove('running', 'completed', 'failed', 'pending');
+        if( jobState === 'COMPLETED' ) {
+          el.classList.add('completed');
+        } else if ( jobState === 'FAILED' || jobState === 'CANCELLED' || jobState === 'TIMEOUT' ) {
+          el.classList.add('failed');
+        } else if ( jobState === 'RUNNING' || jobState === 'COMPLETING' ) {
+          el.classList.add('running');
+        } else if ( jobState === 'PENDING' || jobState === 'QUEUED' || jobState === 'SUSPENDED' ) {
+          el.classList.add('pending');
+        }
+        
+        console.log(`Job ${jobId} on cluster ${cluster} native state: ${jobState}`);
+        return { jobState, html };
+      })
+      .then(({jobState, html}) => {
+        const endStates = ['COMPLETED', 'FAILED', 'CANCELLED', 'TIMEOUT', 'undefined'];
+        if(!endStates.includes(jobState)) {
+          setTimeout(() => this.pollForJobInfo(element), 30000);
+        } else {
+          element.dataset.jobPoller = "false";
+        }
+        
+        if (jobState !== 'undefined' && html) {
+          // This needs not to be persistent with the session storage which we save to backend
+          const launcherId = el.id.replace('launcher_', '');
+          if (!launcherId) return;
+          const jobSessionKey = `job_info_html_${launcherId}`;
+          sessionStorage.setItem(jobSessionKey, html);
+
+          const infoBtn = document.getElementById(`job_info_${launcherId}`);
+          if (infoBtn) {
+            infoBtn.disabled = false;
+            infoBtn.classList.remove('disabled');
+
+            if (!infoBtn.dataset.listenerAttached) {
+              infoBtn.addEventListener('click', () => {
+                const html = sessionStorage.getItem(jobSessionKey);
+                this.showJobInfoOverlay(html);
+              });
+              infoBtn.dataset.listenerAttached = "true";
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        console.log('Cannot not retrieve job info due to error:');
+        console.log(err);
+      });
+  }
+
+  showJobInfoOverlay(html) {
+    const existing = document.getElementById('job-info-overlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'job-info-overlay';
+    const content = document.createElement('div');
+    content.className = 'job-info-content';
+
+    const template = this.stringToHtml(html).querySelector('template');
+    const fragment = template.content.cloneNode(true);
+    const collapseDiv = fragment.querySelector('.collapse');
+    if (collapseDiv) { // So save one extra click from user
+      collapseDiv.classList.remove('collapse');
+      collapseDiv.classList.add('show');
+    }
+    content.appendChild(fragment);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'job-info-close';
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => overlay.remove());
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    content.prepend(closeBtn);
+    overlay.appendChild(content);
+    const stage = document.getElementById('workspace-wrapper');
+    stage.appendChild(overlay);
   }
 }
 
@@ -478,7 +634,6 @@ class DragController {
   }
 
   function createEdge(fromId, toId) {
-    console.log(  `Creating edge from ${fromId} to ${toId}`);
     if (fromId === toId) return;
     if (!boxes.has(fromId) || !boxes.has(toId)) return;
 
@@ -651,7 +806,9 @@ class DragController {
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
+  submitWorkflowButton.addEventListener('click', debounce(async () => {
+    await workflowState.saveToBackend(true);
+  }, 300));
   resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
   saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));
 

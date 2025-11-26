@@ -59,6 +59,8 @@ module OodPortalGenerator
       # Security configuration
       @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@proxy_server}")
       @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
+      @strip_proxy_headers = opts.fetch(:strip_proxy_headers, default_strip_proxy_headers)
+      @strip_proxy_cookies = opts.fetch(:strip_proxy_cookies, default_strip_proxy_cookies)
 
       # Portal authentication
       @auth = opts.fetch(:auth, [])
@@ -99,6 +101,9 @@ module OodPortalGenerator
       # Register unmapped user sub-uri
       @register_uri  = opts.fetch(:register_uri, nil)
       @register_root = opts.fetch(:register_root, nil)
+      @register_path = opts.fetch(:register_path, @register_root)
+      @register_method = opts.fetch(:register_method, 'Alias')
+      @register_method_options = opts.fetch(:register_method_options, nil)
 
       @dex_uri                          = opts.fetch(:dex_uri, '/dex')
       @dex_http_port                    = opts.fetch(:dex_http_port, nil)
@@ -159,6 +164,20 @@ module OodPortalGenerator
       Socket.ip_address_list.select(&:ipv4?)
                             .reject(&:ipv4_loopback?)
                             .map(&:ip_address)
+    end
+
+    # Default headers stripped from proxied requests to avoid leaking user identity data.
+    def default_strip_proxy_headers
+      ["Authorization", "OIDC_CLAIM_sub", "OIDC_CLAIM_preferred_username", "OIDC_CLAIM_given_name",
+       "OIDC_CLAIM_zoneinfo", "OIDC_CLAIM_locale", "OIDC_CLAIM_email", "OIDC_CLAIM_email_verified",
+       "OIDC_CLAIM_iss", "OIDC_CLAIM_nonce", "OIDC_CLAIM_aud", "OIDC_CLAIM_acr", "OIDC_CLAIM_azp",
+       "OIDC_CLAIM_auth_time", "OIDC_CLAIM_exp", "OIDC_CLAIM_iat", "OIDC_CLAIM_jti", "OIDC_access_token",
+       "OIDC_access_token_expires"]
+    end
+
+    # Default cookies stripped from proxied requests to avoid forwarding OIDC sessions.
+    def default_strip_proxy_cookies
+      ["mod_auth_openidc_session_\\d+", "mod_auth_openidc_session"]
     end
 
     # Helper method to escape IP for maintenance rewrite condition
