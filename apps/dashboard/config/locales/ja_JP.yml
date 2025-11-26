@@ -164,6 +164,7 @@ ja_JP:
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
+    jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_placeholder: Project directory absolute path
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
     jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
@@ -178,7 +179,21 @@ ja_JP:
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
+    jobs_workflows: Workflows
+    jobs_workflow_submit: Submit Workflow
+    jobs_create_blank_workflow: New Workflow
+    jobs_workflow_created: Workflow successfully created!
+    jobs_workflow_name_placeholder: Workflow name
+    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
+    jobs_workflow_description_placeholder: Workflow description
+    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
+    jobs_workflow_deleted: Workflow successfully deleted!
+    jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_manifest_updated: Workflow manifest updated!
+    jobs_workflow_submitted: Workflow successfully submitted!
     launch: 起動する
+    module_browser_last_updated: "Last updated: %{last_updated}"
+    module_browser_title: Module Browser
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     nav_all_apps: All Apps

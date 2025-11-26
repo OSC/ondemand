@@ -67,20 +67,46 @@ class RcloneUtil
       if path.root?
         return true
       end
-      # List everything in parent and check if requested path ends with a slash and actually exists
-      full_path = remote_path(remote, path.parent.to_s)
-      o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
-      if s.success?
-        match = o.match(/^(?<entry>#{Regexp.escape(path.basename.to_s)}\/?)$/)
-        if match.nil?
-          raise StandardError, "Remote file or directory '#{path}' does not exist"
-        else
-          match[:entry].end_with?("/")
-        end
+
+      full_path = remote_path(remote, path)
+      o, e, s = rclone( "lsjson", "--low-level-retries=1", "--stat", full_path)
+
+      if s.success? 
+        return JSON.parse(o)["IsDir"]
       elsif s.exitstatus == 3 # directory not found
         raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+      end
+      
+      # Fall back if lsjson fails
+      if (remote_type(remote) == "s3") && path.each_filename.count <= 1
+        o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
+
+        if s.success?
+          # We assume that if an S3 remote returns true from one up from the root, the bucket exists
+          return true
+        elsif s.exitstatus == 3 # directory not found
+          raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+        else
+          raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
+        end
+
       else
-        raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
+        # List everything in parent and check if requested path ends with a slash and actually exists
+        full_path = remote_path(remote, path.parent.to_s)
+        o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
+
+        if s.success?
+          match = o.match(/^(?<entry>#{Regexp.escape(path.basename.to_s)}\/?)$/)
+          if match.nil?
+            raise StandardError, "Remote file or directory '#{path}' does not exist"
+          else
+            match[:entry].end_with?("/")
+          end
+        elsif s.exitstatus == 3 # directory not found
+          raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+        else
+          raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
+        end
       end
     end
 
@@ -282,7 +308,7 @@ class RcloneUtil
     end
 
     def rclone(*args, env: extra_config, **kwargs)
-      # config/initalizers/open3_extensions.rb overrides Open3.capture3 to log calls.
+      # config/initializers/open3_extensions.rb overrides Open3.capture3 to log calls.
       # Get a reference to the original method to avoid logging the sensitive env vars.
       Open3.singleton_method(:capture3).call(env, rclone_cmd, *args, **kwargs)
     end

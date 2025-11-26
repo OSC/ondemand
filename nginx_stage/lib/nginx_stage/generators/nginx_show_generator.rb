@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module NginxStage
   # This generator shows the state of the running per-user NGINX process.
   class NginxShowGenerator < Generator
-
     include NginxStage::SessionFinder
 
     desc 'Show the details for a given per-user nginx process'
@@ -27,6 +28,7 @@ module NginxStage
     add_hook :check_pid_is_process do
       pid_file = PidFile.new pid_path
       raise StalePidFile, "stale pid file: #{pid_path}" unless pid_file.running_process?
+
       puts "Instance: #{pid_file.pid}"
     end
 
@@ -38,14 +40,15 @@ module NginxStage
     end
 
     private
-      # Path to the user's per-user NGINX pid file
-      def pid_path
-        NginxStage.pun_pid_path(user: user)
-      end
 
-      # Path to the user's per-user NGINX socket file
-      def socket_path
-        NginxStage.pun_socket_path(user: user)
-      end
+    # Path to the user's per-user NGINX pid file
+    def pid_path
+      NginxStage.pun_pid_path(user: user)
+    end
+
+    # Path to the user's per-user NGINX socket file
+    def socket_path
+      NginxStage.pun_socket_path(user: user)
+    end
   end
 end

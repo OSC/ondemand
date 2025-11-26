@@ -1,4 +1,4 @@
-# RemoteTransfer is a class for transfering remote files.
+# RemoteTransfer is a class for transferring remote files.
 class RemoteTransfer < Transfer
 
   validates_each :src_remote, :dest_remote do |record, _, remote|
@@ -106,7 +106,7 @@ class RemoteTransfer < Transfer
     # Store info about sizes of files to transfer for tracking progress
     steps
 
-    # Transfer each file/directory indiviually
+    # Transfer each file/directory individually
     files.each do |src, dst|
       if action == 'mv'
         RcloneUtil.moveto_with_progress(src_remote, dest_remote, src, dst) do |p|

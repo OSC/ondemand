@@ -77,6 +77,7 @@ module ApplicationHelper
   end
 
   def icon_tag(icon_uri, classes: ['app-icon'])
+    icon_uri = URI(icon_uri) if icon_uri.is_a?(String)
     if ['fa', 'fas', 'far', 'fab', 'fal'].include?(icon_uri.scheme)
       fa_icon(icon_uri.host, fa_style: icon_uri.scheme, classes: classes)
     elsif icon_uri.to_s.starts_with?(@user_configuration.public_url.to_s)

@@ -25,6 +25,10 @@ module SmartAttributes
         (opts[:label] || 'Resolution').to_s
       end
 
+      def help(fmt: nil)
+        (opts[:help] || 'Resolution is only used by native VNC connections').to_s
+      end
+
       # Submission hash describing how to submit this attribute
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash

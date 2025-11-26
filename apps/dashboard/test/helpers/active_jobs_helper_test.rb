@@ -23,22 +23,22 @@ class ActiveJobsHelperTest < ActionView::TestCase
   end
 
   test 'grafana grafana cpu panel URL' do
-    expected_url = 'https://grafana.osc.edu/d-solo/aaba6Ahbauquag/ondemand-clusters/?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&panelId=20&var-jobid=9427651'
+    expected_url = 'https://grafana.osc.edu/d-solo/aaba6Ahbauquag/ondemand-clusters?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&panelId=20&var-jobid=9427651'
     assert_equal expected_url, build_grafana_link('owens', '1582303423', 'cpu', 'o0484', '9427651')
   end
 
   test 'generates grafana memory panel URL' do
-    expected_url = 'https://grafana.osc.edu/d-solo/aaba6Ahbauquag/ondemand-clusters/?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&panelId=24&var-jobid=9427651'
+    expected_url = 'https://grafana.osc.edu/d-solo/aaba6Ahbauquag/ondemand-clusters?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&panelId=24&var-jobid=9427651'
     assert_equal expected_url, build_grafana_link('owens', '1582303423', 'memory', 'o0484', '9427651')
   end
 
   test 'generates grafana node dashboard URL' do
-    expected_url = 'https://grafana.osc.edu/d/aaba6Ahbauquag/ondemand-clusters/?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484'
+    expected_url = 'https://grafana.osc.edu/d/aaba6Ahbauquag/ondemand-clusters?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484'
     assert_equal expected_url, build_grafana_link('owens', '1582303423', 'node', 'o0484')
   end
 
   test 'generates grafana job dashboard URL' do
-    expected_url = 'https://grafana.osc.edu/d/aaba6Ahbauquag/ondemand-clusters/?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&var-jobid=9427651'
+    expected_url = 'https://grafana.osc.edu/d/aaba6Ahbauquag/ondemand-clusters?orgId=1&theme=light&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&var-jobid=9427651'
     assert_equal expected_url, build_grafana_link('owens', '1582303423', 'job', 'o0484', '9427651')
   end
 

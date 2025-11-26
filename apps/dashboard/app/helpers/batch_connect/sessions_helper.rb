@@ -1,6 +1,6 @@
 # Helper for active batch connect sessions.
 #
-# Note that this module programatically generates the cards for
+# Note that this module programmatically generates the cards for
 # active batch connect sessions.
 module BatchConnect::SessionsHelper
 
@@ -38,16 +38,23 @@ module BatchConnect::SessionsHelper
     time_limit = session.info.wallclock_limit
     time_used  = session.info.wallclock_time
     if session.starting? || session.running?
-      if time_limit && time_used
+      if time_limit.to_i.positive? && time_used
         [t('dashboard.batch_connect_sessions_stats_time_remaining'), distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
       elsif time_used
         [t('dashboard.batch_connect_sessions_stats_time_used'), distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
       end
-    else
-      if time_limit
-        [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
-      end
+    elsif time_limit.to_i.positive?
+      [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
     end
+  end
+
+  def minutes_remaining(session)
+    time_limit = session.info.wallclock_limit
+    time_used  = session.info.wallclock_time
+    return nil if time_limit.nil? || time_used.nil?
+
+    seconds_remaining = time_limit - time_used
+    (seconds_remaining / 60.0).floor
   end
 
   def status(session)
@@ -204,5 +211,9 @@ module BatchConnect::SessionsHelper
         )
       end
     end
+  end
+
+  def should_poll?(sessions)
+    sessions.any? { |s| !s.completed? }
   end
 end

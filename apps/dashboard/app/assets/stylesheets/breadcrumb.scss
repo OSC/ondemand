@@ -10,3 +10,18 @@
 .breadcrumb-no-delimiter .breadcrumb-item + .breadcrumb-item::before {
   padding-right: 0;
 }
+
+.breadcrumb-wrapper {
+  --breadcrumb-bg: #e9ecef;
+  --breadcrumb-margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: var(--breadcrumb-bg);
+  margin-bottom: var(--breadcrumb-margin-bottom);
+
+  > * {
+    margin-bottom: 0;
+  }
+}

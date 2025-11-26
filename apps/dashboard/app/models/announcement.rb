@@ -36,9 +36,9 @@ class Announcement
   #  @return [String] the id
   def id
     @id ||= begin
-              default_id = Digest::SHA1.hexdigest(msg) if msg
-              opts.fetch(:id, default_id)
-            end
+      default_id = Digest::SHA1.hexdigest(msg) if msg
+      opts.fetch(:id, default_id)
+    end
   end
 
   # The announcement's button text displayed for required or dismissible announcements

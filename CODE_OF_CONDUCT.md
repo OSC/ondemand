@@ -70,4 +70,4 @@ members of the project's leadership.
 This Code of Conduct is adapted from the [Contributor Covenant], version 1.4,
 available at https://contributor-covenant.org/version/1/4
 
-[Contributer Covenant]: https://contributor-covenant.org
+[Contributor Covenant]: https://contributor-covenant.org

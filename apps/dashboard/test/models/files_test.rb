@@ -2,7 +2,7 @@ require 'test_helper'
 
 class FilesTest < ActiveSupport::TestCase
   test "mime_type raises exception for non-file" do
-    assert_raises { PosixFile.new("/dev/nulll").mime_type }
+    assert_raises { PosixFile.new("/dev/nonexistent").mime_type }
   end
 
   test "mime_type handles default types" do
@@ -84,8 +84,15 @@ class FilesTest < ActiveSupport::TestCase
     end 
   end
 
+  test 'can_download_as_zip handles broken symlinks' do
+    Dir.mktmpdir do |dir|
+      File.symlink(File.join(dir, 'missing_file'), File.join(dir, 'link_to_missing_file'))
+      assert_equal [true, nil], PosixFile.new(dir).can_download_as_zip?
+    end
+  end
+
   test "can_download_as_zip handles directory size exceeding limit" do
-    download_directory_size_limit = Configuration.file_download_dir_max
+    download_directory_size_limit = Configuration.download_dir_max
     Dir.mktmpdir do |dir|
       dir_size = download_directory_size_limit + 1
       PosixFile.any_instance.stubs(:calculate_directory_size)

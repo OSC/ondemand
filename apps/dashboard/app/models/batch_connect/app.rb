@@ -304,7 +304,11 @@ module BatchConnect
     # View used for session if it exists
     # @return [String, nil] session view
     def session_view
-      file = root.join('view.html.erb')
+      file = if sub_app && (path = form_config.fetch(:view, nil))
+               view_file(root: sub_app_root, path: path)
+             else
+               view_file(root: root)
+             end
       file.read if file.file?
     end
 
@@ -406,6 +410,11 @@ module BatchConnect
       Array.wrap(paths).compact.map { |f| root.join(f) }.select(&:file?).first
     end
 
+    # Path to file for custom session view
+    def view_file(root:, path: 'view.html.erb')
+      root.join(path)
+    end
+
     # Parse an ERB and Yaml file
     def read_yaml_erb(path:, binding: nil)
       contents = path.read
@@ -469,17 +478,19 @@ module BatchConnect
 
       attribute_list.prepend('cluster') unless attribute_list.include?('cluster')
 
+      defined_cluster_attr = attributes[:cluster] || {}
+
       attributes[:cluster] = if clusters.size > 1
                                {
                                  widget:  'select',
                                  label:   'Cluster',
                                  options: clusters.map(&:id)
-                               }
+                               }.merge(defined_cluster_attr)
                              else
                                {
                                  value:  clusters.first.id.to_s,
                                  widget: 'hidden_field'
-                               }
+                               }.merge(defined_cluster_attr)
                              end
     end
   end

@@ -14,9 +14,18 @@ Rails.application.routes.draw do
       post '/jobs/:cluster/:jobid/stop' => 'projects#stop_job', :as => 'stop_job'
       post '/zip_to_template' => 'projects#zip_to_template', :as => 'zip_to_template'
 
+      resources :workflows do
+        member do
+          post 'submit'
+          post 'save'
+          get 'load'
+        end
+      end
+
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
+        get 'render_button', on: :member
       end
     end
   end
@@ -102,7 +111,7 @@ Rails.application.routes.draw do
 
   # ActiveJobs which can be disabled in production
   if Configuration.can_access_activejobs?
-    get '/activejobs' => 'active_jobs#index'
+    get '/activejobs' => 'active_jobs#index', :as => 'active_jobs'
     get '/activejobs/json' => 'active_jobs#json', :defaults => { :format => 'json' }
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end
@@ -130,7 +139,7 @@ Rails.application.routes.draw do
   match '/404', :to => 'errors#not_found', :via => :all
   match '/500', :to => 'errors#internal_server_error', :via => :all
 
-  get 'module_browser' => 'module_browser#index', :as => 'module_browser'
+  get 'module-browser' => 'module_browser#index', :as => 'module_browser'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

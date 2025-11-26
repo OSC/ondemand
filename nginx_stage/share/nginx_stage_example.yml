@@ -244,6 +244,14 @@
 #
 #disabled_shell: '/access/denied'
 
+# Define an error message that is displayed to users when they have a 
+#     disabled_shell.
+#disabled_shell_message: 'user has a disabled shell: %s'
+
+# Hide the stderr "Run 'nginx_stage --help' to see a full list of available 
+#     command line options." message when calling nginx_stage
+#show_nginx_stage_help_message: true
+
 # Set BUNDLE_USER_CONFIG to /dev/null in the PUN environment
 # NB: This prevents a user's ~/.bundle/config from affecting OnDemand applications
 #

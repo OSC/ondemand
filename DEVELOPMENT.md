@@ -29,7 +29,7 @@ The ``dashboard`` application is a Ruby on Rails application that serves as a
 gateway to launching other Open OnDemand applications. Like all Open OnDemand
 applications, it's meant to runs as a non-root user.
 
-This documentation assumes you have [development enabled](https://osc.github.io/ood-documentation/latest/app-development/enabling-development-mode.html) for yourself on an existing Open OnDemand installation.
+This documentation assumes you have [development enabled](https://osc.github.io/ood-documentation/latest/how-tos/app-development/enabling-development-mode.html) for yourself on an existing Open OnDemand installation.
 
 ### Getting started developing the dashboard
 
@@ -99,11 +99,11 @@ is likely to be specific to your HOME directory on any given machine.
 
 ### Customizing the dashboard
 
-Now you can refer to the [documentation on customizing](https://osc.github.io/ood-documentation/latest/customization.html)
+Now you can refer to the [documentation on customizing](https://osc.github.io/ood-documentation/latest/customizations.html)
 and make those changes to a `.env.local` file in the same directory as
 this README.md.
 
-Refer to [the configuration class](config/configuration_singleton.rb) to see every option
+Refer to [the configuration class](apps/dashboard/config/configuration_singleton.rb) to see every option
 available.
 
 Here's the user Annie Oakley's `.env.local` file to get you started.

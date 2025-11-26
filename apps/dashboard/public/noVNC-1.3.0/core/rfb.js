@@ -1043,7 +1043,7 @@ export default class RFB extends EventTargetMixin {
 
         // Mouse wheel events are sent in steps over VNC. This means that the VNC
         // protocol can't handle a wheel event with specific distance or speed.
-        // Therefor, if we get a lot of small mouse wheel events we combine them.
+        // Therefore, if we get a lot of small mouse wheel events we combine them.
         this._accumulatedWheelDeltaX += dX;
         this._accumulatedWheelDeltaY += dY;
 
@@ -1414,7 +1414,7 @@ export default class RFB extends EventTargetMixin {
 
             this._rfbVeNCryptState = 2;
         }
-        // must fall through here (i.e. no "else if"), beacause we may have already received
+        // must fall through here (i.e. no "else if"), because we may have already received
         // the subtypes length and won't be called again
 
         if (this._rfbVeNCryptState == 2) { // waiting for subtypes length
@@ -2656,7 +2656,7 @@ RFB.messages = {
     },
 
     extendedClipboardProvide(sock, formats, inData) {
-        // Deflate incomming data and their sizes
+        // Deflate incoming data and their sizes
         let deflator = new Deflator();
         let dataToDeflate = [];
 

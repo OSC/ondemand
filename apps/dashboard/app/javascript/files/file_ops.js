@@ -55,7 +55,7 @@ jQuery(function() {
   });
   
   $('#directory-contents tbody').on('dblclick', 'tr td:not(:first-child)', function(){
-    // handle doubleclick
+    // handle double-click
     let a = this.parentElement.querySelector('a');
     if(a.classList.contains('d')) {
       const eventData = {

@@ -172,14 +172,14 @@ function updateAutoEnvironmentVariable(event) {
   const labelString = event.target.dataset.labelString;
   const idString = `launcher_auto_environment_variable_${aev_name}`;
   const nameString = `launcher[auto_environment_variable_${aev_name}]`;
-  var input_field = event.target.parentElement.children[2].children[1];
+  var input_field = event.target.parentElement.children[2].children[0].children[1];
 
   input_field.removeAttribute('readonly');
   input_field.id = idString;
   input_field.name = nameString;
 
   if (labelString.match(/Environment(&#32;|\s)Variable/)) {
-    const label_field = event.target.parentElement.children[2].children[0];
+    const label_field = event.target.parentElement.children[2].children[0].children[0];
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
 

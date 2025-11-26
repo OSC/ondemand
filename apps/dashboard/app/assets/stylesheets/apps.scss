@@ -58,7 +58,7 @@ i.app-icon.fa-fw {
   font-size: 14px;
 }
 
-// awesim colors - FIXME: aweful lot for a list of colors to cycle through
+// awesim colors - FIXME: awful lot for a list of colors to cycle through
 // would be better to gave a default grey and then cycle based on a list in an
 // initializer
 .apps-section-header-blue {
@@ -96,5 +96,31 @@ i.app-icon.fa-fw {
     color: rgb(0, 95, 133);
     border-color: rgb(0, 95, 133);
     text-decoration: none;
+  }
+}
+
+.app-settings-popup {
+  margin-bottom: 0px;
+  
+  .row {
+    --bs-gutter-x: 0px;
+    margin-right: 0px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-items: end;
+    align-items: end;
+  }
+
+  dd, dt {
+    margin: 0px;
+    width: auto;
+  }
+
+  dd {
+    margin-left: 10px;
+  }
+  
+  hr {
+    margin:5px;
   }
 }

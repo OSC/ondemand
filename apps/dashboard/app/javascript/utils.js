@@ -1,5 +1,4 @@
 import {analyticsPath} from "./config";
-import { ariaNotify } from './aria_live_notify';
 
 export function cssBadgeForState(state){
   switch (state) {
@@ -43,11 +42,7 @@ export function today() {
   return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
 }
 
-function showSpinner() {
-  $('body').addClass('modal-open');
-  $('#full-page-spinner').removeClass('d-none');
-}
-
+// the next two functions, using #full_page_spinner, are only used in sweet_alert.js
 export function pageSpin() {
   const ele = document.getElementById('full_page_spinner');
   ele.classList.remove('d-none');
@@ -60,6 +55,17 @@ export function stopPageSpin() {
   ariaNotify('Loading complete.');
 }
 
+// The next three functions use #full-page-spinner, and are used more widely
+function showSpinner() {
+  $('body').addClass('modal-open');
+  $('#full-page-spinner').removeClass('d-none');
+}
+
+function hideSpinner() {
+  $('body').removeClass('modal-open');
+  $('#full-page-spinner').addClass('d-none');
+}
+
 export function bindFullPageSpinnerEvent() {
   $('.full-page-spinner').each((index, element) => {
     const $element = $(element);
@@ -69,6 +75,9 @@ export function bindFullPageSpinnerEvent() {
       $element.closest('form').on('submit', showSpinner);
     }
   });
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) hideSpinner();
+  })
 }
 
 // open links in javascript and display an alert
@@ -99,6 +108,47 @@ export function openLinkInJs(event) {
     alertDiv.innerHTML = html.split("ALERT_MSG").join(msg);
     mainDiv.prepend(alertDiv);
   }
+}
+
+// Sets a custom message for a generic ARIA live region
+export function ariaNotify(message, interrupt = true) {
+  const liveRegion = document.getElementById("aria_live_region");
+
+  if(liveRegion) {
+    if(interrupt) {
+      liveRegion.textContent = message;
+    }
+    else {
+      const messageBlock = document.createElement('p');
+      messageBlock.textContent = message;
+      liveRegion.appendChild(messageBlock);
+    }
+  }
+}
+
+// Push a notification to the user using the Notification API
+export function pushNotify(message, options = {}) {
+  if (!("Notification" in window)) return;
+
+  if (Notification.permission === "granted") {
+    new Notification(message, options);
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        new Notification(message, options);
+      }
+    });
+  }
+}
+
+// Store a boolean value in localStorage
+export function storeBoolean(key, value) {
+  localStorage.setItem(key, value ? 'true' : 'false');
+}
+
+// Retrieve a boolean value from localStorage
+export function getBoolean(key) {
+  return localStorage.getItem(key) === 'true';
 }
 
 // Helper method to set an element's innerHTML property

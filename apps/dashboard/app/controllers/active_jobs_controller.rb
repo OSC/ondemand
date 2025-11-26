@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The controller for activejobs pages /dashboard/activejobs
 class ActiveJobsController < ApplicationController
   include ActiveJobsHelper
@@ -9,43 +11,42 @@ class ActiveJobsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json {
+      format.json do
         ActiveJobs::JobsJsonRequestHandler.new(
-          filter_id: @jobfilter,
+          filter_id:  @jobfilter,
           cluster_id: params[:jobcluster],
           controller: self,
-          params: params,
-          response: response
+          params:     params,
+          response:   response
         ).render
-      }
+      end
     end
   end
 
   def json
     respond_to do |format|
-      format.html { # show.html.erb
-        raise ActionController::RoutingError.new('Not Found')
-      }
-      format.json {
-        #Only allow the configured servers to respond
-        if cluster = OODClusters[params[:cluster].to_s.to_sym]
-          render '/active_jobs/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
+      format.html do # show.html.erb
+        raise ActionController::RoutingError, 'Not Found'
+      end
+      format.json do
+        # Only allow the configured servers to respond
+        if (cluster = OODClusters[params[:cluster].to_s.to_sym])
+          render '/active_jobs/extended_data', :locals => { :jobstatusdata => get_job(params[:pbsid], cluster) }
         else
-          msg = "Request did not specify an available cluster. "
+          msg = 'Request did not specify an available cluster. '
           msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
           msg += "But specified cluster is: #{params[:cluster]}"
           render :json => { name: params[:pbsid], error: msg }
         end
-      }
+      end
     end
   end
 
   def delete_job
-
     # Only delete if the pbsid and host params are present and host is configured in servers.
     # PBS will prevent a user from deleting a job that is not their own and throw an error.
     cluster = OODClusters[params[:cluster].to_sym]
-    if (params[:pbsid] && cluster)
+    if params[:pbsid] && cluster
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
@@ -54,12 +55,12 @@ class ActiveJobsController < ApplicationController
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
         sleep(2.0)
-        redirect_to activejobs_path, :notice => "Successfully deleted " + job_id
-      rescue
-        redirect_to activejobs_path, :alert => "Failed to delete " + job_id
+        redirect_to activejobs_path, :notice => "Successfully deleted #{job_id}"
+      rescue StandardError
+        redirect_to activejobs_path, :alert => "Failed to delete #{job_id}"
       end
     else
-      redirect_to activejobs_path, :alert => "Failed to delete."
+      redirect_to activejobs_path, :alert => 'Failed to delete.'
     end
   end
 
@@ -72,37 +73,35 @@ class ActiveJobsController < ApplicationController
   #
   # @return [Jobstatusdata] The job data as a Jobstatusdata object
   def get_job(jobid, cluster)
-    begin
-      data = cluster.job_adapter.info(jobid)
+    data = cluster.job_adapter.info(jobid)
 
-      raise OodCore::JobAdapterError if data.native.nil?
-      ActiveJobs::Jobstatusdata.new(data, cluster, true)
+    raise OodCore::JobAdapterError if data.native.nil?
 
-    rescue OodCore::JobAdapterError
-      OpenStruct.new(name: jobid, error: "No job details because job has already left the queue." , status: "completed" )
-    rescue => e
-      Rails.logger.info("#{e}:#{e.message}")
-      Rails.logger.info(e.backtrace.join("\n"))
-      OpenStruct.new(name: jobid, error: "No job details available.\n" + e.backtrace.to_s, status: "" )
-    end
+    ActiveJobs::Jobstatusdata.new(data, cluster, true)
+  rescue OodCore::JobAdapterError
+    OpenStruct.new(name: jobid, error: 'No job details because job has already left the queue.',
+                   status: 'completed')
+  rescue StandardError => e
+    Rails.logger.info("#{e}:#{e.message}")
+    Rails.logger.info(e.backtrace.join("\n"))
+    OpenStruct.new(name: jobid, error: "No job details available.\n#{e.backtrace}", status: '')
   end
 
   # Returns the filter id from the parameter if it is valid
   #
   # @return [String, nil] the filter id if valid
   def get_filter
-    if params[:jobfilter] && filters.any? { |f| f.filter_id == params[:jobfilter] }
-      params[:jobfilter]
-    end
+    return unless params[:jobfilter] && filters.any? { |f| f.filter_id == params[:jobfilter] }
+
+    params[:jobfilter]
   end
 
   # Returns the cluster id from the parameter if it is valid
   #
   # @return [String, nil] the cluster id if valid
   def get_cluster
-    if params[:jobcluster] && (OODClusters[params[:jobcluster]] || params[:jobcluster] == 'all')
-      params[:jobcluster]
-    end
-  end
+    return unless params[:jobcluster] && (OODClusters[params[:jobcluster]] || params[:jobcluster] == 'all')
 
+    params[:jobcluster]
+  end
 end

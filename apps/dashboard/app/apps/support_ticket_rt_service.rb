@@ -28,5 +28,4 @@ class SupportTicketRtService
     ticket_id = rts.create_ticket(support_ticket, session, job)
     service_config.fetch(:success_message, I18n.t('dashboard.support_ticket.rt.creation_success', ticket_id: ticket_id))
   end
-
 end

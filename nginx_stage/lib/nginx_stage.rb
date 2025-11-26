@@ -199,7 +199,7 @@ module NginxStage
       name = v[/#{pun_pid_path(user: '(.+)')}/, 1]
       User.new(name)
 
-      # return nil here becasue we actually _want_ to rescue.
+      # return nil here because we actually _want_ to rescue.
       # i.e., a User is inactive if it _can't_ be instanitated.
       nil
     rescue ArgumentError => e

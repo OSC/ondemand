@@ -76,7 +76,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     click_on(I18n.t('dashboard.save'))
   end
 
-  def add_auto_environment_variable(project_id, launcher_id, save: true)
+  def add_auto_environment_variable(_project_id, _launcher_id, save: true)
     # now add 'auto_environment_variable'
     click_on('Add new option')
     select('Environment Variable', from: 'add_new_field_select')
@@ -156,7 +156,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 'test-description', project_data[:description]
       assert_equal 'fas://arrow-right', project_data[:icon]
       assert_equal "#{dir}/projects/#{project_id}", project_data[:directory]
-      assert_equal 2097152, project_data[:size]
+      assert_equal 2_097_152, project_data[:size]
       assert_equal '2 MB', project_data[:human_size]
     end
   end
@@ -272,13 +272,13 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'creates new laucher with default items' do
+  test 'creates new launcher with default items' do
     Dir.mktmpdir do |dir|
       Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
       project_id = setup_project(dir)
       launcher_id = setup_launcher(project_id)
 
-      # note that bc_num_hours is in this YAML.
+      # NOTE: that bc_num_hours is in this YAML.
       expected_yml = <<~HEREDOC
         ---
         title: the launcher title
@@ -335,7 +335,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
@@ -513,7 +513,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       expected_new_options = [
         'bc_num_hours', 'auto_queues', 'bc_num_nodes', 'auto_cores',
         'auto_accounts', 'auto_job_name', 'auto_environment_variable',
-        'auto_log_location',
+        'auto_log_location'
       ].to_set
       assert_equal expected_new_options, actual_new_options
     end
@@ -562,7 +562,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_environment_variable').click
 
       find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
-      find("#launcher_auto_environment_variable_SOME_VARIABLE").fill_in(with: 'some_value')
+      find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'some_value')
 
       find('#save_launcher_auto_environment_variable').click
 
@@ -572,7 +572,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('.alert-success', text: "Close\n#{success_message}")
       assert_current_path project_path(project_id)
 
-      # note that bc_num_hours has default, min & max
+      # NOTE: that bc_num_hours has default, min & max
       expected_yml = <<~HEREDOC
         ---
         title: the launcher title
@@ -685,6 +685,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - pas1871
             - pas1754
             - pas1604
+            - p_s1.71
+            - p-s1.71
+            - p.s1.71
             value: pzs1124
             label: Account
             help: ''
@@ -782,10 +785,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
 
       find('#edit_launcher_auto_accounts').click
+
+      # There are 7 allowed accounts before the 4 excluded ones
+      counter = 7
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
       exclude_accounts.each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
@@ -811,9 +819,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
       find('#edit_launcher_auto_accounts').click
 
+      counter = 7
       exclude_accounts.each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # now add is enabled and rm is disabled. (opposite of the above)
         assert_equal('false', add_btn[:disabled])
@@ -850,16 +861,19 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_accounts').click
       accounts_select = find('#launcher_auto_accounts')
       account_options = accounts_select.all('option')
-      find("#launcher_auto_accounts_fixed").click
+      find('#launcher_auto_accounts_fixed').click
 
       # Validate that UI changes when field is fixed.
       assert_equal('true', accounts_select[:disabled])
+      counter = 0 # mimic id logic
       account_options.each do |option|
-        rm_btn = find("#launcher_auto_accounts_remove_#{option.text}")
-        add_btn = find("#launcher_auto_accounts_add_#{option.text}")
+        counter += 1
+        html_option = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_option}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_option}")
 
         option_text_strike = option.selected? ? 0 : 1
-        assert_selector("li.text-strike > button#launcher_auto_accounts_add_#{option.text}", count: option_text_strike)
+        assert_selector("li.text-strike > button#launcher_auto_accounts_add_#{html_option}", count: option_text_strike)
         assert_equal(true, option.disabled?)
         assert_equal('true', add_btn[:disabled])
         assert_equal('true', rm_btn[:disabled])
@@ -882,9 +896,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.add'))
       find('#edit_launcher_auto_accounts').click
 
+      counter = 0
       ['pas2051', 'pas1871', 'pas1754', 'pas1604'].each do |acct|
-        rm_btn = find("#launcher_auto_accounts_remove_#{acct}")
-        add_btn = find("#launcher_auto_accounts_add_#{acct}")
+        counter += 1
+        html_acct = "option#{counter}"
+        rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
+        add_btn = find("#launcher_auto_accounts_add_#{html_acct}")
 
         # rm is enabled and add is disabled.
         assert_equal('false', rm_btn[:disabled])
@@ -983,13 +1000,30 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
-      find("#launch_8woi7ghd").click
+      find('#launch_8woi7ghd').click
 
       assert_selector('.alert-success', text: 'job-id-123')
 
       # sleep here because this test can error with Errno::ENOTEMPTY: Directory not empty @ dir_s_rmdir
       # something still has a hold on these files.
       sleep 2
+    end
+  end
+
+  test 'importing a shared project' do
+    Dir.mktmpdir do |dir|
+      Project.stubs(:dataroot).returns(Pathname.new(dir))
+
+      visit(projects_root_path)
+      click_on(I18n.t('dashboard.jobs_import_shared_project'))
+
+      fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
+      click_on(I18n.t('dashboard.import'))
+
+      # redirected back to the index and it has imported the project with a success notice
+      assert_current_path(projects_root_path)
+      assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
     end
   end
 end

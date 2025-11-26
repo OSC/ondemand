@@ -9,7 +9,7 @@ stages:
   - deploy
 
 variables:
-  OOD_BUILD_REPO: '4.0'
+  OOD_BUILD_REPO: '4.1'
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
   OOD_PACKAGING_DEBUG: 'true'
@@ -29,7 +29,7 @@ build-nightly:
         # OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_ARCH: [x86_64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el9]
+      - OOD_PACKAGING_DIST: [el9, el10]
         # Only build nightlies as x86 as that's all OSC uses
         # OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_ARCH: [x86_64]
@@ -65,6 +65,9 @@ build:
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
+      # el10 aarch64 builds are timing out so skip those builds
+      - OOD_PACKAGING_DIST: [el10]
+        OOD_PACKAGING_ARCH: [x86_64, ppc64le]
       # Ubuntu and Debian don't have way to get NodeJS 20+ on ppc64le
       - OOD_PACKAGING_DIST: [ubuntu-22.04, ubuntu-24.04, debian-12]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]

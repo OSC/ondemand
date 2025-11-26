@@ -35,11 +35,11 @@ describe OodPortalGenerator do
       expect(described_class.debian?).to eq(false)
     end
 
-    it 'returns true for Ubuntu 20.04' do
+    it 'returns true for Ubuntu 24.04' do
       os_release = <<~EOS
         ID=ubuntu
         ID_LIKE=debian
-        VERSION_ID="20.04"
+        VERSION_ID="24.04"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)

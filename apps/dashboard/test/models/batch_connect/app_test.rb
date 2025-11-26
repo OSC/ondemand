@@ -100,7 +100,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
   test "app with a single valid cluster" do
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir)
-      # note the format here, it's a string not array for backward compatability
+      # note the format here, it's a string not array for backward compatibility
       r.path.join("form.yml").write("cluster: \'owens\'")
 
       app = BatchConnect::App.new(router: r)
@@ -112,13 +112,13 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
   test "app with special case of all clusters (*)" do
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir)
-      # note the format here, it's a string not array for backward compatability
-      # Also note the quotes, those are nessecary for yaml to parse it correctly
+      # note the format here, it's a string not array for backward compatibility
+      # Also note the quotes, those are necessary for yaml to parse it correctly
       r.path.join("form.yml").write("cluster: '*'")
 
       app = BatchConnect::App.new(router: r)
       assert app.valid?
-      # have to cast to set here because globs ordering is not gaurenteed.
+      # have to cast to set here because globs ordering is not guaranteed.
       assert_equal expected_clusters(:owens, :oakley, :pitzer, :quick).to_set, app.clusters.to_set
     }
   end

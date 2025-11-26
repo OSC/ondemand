@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 require 'yaml'
 
 # Manifests provide metadata for applications (OodApps).
 class Manifest
-
   attr_reader :exception
 
   # InvalidContentError is an error helper class to give users a nice
   # error message when there are validation errors.
   class InvalidContentError < StandardError
     def initialize
-      super %q(Manifest is not formatted correctly! 
+      super 'Manifest is not formatted correctly!
 Manifest should be in YAML format with markdown for description
 ---
 name: Container Fill Sim
@@ -29,7 +30,7 @@ description: |
   * [Company Website](https://www.osc.edu)
 
 category: OSC
-      )
+      '
     end
   end
 
@@ -66,9 +67,9 @@ category: OSC
   # @option opts [Hash]   :metadata An optional hash of key value pairs.
   # @option opts [Hash]   :tile An optional hash of key value pairs.
   def initialize(opts)
-    raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
+    raise InvalidContentError unless opts&.respond_to?(:to_h)
 
-    @manifest_options = opts.to_h.with_indifferent_access.select do |method, _val| 
+    @manifest_options = opts.to_h.with_indifferent_access.select do |method, _val|
       respond_to?(method)
     end
   end
@@ -77,49 +78,49 @@ category: OSC
   #
   # @return [String] name as string
   def name
-    @manifest_options[:name] || ""
+    @manifest_options[:name] || ''
   end
 
   # The description of the application
   #
   # @return [String] description as string
   def description
-    @manifest_options[:description] || ""
+    @manifest_options[:description] || ''
   end
 
   # The icon used on the dashboard, optionally a Font Awesome tag
   #
   # @return [String] icon as string
   def icon
-    @manifest_options[:icon] || ""
+    @manifest_options[:icon] || ''
   end
 
   # Return the optional redirect URL string
   #
   # @return [String] url as string
   def url
-    @manifest_options[:url] || ""
+    @manifest_options[:url] || ''
   end
 
   # Return the app category
   #
   # @return [String] category as string
   def category
-    @manifest_options[:category] || ""
+    @manifest_options[:category] || ''
   end
 
   # Return the app subcategory
   #
   # @return [String] subcategory as string
   def subcategory
-    @manifest_options[:subcategory] || ""
+    @manifest_options[:subcategory] || ''
   end
 
   # Return the app role
   #
   # @return [String] role as string
   def role
-    @manifest_options[:role] || ""
+    @manifest_options[:role] || ''
   end
 
   # Return the app metadata
@@ -170,11 +171,11 @@ category: OSC
   #
   # @return [true, false] true if the file is saved successfully
   def save(path)
-    Pathname.new(path).write(self.to_yaml)
+    Pathname.new(path).write(to_yaml)
 
     true
-  rescue
-    # TODO Add a custom exception here to track why it erred. IO? Permissions? etc.
+  rescue StandardError
+    # TODO: Add a custom exception here to track why it erred. IO? Permissions? etc.
     false
   end
 
@@ -184,7 +185,7 @@ category: OSC
   #
   # @return [Manifest] A new manifest with the updated options
   def merge(opts)
-    raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
+    raise InvalidContentError unless opts&.respond_to?(:to_h)
 
     Manifest.new(@manifest_options.merge(opts.to_h))
   end
@@ -200,11 +201,10 @@ category: OSC
   #
   # @return [String] The populated contents of the object as YAML string.
   def to_yaml
-    self.to_h.deep_stringify_keys.compact.to_yaml
+    to_h.deep_stringify_keys.compact.to_yaml
   end
 
   class InvalidManifest < Manifest
-
     def initialize(exception)
       super({})
 
@@ -215,7 +215,7 @@ category: OSC
       false
     end
 
-    def save(path)
+    def save(_path)
       false
     end
   end
@@ -229,7 +229,7 @@ category: OSC
       false
     end
 
-    def save(path)
+    def save(_path)
       false
     end
   end

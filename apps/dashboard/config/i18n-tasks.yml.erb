@@ -138,6 +138,18 @@ search:
 translation:
   backend: openai
   openai_api_key: <%= ENV["OPENAI_API_KEY"] %>
+  openai_system_pront: >-
+    You are a professional translator that translates content from the %{from} locale
+    to the %{to} locale in an i18n locale array.
+
+    The array has a structured format and contains multiple strings. Your task is to translate
+    each of these strings and create a new array with the translated strings.
+
+    HTML markups (enclosed in < and > characters) must not be changed under any circumstance.
+    Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
+
+    Keep in mind the context of all the strings for a more accurate translation.
+    Ensure that translations are in the the %{to} locale and not only a copy from the %{from} locale.
 
 ## Do not consider these keys missing:
 # ignore_missing:

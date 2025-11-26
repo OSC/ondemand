@@ -1,0 +1,9 @@
+<div class='page-header text-center'>
+  <h1>New Workflow</h1>
+</div>
+
+<br>
+
+<%= bootstrap_form_for(@workflow, url: project_workflows_path(params[:project_id])) do |form| %>
+  <%= render partial: "form", locals: { form: form }%>
+<% end %>

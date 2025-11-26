@@ -118,7 +118,7 @@ module ActiveSupport
       end
     end
 
-    # helper to stub clusters to be [ascend] becuase adding new cluster.d
+    # helper to stub clusters to be [ascend] because adding new cluster.d
     # files may conflict with existing tests.
     def stub_ascend
       ascend = OodCore::Cluster.new({ id: 'ascend', job: { adapter: 'slurm' } })
