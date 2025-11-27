@@ -3,6 +3,7 @@ import {CONTENTID} from './data_table.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
 import { csrfToken } from '../config.js';
+import { OODAlertError } from '../alert.js';
 
 export {EVENTNAME};
 
@@ -46,13 +47,8 @@ jQuery(function () {
 
   $(CONTENTID).on(EVENTNAME.updateClipboard, function (e, options) {
     if (options.selection.length == 0) {
-      const eventData = {
-        'title': 'Select a file, files, or directory to copy or move.',
-        'message': 'You have selected none.',
-      };
-
-      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-      $(CONTENTID).trigger(EVENTNAME.clearClipboard, eventData);
+      OODAlertError('Select a file, files, or directory to copy or move. You have selected none.');
+      $(CONTENTID).trigger(EVENTNAME.clearClipboard);
 
     } else {
       clipBoard.updateClipboardFromSelection(options.selection);
