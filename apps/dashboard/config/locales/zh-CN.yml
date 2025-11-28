@@ -63,16 +63,12 @@ zh-CN:
     batch_connect_sandbox: " [Sandbox]"
     batch_connect_sessions_cancel_confirm: Are you sure?
     batch_connect_sessions_cancel_title: Cancel
-    batch_connect_sessions_data_html: '你可以通过%{data_link_tag}来获取会话数据%{title}。
-
-'
+    batch_connect_sessions_data_html: '你可以通过%{data_link_tag}来获取会话数据%{title}。'
     batch_connect_sessions_delete_confirm: 你确定吗？
     batch_connect_sessions_delete_hover: 删除会话
     batch_connect_sessions_delete_title: 删除
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
-    batch_connect_sessions_error_invalid_job_name_html: '如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
-
-'
+    batch_connect_sessions_error_invalid_job_name_html: '如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。'
     batch_connect_sessions_errors_staging: 无法调用模板，并显示以下错误：
     batch_connect_sessions_errors_submission: 提交会话失败，出现以下错误：
     batch_connect_sessions_novnc_launch: 启动%{app_title}
@@ -96,15 +92,9 @@ zh-CN:
     batch_connect_sessions_status_blurb_delete_failure: 删除会话失败。
     batch_connect_sessions_status_blurb_delete_success: 会话已成功删除.
     batch_connect_sessions_status_completed: For debugging purposes, this card will be retained for %{days} more days
-    batch_connect_sessions_status_missing_connection: '此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。
-
-'
-    batch_connect_sessions_status_queued: '由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。
-
-'
-    batch_connect_sessions_status_starting: '您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。
-
-'
+    batch_connect_sessions_status_missing_connection: '此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。'
+    batch_connect_sessions_status_queued: '由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。'
+    batch_connect_sessions_status_starting: '您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。'
     batch_connect_sessions_word: Session
     bc_saved_settings:
       delete_confirm: Are you sure?
@@ -273,7 +263,6 @@ zh-CN:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
-    # unknown: "Unknown"
     delete: "删除"
     edit: "编辑"
     show: "显示" 
@@ -286,5 +275,4 @@ zh-CN:
     mode: "模式"
     project: "项目"
     directory: "目录"
-  
     auto_log_location_title: "日志位置"
