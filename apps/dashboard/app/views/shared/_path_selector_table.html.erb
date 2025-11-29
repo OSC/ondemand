@@ -7,7 +7,7 @@
 -%>
 
 <div
-    class="modal fade"
+    class="modal fade text-start"
     id="<%= path_selector_id %>" tabindex="-1" role="dialog"
     aria-labelledby="modal-path-selector"
     data-show-files="<%= show_files %>"
@@ -38,7 +38,7 @@
                 <div class="panel-heading">Favorites</div>
                 <div id="favorites" class="list-group text-nowrap">
                   <% homedir = FavoritePath.new(Dir.home, title:'Home Directory') %>
-                  <%= render(partial: 'favorites', collection: favorites.unshift(homedir), as: :path) %>
+                  <%= render(partial: 'batch_connect/session_contexts/favorites', collection: favorites.unshift(homedir), as: :path) %>
                 </div>
               </div>
             </div>
