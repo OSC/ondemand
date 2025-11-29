@@ -107,22 +107,22 @@
 
   .job-popup {
     position: absolute;
-    left: calc(6vw - 7px);
-    width: 88.5vw;
+    left: 5.75%;
+    width: 88.5%; // 2*left + width should always = 100
 
     @media (min-width: 576px) {
-      left: calc(37vw - 8.5px);
-      width: 59.5vw;
+      left: 37%;
+      width: 59.5%;
     }
 
     @media (min-width: 992px) {
-      left: calc(19vw - 9px);
-      width: 30.5vw;
+      left: 18.5%;
+      width: 30.5%;
     }
 
     @media (min-width: 1600px) {
-      left: 18.5vw;
-      width: 30.5vw;
+      left: 18%;
+      width: 31.9%;
     }
   }
 }
