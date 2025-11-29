@@ -31,20 +31,10 @@ export class PathSelectorTable {
       this.initDataTable();
       this.reloadTable(this.initialUrl());
 
-      $(`#${this.tableId} tbody`).on('click', 'tr', this.withEventGuard((event) => { this.clickRow(event) }));
-      $('#favorites').on('click', 'a', this.withEventGuard((event) => { this.clickRow(event) }));
-      $(`#${this.breadcrumbId}`).on('click', 'li', this.withEventGuard((event) => { this.clickBreadcrumb(event) }));
-      $(`#${this.selectButtonId}`).on('click', this.withEventGuard((event) => { this.selectPath(event) }));
-  }
-
-  withEventGuard(handler) {
-    return function(event, ...args) {
-      try {
-        if (event && typeof event.preventDefault === 'function') event.preventDefault();
-        if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
-      } catch (e) { console.error('withEventGuard failed to guard event', e); }
-      return handler.call(this, event, ...args);
-    };
+      $(`#${this.tableId} tbody`).on('click', 'tr', (event) => { this.clickRow(event) });
+      $('#favorites').on('click', 'a', (event) => { this.clickRow(event) });
+      $(`#${this.breadcrumbId}`).on('click', 'li', (event) => { this.clickBreadcrumb(event) });
+      $(`#${this.selectButtonId}`).on('click', (event) => { this.selectPath(event) });
   }
 
   initDataTable() {

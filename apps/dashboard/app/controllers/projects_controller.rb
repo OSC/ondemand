@@ -34,6 +34,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
+    @project = Project.new
     @projects = Project.all
     @templates = templates
   end
@@ -45,10 +46,10 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
-  # GET /projects/import
-  def import
-    @project = Project.new
+  # GET /projects/possible_imports
+  def possible_imports
     @projects = Project.possible_imports
+    render(partial: 'projects/possible_imports', layout: false)
   end
 
   # GET /projects/:id/edit

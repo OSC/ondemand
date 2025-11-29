@@ -1,0 +1,28 @@
+<%= turbo_frame_tag(:possible_imports) do %>
+<% unless @projects.empty? %>
+  <div class='card mx-4 mb-2'>
+    <div class='card-body'>
+      <strong>
+        <%= label :directory, I18n.t('dashboard.jobs_select_directory_placeholder') %>
+      </strong>
+      <div class="d-flex flex-wrap justify-content-start">
+        <% @projects.each do |project| %>
+	  <div id="<%= project.id %>" class="col-md-3 w-40">
+          <%= button_to project_import_save_path, method: :post,
+                params: { project: { directory: project.directory } }, 
+                data: { turbo_frame: '_top' },
+                class: 'project-icon p-2 w-100 border-0 bg-transparent' do %>
+              <div class="text-center d-flex justify-content-center">
+		<strong>
+		  <%= icon_tag(URI.parse(project.icon)) %>
+                  <%= content_tag(:div, project.title, class:'project-title my-2') %>
+                </strong>
+              </div>
+          <% end %>
+	  </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<% end %>

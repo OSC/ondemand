@@ -80,9 +80,7 @@
           </div>
         </a>
         <div id="load-import-pane" class="collapse">
-          <%= turbo_frame_tag(:import_pane, src: project_import_path, loading: :lazy) do %>
-            <%= render partial: "files/spinner", locals:{show_on_load: true} %>
-          <% end %>
+          <%= render partial: 'import' %>
         </div>
       </div>
 
