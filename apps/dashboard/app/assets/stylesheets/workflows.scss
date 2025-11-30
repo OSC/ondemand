@@ -5,7 +5,8 @@ $cell_w: 204; // (204+20) * 4 = 900px width for workspace wrapper
 $cell_h: 130; // (130+20) * 4 = 600px height for workspace wrapper
 $gap: 20;
 
-:root {
+.app {
+  // Variable definition
   --bg: #f7f7fb;
   --ink: #222;
   --ink-muted: #666;
@@ -20,16 +21,7 @@ $gap: 20;
   --cell_w: #{$cell_w};
   --cell_h: #{$cell_h};
   --gap: #{$gap};
-}
 
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: var(--ink);
-}
-
-.app {
   display: grid;
   grid-template-rows: auto 1fr;
   height: 100%;
