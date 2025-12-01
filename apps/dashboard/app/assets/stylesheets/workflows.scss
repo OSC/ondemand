@@ -5,7 +5,7 @@ $cell_w: 204; // (204+20) * 4 = 900px width for workspace wrapper
 $cell_h: 130; // (130+20) * 4 = 600px height for workspace wrapper
 $gap: 20;
 
-.app {
+.workflows_ui_styles {
   // Variable definition
   --bg: #f7f7fb;
   --ink: #222;
@@ -21,7 +21,9 @@ $gap: 20;
   --cell_w: #{$cell_w};
   --cell_h: #{$cell_h};
   --gap: #{$gap};
+}
 
+.app {
   display: grid;
   grid-template-rows: auto 1fr;
   height: 100%;

@@ -5,7 +5,7 @@
 <input type="hidden" id="base-workflow-url" value="<%= project_workflow_path(@project.id, @workflow.id) %>">
 <input type="hidden" id="base-launcher-url" value="<%= project_launchers_path(@project.id) %>">
 
-<div class="app" id="app">
+<div class="app workflows_ui_styles" id="app">
   <div class="toolbar" aria-label="toolbar">
     <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: true, class: 'form-control mb-2 w-25' %>
     <button id="btn-add">Add Launcher</button>
