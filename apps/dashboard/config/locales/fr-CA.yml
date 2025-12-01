@@ -3,7 +3,7 @@ fr-CA:
   activemodel:
     errors:
       messages:
-        format: "Le format de %{attribute} est invalide ou manquant"
+        format: Le format de %{attribute} est invalide ou manquant
         invalid: "%{attribute} est invalide"
         required: "%{attribute} est requis"
         used: "%{attribute} est déjà utilisé"
@@ -32,9 +32,10 @@ fr-CA:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: Applications système
     auto_log_location_title: Emplacement du journal
+    back: Retour
     balance_additional_message: Envisagez de demander %{balanace_units} supplémentaires
     balance_message: "%{units_balance} est %{value}"
-    balance_reload_message_html: "Rechargez la page pour voir le solde mis à jour. Les soldes sont mis à jour quotidiennement.<br>Dernière mise à jour : %{last_update}"
+    balance_reload_message_html: 'Rechargez la page pour voir le solde mis à jour. Les soldes sont mis à jour quotidiennement.<br>Dernière mise à jour : %{last_update}'
     balance_warning_prefix_html: "%{units_balance} avertissement pour"
     batch_connect_apps_menu_title: Applications interactives
     batch_connect_form_attr_cache_error: Impossible d'utiliser les valeurs en cache, utilisation des valeurs par défaut. (%{error_message})
@@ -128,10 +129,12 @@ fr-CA:
     close: Fermer
     custom_pages:
       invalid: 'Code de page invalide : %{page}. Cette page n’a pas été configurée'
+    date: Date
     delete: Supprimer
     development_apps_caption: Application bac à sable
     directory: Répertoire
     edit: Modifier
+    file_quotas: Quotas de fichiers
     files_directory_download_error_modal_title: Répertoire trop volumineux à télécharger
     files_directory_download_unauthorized: Vous ne pouvez télécharger qu’un répertoire au format zip si vous y avez les droits de lecture et d’exécution
     files_directory_size_calculation_error: Délai dépassé lors de la détermination de la taille du répertoire.
@@ -139,12 +142,21 @@ fr-CA:
     files_directory_size_unknown: 'Erreur avec le code de sortie %{exit_code} lors de la détermination de la taille du répertoire : %{error}'
     files_directory_too_large: Le répertoire est trop volumineux pour être téléchargé en zip. Il doit faire moins de %{download_directory_size_limit} octets.
     files_download_not_enabled: Le téléchargement de fichiers n’est pas activé sur ce serveur.
+    files_download_zip: Télécharger en zip
+    files_file_too_large: Le fichier est trop volumineux pour être téléchargé. Les téléchargements de fichiers doivent être inférieurs à %{download_file_size_limit} octets.
     files_remote_dir_not_created: Répertoire %{path} non créé
     files_remote_disabled: Le support de fichiers distants n’est pas activé
     files_remote_empty_dir_unsupported: Les répertoires vides ne sont pas pris en charge à distance
     files_remote_error_listing_remotes: 'Erreur lors de la liste des remotes Rclone : %{error}'
+    files_send_to_target_title_default: Envoyer les métadonnées des fichiers sélectionnés à l'application externe
+    files_shell: Ouvrir dans le terminal
+    files_shell_dropdown: Sélectionner le cluster à ouvrir dans le terminal
+    import: Importer
+    job_info: Infos sur le travail
     jobs_create_blank_project: Créer un nouveau projet
+    jobs_create_blank_workflow: Nouveau flux de travail
     jobs_create_template_project: Créer un nouveau projet à partir d’un modèle
+    jobs_import_shared_project: Importer un projet partagé
     jobs_launchers: Lancements
     jobs_launchers_created: Lancement créé avec succès !
     jobs_launchers_default_created: Un « hello_world.sh » a aussi été ajouté à ce projet.
@@ -159,9 +171,11 @@ fr-CA:
     jobs_project_delete_project_confirmation: Supprimer tout le contenu du répertoire du projet ?
     jobs_project_deleted: Projet supprimé avec succès !
     jobs_project_description_placeholder: Description du projet
+    jobs_project_directory_error: Le chemin du répertoire du projet n'est pas défini pour ce flux de travail
     jobs_project_directory_help_html: 'Laisser vide et un nouveau répertoire sera créé. <br />Emplacement par défaut : %{root_directory}'
     jobs_project_directory_placeholder: Chemin absolu du répertoire du projet
     jobs_project_generic_error: 'Erreur lors du traitement de votre requête : %{error}'
+    jobs_project_imported: Projet importé avec succès !
     jobs_project_invalid_configuration_clusters: Un cluster HPC est requis. Contactez votre administrateur pour en ajouter un au système.
     jobs_project_invalid_configuration_scripts: Un script exécutable est requis pour votre projet. Téléversez un script via l’application de fichiers.
     jobs_project_job_deleted: Travail %{job_id} supprimé avec succès
@@ -173,9 +187,26 @@ fr-CA:
     jobs_project_not_found: Impossible de trouver le projet %{project_id}
     jobs_project_save_error: Impossible d’enregistrer le manifest dans %{path}
     jobs_project_validation_error: Requête invalide. Veuillez vérifier les erreurs ci-dessous
+    jobs_select_directory_placeholder: Cliquez sur le projet ci-dessous pour l'importer sur votre page d'accueil (facultatif)
+    jobs_workflow_created: Flux de travail créé avec succès !
+    jobs_workflow_deleted: Flux de travail supprimé avec succès !
+    jobs_workflow_description_placeholder: Description du flux de travail
+    jobs_workflow_failed: Le flux de travail a échoué avec l'erreur %{error}
+    jobs_workflow_manifest_updated: Manifeste du flux de travail mis à jour !
+    jobs_workflow_missing_launchers: sélectionnez au moins %{count}
+    jobs_workflow_name_placeholder: Nom du flux de travail
+    jobs_workflow_name_validation: Le nom du flux de travail ne peut contenir que des lettres, des chiffres, des tirets, des traits de soulignement et des espaces
+    jobs_workflow_not_found: Impossible de trouver le flux de travail %{workflow_id}
+    jobs_workflow_submit: Soumettre le flux de travail
+    jobs_workflow_submitted: Flux de travail soumis avec succès !
+    jobs_workflows: Flux de travail
     launch: Lancer
+    mode: Mode
+    module_browser_last_updated: 'Dernière mise à jour : %{last_updated}'
+    module_browser_title: Navigateur de modules
     motd_erb_render_error: 'Le MOTD n’a pas été analysé ou rendu correctement : %{error_message}'
     motd_title: Message du jour
+    name: Nom
     nav_all_apps: Toutes les applications
     nav_develop_docs: Documentation développeur
     nav_develop_my_sandbox_apps_dev: Mes applications bac à sable (Développement)
@@ -194,10 +225,19 @@ fr-CA:
     nav_sessions: Mes sessions interactives
     nav_user: Connecté en tant que %{username}
     not_grouped: Autres applications
+    nsf_access_events: Événements d'accès NSF
+    ok: OK
+    owner: Propriétaire
+    path_selector_default_popup_title: Sélectionnez votre répertoire de travail
+    path_selector_home: accueil
+    path_selector_parent_directory: répertoire parent
     pinned_apps_caption_html: Un sous-ensemble en vedette de <a href="%{all_apps_url}">toutes les applications disponibles</a>
     pinned_apps_category: Applications
     pinned_apps_title: Applications épinglées
     project: Projet
+    project_balances: Soldes de projet
+    project_zip_error_message: 'Erreur lors de la création du fichier ZIP : %{error}'
+    project_zip_success_message: 'SUCCÈS : project.zip a été créé dans votre répertoire de projet.'
     quota_additional_message: Envisagez de supprimer ou d’archiver des fichiers pour libérer de l’espace disque.
     quota_block: Utilisation de %{used} sur quota %{available}
     quota_block_shared: "(%{used_exclusive} vous appartiennent)"
@@ -207,12 +247,14 @@ fr-CA:
     quota_warning_prefix_html: Avertissement de limite de quota pour
     recently_used_apps_title: Applications récemment utilisées
     remove: Retirer
+    reset: Réinitialiser
     restart_msg_html: |
       Votre appartenance au groupe a changé, ce qui affecte votre accès aux applications. Votre tableau de bord devrait redémarrer automatiquement.
       Si ce n’est pas le cas, cliquez ici : <a href="%{restart_url}">redémarrer le serveur web</a>.
     save: Enregistrer
     saved_settings_title: Paramètres enregistrés
     select_path: Sélectionner le chemin
+    select_path_for: "%{element} sélectionner le chemin\n"
     settings_invalid_request: Paramètres soumis invalides
     settings_updated: Paramètres mis à jour
     shared_apps_caption: Partagé par %{owner_title} (%{owner})
@@ -228,29 +270,37 @@ fr-CA:
       Les applications d’accès aux clusters sont disponibles via les menus déroulants dans la barre de navigation ci-dessus.
       <br>Les applications partagées personnalisées sont disponibles ci-dessous.
     shell_app_title: "%{cluster_title} Accès Shell"
-    show: "Afficher"
+    show: Afficher
+    size: Taille
+    skip_navigation: Ignorer la navigation
+    soft_tabs: Tabulations douces
+    soft_tabs_info: Les tabulations douces sont des espaces dans le fichier au lieu de véritables caractères de tabulation.
     support_ticket:
-      creation_success: "Courriel de billet de soutien envoyé à : %{to}"
-      generic_error: "Erreur lors du traitement de votre requête : %{error}"
-      header: "Billet de soutien"
+      creation_success: 'Courriel de billet de soutien envoyé à : %{to}'
+      generic_error: 'Erreur lors du traitement de votre requête : %{error}'
+      header: Billet de soutien
       rt:
-        creation_success: "Billet créé dans le système RequestTracker. ID du billet : %{ticket_id}"
-      title: "Billet de soutien"
+        creation_success: 'Billet créé dans le système RequestTracker. ID du billet : %{ticket_id}'
+      servicenow:
+        attachments_failure: 'Ticket de support créé dans ServiceNow. Numéro : %{number}. Mais impossible d''ajouter les pièces jointes.'
+        creation_success: 'Ticket de support créé dans ServiceNow. Numéro : %{number}'
+      title: Billet de soutien
       validation:
-        attachments_items: "Les %{id} sont invalides. %{items} ajoutés, nombre maximal de pièces jointes : %{max}"
-        attachments_size: "Les %{id} sont invalides. Taille maximale de la pièce jointe : %{max}"
-        email: "Le format de %{id} est invalide. Adresse courriel valide attendue"
+        attachments_items: 'Les %{id} sont invalides. %{items} ajoutés, nombre maximal de pièces jointes : %{max}'
+        attachments_size: 'Les %{id} sont invalides. Taille maximale de la pièce jointe : %{max}'
+        email: Le format de %{id} est invalide. Adresse courriel valide attendue
         items:
-          attachments_js: "Plus de pièces jointes autorisées"
-        required: "Le champ %{id} est requis"
+          attachments_js: Plus de pièces jointes autorisées
+        required: Le champ %{id} est requis
         size:
-          attachments_js: "Taille max de la pièce jointe : %{max}. Taille du fichier sélectionné : %{size}"
-      validation_error: "Requête invalide. Veuillez revoir les messages d’erreur ci-dessous"
-    system_apps_caption: "Application système installée"
-    unknown: "Inconnu"
-    uppy: "Uppy"
+          attachments_js: 'Taille max de la pièce jointe : %{max}. Taille du fichier sélectionné : %{size}'
+      validation_error: Requête invalide. Veuillez revoir les messages d’erreur ci-dessous
+    system_apps_caption: Application système installée
+    type: Type
+    unknown: Inconnu
+    uppy: Uppy
     user_configuration:
-      support_ticket_error: "support_ticket est mal configuré. Les sections « email » ou « rt_api » sont requises dans le YAML de configuration."
+      support_ticket_error: support_ticket est mal configuré. Les sections « email » ou « rt_api » sont requises dans le YAML de configuration.
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand offre un point d'accès intégré et unique à toutes vos ressources HPC.</p>
