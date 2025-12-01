@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Populate int_configs (#4823)\
-Support el10 (#4804)\
-Add strip_proxy header/cookie directives to ood-portal-generator to mitigate proxy authentication leaks (#4784)\
-only use time limit if it is positive (#4802)\
-update dependencies (#4818)\
-Update Changelog (#4816)\
-Add validation to workflow forms (#4779)\
-lint a random file (#4815)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -105,6 +97,7 @@ lint a random file (#4815)
 - register_path, register_method and register_method_options have been added to ood_portal.yml in [4763](https://github.com/OSC/ondemand/pull/4763).
 - nsf_access_events widget has been added in [4726](https://github.com/OSC/ondemand/pull/4726).
 - Resolution widgets now have a help field for clarity in [4765](https://github.com/OSC/ondemand/pull/4765).
+- Added el10 support in [4804](https://github.com/OSC/ondemand/pull/4804).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
