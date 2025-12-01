@@ -81,7 +81,6 @@ class LaunchersController < ApplicationController
     @valid_project = Launcher.clusters?
     @remove_delete_button = true
     @show_job_info_button = true
-    @source_workflow = true
     render(partial: 'projects/launcher_buttons', locals: { launcher: launcher })
   end
 
