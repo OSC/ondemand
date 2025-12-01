@@ -678,7 +678,7 @@ class DragController {
 
   function makeLauncher(row, col, id, title) {
     return new Promise((resolve, reject) => {
-      const url = `${baseLauncherUrl}/${id}/render_button/${workflowId}`;
+      const url = `${baseLauncherUrl}/${id}/render_button`;
       $.get(url, function(html) {
         const $launcher = $(`
           <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
