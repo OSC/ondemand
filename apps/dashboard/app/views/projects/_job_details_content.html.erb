@@ -13,16 +13,16 @@
     <div class="card card-body">
       <table class="table table-bordered table-sm m-0 mb-2">
         <tr>
-          <tr><strong> State </strong></td>
-          <td>job.native.dig(:state).to_s</td>
+          <td><strong> State </strong></td>
+          <td><%= job.native.dig(:state).to_s %></td>
         </tr>
         <tr>
-          <tr><strong> Dependency </strong></td>
-          <td>job.native.dig(:dependency).to_s</td>
+          <td><strong> Dependency </strong></td>
+          <td><%= job.native.dig(:dependency).to_s %></td>
         </tr>
         <tr>
-          <tr><strong> Reason </strong></td>
-          <td>job.native.dig(:reason).to_s</td>
+          <td><strong> Reason </strong></td>
+          <td><%= job.native.dig(:reason).to_s %></td>
         </tr>
         <% job.to_human_display.each do |name, value| %>
           <tr>
@@ -32,7 +32,6 @@
         <% end %>
       </table>
       <div class="d-flex flex-row-reverse mt-2 mx-2">
-        #TODO fix this 
         <%= job_details_buttons(job.status.to_s, job, project) %>
       </div>
     </div>
