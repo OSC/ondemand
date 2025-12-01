@@ -535,7 +535,7 @@ class DragController {
   const workflowId = document.getElementById('workflow-id').value;
   const baseWorkflowUrl = document.getElementById('base-workflow-url').value;
   const baseLauncherUrl = document.getElementById('base-launcher-url').value;
-  const styles = getComputedStyle(document.querySelector('.workflows_ui_styles'));
+  const styles = getComputedStyle(document.getElementById('workflows_app'));
   const stageZoom = document.getElementById('stage-zoom');
 
   // State variables and constants
