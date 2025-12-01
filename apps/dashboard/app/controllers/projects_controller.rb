@@ -227,7 +227,7 @@ class ProjectsController < ApplicationController
       label = project.title
       data = {
         'data-description' => project.description,
-        'data-icon'        => project.icon
+        'data-icon'        => project.icon_class
       }
       [label, project.directory, data]
     end
