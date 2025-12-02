@@ -683,11 +683,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - pde0006
             - pas2051
             - pas1871
-            - pas1754
-            - pas1604
             - p_s1.71
             - p-s1.71
             - p.s1.71
+            - pas1754
+            - pas1604
             value: pzs1124
             label: Account
             help: ''
@@ -788,8 +788,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # There are 7 allowed accounts before the 4 excluded ones
       counter = 7
-      exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
-      exclude_accounts.each do |acct|
+      exclude_accounts = ['pas2051', 'pas1871', 'p_s1.71', 'p-s1.71']
+      exclude_accounts.each do |_acct|
         counter += 1
         html_acct = "option#{counter}"
         rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
@@ -805,6 +805,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
         assert_equal('false', add_btn[:disabled])
       end
 
+      File.write('delme.html', page.body)
+
       find('#save_launcher_edit').click
       assert_current_path(project_path(project_id))
       launcher_path = project_launcher_path(project_id, launcher_id)
@@ -813,7 +815,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # now let's check launchers#show to see if they've actually been excluded.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
-        assert(!show_account_options.include?(acct))
+        refute(show_account_options.include?(acct), "#{acct} is shown as an option")
       end
 
       visit edit_project_launcher_path(project_id, launcher_id)
@@ -969,10 +971,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'submitting launchers from a template project works' do
     Dir.mktmpdir do |dir|
       # use different accounts than what the template was generated with
-      Open3
-        .stubs(:capture3)
-        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,qos', 'where', 'user=me', stdin_data: '')
-        .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts_alt.txt'), '', exit_success])
+      ['oakley', 'owens'].each do |cluster|
+        Open3.stubs(:capture3)
+             .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
+                   'format=account,qos', 'where', 'user=me', "cluster=#{cluster}", stdin_data: '')
+             .returns([File.read("test/fixtures/cmd_output/sacctmgr_show_accts_#{cluster}_alt.txt"), '', exit_success])
+      end
 
       Project.stubs(:dataroot).returns(Pathname.new(dir))
       Configuration.stubs(:project_template_dir).returns("#{Rails.root}/test/fixtures/projects")
