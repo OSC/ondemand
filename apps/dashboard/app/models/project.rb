@@ -49,8 +49,8 @@ class Project
 
     def all
       lookup_table.map do |id, directory|
-        Project.new({ id: id, directory: directory })
-      end
+        Project.new({ id: id, directory: directory, load: true })
+      end.filter {|p| !p.deleted }
     end
 
     def find(id)
@@ -111,7 +111,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template, :files
+  attr_reader :id, :name, :description, :icon, :directory, :template, :files, :deleted
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -129,7 +129,10 @@ class Project
     @directory = File.expand_path(@directory) unless @directory.blank?
     @template = attributes[:template]
 
-    return if new_record?
+    if new_record?
+      remove_from_lookup if attributes[:load]
+      return
+    end
 
     contents = File.read(manifest_path)
     raw_opts = YAML.safe_load(contents)
@@ -197,6 +200,7 @@ class Project
   def remove_from_lookup
     new_table = Project.lookup_table.except(id)
     File.write(Project.lookup_file, new_table.to_yaml)
+    @deleted = true
     true
   rescue StandardError => e
     errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
