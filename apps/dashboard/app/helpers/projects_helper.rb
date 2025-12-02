@@ -21,6 +21,30 @@ module ProjectsHelper
     render(partial: "projects/buttons/#{button_category(status)}_buttons", locals: locals) unless button_partial.nil?
   end
 
+  def native_message(native)
+    state = native.dig(:state)
+    msg = "Current job state is #{state}"
+    
+    reason = native.dig(:reason)
+    if reason != "None"
+      msg += " because of #{reason}"
+    end
+    
+    dependency = native.dig(:dependency)
+    if dependency != "(null)" and state != "CANCELLED"
+      dependency = truncate(dependency.gsub("afterok:", " "), length: 50)
+      msg += ". Job depends on job-id#{dependency}"
+    end
+
+    # Special case: Showing dependency of cancelled job will confuse users
+    if state=="CANCELLED" and reason=="Dependency"
+      msg = "Current job state is #{state}"
+    end
+    
+    msg += "."
+    return msg
+  end
+
   def button_category(status)
     case status
     when 'queued_held'

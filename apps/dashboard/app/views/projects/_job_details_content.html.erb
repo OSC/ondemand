@@ -13,16 +13,8 @@
     <div class="card card-body">
       <table class="table table-bordered table-sm m-0 mb-2">
         <tr>
-          <td><strong> State </strong></td>
-          <td><%= job.native.dig(:state).to_s %></td>
-        </tr>
-        <tr>
-          <td><strong> Dependency </strong></td>
-          <td><%= job.native.dig(:dependency).to_s %></td>
-        </tr>
-        <tr>
-          <td><strong> Reason </strong></td>
-          <td><%= job.native.dig(:reason).to_s %></td>
+          <td><strong> Message </strong></td>
+          <td><%= native_message(job.native) %></td>
         </tr>
         <% job.to_human_display.each do |name, value| %>
           <tr>
