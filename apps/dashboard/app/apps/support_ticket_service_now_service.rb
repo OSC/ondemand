@@ -73,6 +73,7 @@ class SupportTicketServiceNowService
         helpers: TemplateHelpers.new
       }
     )
+
   end
 
   class TemplateHelpers
