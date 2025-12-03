@@ -53,7 +53,7 @@
           <% unless @project.private? && edit_project_action %>
             <div class="field">
               <%= form.select(:group_owner,
-                              user_groups,
+                              CurrentUser.group_names,
                               { label: I18n.t('dashboard.jobs_project_group_owner') },
                               { disabled: edit_project_action })%>
             </div>
