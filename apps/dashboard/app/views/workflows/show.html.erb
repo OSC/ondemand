@@ -7,7 +7,7 @@
 
 <div class="app" id="app">
   <div class="toolbar" aria-label="toolbar">
-    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: true, class: 'form-control mb-2 w-25' %>
+    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: false, class: 'form-control mb-2 w-25' %>
     <button id="btn-add">Add Launcher</button>
     <button id="btn-connect" aria-pressed="false">Connect Launchers</button>
     <button id="btn-delete-launcher" class="danger" title="Delete selected launcher (Del/Backspace)">Delete Launcher</button>
