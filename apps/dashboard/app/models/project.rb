@@ -130,10 +130,7 @@ class Project
     @template = attributes[:template]
     @group_owner = attributes[:group_owner] || get_group_owner
 
-    if new_record?
-      set_group_owner(@group_owner)
-      return
-    end
+    return if new_record?
 
     contents = File.read(manifest_path)
     raw_opts = YAML.safe_load(contents)
@@ -212,18 +209,20 @@ class Project
   end
   
   def get_group_owner
-    if project_dataroot.grpowned?
+    if project_dataroot != Project.dataroot && project_dataroot.grpowned?
       Etc.getgrgid(project_dataroot.stat.gid).name
     else
-      'None'
+      nil
     end
   end
 
-  def set_group_owner(group)
-    begin 
-      FileUtils.chown(nil, Etc.getgrnam(group).gid, project_dataroot)
+  def set_group_owner
+    return true if private? || @group_owner == get_group_owner
+    begin
+      group_gid = @group_owner.nil? ? nil : Etc.getgrnam(@group_owner).gid
+      FileUtils.chown(nil, group_gid, project_dataroot)
     rescue StandardError => e
-      errors.add(:update, "Unable to modify group ownership with error #{e.class}:#{e.message}")
+      errors.add(:update, "Unable to set group ownership with error #{e.class}:#{e.message}")
       false
     end
   end
@@ -324,13 +323,9 @@ class Project
     end
   end
 
-  def update_ownership(attributes)
-    new_group = attributes.fetch(:group_owner, 'None')
-    (new_group == get_group_owner) ? true : set_group_owner(new_group)
-  end
-
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
+    set_group_owner
     configuration_directory.mkpath  unless configuration_directory.exist?
     workflow_directory = Workflow.workflow_dir(project_dataroot)
     workflow_directory.mkpath unless workflow_directory.exist?
