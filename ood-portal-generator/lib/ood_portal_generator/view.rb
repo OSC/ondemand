@@ -5,7 +5,7 @@ require 'socket'
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
-    attr_reader :ssl, :protocol, :proxy_server, :port, :dex_uri
+    attr_reader :ssl, :protocol, :proxy_server, :ssl_proxy, :port, :dex_uri
     attr_accessor :user_map_match, :user_map_cmd, :logout_redirect, :dex_http_port, :dex_enabled
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
 
@@ -25,6 +25,7 @@ module OodPortalGenerator
       @servername       = opts.fetch(:servername, nil)
       @server_aliases   = opts.fetch(:server_aliases, [])
       @proxy_server     = opts.fetch(:proxy_server, servername)
+      @ssl_proxy        = opts.fetch(:ssl_proxy, [])
       @allowed_hosts    = allowed_hosts
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       if OodPortalGenerator.debian?
@@ -84,6 +85,8 @@ module OodPortalGenerator
       @host_regex = opts.fetch(:host_regex, "[^/]+")
       @node_uri   = opts.fetch(:node_uri, nil)
       @rnode_uri  = opts.fetch(:rnode_uri, nil)
+      @secure_node_uri   = opts.fetch(:secure_node_uri, nil)
+      @secure_rnode_uri  = opts.fetch(:secure_rnode_uri, nil)
 
       # Per-user NGINX sub-uri
       @nginx_uri              = opts.fetch(:nginx_uri, "/nginx")
