@@ -87,15 +87,6 @@ module ApplicationHelper
     end
   end
 
-  def pathselector_favorites(favorites)
-    # If favorites is false, return nil
-    if favorites.nil?
-      OodFilesApp.new.favorite_paths.reject(&:remote?)
-    elsif favorites
-      favorites.map { |f| FavoritePath.new(f) }
-    end
-  end
-
   # Creates the list of links to add to the help menu
   def help_links
     help_items = ["restart"] + @user_configuration.profile_links + @user_configuration.help_menu
