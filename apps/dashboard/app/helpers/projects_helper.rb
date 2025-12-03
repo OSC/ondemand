@@ -22,23 +22,21 @@ module ProjectsHelper
   end
 
   def native_message(native)
-    state = native.dig(:state)
-    msg = "Current job state is #{state}"
+    state = native.dig(:state) || native.dig(:job_state)
+    state = state.to_s.strip
+    msg = "Current job state is '#{state}'"
     
-    reason = native.dig(:reason)
-    if reason != "None"
-      msg += " because of #{reason}"
+    reason = native.dig(:reason) || native.dig(:comment)
+    reason = reason.to_s.strip
+    if reason.present? && reason != "None"
+      msg += " because of '#{reason}'"
     end
     
-    dependency = native.dig(:dependency)
-    if dependency != "(null)" and state != "CANCELLED"
+    dependency = native.dig(:dependency) || native.dig(:depend)
+    dependency = dependency.to_s.strip
+    if dependency.present? && dependency != "(null)"
       dependency = truncate(dependency.gsub("afterok:", " "), length: 50)
       msg += ". Job depends on job-id#{dependency}"
-    end
-
-    # Special case: Showing dependency of cancelled job will confuse users
-    if state=="CANCELLED" and reason=="Dependency"
-      msg = "Current job state is #{state}"
     end
     
     msg += "."
