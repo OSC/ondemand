@@ -31,10 +31,19 @@ class Workflow
     def next_id
       SecureRandom.alphanumeric(8).downcase
     end
+
+    def build_submit_params(metadata, project_dir)
+      meta = metadata[:metadata] || {}
+      {
+        launcher_ids: meta[:boxes].map { |b| b["id"] },
+        source_ids: meta[:edges].map { |e| e["from"] },
+        target_ids: meta[:edges].map { |e| e["to"] },
+        project_dir: project_dir
+      }
+    end
   end
 
-  # TODO: Remove launcher_ids, source_ids, target_ids and use metadata only
-  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids, :metadata
+  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata
 
   validates :name, presence: true
   validates :launcher_ids, length: {minimum: 1}
@@ -46,8 +55,6 @@ class Workflow
     @project_dir = attributes[:project_dir]
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
-    @source_ids = attributes[:source_ids] || []
-    @target_ids = attributes[:target_ids] || []
     @metadata = attributes[:metadata] || {}
   end
 
@@ -59,8 +66,6 @@ class Workflow
       :created_at => created_at,
       :project_dir => project_dir,
       :launcher_ids => launcher_ids,
-      :source_ids => source_ids,
-      :target_ids => target_ids,
       :metadata => metadata
     }
   end
