@@ -48,7 +48,7 @@ class RemoteFile
     end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
-  def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
+  def can_download_as_zip?(timeout: Configuration.download_dir_timeout_seconds, download_directory_size_limit: Configuration.download_dir_max)
     [false, 'Downloading remote files as zip is currently not supported']
   end
 

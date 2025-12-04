@@ -227,6 +227,10 @@ class Project
     end
   end
 
+  def editable? 
+    File.writable?(manifest_path)
+  end
+  
   def icon_class
     # rails will prepopulate the tag with fa- so just the name is needed
     icon.sub('fas://', '')

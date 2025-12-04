@@ -105,6 +105,10 @@ Listen <%= addr_port %>
   <%- end -%>
   RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=302,L]
 
+  <FilesMatch "/var/www/ood/public/maintenance/.*">
+    Header Set Cache-Control "max-age=0, no-store"
+  </FilesMatch>
+
   <%- end -%>
   TraceEnable off
 
@@ -230,6 +234,13 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
+    <%- end -%>
+
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
@@ -257,6 +268,13 @@ Listen <%= addr_port %>
 
     <%- @custom_location_directives.to_a.each do |line| -%>
     <%= line %>
+    <%- end -%>
+
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
     <%- end -%>
 
     # ProxyPassReverse implementation

@@ -6,12 +6,17 @@
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
 %define runtime_version %{major_version}.%{minor_version}.0
-%define runtime_release 1
+%define runtime_release 2
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 # Use hardcoded RHEL 9.5 for a short period while downstream RHEL clones get RHEL 9.6 release
 %if 0%{?rhel} == 9
 %define selinux_policy_ver 38.1.45
-%else
+%endif
+# We test against a older version of Amazon Linux 2023 so use older version
+%if 0%{?amzn} == 2023
+%define selinux_policy_ver 38.1.50
+%endif
+%if 0%{?rhel} != 9 && 0%{?amzn} != 2023
 %define selinux_policy_ver %(rpm --qf "%%{version}" -q selinux-policy)
 %endif
 %global selinux_module_version %{package_version}.%{package_release}
@@ -51,7 +56,7 @@ Source2:   ondemand-selinux.fc
 # %%global __brp_strip /bin/true
 # %%global __brp_strip_comment_note /bin/true
 # %%global __brp_strip_static_archive /bin/true
-# %%global __os_install_post %{nil}
+# %%global __os_install_post <nil macro>
 
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
@@ -84,8 +89,8 @@ Requires:        python3
 Requires:        rclone
 %endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.26.3-1.p6.1.0.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.1.0-1.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.26.3-2.p6.1.0.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.1.0-2.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}
@@ -126,8 +131,13 @@ Requires: %{gems_name}
 Metapackage to include Rubygems for OnDemand
 
 %prep
+%if 0%{?rhel} >= 10
+# The chmod command from _fixperms is causing issues so just avoid for now
+%define _fixperms echo
+%autosetup -n %{package_name}-%{git_tag_minus_v}
+%else
 %setup -q -n %{package_name}-%{git_tag_minus_v}
-
+%endif
 
 %build
 %__mkdir selinux
@@ -146,6 +156,7 @@ export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
 bundle config set --global force_ruby_platform true
 bundle config --global build.nokogiri --use-system-libraries
+bundle config --global build.sqlite3 --enable-system-libraries
 BUNDLE_WITHOUT='doc test package development' bundle install
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache
@@ -191,6 +202,7 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 %__mkdir_p %{buildroot}%{_tmppath}/ondemand-nginx
 %__mkdir_p %{buildroot}%{_rundir}/ondemand-nginx
+%__mkdir_p %{buildroot}%{_sysconfdir}/ood/config/ondemand.d
 
 %__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
@@ -315,6 +327,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 %dir %{_sysconfdir}/ood
 %dir %{_sysconfdir}/ood/config
+%dir %{_sysconfdir}/ood/config/ondemand.d
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/hook.env

@@ -40,7 +40,10 @@
                                 help: edit_project_action ? '' : I18n.t('dashboard.jobs_project_directory_help_html', root_directory: Project.dataroot.to_s).html_safe,
                                 data: { 'path-selector': true })%>
 
-            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+            <button 
+              type="button" class="btn btn-primary mt-2 <%= edit_project_action ? 'd-none' : '' %>" 
+              data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>" 
+            >
               <%= I18n.t('dashboard.select_path') %>
             </button>
 

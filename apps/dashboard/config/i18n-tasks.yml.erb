@@ -138,7 +138,7 @@ search:
 translation:
   backend: openai
   openai_api_key: <%= ENV["OPENAI_API_KEY"] %>
-  openai_system_pront: >-
+  openai_system_prompt: >-
     You are a professional translator that translates content from the %{from} locale
     to the %{to} locale in an i18n locale array.
 
@@ -150,6 +150,8 @@ translation:
 
     Keep in mind the context of all the strings for a more accurate translation.
     Ensure that translations are in the the %{to} locale and not only a copy from the %{from} locale.
+
+    When translating to 'en-CA', the output should be in Canadian English, not French.
 
 ## Do not consider these keys missing:
 # ignore_missing:

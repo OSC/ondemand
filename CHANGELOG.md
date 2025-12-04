@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix S3-Specific directory traversal bug in [4623](https://github.com/OSC/ondemand/pull/4623).
 - bc_deskop now removes HOME paths from the PATH in [4703](https://github.com/OSC/ondemand/pull/4703).
 - Remove world writable from files in OOD packaged gems in [4717](https://github.com/OSC/ondemand/pull/4717).
+- Special characters can now appear in auto_accounts by adding data-alias in [4673](https://github.com/OSC/ondemand/pull/4673).
+- Maintenance and needs auth pages are never cached in [4799](https://github.com/OSC/ondemand/pull/4799).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -94,6 +96,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The files app can now create a payload to POST to a separate application in [4662](https://github.com/OSC/ondemand/pull/4662).
 - register_path, register_method and register_method_options have been added to ood_portal.yml in [4763](https://github.com/OSC/ondemand/pull/4763).
 - nsf_access_events widget has been added in [4726](https://github.com/OSC/ondemand/pull/4726).
+- Resolution widgets now have a help field for clarity in [4765](https://github.com/OSC/ondemand/pull/4765).
+- Added el10 support in [4804](https://github.com/OSC/ondemand/pull/4804).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -120,6 +124,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Resolved CVE-2025-53636, an issue that allowed users to perform a denial-of-service (DoS) attack by flooding log files
   with errors via the shell application. The shell application now restricts log output and properly manages scenarios
   where the terminal remains open but the WebSocket connection is inactive in [4461](https://github.com/OSC/ondemand/pull/4461).
+
+## [4.0.8] - 11-03-2025
+
+### Security
+
+- Resolved **CVE-2025-64185**. Open OnDemand RPMs on RHEL 8 systems erroneously created two gem directories
+  with world-writable (777) permissions. This release patches the issue by ensuring these directories are now
+  owned by root:root and set to 755 permissions.
+- Resolved **CVE-2025-62724**. Previous releases were vulnerable to a TOCTOU flaw that allowed files outside
+  the allowlist to be included when downloading zip directories. This release remediates that vulnerability.
+
+## [3.1.16] - 11-04-2025
+
+### Security
+
+- Resolved **CVE-2025-64185**. Open OnDemand RPMs on RHEL 8 systems erroneously created two gem directories
+  with world-writable (777) permissions. This release patches the issue by ensuring these directories are now
+  owned by root:root and set to 755 permissions.
+- Resolved **CVE-2025-62724**. Previous releases were vulnerable to a TOCTOU flaw that allowed files outside
+  the allowlist to be included when downloading zip directories. This release remediates that vulnerability.
 
 ## [4.0.7] - 08-14-2025
 
@@ -1738,7 +1762,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.7...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.8...HEAD
+[4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
 [4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
 [4.0.5]: https://github.com/OSC/ondemand/compare/v4.0.3...v4.0.5
@@ -1746,6 +1771,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 [4.0.2]: https://github.com/OSC/ondemand/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/OSC/ondemand/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/OSC/ondemand/compare/v3.1.10...v4.0.0
+[3.1.16]: https://github.com/OSC/ondemand/compare/v3.1.15...v3.1.16
 [3.1.15]: https://github.com/OSC/ondemand/compare/v3.1.14...v3.1.15
 [3.1.14]: https://github.com/OSC/ondemand/compare/v3.1.13...v3.1.14
 [3.1.13]: https://github.com/OSC/ondemand/compare/v3.1.11...v3.1.13
