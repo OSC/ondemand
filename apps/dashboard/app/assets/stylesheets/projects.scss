@@ -68,14 +68,14 @@
   text-wrap:nowrap;
 }
 
-#project-jobs-files-col {
+#project_jobs_files_col {
   padding-right: 0px;
 
   .jobs-files-item {
     padding-right: 0px;
   }
 
-  #jobs-item {
+  #jobs_item {
     @media (min-width: 992px) {
       padding-right: calc(var(--bs-gutter-x) * 0.5);
     }
