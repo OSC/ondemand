@@ -805,8 +805,6 @@ class ProjectManagerTest < ApplicationSystemTestCase
         assert_equal('false', add_btn[:disabled])
       end
 
-      File.write('delme.html', page.body)
-
       find('#save_launcher_edit').click
       assert_current_path(project_path(project_id))
       launcher_path = project_launcher_path(project_id, launcher_id)
