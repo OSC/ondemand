@@ -51,6 +51,11 @@ gem 'public_suffix', '~> 5.0', '< 6.0'
 gem 'turbo-rails', '2.0.7'
 gem 'zeitwerk', '2.6.18'
 
+# These silence warnings, but can be
+# removed after upgrades include them
+gem 'ostruct'
+gem 'abbrev'
+
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
 gem 'redcarpet', '~> 3.3'
