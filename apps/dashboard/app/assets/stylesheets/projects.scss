@@ -49,13 +49,18 @@
   padding-bottom: 1rem;
   border-radius: 0px 0px var(--bs-border-radius) var(--bs-border-radius);
 
+  .project-icon {
+    width: fit-content;
+    aspect-ratio: 1;
+  }
+
   .app-icon {
-    font-size: 5rem;
+    font-size: 4rem;
     height: auto;
   }
 
   .project-title {
-    max-width: 7rem;
+    width: 7rem;
     font-size: 1rem;
   }
 }
