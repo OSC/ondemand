@@ -208,7 +208,11 @@ class Project
   end
 
   def deletable?
-    File.stat(configuration_directory).uid == CurrentUser.uid
+    begin
+      File.stat(configuration_directory).uid == CurrentUser.uid
+    rescue
+      false
+    end
   end
   
   def icon_class
