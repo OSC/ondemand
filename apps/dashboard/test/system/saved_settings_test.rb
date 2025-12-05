@@ -143,7 +143,6 @@ class SavedSettingsTest < ApplicationSystemTestCase
       assert_equal('owens', actual_data['cluster'])
       assert_equal(3, actual_data.size)
 
-      File.write('delme.html', page.body)
       find('p', text: 'Some Field: my data')
       find('p', text: 'Some Password Field: **********')
     end
