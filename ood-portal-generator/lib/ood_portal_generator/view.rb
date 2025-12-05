@@ -5,7 +5,7 @@ require 'socket'
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
-    attr_reader :ssl, :protocol, :proxy_server, :naive_ssl_proxy, :port, :dex_uri
+    attr_reader :ssl, :protocol, :proxy_server, :ssl_proxy, :port, :dex_uri
     attr_accessor :user_map_match, :user_map_cmd, :logout_redirect, :dex_http_port, :dex_enabled
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
 
@@ -25,7 +25,7 @@ module OodPortalGenerator
       @servername       = opts.fetch(:servername, nil)
       @server_aliases   = opts.fetch(:server_aliases, [])
       @proxy_server     = opts.fetch(:proxy_server, servername)
-      @naive_ssl_proxy  = opts.fetch(:naive_ssl_proxy, false)
+      @ssl_proxy        = opts.fetch(:ssl_proxy, [])
       @allowed_hosts    = allowed_hosts
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       if OodPortalGenerator.debian?

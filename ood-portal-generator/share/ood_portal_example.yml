@@ -281,12 +281,16 @@
 # Default: null (disable this feature)
 #secure_rnode_uri: null
 
-# Disables SSL certificate verification for connections to the secure_[r]node_uri
-# Set to true to allow backends with self-signed or invalid certificates
+# List of SSL Proxy Apache directives
+# These settings control SSL validation for the upstream connection and require
+# a secure_[r]node_uri to be defined
+# to.
 # Example:
-#     naive_ssl_proxy: false
-# Default: false (disable this feature)
-#naive_ssl_proxy: false
+#     ssl_proxy:
+#       - 'SSLProxyCheckPeerCN Off'
+#       - 'SSLProxyCheckPeerName Off'
+# Default: [] (no additional SSL proxy settings)
+#ssl_proxy: []
 
 #
 # Per-user NGINX Passenger apps

@@ -129,12 +129,9 @@ Listen <%= addr_port %>
   <%- if @secure_node_uri || @secure_rnode_uri -%>
   # Enable SSL Proxying
   SSLProxyEngine On
+  <%- @ssl_proxy.to_a.each do |line| -%>
+  <%= line %>
   <%- end -%>
-
-  <%- if @naive_ssl_proxy -%>
-  # Enable permissive SSL Proxying (ignores CN/Name mismatches)
-  SSLProxyCheckPeerCN Off
-  SSLProxyCheckPeerName Off
   <%- end -%>
 
   <%- if @oidc_uri && @oidc_provider_metadata_url && @oidc_client_id -%>
