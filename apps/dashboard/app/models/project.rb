@@ -31,7 +31,9 @@ class Project
 
     def lookup_table
       f = File.read(lookup_file)
-      YAML.safe_load(f).to_h
+      YAML.safe_load(f).to_h.reject do |_, dir|
+        from_directory(dir).errors.present?
+      end
     rescue StandardError, Exception => e
       Rails.logger.warn("cannot read #{dataroot}/.project_lookup due to error #{e}")
       {}
