@@ -206,6 +206,10 @@ class Project
   def editable? 
     File.writable?(manifest_path)
   end
+
+  def deletable?
+    File.stat(configuration_directory).uid == CurrentUser.uid
+  end
   
   def icon_class
     # rails will prepopulate the tag with fa- so just the name is needed
@@ -214,6 +218,8 @@ class Project
 
   def destroy!
     remove_from_lookup
+    return true unless deletable?
+
     FileUtils.remove_dir(configuration_directory, true)
   end
 

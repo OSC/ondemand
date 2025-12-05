@@ -170,6 +170,7 @@ en:
     jobs_project_imported: Project successfully imported!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
+    jobs_project_removed: Project removed from lookup!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_error: Project directory path is not set for this workflow
