@@ -111,7 +111,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template, :files
+  attr_reader :id, :name, :description, :icon, :directory, :template, :files, :group_owner
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -128,6 +128,7 @@ class Project
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
     @template = attributes[:template]
+    @group_owner = attributes[:group_owner] || get_group_owner
 
     return if new_record?
 
@@ -201,6 +202,29 @@ class Project
   rescue StandardError => e
     errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
     false
+  end
+
+  def private?
+    project_dataroot.to_s.start_with?(CurrentUser.home)
+  end
+  
+  def get_group_owner
+    if project_dataroot != Project.dataroot && project_dataroot.grpowned?
+      Etc.getgrgid(project_dataroot.stat.gid).name
+    else
+      nil
+    end
+  end
+
+  def set_group_owner
+    return true if private? || @group_owner == get_group_owner
+    begin
+      group_gid = @group_owner.nil? ? nil : Etc.getgrnam(@group_owner).gid
+      FileUtils.chown(nil, group_gid, project_dataroot)
+    rescue StandardError => e
+      errors.add(:update, "Unable to set group ownership with error #{e.class}:#{e.message}")
+      false
+    end
   end
 
   def editable? 
@@ -305,6 +329,7 @@ class Project
 
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
+    set_group_owner
     configuration_directory.mkpath  unless configuration_directory.exist?
     workflow_directory = Workflow.workflow_dir(project_dataroot)
     workflow_directory.mkpath unless workflow_directory.exist?

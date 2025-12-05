@@ -236,7 +236,7 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:name, :directory, :description, :icon, :id, :template)
+      .permit(:name, :directory, :description, :icon, :id, :template, :group_owner)
   end
 
   def show_project_params
