@@ -130,8 +130,9 @@ class ProjectsController < ApplicationController
       return
     end
 
+    deletable = @project.deletable?
     if @project.destroy!
-      message_key = "dashboard.jobs_project_#{@project.deletable? ? 'deleted' : 'removed'}"
+      message_key = "dashboard.jobs_project_#{deletable ? 'deleted' : 'removed'}"
       redirect_to projects_path, notice: I18n.t(message_key)
     else
       redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
