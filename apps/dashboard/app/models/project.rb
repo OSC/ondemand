@@ -221,10 +221,10 @@ class Project
   end
 
   def destroy!
-    remove_from_lookup
-    return true unless deletable?
-
-    FileUtils.remove_dir(configuration_directory, true)
+    raise StandardError unless remove_from_lookup
+    return unless deletable?
+    
+    FileUtils.remove_dir(configuration_directory)
   end
 
   def configuration_directory
