@@ -19,6 +19,12 @@
           <%= link_to I18n.t('dashboard.show'), project_workflow_path(@project.id, workflow.id),
                       class: "btn btn-info launcher-button" %>
         </div>
+        <div class="col">
+          <%= link_to clone_project_workflow_path(@project.id, workflow.id),
+                      class: "btn btn-secondary launcher-button" do %>
+            <%= icon_tag(URI.parse("fas://clone"), classes:['fa-fw']) %>
+          <% end %>
+        </div>
       </div>
       <div class="row">
         <div class="col">
