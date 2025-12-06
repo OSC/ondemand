@@ -21,6 +21,28 @@ module ProjectsHelper
     render(partial: "projects/buttons/#{button_category(status)}_buttons", locals: locals) unless button_partial.nil?
   end
 
+  def native_message(native)
+    state = native.dig(:state) || native.dig(:job_state)
+    state = state.to_s.strip
+    msg = "Current job state is '#{state}'"
+    
+    reason = native.dig(:reason) || native.dig(:comment)
+    reason = reason.to_s.strip
+    if reason.present? && reason != "None"
+      msg += " because of '#{reason}'"
+    end
+    
+    dependency = native.dig(:dependency) || native.dig(:depend)
+    dependency = dependency.to_s.strip
+    if dependency.present? && dependency != "(null)"
+      dependency = truncate(dependency.gsub("afterok:", " "), length: 50)
+      msg += ". Job depends on job-id#{dependency}"
+    end
+    
+    msg += "."
+    return msg
+  end
+
   def button_category(status)
     case status
     when 'queued_held'
