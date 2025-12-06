@@ -48,7 +48,7 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  # GET /projects/:id/worflows/:id/clone
+  # GET /projects/:id/workflows/:id/clone
   def clone
     return unless load_project_and_workflow_objects
 
