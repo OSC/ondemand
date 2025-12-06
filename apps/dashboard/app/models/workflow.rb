@@ -10,16 +10,16 @@ class Workflow
 
     def find(id, project_dir)
       file = "#{workflow_dir(project_dir)}/#{id}.yml"
-      Workflow.from_yaml(file, project_dir)
+      Workflow.from_yaml(file)
     end
 
     def all(project_dir)
       Dir.glob("#{workflow_dir(project_dir)}/*.yml").map do |file|
-        Workflow.from_yaml(file, project_dir)
+        Workflow.from_yaml(file)
       end.compact.sort_by { |s| s.created_at }
     end
 
-    def from_yaml(file, project_dir)
+    def from_yaml(file)
       contents = File.read(file)
       opts = YAML.safe_load(contents).deep_symbolize_keys
       new(opts)

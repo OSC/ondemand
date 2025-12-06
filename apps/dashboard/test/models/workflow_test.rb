@@ -94,7 +94,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal workflow.id, manifest_data["id"]
       assert_equal "test-workflow", manifest_data["name"]
       assert_equal "description", manifest_data["description"]
-      assert_equal project_dir, manifest_data["project_dir"]
+      assert_equal project_dir.to_s, manifest_data["project_dir"]
     end
   end
 
@@ -132,7 +132,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal workflow.id, manifest_data["id"]
       assert_equal name,        manifest_data["name"]
       assert_equal description, manifest_data["description"]
-      assert_equal project_dir, manifest_data["project_dir"]
+      assert_equal project_dir.to_s, manifest_data["project_dir"]
       assert_equal launchers,   manifest_data["launcher_ids"]
     end
   end
