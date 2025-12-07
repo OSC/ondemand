@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const titleField = document.getElementById("launcher_title");
-  const warning = document.getElementById("launcher_title_warning");
+  const titleField = document.getElementById("launcher-title");
+  const warning = document.getElementById("launcher-title-warning");
   let allTitles = [];
   const titlesElement = document.getElementById("launcher_titles");
   if (titlesElement) {
