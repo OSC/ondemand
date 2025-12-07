@@ -43,7 +43,7 @@ class LaunchersController < ApplicationController
     cloned = @launcher.dup
     cloned.title += " (Copy)"
     @launcher = cloned
-    Launcher.all(@project.directory)
+    @launchers = Launcher.all(@project.directory)
     render :new
   end
 
