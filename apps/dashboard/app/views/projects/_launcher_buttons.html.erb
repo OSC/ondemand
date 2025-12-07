@@ -4,6 +4,7 @@
   edit_title = "#{t('dashboard.edit')} launcher #{launcher.title}"
   delete_title = "#{t('dashboard.delete')} launcher #{launcher.title}"
   remove_delete_button = @remove_delete_button
+  remove_clone_button = @remove_clone_button
   show_job_info_button = @show_job_info_button
 -%>
 
@@ -33,6 +34,19 @@
     <%- end -%>
 
   </div>
+  
+  <% unless remove_clone_button %>
+    <div class="col">
+      <%= link_to(
+        clone_project_launcher_path(@project.id, launcher.id),
+        class: "btn btn-secondary launcher-button",
+        id: "clone_#{launcher.id}"
+        ) do 
+      %>
+        <%= icon_tag(URI.parse("fas://clone"), classes:['fa-fw']) %>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 <div class="row">
   <div class="col">

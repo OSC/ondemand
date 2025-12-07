@@ -1,6 +1,10 @@
+<%= javascript_include_tag 'launcher_new', nonce: true, defer: true %>
+
+<input type="hidden" id="launcher_titles" value="<%= @launchers.map(&:title).to_json %>">
 
 <%= bootstrap_form_for(@launcher, url: project_launchers_path) do |form| %>
 
+  <div id="launcher_title_warning" style="color: red; display: none;"></div>
   <div class="field">
     <%= form.text_field :title, label: "Name" %>
   </div>

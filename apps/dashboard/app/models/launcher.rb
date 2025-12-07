@@ -6,7 +6,7 @@ class Launcher
 
   class ClusterNotFound < StandardError; end
 
-  attr_reader :title, :id, :created_at, :project_dir, :smart_attributes
+  attr_accessor :title, :id, :created_at, :project_dir, :smart_attributes
 
   class << self
     def launchers_dir(project_dir)

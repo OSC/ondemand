@@ -4,7 +4,7 @@
 class LaunchersController < ApplicationController
 
   before_action :find_project
-  before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save]
+  before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save, :clone]
 
   SAVE_LAUNCHER_KEYS = [
     :cluster, :auto_accounts, :auto_accounts_exclude, :auto_accounts_fixed,
@@ -19,6 +19,7 @@ class LaunchersController < ApplicationController
   ].freeze
 
   def new
+    @launchers = Launcher.all(@project.directory)
     @launcher = Launcher.new(project_dir: @project.directory)
   end
 
@@ -35,6 +36,15 @@ class LaunchersController < ApplicationController
     else
       redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
     end
+  end
+
+  # GET /projects/:id/launchers/:id/clone
+  def clone
+    cloned = @launcher.dup
+    cloned.title += " (Copy)"
+    @launcher = cloned
+    Launcher.all(@project.directory)
+    render :new
   end
 
   # GET   /projects/:project_id/launchers/:id/edit
@@ -80,6 +90,7 @@ class LaunchersController < ApplicationController
     launcher = Launcher.find(show_launcher_params[:id], @project.directory)
     @valid_project = Launcher.clusters?
     @remove_delete_button = true
+    @remove_clone_button = true
     @show_job_info_button = true
     render(partial: 'projects/launcher_buttons', locals: { launcher: launcher })
   end
