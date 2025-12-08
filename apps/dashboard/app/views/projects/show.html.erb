@@ -44,6 +44,13 @@
             <div class="col launcher-title">
               <%= launcher.title %>
             </div>
+
+            <div class="col-auto">
+              <%= link_to clone_project_launcher_path(@project.id, launcher.id), 
+                            class: "btn btn-secondary" do %>
+                <%= icon_tag(URI.parse("fas://clone")) %>
+              <% end %>
+            </div>
           </div>
 
           <%= render(partial: 'launcher_buttons', locals: { launcher: launcher }) %>
