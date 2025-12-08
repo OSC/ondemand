@@ -1,6 +1,5 @@
 <%= bootstrap_form_for(@launcher, url: project_launchers_path) do |form| %>
 
-  <div id="launcher-title-warning" style="color: red; display: none;"></div>
   <div class="field">
     <%= form.text_field :title, label: "Name" %>
   </div>
