@@ -7,7 +7,7 @@ module OodPortalGenerator
   class View
     attr_reader :ssl, :protocol, :proxy_server, :port, :dex_uri
     attr_accessor :user_map_match, :user_map_cmd, :logout_redirect, :dex_http_port, :dex_enabled
-    attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url
+    attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
 
     # let the application set the auth if it needs to
     attr_writer :auth
@@ -59,6 +59,8 @@ module OodPortalGenerator
       # Security configuration
       @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@proxy_server}")
       @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
+      @strip_proxy_headers = opts.fetch(:strip_proxy_headers, default_strip_proxy_headers)
+      @strip_proxy_cookies = opts.fetch(:strip_proxy_cookies, default_strip_proxy_cookies)
 
       # Portal authentication
       @auth = opts.fetch(:auth, [])
@@ -99,12 +101,16 @@ module OodPortalGenerator
       # Register unmapped user sub-uri
       @register_uri  = opts.fetch(:register_uri, nil)
       @register_root = opts.fetch(:register_root, nil)
+      @register_path = opts.fetch(:register_path, @register_root)
+      @register_method = opts.fetch(:register_method, 'Alias')
+      @register_method_options = opts.fetch(:register_method_options, nil)
 
       @dex_uri                          = opts.fetch(:dex_uri, '/dex')
       @dex_http_port                    = opts.fetch(:dex_http_port, nil)
       @oidc_provider_metadata_url       = opts.fetch(:oidc_provider_metadata_url, nil)
       @oidc_client_id                   = opts.fetch(:oidc_client_id, nil)
       @oidc_client_secret               = opts.fetch(:oidc_client_secret, nil)
+      @oidc_redirect_uri                = opts.fetch(:oidc_redirect_uri, @oidc_uri || '/oidc')
       @oidc_remote_user_claim           = opts.fetch(:oidc_remote_user_claim, 'preferred_username')
       @oidc_scope                       = opts.fetch(:oidc_scope, "openid profile email")
       @oidc_crypto_passphrase           = opts.fetch(:oidc_crypto_passphrase, Digest::SHA1.hexdigest(servername))
@@ -125,6 +131,7 @@ module OodPortalGenerator
 
     # Helper method to set the filename and path for access and error logs
     def log_filename(value,log_type)
+      return value.to_s if value.to_s.start_with?('|')
       return "#{@logroot}/#{value}" unless value.nil?
 
       prefix = "#{servername}_#{log_type}"
@@ -157,6 +164,20 @@ module OodPortalGenerator
       Socket.ip_address_list.select(&:ipv4?)
                             .reject(&:ipv4_loopback?)
                             .map(&:ip_address)
+    end
+
+    # Default headers stripped from proxied requests to avoid leaking user identity data.
+    def default_strip_proxy_headers
+      ["Authorization", "OIDC_CLAIM_sub", "OIDC_CLAIM_preferred_username", "OIDC_CLAIM_given_name",
+       "OIDC_CLAIM_zoneinfo", "OIDC_CLAIM_locale", "OIDC_CLAIM_email", "OIDC_CLAIM_email_verified",
+       "OIDC_CLAIM_iss", "OIDC_CLAIM_nonce", "OIDC_CLAIM_aud", "OIDC_CLAIM_acr", "OIDC_CLAIM_azp",
+       "OIDC_CLAIM_auth_time", "OIDC_CLAIM_exp", "OIDC_CLAIM_iat", "OIDC_CLAIM_jti", "OIDC_access_token",
+       "OIDC_access_token_expires"]
+    end
+
+    # Default cookies stripped from proxied requests to avoid forwarding OIDC sessions.
+    def default_strip_proxy_cookies
+      ["mod_auth_openidc_session_\\d+", "mod_auth_openidc_session"]
     end
 
     # Helper method to escape IP for maintenance rewrite condition

@@ -11,6 +11,8 @@ Style/SymbolArray:
   EnforcedStyle: 'brackets'
 
 # layout
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: 'consistent'
 Layout/HashAlignment:
   EnforcedColonStyle: table
   EnforcedHashRocketStyle: table

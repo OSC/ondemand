@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Announcements are the Enumerable collection of the Announcement class.
 class Announcements
   include Enumerable
@@ -10,12 +12,10 @@ class Announcements
       paths = Array.wrap(paths).map { |p| Pathname.new(p.to_s) }
 
       announcements = paths.flat_map do |p|
-        begin
-          path = p.expand_path
-          path.directory? ? Pathname.glob(path.join("*.{md,yml}")).sort : path
-        rescue
-          p
-        end
+        path = p.expand_path
+        path.directory? ? Pathname.glob(path.join('*.{md,yml}')).sort : path
+      rescue StandardError
+        p
       end.select do |path|
         File.exist?(path)
       end.map do |p|

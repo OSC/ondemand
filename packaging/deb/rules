@@ -34,6 +34,7 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	bundle config set --global force_ruby_platform true
 	bundle config --global build.nokogiri --use-system-libraries
+	bundle config --global build.sqlite3 --enable-system-libraries
 	BUNDLE_WITHOUT='doc test package development' bundle install
 	rake --trace -mj$(NCPUS) build
 	rm -rf $(GEM_HOME)/cache
@@ -46,6 +47,7 @@ override_dh_auto_install:
 	# install gems
 	mkdir -p $(DESTDIR)/opt/ood/gems
 	mv $(GEM_HOME)/* $(DESTDIR)/opt/ood/gems
+	chmod -R o-w $(DESTDIR)/opt/ood/gems
 
 	# make some directories
 	mkdir -p "$(APACHE_DIR)/public/maintenance"
@@ -66,6 +68,7 @@ override_dh_auto_install:
 
 	# ood config files
 	rake package:version > $(DESTDIR)/opt/ood/VERSION
+	install -m 644 LICENSE.txt $(DESTDIR)/opt/ood/LICENSE.txt
 	install -m 644 nginx_stage/share/nginx_stage_example.yml $(CONFIG_DIR)/nginx_stage.yml
 	install -m 640 ood-portal-generator/share/ood_portal_example.yml $(CONFIG_DIR)/ood_portal.yml
 	install -m 644 ood-portal-generator/share/maintenance.html $(APACHE_DIR)/public/maintenance/index.html

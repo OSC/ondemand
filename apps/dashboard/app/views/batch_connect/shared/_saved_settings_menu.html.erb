@@ -4,7 +4,7 @@
     <div class="card-header"><%= t('dashboard.bc_saved_settings.title') %></div>
     <div class="list-group list-group-flush">
       <% if all_settings.empty? %>
-        <span class="list-group-item list-group-item-action">
+        <span class="list-group-item list-group-item-action border-0">
           <%= t('dashboard.bc_saved_settings.no_settings_title') %>
         </span>
       <% end %>
@@ -12,7 +12,7 @@
         app = BatchConnect::App.from_token(app_token.to_s)
         link = app.link
       %>
-        <p class="list-group-item mb-0 header">
+        <p class="list-group-item mb-0 header border-0">
           <a href="#" class="" data-bs-toggle="collapse" data-bs-target="<%= "#saved-settings-#{index}" %>" aria-expanded="true" aria-controls="<%= "saved-settings-#{index}" %>">
             <%= icon_tag(link.icon_uri) unless link.icon_uri.to_s.blank? %>
             <%= app.title %>
@@ -20,7 +20,7 @@
         </p>
         <div id="<%= "saved-settings-#{index}" %>" class="show saved-settings-list">
           <% app_saved_settings.sort.each do |setting_name, _| %>
-            <a class="list-group-item list-group-item-action"
+            <a class="list-group-item list-group-item-action border-0"
                href="<%= batch_connect_setting_path(token: app.token, id: setting_name) %>"
                title="">
               <i id="" class="fa fa-file fa-fw app-icon" aria-hidden="true"></i>

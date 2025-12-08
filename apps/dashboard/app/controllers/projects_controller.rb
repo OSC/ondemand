@@ -15,6 +15,7 @@ class ProjectsController < ApplicationController
       end
     else
       @launchers = Launcher.all(@project.directory)
+      @workflows = Workflow.all(@project.directory)
       @valid_project = Launcher.clusters?
       @valid_scripts = Launcher.scripts?(@project.directory)
 
@@ -73,7 +74,7 @@ class ProjectsController < ApplicationController
     if @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      message = if @project.errors[:save].empty?
+      message = if @project.errors[:update].empty?
                   I18n.t('dashboard.jobs_project_validation_error')
                 else
                   I18n.t(
@@ -132,7 +133,7 @@ class ProjectsController < ApplicationController
     if @project.destroy!
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_deleted')
     else
-      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
     end
   end
 
@@ -226,7 +227,7 @@ class ProjectsController < ApplicationController
       label = project.title
       data = {
         'data-description' => project.description,
-        'data-icon'        => project.icon
+        'data-icon'        => project.icon_class
       }
       [label, project.directory, data]
     end

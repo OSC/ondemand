@@ -1,0 +1,6 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+accesslog: '|/path/to/log/program --config /path/to/config/file'

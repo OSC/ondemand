@@ -39,6 +39,13 @@ function human_time(seconds_total) {
   return hours_str + ":" + minutes_str + ":" + seconds_str;
 }
 
+function clean_options(options) {
+  if (!options) options = {};
+  if (!options.doneCallback) options.doneCallback = null;
+  if (!options.base_uri) options.base_uri = window.location.pathname.replace('/activejobs','');
+  return options;
+}
+
 function fetch_job_data(tr, row, options) {
   let btn = tr.find('button.details-control');
   if (row.child.isShown()) {
@@ -64,11 +71,11 @@ function fetch_job_data(tr, row, options) {
 
     $.getJSON(jobDataUrl, function (data) {
       // Open this row
-      row.child(data.html_ganglia_graphs_table).show();
+      row.child(data.html_extended_layout).show();
       // Add the data panel to the view
       $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
         .hide()
-        .html(data.html_extended_panel)
+        .html(data.html_extended_data_table)
         .fadeIn(250);
       // Update the status label in the parent row
       tr.find(".status-label").html(data.status);
@@ -89,9 +96,7 @@ function fetch_job_data(tr, row, options) {
 }
 
 function fetch_table_data(table, options){
-  if (!options) options = {};
-  if (!options.doneCallback) options.doneCallback = null;
-  if (!options.base_uri) options.base_uri = window.location.pathname;
+  options = clean_options(options);
 
   oboe({
     url: options.base_uri + '/activejobs.json?'+get_request_params(),
@@ -123,7 +128,7 @@ function fetch_table_data(table, options){
     }
     else{
       //FIXME: this error appears even when the above 404 occurs, for example
-      // that is because a 404 responce for json request returns a plain text response
+      // that is because a 404 response for json request returns a plain text response
       // and parsing that as json fails
        show_errors(["Request for jobs failed due to body parsing error."])
     }
@@ -147,9 +152,7 @@ function status_label(status){
 }
 
 function create_datatable(options){
-    if (!options) options = {};
-    if (!options.drawCallback) options.drawCallback = null;
-    if (!options.base_uri) options.base_uri = window.location.pathname;
+    options = clean_options(options)
 
     $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
     $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());

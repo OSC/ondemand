@@ -1,4 +1,4 @@
-import { OODAlert } from '../alert';
+import { OODAlertError } from '../alert';
 import { hide, show } from "../utils";
 
 export class PathSelectorTable {
@@ -32,7 +32,7 @@ export class PathSelectorTable {
       this.reloadTable(this.initialUrl());
 
       $(`#${this.tableId} tbody`).on('click', 'tr', (event) => { this.clickRow(event) });
-      $('#favorites').on('click', 'li', (event) => { this.clickRow(event) });
+      $('#favorites').on('click', 'a', (event) => { this.clickRow(event) });
       $(`#${this.breadcrumbId}`).on('click', 'li', (event) => { this.clickBreadcrumb(event) });
       $(`#${this.selectButtonId}`).on('click', (event) => { this.selectPath(event) });
   }
@@ -101,9 +101,15 @@ export class PathSelectorTable {
       this.resetTable();
     } catch (err) {
       this.resetTable();
-      if (err.message.match("Permission denied")) {
+      if (err.message) {
+        const msg = err.message;	    
+        var prefix = '';
+        if (msg.match('ALLOWLIST_PATH')) {
+          prefix = 'Permission denied: ';
+        }
         $('#forbidden-warning').removeClass('d-none')
-        $('#forbidden-warning').trigger('focus');
+          .text(`${prefix}${msg}`)
+          .trigger('focus');
       }
       console.log(err);
     }
@@ -220,7 +226,7 @@ export class PathSelectorTable {
         regex = RegExp(this.filePattern);
       }
     } catch {
-      OODAlert("The regular expression provided for this path selector did not compile");
+      OODAlertError("The regular expression provided for this path selector did not compile");
     }
 
     const filteredFiles = data.files.filter((file) => {

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module BatchConnect
-  # The context of a given batch connect session. It encapsulates all the paramters
+  # The context of a given batch connect session. It encapsulates all the parameters
   # available from the app and the choices made by the user.
   class SessionContext
     include Enumerable
+    include BoolReader
 
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
@@ -48,7 +49,7 @@ module BatchConnect
     # @param arguments the arguments to the call
     # @param block an optional block for the call
     def method_missing(method_name, *arguments, &block)
-      if /^(?<id>[^=]+)(?<assign>=)?$/ =~ method_name.to_s && attribute = self[id]
+      if /^(?<id>[^=]+)(?<assign>=)?$/ =~ method_name.to_s && (attribute = self[id])
         assign ? attribute.send('value=', *arguments) : attribute.value
       else
         super
@@ -86,21 +87,12 @@ module BatchConnect
 
     private
 
-    FALSE_VALUES = [false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO'].freeze
-
-    # Returns false if value is among the FALSE_VALUES set
-    # @param value the value to check
-    # @return [Boolean]
-    def to_bool(value)
-      !FALSE_VALUES.include?(value)
-    end
-
     # @return [Boolean]
     def app_specific_cache_enabled?
       if @app_specific_cache_setting.nil?
         global_cache_enabled?
       else
-        to_bool(@app_specific_cache_setting)
+        read_bool(@app_specific_cache_setting)
       end
     end
 

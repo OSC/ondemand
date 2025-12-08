@@ -4,6 +4,8 @@ require 'pathname'
 require 'erb'
 require 'dotenv'
 require 'tempfile'
+require 'tmpdir'
+require 'securerandom'
 
 module RakeHelper
   def proj_root
@@ -110,13 +112,10 @@ module RakeHelper
     return src unless File.extname(name) == '.erb'
 
     content = ERB.new(File.read(src), trim_mode: '-').result(binding)
-    begin
-      t = Tempfile.new(name)
-      t.write(content)
-      t.path
-    ensure
-      t.close
-    end
+    fname = "#{Dir.tmpdir}/#{name}_#{SecureRandom.hex(4)}"
+    File.open(fname, 'w') { |file| file.write(content) }
+
+    fname
   end
 
   def ood_image_tag

@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class SupportTicketRtServiceTest < ActiveSupport::TestCase
-
   def setup
     @target = SupportTicketRtService.new({})
   end

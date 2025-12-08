@@ -66,8 +66,13 @@ class FilesController < ApplicationController
                   next unless File.readable?(file.realpath)
 
                   if File.file?(file.realpath)
-                    zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                      IO.copy_stream(file.realpath, zip_file)
+                    File.open(file.realpath, 'rb') do |opened_file|
+                      real_path = File.readlink("/proc/self/fd/#{opened_file.fileno}")
+                      next unless AllowlistPolicy.default.permitted?(real_path)
+
+                      zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                        IO.copy_stream(opened_file, zip_file)
+                      end
                     end
                   else
                     zip.add_empty_directory(dirname: file.relative_path.to_s)
@@ -215,7 +220,7 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        render :index
+        redirect_to(files_path(next_valid), alert: exception.message.to_s)
       end
       format.json do
         @files = []
@@ -271,6 +276,12 @@ class FilesController < ApplicationController
     fs_params[:download]
   end
 
+  def next_valid
+    next_valid = @path.path.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
+    present_path = next_valid.nil? ? Dir.home : next_valid
+    AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home
+  end
+
   def uppy_upload_path
     # careful:
     #
@@ -287,6 +298,8 @@ class FilesController < ApplicationController
 
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
+    can_download, error = @path.can_download_file?
+    raise(StandardError, error) unless can_download
 
     if html_file? && ::Configuration.unsafe_render_html
       render(file: @path.realpath, layout: false)

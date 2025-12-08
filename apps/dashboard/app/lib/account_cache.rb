@@ -9,9 +9,10 @@ module AccountCache
   # @return [Array<AccountInfo>] - the account info objects
   def accounts
     Rails.cache.fetch('account_info', expires_in: 4.hours) do
-      # only Slurm support in ood_core
-      cluster = Configuration.job_clusters.select(&:slurm?).first
-      cluster.nil? ? [] : cluster.job_adapter.accounts
+      # only Slurm & HTCondor support in ood_core
+      # job_clusters: not to be confused with clusters
+      job_clusters = Configuration.job_clusters.select { |c| c.slurm? || c.htcondor? }
+      job_clusters.empty? ? [] : job_clusters.map(&:job_adapter).flat_map(&:accounts).uniq
     rescue StandardError => e
       Rails.logger.warn("Did not get accounts from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
@@ -29,7 +30,7 @@ module AccountCache
   end
 
   # To be used with dynamic forms. This method stithes together data
-  # about the account's availablity WRT clusters, queues & QoS'.
+  # about the account's availability WRT clusters, queues & QoS'.
   #
   # @return [Array] - the dynamic form options
   def dynamic_accounts
@@ -53,7 +54,7 @@ module AccountCache
   end
 
   # To be used with dynamic forms. This method stithes together data
-  # about the queue's availablity WRT clusters.
+  # about the queue's availability WRT clusters.
   # If the user has no account with access to a given queue, it is excluded.
   # If a user has access to a given queue but only with specific accounts,
   # data attributes are added to indicate which accounts can *not* be used for that queue.
@@ -115,12 +116,9 @@ module AccountCache
 
         available_accounts = account_tuples.map { |tuple| tuple[0] }.uniq
         unavailable_accounts = account_names.reject { |c| available_accounts.include?(c) }
+        account_data = disabled_account_data(unavailable_accounts)
 
-        unavailable_accounts.each do |account|
-          data["data-option-for-auto-accounts-#{account}"] = false
-        end
-
-        [qos, qos, data]
+        [qos, qos, data.merge(account_data)]
       end
     end
   end
@@ -151,9 +149,10 @@ module AccountCache
   end
 
   def queue_account_data(queue)
-    accounts.map do |account|
-      ["data-option-for-auto-accounts-#{account}", false] unless account_allowed?(queue, account)
-    end.compact.to_h
+    unavailable_accounts = account_names.reject do |account| 
+      account_allowed?(queue, account)
+    end
+    disabled_account_data(unavailable_accounts)
   end
 
   # can _this_ account submit to this queue?
@@ -163,8 +162,26 @@ module AccountCache
     # This behavior is replicated in OOD Core by conditionally setting deny_qos to an empty array.
     return false if queue.allow_accounts && !queue.allow_accounts.include?(account.to_s)
     return false if queue.deny_accounts.include?(account.to_s)
-    return false if queue.allow_qos && !(queue.allow_qos & account.qos).any?    
+    return false if queue.allow_qos && (queue.allow_qos & account.qos).none?
     return false if (queue.deny_qos & account.qos).any?
+
     true
+  end
+
+  def disabled_account_data(disabled_accounts)
+    counter = 0
+    disabled_accounts.map do |account|
+      counter += 1
+      # check if account contains anything other than digits and lowercase letters
+      if /\A[a-z0-9]+\z/.match?(account)
+        [["data-option-for-auto-accounts-#{account}", false]] 
+      else
+        acct_alias = "account#{counter}"
+        [
+          ["data-alias-#{acct_alias}", account],
+          ["data-option-for-auto-accounts-#{acct_alias}", false]
+        ]
+      end
+    end.flatten(1).compact.to_h
   end
 end

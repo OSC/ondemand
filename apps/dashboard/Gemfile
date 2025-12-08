@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.1.5.1'
+gem 'rails', '7.1.6'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -28,7 +28,8 @@ end
 group :test do
   gem 'capybara'
 
-  gem "selenium-webdriver"
+  # lock selenium-webdriver to this version until we upgrade to Rails 8.
+  gem "selenium-webdriver", "4.26.0"
   gem "webrick"
   gem 'mocha', '~> 2.1'
 end
@@ -36,10 +37,10 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   # gem 'web-console', '~> 2.0'
-  gem 'i18n-tasks'
+  gem 'i18n-tasks', '~> 1.0.15'
   gem 'highline', '2.1.0'
   # gem 'easy_translate'
-  # gem 'ruby-openai'
+  gem 'ruby-openai'
 end
 
 # lock gems to versions that are compatible with ruby 2.7.0,
@@ -50,12 +51,17 @@ gem 'public_suffix', '~> 5.0', '< 6.0'
 gem 'turbo-rails', '2.0.7'
 gem 'zeitwerk', '2.6.18'
 
+# These silence warnings, but can be
+# removed after upgrades include them
+gem 'ostruct'
+gem 'abbrev'
+
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
-gem 'bootstrap_form', '5.0'
+gem 'bootstrap_form', '5.4'
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'

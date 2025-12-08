@@ -15,9 +15,17 @@
             button_to(
               batch_connect_session_contexts_path(token: app.token),
               class: ['launcher-click', tile_data[:border_color]],
-              data: {:method => "post"},
               params: params,
-              ) do
+              title: (displayable_settings?(app)? 'Parameters' : nil),
+              data: {
+                method:       'post',
+                bs_content:   recent_settings(app),
+                bs_toggle:    'popover',
+                bs_placement: 'bottom',
+                bs_html:      'true',
+                bs_trigger:   'hover'
+              }
+            ) do
           %>
 
             <%= render partial: "/widgets/pinned_apps/app_content", locals: { link: link } %>

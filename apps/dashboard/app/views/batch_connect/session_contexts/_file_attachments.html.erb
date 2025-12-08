@@ -1,7 +1,10 @@
 <% has_error = !form.object.errors[attrib.id].empty? %>
-<div class="form-group">
-  <label class="form-label" for="<%= "#{form.object.class.name.underscore}_#{attrib.id}" %>"><%= attrib.label %></label>
-  <p class="<%= has_error ? 'is-invalid' : '' %>" data-bs-toggle="attachments-error" id="<%= "#{form.object.class.name.underscore}_#{attrib.id}" %>">Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.</p>
+<% widget_id = [form.object.class.name.underscore.gsub('/','_'), attrib.id].join('_') %>
+<div class="mb-3">
+  <label class="form-label" for="<%= widget_id %>"><%= attrib.label %></label>
+  <p id="<%= widget_id %>" class="<%= has_error ? 'is-invalid' : '' %>" data-bs-toggle="attachments-error">
+    Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.
+  </p>
   <% if has_error %>
     <div class="invalid-feedback">
       <p><%= form.object.errors[attrib.id].join(", ") %></p>

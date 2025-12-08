@@ -27,15 +27,11 @@
 #
 # 3. Finally, restart Apache to have the changes take effect:
 #
-#      # For CentOS 6
-#      sudo service httpd24-httpd condrestart
-#      sudo service httpd24-htcacheclean condrestart
-#
-#      # For CentOS 7
-#      sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service
-#
 #      # For CentOS 8
 #      sudo systemctl try-restart httpd.service htcacheclean.service
+#
+#      # For Ubuntu 24.04
+#      sudo systemctl try-restart apache2.service
 #
 
 <% if @listen_addr_port -%>
@@ -109,6 +105,10 @@ Listen <%= addr_port %>
   <%- end -%>
   RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=302,L]
 
+  <FilesMatch "/var/www/ood/public/maintenance/.*">
+    Header Set Cache-Control "max-age=0, no-store"
+  </FilesMatch>
+
   <%- end -%>
   TraceEnable off
 
@@ -134,7 +134,7 @@ Listen <%= addr_port %>
   <%- if @oidc_client_secret -%>
   OIDCClientSecret <%= @oidc_client_secret %>
   <%- end -%>
-  OIDCRedirectURI <%= @oidc_uri %>
+  OIDCRedirectURI <%= @oidc_redirect_uri %>
   OIDCRemoteUserClaim <%= @oidc_remote_user_claim %>
   OIDCScope "<%= @oidc_scope %>"
   OIDCCryptoPassphrase <%= @oidc_crypto_passphrase %>
@@ -234,10 +234,17 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
+    <%- end -%>
+
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
@@ -263,10 +270,17 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
+    <%- end -%>
+
     # ProxyPassReverse implementation
     Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "<%= @rnode_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
@@ -394,14 +408,17 @@ Listen <%= addr_port %>
   </Directory>
   <%- end -%>
 
-  <%- if @register_uri && @register_root %>
+  <%- if @register_uri && @register_root && @register_method && @register_path %>
   # Register and/or unregister the mapping of an authenticated-user to a system-user
   # NB: This is not needed for regular expression mapping
   #
   #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @register_uri %>
   #     #=> <%= @register_root %>/
   #
-  Alias "<%= @register_uri %>" "<%= @register_root %>"
+  <%= @register_method %> "<%= @register_uri %>" "<%= @register_path %>"
+  <%- if @register_method_options -%><%- @register_method_options.each do |line| -%>
+  <%= line %>
+  <%- end -%><%- end -%>
   <Directory "<%= @register_root %>">
     Options FollowSymLinks
     AllowOverride None

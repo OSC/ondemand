@@ -1,12 +1,11 @@
 
-<turbo-stream action="replace" target="batch_connect_sessions" id="sessions_frame">
-  <div class="d-flex justify-content-center">
-    <div class="spinner-border" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div>
+<turbo-stream action="update" target="batch_connect_sessions" id="sessions_frame">
   <template>
-    <div class="batch-connect sessions">
+    <div
+      id="bc_sessions_content"
+      class="batch-connect sessions"
+      data-should-poll="<%= should_poll?(@sessions) %>"
+    >
       <% if @sessions.empty? %>
         <div class="ood-appkit markdown">
           <p><%= t('dashboard.batch_connect_no_sessions') %></p>
@@ -15,5 +14,10 @@
         <%= render partial: "panel", collection: @sessions, as: :session, formats: [:html] %>
       <% end %>
     </div>
-    </template>
+  </template>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
 </turbo-stream>

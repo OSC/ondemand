@@ -1,0 +1,11 @@
+<%= javascript_include_tag 'workflow_new', nonce: true, defer: true %>
+
+<div class='page-header text-center'>
+  <h1>New Workflow</h1>
+</div>
+
+<br>
+
+<%= bootstrap_form_for(@workflow, url: project_workflows_path(params[:project_id])) do |form| %>
+  <%= render partial: "form", locals: { form: form }%>
+<% end %>

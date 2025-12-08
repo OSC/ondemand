@@ -14,4 +14,15 @@ module AppHelper
   def row_id(url)
     url.gsub("/", "-").slice(1, url.length)
   end
+
+  def recent_settings(app)
+    content = app.attributes.select(&:display?).map do |attr| 
+      "<div class='row'> <dt>#{attr.label}:</dt> <dd>#{attr.value}</dd> </div>" 
+    end
+    content.empty? ? nil : ['<dl class="app-settings-popup">', content.join('<hr>'), '</dl>'].join
+  end
+
+  def displayable_settings?(app)
+    !app.attributes.select(&:display?).empty?
+  end
 end

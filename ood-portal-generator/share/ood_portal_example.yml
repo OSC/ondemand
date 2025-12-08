@@ -42,7 +42,7 @@
 #ssl: null
 
 # Disable logging entirely. With this you can have custom log directives
-# in a seperate configuration file.
+# in a separate configuration file.
 # Example:
 #     disable_logs: true
 # Default: false (logs are enabled)
@@ -113,6 +113,18 @@
 #   security_strict_transport: false
 # Default: true when ssl is enabled, false otherwise
 #security_strict_transport: false
+
+# Fix Cross-Site-Request authentication headers proxying
+# Example:
+#   strip_proxy_headers: []
+# Default: ["Authorization", "OIDC_CLAIM_sub", "OIDC_CLAIM_preferred_username", "OIDC_CLAIM_given_name", "OIDC_CLAIM_zoneinfo", "OIDC_CLAIM_locale", "OIDC_CLAIM_email", "OIDC_CLAIM_email_verified", "OIDC_CLAIM_iss", "OIDC_CLAIM_nonce", "OIDC_CLAIM_aud", "OIDC_CLAIM_acr", "OIDC_CLAIM_azp", "OIDC_CLAIM_auth_time", "OIDC_CLAIM_exp", "OIDC_CLAIM_iat", "OIDC_CLAIM_jti", "OIDC_access_token", "OIDC_access_token_expires"]
+#strip_proxy_headers: ["Authorization", "OIDC_CLAIM_sub", "OIDC_CLAIM_preferred_username", "OIDC_CLAIM_given_name", "OIDC_CLAIM_zoneinfo", "OIDC_CLAIM_locale", "OIDC_CLAIM_email", "OIDC_CLAIM_email_verified", "OIDC_CLAIM_iss", "OIDC_CLAIM_nonce", "OIDC_CLAIM_aud", "OIDC_CLAIM_acr", "OIDC_CLAIM_azp", "OIDC_CLAIM_auth_time", "OIDC_CLAIM_exp", "OIDC_CLAIM_iat", "OIDC_CLAIM_jti", "OIDC_access_token", "OIDC_access_token_expires"]
+
+# Fix Cross-Site-Request authentication cookies proxying
+# Example:
+#   strip_proxy_cookies: []
+# Default: ["mod_auth_openidc_session_\\d+", "mod_auth_openidc_session"]
+#strip_proxy_cookies: ["mod_auth_openidc_session_\\d+", "mod_auth_openidc_session"]
 
 # Root directory of the Lua handler code
 # Example:
@@ -306,6 +318,12 @@
 # Default: null (disable OpenID Connect support)
 #oidc_uri: null
 
+# Sub-uri used by mod_auth_openidc to populate OIDCRedirectURI
+# Example:
+#     oidc_redirect_uri: '/oidc'
+# Default: '/oidc'
+#oidc_redirect_uri: '/oidc'
+
 # Sub-uri user is redirected to if they are not authenticated. This is used to
 # *discover* what ID provider the user will login through.
 # Example:
@@ -339,6 +357,27 @@
 #     register_root: '/var/www/ood/register'
 # Default: null (display error to user if mapping fails)
 #register_root: null
+
+# Path to file or directory on filesystem that serves the HTML code used to register
+# an unmapped user
+# Example:
+#     register_root: '/var/www/ood/register/register.wsgi'
+# Default: @register_root
+#register_path: '/var/www/ood/register/register.wsgi'
+
+# Method for url used to register an unmapped user
+# Example:
+#     register_method: 'ScriptAlias'
+# Default: 'Alias'
+#register_method: 'WSGIScriptAlias'
+
+# List of SSL Apache directives added to register an unmapped user
+# Example:
+#     register_method:
+#     - 'WSGIDaemonProcess register user=www-data group=www-data threads=5 home=/var/www/flask-apps/register'
+# Default: null
+#register_method_options:
+#- 'WSGIDaemonProcess register user=www-data group=www-data threads=5 home=/var/www/flask-apps/register'
 
 # OIDC metadata URL
 # Example:
@@ -411,7 +450,7 @@
 #oidc_settings: {}
 
 # The Dex URI behind Apache reverse proxy
-# Set to false or null to disable Dex behing the Apache reverse proxy
+# Set to false or null to disable Dex behind the Apache reverse proxy
 # Example:
 #   dex_uri: /auth
 # Default: /dex

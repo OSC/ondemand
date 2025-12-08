@@ -120,6 +120,10 @@ describe OodPortalGenerator::Application do
       test_generate('input/no_logs_w_log_config.yml', 'output/no_logs.conf')
     end
 
+    it 'skip logroot if using piped logs' do
+      test_generate('input/piped_logs.yml', 'output/piped_logs.conf')
+    end
+
     it 'templates custom vhost directives' do
       test_generate('input/custom_vhost_directives.yml', 'output/custom_vhost_directives.conf')
     end
@@ -130,6 +134,14 @@ describe OodPortalGenerator::Application do
 
     it 'templates custom location and vhost directives' do
       test_generate('input/custom_directives.yml', 'output/custom_directives.conf')
+    end
+
+    it 'templates strip_proxy_headers directives' do
+      test_generate('input/strip_proxy_headers_directives.yml', 'output/strip_proxy_headers_directives.conf')
+    end
+
+    it 'templates strip_proxy_cookies directives' do
+      test_generate('input/strip_proxy_cookies_directives.yml', 'output/strip_proxy_cookies_directives.conf')
     end
 
     it 'http_redirect_host can be set' do
@@ -194,6 +206,18 @@ describe OodPortalGenerator::Application do
     it 'genereates the correct debian portal with auth' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
       test_generate('input/auth.yml', 'output/auth_deb.conf')
+    end
+
+    it 'generates defaults for register' do
+      test_generate('input/register-defaults.yml', 'output/register-defaults.conf')
+    end
+
+    it 'generates scriptalias for register' do
+      test_generate('input/register-scriptalias.yml', 'output/register-scriptalias.conf')
+    end
+
+    it 'generates wsgiscriptalias for register' do
+      test_generate('input/register-wsgiscriptalias.yml', 'output/register-wsgiscriptalias.conf')
     end
 
     context 'dex' do
