@@ -67,3 +67,12 @@
   margin: .2rem 0px;
   text-wrap:nowrap;
 }
+
+.help-button {
+  vertical-align: middle;
+  height: 1rem;
+
+  svg {
+    vertical-align: top;
+  }
+}
