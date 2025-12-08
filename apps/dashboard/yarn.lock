@@ -286,9 +286,9 @@
     "@uppy/utils" "^6.2.2"
 
 ace-code@^1.35.0:
-  version "1.43.4"
-  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.43.4.tgz#7e272a789ea2000582a619061e2a06ef31ac24fc"
-  integrity sha512-YyR6UJQp65YT5I2QwC1DZiTDzVTNOaNgCJelX9WaTu0EFSZAUtc0HyNr231m2KMKBZTaCqWxMgskqamXn6neIw==
+  version "1.43.5"
+  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.43.5.tgz#0ad6e4533fa99709a42dbac77d9fce86619f688c"
+  integrity sha512-cb1iV/8FSB6oHB08X0Mo//pX5jNiHX7Gy3Ews+8Y1pkz0D8j//ncnRVQeHYFq7USLHd7d+/+GiSm4neXSp3+Vw==
 
 anymatch@~3.1.2:
   version "3.1.3"
@@ -576,9 +576,9 @@ picomatch@^2.0.4, picomatch@^2.2.1:
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
 preact@^10.5.13:
-  version "10.27.2"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.27.2.tgz#19b9009c1be801a76a0aaf0fe5ba665985a09312"
-  integrity sha512-5SYSgFKSyhCbk6SrXyMpqjb5+MQBgfvEKE/OC+PujcY34sOpqtr+0AZQtPYx5IA6VxynQ7rUPCtKzyovpj9Bpg==
+  version "10.28.0"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.28.0.tgz#a851300df42842797046545e4172a4128d158755"
+  integrity sha512-rytDAoiXr3+t6OIP3WGlDd0ouCUG1iCWzkcY3++Nreuoi17y6T5i/zRhe6uYfoVcxq6YU+sBtJouuRDsq8vvqA==
 
 readdirp@~3.6.0:
   version "3.6.0"
