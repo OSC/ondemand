@@ -16,7 +16,6 @@ class WorkflowsController < ApplicationController
   def new
     @workflow = Workflow.new(index_params)
     @launchers = Launcher.all(project_directory)
-    @workflows = Workflow.all(project_directory)
   end
 
   # GET /projects/:id/workflows/edit
@@ -58,7 +57,6 @@ class WorkflowsController < ApplicationController
 
     @workflow = cloned
     @launchers = Launcher.all(project_directory)
-    @workflows = Workflow.all(project_directory)
 
     render :new
   end

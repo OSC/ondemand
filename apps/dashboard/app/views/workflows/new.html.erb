@@ -6,8 +6,6 @@
 
 <br>
 
-<input type="hidden" id="workflow-names" value="<%= @workflows.map(&:name).to_json %>">
-
 <%= bootstrap_form_for(@workflow, url: project_workflows_path(params[:project_id])) do |form| %>
   <%= render partial: "form", locals: { form: form }%>
 <% end %>
