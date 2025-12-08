@@ -162,17 +162,17 @@
 
 <%= button_tag 'Delete App',
   class: 'btn btn-danger float-end',
+  type: 'button',
   data: {
-    toggle: 'collapse',
-    target: '#delete-panel'
+    bs_toggle: 'collapse',
+    bs_target: '#delete-panel'
   }
 %>
 
-<div id="delete-panel" class="collapse">
-  <br />
-  <div class="panel panel-danger">
-    <div class="panel-heading">Delete this app using the terminal.</div>
-    <div class="panel-body">
+<div id="delete-panel" class="collapse mt-3">
+  <div class="card border-danger">
+    <div class="card-header bg-danger text-white">Delete this app using the terminal.</div>
+    <div class="card-body">
       <p>The following command moves this app to a local temporary directory and then deletes it:</p>
 <pre>APP_DIR=<%= @product.app.path %> &amp;&amp; \
 mkdir -p $HOME/tmp &amp;&amp; \

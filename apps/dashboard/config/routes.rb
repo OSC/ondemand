@@ -17,12 +17,15 @@ Rails.application.routes.draw do
       resources :workflows do
         member do
           post 'submit'
+          post 'save'
+          get 'load'
         end
       end
 
       resources :launchers do
         post 'submit', on: :member
         post 'save', on: :member
+        get 'render_button', on: :member
       end
     end
   end
@@ -108,7 +111,7 @@ Rails.application.routes.draw do
 
   # ActiveJobs which can be disabled in production
   if Configuration.can_access_activejobs?
-    get '/activejobs' => 'active_jobs#index'
+    get '/activejobs' => 'active_jobs#index', :as => 'active_jobs'
     get '/activejobs/json' => 'active_jobs#json', :defaults => { :format => 'json' }
     delete '/activejobs' => 'active_jobs#delete_job', :as => 'delete_job'
   end

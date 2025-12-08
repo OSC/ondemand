@@ -27,18 +27,19 @@ class Announcement
 
   # The announcement's message
   # @return [String, nil] the announcement's message if it exists
-  def msg
-    msg = opts.fetch(:msg, '').to_s
-    msg.blank? ? nil : msg
+  def message
+    message = opts.fetch(:message, opts.fetch(:msg, '')).to_s
+    message.blank? ? nil : message
   end
+  alias_method :msg, :message
 
   # The announcement's id. Used when storing that it has been dismissed.
   #  @return [String] the id
   def id
     @id ||= begin
-              default_id = Digest::SHA1.hexdigest(msg) if msg
-              opts.fetch(:id, default_id)
-            end
+      default_id = Digest::SHA1.hexdigest(msg) if msg
+      opts.fetch(:id, default_id)
+    end
   end
 
   # The announcement's button text displayed for required or dismissible announcements
@@ -51,10 +52,8 @@ class Announcement
   # Whether this is a valid announcement
   # @return [Boolean] whether it is valid
   def valid?
-    return false unless msg
-
+    return false unless message
     return false if dismissible? && !id
-
     true
   end
 
@@ -81,7 +80,7 @@ class Announcement
   def opts
     @opts ||= case @path.extname
               when '.md'
-                { msg: @path.expand_path.read }
+                { message: @path.expand_path.read }
               when '.yml'
                 YAML.safe_load(ERB.new(@path.expand_path.read, trim_mode: '-').result)
               else

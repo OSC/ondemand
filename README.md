@@ -63,6 +63,6 @@ This project is maintained by the <a href="https://www.osc.edu">Ohio Supercomput
 [Open OnDemand Documentation]: https://osc.github.io/ood-documentation/latest/
 [installation instructions]: https://osc.github.io/ood-documentation/latest/requirements.html
 [contributing guide]: CONTRIBUTING.md
-[Discourse]: https://discourse.osc.edu
+[Discourse]: https://discourse.openondemand.org/
 [hpc toolset tutorial]: https://github.com/ubccr/hpc-toolset-tutorial/
 [Open OnDemand Slack]: http://openondemand.org/slack

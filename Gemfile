@@ -8,7 +8,7 @@ gem 'rake'
 gem 'dotenv', '~> 2.1'
 
 group :package do
-  gem 'ood_packaging', '~> 0.17.1'
+  gem 'ood_packaging', '~> 0.19.0'
 end
 
 group :test do
@@ -18,6 +18,6 @@ group :test do
   gem 'watir'
 
   gem 'beaker'
-  gem 'beaker-docker', '~> 1.4.0'
+  gem 'beaker-docker', '~> 2.2.0'
   gem 'beaker-rspec'
 end

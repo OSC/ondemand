@@ -14,6 +14,9 @@
     <% if Configuration.globus_endpoints %>
       <%= render partial: 'globus' %>
     <% end %>
+    <% if @user_configuration.files_select_target %>
+      <%= render partial: 'send_to_target_button' %>
+    <% end %>
     <button id="copy-move-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
     <button id="delete-btn" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>

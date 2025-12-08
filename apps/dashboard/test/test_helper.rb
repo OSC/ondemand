@@ -96,9 +96,12 @@ module ActiveSupport
     end
 
     def stub_sacctmgr
-      Open3.stubs(:capture3)
-           .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', stdin_data: '')
-           .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
+      ['oakley', 'owens'].each do |cluster|
+        Open3.stubs(:capture3)
+             .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
+                   'format=account,qos', 'where', 'user=me', "cluster=#{cluster}", stdin_data: '')
+             .returns([File.read("test/fixtures/cmd_output/sacctmgr_show_accts_#{cluster}.txt"), '', exit_success])
+      end
     end
 
     def stub_du(directory = nil)
@@ -118,7 +121,7 @@ module ActiveSupport
       end
     end
 
-    # helper to stub clusters to be [ascend] becuase adding new cluster.d
+    # helper to stub clusters to be [ascend] because adding new cluster.d
     # files may conflict with existing tests.
     def stub_ascend
       ascend = OodCore::Cluster.new({ id: 'ascend', job: { adapter: 'slurm' } })

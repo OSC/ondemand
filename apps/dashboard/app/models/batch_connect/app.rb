@@ -304,7 +304,11 @@ module BatchConnect
     # View used for session if it exists
     # @return [String, nil] session view
     def session_view
-      file = root.join('view.html.erb')
+      file = if sub_app && (path = form_config.fetch(:view, nil))
+               view_file(root: sub_app_root, path: path)
+             else
+               view_file(root: root)
+             end
       file.read if file.file?
     end
 
@@ -404,6 +408,11 @@ module BatchConnect
     def submit_file(root:, paths: %w[submit.yml.erb submit.yml])
       # rubocop:enable Style/WordArray
       Array.wrap(paths).compact.map { |f| root.join(f) }.select(&:file?).first
+    end
+
+    # Path to file for custom session view
+    def view_file(root:, path: 'view.html.erb')
+      root.join(path)
     end
 
     # Parse an ERB and Yaml file

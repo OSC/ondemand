@@ -23,7 +23,7 @@ jQuery(function (){
 
     /*
     Back button fix. Because of browser page caching, spinner is shown when back is click
-    This event will trigger everytime the page is shown, removing the spinner if present.
+    This event will trigger every time the page is shown, removing the spinner if present.
      */
     $(window).on('pageshow', hideSpinner)
 

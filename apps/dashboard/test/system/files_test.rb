@@ -29,6 +29,13 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector '.selected', count: 2
   end
 
+  test 'visiting files app with bad directory does not duplicate errors' do
+    bad_path = Rails.root / "nonexistent"
+    visit files_url(bad_path.to_s)
+    find('table')
+    assert_selector '.alert-danger', count: 1
+  end
+
   test 'adding new file' do
     Dir.mktmpdir do |dir|
       visit files_url(dir)
@@ -614,7 +621,7 @@ class FilesTest < ApplicationSystemTestCase
         favorites = [FavoritePath.new(allowed_dir), FavoritePath.new(not_allowed_dir)]
         OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
 
-        visit files_url(dir)
+        visit files_url(allowed_dir)
         assert_selector('#favorites li', count: 2)
       end
     end
@@ -858,5 +865,93 @@ class FilesTest < ApplicationSystemTestCase
       assert_equal(current_path, files_path("#{Rails.root}/tmp/file.html"))
       assert_equal('hello world', find('h1').text)
     end
+  end
+
+  test 'send to target feature sends selected files' do
+    stub_user_configuration(
+      {
+        files_select_target: {
+          endpoint: '/pun/sys/passenger_app',
+          label: 'Send to App',
+          icon: 'fas://paper-plane',
+          title: 'Send selected files to the external application',
+          expiration: 10
+        }
+      }
+    )
+
+    token_value = 'test-token-12345'
+
+    # Visit files app with token parameter
+    visit files_url(Rails.root.to_s, files_select_target_token: token_value)
+
+    # Verify button is present and enabled
+    button = find('#send_to_target_btn')
+    assert button.present?
+    refute button.disabled?
+
+    # Select manifest.yml file
+    find('tbody a', exact_text: 'manifest.yml').ancestor('tr').find('input[type="checkbox"]').click
+
+    # Select config directory
+    find('tbody a', exact_text: 'config').ancestor('tr').find('input[type="checkbox"]').click
+
+    # Verify two items are selected
+    assert_selector '.selected', count: 2
+
+    # Mock window.fetch to capture the request
+    page.execute_script(<<~JS)
+      window.fetchRequests = [];
+      window.originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        window.fetchRequests.push({ url: url, options: options });
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({})
+        });
+      };
+    JS
+
+    # Click send to target button
+    button.click
+
+    # Wait for the fetch request to complete
+    sleep 1
+
+    # Verify fetch was called
+    fetch_requests = page.evaluate_script('window.fetchRequests')
+    assert_equal 1, fetch_requests.length, 'Expected exactly one fetch request'
+
+    request = fetch_requests[0]
+    assert_equal '/pun/sys/passenger_app', request['url']
+    assert_equal 'POST', request['options']['method']
+    assert_equal 'application/json', request['options']['headers']['Content-Type']
+
+    # Parse the request body
+    payload = JSON.parse(request['options']['body'])
+
+    # Verify main fields
+    assert_equal token_value, payload['token']
+    assert_equal 'fs', payload['filesystem']
+    assert_equal Rails.root.to_s, payload['directory']
+    assert_equal 2, payload['files'].length
+
+    # Verify file details
+    file_names = payload['files'].map { |f| f['name'] }
+    assert_includes file_names, 'manifest.yml'
+    assert_includes file_names, 'config'
+
+    manifest_file = payload['files'].find { |f| f['name'] == 'manifest.yml' }
+    assert_equal "#{Rails.root}/manifest.yml", manifest_file['file_path']
+    assert_equal 'f', manifest_file['type']
+    assert_equal false, manifest_file['directory']
+
+    config_dir = payload['files'].find { |f| f['name'] == 'config' }
+    assert_equal "#{Rails.root}/config", config_dir['file_path']
+    assert_equal 'd', config_dir['type']
+    assert_equal true, config_dir['directory']
+
+    # Restore original fetch
+    page.execute_script('window.fetch = window.originalFetch;')
   end
 end

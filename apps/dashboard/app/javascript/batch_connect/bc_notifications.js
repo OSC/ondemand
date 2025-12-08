@@ -1,5 +1,5 @@
 import { getBoolean, storeBoolean } from '../utils';
-import { OODAlert } from '../alert';
+import { OODAlertError } from '../alert';
 
 const NOTIFICATIONS_ENABLED_KEY = 'ood_notifications_enabled';
 const EXPIRATION_NOTIFIED_KEY = 'ood_expiration_notified';
@@ -45,10 +45,10 @@ export function setupNotificationToggle(toggleElementId) {
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
           event.target.checked = false;
-          OODAlert('Please allow notification permissions in your browser to enable session alerts.');
+          OODAlertError('Please allow notification permissions in your browser to enable session alerts.');
         }
       } catch (error) {
-        OODAlert('Error requesting notification permission:', error);
+        OODAlertError('Error requesting notification permission:', error);
       }
     }
     storeBoolean(NOTIFICATIONS_ENABLED_KEY, event.target.checked);

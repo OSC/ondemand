@@ -6,6 +6,7 @@
   RewriteEngine On
   RewriteCond %{REQUEST_URI} !/public/need_auth.html
   RewriteRule ^.*$ /public/need_auth.html [R=301,L]
+  Header Set Cache-Control "max-age=0, no-store"
 
   # Only public assets enabled in this mode.
   # If you're reading this message you need to setup authentication: https://osc.github.io/ood-documentation/latest/authentication.html

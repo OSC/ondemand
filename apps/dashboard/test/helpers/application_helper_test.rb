@@ -152,6 +152,19 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal image_uri.to_s, image_html['src']
   end
 
+  test 'icon_tag should convert string icon_uri to URI and render correct icon' do
+    @user_configuration = stub({ public_url: Pathname.new('/public') })
+
+    # Pass a plain string instead of a URI
+    icon_string = 'fas://paper-plane'
+    html = Nokogiri::HTML(icon_tag(icon_string))
+
+    icon_html = html.at_css('i')
+    assert_not_nil icon_html, 'Expected <i> element for FontAwesome icon'
+    assert_includes icon_html['class'], 'fas'
+    assert_includes icon_html['class'], 'paper-plane'
+  end
+
   test 'favicon tag should use public asset uri in production mode' do
     Rails.stubs(:env).returns(stub('production?', production?: true))
 

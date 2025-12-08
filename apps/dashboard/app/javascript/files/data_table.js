@@ -2,6 +2,7 @@ import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
 export { CONTENTID, EVENTNAME };
+import { OODAlertError } from '../alert.js';
 
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
@@ -309,12 +310,7 @@ class DataTable {
 
             return result;
         } catch (e) {
-            const eventData = {
-                'title': `Error occurred when attempting to access ${request_url}`,
-                'message': e.message,
-            };
-
-            $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
+            OODAlertError(e.message);
 
             $('#open-in-terminal-btn').addClass('disabled');
 

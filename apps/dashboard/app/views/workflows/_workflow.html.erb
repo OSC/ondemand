@@ -1,4 +1,4 @@
-<div class="list-group bg-white rounded">
+<div class="list-group bg-white rounded mt-4">
   <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
       data-bs-toggle="collapse" data-bs-target="#workflow_list"
       aria-expanded="true" aria-controls="workflow_list">
@@ -18,6 +18,12 @@
         <div class="col">
           <%= link_to I18n.t('dashboard.show'), project_workflow_path(@project.id, workflow.id),
                       class: "btn btn-info launcher-button" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <%= link_to I18n.t('dashboard.edit'), edit_project_workflow_path(@project.id, workflow.id),
+                      class: "btn btn-primary launcher-button" %>
         </div>
         <div class="col">
           <%= button_to I18n.t('dashboard.delete'), project_workflow_path(@project.id, workflow.id),

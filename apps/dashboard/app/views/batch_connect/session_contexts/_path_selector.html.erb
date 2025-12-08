@@ -15,13 +15,13 @@
     breadcrumb_id: "#{path_selector_id}_breadcrumb",
     button_id: "#{path_selector_id}_button",
     input_field_id: input_field_id,
-    popup_title: field_options.fetch(:popup_title, 'Select Your Working Directory' )
+    popup_title: field_options.fetch(:popup_title, nil)
   }
 %>
 
 <%= form.text_field(attrib.id, class: 'form-control', **options) %>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>" aria-label="<%= I18n.t('dashboard.select_path_for', element: attrib.label) %>">
   <%= I18n.t('dashboard.select_path') %>
 </button>
 
