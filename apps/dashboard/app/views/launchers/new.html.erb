@@ -1,14 +1,18 @@
 
-<%= bootstrap_form_for(@launcher, url: project_launchers_path) do |form| %>
+<div class="card col-sm-9 col-md-6 justify-self-center">
+  <div class="card-body">
+  <%= bootstrap_form_for(@launcher, url: project_launchers_path) do |form| %>
 
-  <div class="field">
-    <%= form.text_field :title, label: "Name" %>
+    <div class="field">
+      <%= form.text_field :title, label: "Launcher Name" %>
+    </div>
+
+    <div class="actions d-flex justify-content-between">
+      <%= form.submit 'Save', class: 'btn btn-primary' %>
+
+      <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default',  title: 'Return to projects page' %>
+    </div>
+  <% end %>
   </div>
+</div>
 
-  <div class="actions">
-    <%= form.submit 'Save', class: 'btn btn-primary' %>
-  </div>
-<% end %>
-
-
-<%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default mt-3',  title: 'Return to projects page' %>
