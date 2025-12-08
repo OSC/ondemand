@@ -2290,8 +2290,8 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       ['p_s1.71', 'p-s1.71', 'p.s1.71'].each do |acct|
         # We start by resetting back to the starting point
-        select('owens', from: bc_ele_id('cluster'))
-        select('oakley', from: bc_ele_id('cluster'))
+        select('Owens', from: bc_ele_id('cluster'))
+        select('Oakley', from: bc_ele_id('cluster'))
         select(acct, from: bc_ele_id('auto_accounts'))
 
 
