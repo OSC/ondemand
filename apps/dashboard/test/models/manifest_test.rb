@@ -122,7 +122,7 @@ class ManifestTest < ActiveSupport::TestCase
     assert_equal 'fa://desktop', manifest.icon
     assert_equal 'Desktops', manifest.category
     assert_equal 'Virtual Desktop Interface', manifest.subcategory
-    assert_equal '/pun/sys/vncsim/%{app_token}s/sessions', manifest.url
+    assert_equal '/pun/sys/vncsim/%{app_token}/sessions', manifest.url
     assert_equal metadata, manifest.metadata
     assert_equal 'this is the caption from a manifest', manifest.caption
   end
