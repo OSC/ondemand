@@ -6,20 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-rm eval dbus-launch now that we have SAFE_PATH correct (#4850)\
-fix overlaps in project show header (#4852)\
-bump bootstrap_form to 5.4 (#4843)\
-Silence Gemfile and key warnings (#4820)\
-use OODAlertError directly (#4813)\
-Fix locales (#4836)\
-Announcements respond to 'message' key (#4845)\
-Added select_all for create, clean up workflow submission (#4775)\
-rm bundler version requirement for nginx_stage (#4846)\
-Clean up project editing (#4837)\
-Fix template icons (#4838)\
-HTCondor Adapater also supports account info. (#4814)\
-Removed :root, html, body rules from workflows.scss (#4830)\
-Update Changelog (#4832)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -131,6 +117,7 @@ Update Changelog (#4832)
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 - Apache logs will now correctly respond to | commands in [4710](https://github.com/OSC/ondemand/pull/4710).
+- Announcements now respond to 'message' key, replacing 'msg' in [4845](https://github.com/OSC/ondemand/pull/4845).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
