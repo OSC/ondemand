@@ -3,19 +3,19 @@ zh-CN:
   activemodel:
     errors:
       messages:
-        format: "%{attribute} format invalid or missing"
-        invalid: "%{attribute} is invalid"
-        required: "%{attribute} is required"
-        used: "%{attribute} is already used"
+        format: "%{attribute} 格式无效或缺失"
+        invalid: "%{attribute} 无效"
+        required: "%{attribute} 是必需的"
+        used: "%{attribute} 已被使用"
   dashboard:
-    active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
-    active_sessions_title: Active interactive sessions
-    add: Add
-    all_apps_table_app_column: Name
-    all_apps_table_category_column: Category
-    all_apps_table_sub_category_column: Sub Category
-    announcements_dismissible_button: OK
-    announcements_required_button: Accept
+    active_sessions_caption_html: <a href="%{all_sessions_url}"> 查看全部 (%{number_of_sessions})</a>
+    active_sessions_title: 活动交互会话
+    add: 添加
+    all_apps_table_app_column: 名称
+    all_apps_table_category_column: 类别
+    all_apps_table_sub_category_column: 子类别
+    announcements_dismissible_button: 确定
+    announcements_required_button: 接受
     apps_setup_failure_html: |
       <h2>初始化此应用程序的数据时出现问题。</h2>
       <p class="lead">
@@ -31,191 +31,199 @@ zh-CN:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: 系统应用
     auto_log_location_title: 日志位置
-    back: Back
+    back: 返回
     balance_additional_message: 考虑申请额外的 %{balanace_units}
     balance_message: "%{units_balance} 是 %{value}"
     balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
     balance_warning_prefix_html: "%{units_balance} 警告"
-    batch_connect_apps_menu_title: Interactive Apps
-    batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
+    batch_connect_apps_menu_title: 交互式应用
+    batch_connect_form_attr_cache_error: 无法使用先前缓存的值，改为使用默认值。(%{error_message})
     batch_connect_form_choose_template_name: 选择模版名称
     batch_connect_form_data_root: 数据根目录
-    batch_connect_form_invalid: The form.yml has missing options in the %{id} form field.
+    batch_connect_form_invalid: form.yml 中的 %{id} 表单字段缺少选项。
     batch_connect_form_launch: 启动
     batch_connect_form_prefill: 使用模版预填写
     batch_connect_form_prefill_error: 诶呀，你的模版有问题
     batch_connect_form_reset_resolution: 重置分辨率
     batch_connect_form_save: 保存为模版
     batch_connect_form_save_new_template: 保存为一个新模版
-    batch_connect_form_save_submit: Save settings and close
+    batch_connect_form_save_submit: 保存设置并关闭
     batch_connect_form_select_template: 选择一个模版
     batch_connect_form_session_data_html: "* 你可以通过%{data_link_tag}来获取会话数据%{title}。\n"
-    batch_connect_form_template_name_label: setting name
+    batch_connect_form_template_name_label: 设置名称
     batch_connect_form_type_new_name: 在这里输入你的新模版名称
     batch_connect_form_type_new_name_error: 请输入一个有效的名称以继续
-    batch_connect_invalid_form_array: "'form' element in form.yml is not an Array"
-    batch_connect_invalid_form_attributes: "'attributes' element in form.yml is not a Map"
+    batch_connect_invalid_form_array: "'form' 元素在 form.yml 中不是数组"
+    batch_connect_invalid_form_attributes: "'attributes' 元素在 form.yml 中不是映射"
     batch_connect_missing_cluster: |
-      The cluster was never set. Either set it in form.yml.erb with `cluster` or `form.cluster` or
-      set `cluster` in submit.yml.erb.
+      集群从未设置。请在 form.yml.erb 中使用 `cluster` 或 `form.cluster` 设置，或
+      在 submit.yml.erb 中设置 `cluster`。
     batch_connect_no_apps: 没有可用的互动应用程序。
     batch_connect_no_sessions: 您没有可运行的会话。
-    batch_connect_sandbox: " [Sandbox]"
-    batch_connect_sessions_cancel_confirm: Are you sure?
-    batch_connect_sessions_cancel_title: Cancel
-    batch_connect_sessions_data_html: '你可以通过%{data_link_tag}来获取会话数据%{title}。
-
-'
+    batch_connect_sandbox: " [沙盒]"
+    batch_connect_sessions_cancel_confirm: 你确定吗？
+    batch_connect_sessions_cancel_title: 取消
+    batch_connect_sessions_data_html: 你可以通过%{data_link_tag}来获取会话数据%{title}。
     batch_connect_sessions_delete_confirm: 你确定吗？
     batch_connect_sessions_delete_hover: 删除会话
     batch_connect_sessions_delete_title: 删除
-    batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
-    batch_connect_sessions_error_invalid_job_name_html: '如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
-
-'
+    batch_connect_sessions_edit_title: 使用此会话参数编辑新的 %{title}
+    batch_connect_sessions_error_invalid_job_name_html: 如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
     batch_connect_sessions_errors_staging: 无法调用模板，并显示以下错误：
     batch_connect_sessions_errors_submission: 提交会话失败，出现以下错误：
     batch_connect_sessions_novnc_launch: 启动%{app_title}
     batch_connect_sessions_novnc_view_only: 只读 (共享链接)
-    batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.
-    batch_connect_sessions_relaunch_title: Relaunch
+    batch_connect_sessions_path_selector_forbidden_error: 您没有权限选择该目录或文件。
+    batch_connect_sessions_relaunch_title: 重新启动
     batch_connect_sessions_staged_root: 暂存根目录
     batch_connect_sessions_stats_created_at: 创建于：
     batch_connect_sessions_stats_host: 主机：
     batch_connect_sessions_stats_session_id: 会话ID：
-    batch_connect_sessions_stats_support_ticket: Problems with this session?
-    batch_connect_sessions_stats_support_ticket_link_text: Submit support ticket
+    batch_connect_sessions_stats_support_ticket: 此会话有问题吗？
+    batch_connect_sessions_stats_support_ticket_link_text: 提交支持票
     batch_connect_sessions_stats_time_remaining: 剩余时间：
     batch_connect_sessions_stats_time_requested: 所需时间：
     batch_connect_sessions_stats_time_used: 使用时间：
     batch_connect_sessions_stats_undetermined_host: 未定
     batch_connect_sessions_status_bad: 你的会话出现问题。请与支持人员联系以获取更多信息。
-    batch_connect_sessions_status_blurb_cancel_failure: Failed to cancel session.
-    batch_connect_sessions_status_blurb_cancel_success: Session was successfully canceled.
+    batch_connect_sessions_status_blurb_cancel_failure: 取消会话失败。
+    batch_connect_sessions_status_blurb_cancel_success: 会话已成功取消。
     batch_connect_sessions_status_blurb_create_success: 会话已成功创建。
     batch_connect_sessions_status_blurb_delete_failure: 删除会话失败。
     batch_connect_sessions_status_blurb_delete_success: 会话已成功删除.
-    batch_connect_sessions_status_completed: For debugging purposes, this card will be retained for %{days} more days
-    batch_connect_sessions_status_missing_connection: '此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。
-
-'
-    batch_connect_sessions_status_queued: '由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。
-
-'
-    batch_connect_sessions_status_starting: '您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。
-
-'
-    batch_connect_sessions_word: Session
+    batch_connect_sessions_status_completed: 出于调试目的，此卡片将保留 %{days} 天
+    batch_connect_sessions_status_missing_connection: 此应用缺少建立连接所需的信息。 如果看到此消息，请与支持人员联系。
+    batch_connect_sessions_status_queued: 由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。
+    batch_connect_sessions_status_starting: 您的会话目前正在启动...请耐心等待，因为此过程可能需要几分钟。
+    batch_connect_sessions_word: 会话
     bc_saved_settings:
-      delete_confirm: Are you sure?
-      delete_title: Delete %{settings_name} saved settings
-      deleted_message: Saved settings %{settings_name} deleted.
-      edit_title: Edit %{settings_name} saved settings
-      launch_title: Launch %{app_title} with %{settings_name} parameters
-      missing_settings: Selected saved settings not found.
-      no_settings_title: You have no saved settings.
-      outdated_message: "%{app_title} parameters have changed since these settings were created."
-      saved_message: "%{settings_name} settings saved"
-      settings_values_label: Values
-      title: Saved Settings
+      delete_confirm: 你确定吗？
+      delete_title: 删除 %{settings_name} 保存的设置
+      deleted_message: 保存的设置 %{settings_name} 已删除。
+      edit_title: 编辑 %{settings_name} 保存的设置
+      launch_title: 使用 %{settings_name} 参数启动 %{app_title}
+      missing_settings: 未找到所选的保存设置。
+      no_settings_title: 您没有保存的设置。
+      outdated_message: 自这些设置创建以来，%{app_title} 参数已更改。
+      saved_message: "%{settings_name} 设置已保存"
+      settings_values_label: 值
+      title: 保存的设置
     breadcrumbs_all_apps: 所有应用
     breadcrumbs_home: 主页
     breadcrumbs_my_sessions: 我的交互会话
-    breadcrumbs_support_ticket: Support Ticket
-    close: Close
+    breadcrumbs_support_ticket: 支持票
+    close: 关闭
     custom_pages:
-      invalid: 'Invalid page code: %{page}. This page has not been configured'
+      invalid: 无效的页面代码：%{page}。此页面尚未配置
+    date: 日期
     delete: 删除
-    development_apps_caption: Sandbox App
-    directory: Directory
+    development_apps_caption: 沙盒应用
+    directory: 目录
     edit: 编辑
-    files_directory_download_error_modal_title: Directory too large to download
-    files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
-    files_directory_size_calculation_error: Timeout while trying to determine directory size.
-    files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
-    files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
-    files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
-    files_download_not_enabled: Downloading files is not enabled on this server.
-    files_remote_dir_not_created: Did not create directory %{path}
-    files_remote_disabled: Remote file support is not enabled
-    files_remote_empty_dir_unsupported: Remote does not support empty directories
-    files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
-    import: Import
-    jobs_create_blank_project: Create a new project
-    jobs_create_template_project: Create a new project from a template
-    jobs_import_shared_project: Import a shared project
-    jobs_launchers: Launchers
-    jobs_launchers_created: Launcher successfully created!
-    jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
-    jobs_launchers_delete_script_confirmation: Delete all contents of launcher?
-    jobs_launchers_deleted: Launcher successfully deleted!
-    jobs_launchers_fixed_field: Fixed Value
-    jobs_launchers_not_found: Cannot find Launcher %{launcher_id}
-    jobs_launchers_submitted: Successfully submitted job %{job_id}.
-    jobs_launchers_updated: Launcher manifest updated!
-    jobs_new_launcher: New Launcher
-    jobs_project_created: Project successfully created!
-    jobs_project_imported: Project successfully imported!
-    jobs_project_delete_project_confirmation: Delete all contents of project directory?
-    jobs_project_deleted: Project successfully deleted!
-    jobs_project_description_placeholder: Project description
-    jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
-    jobs_project_directory_error: Project directory path is not set for this workflow
-    jobs_project_directory_placeholder: Project directory absolute path
-    jobs_project_generic_error: 'There was an error processing your request: %{error}'
-    jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
-    jobs_project_invalid_configuration_scripts: An executable script is required for your project. Upload a script using the file application.
-    jobs_project_job_deleted: Successfully deleted job %{job_id}
-    jobs_project_job_not_deleted: Cannot delete job %{job_id}
-    jobs_project_job_stopped: Successfully stopped job %{job_id}
-    jobs_project_manifest_updated: Project manifest updated!
-    jobs_project_name_placeholder: Project name
-    jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
-    jobs_project_not_found: Cannot find project %{project_id}
-    jobs_project_save_error: Cannot save manifest to %{path}
-    jobs_project_validation_error: Invalid Request. Please review the errors below
-    jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
-    jobs_workflows: Workflows
-    jobs_workflow_submit: Submit Workflow
-    jobs_create_blank_workflow: New Workflow
-    jobs_workflow_created: Workflow successfully created!
-    jobs_workflow_name_placeholder: Workflow name
-    jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
-    jobs_workflow_description_placeholder: Workflow description
-    jobs_workflow_not_found: Cannot find workflow %{workflow_id}
-    jobs_workflow_deleted: Workflow successfully deleted!
-    jobs_workflow_failed: Workflow failed with error %{error}
-    jobs_workflow_manifest_updated: Workflow manifest updated!
-    jobs_workflow_submitted: Workflow successfully submitted!
+    file_quotas: 文件配额
+    files_directory_download_error_modal_title: 目录太大，无法下载
+    files_directory_download_unauthorized: 您只能下载您具有读取和执行权限的文件或目录
+    files_directory_size_calculation_error: 尝试确定目录大小时超时。
+    files_directory_size_calculation_timeout: 尝试确定目录大小时超时。
+    files_directory_size_unknown: 尝试确定目录大小时出现状态 %{exit_code} 的错误：%{error}
+    files_directory_too_large: 该目录太大，无法作为 zip 下载。目录应小于 %{download_directory_size_limit} 字节。
+    files_download_not_enabled: 此服务器上未启用文件下载。
+    files_download_zip: 下载为 zip
+    files_file_too_large: 文件太大，无法下载。文件下载应小于 %{download_file_size_limit} 字节。
+    files_remote_dir_not_created: 未创建目录 %{path}
+    files_remote_disabled: 未启用远程文件支持
+    files_remote_empty_dir_unsupported: 远程不支持空目录
+    files_remote_error_listing_remotes: 列出 Rclone 远程时出错：%{error}
+    files_send_to_target_title_default: 将选定文件的元数据发送到外部应用程序
+    files_shell: 在终端中打开
+    files_shell_dropdown: 选择要在终端中打开的集群
+    import: 导入
+    job_info: 作业信息
+    jobs_create_blank_project: 创建新项目
+    jobs_create_blank_workflow: 新工作流
+    jobs_create_template_project: 从模板创建新项目
+    jobs_import_shared_project: 导入共享项目
+    jobs_launchers: 启动器
+    jobs_launchers_created: 启动器成功创建！
+    jobs_launchers_default_created: 该项目还添加了一个 'hello_world.sh'。
+    jobs_launchers_delete_script_confirmation: 是否删除启动器的所有内容？
+    jobs_launchers_deleted: 启动器成功删除！
+    jobs_launchers_fixed_field: 固定值
+    jobs_launchers_not_found: 找不到启动器 %{launcher_id}
+    jobs_launchers_submitted: 成功提交作业 %{job_id}。
+    jobs_launchers_updated: 启动器清单已更新！
+    jobs_new_launcher: 新启动器
+    jobs_project_created: 项目成功创建！
+    jobs_project_delete_project_confirmation: 是否删除项目目录的所有内容？
+    jobs_project_deleted: 项目成功删除！
+    jobs_project_description_placeholder: 项目描述
+    jobs_project_directory_error: 此工作流的项目目录路径未设置
+    jobs_project_directory_help_html: 留空将创建一个新目录。 <br />默认位置： %{root_directory}
+    jobs_project_directory_placeholder: 项目目录绝对路径
+    jobs_project_generic_error: 处理您的请求时出错：%{error}
+    jobs_project_imported: 项目成功导入！
+    jobs_project_invalid_configuration_clusters: 需要 HPC 集群。请联系您的管理员将其添加到系统中。
+    jobs_project_invalid_configuration_scripts: 您的项目需要一个可执行脚本。请使用文件应用程序上传脚本。
+    jobs_project_job_deleted: 成功删除作业 %{job_id}
+    jobs_project_job_not_deleted: 无法删除作业 %{job_id}
+    jobs_project_job_stopped: 成功停止作业 %{job_id}
+    jobs_project_manifest_updated: 项目清单已更新！
+    jobs_project_name_placeholder: 项目名称
+    jobs_project_name_validation: 项目名称只能包含字母、数字、短横线、下划线和空格
+    jobs_project_not_found: 找不到项目 %{project_id}
+    jobs_project_save_error: 无法保存清单到 %{path}
+    jobs_project_validation_error: 无效请求。请查看以下错误
+    jobs_select_directory_placeholder: 单击下面的项目以导入到您的主页（可选）
+    jobs_workflow_created: 工作流创建成功！
+    jobs_workflow_deleted: 工作流删除成功！
+    jobs_workflow_description_placeholder: 工作流描述
+    jobs_workflow_failed: 工作流失败，错误 %{error}
+    jobs_workflow_manifest_updated: 工作流清单已更新！
+    jobs_workflow_missing_launchers: 至少选择 %{count}
+    jobs_workflow_name_placeholder: 工作流名称
+    jobs_workflow_name_validation: 工作流名称只能包含字母、数字、短横线、下划线和空格
+    jobs_workflow_not_found: 找不到工作流 %{workflow_id}
+    jobs_workflow_submit: 提交工作流
+    jobs_workflow_submitted: 工作流提交成功！
+    jobs_workflows: 工作流
     launch: 启动
-    module_browser_last_updated: "Last updated: %{last_updated}"
-    module_browser_title: Module Browser
-    motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
+    mode: 模式
+    module_browser_last_updated: 最后更新：%{last_updated}
+    module_browser_title: 模块浏览器
+    motd_erb_render_error: MOTD 未正确解析或渲染：%{error_message}
     motd_title: 每日信息
+    name: 名称
     nav_all_apps: 所有应用
     nav_develop_docs: 开发者文档
     nav_develop_my_sandbox_apps_dev: 我的沙盒应用 (Development)
     nav_develop_my_sandbox_apps_prod: 我的沙盒应用 (Production)
     nav_develop_title: 开发
     nav_help_change_password: 修改HPC密码
-    nav_help_custom: Nav help custom
+    nav_help_custom: 导航帮助自定义
     nav_help_docs: 帮助文档
     nav_help_support: 联系支持人员
-    nav_help_support_ticket: Submit Support Ticket
+    nav_help_support_ticket: 提交支持票
     nav_help_title: 帮助
     nav_help_two_factor: 配置双重身份验证
-    nav_limit_caption: showing %{subset_count} of %{total_count}
+    nav_limit_caption: 显示 %{subset_count} 的 %{total_count}
     nav_logout: 登出
     nav_restart_server: 重启网页服务器
     nav_sessions: 我的交互会话
     nav_user: 以用户名：%{username}登陆
-    not_grouped: Other Apps
-    pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
-    pinned_apps_category: Apps
-    pinned_apps_title: Pinned Apps
-    project: Project
-    project_zip_error_message: "创建 ZIP 文件时出错：%{error}"
-    project_zip_success_message: "成功：project.zip 已在您的项目目录中创建。"
+    not_grouped: 其他应用
+    nsf_access_events: NSF 访问事件
+    ok: 确定
+    owner: 所有者
+    path_selector_default_popup_title: 选择您的工作目录
+    path_selector_home: 主页
+    path_selector_parent_directory: 父目录
+    pinned_apps_caption_html: 一个精选的<a href="%{all_apps_url}">所有可用应用</a>子集
+    pinned_apps_category: 应用
+    pinned_apps_title: 固定应用
+    project: 项目
+    project_balances: 项目余额
+    project_zip_error_message: 创建 ZIP 文件时出错：%{error}
+    project_zip_success_message: 成功：project.zip 已在您的项目目录中创建。
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
     quota_block: 配额使用量%{used} 可用 %{available}
     quota_block_shared: "(您的配额%{used_exclusive} )"
@@ -223,19 +231,20 @@ zh-CN:
     quota_file_shared: "(您的文件配额%{used_exclusive})"
     quota_reload_message: 重新加载页面以查看更新的配额。 配额每5分钟更新一次。
     quota_warning_prefix_html: 配额限制警告
-    recently_used_apps_title: Recently Used Apps
-    remove: Remove
-    reset: Reset
+    recently_used_apps_title: 最近使用的应用
+    remove: 移除
+    reset: 重置
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
-    save: Save
-    saved_settings_title: Saved Settings
-    select_path: Select Path
-    settings_invalid_request: Invalid settings submitted
-    settings_updated: Settings updated
-    shared_apps_caption: Shared by %{owner_title} (%{owner})
-    shared_apps_caption_short: Shared by %{owner}
+    save: 保存
+    saved_settings_title: 已保存的设置
+    select_path: 选择路径
+    select_path_for: "%{element} 选择路径\n"
+    settings_invalid_request: 提交的设置无效
+    settings_updated: 设置已更新
+    shared_apps_caption: 由 %{owner_title} (%{owner}) 共享
+    shared_apps_caption_short: 由 %{owner} 共享
     shared_apps_title: 共享应用
     sharing_catalog_msg_html: "<br>可以在%{catalog_link_tag}上查看可用应用程序的子集。\n"
     sharing_catalog_title: 应用目录
@@ -246,45 +255,38 @@ zh-CN:
     sharing_welcome_msg_html: |
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
-    shell_app_title: "%{cluster_title} Shell Access"
+    shell_app_title: "%{cluster_title} Shell 访问"
     show: 显示
+    size: 大小
+    skip_navigation: 跳过导航
+    soft_tabs: 软制表符
+    soft_tabs_info: 软制表符是文件中的空格，而不是实际的制表符字符。
     support_ticket:
-      creation_success: 'Support ticket email sent to: %{to}'
-      generic_error: 'There was an error processing your request: %{error}'
-      header: Support Ticket
+      creation_success: 支持票电子邮件已发送至：%{to}
+      generic_error: 处理您的请求时出错：%{error}
+      header: 支持票
       rt:
-        creation_success: 'Support ticket created in RequestTracker system. TicketId: %{ticket_id}'
-      title: Support Ticket
+        creation_success: 在 RequestTracker 系统中创建的支持票。票号：%{ticket_id}
+      servicenow:
+        attachments_failure: 在 ServiceNow 中创建的支持票。编号：%{number}，但无法添加附件。
+        creation_success: 在 ServiceNow 中创建的支持票。编号：%{number}
+      title: 支持票
       validation:
-        attachments_items: The %{id} are invalid. %{items} added, maximum number of attachments is %{max}
-        attachments_size: The %{id} are invalid. Maximum attachment size is %{max}
-        email: The %{id} format is invalid. Expected a valid email address
+        attachments_items: "%{id} 无效。%{items} 已添加，最大附件数量为 %{max}"
+        attachments_size: "%{id} 无效。最大附件大小为 %{max}"
+        email: "%{id} 格式无效。期望一个有效的电子邮件地址"
         items:
-          attachments_js: No more attachments allowed
-        required: The %{id} is required
+          attachments_js: 不允许更多附件
+        required: "%{id} 是必需的"
         size:
-          attachments_js: Max attachment size is %{max}. Selected file size is %{size}
-      validation_error: Invalid Request. Please review the error messages below
-    system_apps_caption: System Installed App
-    unknown: Unknown
+          attachments_js: 最大附件大小为 %{max}。所选文件大小为 %{size}
+      validation_error: 无效请求。请查看下面的错误信息
+    system_apps_caption: 系统已安装应用
+    type: 类型
+    unknown: 未知
     uppy: Uppy
     user_configuration:
-      support_ticket_error: support_ticket is misconfigured. "email" or "rt_api" sections are required in the configuration YAML.
+      support_ticket_error: support_ticket 配置错误。请在配置 YAML 中添加后端实现。
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
-    # unknown: "Unknown"
-    delete: "删除"
-    edit: "编辑"
-    show: "显示" 
-    launch: "启动" 
-    type: "类型"
-    name: "名称"
-    size: "大小"
-    owner: "所有者"
-    date: "日期"
-    mode: "模式"
-    project: "项目"
-    directory: "目录"
-  
-    auto_log_location_title: "日志位置"

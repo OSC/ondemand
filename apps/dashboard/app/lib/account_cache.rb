@@ -9,10 +9,10 @@ module AccountCache
   # @return [Array<AccountInfo>] - the account info objects
   def accounts
     Rails.cache.fetch('account_info', expires_in: 4.hours) do
-      # only Slurm support in ood_core
+      # only Slurm & HTCondor support in ood_core
       # job_clusters: not to be confused with clusters
-      slurm_job_clusters = Configuration.job_clusters.select(&:slurm?)
-      slurm_job_clusters.empty? ? [] : slurm_job_clusters.map(&:job_adapter).flat_map(&:accounts).uniq
+      job_clusters = Configuration.job_clusters.select { |c| c.slurm? || c.htcondor? }
+      job_clusters.empty? ? [] : job_clusters.map(&:job_adapter).flat_map(&:accounts).uniq
     rescue StandardError => e
       Rails.logger.warn("Did not get accounts from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
@@ -113,12 +113,9 @@ module AccountCache
 
         available_accounts = account_tuples.map { |tuple| tuple[0] }.uniq
         unavailable_accounts = account_names.reject { |c| available_accounts.include?(c) }
+        account_data = disabled_account_data(unavailable_accounts)
 
-        unavailable_accounts.each do |account|
-          data["data-option-for-auto-accounts-#{account}"] = false
-        end
-
-        [qos, qos, data]
+        [qos, qos, data.merge(account_data)]
       end
     end
   end
@@ -155,9 +152,10 @@ module AccountCache
   end
 
   def queue_account_data(queue)
-    account_names.map do |account|
-      ["data-option-for-auto-accounts-#{account}", false] unless account_allowed?(queue, account)
-    end.compact.to_h
+    unavailable_accounts = account_names.reject do |account| 
+      account_allowed?(queue, account)
+    end
+    disabled_account_data(unavailable_accounts)
   end
 
   def account_allowed?(queue, account_name)
@@ -168,5 +166,22 @@ module AccountCache
     else
       queue.allow_accounts.any? { |account| account == account_name }
     end
+  end
+
+  def disabled_account_data(disabled_accounts)
+    counter = 0
+    disabled_accounts.map do |account|
+      counter += 1
+      # check if account contains anything other than digits and lowercase letters
+      if /\A[a-z0-9]+\z/.match?(account)
+        [["data-option-for-auto-accounts-#{account}", false]] 
+      else
+        acct_alias = "account#{counter}"
+        [
+          ["data-alias-#{acct_alias}", account],
+          ["data-option-for-auto-accounts-#{acct_alias}", false]
+        ]
+      end
+    end.flatten(1).compact.to_h
   end
 end

@@ -1,0 +1,11 @@
+pzs2124|owens-default,staff,phoenix,geophys,hal,gpt
+pzs2118|owens-default
+pzs2117|owens-default
+pzs2010|owens-default
+pzs1715|owens-default
+pzs1714|owens-default
+pde1006|owens-default
+pas3051|owens-default
+pas2871|owens-default
+pas2754|owens-default
+pas2604|owens-default

@@ -40,14 +40,14 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # select oakley and 2 node types should be hidden
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
 
     # FIXME: no idea why .visible? doesn't work here. Selenium/chrome native still shows element as visible?
     assert_equal 'display: none;', find_option_style('node_type', 'advanced')
     assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
 
     # select owens and now they're available
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal '', find_option_style('node_type', 'advanced')
     assert_equal '', find_option_style('node_type', 'hugemem')
   end
@@ -56,7 +56,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # select python 2.7 to initialize things
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('any', from: bc_ele_id('node_type'))
     select('2.7', from: bc_ele_id('python_version'))
     assert_equal '', find_option_style('python_version', '2.7')
@@ -74,7 +74,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
 
     # change the node type and we should have some new min/max & value
     select('gpu', from: bc_ele_id('node_type'))
@@ -160,13 +160,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 7, find_max('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
 
     select('gpu', from: bc_ele_id('node_type'))
     assert_equal 28, find_max('bc_num_slots')
 
     # changing the cluster changes the max
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 40, find_max('bc_num_slots')
   end
 
@@ -181,13 +181,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '100', find_value('bc_num_slots')
 
     # toggle the cluster back and forth and it's still the same
-    select('oakley', from: bc_ele_id('cluster'))
-    select('owens', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
 
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
@@ -250,7 +250,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 88, find_max('bc_num_hours')
 
     # change the cluster and these change again (the for clause)
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 3, find_min('bc_num_slots')
     assert_equal 40, find_max('bc_num_slots')
     assert_equal 90, find_min('bc_num_hours')
@@ -265,12 +265,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('broken', from: bc_ele_id('node_type'))
 
     # changing clusters does nothing.
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
     assert_equal '3', find_value('bc_num_slots')
 
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
     assert_equal '3', find_value('bc_num_slots')
@@ -292,20 +292,20 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal '3', find_value('bc_num_slots')
 
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
     # value gets set to the new min
     assert_equal '2', find_value('bc_num_slots')
 
     # change clusters and it bumps up again
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal '3', find_value('bc_num_slots')
 
     # edit the values, then change the cluster to ensure
     # the change overwrites the edit
     fill_in bc_ele_id('bc_num_slots'), with: 1
     assert_equal '1', find_value('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal '2', find_value('bc_num_slots')
   end
 
@@ -316,13 +316,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     fill_in bc_ele_id('bc_num_slots'), with: 1000
     assert_equal '1000', find_value('bc_num_slots')
 
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
     # value gets set to the new max
     assert_equal '28', find_value('bc_num_slots')
 
     # change clusters and it bumps up again
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal '40', find_value('bc_num_slots')
   end
 
@@ -1669,7 +1669,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 40, find_max('bc_num_slots')
 
     # now change the cluster and the max changes
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 48, find_max('bc_num_slots')
   end
 
@@ -1816,6 +1816,240 @@ class BatchConnectTest < ApplicationSystemTestCase
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
 
+  test 'option for allows special characters with alias' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - python_version
+        - gpu_size
+      attributes:
+        python_version:
+          widget: 'select'
+          options:
+            - ['3.3@2025_|b|']
+            - ['3.4@2-&3']
+            - ['4.0@#$%*()^!']
+            - ['<>?/\\:;']
+            - ['control']
+        gpu_size:
+          widget: 'select'
+          options:
+            - ['tiny',  
+               data-alias-default: '3.3@2025_|b|',
+               data-option-for-python-version-default: false, 
+              ]
+            - ['small', 
+               data-alias-other-name: '3.4@2-&3',
+               data-option-for-python-version-control: false, 
+               data-option-for-python-version-other-name: false, 
+              ]
+            - ['medium',
+               data-alias-strange: '<>?/\\:;',
+               data-option-for-python-version-strange: false,
+               data-option-for-python-version-default: false
+              ]
+            - ['large',
+               data-alias-four: '4.0@#$%*()^!',
+               data-option-for-python-version-four: false,
+              ]
+            - ['super',
+               data-option-for-python-version-default: false,
+               data-option-for-python-version-strange: false
+              ]
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # Assert defaults
+      assert_selector("##{bc_ele_id('python_version')}")
+      assert_equal('3.3@2025_|b|', find_value('python_version'))
+      assert_equal('small', find_value('gpu_size'))
+
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('<>?/\\:;', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('control', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('3.3@2025_|b|', from: "#{bc_ele_id('python_version')}")
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+    end
+  end
+
+  test 'exclusive option for allows special characters with alias' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - account
+        - python_version
+        - gpu_size
+      attributes:
+        account:
+          widget: 'select'
+          options:
+            - ['name_lastname@school.edu']
+            - ['namelastname_school']
+        python_version:
+          widget: 'select'
+          options:
+            - ['3.3@2025_|b|']
+            - ['3.4@2-&3']
+            - ['4.0@#$%*()^!']
+            - ['<>?/\\:;']
+            - ['control']
+        gpu_size:
+          widget: 'select'
+          options:
+            - ['tiny',
+                data-alias-default: '3.3@2025_|b|',
+                data-exclusive-option-for-python-version-default: true 
+              ]
+            - ['small',
+                data-alias-other-name: '3.4@2-&3',
+                data-alias-shared: 'namelastname_school',
+                data-exclusive-option-for-account-shared: true, 
+                data-exclusive-option-for-python-version-other-name: true, 
+              ]
+            - ['medium',
+                data-alias-strange: '<>?/\\:;',
+                data-exclusive-option-for-python-version-strange: true,
+              ]
+            - ['large',
+                data-alias-four: '4.0@#$%*()^!',
+                data-exclusive-option-for-account-shared: true,
+                data-exclusive-option-for-python-version-four: true,
+              ]
+            - ['super',
+                data-alias-personal: 'name_lastname@school.edu',
+                data-exclusive-option-for-account-personal: true,
+                data-exclusive-option-for-python-version-default: true
+              ]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # Assert defaults
+      assert_equal('name_lastname@school.edu', find_value('account'))
+      assert_equal('3.3@2025_|b|', find_value('python_version'))
+      assert_equal('tiny', find_value('gpu_size'))
+
+      # Check things hidden by default
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+
+      # This is a weird situation, as it currently leaves the last selected option as the 
+      # value despite it being hidden, so we will have to reset after these two cases.
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('<>?/\\:;', from: "#{bc_ele_id('python_version')}")
+
+      # reset so that an option is selected
+      select('medium', from: "#{bc_ele_id('gpu_size')}")
+
+      assert_equal('medium', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('namelastname_school', from: "#{bc_ele_id('account')}")
+      select('3.3@2025_|b|', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('tiny', find_value('gpu_size'))
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('small', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('large', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('<>?/\\:;', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('medium', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+    end
+  end
+
+  # NEED TO TEST MIN/MAX FOR WITH ALIASES
+
   test 'auto generated modules are dynamic' do
     with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
@@ -1830,7 +2064,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.4')
 
       # select oakley and now they're available
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
@@ -1873,7 +2107,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens', find_value('cluster')
 
       # oakley has the hidden intel module 'intel/2021.4.0'
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
 
       actual_options = find_all_options('auto_modules_intel', nil).map(&:text)
 
@@ -1907,7 +2141,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens', find_value('cluster')
 
       # these accounts are only on owens
@@ -1917,9 +2151,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       # pzs1124 exists on both, so it's available
       assert_equal '', find_option_style('auto_accounts', 'pzs1124')
 
-      # pzs0715 is available on oakely, so switching clusters should keep the same value.
-      select('oakley', from: bc_ele_id('cluster'))
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      # pzs1124 is available on oakely, so switching clusters should keep the same value.
+      select('Oakley', from: bc_ele_id('cluster'))
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
       # now these are hidden when oakley is chosen
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1754')
@@ -1951,12 +2185,12 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         visit new_batch_connect_session_context_url('sys/app')
 
-        assert_equal 'pzs0715', find_value('auto_accounts')
+        assert_equal 'pzs1124', find_value('auto_accounts')
         assert_equal 'owens', find_value('cluster')
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124'].sort
+                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).sort
@@ -2001,7 +2235,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_selector("##{bc_ele_id('auto_queues')} option[value='systems']", count: 0)
 
       # batch exists on both clusters, so switching clusters does nothing
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'batch', find_value('auto_queues')
 
       # now those oakley queues are available
@@ -2029,9 +2263,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       # defaults
       assert_equal 'batch', find_value('auto_queues')
       assert_equal 'owens', find_value('cluster')
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
 
       # condo-osumed queues are disabled, but the backfill-serial variants are.
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
@@ -2051,6 +2285,24 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
+
+      # Special character accounts should function the same as pas2051
+
+      ['p_s1.71', 'p-s1.71', 'p.s1.71'].each do |acct|
+        # We start by resetting back to the starting point
+        select('Owens', from: bc_ele_id('cluster'))
+        select('Oakley', from: bc_ele_id('cluster'))
+        select(acct, from: bc_ele_id('auto_accounts'))
+
+
+        
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-48core'))
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
+      end
     end
   end
 
@@ -2077,7 +2329,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens-default', find_value('auto_qos')
       assert_equal 'owens', find_value('cluster')
 
@@ -2090,6 +2342,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       # qos' available on owens cluster, but not with the selected account
+      select('pzs0715', from: bc_ele_id('auto_accounts'))
       assert_equal 'display: none;', find_option_style('auto_qos', 'staff')
       assert_equal 'display: none;', find_option_style('auto_qos', 'phoenix')
       assert_equal 'display: none;', find_option_style('auto_qos', 'geophys')
@@ -2108,7 +2361,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens-default', find_value('auto_qos')
 
       # change the cluster, and qos changes but account stays the same
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'oakley-default', find_value('auto_qos')
       assert_equal 'pzs1124', find_value('auto_accounts')
     end
