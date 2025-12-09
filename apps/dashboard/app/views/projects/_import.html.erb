@@ -42,6 +42,10 @@
     </p>
   <% end %>
   <%= turbo_frame_tag(:possible_imports, src: project_possible_imports_path, loading: :lazy) do %>
-    <%= render partial: "files/spinner", locals:{ show_on_load: true } %>
+    <div class="text-center">
+      <div class="spinner-border">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
   <% end %>
 </div>
