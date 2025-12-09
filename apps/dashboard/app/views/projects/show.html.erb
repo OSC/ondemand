@@ -46,8 +46,7 @@
             </div>
 
             <div class="col-auto">
-              <%= link_to clone_project_launcher_path(@project.id, launcher.id), 
-                            class: "btn btn-secondary" do %>
+              <%= link_to clone_project_launcher_path(@project.id, launcher.id), title: "Clone launcher" do %>
                 <%= icon_tag(URI.parse("fas://clone")) %>
               <% end %>
             </div>
