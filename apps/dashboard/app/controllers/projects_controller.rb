@@ -114,10 +114,10 @@ class ProjectsController < ApplicationController
       if Project.import_to_lookup(@project)
         redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
       else
-        redirect_to projects_path, alert: @project.errors.collect_errors
+        redirect_to projects_path, alert: @project.collect_errors
       end
     else
-      redirect_to projects_path, alert: @project.errors.collect_errors
+      redirect_to projects_path, alert: @project.collect_errors
     end
   end
 
