@@ -149,9 +149,9 @@ class Project
 
   def new_record?
     return true unless id
-    return true unless directory
+    return true unless directory.to_s.present?
 
-    id && directory && !File.exist?(manifest_path)
+    id && directory.to_s.present? && !File.exist?(manifest_path)
   end
 
   def save
@@ -159,7 +159,7 @@ class Project
 
     # SET DEFAULTS
     @id = Project.next_id if id.blank?
-    @directory = Pathname.new(Project.dataroot.join(id.to_s)) if directory.to_s.blank?
+    @directory = Pathname.new(Project.dataroot.join(id.to_s)) if directory.blank?
     @directory = Pathname.new(Project.dataroot.join(directory)) if directory.relative?
 
     @icon = 'fas://cog' if icon.blank?
@@ -303,7 +303,7 @@ class Project
   end
 
   def readme_path
-    file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
+    file = Dir.glob("#{directory.to_s}/README.{md,txt}").first.to_s
     File.readable?(file) ? file : nil
   end
 
@@ -401,7 +401,7 @@ class Project
   end
 
   def project_directory_invalid
-    if !directory.blank? && Project.dataroot.to_s == directory
+    if !directory.blank? && Project.dataroot == directory
       errors.add(:directory, :invalid)
     end
   end
