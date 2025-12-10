@@ -299,6 +299,7 @@ en:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+    logo_alt_text: Welcome to Open OnDemand
     unknown: "Unknown"
     save: "Save"
     add: "Add"
