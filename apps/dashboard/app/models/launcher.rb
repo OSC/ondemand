@@ -37,7 +37,7 @@ class Launcher
 
       new(opts)
     rescue StandardError, Errno::ENOENT => e
-      puts("Did not find launcher due to error #{e}")
+      Rails.logger.warn("Did not find launcher due to error #{e}")
       nil
     end
 
