@@ -63,7 +63,7 @@ class Launcher
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
 
-    @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
+    @project_dir = opts[:project_dir].to_s || raise(StandardError, 'You must set the project directory')
     @id = opts[:id].to_s.match?(ID_REX) ? opts[:id].to_s : Launcher.next_id
     @title = opts[:title].to_s
     @created_at = opts[:created_at]
