@@ -52,7 +52,7 @@ class Workflow
     @id = attributes[:id]
     @name = attributes[:name]
     @description = attributes[:description]
-    @project_dir = attributes[:project_dir]
+    @project_dir = attributes[:project_dir].to_s
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
     @metadata = attributes[:metadata] || {}
