@@ -52,7 +52,7 @@ class Workflow
     @id = attributes[:id]
     @name = attributes[:name]
     @description = attributes[:description]
-    @project_dir = attributes[:project_dir].to_s
+    @project_dir = attributes[:project_dir]
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
     @metadata = attributes[:metadata] || {}
@@ -73,7 +73,7 @@ class Workflow
   def save
     return false unless valid?(:create)
 
-    if @project_dir.empty?
+    if @project_dir.nil?
       errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
       return false
     end
