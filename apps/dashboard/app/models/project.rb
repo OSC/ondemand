@@ -212,7 +212,7 @@ class Project
   end
   
   def directory_group_owner
-    if directory.to_s.present? && directory.grpowned?
+    if directory.exist?
       Etc.getgrgid(directory.stat.gid).name
     else
       nil
@@ -303,7 +303,7 @@ class Project
   end
 
   def readme_path
-    file = Dir.glob("#{directory.to_s}/README.{md,txt}").first.to_s
+    file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
     File.readable?(file) ? file : nil
   end
 
