@@ -74,7 +74,7 @@ module ActiveJobs
 
       info_all.map { |j|
         {
-          cluster_title: cluster.title
+          cluster_title: cluster.title,
           status: j.status.state.to_s,
           cluster: cluster.id.to_s,
           pbsid: j.id,
