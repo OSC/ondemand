@@ -53,6 +53,22 @@
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
+          <% unless @project.private? && edit_project_action %>
+            <div class="field">
+              <% help_html = 
+                  if edit_project_action
+                    '' 
+                  else
+                    "<i class='fa fa-question-circle vertical-align-middle' data-bs-toggle='tooltip' data-bs-placement='right' title='#{I18n.t('dashboard.jobs_project_group_help')}'></i>" 
+                  end
+              %>
+              <%= form.select(:group_owner,
+                              CurrentUser.group_names,
+                              { label: "#{I18n.t('dashboard.jobs_project_group_owner')} #{help_html}".html_safe },
+                              { disabled: edit_project_action })
+              %>
+            </div>
+	        <% end %>
         </div>
       </div>
       </div>

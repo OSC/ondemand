@@ -117,6 +117,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 - Apache logs will now correctly respond to | commands in [4710](https://github.com/OSC/ondemand/pull/4710).
+- Announcements now respond to 'message' key, replacing 'msg' in [4845](https://github.com/OSC/ondemand/pull/4845).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).

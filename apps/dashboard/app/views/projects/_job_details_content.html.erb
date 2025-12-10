@@ -12,6 +12,10 @@
   <div class="collapse" id="<%= id %>_data">
     <div class="card card-body">
       <table class="table table-bordered table-sm m-0 mb-2">
+        <tr>
+          <td><strong> Message </strong></td>
+          <td><%= native_message(job.native) %></td>
+        </tr>
         <% job.to_human_display.each do |name, value| %>
           <tr>
             <td><strong><%= name %></strong></td>
