@@ -113,7 +113,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template, :files
+  attr_reader :id, :name, :description, :icon, :directory, :template
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -289,9 +289,9 @@ class Project
     zip_file = "#{project_dataroot}/project.zip"
     FileUtils.rm(zip_file) if File.exist?(zip_file)
     Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
-      files.each do |file_name|
+      zip_list.each do |file_name|
         file_path = "#{project_dataroot}/#{file_name}"
-        zipfile.add(file_name, file_path) if File.exist?(file_path)
+        zipfile.add(file_name, file_path) if File.read(file_path)
       end
     end
     zip_file
@@ -300,7 +300,7 @@ class Project
   private
 
   def update_attrs(attributes)
-    [:name, :description, :icon, :files].each do |attribute|
+    [:name, :description, :icon].each do |attribute|
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
   end
@@ -312,6 +312,7 @@ class Project
     workflow_directory.mkpath unless workflow_directory.exist?
     logfile_path = JobLogger::JobLoggerHelper.log_file(project_dataroot)
     FileUtils.touch(logfile_path.to_s) unless logfile_path.exist?
+    initialize_zip_list
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
@@ -363,6 +364,18 @@ class Project
       '--exclude', '.ondemand/job_log.yml',
       "#{template}/", project_dataroot.to_s
     ]
+  end
+
+  def zip_list_path
+    Pathname.new("#{directory}/zip_list.yml")
+  end
+
+  def zip_list
+    Array(YAML.load_file(zip_list_path))
+  end
+
+  def initialize_zip_list
+    zip_list_path.write("# Add files here to include them in zipped copies\n#{[zip_list_path.basename.to_s].to_yaml}") unless zip_list_path.exist?
   end
 
   def project_directory_exist
