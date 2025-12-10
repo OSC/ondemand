@@ -208,12 +208,12 @@ class Project
   end
 
   def private?
-    project_dataroot.to_s.start_with?(CurrentUser.home)
+    directory.to_s.start_with?(CurrentUser.home)
   end
   
   def directory_group_owner
-    if project_dataroot != Project.dataroot && project_dataroot.grpowned?
-      Etc.getgrgid(project_dataroot.stat.gid).name
+    if directory.to_s.present? && directory.grpowned?
+      Etc.getgrgid(directory.stat.gid).name
     else
       nil
     end
@@ -224,7 +224,7 @@ class Project
 
     begin
       group_gid = group_owner.nil? ? nil : Etc.getgrnam(group_owner).gid
-      FileUtils.chown(nil, group_gid, project_dataroot)
+      FileUtils.chown(nil, group_gid, directory)
     rescue StandardError => e
       errors.add(:save, "Unable to set group with error #{e.class}:#{e.message}")
       false
