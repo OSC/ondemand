@@ -3,7 +3,7 @@
 # Helpers for the system status page /dashboard/systemstatus
 module SystemStatusHelper
   def title(cluster)
-    "#{cluster.metadata.title} Cluster Status"
+    "#{cluster.title} Cluster Status"
   end
 
   def status_hash(name, active, total)

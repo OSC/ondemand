@@ -56,7 +56,7 @@ module ActiveJobs
             count += 1;
           end
         rescue => e
-          msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
+          msg = "#{cluster.title}: #{e.message}"
           controller.logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
           errors << msg
         end
@@ -74,7 +74,7 @@ module ActiveJobs
 
       info_all.map { |j|
         {
-          cluster_title: cluster.metadata.title || cluster.id.to_s.titleize,
+          cluster_title: cluster.title
           status: j.status.state.to_s,
           cluster: cluster.id.to_s,
           pbsid: j.id,
