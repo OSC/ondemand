@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'zip'
 
 # Project classes represent projects users create to run HPC jobs.
 class Project
@@ -308,18 +307,6 @@ class Project
   def readme_path
     file = Dir.glob("#{directory}/README.{md,txt}").first.to_s
     File.readable?(file) ? file : nil
-  end
-
-  def zip_to_template
-    zip_file = "#{project_dataroot}/project.zip"
-    FileUtils.rm(zip_file) if File.exist?(zip_file)
-    Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
-      files.each do |file_name|
-        file_path = "#{project_dataroot}/#{file_name}"
-        zipfile.add(file_name, file_path) if File.exist?(file_path)
-      end
-    end
-    zip_file
   end
 
   private
