@@ -47,6 +47,11 @@ apps/dashboard/.ruby-version
 
 /apps/bc_desktop/local
 
+# Authentication cookies and session files
+cookies.txt
+*.cookie
+*.session
+
 # Ignore staged app
 /apps/dashboard/vendor/my_app
 
