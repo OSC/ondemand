@@ -20,9 +20,9 @@
           <span id="selected-cluster-label"></span> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-          <% OODClusters.sort_by {|cluster| cluster.metadata.title || cluster.id.to_s.titleize }.each do |cluster| %>
+          <% OODClusters.sort_by {|cluster| cluster.title }.each do |cluster| %>
               <li id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');">
-                <a class="dropdown-item" href="#"><%= cluster.metadata.title || cluster.id.to_s.titleize %></a>
+                <a class="dropdown-item" href="#"><%= cluster.title %></a>
               </li>
           <% end %>
           <li class="divider"></li>

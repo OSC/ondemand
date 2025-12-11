@@ -484,7 +484,9 @@ module BatchConnect
                                {
                                  widget:  'select',
                                  label:   'Cluster',
-                                 options: clusters.map(&:id)
+                                 options: clusters.map do |c|
+                                            [c.title, c.id]                         
+                                          end
                                }.merge(defined_cluster_attr)
                              else
                                {
