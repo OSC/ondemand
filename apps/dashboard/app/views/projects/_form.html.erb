@@ -63,7 +63,7 @@
               %>
               <%= form.form_group(:setgid) do
                     form.check_box(:setgid,
-                                   checked: edit_project_action ? @project.project_dataroot.setgid? : true,
+                                   checked: edit_project_action ? @project.directory.setgid? : true,
                                    switch: true,
                                    label: "Set setgid bit? #{form_label_tooltip(I18n.t('dashboard.jobs_project_setgid_help'))}".html_safe,
                                    disabled: edit_project_action)
