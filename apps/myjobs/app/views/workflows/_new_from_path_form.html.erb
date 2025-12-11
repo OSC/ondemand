@@ -21,7 +21,7 @@
 
         <%= f.text_field :script_name %>
 
-        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:", :include_blank => true }, { class: "selectpicker", id: "batch_host_select" } %>
+        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.title}", cluster.id ] }, { label: "Cluster:", :include_blank => true }, { class: "selectpicker", id: "batch_host_select" } %>
 
         <%= f.text_field :account, help: "Account is an optional field. If not set, the account may be auto-set by the submit filter." %>
       </div>
