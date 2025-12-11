@@ -59,6 +59,7 @@ class Launcher
   ID_REX = /\A\w{8}\Z/.freeze
 
   validates(:id, format: { with: ID_REX, message: "ID does not match #{Launcher::ID_REX.inspect}" }, on: [:save])
+  validates(:title, presence: true)
 
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access

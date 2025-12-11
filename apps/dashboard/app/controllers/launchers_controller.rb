@@ -33,7 +33,7 @@ class LaunchersController < ApplicationController
       notice_messages << I18n.t('dashboard.jobs_launchers_default_created') if default_script_created
       redirect_to project_path(params[:project_id]), notice: notice_messages.join(' ')
     else
-      redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
+      redirect_to new_project_launcher_path(params[:project_id]), alert: @launcher.errors[:save].last
     end
   end
 
