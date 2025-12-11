@@ -19,6 +19,7 @@ Rails.application.routes.draw do
           post 'submit'
           post 'save'
           get 'load'
+          get 'clone'
         end
       end
 
