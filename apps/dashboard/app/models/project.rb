@@ -148,10 +148,9 @@ class Project
   end
 
   def new_record?
-    return true unless id
-    return true unless directory.to_s.present?
-
-    id && directory.to_s.present? && !File.exist?(manifest_path)
+    return true unless id && directory.to_s.present?
+    
+    !File.exist?(manifest_path)
   end
 
   def save
@@ -164,7 +163,7 @@ class Project
 
     @icon = 'fas://cog' if icon.blank?
 
-    make_root && update_permission && make_dir && sync_template && store_manifest(:save)
+    make_dir && sync_template && store_manifest(:save)
   end
 
   def update(attributes)
@@ -327,15 +326,9 @@ class Project
     end
   end
 
-  def make_root
-    directory.mkpath unless directory.exist?
-    true
-  rescue StandardError => e
-    errors.add(:save, "Failed to initialize project directory: #{e.message}")
-    false
-  end
-
   def make_dir
+    directory.mkpath unless directory.exist?
+    update_permission
     configuration_directory.mkpath  unless configuration_directory.exist?
     workflow_directory = Workflow.workflow_dir(directory)
     workflow_directory.mkpath unless workflow_directory.exist?
