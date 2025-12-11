@@ -329,7 +329,7 @@ class Project
 
   def make_dir
     directory.mkpath unless directory.exist?
-    update_permission
+    return false unless update_permission
     configuration_directory.mkpath  unless configuration_directory.exist?
     workflow_directory = Workflow.workflow_dir(directory)
     workflow_directory.mkpath unless workflow_directory.exist?
