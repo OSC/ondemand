@@ -7,7 +7,7 @@ class WorkflowsTest < ActiveSupport::TestCase
     workflow = Workflow.new
 
     assert_nil workflow.id
-    assert_nil workflow.project_dir
+    assert_equal '', workflow.project_dir
     assert_nil workflow.name
     assert_nil workflow.description
     assert_nil workflow.created_at
@@ -94,7 +94,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal workflow.id, manifest_data["id"]
       assert_equal "test-workflow", manifest_data["name"]
       assert_equal "description", manifest_data["description"]
-      assert_equal project_dir, manifest_data["project_dir"]
+      assert_equal project_dir.to_s, manifest_data["project_dir"]
     end
   end
 
@@ -132,7 +132,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal workflow.id, manifest_data["id"]
       assert_equal name,        manifest_data["name"]
       assert_equal description, manifest_data["description"]
-      assert_equal project_dir, manifest_data["project_dir"]
+      assert_equal project_dir.to_s, manifest_data["project_dir"]
       assert_equal launchers,   manifest_data["launcher_ids"]
     end
   end
@@ -154,7 +154,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal 'updated',   workflow.name
       assert_equal 'updated',   workflow.description
       assert_equal old_id,      workflow.id
-      assert_equal project_dir, workflow.project_dir
+      assert_equal project_dir.to_s, workflow.project_dir
       assert_equal ['sample2'], workflow.launcher_ids
     end
   end
