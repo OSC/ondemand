@@ -195,4 +195,8 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  # AI Assistant routes
+  post 'assistant/chat', to: 'assistant#chat'
+  get 'assistant/status', to: 'assistant#status'
 end
