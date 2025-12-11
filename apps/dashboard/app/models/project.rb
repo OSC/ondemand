@@ -113,7 +113,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template, :files, :group_owner
+  attr_reader :id, :name, :description, :icon, :directory, :template, :files, :group_owner, :setgid
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -131,6 +131,7 @@ class Project
     @directory = File.expand_path(@directory) unless @directory.blank?
     @template = attributes[:template]
     @group_owner = attributes[:group_owner] || directory_group_owner
+    @setgid = attributes[:setgid].to_s == '1'
 
     return if new_record?
 
@@ -351,8 +352,14 @@ class Project
   end
 
   def update_permission
-    project_dataroot.chmod(0750)
-    chgrp_directory
+    return false unless chgrp_directory
+
+    root_mode = 0o750
+    unless private? # allow group to edit shared projects
+      root_mode += (setgid ? 0o2020 : 0o020)
+    end
+    project_dataroot.chmod(root_mode)
+    true
   rescue StandardError => e
     errors.add(:save, "Failed to update permissions of the directory: #{e.message}")
     false
