@@ -7,10 +7,10 @@ class ProjectsTest < ActiveSupport::TestCase
     project = Project.new
 
     assert_nil project.id
-    assert_nil project.directory
-    assert_equal '', project.name
-    assert_equal '', project.description
-    assert_equal '', project.icon
+    assert_equal Pathname.new(''), project.directory
+    assert_equal '',               project.name
+    assert_equal '',               project.description
+    assert_equal '',               project.icon
   end
 
   test 'create project validation' do
@@ -63,7 +63,7 @@ icon: 'fas://existing')
 
       # Check id and directory defaults
       assert_not_nil project.id
-      assert_equal "#{projects_path}/projects/#{project.id}", project.directory
+      assert_equal Pathname.new("#{projects_path}/projects/#{project.id}"), project.directory
       assert_equal 'fas://cog', project.icon
     end
   end
@@ -80,7 +80,7 @@ icon: 'fas://test')
       assert Dir.entries("#{projects_path}/projects").include?(project_id)
       assert_equal project_id, project.id
       assert_equal 'MyLocalName', project.name
-      assert_equal "#{projects_path}/projects/#{project_id}", project.directory
+      assert_equal Pathname.new("#{projects_path}/projects/#{project_id}"), project.directory
       assert_equal 'MyLocalDescription', project.description
       assert_equal 'fas://test', project.icon
       assert_equal 2_097_152, project.size
@@ -93,7 +93,7 @@ icon: 'fas://test')
       project_dir = File.join(tmp, 'dir_override')
       project = create_project(projects_root, directory: project_dir)
 
-      assert_equal project_dir, project.directory
+      assert_equal Pathname.new(project_dir), project.directory
       assert File.directory?(Pathname.new(project_dir))
       assert File.file?(Pathname.new("#{project_dir}/.ondemand/manifest.yml"))
     end

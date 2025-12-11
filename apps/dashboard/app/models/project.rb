@@ -31,7 +31,9 @@ class Project
 
     def lookup_table
       f = File.read(lookup_file)
-      YAML.safe_load(f).to_h
+      YAML.safe_load(f).to_h.reject do |_, dir|
+        from_directory(dir).errors.present?
+      end
     rescue StandardError, Exception => e
       Rails.logger.warn("cannot read #{dataroot}/.project_lookup due to error #{e}")
       {}
@@ -111,7 +113,7 @@ class Project
     end
   end
 
-  attr_reader :id, :name, :description, :icon, :directory, :template, :files
+  attr_reader :id, :name, :description, :icon, :directory, :template, :files, :group_owner, :setgid
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -125,9 +127,10 @@ class Project
   def initialize(attributes = {})
     @id = attributes[:id]
     update_attrs(attributes)
-    @directory = attributes[:directory]
-    @directory = File.expand_path(@directory) unless @directory.blank?
+    @directory = Pathname.new(attributes[:directory].to_s)
     @template = attributes[:template]
+    @group_owner = attributes[:group_owner] || directory_group_owner
+    @setgid = attributes[:setgid].to_s == '1'
 
     return if new_record?
 
@@ -146,10 +149,9 @@ class Project
   end
 
   def new_record?
-    return true unless id
-    return true unless directory
-
-    id && directory && !File.exist?(manifest_path)
+    return true unless id && directory.to_s.present?
+    
+    !File.exist?(manifest_path)
   end
 
   def save
@@ -157,10 +159,12 @@ class Project
 
     # SET DEFAULTS
     @id = Project.next_id if id.blank?
-    @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
+    @directory = Pathname.new(Project.dataroot.join(id.to_s)) if directory.blank?
+    @directory = Pathname.new(Project.dataroot.join(directory)) if directory.relative?
+
     @icon = 'fas://cog' if icon.blank?
 
-    make_dir && update_permission && sync_template && store_manifest(:save)
+    make_dir && sync_template && store_manifest(:save)
   end
 
   def update(attributes)
@@ -176,11 +180,11 @@ class Project
   end
 
   def save_manifest(operation)
-    Pathname(manifest_path).write(to_h.deep_stringify_keys.compact.to_yaml)
+    manifest_path.write(to_h.deep_stringify_keys.compact.to_yaml)
 
     true
   rescue StandardError => e
-    errors.add(operation, I18n.t('dashboard.jobs_project_save_error', path: manifest_path))
+    errors.add(operation, I18n.t('dashboard.jobs_project_save_error', path: manifest_path.to_s))
     Rails.logger.warn "Cannot save project manifest: #{manifest_path} with error #{e.class}:#{e.message}"
     false
   end
@@ -203,6 +207,34 @@ class Project
     false
   end
 
+  def private?
+    directory.to_s.start_with?(CurrentUser.home)
+  end
+  
+  def directory_group_owner
+    if directory.exist?
+      Etc.getgrgid(directory.stat.gid).name
+    else
+      nil
+    end
+  end
+
+  def chgrp_directory
+    return true if private? || group_owner == directory_group_owner
+
+    begin
+      group_gid = group_owner.nil? ? nil : Etc.getgrnam(group_owner).gid
+      FileUtils.chown(nil, group_gid, directory)
+    rescue StandardError => e
+      errors.add(:save, "Unable to set group with error #{e.class}:#{e.message}")
+      false
+    end
+  end
+
+  def editable? 
+    File.writable?(manifest_path)
+  end
+  
   def icon_class
     # rails will prepopulate the tag with fa- so just the name is needed
     icon.sub('fas://', '')
@@ -214,11 +246,7 @@ class Project
   end
 
   def configuration_directory
-    Pathname.new("#{project_dataroot}/.ondemand")
-  end
-
-  def project_dataroot
-    Project.dataroot.join(directory.to_s)
+    directory.join('.ondemand')
   end
 
   def title
@@ -226,7 +254,7 @@ class Project
   end
 
   def manifest_path
-    File.join(configuration_directory, 'manifest.yml')
+    configuration_directory.join('manifest.yml')
   end
 
   def collect_errors
@@ -234,8 +262,8 @@ class Project
   end
 
   def size
-    if Dir.exist? project_dataroot
-      o, e, s = Open3.capture3('timeout', "#{Configuration.project_size_timeout}s", 'du', '-s', '-b', project_dataroot.to_s)
+    if directory.exist?
+      o, e, s = Open3.capture3('timeout', "#{Configuration.project_size_timeout}s", 'du', '-s', '-b', directory.to_s)
       o.split('/')[0].to_i
     end
   end
@@ -280,12 +308,12 @@ class Project
   end
 
   def zip_to_template
-    zip_file = "#{project_dataroot}/project.zip"
+    zip_file = directory.join('project.zip')
     FileUtils.rm(zip_file) if File.exist?(zip_file)
     Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
       files.each do |file_name|
-        file_path = "#{project_dataroot}/#{file_name}"
-        zipfile.add(file_name, file_path) if File.exist?(file_path)
+        file_path = directory.join(file_name)
+        zipfile.add(file_name, file_path.to_s) if File.exist?(file_path)
       end
     end
     zip_file
@@ -300,11 +328,12 @@ class Project
   end
 
   def make_dir
-    project_dataroot.mkpath         unless project_dataroot.exist?
+    directory.mkpath unless directory.exist?
+    return false unless update_permission
     configuration_directory.mkpath  unless configuration_directory.exist?
-    workflow_directory = Workflow.workflow_dir(project_dataroot)
+    workflow_directory = Workflow.workflow_dir(directory)
     workflow_directory.mkpath unless workflow_directory.exist?
-    logfile_path = JobLogger::JobLoggerHelper.log_file(project_dataroot)
+    logfile_path = JobLogger::JobLoggerHelper.log_file(directory)
     FileUtils.touch(logfile_path.to_s) unless logfile_path.exist?
     true
   rescue StandardError => e
@@ -313,7 +342,13 @@ class Project
   end
 
   def update_permission
-    project_dataroot.chmod(0750)
+    return false unless chgrp_directory
+
+    root_mode = 0o750
+    unless private? # allow group to edit shared projects
+      root_mode += (setgid ? 0o2020 : 0o020)
+    end
+    directory.chmod(root_mode)
     true
   rescue StandardError => e
     errors.add(:save, "Failed to update permissions of the directory: #{e.message}")
@@ -339,7 +374,7 @@ class Project
   def save_new_launchers
     dir = Launcher.launchers_dir(template)
     Dir.glob("#{dir}/*/form.yml").map do |launcher_yml|
-      Launcher.from_yaml(launcher_yml, project_dataroot)
+      Launcher.from_yaml(launcher_yml, directory.to_s)
     end.map do |launcher|
       saved_successfully = launcher.save
       errors.add(:save, launcher.errors.full_messages) unless saved_successfully
@@ -355,7 +390,7 @@ class Project
       'rsync', '-rltp',
       '--exclude', 'launchers/*',
       '--exclude', '.ondemand/job_log.yml',
-      "#{template}/", project_dataroot.to_s
+      "#{template}/", directory.to_s
     ]
   end
 
@@ -366,7 +401,7 @@ class Project
   end
 
   def project_directory_invalid
-    if !directory.blank? && Project.dataroot.to_s == directory
+    if !directory.blank? && Project.dataroot == directory
       errors.add(:directory, :invalid)
     end
   end

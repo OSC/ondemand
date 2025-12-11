@@ -8,7 +8,7 @@
 </div>
 
 <div class='row'>
-  <div class="col-2 align-self-center justify-content-left d-flex">
+  <div class="col-6 col-sm-3 align-self-center justify-content-left d-flex mt-2 order-2 order-sm-1">
     <%= button_to(
         'Create ZIP',
         project_zip_to_template_path(@project.id),
@@ -19,11 +19,11 @@
     %>
 
   </div>
-  <div class='page-header text-center col-8'>
+  <div class='page-header text-center col-12 col-sm-6 order-1 order-sm-2'>
     <h1 class="my-2 h3"><%= @project.title %></h1>
     <small class="text-muted">This is a preview of the new 'Project Manager'</small>
   </div>
-  <div class="col-2 align-self-center justify-content-end d-flex">
+  <div class="col-6 col-sm-3 align-self-center justify-content-end d-flex mt-2 order-3">
     <%= link_to 'Back to Projects', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
   </div>
 </div>

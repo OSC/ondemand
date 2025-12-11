@@ -97,6 +97,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - register_path, register_method and register_method_options have been added to ood_portal.yml in [4763](https://github.com/OSC/ondemand/pull/4763).
 - nsf_access_events widget has been added in [4726](https://github.com/OSC/ondemand/pull/4726).
 - Resolution widgets now have a help field for clarity in [4765](https://github.com/OSC/ondemand/pull/4765).
+- Added el10 support in [4804](https://github.com/OSC/ondemand/pull/4804).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -116,6 +117,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 - Apache logs will now correctly respond to | commands in [4710](https://github.com/OSC/ondemand/pull/4710).
+- Announcements now respond to 'message' key, replacing 'msg' in [4845](https://github.com/OSC/ondemand/pull/4845).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).

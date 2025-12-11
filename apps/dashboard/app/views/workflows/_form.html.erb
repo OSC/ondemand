@@ -20,11 +20,17 @@
         <div class="field">
           <strong>Pick Launchers</strong><br>
           <div class="p-3 <%= launcher_error.nil? ? '' : 'border border-danger rounded is-invalid'%>">
+          <div class="form-check">
+            <%= check_box_tag "select_all_launchers", "", false,
+                  id: "select_all_launchers", class: "form-check-input" %>
+            <%= label_tag "select_all_launchers", "Select All", class: "form-check-label" %>
+          </div>
+
           <% @launchers.each do |launcher| %>
             <div class="form-check">
               <%= check_box_tag "workflow[launcher_ids][]", launcher.id,
                                 @workflow.launcher_ids.include?(launcher.id),
-                                id: "launcher_#{launcher.id}", class: "form-check-input" %>
+                                id: "launcher_#{launcher.id}", class: "form-check-input launcher-checkbox" %>
               <%= label_tag "launcher_#{launcher.id}", launcher.title, class: "form-check-label" %>
             </div>
           <% end %>

@@ -40,7 +40,10 @@
                                 help: edit_project_action ? '' : I18n.t('dashboard.jobs_project_directory_help_html', root_directory: Project.dataroot.to_s).html_safe,
                                 data: { 'path-selector': true })%>
 
-            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+            <button 
+              type="button" class="btn btn-primary mt-2 <%= edit_project_action ? 'd-none' : '' %>" 
+              data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>" 
+            >
               <%= I18n.t('dashboard.select_path') %>
             </button>
 
@@ -50,6 +53,24 @@
           <div class="field">
             <%= form.text_area :description, placeholder: I18n.t('dashboard.jobs_project_description_placeholder') %>
           </div>
+          <% unless @project.private? && edit_project_action %>
+            <div class="field">
+              <% help_html = edit_project_action ? '' : form_label_tooltip(I18n.t('dashboard.jobs_project_group_help')) %>
+              <%= form.select(:group_owner,
+                              CurrentUser.group_names,
+                              { label: "#{I18n.t('dashboard.jobs_project_group_owner')} #{help_html}".html_safe },
+                              { disabled: edit_project_action })
+              %>
+              <%= form.form_group(:setgid) do
+                    form.check_box(:setgid,
+                                   checked: edit_project_action ? @project.directory.setgid? : true,
+                                   switch: true,
+                                   label: "Set setgid bit? #{form_label_tooltip(I18n.t('dashboard.jobs_project_setgid_help'))}".html_safe,
+                                   disabled: edit_project_action)
+                  end
+              %>
+            </div>
+	        <% end %>
         </div>
       </div>
       </div>
