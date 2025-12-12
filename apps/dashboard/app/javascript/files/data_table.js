@@ -3,6 +3,7 @@ import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
 export { CONTENTID, EVENTNAME };
 import { OODAlertError } from '../alert.js';
+import { toHumanSize } from '../utils.js';
 
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
@@ -178,15 +179,6 @@ class DataTable {
         return this._table;
     }
 
-    toHumanSize(number) {
-      if(number === null) {
-        return '-';
-      } else {
-        const unitIndex = number == 0 ? 0 : Math.floor(Math.log(number) / Math.log(1000));
-        return `${((number / Math.pow(1000, unitIndex)).toFixed(2))} ${['B', 'kB', 'MB', 'GB', 'TB', 'PB'][unitIndex]}`;
-      }
-    }
-
     loadDataTable() {
         this._table = $(CONTENTID).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
@@ -233,7 +225,7 @@ class DataTable {
                 {
                     data: 'size',
                     render: (data, type, row, meta) => {
-                        return type == "display" ? this.toHumanSize(row.size) : data;
+                        return type == "display" ? toHumanSize(row.size) : data;
                     }
                 }, // human_size
                 {

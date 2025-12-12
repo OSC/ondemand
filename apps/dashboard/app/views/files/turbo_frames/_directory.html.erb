@@ -1,20 +1,27 @@
 <%= turbo_frame_tag "project_directory" do %>
-  <div class="d-flex justify-content-left lead text-weight-800 text-break">
-    <strong><%= frame_path(path)  %></strong>
+  <div class="d-flex justify-content-center lead text-weight-800 text-break">
+    <strong class="mx-2"><%= frame_path(path)  %></strong>
   </div>
   <table class="table table-striped table-condensed w-100 table-hover caption-right">
     <thead>
       <tr>
-        <th>Type</th>
+        <th></th>
         <th>Name</th>
-        <th>Size</th>
-        <th>Date</th>
-        <th>Owner</th>
-        <th>Mode</th>
+        <th><span class="sr-only">Actions</span></th>
+        <% private_dir = path.to_s.start_with?(CurrentUser.home) %>
+        <% if private_dir %>
+          <th>Size</th>
+          <th>Date</th>
+        <% else %>
+          <th class='d-above-xl'>Size</th>
+          <th class='d-above-xl'>Date</th>
+          <th>Owner</th>
+          <th>Mode</th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
-        <%= render partial: "files/turbo_frames/files", locals: { path: path, files: files } %>
+        <%= render partial: "files/turbo_frames/files", locals: { path: path, files: files, private_dir: private_dir } %>
     </tbody>
   </table>
   <div class="row content-justied-center col-6 mx-auto ">

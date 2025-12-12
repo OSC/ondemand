@@ -21,6 +21,15 @@ export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function toHumanSize(number, precision = 2) {
+  if(number === null) {
+    return '-';
+  } else {
+    const unitIndex = number == 0 ? 0 : Math.floor(Math.log(number) / Math.log(1000));
+    return `${((number / Math.pow(1000, unitIndex)).toFixed(precision))} ${['B', 'kB', 'MB', 'GB', 'TB', 'PB'][unitIndex]}`;
+  }
+}
+
 export function startOfYear() {
   const now = new Date();
   const past = new Date();

@@ -1,6 +1,6 @@
 import { rootPath } from './config.js';
 import { replaceHTML } from './turbo_shim';
-
+import { toHumanSize } from './utils.js';
 
 jQuery(function() {
   $('[data-job-poller="true"]').each((_index, ele) => {
@@ -10,7 +10,16 @@ jQuery(function() {
   $("[data-bs-toggle='project']").each((_index, ele) => {
     updateProjectSize(ele);
   });
+
+  document.addEventListener('turbo:frame-render', onTurboFrameLoad);  
 });
+
+function onTurboFrameLoad() {
+  $("td.update-to-human-size").each((_index, ele) => {
+    updateFileSize(ele);
+  });
+}
+
 
 function jobDetailsPath(cluster, jobId) {
   const baseUrl = rootPath();
@@ -110,4 +119,8 @@ function updateProjectSize(element) {
       $container.text(`(${UNDETERMINED})`);
     }
   });
+}
+
+function updateFileSize(ele) {
+  ele.textContent = toHumanSize(ele.textContent, 0);
 }
