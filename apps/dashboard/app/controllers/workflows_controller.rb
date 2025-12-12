@@ -47,6 +47,20 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # GET /projects/:id/workflows/:id/clone
+  def clone
+    return unless load_project_and_workflow_objects
+
+    cloned = @workflow.deep_dup
+    cloned.name += " (Copy)"
+    session[:cloned_metadata] = cloned.metadata.to_h.deep_stringify_keys
+
+    @workflow = cloned
+    @launchers = Launcher.all(project_directory)
+
+    render :new
+  end
+
   # DELETE /projects/:id/workflows/:id
   def destroy
     return unless load_project_and_workflow_objects
@@ -135,7 +149,7 @@ class WorkflowsController < ApplicationController
     params
       .require(:workflow)
       .permit(:name, :description, :id, launcher_ids: [])
-      .merge(project_dir: project_directory)
+      .merge(project_dir: project_directory, metadata: session.delete(:cloned_metadata) || {})
   end
 
   def update_params
