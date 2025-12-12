@@ -16,19 +16,13 @@ module AppHelper
   end
 
   def recent_settings(app)
-    content = displayable_settings(app).map do |attr| 
+    content = app.attributes.select(&:display?).map do |attr| 
       "<div class='row'> <dt>#{attr.label}:</dt> <dd>#{attr.value}</dd> </div>" 
     end
     content.empty? ? nil : ['<dl class="app-settings-popup">', content.join('<hr>'), '</dl>'].join
   end
 
   def displayable_settings?(app)
-    !displayable_settings(app).empty?
-  end
-
-  private
-
-  def displayable_settings(app)
-    app.attributes.select(&:display?).reject{ |a| a.widget == 'password_field' }
+    !app.attributes.select(&:display?).empty?
   end
 end
