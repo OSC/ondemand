@@ -67,6 +67,7 @@ class Launcher
     @id = opts[:id].to_s.match?(ID_REX) ? opts[:id].to_s : Launcher.next_id
     @title = opts[:title].to_s
     @created_at = opts[:created_at]
+    @source_path = opts[:source_path]
     sm_opts = {
       form:       opts[:form] || [],
       attributes: opts[:attributes] || {}
@@ -152,6 +153,11 @@ class Launcher
     path = Launcher.path(project_dir, id)
 
     path.mkpath unless path.exist?
+
+    if File.readable?(@source_path.to_s)
+      @smart_attributes = Launcher.from_yaml(@source_path, project_dir).smart_attributes
+    end
+
     File.write(Launcher.launcher_form_file(path), to_yaml)
 
     true

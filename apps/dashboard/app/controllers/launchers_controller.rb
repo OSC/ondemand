@@ -43,7 +43,7 @@ class LaunchersController < ApplicationController
     cloned = @launcher.dup
     cloned.title += " (Copy)"
     @launcher = cloned
-    @launchers = Launcher.all(@project.directory)
+    @source_path = Launcher.launcher_form_file(Launcher.path(@launcher.project_dir, @launcher.id))
     render :new
   end
 
@@ -102,7 +102,7 @@ class LaunchersController < ApplicationController
   end
 
   def create_launcher_params
-    params.permit({ launcher: [:title] }, :project_id)
+    params.permit({ launcher: [:title, :source_path] }, :project_id)
   end
 
   def show_launcher_params
