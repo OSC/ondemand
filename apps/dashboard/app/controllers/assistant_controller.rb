@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 # Controller for the AI Assistant chat functionality
+#
+# SECURITY MODEL:
+# - API key is stored server-side only (ENV['OPENAI_API_KEY']) - never exposed to browser
+# - All OpenAI API calls are proxied through Rails backend
+# - Uses Rails authentication/authorization - only authenticated OOD users can access
+# - Tool actions (file ops, job management) run with user's own permissions via CurrentUser
+# - File operations restricted to user's accessible directories (enforced by file system permissions)
+# - Job operations only affect the current user's jobs (filtered by username)
+# - Destructive actions (delete_job) should request user confirmation via AI prompt
 class AssistantController < ApplicationController
   include ActionController::Live
   skip_before_action :verify_authenticity_token, only: [:chat]
@@ -334,6 +343,11 @@ class AssistantController < ApplicationController
     end
   end
 
+  # Execute tool function calls from the AI
+  # SECURITY: All operations run with current user's permissions
+  # - File operations use user's filesystem permissions
+  # - Job operations filtered by CurrentUser.name
+  # - Cluster access controlled by OOD cluster configuration
   def execute_tool(name, arguments)
     case name
     when 'list_jobs'
@@ -341,7 +355,7 @@ class AssistantController < ApplicationController
     when 'get_job_details'
       tool_get_job_details(arguments)
     when 'delete_job'
-      tool_delete_job(arguments)
+      tool_delete_job(arguments)  # Mutative: prompts AI to confirm with user first
     when 'list_files'
       tool_list_files(arguments)
     when 'get_file_info'
@@ -355,11 +369,11 @@ class AssistantController < ApplicationController
     when 'get_available_apps'
       tool_get_available_apps
     when 'create_file'
-      tool_create_file(arguments)
+      tool_create_file(arguments)  # Mutative: creates files in user's accessible directories
     when 'submit_batch_job'
-      tool_submit_batch_job(arguments)
+      tool_submit_batch_job(arguments)  # Mutative: submits job as current user
     when 'create_and_submit_job'
-      tool_create_and_submit_job(arguments)
+      tool_create_and_submit_job(arguments)  # Mutative: creates script + submits as current user
     else
       { error: "Unknown tool: #{name}" }
     end
@@ -368,6 +382,9 @@ class AssistantController < ApplicationController
   end
 
   # Tool implementations
+  
+  # List jobs - filtered to current user only
+  # SECURITY: Only returns jobs owned by CurrentUser.name
   def tool_list_jobs(args)
     jobs = []
     clusters = args['cluster'] ? [OODClusters[args['cluster'].to_sym]].compact : OODClusters.select(&:job_allow?)
@@ -375,6 +392,7 @@ class AssistantController < ApplicationController
     clusters.each do |cluster|
       begin
         adapter = cluster.job_adapter
+        # SECURITY: Filter to only current user's jobs
         cluster_jobs = adapter.info_all(attrs: nil).select { |j| j.job_owner == CurrentUser.name }
         
         cluster_jobs.each do |job|
