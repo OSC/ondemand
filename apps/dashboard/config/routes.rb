@@ -13,7 +13,11 @@ Rails.application.routes.draw do
       delete '/jobs/:cluster/:jobid' => 'projects#delete_job', :as => 'delete_job'
       post '/jobs/:cluster/:jobid/stop' => 'projects#stop_job', :as => 'stop_job'
       post '/zip_to_template' => 'projects#zip_to_template', :as => 'zip_to_template'
-
+      
+      # These routes are unused but prevent errors
+      get 'workflows', to: 'projects#show', on: :member
+      get 'launchers', to: 'projects#show', on: :member
+      
       resources :workflows do
         member do
           post 'submit'
