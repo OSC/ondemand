@@ -16,7 +16,10 @@
     </strong>
   </td>
   <td></td>
-  <td></td>
+<% unless private_dir %>
+  <td class="d-above-xl"></td>
+  <td class="d-above-xl"></td>
+<% end%>
   <td></td>
   <td></td>
 </tr>
@@ -25,39 +28,88 @@
     <td>
       <i class="fa <%= file[:directory] ? 'fa-folder' : 'fa-file' %>">
     </td>
-    <td>
-      <%- if file[:directory] -%>
+    <% full_path = "#{path}/#{file[:name]}" %>
+    <%- if file[:directory] -%>
+      <td>
         <%= link_to(
           file[:name], 
           directory_frame_path(
-            path: "#{path}/#{file[:name]}"
+            path: full_path
           ),
           title: "Show #{file[:name]} directory",
           data: { turbo_frame: "project_directory" }
         )
         %>
-      <%- else -%>
+      </td>
+      <td></td>
+    <%- else -%>
+      <td>
         <%= 
           link_to(
             file[:name],
-            files_path("#{path}/#{file[:name]}"),
+            files_path(full_path),
             format: :html,
             target: "_top",
           )
         %>
-      <%- end -%>
+      </td>
+      <td class="p-0 py-1">
+        <div class="btn-group actions-btn-group">
+          <button type="button"
+                  class="actions-btn btn btn-outline-dark btn-sm dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+            <span class="fa fa-ellipsis-v"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="actionsDropdown_<%= h full_path %>">
+            <li>
+              <%= link_to files_path(full_path, format: :html),
+                          target: '_top',
+                          class: 'view-file dropdown-item',
+                          data: { row_index: nil } do %>
+                <i class="fas fa-eye" aria-hidden="true"></i>
+                View
+              <% end %>
+            </li>
+
+            <% if file[:downloadable] %>
+              <li>
+                <%= link_to OodAppkit.editor.edit(path: full_path).to_s,
+                            target: '_top',
+                            class: 'edit-file dropdown-item' do %>
+                  <i class="fas fa-edit" aria-hidden="true"></i>
+                  Edit
+                <% end %>
+              </li>
+
+              <li>
+                <%= link_to files_path(full_path, download: '1'),
+                            target: '_top',
+                            class: 'download-file dropdown-item' do %>
+                  <i class="fas fa-download" aria-hidden="true"></i>
+                  Download
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </td>
+    <%- end -%>
+
+    <td class="<%= private_dir ? '' : 'd-above-xl' %>">
+      <%= number_to_human_size(file[:size]) %>
     </td>
-    <td>
-      <%= file[:size] %>
-    </td>
-    <td>
+    <td class="<%= private_dir ? '' : 'd-above-xl' %>">
       <%= DateTime.parse(Time.at(file[:date]).to_s).strftime("%F %r") %>
     </td>
-    <td>
-      <%= file[:owner] %>
-    </td>
-    <td>
-      <%= file[:mode] %>
-    </td>
+    <% unless private_dir %>
+      <td>
+        <%= file[:owner] %>
+      </td>
+      <td>
+        <%= file[:mode].to_s(8).rjust(3,'0')[-3..] %>
+      </td>
+    <% end %>
   </tr>
 <%- end -%>

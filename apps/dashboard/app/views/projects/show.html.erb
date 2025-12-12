@@ -79,7 +79,7 @@
     </div>
   </div>
   <div class="col-md-6">
-    <div id="directory_browser" class="border border-2 p-3 mt-3 mb-5 bg-white rounded">
+    <div id="directory_browser" class="border border-2 px-1 py-3 mt-3 mb-5 bg-white rounded">
       <h2 class="lead fw-bolder d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
       <hr>
       <%= turbo_frame_tag 'project_directory', 
@@ -91,7 +91,7 @@
         <div class="d-flex justify-content-center">
           <div id="loading-icon" class="spinner-border rem-5" role="status">
             <span class="sr-only">Loading...</span> 
-          </div>
+	  </div>
         </div>
       <%- end -%>
     </div>

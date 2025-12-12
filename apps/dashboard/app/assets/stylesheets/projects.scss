@@ -2,6 +2,14 @@
   vertical-align: middle !important;
 }
 
+th.d-above-xl, td.d-above-xl {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: table-cell;
+  }
+}
+
 .project-card {
   width: fit-content;
 }
