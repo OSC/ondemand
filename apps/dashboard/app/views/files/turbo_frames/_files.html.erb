@@ -100,7 +100,11 @@
     <td class="<%= private_dir ? '' : 'd-above-xl' %>">
       <%= number_to_human_size(file[:size]) %>
     </td>
-    <td class="<%= private_dir ? '' : 'd-above-xl' %>">
+    <td class="<%= file[:directory] ? '' : 'update-to-human-size' %> <%= private_dir ? '' : 'd-above-xl' %>">">
+      <%= file[:size] %>
+    </td>
+    <td>
+>>>>>>> Stashed changes
       <%= DateTime.parse(Time.at(file[:date]).to_s).strftime("%F %r") %>
     </td>
     <% unless private_dir %>
