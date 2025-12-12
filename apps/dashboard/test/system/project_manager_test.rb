@@ -1017,7 +1017,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       Project.stubs(:dataroot).returns(Pathname.new(dir))
 
       visit(projects_root_path)
-      click_on(I18n.t('dashboard.jobs_import_shared_project'))
+      assert_text(I18n.t('dashboard.jobs_import_shared_project'))
+      find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
 
       fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
       click_on(I18n.t('dashboard.import'))
