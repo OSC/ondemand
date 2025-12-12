@@ -39,9 +39,6 @@ class LaunchersController < ApplicationController
 
   # GET /projects/:id/launchers/:id/clone
   def clone
-    cloned = @launcher.dup
-    cloned.title += " (Copy)"
-    @launcher = cloned
     @source_path = Launcher.launcher_form_file(Launcher.path(@launcher.project_dir, @launcher.id))
     render :new
   end
