@@ -490,6 +490,7 @@
 #      name: LDAP
 #      config:
 #        host: openldap.my_center.edu:636
+#        rootCA: /etc/ssl/certs/ldap-ca.pem
 #        insecureSkipVerify: false
 #        bindDN: cn=admin,dc=example,dc=org
 #        bindPW: admin
