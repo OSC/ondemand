@@ -35,14 +35,28 @@
 #
 
 
+# Redirect all http traffic to the https Open OnDemand portal URI
+#     http://*:8080
+#     #=> https://test.proxy.name:8080
+#
+<VirtualHost *:80>
+  ServerName test.server.name
+
+  RewriteEngine On
+  RewriteRule ^(.*) https://%{HTTP_HOST}:8080$1 [R=301,NE,L]
+</VirtualHost>
 
 # The Open OnDemand portal VirtualHost
 #
-<VirtualHost *:80>
+<VirtualHost *:8080>
+  ServerName test.server.name
 
-  ErrorLog  "logs/example.com_error.log"
-  CustomLog "logs/example.com_access.log" combined
+  ErrorLog  "logs/test.server.name_error_ssl.log"
+  CustomLog "logs/test.server.name_access_ssl.log" combined
 
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} !^(test.proxy.name(:8080)?)?$ [NC]
+  RewriteRule ^(.*) https://test.proxy.name:8080$1 [R=301,NE,L]
 
   # Support maintenance page during outages of OnDemand
   RewriteEngine On
@@ -57,8 +71,17 @@
 
   TraceEnable off
 
-  Header always set Content-Security-Policy "frame-ancestors http://example.com;"
+  Header always set Content-Security-Policy "frame-ancestors https://test.proxy.name;"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 
+  SSLEngine On
+  SSLCertificateFile "/etc/pki/tls/certs/www.example.com.crt"
+  SSLCertificateKeyFile "/etc/pki/tls/private/www.example.com.key"
+
+  # Enable SSL Proxying
+  SSLProxyEngine On
+  SSLProxyCheckPeerCN Off
+  SSLProxyCheckPeerName Off
 
   # Lua configuration
   #
@@ -77,7 +100,7 @@
   #
   SetEnv OOD_PUN_STAGE_CMD "sudo /opt/ood/nginx_stage/sbin/nginx_stage"
 
-  SetEnv OOD_ALLOWED_HOSTS "8.8.8.8,example.com"
+  SetEnv OOD_ALLOWED_HOSTS "test.proxy.name,test.server.name"
 
 
   #
@@ -86,7 +109,7 @@
 
   # Serve up publicly available assets from local file system:
   #
-  #     http://localhost:80/public/favicon.ico
+  #     https://test.server.name:8080/public/favicon.ico
   #     #=> /var/www/ood/public/favicon.ico
   #
   Alias "/public" "/var/www/ood/public"
@@ -96,18 +119,41 @@
     Require all granted
   </Directory>
 
-  # Reverse proxy traffic to backend webserver through IP sockets:
+
+
+  # Reverse proxy SSL traffic to backend webserver through IP sockets:
   #
-  #     http://localhost:80/node/HOST/PORT/index.html
-  #     #=> http://HOST:PORT/node/HOST/PORT/index.html
+  #     https://test.server.name:8080/configured-secure-node/HOST/PORT/index.html
+  #     #=> https://HOST:PORT/configured-secure-node/HOST/PORT/index.html
   #
-  <LocationMatch "^/node/(?<host>[^/]+)/(?<port>\d+)">
+  <LocationMatch "^/configured-secure-node/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
     AuthType openid-connect
     Require valid-user
 
 
     RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
-    RequestHeader edit* Cookie "JSESSIONID=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
 
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
@@ -117,42 +163,61 @@
 
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
-    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/node/%{MATCH_HOST}e/%{MATCH_PORT}e"
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
 
-  # Reverse "relative" proxy traffic to backend webserver through IP sockets:
+  #  Reverse "relative" proxy SSL traffic to backend webserver through IP sockets:
   #
-  #     http://localhost:80/rnode/HOST/PORT/index.html
-  #     #=> http://HOST:PORT/index.html
+  #     https://test.server.name:8080/configured-secure-rnode/HOST/PORT/index.html
+  #     #=> https://HOST:PORT/index.html
   #
-  <LocationMatch "^/rnode/(?<host>[^/]+)/(?<port>\d+)(?<uri>/.*|)">
+  <LocationMatch "^/configured-secure-rnode/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)(?<uri>/.*|)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
     AuthType openid-connect
     Require valid-user
 
 
     RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
-    RequestHeader edit* Cookie "JSESSIONID=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
 
     # ProxyPassReverse implementation
-    Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+    Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
-    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
 
-
-
   # Reverse proxy traffic to backend PUNs through Unix domain sockets:
   #
-  #     http://localhost:80/pun/dev/app/simulations/1
+  #     https://test.server.name:8080/pun/dev/app/simulations/1
   #     #=> unix:/path/to/socket|http://localhost/pun/dev/app/simulations/1
   #
   SetEnv OOD_PUN_URI "/pun"
@@ -180,7 +245,7 @@
   # Control backend PUN for authenticated user:
   # NB: See mod_ood_proxy for more details.
   #
-  #    http://localhost:80/nginx/stop
+  #    https://test.server.name:8080/nginx/stop
   #    #=> stops the authenticated user's PUN
   #
   SetEnv OOD_NGINX_URI "/nginx"
@@ -194,22 +259,22 @@
 
   # Redirect root URI to specified URI
   #
-  #     http://localhost:80/
-  #     #=> http://localhost:80/pun/sys/dashboard
+  #     https://test.server.name:8080/
+  #     #=> https://test.server.name:8080/pun/sys/dashboard
   #
   RedirectMatch ^/$ "/pun/sys/dashboard"
 
   # Redirect logout URI to specified redirect URI
   #
-  #     http://localhost:80/logout
-  #     #=> http://localhost:80/pun/sys/dashboard/logout
+  #     https://test.server.name:8080/logout
+  #     #=> https://test.server.name:8080/pun/sys/dashboard/logout
   #
   Redirect "/logout" "/pun/sys/dashboard/logout"
 
 
   # Maintenance location
   #
-  #     http://localhost:80/public/maintenance
+  #     https://test.server.name:8080/public/maintenance
   #     #=> Displays /var/www/ood/public/maintenance/index.html
   #
   <Directory "/var/www/ood/public/maintenance">

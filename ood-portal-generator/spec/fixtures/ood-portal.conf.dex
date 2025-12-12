@@ -60,6 +60,7 @@
 
   Header always set Content-Security-Policy "frame-ancestors http://example.com;"
 
+
   # OIDC configuration
   #
   OIDCProviderMetadataURL http://example.com/dex/.well-known/openid-configuration
@@ -115,6 +116,8 @@
     AllowOverride None
     Require all granted
   </Directory>
+
+
 
 
 

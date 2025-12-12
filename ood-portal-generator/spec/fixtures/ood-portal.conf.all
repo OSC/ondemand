@@ -89,6 +89,9 @@ Listen 8080
   SSLCertificateFile "/etc/pki/tls/certs/www.example.com.crt"
   SSLCertificateKeyFile "/etc/pki/tls/private/www.example.com.key"
 
+  # Enable SSL Proxying
+  SSLProxyEngine On
+
   # Lua configuration
   #
   LuaRoot "/some/other/mod_ood_proxy/lib"
@@ -218,6 +221,100 @@ Listen 8080
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    LuaHookFixups node_proxy.lua node_proxy_handler
+  </LocationMatch>
+
+  # Reverse proxy SSL traffic to backend webserver through IP sockets:
+  #
+  #     https://test.server.name:8080/configured-secure-node/HOST/PORT/index.html
+  #     #=> https://HOST:PORT/configured-secure-node/HOST/PORT/index.html
+  #
+  <LocationMatch "^/configured-secure-node/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
+    AuthType openid-connect
+    Require valid-user
+
+
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
+
+    # ProxyPassReverse implementation
+    Header edit Location "^[^/]+//[^/]+" ""
+
+    # ProxyPassReverseCookieDomain implementation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
+
+    # ProxyPassReverseCookiePath implementation
+    Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    LuaHookFixups node_proxy.lua node_proxy_handler
+  </LocationMatch>
+
+  #  Reverse "relative" proxy SSL traffic to backend webserver through IP sockets:
+  #
+  #     https://test.server.name:8080/configured-secure-rnode/HOST/PORT/index.html
+  #     #=> https://HOST:PORT/index.html
+  #
+  <LocationMatch "^/configured-secure-rnode/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)(?<uri>/.*|)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
+    AuthType openid-connect
+    Require valid-user
+
+
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
+
+    # ProxyPassReverse implementation
+    Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # ProxyPassReverseCookieDomain implementation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
+
+    # ProxyPassReverseCookiePath implementation
+    Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
