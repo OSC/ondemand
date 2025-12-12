@@ -19,7 +19,6 @@ class LaunchersController < ApplicationController
   ].freeze
 
   def new
-    @launchers = Launcher.all(@project.directory)
     @launcher = Launcher.new(project_dir: @project.directory)
   end
 
