@@ -12,6 +12,12 @@
         <div class="col workflow-title">
           <%= workflow.name %>
         </div>
+
+        <div class="col-auto">
+          <%= link_to clone_project_workflow_path(@project.id, workflow.id), title: "Clone workflow" do %>
+            <%= icon_tag(URI.parse("fas://clone")) %>
+          <% end %>
+        </div>
       </div>
 
       <div class="row">

@@ -172,30 +172,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # POST /projects/:project_id/zip
-  # zip current project using project.zip_to_template
-  def zip_to_template
-    @project = Project.find(zip_to_template_params[:project_id])
-
-    if @project.nil?
-      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: zip_to_template_params[:project_id])
-      return
-    end
-
-    begin
-      zip_file = @project.zip_to_template
-      redirect_to(
-        project_path(@project.id),
-        notice: I18n.t('dashboard.project_zip_success_message')
-      )
-    rescue StandardError => e
-      redirect_to(
-        project_path(@project.id),
-        alert: I18n.t('dashboard.project_zip_error_message', error: e.message.to_s)
-      )
-    end
-  end
-
   # POST /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
     @project = Project.find(job_details_params[:project_id])
@@ -236,7 +212,7 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:name, :directory, :description, :icon, :id, :template, :group_owner)
+      .permit(:name, :directory, :description, :icon, :id, :template, :group_owner, :setgid)
   end
 
   def show_project_params

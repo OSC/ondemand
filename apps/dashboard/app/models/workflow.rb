@@ -10,16 +10,16 @@ class Workflow
 
     def find(id, project_dir)
       file = "#{workflow_dir(project_dir)}/#{id}.yml"
-      Workflow.from_yaml(file, project_dir)
+      Workflow.from_yaml(file)
     end
 
     def all(project_dir)
       Dir.glob("#{workflow_dir(project_dir)}/*.yml").map do |file|
-        Workflow.from_yaml(file, project_dir)
+        Workflow.from_yaml(file)
       end.compact.sort_by { |s| s.created_at }
     end
 
-    def from_yaml(file, project_dir)
+    def from_yaml(file)
       contents = File.read(file)
       opts = YAML.safe_load(contents).deep_symbolize_keys
       new(opts)
@@ -43,7 +43,7 @@ class Workflow
     end
   end
 
-  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata
+  attr_accessor :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata
 
   validates :name, presence: true
   validates :launcher_ids, length: {minimum: 1}
@@ -52,7 +52,7 @@ class Workflow
     @id = attributes[:id]
     @name = attributes[:name]
     @description = attributes[:description]
-    @project_dir = attributes[:project_dir]
+    @project_dir = attributes[:project_dir].to_s
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
     @metadata = attributes[:metadata] || {}
@@ -73,7 +73,7 @@ class Workflow
   def save
     return false unless valid?(:create)
 
-    if @project_dir.nil?
+    if @project_dir.empty?
       errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
       return false
     end
@@ -85,7 +85,7 @@ class Workflow
 
   def save_manifest(operation)
     FileUtils.touch(manifest_file) unless manifest_file.exist?
-    Pathname(manifest_file).write(to_h.deep_stringify_keys.compact.to_yaml)
+    Pathname(manifest_file).write(to_h.as_json.compact.to_yaml)
 
     true
   rescue StandardError => e

@@ -161,6 +161,8 @@ zh-CN:
     jobs_project_directory_help_html: 留空将创建一个新目录。 <br />默认位置： %{root_directory}
     jobs_project_directory_placeholder: 项目目录绝对路径
     jobs_project_generic_error: 处理您的请求时出错：%{error}
+    jobs_project_group_help: 确保选择包含所有预期合作者的组。如果这不是一个协作项目，建议使用默认组。
+    jobs_project_group_owner: 组
     jobs_project_imported: 项目成功导入！
     jobs_project_invalid_configuration_clusters: 需要 HPC 集群。请联系您的管理员将其添加到系统中。
     jobs_project_invalid_configuration_scripts: 您的项目需要一个可执行脚本。请使用文件应用程序上传脚本。
@@ -172,6 +174,7 @@ zh-CN:
     jobs_project_name_validation: 项目名称只能包含字母、数字、短横线、下划线和空格
     jobs_project_not_found: 找不到项目 %{project_id}
     jobs_project_save_error: 无法保存清单到 %{path}
+    jobs_project_setgid_help: 保持 setgid 选中状态可确保项目文件以所选组创建。不会影响您主目录中的项目。
     jobs_project_validation_error: 无效请求。请查看以下错误
     jobs_select_directory_placeholder: 单击下面的项目以导入到您的主页（可选）
     jobs_workflow_created: 工作流创建成功！
@@ -187,6 +190,7 @@ zh-CN:
     jobs_workflow_submitted: 工作流提交成功！
     jobs_workflows: 工作流
     launch: 启动
+    logo_alt_text: 欢迎使用 Open OnDemand
     mode: 模式
     module_browser_last_updated: 最后更新：%{last_updated}
     module_browser_title: 模块浏览器
