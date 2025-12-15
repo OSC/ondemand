@@ -175,6 +175,8 @@ fr-CA:
     jobs_project_directory_help_html: 'Laisser vide et un nouveau répertoire sera créé. <br />Emplacement par défaut : %{root_directory}'
     jobs_project_directory_placeholder: Chemin absolu du répertoire du projet
     jobs_project_generic_error: 'Erreur lors du traitement de votre requête : %{error}'
+    jobs_project_group_help: Assurez-vous de choisir le groupe qui inclut tous les collaborateurs prévus. Si ce n'est pas un projet collaboratif, le groupe par défaut est recommandé.
+    jobs_project_group_owner: Groupe
     jobs_project_imported: Projet importé avec succès !
     jobs_project_invalid_configuration_clusters: Un cluster HPC est requis. Contactez votre administrateur pour en ajouter un au système.
     jobs_project_invalid_configuration_scripts: Un script exécutable est requis pour votre projet. Téléversez un script via l’application de fichiers.
@@ -186,6 +188,7 @@ fr-CA:
     jobs_project_name_validation: Le nom du projet ne peut contenir que des lettres, chiffres, tirets, soulignés et espaces
     jobs_project_not_found: Impossible de trouver le projet %{project_id}
     jobs_project_save_error: Impossible d’enregistrer le manifest dans %{path}
+    jobs_project_setgid_help: Laisser l'option setgid cochée garantit que les fichiers du projet sont créés avec le groupe sélectionné. N'affecte pas les projets dans votre répertoire personnel.
     jobs_project_validation_error: Requête invalide. Veuillez vérifier les erreurs ci-dessous
     jobs_select_directory_placeholder: Cliquez sur le projet ci-dessous pour l'importer sur votre page d'accueil (optionnel)
     jobs_workflow_created: Flux de travail créé avec succès !
@@ -201,6 +204,7 @@ fr-CA:
     jobs_workflow_submitted: Flux de travail soumis avec succès !
     jobs_workflows: Flux de travail
     launch: Lancer
+    logo_alt_text: Bienvenue dans Open OnDemand
     mode: Mode
     module_browser_last_updated: 'Dernière mise à jour : %{last_updated}'
     module_browser_title: Navigateur de modules
