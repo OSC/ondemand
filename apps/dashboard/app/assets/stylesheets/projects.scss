@@ -127,6 +127,7 @@ th.d-above-xl, td.d-above-xl {
 
   .job-popup {
     position: absolute;
+    z-index: 1;  
     left: 5.75%;
     width: 88.5%; // 2*left + width should always = 100
 
