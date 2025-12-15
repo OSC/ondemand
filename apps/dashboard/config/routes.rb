@@ -12,7 +12,6 @@ Rails.application.routes.draw do
       get '/jobs/:cluster/:jobid' => 'projects#job_details', :defaults => { :format => 'turbo_stream' }, :as => 'job_details'
       delete '/jobs/:cluster/:jobid' => 'projects#delete_job', :as => 'delete_job'
       post '/jobs/:cluster/:jobid/stop' => 'projects#stop_job', :as => 'stop_job'
-      post '/zip_to_template' => 'projects#zip_to_template', :as => 'zip_to_template'
 
       resources :workflows do
         member do
@@ -27,6 +26,7 @@ Rails.application.routes.draw do
         post 'submit', on: :member
         post 'save', on: :member
         get 'render_button', on: :member
+        get 'clone', on: :member
       end
     end
   end

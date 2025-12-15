@@ -68,6 +68,10 @@ th.d-above-xl, td.d-above-xl {
   float: right;
 }
 
+.launcher-item {
+  justify-content: right;
+}
+
 .launcher-title {
   font-size: 1em;
   font-weight: bold;
@@ -82,4 +86,63 @@ th.d-above-xl, td.d-above-xl {
 
 .workflow-item {
   justify-content: right;
+}
+
+#project_jobs_files_col {
+  padding-right: 0px;
+
+  .jobs-files-item {
+    padding-right: 0px;
+  }
+
+  #jobs_item {
+    @media (min-width: 992px) {
+      padding-right: calc(var(--bs-gutter-x) * 0.5);
+    }
+  }
+}
+
+.pill-box {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0px;
+  padding: 0px;
+
+  .job-pill {
+    width: min-content;
+    padding: 0rem 1rem;
+
+    button.badge {
+      color: var(--bs-btn-hover-color);
+    }
+
+    button.badge.collapsed {
+      color: var(--bs-badge-color);
+    }
+
+    button.badge.collapsed:hover {
+      color: var(--bs-btn-hover-color);
+    }
+  }
+
+  .job-popup {
+    position: absolute;
+    left: 5.75%;
+    width: 88.5%; // 2*left + width should always = 100
+
+    @media (min-width: 576px) {
+      left: 37%;
+      width: 59.5%;
+    }
+
+    @media (min-width: 992px) {
+      left: 18.5%;
+      width: 30.5%;
+    }
+
+    @media (min-width: 1600px) {
+      left: 18%;
+      width: 31.9%;
+    }
+  }
 }
