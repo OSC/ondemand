@@ -175,6 +175,8 @@ en-CA:
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
+    jobs_project_group_help: Make sure to choose the group that includes all intended collaborators. If this is not a collaborative project, the default group is recommended.
+    jobs_project_group_owner: Group
     jobs_project_imported: Project successfully imported!
     jobs_project_invalid_configuration_clusters: An HPC cluster is required. Contact your administrator to add one to the system.
     jobs_project_invalid_configuration_scripts: An executable script is required for your project. Upload a script using the file application.
@@ -186,6 +188,7 @@ en-CA:
     jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_save_error: Cannot save manifest to %{path}
+    jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. This does not affect projects in your home directory.
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
     jobs_workflow_created: Workflow successfully created!
@@ -201,6 +204,7 @@ en-CA:
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflows: Workflows
     launch: Launch
+    logo_alt_text: Welcome to Open OnDemand
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser

@@ -1,8 +1,11 @@
-
 <%= bootstrap_form_for(@launcher, url: project_launchers_path) do |form| %>
+  <% clone_action = (action_name == 'clone') %>
+  <% if clone_action %>
+    <%= form.hidden_field :source_path, value: @source_path %>
+  <% end %>
 
   <div class="field">
-    <%= form.text_field :title, label: "Name" %>
+    <%= form.text_field :title, label: "Name", value: clone_action ? @launcher.title + ' (Copy)' : '' %>
   </div>
 
   <div class="actions">
