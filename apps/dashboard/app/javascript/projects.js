@@ -82,7 +82,7 @@ function moveCompletedPanel(id, newHTML) {
 
   const div = document.createElement('div');
   div.id = id;
-  div.classList.add('col-md-4');
+  div.classList.add('job-pill');
 
   const row = document.getElementById('completed_jobs');
   row.appendChild(div);
