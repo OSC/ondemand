@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Remove project zip functionality (#4876)\
+Add clone button to launchers (#4858)\
+Added clone button for workflows (#4857)\
+refactor project.rb (#4864)\
+add setgid option to projects (#4872)\
+Refactor to use cluster title (#4869)\
+Toggle group ownership on projects (#4792)\
+add alt text to welcome logo (#4867)\
+Remove deleted projects from lookup (#4840)\
+Improve messages on import error reports (#4851)\
+Add important native job info message for Workflows (#4831)\
+Lint a random file (#4859)\
+use cluster title method in form item (#4614)\
+Update Changelog (#4860)\
+update localizations (#4861)\
+remove partition from sacctmgr (#4475)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
