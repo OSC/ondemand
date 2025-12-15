@@ -172,6 +172,8 @@ ja_JP:
     jobs_project_directory_help_html: '空のままにすると新しいディレクトリが作成されます。<br />デフォルトの場所: %{root_directory}'
     jobs_project_directory_placeholder: プロジェクトディレクトリの絶対パス
     jobs_project_generic_error: 'リクエストの処理中にエラーが発生しました: %{error}'
+    jobs_project_group_help: すべての意図したコラボレーターを含むグループを選択してください。これはコラボレーションプロジェクトでない場合、デフォルトのグループを推奨します。
+    jobs_project_group_owner: グループ
     jobs_project_imported: プロジェクトが正常にインポートされました！
     jobs_project_invalid_configuration_clusters: HPCクラスターが必要です。システムに追加するために管理者に連絡してください。
     jobs_project_invalid_configuration_scripts: プロジェクトには実行可能なスクリプトが必要です。ファイルアプリケーションを使用してスクリプトをアップロードしてください。
@@ -183,6 +185,7 @@ ja_JP:
     jobs_project_name_validation: プロジェクト名には文字、数字、ダッシュ、アンダースコア、スペースのみを含めることができます。
     jobs_project_not_found: プロジェクト%{project_id}が見つかりません。
     jobs_project_save_error: マニフェストを%{path}に保存できません。
+    jobs_project_setgid_help: setgidをチェックしたままにすると、プロジェクトファイルが選択したグループで作成されます。ホームディレクトリ内のプロジェクトには影響しません。
     jobs_project_validation_error: 無効なリクエストです。以下のエラーを確認してください。
     jobs_select_directory_placeholder: ホームページにインポートするために以下のプロジェクトをクリックしてください（オプション）
     jobs_workflow_created: ワークフローが正常に作成されました！
@@ -198,6 +201,7 @@ ja_JP:
     jobs_workflow_submitted: ワークフローが正常に送信されました！
     jobs_workflows: ワークフロー
     launch: 起動
+    logo_alt_text: Open OnDemandへようこそ
     mode: モード
     module_browser_last_updated: '最終更新日: %{last_updated}'
     module_browser_title: モジュールブラウザ
