@@ -17,10 +17,10 @@
                 <%= icon_tag(URI.parse(project.icon)) %>
                 <%= content_tag(:div, class: 'project-title') do %>
                   <%= project.title %>
-		  <small class="text-muted">
-		    <%= PosixFile.username_from_cache(project.directory.stat.uid) unless owned %>
-		  </small>
-		<% end %>
+                  <small class="text-muted">
+                    <%= PosixFile.username_from_cache(project.directory.stat.uid) unless owned %>
+                  </small>
+                <% end %>
               </strong>
             </div>
             <div class="row">
