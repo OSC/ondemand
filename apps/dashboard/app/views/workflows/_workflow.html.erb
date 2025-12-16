@@ -34,7 +34,7 @@
         <div class="col">
           <%= button_to I18n.t('dashboard.delete'), project_workflow_path(@project.id, workflow.id),
                         method: :delete,
-                        data: { confirm: t('dashboard.jobs_project_delete_project_confirmation') },
+                        data: { confirm: t('dashboard.jobs_workflow_delete_confirmation') },
                         class: "btn btn-danger launcher-button" %>
         </div>
       </div>
