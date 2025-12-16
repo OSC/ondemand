@@ -130,14 +130,14 @@ class ProjectsController < ApplicationController
       return
     end
 
+    # We call deletable? here because it is always false after destroy!
     deletable = @project.deletable?
     begin
       @project.destroy!
       message_key = "dashboard.jobs_project_#{deletable ? 'deleted' : 'removed'}"
       redirect_to projects_path, notice: I18n.t(message_key)
     rescue StandardError => e
-      @project.errors.add(:destroy, "#{e.class}:#{e.message}") unless e.message == "StandardError"
-      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_generic_error', error: "#{e.class}: #{e.message}")
     end
   end
 

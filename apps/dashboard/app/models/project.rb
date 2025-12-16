@@ -194,13 +194,9 @@ class Project
     false
   end
 
-  def remove_from_lookup
+  def remove_from_lookup!
     new_table = Project.lookup_table.except(id)
     File.write(Project.lookup_file, new_table.to_yaml)
-    true
-  rescue StandardError => e
-    errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
-    false
   end
 
   def editable? 
@@ -221,7 +217,7 @@ class Project
   end
 
   def destroy!
-    raise StandardError unless remove_from_lookup
+    remove_from_lookup!
     return unless deletable?
     
     FileUtils.remove_dir(configuration_directory)
