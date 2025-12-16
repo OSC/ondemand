@@ -206,6 +206,10 @@ class Project
     false
   end
 
+  def mine?
+    directory.stat.uid == CurrentUser.uid
+  end
+
   def private?
     directory.to_s.start_with?(CurrentUser.home)
   end
