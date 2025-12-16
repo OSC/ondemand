@@ -188,9 +188,10 @@ en:
     jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_save_error: Cannot save manifest to %{path}
+    jobs_project_select_directory: Select project directory
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. Does not affect projects in your home directory.
     jobs_project_validation_error: Invalid Request. Please review the errors below
-    jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
+    jobs_select_directory_placeholder: Click on project to import
     jobs_workflow_created: Workflow successfully created!
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description

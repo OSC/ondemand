@@ -34,6 +34,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
+    @project = Project.new
     @projects = Project.all
     @templates = templates
   end
@@ -45,10 +46,10 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
-  # GET /projects/import
-  def import
-    @project = Project.new
+  # GET /projects/possible_imports
+  def possible_imports
     @projects = Project.possible_imports
+    render(partial: 'projects/possible_imports', layout: false)
   end
 
   # GET /projects/:id/edit
@@ -113,10 +114,10 @@ class ProjectsController < ApplicationController
       if Project.import_to_lookup(@project)
         redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
       else
-        redirect_to project_import_path, alert: @project.collect_errors
+        redirect_to projects_path, alert: @project.collect_errors
       end
     else
-      redirect_to project_import_path, alert: @project.collect_errors
+      redirect_to projects_path, alert: @project.collect_errors
     end
   end
 

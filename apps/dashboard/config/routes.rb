@@ -4,7 +4,7 @@ require 'authz/app_developer_constraint'
 
 Rails.application.routes.draw do
   if Configuration.can_access_projects?
-    get 'projects/import' => 'projects#import', :as => 'project_import'
+    get 'projects/possible_imports' => 'projects#possible_imports', :as => 'project_possible_imports'
     post 'projects/import' => 'projects#import_save', :as => 'project_import_save'
 
     resources :projects do

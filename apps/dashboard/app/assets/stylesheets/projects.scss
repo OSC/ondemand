@@ -40,6 +40,35 @@
   }
 }
 
+.thin-outline {
+  outline: 0.15em solid rgb(36, 36, 36);
+}
+
+.button-icon {
+  font-size: 175%;
+  margin-left: 2rem;
+}
+
+#import-wrapper {
+  padding-bottom: 1rem;
+  border-radius: 0px 0px var(--bs-border-radius) var(--bs-border-radius);
+
+  .project-icon {
+    width: fit-content;
+    aspect-ratio: 1;
+  }
+
+  .app-icon {
+    font-size: 4rem;
+    height: auto;
+  }
+
+  .project-title {
+    width: 7rem;
+    font-size: 1rem;
+  }
+}
+
 .job-info {
   cursor: default;
 }
