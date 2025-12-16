@@ -99,7 +99,7 @@
     <td class="<%= file[:directory] ? '' : 'update-to-human-size' %> <%= private_dir ? '' : 'd-above-xl' %>">
       <%= file[:size] %>
     </td>
-    <td>
+    <td class="<%= private_dir ? '' : 'd-above-xl' %>">
       <%= DateTime.parse(Time.at(file[:date]).to_s).strftime("%F %r") %>
     </td>
     <% unless private_dir %>
