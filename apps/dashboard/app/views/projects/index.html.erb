@@ -10,11 +10,17 @@
     <div class="row">
       <% @projects.each do |project| %>
         <div id="<%= project.id %>" class="project-card">
-          <%= link_to(project_path(project.id), class: 'text-dark project-icon') do %>
+          <% owned = project.directory.stat.uid == CurrentUser.uid %>
+          <%= link_to(project_path(project.id), class: "text-dark project-icon #{owned ? '' : 'shared'}") do %>
             <div class="text-center d-flex justify-content-center">
               <strong>
                 <%= icon_tag(URI.parse(project.icon)) %>
-                <%= content_tag(:div, project.title, class: 'project-title') %>
+                <%= content_tag(:div, class: 'project-title') do %>
+                  <%= project.title %>
+		  <small class="text-muted">
+		    <%= PosixFile.username_from_cache(project.directory.stat.uid) unless owned %>
+		  </small>
+		<% end %>
               </strong>
             </div>
             <div class="row">

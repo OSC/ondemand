@@ -40,6 +40,19 @@
   }
 }
 
+.project-icon.shared {
+  padding: 1.75rem 2rem;
+
+  .project-title {
+    margin: .5rem 0rem;
+  }
+
+  small {
+    display: block;
+    font-size: 1rem;
+  }
+}
+
 .thin-outline {
   outline: 0.15em solid rgb(36, 36, 36);
 }
