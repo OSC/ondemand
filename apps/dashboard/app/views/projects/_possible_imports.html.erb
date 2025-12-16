@@ -17,9 +17,9 @@
                 <strong>
                   <%= icon_tag(URI.parse(project.icon)) %>
                   <div class="project-title mt-2 mb-0">
-		    <%= project.title %>
-		    <%= content_tag(:small, PosixFile.username_from_cache(project.directory.stat.uid), class:'text-muted d-block') %>
-		  </div>
+                    <%= project.title %>
+                    <%= content_tag(:small, PosixFile.username_from_cache(project.directory.stat.uid), class:'text-muted d-block') %>
+                  </div>
                 </strong>
               </div>
             <% end %>
