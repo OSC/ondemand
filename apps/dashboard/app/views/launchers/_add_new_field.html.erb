@@ -2,23 +2,25 @@
   <button class="btn btn-success my-3" id="add_new_field_button" type="button">
       Add new option
   </button>
+
+  <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default my-3 float-end',  title: 'Return to projects page' %>
 </div>
 
 <template id="new_field_template">
-  <div class="mb-3 editable-form-field">
+  <div class="editable-form-field">
 
     <div class="row mx-0 justify-text-center my-2">
       <!-- help text is going to be place here in javascript -->
     </div>
 
     <div class="row mx-0">
-      <select class="form-control w-50" id="add_new_field_select">
+      <select class="form-control" id="add_new_field_select">
         <!-- options added in javascript -->
       </select>
 
-      <div class='ms-auto'>
-        <button class="btn btn-success mx-1" type="button"><%= t('dashboard.add') %></button>
-        <button class="btn btn-danger mx-1" type="button"><%= t('dashboard.remove') %></button>
+      <div class='mt-3 p-0'>
+        <button class="btn btn-success" type="button"><%= t('dashboard.add') %></button>
+        <button class="btn btn-danger float-end" type="button"><%= t('dashboard.remove') %></button>
       </div>
     </div>
   </div>

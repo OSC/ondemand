@@ -1,17 +1,21 @@
-<%= bootstrap_form_for(@launcher, url: project_launchers_path) do |form| %>
-  <% clone_action = (action_name == 'clone') %>
-  <% if clone_action %>
-    <%= form.hidden_field :source_path, value: @source_path %>
+
+<div class="card col-sm-9 col-md-6 justify-self-center">
+  <div class="card-body">
+  <%= bootstrap_form_for(@launcher, url: project_launchers_path) do |form| %>
+    <% clone_action = (action_name == 'clone') %>
+    <% if clone_action %>
+      <%= form.hidden_field :source_path, value: @source_path %>
+    <% end %>
+    
+    <div class="field">
+      <%= form.text_field :title, label: "Launcher Name", value: clone_action ? @launcher.title + ' (Copy)' : '' %>
+    </div>
+
+    <div class="actions d-flex justify-content-between">
+      <%= form.submit 'Save', class: 'btn btn-primary' %>
+
+      <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default',  title: 'Return to projects page' %>
+    </div>
   <% end %>
-
-  <div class="field">
-    <%= form.text_field :title, label: "Name", value: clone_action ? @launcher.title + ' (Copy)' : '' %>
   </div>
-
-  <div class="actions">
-    <%= form.submit 'Save', class: 'btn btn-primary' %>
-  </div>
-<% end %>
-
-
-<%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default mt-3',  title: 'Return to projects page' %>
+</div>
