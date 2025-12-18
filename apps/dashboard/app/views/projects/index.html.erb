@@ -24,10 +24,16 @@
             </div>
             <div class="row">
               <div class="col">
-                <%= button_to 'Delete', project_path(project.id), class: 'btn btn-danger w-100 mb-1', method: 'delete',
-                    form: { class: 'button_to d-flex justify-content-center' },
-                    data: { confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation') }
-                %>
+		<% if project.deletable? %>
+                  <%= button_to 'Delete', project_path(project.id), class: 'btn btn-danger w-100 mb-1', method: 'delete',
+                        form: { class: 'button_to d-flex justify-content-center' },
+                        data: { confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation') }
+                  %>
+		<% else %>
+                  <%= button_to 'Remove', project_path(project.id), class: 'btn btn-warning w-100 mb-1', method: 'delete',
+                    form: { class: 'button_to d-flex justify-content-center' }
+                  %>
+                <% end %>
               </div>
               <% if project.editable? %>
               <div class="col">

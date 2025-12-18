@@ -197,13 +197,9 @@ class Project
     false
   end
 
-  def remove_from_lookup
+  def remove_from_lookup!
     new_table = Project.lookup_table.except(id)
     File.write(Project.lookup_file, new_table.to_yaml)
-    true
-  rescue StandardError => e
-    errors.add(:update, "Cannot update lookup file with error #{e.class}:#{e.message}")
-    false
   end
 
   def mine?
@@ -237,6 +233,14 @@ class Project
   def editable? 
     File.writable?(manifest_path)
   end
+
+  def deletable?
+    begin
+      File.stat(configuration_directory).uid == CurrentUser.uid
+    rescue
+      false
+    end
+  end
   
   def icon_class
     # rails will prepopulate the tag with fa- so just the name is needed
@@ -244,8 +248,10 @@ class Project
   end
 
   def destroy!
-    remove_from_lookup
-    FileUtils.remove_dir(configuration_directory, true)
+    remove_from_lookup!
+    return unless deletable?
+    
+    FileUtils.remove_dir(configuration_directory)
   end
 
   def configuration_directory
