@@ -26,7 +26,9 @@
 <% files.each do |file| %>
   <tr>
     <td>
-      <i class="fa <%= file[:directory] ? 'fa-folder' : 'fa-file' %>">
+      <% type = file[:directory] ? 'folder' : 'file' %>
+      <i class="fa fa-<%= type %>" title="<%= type %>">
+      <span class="sr-only"> <%= type %> </span>
     </td>
     <% full_path = "#{path}/#{file[:name]}" %>
     <%- if file[:directory] -%>
