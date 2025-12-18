@@ -6,7 +6,7 @@
       title: link.title,
       data: {
         'bs-toggle': "popover",
-        'bs-content': manifest_markdown(link.description),
+        'bs-content': content_tag(:div, manifest_markdown(link.description), class: 'ood-appkit markdown'),
         'bs-html': true,
         'bs-trigger': "hover",
         container: "body",
