@@ -105,3 +105,8 @@ export function appsDatatablePageLength() {
   const cfgData = configData();
   return parseInt(cfgData['appsDatatablePageLength']);
 }
+
+export function userHome() {
+  const cfgData = configData();
+  return cfgData['userHome'];
+}
