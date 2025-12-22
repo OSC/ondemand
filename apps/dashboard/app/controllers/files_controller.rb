@@ -259,6 +259,8 @@ class FilesController < ApplicationController
   def validate_path!
     if posix_file?
       AllowlistPolicy.default.validate!(@path)
+      raise(StandardError, t('dashboard.files_doesnt_exist', path: @path.to_s)) unless @path.exist?
+      raise(StandardError, t('dashboard.files_not_readable', path: @path.to_s)) unless @path.readable?
     elsif @path.remote_type.nil?
       raise StandardError, "Remote #{@path.remote} does not exist"
     elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == 'local' || @path.remote_type == 'alias')

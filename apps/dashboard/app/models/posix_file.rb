@@ -4,7 +4,7 @@ class PosixFile
   attr_reader :path, :stat
 
   delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
-  delegate :directory?, :realpath, :readable?, :file?, to: :path
+  delegate :directory?, :realpath, :readable?, :file?, :exist?, to: :path
   delegate :size, to: :stat
 
   # include to give us number_to_human_size
@@ -206,6 +206,7 @@ class PosixFile
   def can_download_file?
     download_file_size_limit = Configuration.file_download_max
     unless file? && readable?
+      Rails.logger.debug(Thread.current.backtrace.join("\n"))
       error = I18n.t('dashboard.files_directory_download_unauthorized')
       return [false, error]
     end
