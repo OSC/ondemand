@@ -1,0 +1,20 @@
+---
+servername: test.server.name
+proxy_server: test.proxy.name
+
+port: 8080
+
+ssl:
+  - 'SSLCertificateFile "/etc/pki/tls/certs/www.example.com.crt"'
+  - 'SSLCertificateKeyFile "/etc/pki/tls/private/www.example.com.key"'
+
+auth:
+  - 'AuthType openid-connect'
+  - 'Require valid-user'
+
+host_regex: '[\w.-]+\.site\.edu'
+secure_node_uri: '/configured-secure-node'
+secure_rnode_uri: '/configured-secure-rnode'
+ssl_proxy:
+  - 'SSLProxyCheckPeerCN Off'
+  - 'SSLProxyCheckPeerName Off'

@@ -126,6 +126,14 @@ Listen <%= addr_port %>
   <%- end -%>
   <%- end -%>
 
+  <%- if @secure_node_uri || @secure_rnode_uri -%>
+  # Enable SSL Proxying
+  SSLProxyEngine On
+  <%- @ssl_proxy.to_a.each do |line| -%>
+  <%= line %>
+  <%- end -%>
+  <%- end -%>
+
   <%- if @oidc_uri && @oidc_provider_metadata_url && @oidc_client_id -%>
   # OIDC configuration
   #
@@ -286,6 +294,82 @@ Listen <%= addr_port %>
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=<%= @rnode_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    LuaHookFixups node_proxy.lua node_proxy_handler
+  </LocationMatch>
+  <%- end -%>
+
+  <%- if @secure_node_uri -%>
+  # Reverse proxy SSL traffic to backend webserver through IP sockets:
+  #
+  #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @secure_node_uri %>/HOST/PORT/index.html
+  #     #=> https://HOST:PORT<%= @secure_node_uri %>/HOST/PORT/index.html
+  #
+  <LocationMatch "^<%= @secure_node_uri %>/(?<host><%= @host_regex %>)/(?<port>\d+)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
+    <%- @auth.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
+    <%- end -%>
+
+    # ProxyPassReverse implementation
+    Header edit Location "^[^/]+//[^/]+" ""
+
+    # ProxyPassReverseCookieDomain implementation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
+
+    # ProxyPassReverseCookiePath implementation
+    Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=<%= @secure_node_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    LuaHookFixups node_proxy.lua node_proxy_handler
+  </LocationMatch>
+  <%- end -%>
+
+  <%- if @secure_rnode_uri -%>
+  #  Reverse "relative" proxy SSL traffic to backend webserver through IP sockets:
+  #
+  #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @secure_rnode_uri %>/HOST/PORT/index.html
+  #     #=> https://HOST:PORT/index.html
+  #
+  <LocationMatch "^<%= @secure_rnode_uri %>/(?<host><%= @host_regex || "[^/]+" %>)/(?<port>\d+)(?<uri>/.*|)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
+    <%- @auth.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
+    <%- end -%>
+
+    # ProxyPassReverse implementation
+    Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "<%= @secure_rnode_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # ProxyPassReverseCookieDomain implementation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
+
+    # ProxyPassReverseCookiePath implementation
+    Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=<%= @secure_rnode_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
