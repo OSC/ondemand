@@ -206,7 +206,6 @@ class PosixFile
   def can_download_file?
     download_file_size_limit = Configuration.file_download_max
     unless file? && readable?
-      Rails.logger.debug(Thread.current.backtrace.join("\n"))
       error = I18n.t('dashboard.files_directory_download_unauthorized')
       return [false, error]
     end
