@@ -6,22 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#4891)\
-result of running rake update manually (#4884)\
-disable shared settings when appropriate (#4890)\
-Add 'Remove' button to shared projects (#4855)\
-Render markdown properly in popups (#4888)\
-Add owner name to shared projects (#4883)\
-update workflow delete confirmation (#4874)\
-Clean up new launcher form (#4865)\
-Fixed template override lookup for support ticket API content (#4844)\
-Rework project action buttons (#4819)\
-Prevent password_fields from displaying (#4875)\
-lint a random file (#4882)\
-Fix breakpoints on Projects show page (#4829)\
-lint a random file (#4878)\
-update localizations (#4880)\
-Add rootCA (#4871)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -66,6 +50,8 @@ Add rootCA (#4871)
 - Remove world writable from files in OOD packaged gems in [4717](https://github.com/OSC/ondemand/pull/4717).
 - Special characters can now appear in auto_accounts by adding data-alias in [4673](https://github.com/OSC/ondemand/pull/4673).
 - Maintenance and needs auth pages are never cached in [4799](https://github.com/OSC/ondemand/pull/4799).
+- password_fields are never displayable in [4875](https://github.com/OSC/ondemand/pull/4875).
+- Popups now correctly render markdown in [4888](https://github.com/OSC/ondemand/pull/4888).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
