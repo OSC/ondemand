@@ -187,11 +187,14 @@ fr-CA:
     jobs_project_name_placeholder: Nom du projet
     jobs_project_name_validation: Le nom du projet ne peut contenir que des lettres, chiffres, tirets, soulignés et espaces
     jobs_project_not_found: Impossible de trouver le projet %{project_id}
+    jobs_project_removed: Projet retiré de la recherche !
     jobs_project_save_error: Impossible d’enregistrer le manifest dans %{path}
+    jobs_project_select_directory: Sélectionner le répertoire du projet
     jobs_project_setgid_help: Laisser l'option setgid cochée garantit que les fichiers du projet sont créés avec le groupe sélectionné. N'affecte pas les projets dans votre répertoire personnel.
     jobs_project_validation_error: Requête invalide. Veuillez vérifier les erreurs ci-dessous
     jobs_select_directory_placeholder: Cliquez sur le projet ci-dessous pour l'importer sur votre page d'accueil (optionnel)
     jobs_workflow_created: Flux de travail créé avec succès !
+    jobs_workflow_delete_confirmation: Supprimer tous les contenus du flux de travail ?
     jobs_workflow_deleted: Flux de travail supprimé avec succès !
     jobs_workflow_description_placeholder: Description du flux de travail
     jobs_workflow_failed: Le flux de travail a échoué avec l'erreur %{error}

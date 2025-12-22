@@ -173,11 +173,14 @@ zh-CN:
     jobs_project_name_placeholder: 项目名称
     jobs_project_name_validation: 项目名称只能包含字母、数字、短横线、下划线和空格
     jobs_project_not_found: 找不到项目 %{project_id}
+    jobs_project_removed: 项目已从查找中移除！
     jobs_project_save_error: 无法保存清单到 %{path}
+    jobs_project_select_directory: 选择项目目录
     jobs_project_setgid_help: 保持 setgid 选中状态可确保项目文件以所选组创建。不会影响您主目录中的项目。
     jobs_project_validation_error: 无效请求。请查看以下错误
     jobs_select_directory_placeholder: 单击下面的项目以导入到您的主页（可选）
     jobs_workflow_created: 工作流创建成功！
+    jobs_workflow_delete_confirmation: 删除工作流的所有内容？
     jobs_workflow_deleted: 工作流删除成功！
     jobs_workflow_description_placeholder: 工作流描述
     jobs_workflow_failed: 工作流失败，错误 %{error}

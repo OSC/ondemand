@@ -184,11 +184,14 @@ ja_JP:
     jobs_project_name_placeholder: プロジェクト名
     jobs_project_name_validation: プロジェクト名には文字、数字、ダッシュ、アンダースコア、スペースのみを含めることができます。
     jobs_project_not_found: プロジェクト%{project_id}が見つかりません。
+    jobs_project_removed: プロジェクトがルックアップから削除されました！
     jobs_project_save_error: マニフェストを%{path}に保存できません。
+    jobs_project_select_directory: プロジェクトディレクトリを選択
     jobs_project_setgid_help: setgidをチェックしたままにすると、プロジェクトファイルが選択したグループで作成されます。ホームディレクトリ内のプロジェクトには影響しません。
     jobs_project_validation_error: 無効なリクエストです。以下のエラーを確認してください。
     jobs_select_directory_placeholder: ホームページにインポートするために以下のプロジェクトをクリックしてください（オプション）
     jobs_workflow_created: ワークフローが正常に作成されました！
+    jobs_workflow_delete_confirmation: ワークフローのすべての内容を削除しますか？
     jobs_workflow_deleted: ワークフローが正常に削除されました！
     jobs_workflow_description_placeholder: ワークフローの説明
     jobs_workflow_failed: ワークフローがエラー %{error} で失敗しました
