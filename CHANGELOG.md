@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#4891)\
+result of running rake update manually (#4884)\
+disable shared settings when appropriate (#4890)\
+Add 'Remove' button to shared projects (#4855)\
+Render markdown properly in popups (#4888)\
+Add owner name to shared projects (#4883)\
+update workflow delete confirmation (#4874)\
+Clean up new launcher form (#4865)\
+Fixed template override lookup for support ticket API content (#4844)\
+Rework project action buttons (#4819)\
+Prevent password_fields from displaying (#4875)\
+lint a random file (#4882)\
+Fix breakpoints on Projects show page (#4829)\
+lint a random file (#4878)\
+update localizations (#4880)\
+Add rootCA (#4871)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
