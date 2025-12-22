@@ -1,6 +1,6 @@
 <tr>
   <td>
-    <% dir_type = I18n.t('dashboard.files_type_directory') %>
+    <% dir_type = I18n.t('dashboard.directory') %>
     <i class="fa fa-folder" title="<%= dir_type %>">
     <span class="sr-only"> <%= dir_type %> </span>
   </td>
@@ -28,7 +28,7 @@
 <% files.each do |file| %>
   <tr>
     <td>
-      <% type = I18n.t("dashboard.files_type_#{file[:directory] ? 'directory' : 'file'}") %>
+      <% type = I18n.t("dashboard.#{file[:directory] ? 'directory' : 'file'}") %>
       <i class="fa fa-<%= file[:directory] ? 'folder' : 'file' %>" title="<%= type %>">
       <span class="sr-only"> <%= type %> </span>
     </td>

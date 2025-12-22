@@ -134,6 +134,7 @@ en:
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    file: File
     file_quotas: File Quotas
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
@@ -151,8 +152,6 @@ en:
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
-    files_type_file: File
-    files_type_directory: Directory
     import: Import
     job_info: Job Info
     jobs_create_blank_project: Create a new project
