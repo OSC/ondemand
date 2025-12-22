@@ -50,6 +50,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove world writable from files in OOD packaged gems in [4717](https://github.com/OSC/ondemand/pull/4717).
 - Special characters can now appear in auto_accounts by adding data-alias in [4673](https://github.com/OSC/ondemand/pull/4673).
 - Maintenance and needs auth pages are never cached in [4799](https://github.com/OSC/ondemand/pull/4799).
+- password_fields are never displayable in [4875](https://github.com/OSC/ondemand/pull/4875).
+- Popups now correctly render markdown in [4888](https://github.com/OSC/ondemand/pull/4888).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
