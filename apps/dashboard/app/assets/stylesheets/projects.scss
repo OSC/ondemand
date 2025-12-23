@@ -6,6 +6,14 @@
   vertical-align: middle !important;
 }
 
+th.d-above-xl, td.d-above-xl {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: table-cell;
+  }
+}
+
 .project-card {
   width: fit-content;
 }
@@ -165,6 +173,7 @@
 
   .job-popup {
     position: absolute;
+    z-index: 1;  
     left: 5.75%;
     width: 88.5%; // 2*left + width should always = 100
 
