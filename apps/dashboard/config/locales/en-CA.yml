@@ -134,6 +134,7 @@ en-CA:
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    file: File
     file_quotas: File Quotas
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to
@@ -141,9 +142,11 @@ en-CA:
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_doesnt_exist: "%{path} does not exist."
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_download_zip: Download as zip
     files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
+    files_not_readable: You do not have sufficient permissions to read '%{path}'.
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories

@@ -134,6 +134,7 @@ fr-CA:
     development_apps_caption: Application bac à sable
     directory: Répertoire
     edit: Modifier
+    file: Fichier
     file_quotas: Quotas de fichiers
     files_directory_download_error_modal_title: Répertoire trop volumineux à télécharger
     files_directory_download_unauthorized: Vous ne pouvez télécharger qu’un répertoire au format zip si vous y avez les droits de lecture et d’exécution
@@ -141,9 +142,11 @@ fr-CA:
     files_directory_size_calculation_timeout: Délai dépassé lors de la détermination de la taille du répertoire.
     files_directory_size_unknown: 'Erreur avec le code de sortie %{exit_code} lors de la détermination de la taille du répertoire : %{error}'
     files_directory_too_large: Le répertoire est trop volumineux pour être téléchargé en zip. Il doit faire moins de %{download_directory_size_limit} octets.
+    files_doesnt_exist: "%{path} n'existe pas."
     files_download_not_enabled: Le téléchargement de fichiers n’est pas activé sur ce serveur.
     files_download_zip: Télécharger en zip
     files_file_too_large: Le fichier est trop volumineux pour être téléchargé. Les téléchargements de fichiers doivent être inférieurs à %{download_file_size_limit} octets.
+    files_not_readable: Vous n'avez pas les autorisations suffisantes pour lire '%{path}'.
     files_remote_dir_not_created: Répertoire %{path} non créé
     files_remote_disabled: Le support de fichiers distants n’est pas activé
     files_remote_empty_dir_unsupported: Les répertoires vides ne sont pas pris en charge à distance
