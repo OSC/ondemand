@@ -15,7 +15,8 @@
     
     <div class="workflow-actions">
       <button id="btn-submit-workflow" class: 'btn btn-primary'><%= I18n.t('dashboard.jobs_workflow_submit') %></button>
-      <button id="btn-reset-workflow" class: 'btn btn-danger'><%= I18n.t('dashboard.reset') %></button>
+      <button id="btn-reload-workflow" class: 'btn btn-danger'><%= I18n.t('dashboard.reload') %></button>
+      <button id="btn-clear-workflow" class: 'btn btn-danger'><%= I18n.t('dashboard.clear') %></button>
       <button id="btn-save-workflow" class: 'btn btn-info'><%= I18n.t('dashboard.save') %></button>
       <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
       <span class="hint">Click title to select and drag. Connect via clicking two launchers.</span>

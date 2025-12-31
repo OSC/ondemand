@@ -23,7 +23,7 @@ class WorkflowState {
     this.job_hash = {};
   }
 
-  resetWorkflow(e) {
+  clearWorkflow() {
     this.boxes.forEach(b => b.el.remove());
     this.boxes.clear();
     this.edges.forEach(e => e.el.remove());
@@ -31,7 +31,6 @@ class WorkflowState {
     this.dag.reset();
     this.pointer.resetZoom();
     this.#clearSession();
-    alert('Workflow reset.');
   }
 
   saveToSession() {
@@ -529,7 +528,8 @@ class DragController {
   const zoomResetButton = document.getElementById('zoom-reset');
   const selectedLauncher = document.getElementById('select_launcher');
   const submitWorkflowButton = document.getElementById('btn-submit-workflow');
-  const resetWorkflowButton = document.getElementById('btn-reset-workflow');
+  const reloadWorkflowButton = document.getElementById('btn-reload-workflow');
+  const clearWorkflowButton = document.getElementById('btn-clear-workflow');
   const saveWorkflowButton = document.getElementById('btn-save-workflow');
   const projectId = document.getElementById('project-id').value;
   const workflowId = document.getElementById('workflow-id').value;
@@ -806,10 +806,12 @@ class DragController {
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  submitWorkflowButton.addEventListener('click', debounce(async () => {
-    await workflowState.saveToBackend(true);
+  submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
+  reloadWorkflowButton.addEventListener('click', debounce(() => {
+    workflowState.clearWorkflow();
+    workflowState.restorePreviousState(makeLauncher, createEdge);
   }, 300));
-  resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
+  clearWorkflowButton.addEventListener('click', debounce(() => workflowState.clearWorkflow(), 300));
   saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));
 
   zoomInButton.addEventListener('click', () => { pointer.zoomIn(); });

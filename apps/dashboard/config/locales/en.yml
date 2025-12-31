@@ -126,6 +126,7 @@ en:
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
+    clear: Clear
     close: Close
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
@@ -257,6 +258,7 @@ en:
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
     remove: Remove
+    reload: Reload
     reset: Reset
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
