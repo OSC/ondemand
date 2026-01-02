@@ -120,6 +120,7 @@ zh-CN:
     development_apps_caption: 沙盒应用
     directory: 目录
     edit: 编辑
+    file: 文件
     file_quotas: 文件配额
     files_directory_download_error_modal_title: 目录太大，无法下载
     files_directory_download_unauthorized: 您只能下载您具有读取和执行权限的文件或目录
@@ -127,9 +128,11 @@ zh-CN:
     files_directory_size_calculation_timeout: 尝试确定目录大小时超时。
     files_directory_size_unknown: 尝试确定目录大小时出现状态 %{exit_code} 的错误：%{error}
     files_directory_too_large: 该目录太大，无法作为 zip 下载。目录应小于 %{download_directory_size_limit} 字节。
+    files_doesnt_exist: "%{path} 不存在。"
     files_download_not_enabled: 此服务器上未启用文件下载。
     files_download_zip: 下载为 zip
     files_file_too_large: 文件太大，无法下载。文件下载应小于 %{download_file_size_limit} 字节。
+    files_not_readable: 您没有足够的权限读取 '%{path}'。
     files_remote_dir_not_created: 未创建目录 %{path}
     files_remote_disabled: 未启用远程文件支持
     files_remote_empty_dir_unsupported: 远程不支持空目录

@@ -131,6 +131,7 @@ ja_JP:
     development_apps_caption: サンドボックスアプリ
     directory: ディレクトリ
     edit: 編集
+    file: ファイル
     file_quotas: ファイルクォータ
     files_directory_download_error_modal_title: ダウンロードするにはディレクトリが大きすぎます
     files_directory_download_unauthorized: 読み取りおよび実行アクセス権のあるファイルまたはディレクトリのみをダウンロードできます
@@ -138,9 +139,11 @@ ja_JP:
     files_directory_size_calculation_timeout: ディレクトリサイズを決定しようとしてタイムアウトしました。
     files_directory_size_unknown: ディレクトリサイズを決定しようとしたときのステータス%{exit_code}のエラー：%{error}
     files_directory_too_large: ディレクトリはZIPとしてダウンロードするには大きすぎます。ディレクトリは%{download_directory_size_limit}バイト未満である必要があります。
+    files_doesnt_exist: "%{path} は存在しません。"
     files_download_not_enabled: このサーバーではファイルのダウンロードは有効になっていません。
     files_download_zip: zipとしてダウンロード
     files_file_too_large: ファイルはダウンロードするには大きすぎます。ファイルのダウンロードは%{download_file_size_limit}バイト未満である必要があります。
+    files_not_readable: "'%{path}' を読み取るための十分な権限がありません。"
     files_remote_dir_not_created: ディレクトリ%{path}を作成できませんでした。
     files_remote_disabled: リモートファイルのサポートは有効になっていません。
     files_remote_empty_dir_unsupported: リモートは空のディレクトリをサポートしていません。
