@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Update files table in Projects (#4877)\
-Fix file editor control bar overflow (#4903)\
-better localizable file error messages (#4899)\
-lock `@hotwired/turbo-rails` below 8 (#4900)\
-Add SSL reverse proxy paths (#3179) (#4839)\
-Update Changelog (#4895)\
-lint a random file (#4894)\
-update localizations (#4896)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
@@ -108,6 +100,7 @@ update localizations (#4896)
 - nsf_access_events widget has been added in [4726](https://github.com/OSC/ondemand/pull/4726).
 - Resolution widgets now have a help field for clarity in [4765](https://github.com/OSC/ondemand/pull/4765).
 - Added el10 support in [4804](https://github.com/OSC/ondemand/pull/4804).
+- Two reverse proxy paths have been added to support SSL/TLS transport to origins in [4839](https://github.com/OSC/ondemand/pull/4839).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
