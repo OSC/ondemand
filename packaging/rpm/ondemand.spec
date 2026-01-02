@@ -302,7 +302,6 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/activejobs
 %{_localstatedir}/www/ood/apps/sys/myjobs
 %{_localstatedir}/www/ood/apps/sys/projects
-%dir %attr(700, root, root) %{_localstatedir}/www/ood/apps/sys/projects
 %{_localstatedir}/www/ood/apps/sys/projects/manifest.yml
 %{_localstatedir}/www/ood/apps/sys/system-status
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
