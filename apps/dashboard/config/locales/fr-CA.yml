@@ -203,7 +203,6 @@ fr-CA:
     jobs_workflow_name_placeholder: Nom du flux de travail
     jobs_workflow_name_validation: Le nom du flux de travail ne peut contenir que des lettres, des chiffres, des tirets, des traits de soulignement et des espaces
     jobs_workflow_not_found: Impossible de trouver le flux de travail %{workflow_id}
-    jobs_workflow_submit: Soumettre le flux de travail
     jobs_workflow_submitted: Flux de travail soumis avec succès !
     jobs_workflows: Flux de travail
     launch: Lancer

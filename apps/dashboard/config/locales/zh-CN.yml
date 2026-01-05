@@ -189,7 +189,6 @@ zh-CN:
     jobs_workflow_name_placeholder: 工作流名称
     jobs_workflow_name_validation: 工作流名称只能包含字母、数字、短横线、下划线和空格
     jobs_workflow_not_found: 找不到工作流 %{workflow_id}
-    jobs_workflow_submit: 提交工作流
     jobs_workflow_submitted: 工作流提交成功！
     jobs_workflows: 工作流
     launch: 启动

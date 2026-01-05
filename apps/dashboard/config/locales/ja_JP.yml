@@ -200,7 +200,6 @@ ja_JP:
     jobs_workflow_name_placeholder: ワークフロー名
     jobs_workflow_name_validation: ワークフロー名には、文字、数字、ダッシュ、アンダースコア、スペースのみを含めることができます
     jobs_workflow_not_found: ワークフロー %{workflow_id} が見つかりません
-    jobs_workflow_submit: ワークフローを送信
     jobs_workflow_submitted: ワークフローが正常に送信されました！
     jobs_workflows: ワークフロー
     launch: 起動
