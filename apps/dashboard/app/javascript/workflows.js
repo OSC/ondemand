@@ -528,7 +528,7 @@ class DragController {
   const zoomResetButton = document.getElementById('zoom-reset');
   const selectedLauncher = document.getElementById('select_launcher');
   const submitWorkflowButton = document.getElementById('btn-submit-workflow');
-  const reloadWorkflowButton = document.getElementById('btn-reload-workflow');
+  const restoreWorkflowButton = document.getElementById('btn-restore-workflow');
   const clearWorkflowButton = document.getElementById('btn-clear-workflow');
   const saveWorkflowButton = document.getElementById('btn-save-workflow');
   const projectId = document.getElementById('project-id').value;
@@ -807,7 +807,7 @@ class DragController {
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
   submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
-  reloadWorkflowButton.addEventListener('click', debounce(() => {
+  restoreWorkflowButton.addEventListener('click', debounce(() => {
     workflowState.clearWorkflow();
     workflowState.restorePreviousState(makeLauncher, createEdge);
   }, 300));
