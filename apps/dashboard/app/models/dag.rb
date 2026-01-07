@@ -20,16 +20,16 @@ class Dag
   # This will be use to do Depth-First-Search on graph
   # Save edges are integer representing index of launcher_ids
   def create_adjacency_matrix(from_ids, to_ids, launcher_ids)
-    @adj_mat = Array.new(@size) { Array.new(@size, false) }
+    @adj_mat = Array.new(size) { Array.new(size, false) }
 
     m = to_ids.size
     for i in 0...m
       next if from_ids[i].nil? || to_ids[i].nil?
       next unless launcher_ids.include?(from_ids[i]) || launcher_ids.include?(to_ids[i])
 
-      u = @index[from_ids[i]]
-      v = @index[to_ids[i]]
-      @adj_mat[u][v] = true
+      u = index[from_ids[i]]
+      v = index[to_ids[i]]
+      adj_mat[u][v] = true
     end
   end
 
@@ -41,10 +41,10 @@ class Dag
     for i in 0...m
       next if from_ids[i].nil? || to_ids[i].nil?
       next unless launcher_ids.include?(from_ids[i]) && launcher_ids.include?(to_ids[i])
-      next unless @order.include?(from_ids[i]) && @order.include?(to_ids[i])
+      next unless order.include?(from_ids[i]) && order.include?(to_ids[i])
 
-      @dependency[to_ids[i]] ||= []
-      @dependency[to_ids[i]] << from_ids[i]
+      dependency[to_ids[i]] ||= []
+      dependency[to_ids[i]] << from_ids[i]
     end
   end
 
@@ -54,8 +54,8 @@ class Dag
     visited[parent] = true
     stack[parent] = true
 
-    for child in 0...@size
-      if @adj_mat[parent][child]
+    for child in 0...size
+      if adj_mat[parent][child]
         if stack[child]
           @has_cycle = true  # To detect cycle
           return
@@ -65,22 +65,22 @@ class Dag
     end
 
     # Append the launcher_id in order is there is no other launcher dependent on it
-    @order.unshift(launcher_ids[parent])
+    order.unshift(launcher_ids[parent])
     stack[parent] = false
   end
 
   def topological_sort(launcher_ids)
     @order = []
     @has_cycle = false
-    visited = Array.new(@size, false)
-    stack = Array.new(@size, false)
+    visited = Array.new(size, false)
+    stack = Array.new(size, false)
 
-    if !@start_launcher.nil?
-      dfs(@index[@start_launcher], visited, stack, launcher_ids)
+    if !start_launcher.nil?
+      dfs(index[start_launcher], visited, stack, launcher_ids)
     else
-      for i in 0...@size
+      for i in 0...size
         dfs(i, visited, stack, launcher_ids) unless visited[i]
-        break if @has_cycle
+        break if has_cycle
       end
     end
   end
