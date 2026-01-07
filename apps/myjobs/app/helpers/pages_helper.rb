@@ -5,6 +5,6 @@ module PagesHelper
   #
   # @return [String, nil] The title of the cluster or nil if unassigned
   def cluster_title(cluster_key)
-    OODClusters[cluster_key].titlex if cluster_key && OODClusters[cluster_key]
+    OODClusters[cluster_key].title if cluster_key && OODClusters[cluster_key]
   end
 end
