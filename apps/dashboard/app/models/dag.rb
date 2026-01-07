@@ -25,7 +25,7 @@ class Dag
     m = to_ids.size
     for i in 0...m
       next if from_ids[i].nil? || to_ids[i].nil?
-      next unless launcher_ids.include?(from_ids[i]) || launcher_ids.include?(to_ids[i])
+      next unless launcher_ids.include?(from_ids[i]) && launcher_ids.include?(to_ids[i])
 
       u = index[from_ids[i]]
       v = index[to_ids[i]]
