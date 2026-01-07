@@ -35,30 +35,32 @@
   </div>
 </div>
 <div class="row">
-  <div class="col">
-    <%= link_to(
-      edit_project_launcher_path(@project.id, launcher.id),
-      class: "btn btn-primary launcher-button #{disabled_class}",
-      id: "edit_#{launcher.id}",
-      title: edit_title) do
-    %>
-      <%= I18n.t('dashboard.edit') %>
-    <%- end %>
-  </div>
-
-  <% unless remove_delete_button %>
+  <% if launcher.editable? %>
     <div class="col">
-      <%= button_to(
-        project_launcher_path(@project.id, launcher.id),
-        id: "delete_#{launcher.id}",
-        class: "btn btn-danger launcher-button",
-        title: delete_title,
-        data: { confirm: I18n.t('dashboard.jobs_launchers_delete_script_confirmation') },
-        method: :delete) do
+      <%= link_to(
+        edit_project_launcher_path(@project.id, launcher.id),
+        class: "btn btn-primary launcher-button #{disabled_class}",
+        id: "edit_#{launcher.id}",
+        title: edit_title) do
       %>
-        <%= I18n.t('dashboard.delete') %>
-      <%- end -%>
+        <%= I18n.t('dashboard.edit') %>
+      <%- end %>
     </div>
+
+    <% unless remove_delete_button %>
+      <div class="col">
+        <%= button_to(
+          project_launcher_path(@project.id, launcher.id),
+          id: "delete_#{launcher.id}",
+          class: "btn btn-danger launcher-button",
+          title: delete_title,
+          data: { confirm: I18n.t('dashboard.jobs_launchers_delete_script_confirmation') },
+          method: :delete) do
+        %>
+          <%= I18n.t('dashboard.delete') %>
+        <%- end -%>
+      </div>
+    <% end %>
   <% end %>
   
   <% if show_job_info_button %>
