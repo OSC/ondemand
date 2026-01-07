@@ -3,6 +3,7 @@
 class Launcher
   include ActiveModel::Model
   include JobLogger
+  include ProjectPermissions
 
   class ClusterNotFound < StandardError; end
 
@@ -151,14 +152,14 @@ class Launcher
     return false unless valid?(:save)
 
     @created_at = Time.now.to_i if @created_at.nil?
-    path = Launcher.path(project_dir, id)
-
-    path.mkpath unless path.exist?
 
     if File.readable?(@source_path.to_s)
       @smart_attributes = Launcher.from_yaml(@source_path, project_dir).smart_attributes
     end
 
+    make_launcher_dir
+
+    path = Launcher.path(project_dir, id)
     File.write(Launcher.launcher_form_file(path), to_yaml)
 
     true
@@ -251,6 +252,14 @@ class Launcher
 
   def self.launcher_form_file(path)
     File.join(path, "form.yml")
+  end
+
+  def make_launcher_dir
+    with_proper_umask(project_dir) do
+      dir_path = Launcher.path(project_dir, id)
+      dir_path.mkpath unless dir_path.exist?
+      FileUtils.touch(cache_file_path) unless cache_file_path.exist?
+    end
   end
 
   # parameters you got from the controller that affect the attributes, not form.
