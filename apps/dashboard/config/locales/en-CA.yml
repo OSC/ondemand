@@ -126,6 +126,7 @@ en-CA:
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
+    clear: Clear
     close: Close
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
@@ -206,7 +207,6 @@ en-CA:
     jobs_workflow_name_placeholder: Workflow name
     jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
-    jobs_workflow_submit: Submit Workflow
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflows: Workflows
     launch: Launch
@@ -258,6 +258,7 @@ en-CA:
     recently_used_apps_title: Recently Used Apps
     remove: Remove
     reset: Reset
+    restore: Restore
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
@@ -285,6 +286,7 @@ en-CA:
     skip_navigation: Skip Navigation
     soft_tabs: Soft Tabs
     soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
+    submit: Submit
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
