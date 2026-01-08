@@ -337,7 +337,7 @@ class Launcher
       # force some values for scripts like the 'workdir'. We could use auto
       # attributes, but this is not optional and not variable.
       {
-        workdir: project_dir.to_s
+        workdir: options[:workflow_run_dir] || project_dir.to_s
       }
     )
   end

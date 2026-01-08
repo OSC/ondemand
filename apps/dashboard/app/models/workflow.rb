@@ -121,6 +121,14 @@ class Workflow
     end
   end
 
+  def workflow_run_dir
+    ts = Time.now.strftime("%Y%m%d%H%M%S")
+    safe_name = @name.to_s.parameterize(separator: "_")
+    dir = Pathname.new(@project_dir).join("#{safe_name}_#{ts}")
+    FileUtils.mkdir_p(dir)
+    dir
+  end
+
   def submit(attributes = {})
     graph = Dag.new(attributes)
     if graph.has_cycle
@@ -134,6 +142,7 @@ class Workflow
 
     all_launchers = Launcher.all(attributes[:project_dir])
     job_id_hash = {}  # launcher-job_id hash
+    temp_run_dir = workflow_run_dir
 
     for id in order
       launcher = all_launchers.find { |l| l.id == id }
@@ -145,7 +154,7 @@ class Workflow
 
       begin
         jobs = dependent_launchers.map { |id| job_id_hash.dig(id, :job_id) }.compact
-        opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
+        opts = submit_launcher_params(launcher, jobs, temp_run_dir).to_h.symbolize_keys
         job_id = launcher.submit(opts)
         if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
@@ -165,11 +174,12 @@ class Workflow
     nil
   end
 
-  def submit_launcher_params(launcher, dependent_jobs)
+  def submit_launcher_params(launcher, dependent_jobs, temp_run_dir)
     launcher_data = launcher.smart_attributes.each_with_object({}) do |attr, hash|
       hash[attr.id.to_s] = attr.opts[:value]
     end
     launcher_data["afterok"] = Array(dependent_jobs)
+    launcher_data["workflow_run_dir"] = temp_run_dir
     launcher_data
   end
 
