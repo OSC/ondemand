@@ -2,6 +2,7 @@
 
 class Workflow
   include ActiveModel::Model
+  include ProjectPermissions
 
   class << self
     def workflow_dir(project_dir)
@@ -85,7 +86,9 @@ class Workflow
 
   def save_manifest(operation)
     FileUtils.touch(manifest_file) unless manifest_file.exist?
-    Pathname(manifest_file).write(to_h.as_json.compact.to_yaml)
+    if editable?
+      Pathname(manifest_file).write(to_h.as_json.compact.to_yaml)
+    end
 
     true
   rescue StandardError => e
@@ -119,6 +122,10 @@ class Workflow
       next unless override || attributes.key?(attribute)
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
+  end
+
+  def editable?
+    manifest_file.writable? || !shared?(manifest_file)
   end
 
   def submit(attributes = {})

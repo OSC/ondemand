@@ -6,6 +6,7 @@ class Project
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
   include IconWithUri
+  include ProjectPermissions
   extend JobLogger
 
   class << self
@@ -207,7 +208,7 @@ class Project
   end
 
   def private?
-    directory.to_s.start_with?(CurrentUser.home)
+    !shared?(directory)
   end
   
   def directory_group_owner
@@ -327,14 +328,20 @@ class Project
   def make_dir
     directory.mkpath unless directory.exist?
     return false unless update_permission
-    configuration_directory.mkpath  unless configuration_directory.exist?
-    workflow_directory = Workflow.workflow_dir(directory)
-    workflow_directory.mkpath unless workflow_directory.exist?
-    logfile_path = JobLogger::JobLoggerHelper.log_file(directory)
-    FileUtils.touch(logfile_path.to_s) unless logfile_path.exist?
+
+    with_proper_umask(directory) do
+      configuration_directory.mkpath  unless configuration_directory.exist?
+      launcher_directory = Launcher.launchers_dir(directory)
+      launcher_directory.mkpath unless launcher_directory.exist?
+      workflow_directory = Workflow.workflow_dir(directory)
+      workflow_directory.mkpath unless workflow_directory.exist?
+      logfile_path = JobLogger::JobLoggerHelper.log_file(directory)
+      FileUtils.touch(logfile_path.to_s) unless logfile_path.exist?
+    end
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
+    Rails.logger.warn "Cannot create directory: #{directory} with error #{e.class}:#{e.message}"
     false
   end
 
