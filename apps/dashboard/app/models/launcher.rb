@@ -236,6 +236,11 @@ class Launcher
     true
   end
 
+  def editable?
+    form_path = Launcher.launcher_form_file(Launcher.path(project_dir, id))
+    File.writable?(form_path) || !shared?(form_path)
+  end
+
   private
 
   def self.path(root_dir, launcher_id)

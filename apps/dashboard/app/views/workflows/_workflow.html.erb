@@ -26,6 +26,7 @@
                       class: "btn btn-info launcher-button" %>
         </div>
       </div>
+      <% if workflow.editable? %>
       <div class="row">
         <div class="col">
           <%= link_to I18n.t('dashboard.edit'), edit_project_workflow_path(@project.id, workflow.id),
@@ -38,6 +39,7 @@
                         class: "btn btn-danger launcher-button" %>
         </div>
       </div>
+      <% end %>
     </div>
     <%- end -%>
   </div>

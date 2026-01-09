@@ -7,19 +7,19 @@
 
 <div id="workflows_app">
   <div class="toolbar" aria-label="toolbar">
-    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: false, class: 'form-control mb-2 w-25' %>
-    <button id="btn-add">Add Launcher</button>
-    <button id="btn-connect" aria-pressed="false">Connect Launchers</button>
-    <button id="btn-delete-launcher" class="danger" title="Delete selected launcher (Del/Backspace)">Delete Launcher</button>
-    <button id="btn-delete-edge" class="danger" title="Delete selected edge (Del/Backspace)">Delete Edge</button>
-    
+    <% hidden_class = @workflow.editable? ? '' : 'd-none' %>
+    <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: false, class: "form-control mb-2 w-25 #{hidden_class}" %>
+    <button id="btn-add" class="<%= hidden_class %>">Add Launcher</button>
+    <button id="btn-connect" class="<%= hidden_class %>" aria-pressed="false">Connect Launchers</button>
+    <button id="btn-delete-launcher" class="danger <%= hidden_class %>" title="Delete selected launcher (Del/Backspace)">Delete Launcher</button>
+    <button id="btn-delete-edge" class="danger <%= hidden_class %>" title="Delete selected edge (Del/Backspace)">Delete Edge</button>
     <div class="workflow-actions">
-      <button id="btn-submit-workflow" class: 'btn btn-primary'><%= I18n.t('dashboard.submit') %></button>
-      <button id="btn-restore-workflow" class: 'btn btn-danger'><%= I18n.t('dashboard.restore') %></button>
-      <button id="btn-clear-workflow" class: 'btn btn-danger'><%= I18n.t('dashboard.clear') %></button>
-      <button id="btn-save-workflow" class: 'btn btn-info'><%= I18n.t('dashboard.save') %></button>
+      <button id="btn-submit-workflow" class="<%= hidden_class %>"><%= I18n.t('dashboard.submit') %></button>
+      <button id="btn-restore-workflow" class="<%= hidden_class %>"><%= I18n.t('dashboard.restore') %></button>
+      <button id="btn-clear-workflow" class="<%= hidden_class %>"><%= I18n.t('dashboard.clear') %></button>
+      <button id="btn-save-workflow" class="<%= hidden_class %>"><%= I18n.t('dashboard.save') %></button>
       <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
-      <span class="hint">Click title to select and drag. Connect via clicking two launchers.</span>
+      <span class="hint <%= hidden_class %>">Click title to select and drag. Connect via clicking two launchers.</span>
     </div>
   </div>
 
