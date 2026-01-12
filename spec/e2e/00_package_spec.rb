@@ -93,10 +93,9 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_grouped_into('ondemand-nginx') }
   end
 
-  # tests for beta project manager. remove when it's no longer in beta.
   describe file('/var/www/ood/apps/sys/projects') do
     it { is_expected.to be_directory }
-    it { is_expected.to be_mode(700) }
+    it { is_expected.to be_mode(755) }
     it { is_expected.to be_owned_by('root') }
     it { is_expected.to be_grouped_into('root') }
   end
