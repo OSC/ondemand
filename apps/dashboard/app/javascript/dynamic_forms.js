@@ -214,7 +214,7 @@ function updateLabel(changeId, changeElement, key) {
   var labelContent = newLabel(changeElement, key);
   const originalInfo = getWidgetInfo(changeId);
   $(`label[for="${changeId}"]`)[0].innerHTML = labelContent;
-  ariaStream(`Change label on ${originalInfo} to new label ${labelContent}`);
+  ariaStream(`Changed label on ${originalInfo} to new label ${labelContent}`);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
@@ -385,7 +385,7 @@ function setValue(event, changeId) {
   if(changeVal !== undefined) {
     const element = document.getElementById(changeId);
     const elementInfo = getWidgetInfo(changeId);
-    ariaStream(`set ${elementInfo} to value ${changeVal}`);
+    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
 
     if(element['type'] == 'checkbox') {
       setCheckboxValue(element, changeVal);
