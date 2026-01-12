@@ -112,6 +112,7 @@ zh-CN:
     breadcrumbs_home: 主页
     breadcrumbs_my_sessions: 我的交互会话
     breadcrumbs_support_ticket: 支持票
+    clear: 清除
     close: 关闭
     custom_pages:
       invalid: 无效的页面代码：%{page}。此页面尚未配置
@@ -246,6 +247,7 @@ zh-CN:
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
+    restore: 恢复
     save: 保存
     saved_settings_title: 已保存的设置
     select_path: 选择路径
@@ -270,6 +272,7 @@ zh-CN:
     skip_navigation: 跳过导航
     soft_tabs: 软制表符
     soft_tabs_info: 软制表符是文件中的空格，而不是实际的制表符字符。
+    submit: 提交
     support_ticket:
       creation_success: 支持票电子邮件已发送至：%{to}
       generic_error: 处理您的请求时出错：%{error}

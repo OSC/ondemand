@@ -126,6 +126,7 @@ fr-CA:
     breadcrumbs_home: Accueil
     breadcrumbs_my_sessions: Mes sessions interactives
     breadcrumbs_support_ticket: Billet de soutien
+    clear: Effacer
     close: Fermer
     custom_pages:
       invalid: 'Code de page invalide : %{page}. Cette page n’a pas été configurée'
@@ -260,6 +261,7 @@ fr-CA:
     restart_msg_html: |
       Votre appartenance au groupe a changé, ce qui affecte votre accès aux applications. Votre tableau de bord devrait redémarrer automatiquement.
       Si ce n’est pas le cas, cliquez ici : <a href="%{restart_url}">redémarrer le serveur web</a>.
+    restore: Restaurer
     save: Enregistrer
     saved_settings_title: Paramètres enregistrés
     select_path: Sélectionner le chemin
@@ -284,6 +286,7 @@ fr-CA:
     skip_navigation: Ignorer la navigation
     soft_tabs: Tabulations souples
     soft_tabs_info: Les tabulations souples sont des espaces dans le fichier au lieu de véritables caractères de tabulation.
+    submit: Soumettre
     support_ticket:
       creation_success: 'Courriel de billet de soutien envoyé à : %{to}'
       generic_error: 'Erreur lors du traitement de votre requête : %{error}'
