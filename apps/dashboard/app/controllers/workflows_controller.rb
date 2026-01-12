@@ -163,7 +163,7 @@ class WorkflowsController < ApplicationController
   end
 
   def permit_json_data
-    params.permit(:project_id, :id, :zoom, :saved_at, boxes: [:id, :title, :row, :col], edges: [:from, :to]).to_h
+    params.permit(:project_id, :id, :zoom, :saved_at, :start_launcher, boxes: [:id, :title, :row, :col], edges: [:from, :to]).to_h
   end
 
   def metadata_params(json)
@@ -174,7 +174,8 @@ class WorkflowsController < ApplicationController
         edges: json["edges"] || [], 
         zoom: json["zoom"] || 1.0,
         job_hash: json["job_hash"] || {},
-        saved_at: json["saved_at"] || Time.now.to_i
+        saved_at: json["saved_at"] || Time.now.to_i,
+        start_launcher: json["start_launcher"] || nil
       } 
     }
   end

@@ -39,7 +39,8 @@ class Workflow
         launcher_ids: meta[:boxes].map { |b| b["id"] },
         source_ids: meta[:edges].map { |e| e["from"] },
         target_ids: meta[:edges].map { |e| e["to"] },
-        project_dir: project_dir
+        project_dir: project_dir,
+        start_launcher: meta[:start_launcher] || nil
       }
     end
   end
