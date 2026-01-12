@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Hide project manager buttons with unpermitted actions (#4923)\
+Handle trailing slashes in OOD_SHARED_PROJECT_PATH\
+Initialize Project files with proper mode (#4922)\
+lint a random file (#4919)\
+fix this typo (#4920)\
+Change workflow `reset` button into `restore` and `clear` (#4909)\
+Support to get subgraph order in DAG class (#4918)\
+Bump preact from 10.28.0 to 10.28.2 in /apps/dashboard (#4921)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
