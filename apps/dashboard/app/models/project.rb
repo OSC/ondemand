@@ -104,7 +104,7 @@ class Project
         next unless root.exist? && root.directory? && root.readable?
 
         root.children.map do |child_dir|
-          next unless child_dir.directory? && child_dir.readable?
+          next unless child_dir.directory? && child_dir.writable?
           child_dir.children.map do |possible_project|
             Project.from_directory(possible_project)
           end
