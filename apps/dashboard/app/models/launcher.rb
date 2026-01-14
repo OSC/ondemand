@@ -263,7 +263,6 @@ class Launcher
     with_proper_umask(project_dir) do
       dir_path = Launcher.path(project_dir, id)
       dir_path.mkpath unless dir_path.exist?
-      FileUtils.touch(cache_file_path) unless cache_file_path.exist?
     end
   end
 
@@ -314,7 +313,7 @@ class Launcher
   end
 
   def cache_file_path
-    Pathname.new(File.join(Launcher.path(project_dir, id), "cache.json"))
+    Pathname.new(File.join(Launcher.path(project_dir, id), "#{CurrentUser.name}-cache.json"))
   end
 
   def cache_file_exists?
@@ -323,7 +322,6 @@ class Launcher
 
   def cached_values
     @cached_values ||= begin
-      cache_file_path = OodAppkit.dataroot.join(Launcher.launchers_dir("#{project_dir}"), "#{id}_opts.json")
       cache_file_content = File.read(cache_file_path) if cache_file_path.exist?
       
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
