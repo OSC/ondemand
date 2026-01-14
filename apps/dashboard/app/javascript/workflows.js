@@ -41,9 +41,9 @@ class WorkflowState {
     }
   }
 
-  async saveToBackend(submit=false) {
+  async saveToBackend(submit=false, start_launcher=null) {
     if (submit) this.job_hash = {}; // This will save a state where the submit call failed in between
-    const workflow = this.#serialize();
+    const workflow = this.#serialize(start_launcher);
     console.log('Saving workflow:', workflow);
     try {
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -113,7 +113,7 @@ class WorkflowState {
     }
   }
 
-  #serialize() {
+  #serialize(start_launcher) {
     return {
       boxes: Array.from(this.boxes.values()).map(b => ({
         id: b.id,
@@ -127,7 +127,8 @@ class WorkflowState {
       })),
       zoom: this.pointer.zoomRef.value,
       job_hash: this.job_hash,
-      saved_at: new Date().toISOString()
+      saved_at: new Date().toISOString(),
+      start_launcher: start_launcher || null
     };
   }
 
@@ -805,6 +806,23 @@ class DragController {
 
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
+
+  const debouncedLaunch = debounce((launcherId) => {
+    workflowState.saveToBackend(true, launcherId);
+  }, 300);
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('button.launcher-button');
+    if (!btn || !btn.id || !btn.id.startsWith('launch_')) return;
+    if (btn.disabled) return;
+
+    const launcherId = btn.id.replace('launch_', '');
+    if (!launcherId) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    debouncedLaunch(launcherId);
+  });
 
   submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
   restoreWorkflowButton.addEventListener('click', debounce(() => {
