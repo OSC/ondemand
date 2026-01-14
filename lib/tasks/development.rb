@@ -45,6 +45,10 @@ namespace :dev do
     end
   end
 
+  def podman_runtime?
+    @podman_runtime ||= (ENV['CONTAINER_RT'] != 'docker')
+  end
+
   def container_rt_args
     podman_runtime? ? podman_rt_args : docker_rt_args
   end
@@ -58,8 +62,8 @@ namespace :dev do
       '--security-opt', 'label=disable',
       "--uidmap=#{user.uid}:0:1", "--uidmap=0:1:#{user.uid}",
       "--gidmap=#{user.gid}:0:1", "--gidmap=0:1:#{user.gid}",
-      user.uid < 1000 ? "--uidmap=#{user.uid+1}:#{user.uid+1}:1000" : nil,
-      user.gid < 1000 ? "--gidmap=#{user.gid+1}:#{user.gid+1}:1000" : nil,
+      user.uid < 1000 ? "--uidmap=#{user.uid + 1}:#{user.uid + 1}:1000" : nil,
+      user.gid < 1000 ? "--gidmap=#{user.gid + 1}:#{user.gid + 1}:1000" : nil
     ].compact.tap do |arr|
       arr.concat ['--cap-add', 'sys_ptrace'] unless additional_caps.include?('--privileged')
     end.freeze
