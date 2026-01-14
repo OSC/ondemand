@@ -36,7 +36,7 @@ class TransfersController < ApplicationController
 
     if !@transfer.valid?
       # error
-      render json: { error_message: @transfer.errors.map(&:message).join('.') }
+      render json: { error_message: @transfer.errors.map(&:message).join('. ') }
     elsif @transfer.synchronous?
       logger.info "files: executing synchronous command in directory #{@transfer.from}: #{@transfer.command_str}"
       @transfer.perform
