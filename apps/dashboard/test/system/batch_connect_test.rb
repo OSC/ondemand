@@ -2404,6 +2404,8 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       find('span', text: 'test').click
       sleep 3 # make sure the table has time to refresh
+      assert_no_selector("##{base_id}_path_selector_table_spinner", visible: true)
+
       find("##{base_id}_path_selector_button").click
 
       text_field = find("##{base_id}")
