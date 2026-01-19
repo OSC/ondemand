@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Submit workflow subset with launch buttons (#4948)\
+Announce table reload in path selector (#4952)\
+lint a random file (#4950)\
+Fix minor typos in dynamic form announcements (#4949)\
+lint a random file (#4939)\
+update localizations (#4941)
 
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
