@@ -170,7 +170,7 @@ module RakeHelper
   end
 
   def podman_runtime?
-    @podman_runtime ||= ENV['CONTAINER_RT'] == 'podman'
+    @podman_runtime ||= (ENV['CONTAINER_RT'] != 'docker')
   end
 
   def container_runtime
@@ -192,9 +192,9 @@ module RakeHelper
   def image_names
     @image_names ||=
       {
-        ood: 'ood',
-        dev: 'ood-dev',
-        demo: 'ood-demo',
+        ood:  'ood',
+        dev:  'ood-dev',
+        demo: 'ood-demo'
       }.freeze
   end
 
@@ -268,7 +268,7 @@ module RakeHelper
   end
 
   def debian?
-    return true if os_release['ID'] =~ (/(ubuntu|debian)/) || (os_release['ID_LIKE'] == 'debian')
+    return true if os_release['ID'] =~ /(ubuntu|debian)/ || (os_release['ID_LIKE'] == 'debian')
 
     false
   end

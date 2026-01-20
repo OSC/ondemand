@@ -45,10 +45,6 @@ namespace :dev do
     end
   end
 
-  def podman_runtime?
-    @podman_runtime ||= (ENV['CONTAINER_RT'] != 'docker')
-  end
-
   def container_rt_args
     podman_runtime? ? podman_rt_args : docker_rt_args
   end
