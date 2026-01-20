@@ -23,7 +23,7 @@ class WorkflowState {
     this.job_hash = {};
   }
 
-  resetWorkflow(e) {
+  clearWorkflow() {
     this.boxes.forEach(b => b.el.remove());
     this.boxes.clear();
     this.edges.forEach(e => e.el.remove());
@@ -31,7 +31,6 @@ class WorkflowState {
     this.dag.reset();
     this.pointer.resetZoom();
     this.#clearSession();
-    alert('Workflow reset.');
   }
 
   saveToSession() {
@@ -42,9 +41,9 @@ class WorkflowState {
     }
   }
 
-  async saveToBackend(submit=false) {
+  async saveToBackend(submit=false, start_launcher=null) {
     if (submit) this.job_hash = {}; // This will save a state where the submit call failed in between
-    const workflow = this.#serialize();
+    const workflow = this.#serialize(start_launcher);
     console.log('Saving workflow:', workflow);
     try {
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -114,7 +113,7 @@ class WorkflowState {
     }
   }
 
-  #serialize() {
+  #serialize(start_launcher) {
     return {
       boxes: Array.from(this.boxes.values()).map(b => ({
         id: b.id,
@@ -128,7 +127,8 @@ class WorkflowState {
       })),
       zoom: this.pointer.zoomRef.value,
       job_hash: this.job_hash,
-      saved_at: new Date().toISOString()
+      saved_at: new Date().toISOString(),
+      start_launcher: start_launcher || null
     };
   }
 
@@ -529,7 +529,8 @@ class DragController {
   const zoomResetButton = document.getElementById('zoom-reset');
   const selectedLauncher = document.getElementById('select_launcher');
   const submitWorkflowButton = document.getElementById('btn-submit-workflow');
-  const resetWorkflowButton = document.getElementById('btn-reset-workflow');
+  const restoreWorkflowButton = document.getElementById('btn-restore-workflow');
+  const clearWorkflowButton = document.getElementById('btn-clear-workflow');
   const saveWorkflowButton = document.getElementById('btn-save-workflow');
   const projectId = document.getElementById('project-id').value;
   const workflowId = document.getElementById('workflow-id').value;
@@ -806,10 +807,29 @@ class DragController {
   deleteLauncherButton.addEventListener('click', deleteSelectedLauncher);
   deleteEdgeButton.addEventListener('click', deleteSelectedEdge);
 
-  submitWorkflowButton.addEventListener('click', debounce(async () => {
-    await workflowState.saveToBackend(true);
+  const debouncedLaunch = debounce((launcherId) => {
+    workflowState.saveToBackend(true, launcherId);
+  }, 300);
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('button.launcher-button');
+    if (!btn || !btn.id || !btn.id.startsWith('launch_')) return;
+    if (btn.disabled) return;
+
+    const launcherId = btn.id.replace('launch_', '');
+    if (!launcherId) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    debouncedLaunch(launcherId);
+  });
+
+  submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
+  restoreWorkflowButton.addEventListener('click', debounce(() => {
+    workflowState.clearWorkflow();
+    workflowState.restorePreviousState(makeLauncher, createEdge);
   }, 300));
-  resetWorkflowButton.addEventListener('click', debounce(e => workflowState.resetWorkflow(e), 300));
+  clearWorkflowButton.addEventListener('click', debounce(() => workflowState.clearWorkflow(), 300));
   saveWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(), 300));
 
   zoomInButton.addEventListener('click', () => { pointer.zoomIn(); });

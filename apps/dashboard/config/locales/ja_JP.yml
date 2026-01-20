@@ -123,6 +123,7 @@ ja_JP:
     breadcrumbs_home: ホーム
     breadcrumbs_my_sessions: 私のインタラクティブセッション
     breadcrumbs_support_ticket: サポートチケット
+    clear: クリア
     close: 閉じる
     custom_pages:
       invalid: 無効なページコード：%{page}。このページは構成されていません
@@ -203,7 +204,6 @@ ja_JP:
     jobs_workflow_name_placeholder: ワークフロー名
     jobs_workflow_name_validation: ワークフロー名には、文字、数字、ダッシュ、アンダースコア、スペースのみを含めることができます
     jobs_workflow_not_found: ワークフロー %{workflow_id} が見つかりません
-    jobs_workflow_submit: ワークフローを送信
     jobs_workflow_submitted: ワークフローが正常に送信されました！
     jobs_workflows: ワークフロー
     launch: 起動
@@ -258,6 +258,7 @@ ja_JP:
     restart_msg_html: |
       グループのメンバーシップが変更され、アプリへのアクセスに影響を与えています。ダッシュボードは自動的に再起動するはずです。
       再起動しない場合は、<a href="%{restart_url}">ウェブサーバーを再起動</a>してください。
+    restore: 復元
     save: 保存
     saved_settings_title: 保存された設定
     select_path: パスを選択
@@ -282,6 +283,7 @@ ja_JP:
     skip_navigation: ナビゲーションをスキップ
     soft_tabs: ソフトタブ
     soft_tabs_info: ソフトタブはファイル内の実際のタブ文字の代わりにスペースです。
+    submit: 送信
     support_ticket:
       creation_success: 'サポートチケットのメールが送信されました: %{to}'
       generic_error: 'リクエストの処理中にエラーが発生しました: %{error}'

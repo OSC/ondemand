@@ -6,6 +6,7 @@ class Project
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
   include IconWithUri
+  include ProjectPermissions
   extend JobLogger
 
   class << self
@@ -98,14 +99,14 @@ class Project
     private
 
     def importable_directories
-      Configuration.shared_projects_root.map do |root|
-        next unless File.exist?(root) && File.directory?(root) && File.readable?(root)
+      Configuration.shared_projects_root.map do |str_root|
+        root = Pathname.new(str_root)
+        next unless root.exist? && root.directory? && root.readable?
 
-        Dir.each_child(root).map do |child|
-          child_dir = "#{root}/#{child}"
-          next unless File.directory?(child_dir) && File.readable?(child_dir)
-          Dir.each_child(child_dir).map do |possible_project|
-            Project.from_directory("#{child_dir}/#{possible_project}")
+        root.children.map do |child_dir|
+          next unless child_dir.directory? && child_dir.readable?
+          child_dir.children.map do |possible_project|
+            Project.from_directory(possible_project)
           end
         end.flatten
       end.flatten.compact.reject{ |p| p.errors.any? }
@@ -207,7 +208,7 @@ class Project
   end
 
   def private?
-    directory.to_s.start_with?(CurrentUser.home)
+    !shared?(directory)
   end
   
   def directory_group_owner
@@ -327,14 +328,20 @@ class Project
   def make_dir
     directory.mkpath unless directory.exist?
     return false unless update_permission
-    configuration_directory.mkpath  unless configuration_directory.exist?
-    workflow_directory = Workflow.workflow_dir(directory)
-    workflow_directory.mkpath unless workflow_directory.exist?
-    logfile_path = JobLogger::JobLoggerHelper.log_file(directory)
-    FileUtils.touch(logfile_path.to_s) unless logfile_path.exist?
+
+    with_proper_umask(directory) do
+      configuration_directory.mkpath  unless configuration_directory.exist?
+      launcher_directory = Launcher.launchers_dir(directory)
+      launcher_directory.mkpath unless launcher_directory.exist?
+      workflow_directory = Workflow.workflow_dir(directory)
+      workflow_directory.mkpath unless workflow_directory.exist?
+      logfile_path = JobLogger::JobLoggerHelper.log_file(directory)
+      FileUtils.touch(logfile_path.to_s) unless logfile_path.exist?
+    end
     true
   rescue StandardError => e
     errors.add(:save, "Failed to make directory: #{e.message}")
+    Rails.logger.warn "Cannot create directory: #{directory} with error #{e.class}:#{e.message}"
     false
   end
 
