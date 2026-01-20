@@ -73,6 +73,9 @@ gem 'rest-client', '~> 2.0'
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
 
+# have to lock minitest until we upgrade rails 
+gem 'minitest', '< 6.0'
+
 # should upgrade to propshaft - only have an issue with fontawesome icons
 gem 'sprockets-rails', '>= 2.0.0'
 

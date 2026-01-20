@@ -17,11 +17,14 @@
     "datatables.net-select": "^1.3.3",
     "datatables.net-select-bs4": "^1.3.3",
     "esbuild": "^0.25.0",
-    "jquery": "^3.5.1",
+    "jquery": "< 4.0",
     "jquery-ujs": "^1.2.2",
     "lodash": "^4.17.21",
     "oboe": "^2.1.5",
     "sass": "1.78.0"
+  },
+  "resolutions": {
+    "jquery": "< 4.0"
   },
   "scripts": {
     "build": "node esbuild.config.js",
