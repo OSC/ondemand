@@ -975,7 +975,7 @@ class FilesTest < ApplicationSystemTestCase
       alert_text = "Error occurred when attempting to rename file: these files already exist: #{dir}/foo"
       assert_selector '.alert-danger span', text: alert_text
 
-      # close alert modal
+      # Close alert modal
       find('.alert-danger button').click
 
       assert_no_selector '.alert-danger', visible: true
