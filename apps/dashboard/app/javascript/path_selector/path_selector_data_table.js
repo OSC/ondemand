@@ -137,6 +137,9 @@ export class PathSelectorTable {
   clickRow(event) {
     const row = $(event.target).closest('tr').get(0) || event.target;
     const url = row.dataset['apiUrl'];
+    if (url === undefined) {
+      return;
+    }
     const pathType = row.dataset['pathType'];
     this.activateFavorite(row);
 
@@ -161,7 +164,10 @@ export class PathSelectorTable {
   }
 
   clickBreadcrumb(event) {
-    const path = event.target.id;
+    const path = event.target.id || undefined;
+    if (path === undefined) {
+      return;
+    }
     this.activateFavorite(event.target);
     this.reloadTable(path);
   }
