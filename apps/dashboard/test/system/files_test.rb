@@ -973,7 +973,7 @@ class FilesTest < ApplicationSystemTestCase
       assert_no_selector '#full_page_spinner', visible: true, wait: MAX_WAIT
 
       alert_ele = find('.alert-danger')
-      alert_text = "Error occurred when attempting to rename file: these files already exist: #{dir}/foo \n  Close"
+      alert_text = "Error occurred when attempting to rename file: these files already exist: #{dir}/foo \nClose"
       assert_equal alert_text, alert_ele.text
       
     end
