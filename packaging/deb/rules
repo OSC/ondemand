@@ -96,4 +96,3 @@ override_dh_builddeb:
 
 override_dh_fixperms:
 	dh_fixperms
-	chmod 700 $(APACHE_DIR)/apps/sys/projects
