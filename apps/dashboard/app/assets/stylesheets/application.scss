@@ -39,10 +39,14 @@ a.navbar-brand.navbar-brand-logo {
   vertical-align: middle;
   max-width: 20em;
   overflow-x: hidden;
-}
 
-.navbar-brand.navbar-brand-logo img {
-  height: 100%;
+  img {
+    height: 100%;
+  }
+
+  span {
+    vertical-align: sub;
+  }
 }
 
 // for inverse, lets make the text slightliy darker so its
