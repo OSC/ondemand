@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.0] - 01-23-2026
+
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
 - Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
@@ -121,6 +123,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 - Apache logs will now correctly respond to | commands in [4710](https://github.com/OSC/ondemand/pull/4710).
 - Announcements now respond to 'message' key, replacing 'msg' in [4845](https://github.com/OSC/ondemand/pull/4845).
+- The AppsController uses nginx to serve icons in [5007](https://github.com/OSC/ondemand/pull/5007).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
@@ -1766,7 +1769,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.8...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.0...HEAD
+[4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
 [4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
