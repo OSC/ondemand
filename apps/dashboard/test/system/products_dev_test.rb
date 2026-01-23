@@ -67,7 +67,7 @@ class ProductsDevTest < ApplicationSystemTestCase
 
   test 'HTML renders all rows for apps in Product Table' do
     find(id: 'productTable')
-    assert_selector 'tr', count: 13
+    assert_selector 'tr', count: 14
   end
 
   test 'pressing bundle install' do
