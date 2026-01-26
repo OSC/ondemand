@@ -120,7 +120,7 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
-    dalli (4.0.0)
+    dalli (4.1.0)
       logger
     date (3.5.1)
     domain_name (0.6.20240107)
