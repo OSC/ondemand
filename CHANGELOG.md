@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Update Changelog (#5011)\
+bump ood core for bug fixes (#5012)\
+fix icons by setting x_sendfile_header (#5007)\
+Test that external app uses its URL in navbar link (#4997)\
+Fix navbar logo styling (#5004)\
+remove close button on modules (#4999)\
+lint a random file (#5001)\
+Test file transfer failure behavior (#4963)\
+Bump lodash from 4.17.21 to 4.17.23 in /apps/dashboard (#5000)\
+Remove hidden class from workflow submit button (#4956)\
+rm preview status from PM (#4912)\
+Prevent bad requests in path selector (#4953)\
+Fix file transfer error messages (#4958)\
+manual dependency update while locking minitest (#4915)\
+add favorites to project path selector (#4947)\
+optimize importable project search (#4946)\
+Add per user caching to launchers (#4934)\
+Test path selector hides spinner (#4965)
 
 ## [4.1.0] - 01-23-2026
 
