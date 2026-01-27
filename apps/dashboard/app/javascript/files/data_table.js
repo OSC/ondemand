@@ -367,7 +367,7 @@ class DataTable {
     renderNameColumn(data, type, row, meta) {
         let element = undefined;
 
-        if(row.type == 'f' && !downloadEnabled()) {
+        if(!downloadEnabled() || row.url === undefined) {
             element = document.createElement('span');
         } else {
             element = document.createElement('a');
