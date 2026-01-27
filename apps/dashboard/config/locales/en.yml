@@ -208,6 +208,7 @@ en:
     jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_submitted: Workflow successfully submitted!
+    jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflows: Workflows
     launch: Launch
     logo_alt_text: Welcome to Open OnDemand
