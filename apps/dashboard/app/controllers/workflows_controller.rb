@@ -98,6 +98,7 @@ class WorkflowsController < ApplicationController
       edges: metadata['edges'] || [],
       zoom: metadata['zoom'] || 1.0,
       job_hash: metadata["job_hash"] || {},
+      workflow_state: metadata['workflow_state'] || "completed",
       saved_at: metadata['saved_at'] || nil
     }
   end
@@ -107,9 +108,10 @@ class WorkflowsController < ApplicationController
   def submit
     return unless load_project_and_workflow_objects(render_json: true)
     metadata = metadata_params(permit_json_data)
-    @workflow.update(metadata)
     submit_param = Workflow.build_submit_params(metadata, project_directory)
     result = @workflow.submit(submit_param)
+    metadata[:metadata][:job_hash] = result if result.present?
+    @workflow.update(metadata)
     if !result.nil?
       render json: { message: I18n.t('dashboard.jobs_workflow_submitted'), job_hash: result }
     else
@@ -163,7 +165,7 @@ class WorkflowsController < ApplicationController
   end
 
   def permit_json_data
-    params.permit(:project_id, :id, :zoom, :saved_at, :start_launcher, boxes: [:id, :title, :row, :col], edges: [:from, :to]).to_h
+    params.permit(:project_id, :id, :zoom, :saved_at, :workflow_state, :start_launcher, boxes: [:id, :title, :row, :col], edges: [:from, :to]).to_h
   end
 
   def metadata_params(json)
@@ -174,6 +176,7 @@ class WorkflowsController < ApplicationController
         edges: json["edges"] || [], 
         zoom: json["zoom"] || 1.0,
         job_hash: json["job_hash"] || {},
+        workflow_state: json["workflow_state"] || "completed",
         saved_at: json["saved_at"] || Time.now.to_i,
         start_launcher: json["start_launcher"] || nil
       } 
