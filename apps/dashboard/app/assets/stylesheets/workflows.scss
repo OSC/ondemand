@@ -72,9 +72,12 @@ $gap: 20;
 }
 
 .hint {
-  margin-left: auto;
+  margin-left: 2rem;;
   color: var(--ink-muted);
   font-size: .9rem;
+  align-content: center;
+  max-height: 4rem;
+  overflow: clip;
 }
 
 .workspace-wrapper {
