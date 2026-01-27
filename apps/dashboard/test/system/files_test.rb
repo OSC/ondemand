@@ -653,8 +653,8 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(dir)
 
-      fifo_row = find('tbody a', exact_text: fifo).ancestor('tr')
-      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+      fifo_row = find('tbody span', exact_text: fifo).ancestor('tr')
+      cant_read_row = find('tbody span', exact_text: cant_read).ancestor('tr')
 
       fifo_row.find('button.dropdown-toggle').click
       fifo_links = fifo_row.all('td > div.btn-group > ul > li > a').map(&:text)
@@ -673,7 +673,7 @@ class FilesTest < ApplicationSystemTestCase
   test 'block devices are not downloadable' do
     visit files_url('/dev')
 
-    null_row = find('tbody a', exact_text: 'null').ancestor('tr')
+    null_row = find('tbody span', exact_text: 'null').ancestor('tr')
     null_row.find('button.dropdown-toggle').click
     null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
@@ -695,7 +695,7 @@ class FilesTest < ApplicationSystemTestCase
       visit files_url(dir)
 
       can_read_row = find('tbody a', exact_text: can_read).ancestor('tr')
-      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+      cant_read_row = find('tbody span', exact_text: cant_read).ancestor('tr')
 
       can_read_row.find('input[type="checkbox"]').check
 
@@ -716,7 +716,7 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(dir)
 
-      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+      cant_read_row = find('tbody span', exact_text: cant_read).ancestor('tr')
       cant_read_row.find('input[type="checkbox"]').check
       assert find('#download-btn').disabled?
 
@@ -737,8 +737,8 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(dir)
 
-      cant_read1_row = find('tbody a', exact_text: cant_read1).ancestor('tr')
-      cant_read2_row = find('tbody a', exact_text: cant_read2).ancestor('tr')
+      cant_read1_row = find('tbody span', exact_text: cant_read1).ancestor('tr')
+      cant_read2_row = find('tbody span', exact_text: cant_read2).ancestor('tr')
 
       cant_read1_row.find('input[type="checkbox"]').check
       assert find('#download-btn').disabled?
