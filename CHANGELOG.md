@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+## [Unreleased]
 
 ## [4.1.1] - 01-28-2026
 
@@ -1777,7 +1778,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.1...HEAD
+[4.1.1]: https://github.com/OSC/ondemand/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
