@@ -154,7 +154,7 @@ class Workflow
       begin
         jobs = dependent_launchers.map { |id| job_id_hash.dig(id, :job_id) }.compact
         opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
-        job_id = launcher.submit(opts)
+        job_id = launcher.submit(opts, write_cache: false)
         if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
         else
@@ -174,7 +174,7 @@ class Workflow
   end
 
   def submit_launcher_params(launcher, dependent_jobs)
-    launcher_data = launcher.smart_attributes.each_with_object({}) do |attr, hash|
+    launcher_data = launcher.cacheless_attributes.each_with_object({}) do |attr, hash|
       hash[attr.id.to_s] = attr.opts[:value]
     end
     launcher_data["afterok"] = Array(dependent_jobs)

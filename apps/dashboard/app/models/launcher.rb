@@ -7,7 +7,7 @@ class Launcher
 
   class ClusterNotFound < StandardError; end
 
-  attr_reader :title, :id, :created_at, :project_dir, :smart_attributes
+  attr_reader :title, :id, :created_at, :project_dir, :cacheless_attributes, :smart_attributes
 
   class << self
     def launchers_dir(project_dir)
@@ -78,14 +78,20 @@ class Launcher
     add_required_fields(**sm_opts)
     # add defaults if it's a brand new launcher with only title and directory.
     add_default_fields(**sm_opts) if opts.size <= 2
+
+    # we generate two sets of attributes here depending on whether we want the initial
+    # form values to come from the form defaults or from the cache.
+    @cacheless_attributes = build_smart_attributes(**sm_opts, use_cache: false)
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
-  def build_smart_attributes(form: [], attributes: {})
+  def build_smart_attributes(form: [], attributes: {}, use_cache: true)
     form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
-      cache_value = cached_values[form_item_id]
-      attrs[:value] = cache_value if cache_value.present?
+      if use_cache
+        cache_value = cached_values[form_item_id]
+        attrs[:value] = cache_value if cache_value.present?
+      end
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
@@ -190,7 +196,7 @@ class Launcher
     update_attributes(params)
   end
 
-  def submit(options)
+  def submit(options, write_cache: true)
     cluster_id =  if options.has_key?(:auto_batch_clusters)
                     options[:auto_batch_clusters]
                   else
@@ -206,7 +212,7 @@ class Launcher
       adapter.submit(job_script, **dependency_helper(options))
     end
     update_job_log(job_id, cluster_id.to_s)
-    write_job_options_to_cache(options)
+    write_job_options_to_cache(options) if write_cache
 
     job_id
   rescue StandardError => e

@@ -3,7 +3,7 @@
 <%= javascript_include_tag 'launcher_edit', nonce: true %>
 
 <%= bootstrap_form_for(@launcher, url: save_project_launcher_path, html: { autocomplete: "off" }) do |f| %>
-  <% @launcher.smart_attributes.each do |attrib| %>
+  <% @launcher.cacheless_attributes.each do |attrib| %>
     <%# TODO generate render_format %>
     <%= create_editable_widget(f, attrib, format: nil) %>
   <% end %>
