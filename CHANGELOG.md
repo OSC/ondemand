@@ -71,7 +71,7 @@ Prevent bad requests in path selector (#4953)\
 - password_fields are never displayable in [4875](https://github.com/OSC/ondemand/pull/4875).
 - Popups now correctly render markdown in [4888](https://github.com/OSC/ondemand/pull/4888).
 - File transfer errors generate the correct error messages in [4958](https://github.com/OSC/ondemand/pull/4958)
-- Navbar logo now renders correctly in Fix navbar in [5004](https://github.com/OSC/ondemand/pull/5004)
+- Navbar logo images now render correctly in [5004](https://github.com/OSC/ondemand/pull/5004)
 - Files app no longer serves undefined links in [5024](https://github.com/OSC/ondemand/pull/5024)
 
 ### Added
