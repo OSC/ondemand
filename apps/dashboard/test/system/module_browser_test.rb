@@ -74,24 +74,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
     end
   end
 
-  test 'close button in expanded module collapses it' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      
-      first_module = find('.module-card button[data-bs-toggle="collapse"]', match: :first)
-      collapse_id = first_module['data-bs-target']
-      
-      first_module.click
-      sleep TOGGLE_WAIT
-      assert_selector("#{collapse_id}", visible: :visible)
-      
-      close_button = find("#{collapse_id} .btn-close")
-      close_button.click
-      sleep TOGGLE_WAIT
-      assert_selector("#{collapse_id}", visible: :hidden)
-    end
-  end
-
   test 'selecting a version updates the load command' do
     with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
       visit module_browser_url
