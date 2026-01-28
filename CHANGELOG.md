@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Changed
 - Launcher cache no longer impacts workflow parameters in [5019](https://github.com/OSC/ondemand/pull/5019).
-- The AppsController uses rails render to serve icons in [5029](https://github.com/OSC/ondemand/pull/5029).
+- The AppsController uses rails render to serve icons in [5029](https://github.com/OSC/ondemand/pull/5029), reverting [5007](https://github.com/OSC/ondemand/pull/5007).
 
 ## [4.1.0] - 01-23-2026
 
