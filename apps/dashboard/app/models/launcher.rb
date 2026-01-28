@@ -79,6 +79,8 @@ class Launcher
     # add defaults if it's a brand new launcher with only title and directory.
     add_default_fields(**sm_opts) if opts.size <= 2
 
+    # we generate two sets of attributes here depending on whether we want the initial
+    # form values to come from the form defaults or from the cache.
     @cacheless_attributes = build_smart_attributes(**sm_opts, use_cache: false)
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
