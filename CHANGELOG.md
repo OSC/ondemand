@@ -5,18 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-Revert "fix icons by setting x_sendfile_header (#5007)" (#5028)\
-Improve workflow styling (#5022)\
-Update Changelog (#5011)\
-bump ood core for bug fixes (#5012)\
-fix icons by setting x_sendfile_header (#5007)\
-Test that external app uses its URL in navbar link (#4997)\
-lint a random file (#5001)\
-Test file transfer failure behavior (#4963)\
-Bump lodash from 4.17.21 to 4.17.23 in /apps/dashboard (#5000)\
-Remove hidden class from workflow submit button (#4956)\
-
 ## [4.1.1] - 01-28-2026
 
 ## Fixed
