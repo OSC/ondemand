@@ -17,6 +17,16 @@ Test file transfer failure behavior (#4963)\
 Bump lodash from 4.17.21 to 4.17.23 in /apps/dashboard (#5000)\
 Remove hidden class from workflow submit button (#4956)\
 
+## [4.1.1] - 01-28-2026
+
+## Fixed
+- Files app no longer serves undefined links in [5024](https://github.com/OSC/ondemand/pull/5024).
+- File naming modal now responds to 'Enter' key for submission in [5030](https://github.com/OSC/ondemand/pull/5030).
+
+## Changed
+- Launcher cache no longer impacts workflow parameters in [5019](https://github.com/OSC/ondemand/pull/5019).
+- The AppsController uses rails render to serve icons in [5029](https://github.com/OSC/ondemand/pull/5029).
+
 ## [4.1.0] - 01-23-2026
 
 ### Fixed
@@ -64,12 +74,6 @@ Remove hidden class from workflow submit button (#4956)\
 - Maintenance and needs auth pages are never cached in [4799](https://github.com/OSC/ondemand/pull/4799).
 - password_fields are never displayable in [4875](https://github.com/OSC/ondemand/pull/4875).
 - Popups now correctly render markdown in [4888](https://github.com/OSC/ondemand/pull/4888).
-- Path selector no longer creates broken requests in [4953](https://github.com/OSC/ondemand/pull/4953).
-- File transfer errors generate the correct error messages in [4958](https://github.com/OSC/ondemand/pull/4958).
-- Module browser no longer renders close button outside modal in [4999](https://github.com/OSC/ondemand/pull/4958).
-- Navbar logo images now render correctly in [5004](https://github.com/OSC/ondemand/pull/5004).
-- Files app no longer serves undefined links in [5024](https://github.com/OSC/ondemand/pull/5024).
-- File naming modal now responds to 'Enter' key for submission in [5030](https://github.com/OSC/ondemand/pull/5030).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -139,9 +143,6 @@ Remove hidden class from workflow submit button (#4956)\
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 - Apache logs will now correctly respond to | commands in [4710](https://github.com/OSC/ondemand/pull/4710).
 - Announcements now respond to 'message' key, replacing 'msg' in [4845](https://github.com/OSC/ondemand/pull/4845).
-- Project Manager no longer shows preview text in [4912](https://github.com/OSC/ondemand/pull/4912).
-- Launcher cache no longer impacts workflow parameters in [5019](https://github.com/OSC/ondemand/pull/5019).
-- The AppsController uses rails render to serve icons in [5029](https://github.com/OSC/ondemand/pull/5029).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
