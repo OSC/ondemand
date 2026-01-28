@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.1] - 01-28-2026
+
+### Fixed
+- Files app no longer serves undefined links in [5024](https://github.com/OSC/ondemand/pull/5024).
+- File naming modal now responds to 'Enter' key for submission in [5030](https://github.com/OSC/ondemand/pull/5030).
+
+### Changed
+- Launcher cache no longer impacts workflow parameters in [5019](https://github.com/OSC/ondemand/pull/5019).
+- The AppsController uses rails render to serve icons in [5029](https://github.com/OSC/ondemand/pull/5029), reverting [5007](https://github.com/OSC/ondemand/pull/5007).
+
 ## [4.1.0] - 01-23-2026
 
 ### Fixed
@@ -1769,7 +1779,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.1...HEAD
+[4.1.1]: https://github.com/OSC/ondemand/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
