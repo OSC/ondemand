@@ -351,7 +351,15 @@ class Launcher
       sm
     end.map do |sm|
       sm.submit(fmt: render_format)
-    end.reduce(&:deep_merge)[:script].merge(
+    end.reduce do |merged, current|
+      merged.deep_merge(current) do |key, old_val, new_val|
+        if old_val.is_a?(Array) && new_val.is_a?(Array)
+          old_val + new_val  # concatenate arg arrays
+        else
+          new_val
+        end
+      end
+    end[:script].merge(
       # force some values for scripts like the 'workdir'. We could use auto
       # attributes, but this is not optional and not variable.
       {

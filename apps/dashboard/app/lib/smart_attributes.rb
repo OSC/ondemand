@@ -26,4 +26,5 @@ module SmartAttributes
   require 'smart_attributes/attributes/auto_environment_variable'
   require 'smart_attributes/attributes/auto_cores'
   require 'smart_attributes/attributes/global_attribute'
+  require 'smart_attributes/attributes/auto_args'
 end

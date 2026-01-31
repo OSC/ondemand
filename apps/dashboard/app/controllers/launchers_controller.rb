@@ -114,8 +114,11 @@ class LaunchersController < ApplicationController
     auto_env_params = params[:launcher].keys.select do |k|
       k.match?('auto_environment_variable')
     end
+    auto_args_params = params[:launcher].keys.select do |k|
+      k.match?('auto_args')
+    end
 
-    allowlist = SAVE_LAUNCHER_KEYS + auto_env_params
+    allowlist = SAVE_LAUNCHER_KEYS + auto_env_params + auto_args_params
 
     params.permit({ launcher: allowlist }, :project_id, :id)
   end
