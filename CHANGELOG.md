@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Update Changelog (#5031)\
+Separate launcher cache from workflows (#5019)\
+serve icons through rails render (#5029)\
+Revert "fix icons by setting x_sendfile_header (#5007)" (#5028)\
+Add html form structure to files input modal (#5030)\
+Improve workflow styling (#5022)\
+Fix undefined files links (#5024)
 
 ## [4.1.1] - 01-28-2026
 
