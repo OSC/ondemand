@@ -120,7 +120,7 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
-    dalli (4.0.0)
+    dalli (4.2.0)
       logger
     date (3.5.1)
     domain_name (0.6.20240107)
@@ -213,7 +213,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0113)
+    mime-types-data (3.2026.0127)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.27.0)
