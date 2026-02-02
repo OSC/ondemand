@@ -199,6 +199,7 @@ ja_JP:
     jobs_workflow_deleted: ワークフローが正常に削除されました！
     jobs_workflow_description_placeholder: ワークフローの説明
     jobs_workflow_failed: ワークフローがエラー %{error} で失敗しました
+    jobs_workflow_help: タイトルをクリックして選択し、ドラッグします。 'ランチャーを接続'が選択されている状態で、2つのランチャーをクリックして接続します
     jobs_workflow_manifest_updated: ワークフローのマニフェストが更新されました！
     jobs_workflow_missing_launchers: 少なくとも %{count} を選択してください
     jobs_workflow_name_placeholder: ワークフロー名
