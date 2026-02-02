@@ -188,6 +188,7 @@ zh-CN:
     jobs_workflow_deleted: 工作流删除成功！
     jobs_workflow_description_placeholder: 工作流描述
     jobs_workflow_failed: 工作流失败，错误 %{error}
+    jobs_workflow_help: 点击标题以选择并拖动。通过点击两个选中的发射器并选择“连接发射器”来连接
     jobs_workflow_manifest_updated: 工作流清单已更新！
     jobs_workflow_missing_launchers: 至少选择 %{count}
     jobs_workflow_name_placeholder: 工作流名称

@@ -202,6 +202,7 @@ fr-CA:
     jobs_workflow_deleted: Flux de travail supprimé avec succès !
     jobs_workflow_description_placeholder: Description du flux de travail
     jobs_workflow_failed: Le flux de travail a échoué avec l'erreur %{error}
+    jobs_workflow_help: Cliquez sur le titre pour sélectionner et faire glisser. Connectez en cliquant sur deux lanceurs avec 'Connecter les lanceurs' sélectionné.
     jobs_workflow_manifest_updated: Manifeste du flux de travail mis à jour !
     jobs_workflow_missing_launchers: sélectionnez au moins %{count}
     jobs_workflow_name_placeholder: Nom du flux de travail

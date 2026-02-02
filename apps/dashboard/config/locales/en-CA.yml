@@ -202,6 +202,7 @@ en-CA:
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description
     jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_help: Click the title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected.
     jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_missing_launchers: select at least %{count}
     jobs_workflow_name_placeholder: Workflow name
@@ -258,10 +259,10 @@ en-CA:
     recently_used_apps_title: Recently Used Apps
     remove: Remove
     reset: Reset
-    restore: Restore
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
+    restore: Restore
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
