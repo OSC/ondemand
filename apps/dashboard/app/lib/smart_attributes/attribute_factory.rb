@@ -3,6 +3,7 @@ module SmartAttributes
 
     AUTO_MODULES_REX = /\Aauto_modules_([\w\-\/]+)\z/.freeze
     AUTO_ENVIRONMENT_VARIABLE_REX = /\Aauto_environment_variable_([\w-]+)\z/.freeze
+    AUTO_ARGS_REX = /\Aauto_args_([\w-]+)\z/.freeze
     GLOBAL_ATTRIBUTE_REX = /\Aglobal_([\w-]+)\z/.freeze
 
     class << self
@@ -26,6 +27,10 @@ module SmartAttributes
           sub_id = id.match(GLOBAL_ATTRIBUTE_REX)[1]
           id = 'global_attribute'
           opts = opts.merge({ 'key' => real_id, 'sub_id' => sub_id })
+        elsif id.match?(AUTO_ARGS_REX)
+          args = id.match(AUTO_ARGS_REX)[1]
+          id = 'auto_args'
+          opts = opts.merge({'key' => args})
         end
 
         build_method = "build_#{id}"

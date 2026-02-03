@@ -34,6 +34,10 @@ const newFieldData = {
   auto_cores: {
     label: 'Cores',
     help: 'How many cores the job will run on.'
+  },
+  auto_args: {
+    label: 'Args',
+    help: 'Add an arg field and value'
   }
 }
 
@@ -162,6 +166,9 @@ function addInProgressField(event) {
   justAdded.find('[data-auto-environment-variable="name"]')
            .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
 
+  justAdded.find('[data-auto-args="name"]')
+           .on('keyup', (event) => { updateAutoArgs(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
@@ -189,6 +196,42 @@ function updateAutoEnvironmentVariable(event) {
   let checkbox = fixedBoxGroup.children[0];
   checkbox.id = `${idString}_fixed`;
   checkbox.name = `launcher[auto_environment_variable_${aev_name}_fixed]`;
+  checkbox.setAttribute('data-fixed-toggler', idString);
+
+  // Update hidden field if attribute is already fixed, otherwise just update label
+  let labelIndex = 2;
+  if(fixedBoxGroup.children.length == 3) {
+    let hiddenField = fixedBoxGroup.children[1];
+    hiddenField.name = nameString;
+  } else {
+    labelIndex = 1;
+  }
+
+  let fixedLabel = fixedBoxGroup.children[labelIndex];
+  fixedLabel.setAttribute('for', `${idString}_fixed`);
+}
+
+function updateAutoArgs(event) {
+  const arg_name = event.target.value;
+  const labelString = event.target.dataset.labelString;
+  const idString = `launcher_auto_args_${arg_name}`;
+  const nameString = `launcher[auto_args_${arg_name}]`;
+  var input_field = event.target.parentElement.children[2].children[0].children[1];
+
+  input_field.removeAttribute('readonly');
+  input_field.id = idString;
+  input_field.name = nameString;
+
+  if (labelString.match(/Args/)) {
+    const label_field = event.target.parentElement.children[2].children[0].children[0];
+    label_field.innerHTML = `Args: ${arg_name}`;
+  }
+
+  let fixedBoxGroup = event.target.parentElement.children[3].children[0].children[0];
+
+  let checkbox = fixedBoxGroup.children[0];
+  checkbox.id = `${idString}_fixed`;
+  checkbox.name = `launcher[auto_args_${arg_name}_fixed]`;
   checkbox.setAttribute('data-fixed-toggler', idString);
 
   // Update hidden field if attribute is already fixed, otherwise just update label
@@ -410,6 +453,9 @@ jQuery(() => {
 
   $('[data-auto-environment-variable="name"]')
       .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
+  
+  $('[data-auto-args="name"]')
+      .on('keyup', (event) => { updateAutoArgs(event) });
 
   initSelectFields();
   initFixedFields();

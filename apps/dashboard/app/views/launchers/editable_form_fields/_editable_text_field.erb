@@ -11,6 +11,14 @@
        data-label-string=<%= attrib.original_label.gsub(' ', '&#32;').force_encoding('utf-8') %>
        value=<%= attrib.id.gsub(/auto_environment_variable_?/, '') %>
   >
+<% elsif field_id.match?('auto_args') %>
+  <label>Name</label>
+  <input class="form-control edit-field"
+       type="text"
+       data-auto-args="name"
+       data-label-string=<%= attrib.original_label.gsub(' ', '&#32;').force_encoding('utf-8') %>
+       value=<%= attrib.id.gsub(/auto_args_?/, '') %>
+  >
 <% end %>
   <%=  create_widget(form, attrib, format: format, hide_fixed: false) %>
 
