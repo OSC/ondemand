@@ -17,7 +17,7 @@
 import jQuery from 'jquery';
 import 'jquery-ujs';
 import 'datatables.net';
-import 'datatables.net-bs4/js/dataTables.bootstrap4';
+import 'datatables.net-bs5/js/dataTables.bootstrap5';
 import 'datatables.net-select/js/dataTables.select';
 import 'datatables.net-plugins/api/processing().mjs';
 
