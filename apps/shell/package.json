@@ -36,7 +36,7 @@
     "encodeurl": "2.0.0"
   },
   "devDependencies": {
-    "jest": "^26.1.0"
+    "jest": "^30"
   },
   "scripts": {
     "test": "jest --verbose"
