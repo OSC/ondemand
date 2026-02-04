@@ -204,13 +204,6 @@ class DataTable {
                 // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
                 selector: 'td:not(:first-child)'
             },
-            // https://datatables.net/reference/option/dom
-            // dom: '', dataTables_info nowrap
-            //
-            // put breadcrmbs below filter!!!
-            // dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-            //     "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-end'><'transfers-status'>>>>" +
-            //     "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
             layout: {
                 topStart: 'info',
                 topEnd: 'search',
@@ -223,7 +216,7 @@ class DataTable {
                     orderable: false,
                     defaultContent: '<input type="checkbox">',
                     render: (data, type, row, meta) => {
-                        return `<input type='checkbox' data-dl-url='${row.download_url}'>`;
+                        return `<input type='checkbox' class='file-select' data-dl-url='${row.download_url}'>`;
                     }
                 },
                 { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
