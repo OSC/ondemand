@@ -8,7 +8,7 @@
         'bs-toggle': "popover",
         'bs-content': content_tag(:div, manifest_markdown(link.description), class: 'ood-appkit markdown'),
         'bs-html': true,
-        'bs-trigger': "hover",
+        'bs-trigger': "hover focus",
         container: "body",
       }.merge(link.data)
     ) do
