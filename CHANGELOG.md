@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Add app routes tests for owner names (#5034)\
+Fix broken ActiveJobs route (#5042)\
+update localizations (#5039)
 
 ## [4.1.1] - 01-28-2026
 
