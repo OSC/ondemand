@@ -358,6 +358,14 @@ class DataTable {
         return new Promise((resolve, reject) => {
             Promise.resolve(response)
                 .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+                .then(response => {
+                    const disposition = response.headers.get('content-disposition');
+                    if(disposition === null) {
+                        return response;
+                    } else {
+                        throw new Error("Cannot navigate to a file.");
+                    }
+                })
                 .then(response => response.json())
                 .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
                 .catch((e) => reject(e))
@@ -367,7 +375,7 @@ class DataTable {
     renderNameColumn(data, type, row, meta) {
         let element = undefined;
 
-        if(!downloadEnabled() || row.url === undefined) {
+        if(!downloadEnabled() || row.url === undefined || this.isInvalidURL(row.url)) {
             element = document.createElement('span');
         } else {
             element = document.createElement('a');
@@ -381,6 +389,16 @@ class DataTable {
 
         return element.outerHTML;
     }
+
+    isInvalidURL(urlString) {
+        try {
+          const url = new URL(urlString);
+          const protocol = url.protocol;
+          return protocol === "javascript:";
+        } catch (error) {
+          return true;
+        }
+      }
 
     actionsBtnTemplate(options) {
         // options: { row_index: meta.row,
