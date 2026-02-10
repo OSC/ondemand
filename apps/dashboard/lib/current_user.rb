@@ -18,10 +18,11 @@ class CurrentUser
     delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :instance
     delegate :primary_group, :primary_group_name, :group_names, :groups, to: :instance
 
-    alias_method :home, :dir
+    alias home dir
   end
 
   attr_reader :pwuid
+
   delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :pwuid
 
   def initialize
@@ -42,7 +43,6 @@ class CurrentUser
 
   def groups
     @groups ||= begin
-
       # let's guarantee that the first item in this list is the primary group
       groups = Process.groups
       groups.delete(primary_group.gid)
