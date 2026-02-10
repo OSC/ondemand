@@ -183,8 +183,21 @@ function updateAutoEnvironmentVariable(event) {
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
 
+  // Update port type radio buttons
+  const portTypeGroup = event.target.parentElement.children[3];
+  if (portTypeGroup && portTypeGroup.classList.contains('port-type-group')) {
+    const portTypeRadios = portTypeGroup.querySelectorAll('input[type="radio"]');
+    portTypeRadios.forEach((radio) => {
+      const portTypeVal = radio.value;
+      radio.name = `launcher[auto_environment_variable_${aev_name}_port_type]`;
+      radio.id = `${idString}_port_type_${portTypeVal}`;
+      const label = radio.nextElementSibling;
+      if (label) label.setAttribute('for', radio.id);
+    });
+  }
+
   // Update the checkbox so that environment variables can be fixed when created
-  let fixedBoxGroup = event.target.parentElement.children[3].children[0].children[0];
+  let fixedBoxGroup = event.target.parentElement.children[4].children[0].children[0];
 
   let checkbox = fixedBoxGroup.children[0];
   checkbox.id = `${idString}_fixed`;
