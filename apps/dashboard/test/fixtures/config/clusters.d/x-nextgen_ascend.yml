@@ -1,0 +1,67 @@
+---
+v2:
+  metadata:
+    # here we omit the title so that the title of the cluster is forced to be
+    # the titleized id of the cluster
+    # title: "X Nextgen Ascend"
+    url: "https://www.osc.edu/resources/technical_support/supercomputers/ascend"
+    hidden: false
+  login:
+    host: "x-nextgen-ascend.osc.edu"
+  job:
+    adapter: "slurm"
+    cluster: "x-nextgen_ascend"
+  custom:
+    pbs:
+      host: "x-nextgen-ascend-batch.osc.edu"
+      lib: "/opt/torque/lib64"
+      bin: "/opt/torque/bin"
+      version: "6.0.1"
+    moab:
+      host: "x-nextgen-ascend-batch.osc.edu"
+      bin: "/opt/moab/bin"
+      version: "9.0.1"
+      homedir: "/var/spool/moab"
+    rsv_query:
+      torque_host: "x-nextgen-ascend-batch.osc.edu"
+      torque_lib: "/opt/torque/lib64"
+      torque_bin: "/opt/torque/bin"
+      torque_version: "6.0.1"
+      moab_host: "x-nextgen-ascend-batch.osc.edu"
+      moab_bin: "/opt/moab/bin"
+      moab_version: "9.0.1"
+      moab_homedir: "/var/spool/moab"
+      acls:
+        - adapter: "group"
+          groups:
+            - "sysp"
+            - "hpcsoft"
+          type: "blacklist"
+    ganglia:
+      host: "ganglia.osc.edu"
+      scheme: "https://"
+      segments:
+        - "graph.php"
+      req_query:
+        c: "Next-Gen Ascend"
+      opt_query:
+        h: "%{h}.osc.edu"
+      version: "3"
+    grafana:
+      host: "https://grafana.osc.edu"
+      orgId: 1
+      dashboard:
+        name: "ondemand-clusters"
+        uid: "aaba6Ahbauquag"
+        panels:
+          cpu: 20
+          memory: 24
+      labels:
+        cluster: "cluster"
+        host: "host"
+        jobid: "jobid"
+  batch_connect:
+      basic:
+        script_wrapper: "module restore\n%s"
+      vnc:
+        script_wrapper: "module restore\nmodule load ondemand-vnc\n%s"

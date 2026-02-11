@@ -52,6 +52,21 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '', find_option_style('node_type', 'hugemem')
   end
 
+  test 'cluster names with dashes and underscores work with data-option-for attributes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # select Next Gen Ascend and hugemem/advanced node types should be hidden
+    select('X Nextgen Ascend', from: bc_ele_id('cluster'))
+
+    assert_equal 'display: none;', find_option_style('node_type', 'advanced')
+    assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
+
+    # select owens and now they're available
+    select('Owens', from: bc_ele_id('cluster'))
+    assert_equal '', find_option_style('node_type', 'advanced')
+    assert_equal '', find_option_style('node_type', 'hugemem')
+  end
+
   test 'node type choice changes python versions' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -168,6 +183,29 @@ class BatchConnectTest < ApplicationSystemTestCase
     # changing the cluster changes the max
     select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 40, find_max('bc_num_slots')
+  end
+
+  test 'cluster names with dashes and underscores work with min/max attributes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # select Next Gen Ascend cluster
+    select('X Nextgen Ascend', from: bc_ele_id('cluster'))
+
+    select('any', from: bc_ele_id('node_type'))
+    assert_equal 5, find_min('bc_num_slots')
+    assert_equal 10, find_max('bc_num_slots')
+
+    # with 'gpu' node type, check min/max for Next Gen Ascend
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 4, find_min('bc_num_slots')
+    assert_equal 32, find_max('bc_num_slots')
+    assert_equal 85, find_min('bc_num_hours')
+    assert_equal 96, find_max('bc_num_hours')
+
+    # verify that switching back to a non-dashed cluster still works
+    select('Owens', from: bc_ele_id('cluster'))
+    assert_equal 2, find_min('bc_num_slots')
+    assert_equal 28, find_max('bc_num_slots')
   end
 
   test 'using same node sets min/max' do

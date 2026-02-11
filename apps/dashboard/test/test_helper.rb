@@ -14,6 +14,7 @@ module ActiveSupport
     # Add more helper methods to be used by all tests here...
 
     UserDouble = Struct.new(:name, :groups)
+    CLUSTERS = ['owens', 'oakley', 'x-nextgen_ascend'].freeze
 
     class BrokenAdapter < OodCore::Job::Adapter
       SUBMIT_ERR_MSG = 'this adapter cannot submit jobs'
@@ -87,7 +88,7 @@ module ActiveSupport
     end
 
     def stub_scontrol
-      ['owens', 'oakley'].each do |cluster|
+      CLUSTERS.each do |cluster|
         Open3
           .stubs(:capture3)
           .with({}, 'scontrol', 'show', 'part', '-o', '-M', cluster.to_s, stdin_data: '')
@@ -96,7 +97,7 @@ module ActiveSupport
     end
 
     def stub_sacctmgr
-      ['oakley', 'owens'].each do |cluster|
+      CLUSTERS.each do |cluster|
         Open3.stubs(:capture3)
              .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
                    'format=account,qos', 'where', 'user=me', "cluster=#{cluster}", stdin_data: '')
@@ -113,7 +114,7 @@ module ActiveSupport
     end
 
     def stub_sinfo
-      ['oakley', 'owens'].each do |cluster|
+      CLUSTERS.each do |cluster|
         Open3
           .stubs(:capture3)
           .with({}, 'sinfo', '-ho', "\u001E%c\u001F%n\u001F%f", '-M', cluster, stdin_data: '')
