@@ -20,8 +20,8 @@ class BatchConnectTest < ApplicationSystemTestCase
   def make_bc_app(dir, form)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-    stub_scontrol
-    stub_sacctmgr
+    stub_scontrol(['owens', 'oakley', 'x-nextgen_ascend'])
+    stub_sacctmgr(['owens', 'oakley', 'x-nextgen_ascend'])
     stub_git(app_dir)
     Pathname.new(app_dir).join('form.yml').write(form)
   end

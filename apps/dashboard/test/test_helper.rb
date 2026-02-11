@@ -14,7 +14,7 @@ module ActiveSupport
     # Add more helper methods to be used by all tests here...
 
     UserDouble = Struct.new(:name, :groups)
-    CLUSTERS = ['owens', 'oakley', 'x-nextgen_ascend'].freeze
+    DEFAULT_CLUSTERS = ['owens', 'oakley'].freeze
 
     class BrokenAdapter < OodCore::Job::Adapter
       SUBMIT_ERR_MSG = 'this adapter cannot submit jobs'
@@ -87,8 +87,8 @@ module ActiveSupport
       UserConfiguration.stubs(:new).returns(user_configuration)
     end
 
-    def stub_scontrol
-      CLUSTERS.each do |cluster|
+    def stub_scontrol(clusters = DEFAULT_CLUSTERS)
+      clusters.each do |cluster|
         Open3
           .stubs(:capture3)
           .with({}, 'scontrol', 'show', 'part', '-o', '-M', cluster.to_s, stdin_data: '')
@@ -96,8 +96,8 @@ module ActiveSupport
       end
     end
 
-    def stub_sacctmgr
-      CLUSTERS.each do |cluster|
+    def stub_sacctmgr(clusters = DEFAULT_CLUSTERS)
+      clusters.each do |cluster|
         Open3.stubs(:capture3)
              .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
                    'format=account,qos', 'where', 'user=me', "cluster=#{cluster}", stdin_data: '')
@@ -113,8 +113,8 @@ module ActiveSupport
         .returns(['2097152 /directory/path', '', exit_success])
     end
 
-    def stub_sinfo
-      CLUSTERS.each do |cluster|
+    def stub_sinfo(clusters = DEFAULT_CLUSTERS)
+      clusters.each do |cluster|
         Open3
           .stubs(:capture3)
           .with({}, 'sinfo', '-ho', "\u001E%c\u001F%n\u001F%f", '-M', cluster, stdin_data: '')

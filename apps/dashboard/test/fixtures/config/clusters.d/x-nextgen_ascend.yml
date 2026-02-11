@@ -5,7 +5,7 @@ v2:
     # the titleized id of the cluster
     # title: "X Nextgen Ascend"
     url: "https://www.osc.edu/resources/technical_support/supercomputers/ascend"
-    hidden: false
+    hidden: true
   login:
     host: "x-nextgen-ascend.osc.edu"
   job:
