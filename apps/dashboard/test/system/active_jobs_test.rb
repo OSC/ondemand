@@ -30,7 +30,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
   # Define selector statements
   MAIN_BODY_SELECT = '#job_status_table tbody'
-  PAGER_SELECT = 'div#job_status_table_wrapper .dt-paginate'
+  PAGER_SELECT = 'div#job_status_table_wrapper .dt-paging'
   
   def setup
     # Enable routes guarded by this flag
