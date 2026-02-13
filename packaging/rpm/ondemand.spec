@@ -72,6 +72,7 @@ BuildRequires:   ondemand-ruby = %{runtime_version_full}
 BuildRequires:   ondemand-nodejs = %{runtime_version_full}
 BuildRequires:   rsync
 BuildRequires:   git
+BuildRequires:   rubygem-bundler rubygem-rake ruby-devel npm sqlite-devel libxslt-devel
 # Force Python 3.12 for EL8 as Python 3.6 does not work with node-gyp
 %if 0%{?rhel} == 8
 BuildRequires:   python3.12
