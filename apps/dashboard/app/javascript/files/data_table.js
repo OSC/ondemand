@@ -263,6 +263,19 @@ class DataTable {
         this.updateGlobus();
     }
 
+    cleanHtml(html) {
+        const parser = new DOMParser();
+        const ele = parser.parseFromString(html, 'text/html');
+
+        const imgs = ele.querySelectorAll('img');
+        imgs.forEach(img => { img.parentElement.removeChild(img) });
+
+        const scripts = ele.querySelectorAll('script');
+        scripts.forEach(script => { script.parentElement.removeChild(script) });
+
+        return ele.body.innerHTML;
+    }
+
     async reloadTable(url) {
         var request_url = url || history.state.currentDirectoryUrl;
 
@@ -272,7 +285,7 @@ class DataTable {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
             const data = await this.dataFromJsonResponse(response);
             history.state.currentFilenames = Array.from(data.files, x => x.name);
-            $('#shell-wrapper').replaceWith((data.shell_dropdown_html));
+            $('#shell-wrapper').replaceWith(this.cleanHtml(data.shell_dropdown_html));
 
             this._table.clear();
             this._table.rows.add(data.files);
@@ -358,6 +371,14 @@ class DataTable {
         return new Promise((resolve, reject) => {
             Promise.resolve(response)
                 .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+                .then(response => {
+                    const disposition = response.headers.get('content-disposition');
+                    if(disposition === null) {
+                        return response;
+                    } else {
+                        throw new Error("Cannot navigate to a file.");
+                    }
+                })
                 .then(response => response.json())
                 .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
                 .catch((e) => reject(e))
@@ -367,7 +388,7 @@ class DataTable {
     renderNameColumn(data, type, row, meta) {
         let element = undefined;
 
-        if(!downloadEnabled() || row.url === undefined) {
+        if(!downloadEnabled() || row.url === undefined || this.isInvalidURL(row.url)) {
             element = document.createElement('span');
         } else {
             element = document.createElement('a');
@@ -381,6 +402,16 @@ class DataTable {
 
         return element.outerHTML;
     }
+
+    isInvalidURL(urlString) {
+        try {
+          const url = new URL(urlString, window.location.origin);
+          const protocol = url.protocol;
+          return protocol === "javascript:" || protocol === "data:" || protocol === "vbscript:";
+        } catch (error) {
+          return true;
+        }
+      }
 
     actionsBtnTemplate(options) {
         // options: { row_index: meta.row,
@@ -501,7 +532,7 @@ class DataTable {
         this.reloadTable(url)
           .then((data) => {
             if(data) {
-                $('#path-breadcrumbs').html(data.breadcrumbs_html);
+                $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
                 if(pushState) {
                     // Clear search query when moving to another directory.
                     this._table.search('').draw();
