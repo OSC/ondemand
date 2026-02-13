@@ -30,7 +30,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
   # Define selector statements
   MAIN_BODY_SELECT = '#job_status_table tbody'
-  PAGER_SELECT = 'div#job_status_table_paginate'
+  PAGER_SELECT = 'div#job_status_table_wrapper .dt-paginate'
   
   def setup
     # Enable routes guarded by this flag
@@ -309,7 +309,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
     visit active_jobs_url(jobfilter: 'all')
 
-    res_per_page_selector = 'div#job_status_table_length select'
+    res_per_page_selector = 'div#job_status_table_wrapper .dt-length select'
     assert_selector(res_per_page_selector, text: '50')
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_text('Showing 1 to 50 of 600 entries')
@@ -354,7 +354,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     visit active_jobs_url(jobfilter: 'all')
 
     # Verify filter input is rendered
-    filter_selector = 'div#job_status_table_filter input'
+    filter_selector = 'div#job_status_table_wrapper .dt-search input'
     assert_selector(filter_selector)
 
     # Verify filter reads ids
