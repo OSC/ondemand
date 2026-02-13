@@ -186,6 +186,20 @@ class DataTable {
       }
     }
 
+    rowURL(urlString){
+        try {
+            const url = new URL(urlString, window.location.origin);
+            const protocol = url.protocol;
+            if(protocol === "javascript:" || protocol === "data:" || protocol === "vbscript:"){
+                return "#";
+            } else {
+                return urlString;
+            }
+          } catch (error) {
+            return "#";
+          }
+    }
+
     loadDataTable() {
         this._table = $(CONTENTID).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
@@ -227,7 +241,7 @@ class DataTable {
                     }
                 },
                 { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
-                { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => `<a class="${row.type} name ${row.type == 'd' ? '' : 'view-file'}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
+                { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => `<a class="${row.type} name ${row.type == 'd' ? '' : 'view-file'}" href="${this.rowURL(row.url)}">${Handlebars.escapeExpression(data)}</a>` }, // name
                 { name: 'actions', orderable: false, searchable: false, data: null, render: (data, type, row, meta) => this.actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd', data: row }) },
                 {
                     data: 'size',
@@ -270,6 +284,19 @@ class DataTable {
         this.updateGlobus();
     }
 
+    cleanHtml(html) {
+        const parser = new DOMParser();
+        const ele = parser.parseFromString(html, 'text/html');
+
+        const imgs = ele.querySelectorAll('img');
+        imgs.forEach(img => { img.parentElement.removeChild(img) });
+
+        const scripts = ele.querySelectorAll('script');
+        scripts.forEach(script => { script.parentElement.removeChild(script) });
+
+        return ele.body.innerHTML;
+    }
+
     async reloadTable(url) {
         var request_url = url || history.state.currentDirectoryUrl;
 
@@ -279,7 +306,7 @@ class DataTable {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
             const data = await this.dataFromJsonResponse(response);
             history.state.currentFilenames = Array.from(data.files, x => x.name);
-            $('#shell-wrapper').replaceWith((data.shell_dropdown_html));
+            $('#shell-wrapper').replaceWith(this.cleanHtml(data.shell_dropdown_html));
 
             this._table.clear();
             this._table.rows.add(data.files);
@@ -370,6 +397,14 @@ class DataTable {
         return new Promise((resolve, reject) => {
             Promise.resolve(response)
                 .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+                .then(response => {
+                    const disposition = response.headers.get('content-disposition');
+                    if(disposition === null) {
+                        return response;
+                    } else {
+                        throw new Error("Cannot navigate to a file.");
+                    }
+                })
                 .then(response => response.json())
                 .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
                 .catch((e) => reject(e))
@@ -399,7 +434,7 @@ class DataTable {
         this.reloadTable(url)
           .then((data) => {
             if(data) {
-                $('#path-breadcrumbs').html(data.breadcrumbs_html);
+                $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
                 if(pushState) {
                     // Clear search query when moving to another directory.
                     this._table.search('').draw();
