@@ -394,7 +394,7 @@ class DataTable {
         try {
           const url = new URL(urlString);
           const protocol = url.protocol;
-          return protocol === "javascript:";
+          return protocol === "javascript:" || protocol === "data:" || protocol === "vbscript:";
         } catch (error) {
           return true;
         }
