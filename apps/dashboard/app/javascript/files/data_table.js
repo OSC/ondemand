@@ -263,6 +263,19 @@ class DataTable {
         this.updateGlobus();
     }
 
+    cleanHtml(html) {
+        const parser = new DOMParser();
+        const ele = parser.parseFromString(html, 'text/html');
+
+        const imgs = ele.querySelectorAll('img');
+        imgs.forEach(img => { img.parentElement.removeChild(img) });
+
+        const scripts = ele.querySelectorAll('script');
+        scripts.forEach(script => { script.parentElement.removeChild(script) });
+
+        return ele.body.innerHTML;
+    }
+
     async reloadTable(url) {
         var request_url = url || history.state.currentDirectoryUrl;
 
@@ -272,7 +285,7 @@ class DataTable {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
             const data = await this.dataFromJsonResponse(response);
             history.state.currentFilenames = Array.from(data.files, x => x.name);
-            $('#shell-wrapper').replaceWith((data.shell_dropdown_html));
+            $('#shell-wrapper').replaceWith(this.cleanHtml(data.shell_dropdown_html));
 
             this._table.clear();
             this._table.rows.add(data.files);
@@ -519,7 +532,7 @@ class DataTable {
         this.reloadTable(url)
           .then((data) => {
             if(data) {
-                $('#path-breadcrumbs').html(data.breadcrumbs_html);
+                $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
                 if(pushState) {
                     // Clear search query when moving to another directory.
                     this._table.search('').draw();
