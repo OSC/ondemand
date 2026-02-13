@@ -392,7 +392,7 @@ class DataTable {
 
     isInvalidURL(urlString) {
         try {
-          const url = new URL(urlString);
+          const url = new URL(urlString, window.location.origin);
           const protocol = url.protocol;
           return protocol === "javascript:" || protocol === "data:" || protocol === "vbscript:";
         } catch (error) {
