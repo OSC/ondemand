@@ -269,9 +269,12 @@ class ActiveJobsTest < ApplicationSystemTestCase
     # check pager object
     assert_selector(PAGER_SELECT)
 
-    # check highlight and prev button
+    # check highlight
     assert_selector("#{PAGER_SELECT} li.active", text: '1')
-    assert_selector("#{PAGER_SELECT} li.paginate_button.disabled", text: 'Previous')
+
+    # check prev buttons
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '<<')
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '<')
 
     # Show next page and repeat
     find("#{PAGER_SELECT} li", text: '2').click
@@ -280,12 +283,14 @@ class ActiveJobsTest < ApplicationSystemTestCase
     new_row = first("#{MAIN_BODY_SELECT} tr")
     new_row_text = new_row.all('td').map(&:text).drop(1)
     assert_selector("#{PAGER_SELECT} li.active", text: '2')
-    refute_selector("#{PAGER_SELECT} li.paginate_button.previous.disabled")
-    refute_selector("#{PAGER_SELECT} li.paginate_button.next.disabled")
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '<<')
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '<')
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '>')
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '>>')
     assert_text('Showing 51 to 100 of 400 entries')
 
     # click next button and repeat
-    find("#{PAGER_SELECT} li", text: 'Next').click
+    find("#{PAGER_SELECT} li", text: '>').click
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_selector("#{PAGER_SELECT} li.active", text: '3')
     assert_text('Showing 101 to 150 of 400 entries')
@@ -294,11 +299,12 @@ class ActiveJobsTest < ApplicationSystemTestCase
     find("#{PAGER_SELECT} li", text: '8').click
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_selector("#{PAGER_SELECT} li.active", text: '8')
-    assert_selector("#{PAGER_SELECT} li.paginate_button.disabled", text: 'Next') 
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '>')
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '>>')
     assert_text('Showing 351 to 400 of 400 entries')
 
     # Click prev button
-    find("#{PAGER_SELECT} li", text: 'Previous').click
+    find("#{PAGER_SELECT} li", text: '<').click
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_selector("#{PAGER_SELECT} li.active", text: '7')
     assert_text('Showing 301 to 350 of 400 entries')
