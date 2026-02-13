@@ -1,34 +1,16 @@
 
 // get rid of jquery's default sorting icons.
 // so we can put them in a span below.
-th.sorting::before {
-  content: "" !important;
-}
 
-th.sorting::after {
-  content: "" !important;
-}
-
-table.dataTable th:hover {
+table.dataTable th.dt-orderable-asc:hover {
   background-color: darkgrey;
-}
-
-table.dataTable th[aria-sort="descending"] span::after {
-  content: "▼";
-  margin-left: 1.5rem !important;
-  color: currentcolor;
-  font-size: 100%;
-  top: 0;
-}
-
-table.dataTable th[aria-sort="ascending"] span::after {
-  content: "▲";
-  margin-left: 1.5rem !important;
-  color: currentcolor;
-  font-size: 100%;
-  top: 0;
 }
 
 table.dataTable td a {
   text-decoration: none;
+}
+
+table.dataTable .file-select {
+  vertical-align: middle;
+  margin-left: 30%
 }
