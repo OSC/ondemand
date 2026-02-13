@@ -205,6 +205,11 @@ class DataTable {
                 selector: 'td:not(:first-child)'
             },
             layout: {
+                top1Start: {
+                    div: {
+                        className: 'transfers-status'
+                    }
+                },
                 topStart: 'info',
                 topEnd: 'search',
                 bottomStart: null,
