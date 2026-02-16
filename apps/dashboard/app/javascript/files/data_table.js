@@ -189,7 +189,7 @@ class DataTable {
         }).DataTable({
             autoWidth: false,
             language: {
-                search: `${history.state.filterText}:`,
+                search: 'Filter:',
                 infoFiltered: ""
             },
             order: [[1, "asc"], [2, "asc"]],

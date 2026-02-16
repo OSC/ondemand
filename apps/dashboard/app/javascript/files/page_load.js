@@ -14,7 +14,6 @@ export function setPageLoadState() {
     currentDirectoryUpdatedAt: data['currentDirectoryUpdatedAt'],
     currentFilesPath: data['currentFilesPath'],
     currentFilesUploadPath: data['currentFilesUploadPath'],
-    currentFilesystem: data['currentFilesystem'],
-    filterText: data['filterText']
+    currentFilesystem: data['currentFilesystem']
   }, null);
 }
