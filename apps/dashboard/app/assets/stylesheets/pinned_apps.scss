@@ -196,6 +196,6 @@
   }
 }
 
-.app-launcher-hover:hover {
+.app-launcher-hover:hover, .app-launcher-hover:focus-within {
   transform: scale(0.98);
 }
