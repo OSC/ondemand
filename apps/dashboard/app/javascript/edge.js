@@ -1,25 +1,11 @@
 // Orthogonal Edge System for Workflow DAG
-// Draw.io–style edges with unlimited user-created bends.
-//
 // Handle types:
-//   ● Corner handle  (solid)       – sits at each bend, drag to move it
-//   ○ Midpoint handle (translucent) – sits at middle of each segment,
-//                                     drag to split that segment into a new bend
-//
-// Ports: right side = output (edge start), left side = input (edge end)
+//  ● Corner handle  (solid)        – sits at each bend, drag to move it
+//  ○ Midpoint handle (translucent) – sits at middle of each segment, drag to split that segment into a new bend
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-/* ================================================================== */
-/*  OrthogonalEdge                                                     */
-/* ================================================================== */
-
 export class OrthogonalEdge {
-  /**
-   * @param {Object}     fromBox   – source Box instance
-   * @param {Object}     toBox     – target Box instance
-   * @param {SVGElement} svgGroup  – <g> element that holds all edge visuals
-   */
   constructor(fromBox, toBox, svgGroup) {
     this.fromBox = fromBox;
     this.toBox   = toBox;
@@ -29,14 +15,13 @@ export class OrthogonalEdge {
     // Empty by default → auto-routed 3-segment path.
     this.bends = [];
 
-    // SVG elements
-    this.pathEl      = this._makePath('edge orthogonal-edge');
-    this.clickAreaEl = this._makePath('edge click-area orthogonal-edge');
-
     // Container for dynamic handles (rebuilt on every update)
     this.handleGroup = document.createElementNS(SVG_NS, 'g');
     this.handleGroup.classList.add('edge-handles');
 
+		// SVG elements
+    this.pathEl      = this._makePath('edge orthogonal-edge');
+    this.clickAreaEl = this._makePath('edge click-area orthogonal-edge');
     this.group.appendChild(this.clickAreaEl);
     this.group.appendChild(this.pathEl);
     this.group.appendChild(this.handleGroup);
@@ -52,11 +37,8 @@ export class OrthogonalEdge {
     this._userEdited = false;
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Public API                                                         */
-  /* ------------------------------------------------------------------ */
-
-  /** Recalculate route, redraw path, rebuild handles. */
+	/*--------------------     Public APIs     --------------------*/
+  // Recalculate route, redraw path, rebuild handles
   update() {
     this._waypoints = this._computeRoute();
     const d = this._pointsToPathD(this._waypoints);
@@ -65,40 +47,27 @@ export class OrthogonalEdge {
     this._rebuildHandles();
   }
 
-  /** Remove all SVG elements from the DOM. */
   remove() {
     this.group.remove();
   }
 
-  /**
-   * Called when a connected box is dragged. Instead of recomputing the
-   * entire route, only adjusts the segment closest to the moved box's
-   * port — keeping the rest of the edge shape intact.
-   *
-   * If no user bends exist, falls back to full update().
-   */
+  // Called when a connected box is dragged only adjusts the segment closest to the moved box's
+  // If no user bends exist, falls back to full update().
   updateForBoxMove(box) {
     if (this.bends.length === 0) {
       this.update();
       return;
     }
 
-    if (box === this.fromBox) {
-      // The source box moved — adjust the first bend to stay connected.
-      // Keep the first bend's axis that is NOT shared with the port,
-      // and update the shared axis so the segment stays orthogonal.
+    if (box === this.fromBox) { // adjust the first bend
       const port = this._fromPort();
       const bend = this.bends[0];
 
-      // If first segment was horizontal (same Y), keep bend.x, update bend.y
-      // If first segment was vertical (same X), keep bend.y, update bend.x
-      // Otherwise just track the port delta
       if (Math.abs(bend.y - this._prevFromPort.y) < 1) {
         bend.y = port.y;
       } else if (Math.abs(bend.x - this._prevFromPort.x) < 1) {
         bend.x = port.x;
       } else {
-        // Diagonal / free bend — apply the delta
         const dx = port.x - this._prevFromPort.x;
         const dy = port.y - this._prevFromPort.y;
         bend.x += dx;
@@ -106,8 +75,7 @@ export class OrthogonalEdge {
       }
     }
 
-    if (box === this.toBox) {
-      // The target box moved — adjust the last bend.
+    if (box === this.toBox) { // adjust the last bend
       const port = this._toPort();
       const bend = this.bends[this.bends.length - 1];
 
@@ -127,35 +95,32 @@ export class OrthogonalEdge {
     this.update();
   }
 
-  /** Cache current port positions for delta calculation on next move. */
+  // Cache current port positions for delta calculation on next move
   _savePorts() {
     this._prevFromPort = this._fromPort();
     this._prevToPort   = this._toPort();
   }
 
-  /** Reset all user bends so the edge auto-routes again. */
+  // Reset all user bends so the edge auto-routes again
   resetRoute() {
     this.bends = [];
     this._userEdited = false;
     this.update();
   }
 
-  /** Serialize bend data for save/restore. */
+  // Serialize bend data for save/restore
   serializeBends() {
     return this.bends.map(b => ({ x: b.x, y: b.y }));
   }
 
-  /** Restore bend data from saved state. */
+  // Restore bend data from saved state
   restoreBends(arr) {
     if (Array.isArray(arr)) {
       this.bends = arr.map(b => ({ x: b.x, y: b.y }));
     }
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Port helpers                                                       */
-  /* ------------------------------------------------------------------ */
-
+	/*--------------------     Port Helpers     --------------------*/
   _fromPort() {
     return {
       x: this.fromBox.x + this.fromBox.w,
@@ -170,16 +135,8 @@ export class OrthogonalEdge {
     };
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Route computation                                                  */
-  /* ------------------------------------------------------------------ */
-
-  /**
-   * Build the full waypoint array: [startPort, ...bends, endPort]
-   *
-   * If user has added bends, use them directly.
-   * Otherwise auto-route with a default orthogonal path.
-   */
+	/*--------------------     Route Computation     --------------------*/
+  // Build the full waypoint array: [startPort, ...bends, endPort]
   _computeRoute() {
     const start = this._fromPort();
     const end   = this._toPort();
@@ -224,10 +181,7 @@ export class OrthogonalEdge {
     ];
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  SVG path                                                           */
-  /* ------------------------------------------------------------------ */
-
+	/*--------------------     SVG Path    --------------------*/
   _pointsToPathD(points) {
     if (points.length < 2) return '';
 
@@ -265,19 +219,11 @@ export class OrthogonalEdge {
     return path;
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Handles                                                            */
-  /* ------------------------------------------------------------------ */
-
-  /**
-   * Clear and recreate all handles from current waypoints.
-   *
-   * For N waypoints we place:
-   *   - (N-2) corner handles  at waypoints[1 .. N-2]  (the bends)
-   *   - (N-1) midpoint handles at the center of each segment
-   */
+	/*--------------------     Handles     --------------------*/
+  // Clear and recreate all handles from current waypoints. For N waypoints we place:
+  // (N-2) corner handles  at waypoints[1 .. N-2]  (the bends)
+  // (N-1) midpoint handles at the center of each segment
   _rebuildHandles() {
-    // Remove old
     while (this.handleGroup.firstChild) {
       this.handleGroup.removeChild(this.handleGroup.firstChild);
     }
@@ -285,123 +231,66 @@ export class OrthogonalEdge {
     const pts = this._waypoints;
     if (pts.length < 2) return;
 
-    // Corner handles at each interior waypoint (the bends)
+    // Corner handles at each interior waypoint (the bends, bendIndex = i-1)
     for (let i = 1; i < pts.length - 1; i++) {
-      this._createCornerHandle(pts[i], i - 1);   // bendIndex = i-1
+      this._createCornerHandle(pts[i], i - 1);
     }
 
-    // Midpoint handles at the center of every segment
+    // Midpoint handles at the center of every segment (segIndex = i)
     for (let i = 0; i < pts.length - 1; i++) {
       const mid = {
         x: (pts[i].x + pts[i + 1].x) / 2,
         y: (pts[i].y + pts[i + 1].y) / 2
       };
-      this._createMidpointHandle(mid, i);         // segIndex = i
+      this._createMidpointHandle(mid, i);
     }
   }
 
-  /* ---------- Corner handle (drag to move an existing bend) ---------- */
-
-  _createCornerHandle(pt, bendIndex) {
-    const c = document.createElementNS(SVG_NS, 'circle');
-    c.setAttribute('cx', pt.x);
-    c.setAttribute('cy', pt.y);
-    c.setAttribute('r', 6);
-    c.setAttribute('class', 'edge-handle corner-handle');
-    this.handleGroup.appendChild(c);
-
-    c.addEventListener('pointerdown', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      c.classList.add('dragging');
-
-      this._promoteAutoBends();
-
-      const onMove = (ev) => {
-        const pos = this._clientToStage(ev);
-        this.bends[bendIndex] = this._snapOrtho(pos, bendIndex);
-        this.update();
-      };
-
-      const onUp = () => {
-        c.classList.remove('dragging');
-        document.removeEventListener('pointermove', onMove);
-        document.removeEventListener('pointerup', onUp);
-
-        this._tryEliminate(bendIndex);
-        this.update();
-      };
-
-      document.addEventListener('pointermove', onMove);
-      document.addEventListener('pointerup', onUp);
-    });
+  // Corner handle (drag to move an existing bend)
+	_createCornerHandle(pt, bendIndex) {
+    this._createDraggableHandle(pt, 6, 'edge-handle corner-handle', bendIndex, false);
   }
 
-  /* ---------- Midpoint handle (drag to create a new bend) ---------- */
-
+	// Midpoint handle (drag to create a new bend)
   _createMidpointHandle(pt, segIndex) {
-    const c = document.createElementNS(SVG_NS, 'circle');
-    c.setAttribute('cx', pt.x);
-    c.setAttribute('cy', pt.y);
-    c.setAttribute('r', 5);
-    c.setAttribute('class', 'edge-handle midpoint-handle');
-    this.handleGroup.appendChild(c);
+    this._createDraggableHandle(pt, 5, 'edge-handle midpoint-handle', segIndex, true);
+  }
+
+  _createDraggableHandle(pt, r, className, index, isMidpoint) {
+    const c = this._makeHandle(pt, r, className);
 
     c.addEventListener('pointerdown', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
+      e.stopPropagation(); e.preventDefault();
       c.classList.add('dragging');
-
       this._promoteAutoBends();
 
-      // Insert a new bend at the midpoint of this segment.
-      //
-      // segIndex maps to bends[] insertion point:
-      //   segment 0 = start→bend[0]         → splice at 0
-      //   segment 1 = bend[0]→bend[1]       → splice at 1
-      //   segment k = bend[k-1]→bend[k]/end → splice at k
-      const insertAt = segIndex;
-      this.bends.splice(insertAt, 0, { x: pt.x, y: pt.y });
-      this.update();
+			// Insert a new bend at the midpoint of this segment. segIndex maps to bends[] insertion point:
+      // segment 0 = start→bend[0]         → splice at 0
+      // segment k = bend[k-1]→bend[k]/end → splice at k
+      if (isMidpoint) {
+        this.bends.splice(index, 0, { x: pt.x, y: pt.y });
+        this.update();
+      }
 
-      // After update(), the inserted bend is at bends[insertAt].
-      // We keep tracking it by its fixed index.
       const onMove = (ev) => {
-        const pos = this._clientToStage(ev);
-        this.bends[insertAt] = this._snapOrtho(pos, insertAt);
+        this.bends[index] = this._snapOrtho(this._clientToStage(ev), index);
         this.update();
       };
-
       const onUp = () => {
         c.classList.remove('dragging');
         document.removeEventListener('pointermove', onMove);
         document.removeEventListener('pointerup', onUp);
-
-        // Eliminate bend if dropped close to the midpoint of its neighbours
-        this._tryEliminate(insertAt);
+        this._tryEliminate(index);
         this.update();
       };
-
       document.addEventListener('pointermove', onMove);
       document.addEventListener('pointerup', onUp);
     });
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Utilities                                                          */
-  /* ------------------------------------------------------------------ */
-
-
-	/**
-		* Remove bend at index if it sits close to the line between its
-		* two neighbours (i.e. user dragged it back to the segment center).
-		*/
-	/**
-	 * Remove bend if it sits close to the straight line between its
-	 * two neighbours. Uses perpendicular distance to the line segment,
-	 * so the user just needs to drag the corner roughly back onto the
-	 * line — no need to hit the exact midpoint.
-	 */
+	/*--------------------     Utilities     --------------------*/
+	// Remove bend at index if it sits close to the line between its
+	// two neighbours (i.e. user dragged it back to the segment center).
 	_tryEliminate(bendIndex) {
 		if (bendIndex < 0 || bendIndex >= this.bends.length) return;
 
@@ -421,9 +310,7 @@ export class OrthogonalEdge {
 		}
 	}
 
-	/**
-	 * Perpendicular distance from point P to line segment AB.
-	 */
+	// Perpendicular distance from point P to line segment AB.
 	_pointToSegmentDist(p, a, b) {
 		const dx = b.x - a.x;
 		const dy = b.y - a.y;
@@ -439,11 +326,7 @@ export class OrthogonalEdge {
 		return Math.hypot(p.x - projX, p.y - projY);
 	}
 
-  /**
-   * Snap a dragged bend to 90° alignment with its neighbours.
-   * If the bend's X or Y is within threshold of a neighbour's,
-   * lock it so the segment becomes perfectly horizontal or vertical.
-   */
+  // Snap a dragged bend to 90° alignment with its neighbours.
   _snapOrtho(pos, bendIndex) {
     const SNAP_THRESHOLD = 12;
     let { x, y } = pos;
@@ -464,10 +347,8 @@ export class OrthogonalEdge {
     return { x, y };
   }
 
-  /**
-   * If there are no user bends yet, copy the auto-route interior
-   * points into this.bends so they become user-editable.
-   */
+  // If there are no user bends yet, copy the auto-route interior
+  // points into this.bends so they become user-editable.
   _promoteAutoBends() {
     if (this.bends.length === 0 && this._waypoints.length > 2) {
       this.bends = this._waypoints.slice(1, -1).map(p => ({ x: p.x, y: p.y }));
@@ -476,7 +357,7 @@ export class OrthogonalEdge {
     this._savePorts();
   }
 
-  /** Convert pointer event clientX/clientY → stage coordinates (zoom-aware). */
+  // Convert pointer event clientX/clientY → stage coordinates (zoom-aware)
   _clientToStage(e) {
     const stage = this.group.closest('#stage-zoom') || this.group.closest('#stage');
     const rect  = stage.getBoundingClientRect();
@@ -494,11 +375,7 @@ export class OrthogonalEdge {
   }
 }
 
-
-/* ================================================================== */
-/*  Factory                                                            */
-/* ================================================================== */
-
+/*--------------------     Factory     --------------------*/
 export function createOrthogonalEdge(svgRoot, boxes, fromId, toId, onSelect) {
   const group = document.createElementNS(SVG_NS, 'g');
   group.classList.add('edge');
