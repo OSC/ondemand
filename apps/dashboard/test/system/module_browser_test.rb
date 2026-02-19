@@ -3,10 +3,14 @@
 require 'application_system_test_case'
 
 class ModuleBrowserTest < ApplicationSystemTestCase
-  TOGGLE_WAIT = 0.3
+  MODULE_BTN_SELECT = '.module-card button[data-bs-toggle="collapse"]'
 
   def fixture_dir
     "#{Rails.root}/test/fixtures/modules/"
+  end
+
+  def results_text(count)
+    "Showing #{count} results"
   end
 
   setup do
@@ -19,15 +23,15 @@ class ModuleBrowserTest < ApplicationSystemTestCase
       initial_count = all('.module-card').count
       
       fill_in 'module_search', with: 'gcc'
-      sleep TOGGLE_WAIT
-      
+      assert_selector('#module_results_count', text: results_text(2))
+
       all('.module-card', visible: true).each do |card|
         module_name = card['data-name'].downcase
         assert module_name.include?('gcc'), "Expected #{module_name} to include 'gcc'"
       end
       
       fill_in 'module_search', with: ''
-      sleep TOGGLE_WAIT
+      assert_selector('#module_results_count', text: results_text(initial_count))
       
       final_count = all('.module-card', visible: true).count
       assert_equal initial_count, final_count
@@ -50,6 +54,7 @@ class ModuleBrowserTest < ApplicationSystemTestCase
         clusters = card['data-clusters'].split(',')
         assert clusters.include?(cluster_id), "Module should have #{cluster_id} in its cluster list"
       end
+
       select 'All Clusters', from: 'cluster_filter'
       
       final_count = all('.module-card', visible: true).count
@@ -60,18 +65,18 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   test 'module button expands and collapses the module details' do
     with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
       visit module_browser_url
-      
-      first_module = find('.module-card button[data-bs-toggle="collapse"]', match: :first)
+
+      first_module = find(MODULE_BTN_SELECT, match: :first)
       collapse_id = first_module['data-bs-target']
       
       assert_selector("#{collapse_id}", visible: :hidden)
       
       first_module.click
-      sleep TOGGLE_WAIT
+      assert_selector("#{MODULE_BTN_SELECT}.active")
       assert_selector("#{collapse_id}", visible: :visible)
       
       first_module.click
-      sleep TOGGLE_WAIT
+      assert_selector("#{MODULE_BTN_SELECT}.collapsed")
       assert_selector("#{collapse_id}", visible: :hidden)
     end
   end
@@ -80,10 +85,10 @@ class ModuleBrowserTest < ApplicationSystemTestCase
     with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
       visit module_browser_url
       
-      first_module = find('.module-card button[data-bs-toggle="collapse"]', match: :first)
+      first_module = find(MODULE_BTN_SELECT, match: :first)
       first_module.click
-      sleep TOGGLE_WAIT
-      
+
+      assert_selector("#{MODULE_BTN_SELECT}.active")
       version_button = find('button[data-role="selectable-version"]', match: :first)
       module_name = version_button['data-module']
       version = version_button['data-version']
@@ -107,9 +112,7 @@ class ModuleBrowserTest < ApplicationSystemTestCase
       assert_equal "Showing #{initial_count} results", initial_count_text
       
       fill_in 'module_search', with: 'nonexistent_module'
-      sleep TOGGLE_WAIT
-      
-      assert_equal 'Showing 0 results', find('#module_results_count').text.strip
+      assert_selector('#module_results_count', text: results_text(0))
     end
   end
 end
