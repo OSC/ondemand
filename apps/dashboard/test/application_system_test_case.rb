@@ -4,7 +4,6 @@ require 'test_helper'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
-  TOGGLE_WAIT = 0.5
 
   driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
     # only chrome has support for browser logs

@@ -3,6 +3,8 @@
 require 'application_system_test_case'
 
 class ModuleBrowserTest < ApplicationSystemTestCase
+  TOGGLE_WAIT = 0.3
+
   def fixture_dir
     "#{Rails.root}/test/fixtures/modules/"
   end
