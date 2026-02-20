@@ -69,11 +69,11 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     assert_not navbar_collapse.visible?, 'Navbar should be initially collapsed on mobile'
 
     navbar_toggler.click
-    sleep TOGGLE_WAIT
+    assert_selector('#navbar.show')
     assert navbar_collapse.visible?, 'Navbar should be visible after toggle click'
 
     navbar_toggler.click
-    sleep TOGGLE_WAIT
+    refute_selector('#navbar.show')
     assert_not navbar_collapse.visible?, 'Navbar should be hidden after second toggle click'
     
     # Reset window to original size
@@ -91,11 +91,11 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert_not menu.visible?, "Navbar dropdown #{index + 1} menu should be hidden initially"
 
       toggle.click
-      sleep TOGGLE_WAIT
+      assert_selector('.dropdown-menu.show')
       assert menu.visible?, "Navbar dropdown #{index + 1} menu should be visible after click"
 
       toggle.click
-      sleep TOGGLE_WAIT
+      refute_selector('.dropdown-menu.show')
       assert_not menu.visible?, "Navbar dropdown #{index + 1} menu should be hidden after second click"
     end
   end
@@ -112,11 +112,11 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert launcher_list.visible?, 'Launcher list should be visible initially'
 
       toggle_button.click
-      sleep TOGGLE_WAIT
+      assert_selector('#launcher_list.show')
       assert_not launcher_list.visible?, 'Launcher list should be hidden after toggle'
 
       toggle_button.click
-      sleep TOGGLE_WAIT
+      refute_selector('#launcher_list.show')
       assert launcher_list.visible?, 'Launcher list should be visible after second toggle'
     end
   end
@@ -135,11 +135,11 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert workflow_list.visible?, 'Workflow list should be visible initially'
 
       toggle_button.click
-      sleep TOGGLE_WAIT
+      assert_selector('#workflow_list.show')
       assert_not workflow_list.visible?, 'Workflow list should be hidden after toggle'
 
       toggle_button.click
-      sleep TOGGLE_WAIT
+      refute_selector('#workflow_list.show')
       assert workflow_list.visible?, 'Workflow list should be visible after second toggle'
     end
   end
@@ -157,12 +157,12 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     assert_equal 'false', module_button[:'aria-expanded']
 
     module_button.click
-    sleep TOGGLE_WAIT
+    assert_selector('.module-card button[data-bs-toggle="collapse"].active')
     assert collapsible_element.visible?, 'Module details should be visible after click'
     assert_equal 'true', module_button[:'aria-expanded']
 
     module_button.click
-    sleep TOGGLE_WAIT
+    assert_selector('.module-card button[data-bs-toggle="collapse"].collapsed')
     assert_not collapsible_element.visible?, 'Module details should be hidden after second click'
     assert_equal 'false', module_button[:'aria-expanded']
   end
