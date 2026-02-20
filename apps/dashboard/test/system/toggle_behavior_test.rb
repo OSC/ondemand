@@ -73,7 +73,11 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     assert navbar_collapse.visible?, 'Navbar should be visible after toggle click'
 
     navbar_toggler.click
+    # #navbar.collapse.show -> navbar.collapsing -> navbar.collapse
+    # So we have to wait until show is removed before checking when collapse appears
     refute_selector('#navbar.show')
+    assert_selector('#navbar.collapse')
+    
     assert_not navbar_collapse.visible?, 'Navbar should be hidden after second toggle click'
     
     # Reset window to original size
@@ -112,11 +116,11 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert launcher_list.visible?, 'Launcher list should be visible initially'
 
       toggle_button.click
-      assert_selector('#launcher_list.show')
+      refute_selector('#launcher_list.show')
       assert_not launcher_list.visible?, 'Launcher list should be hidden after toggle'
 
       toggle_button.click
-      refute_selector('#launcher_list.show')
+      assert_selector('#launcher_list.show')
       assert launcher_list.visible?, 'Launcher list should be visible after second toggle'
     end
   end
@@ -135,11 +139,11 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert workflow_list.visible?, 'Workflow list should be visible initially'
 
       toggle_button.click
-      assert_selector('#workflow_list.show')
+      refute_selector('#workflow_list.show')
       assert_not workflow_list.visible?, 'Workflow list should be hidden after toggle'
 
       toggle_button.click
-      refute_selector('#workflow_list.show')
+      assert_selector('#workflow_list.show')
       assert workflow_list.visible?, 'Workflow list should be visible after second toggle'
     end
   end
@@ -162,7 +166,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     assert_equal 'true', module_button[:'aria-expanded']
 
     module_button.click
-    assert_selector('.module-card button[data-bs-toggle="collapse"].collapsed')
+    refute_selector('.module-card button[data-bs-toggle="collapse"].active')
     assert_not collapsible_element.visible?, 'Module details should be hidden after second click'
     assert_equal 'false', module_button[:'aria-expanded']
   end
