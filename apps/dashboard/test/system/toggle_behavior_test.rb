@@ -76,7 +76,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     # #navbar.collapse.show -> navbar.collapsing -> navbar.collapse
     # So we have to wait until show is removed before checking when collapse appears
     refute_selector('#navbar.show')
-    assert_selector('#navbar.collapse')
+    refute_selector('#navbar.collapsing')
     
     assert_not navbar_collapse.visible?, 'Navbar should be hidden after second toggle click'
     
@@ -117,6 +117,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
 
       toggle_button.click
       refute_selector('#launcher_list.show')
+      refute_selector('#launcher_list.collapsing')
       assert_not launcher_list.visible?, 'Launcher list should be hidden after toggle'
 
       toggle_button.click
@@ -143,6 +144,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert_not workflow_list.visible?, 'Workflow list should be hidden after toggle'
 
       toggle_button.click
+      assert_selector('#workflow_list.collapsing')
       assert_selector('#workflow_list.show')
       assert workflow_list.visible?, 'Workflow list should be visible after second toggle'
     end
