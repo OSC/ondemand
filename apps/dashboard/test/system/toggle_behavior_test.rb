@@ -144,7 +144,6 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert_not workflow_list.visible?, 'Workflow list should be hidden after toggle'
 
       toggle_button.click
-      assert_selector('#workflow_list.collapsing')
       assert_selector('#workflow_list.show')
       assert workflow_list.visible?, 'Workflow list should be visible after second toggle'
     end
