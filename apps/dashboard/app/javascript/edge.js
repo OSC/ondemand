@@ -288,6 +288,16 @@ export class OrthogonalEdge {
     });
   }
 
+  _makeHandle(pt, r, className) {
+    const c = document.createElementNS(SVG_NS, 'circle');
+    c.setAttribute('cx', pt.x);
+    c.setAttribute('cy', pt.y);
+    c.setAttribute('r', r);
+    c.setAttribute('class', className);
+    this.handleGroup.appendChild(c);
+    return c;
+  }
+
 	/*--------------------     Utilities     --------------------*/
 	// Remove bend at index if it sits close to the line between its
 	// two neighbours (i.e. user dragged it back to the segment center).
