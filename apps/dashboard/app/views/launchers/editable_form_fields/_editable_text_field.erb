@@ -19,25 +19,17 @@
   <div class="port-type-group mt-3 mb-3">
     <label class="form-label fw-bold">Port Type</label>
     <div class="d-flex gap-3">
-      <div class="form-check">
-        <input class="form-check-input" type="radio"
-               name="<%= form.object_name %>[<%= attrib.id %>_port_type]"
-               id="<%= field_id %>_port_type_none" value="none"
-               <%= port_type_value == 'none' ? 'checked' : '' %>>
-        <label class="form-check-label" for="<%= field_id %>_port_type_none">None</label>
+      <div class="form-check form-check-inline">
+        <%= radio_button_tag "#{form.object_name}[#{attrib.id}_port_type]", "none", port_type_value == 'none', id: "#{field_id}_port_type_none", class: 'form-check-input' %>
+        <%= label_tag "#{field_id}_port_type_none", "None", class: 'form-check-label' %>
       </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio"
-               name="<%= form.object_name %>[<%= attrib.id %>_port_type]"
-               id="<%= field_id %>_port_type_input_port" value="input_port"
-               <%= port_type_value == 'input_port' ? 'checked' : '' %>>
-        <label class="form-check-label" for="<%= field_id %>_port_type_input_port">Input Port</label>
+      <div class="form-check form-check-inline">
+        <%= radio_button_tag "#{form.object_name}[#{attrib.id}_port_type]", "input_port", port_type_value == 'input_port', id: "#{field_id}_port_type_input_port", class: 'form-check-input' %>
+        <%= label_tag "#{field_id}_port_type_input_port", "Input Port", class: 'form-check-label' %>
       </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio"
-               name="<%= form.object_name %>[<%= attrib.id %>_port_type]"
-               id="<%= field_id %>_port_type_output_port" value="output_port"+               <%= port_type_value == 'output_port' ? 'checked' : '' %>>
-        <label class="form-check-label" for="<%= field_id %>_port_type_output_port">Output Port</label>
+      <div class="form-check form-check-inline">
+        <%= radio_button_tag "#{form.object_name}[#{attrib.id}_port_type]", "output_port", port_type_value == 'output_port', id: "#{field_id}_port_type_output_port", class: 'form-check-input' %>
+        <%= label_tag "#{field_id}_port_type_output_port", "Output Port", class: 'form-check-label' %>
       </div>
     </div>
   </div>

@@ -297,7 +297,7 @@ class Launcher
       self[orig_param].min = value if key.end_with?('_min') && !value.to_s.empty?
       self[orig_param].max = value if key.end_with?('_max') && !value.to_s.empty?
       self[orig_param].opts[:fixed] = true if key.end_with?('_fixed')
-      self[orig_param].opts[:port_type] = value if key.end_with?('_port_type')
+      self[orig_param].port_type = value if key.end_with?('_port_type') 
 
       if key.end_with?('_exclude')
         exclude_list = value.split(',').to_a
