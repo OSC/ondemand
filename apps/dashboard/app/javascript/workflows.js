@@ -21,6 +21,7 @@ class WorkflowState {
     this.STORAGE_KEY = `project_${projectId}_workflow_${workflowId}_state`;
     this.poller = new JobPoller(projectId);
     this.job_hash = {};
+    this.state = "completed";
   }
 
   clearWorkflow() {
@@ -30,7 +31,12 @@ class WorkflowState {
     this.edges.length = 0;
     this.dag.reset();
     this.pointer.resetZoom();
+    this.state = "completed";
     this.#clearSession();
+  }
+
+  isRunning() {
+    return this.state === "running";
   }
 
   saveToSession() {
@@ -42,7 +48,11 @@ class WorkflowState {
   }
 
   async saveToBackend(submit=false, start_launcher=null) {
-    if (submit) this.job_hash = {}; // This will save a state where the submit call failed in between
+    if (submit) {
+      this.job_hash = {}; // This will save a state where the submit call failed in between
+      this.state = "running";
+      await this.#applyUiState();
+    }
     const workflow = this.#serialize(start_launcher);
     console.log('Saving workflow:', workflow);
     try {
@@ -104,12 +114,25 @@ class WorkflowState {
         this.pointer.zoomRef.value = metadata.zoom;
         this.pointer.applyZoomCb();
       }
+      if (metadata.workflow_state) {
+        this.state = metadata.workflow_state;
+        await this.#applyUiState();
+      }
       this.job_hash = metadata.job_hash;
       await this.#setJobDescription();
       await this.#setupJobPoller();
       console.info('Workflow restored correctly.');
     } catch (err) {
       console.error('Failed to apply stored workflow:', err);
+    }
+  }
+
+  async onLauncherJobStateUpdate() {
+    if (!this.isRunning()) return;
+    const pendingLaunchers = document.querySelectorAll('[data-job-poller="true"]');
+    if (pendingLaunchers.length==0) {
+      this.state = "completed";
+      await this.#applyUiState();
     }
   }
 
@@ -127,6 +150,7 @@ class WorkflowState {
       })),
       zoom: this.pointer.zoomRef.value,
       job_hash: this.job_hash,
+      workflow_state: this.state,
       saved_at: new Date().toISOString(),
       start_launcher: start_launcher || null
     };
@@ -184,10 +208,36 @@ class WorkflowState {
   }
 
   async #setupJobPoller() {
-    const self = this;
     $('[data-job-poller="true"]').each((_index, ele) => {
-      this.poller.pollForJobInfo(ele);
+      this.poller.pollForJobInfo(ele, this.onLauncherJobStateUpdate.bind(this));
     });
+  }
+
+  async cancelWorkflowJobs() {
+    $('[data-job-poller="true"]').each((_index, ele) => {
+      this.poller.cancelJob(ele);
+    });
+    this.state = "completed";
+    await this.#applyUiState();
+  }
+
+  async #applyUiState() {
+    const running = this.isRunning();
+
+    document
+      .querySelectorAll('button.launcher-button')
+      .forEach(btn => btn.disabled = running);
+
+    const submitBtn = document.getElementById('btn-submit-workflow');
+    if (!submitBtn) return;
+
+    if (running) {
+      submitBtn.textContent = "Cancel";
+      submitBtn.classList.add('danger');
+    } else {
+      submitBtn.textContent = "Submit";
+      submitBtn.classList.remove('danger');
+    }
   }
 }
 
@@ -201,6 +251,11 @@ class JobPoller {
     const baseUrl = rootPath();
     return `${baseUrl}/projects/${this.projectId}/jobs/${cluster}/${jobId}`;
   }
+
+  jobStopPath(cluster, jobId) {
+    const baseUrl = rootPath();
+    return `${baseUrl}/projects/${this.projectId}/jobs/${cluster}/${jobId}/stop`;
+  }
   
   stringToHtml(html) {
     const template = document.createElement('template');
@@ -208,7 +263,7 @@ class JobPoller {
     return template.content.firstChild;
   }
 
-  async pollForJobInfo(element) {
+  async pollForJobInfo(element, onUpdateCallback=null) {
     const cluster = element.dataset['jobCluster'];
     const jobId = element.dataset['jobId'];
     const el = element.jquery ? element[0] : element;
@@ -241,9 +296,10 @@ class JobPoller {
       .then(({jobState, html}) => {
         const endStates = ['COMPLETED', 'FAILED', 'CANCELLED', 'TIMEOUT', 'undefined'];
         if(!endStates.includes(jobState)) {
-          setTimeout(() => this.pollForJobInfo(element), 30000);
+          setTimeout(() => this.pollForJobInfo(element, onUpdateCallback), 30000);
         } else {
           element.dataset.jobPoller = "false";
+          onUpdateCallback && onUpdateCallback();
         }
         
         if (jobState !== 'undefined' && html) {
@@ -269,9 +325,38 @@ class JobPoller {
         }
       })
       .catch((err) => {
-        console.log('Cannot not retrieve job info due to error:');
-        console.log(err);
+        console.log('Cannot not retrieve job info due to error:', err);
       });
+  }
+
+  async cancelJob(element) {
+    const cluster = element.dataset['jobCluster'];
+    const jobId = element.dataset['jobId'];
+    const el = element.jquery ? element[0] : element;
+  
+    if(cluster === undefined || jobId === undefined){ return; }
+  
+    const url = this.jobStopPath(cluster, jobId);
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
+          "Accept": "application/json"
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw data;
+
+      el.classList.remove('running', 'pending');
+      el.classList.add('failed');
+      element.dataset.jobPoller = "false";
+
+    } catch (err) {
+      console.error("Cannot cancel job:", err);
+    }
   }
 
   showJobInfoOverlay(html) {
@@ -824,7 +909,14 @@ class DragController {
     debouncedLaunch(launcherId);
   });
 
-  submitWorkflowButton.addEventListener('click', debounce(() => workflowState.saveToBackend(true), 300));
+  submitWorkflowButton.addEventListener('click', debounce(() => {
+    if (workflowState.isRunning()) {
+      workflowState.cancelWorkflowJobs();
+      workflowSaveCb();
+    } else {
+      workflowState.saveToBackend(true);
+    }
+  }, 300));
   restoreWorkflowButton.addEventListener('click', debounce(() => {
     workflowState.clearWorkflow();
     workflowState.restorePreviousState(makeLauncher, createEdge);
