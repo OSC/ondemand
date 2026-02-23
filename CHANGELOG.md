@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Test cases for module browser (#5032)\
+Bump nokogiri from 1.19.0 to 1.19.1 in /apps/dashboard (#5083)\
+Bump rack from 2.2.21 to 2.2.22 in /apps/myjobs (#5081)\
+Bump rack from 3.2.4 to 3.2.5 in /apps/dashboard (#5080)\
+Update ACCESSIBILITY.md (#5047)\
+Update CONTRIBUTING.md (#5048)\
+Bump faraday from 2.14.0 to 2.14.1 in /apps/dashboard (#5053)\
+Bump qs from 6.14.1 to 6.14.2 in /apps/shell (#5070)
 
 ## [4.1.1] - 01-28-2026
 
