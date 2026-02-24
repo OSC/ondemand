@@ -7,13 +7,11 @@ class WorkflowsTest < ActiveSupport::TestCase
     workflow = Workflow.new
 
     assert_nil workflow.id
-    assert_nil workflow.project_dir
+    assert_equal '', workflow.project_dir
     assert_nil workflow.name
     assert_nil workflow.description
     assert_nil workflow.created_at
     assert_equal [], workflow.launcher_ids
-    assert_equal [], workflow.source_ids
-    assert_equal [], workflow.target_ids
   end
 
   test 'create workflow validation' do
@@ -96,7 +94,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal workflow.id, manifest_data["id"]
       assert_equal "test-workflow", manifest_data["name"]
       assert_equal "description", manifest_data["description"]
-      assert_equal project_dir, manifest_data["project_dir"]
+      assert_equal project_dir.to_s, manifest_data["project_dir"]
     end
   end
 
@@ -134,7 +132,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal workflow.id, manifest_data["id"]
       assert_equal name,        manifest_data["name"]
       assert_equal description, manifest_data["description"]
-      assert_equal project_dir, manifest_data["project_dir"]
+      assert_equal project_dir.to_s, manifest_data["project_dir"]
       assert_equal launchers,   manifest_data["launcher_ids"]
     end
   end
@@ -156,13 +154,13 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal 'updated',   workflow.name
       assert_equal 'updated',   workflow.description
       assert_equal old_id,      workflow.id
-      assert_equal project_dir, workflow.project_dir
+      assert_equal project_dir.to_s, workflow.project_dir
       assert_equal ['sample2'], workflow.launcher_ids
     end
   end
 
-  def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [], source_ids: [], target_ids: [])
-    attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids, source_ids: source_ids, target_ids: target_ids}
+  def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [])
+    attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids}
     workflow = Workflow.new(attrs)
     # this directory is usually created by the project
     Workflow.workflow_dir(project_dir).mkpath

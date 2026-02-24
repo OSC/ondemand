@@ -4,7 +4,7 @@
 class LaunchersController < ApplicationController
 
   before_action :find_project
-  before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save]
+  before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save, :clone]
 
   SAVE_LAUNCHER_KEYS = [
     :cluster, :auto_accounts, :auto_accounts_exclude, :auto_accounts_fixed,
@@ -33,8 +33,14 @@ class LaunchersController < ApplicationController
       notice_messages << I18n.t('dashboard.jobs_launchers_default_created') if default_script_created
       redirect_to project_path(params[:project_id]), notice: notice_messages.join(' ')
     else
-      redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
+      redirect_to new_project_launcher_path(params[:project_id]), alert: @launcher.errors[:save].last
     end
+  end
+
+  # GET /projects/:id/launchers/:id/clone
+  def clone
+    @source_path = Launcher.launcher_form_file(Launcher.path(@launcher.project_dir, @launcher.id))
+    render :new
   end
 
   # GET   /projects/:project_id/launchers/:id/edit
@@ -92,7 +98,7 @@ class LaunchersController < ApplicationController
   end
 
   def create_launcher_params
-    params.permit({ launcher: [:title] }, :project_id)
+    params.permit({ launcher: [:title, :source_path] }, :project_id)
   end
 
   def show_launcher_params

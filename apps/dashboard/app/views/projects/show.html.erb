@@ -8,28 +8,18 @@
 </div>
 
 <div class='row'>
-  <div class="col-2 align-self-center justify-content-left d-flex">
-    <%= button_to(
-        'Create ZIP',
-        project_zip_to_template_path(@project.id),
-        class: 'btn btn-primary align-self-start',
-        title: "create a ZIP archive of #{@project.title} in its '.ondemand' directory",
-        method: :post
-      )
-    %>
-
+  <div class="col-6 col-sm-3 align-self-center justify-content-left d-flex mt-2 order-2 order-sm-1">
   </div>
-  <div class='page-header text-center col-8'>
+  <div class='page-header text-center col-12 col-sm-6 order-1 order-sm-2'>
     <h1 class="my-2 h3"><%= @project.title %></h1>
-    <small class="text-muted">This is a preview of the new 'Project Manager'</small>
   </div>
-  <div class="col-2 align-self-center justify-content-end d-flex">
+  <div class="col-6 col-sm-3 align-self-center justify-content-end d-flex mt-2 order-3">
     <%= link_to 'Back to Projects', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
   </div>
 </div>
 
 <div class="row mb-3">
-  <div class="col-md-2 mt-3">
+  <div class="col-sm-4 col-lg-2 mt-3">
     <div class="list-group bg-white rounded">
       <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
           data-bs-toggle="collapse" data-bs-target="#launcher_list"
@@ -43,6 +33,12 @@
           <div class="row launcher-item">
             <div class="col launcher-title">
               <%= launcher.title %>
+            </div>
+
+            <div class="col-auto">
+              <%= link_to clone_project_launcher_path(@project.id, launcher.id), title: "Clone launcher" do %>
+                <%= icon_tag(URI.parse("fas://clone")) %>
+              <% end %>
             </div>
           </div>
 
@@ -59,41 +55,43 @@
     <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
   </div>
   
-  <div class="col-md-4">
-    <div class="border border-2 p-3 mt-3 mb-5 bg-white rounded">
-      <div class="row">
-        <h2 class="lead fw-bolder d-flex justify-content-center">Active Jobs</h2>
-        <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job, locals: { project: @project }) %>
-      </div>
+  <div id="project_jobs_files_col" class="row col-sm-8 col-lg-10 d-flex">
+    <div id="jobs_item" class="accordion col-12 col-lg-5 jobs-files-item" aria-live="assertive">
+      <div class="border border-2 p-3 mt-3 mb-5 bg-white rounded">
+        <div class="row pill-box">
+          <h2 class="lead fw-bolder d-flex justify-content-center">Active Jobs</h2>
+          <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job, locals: { project: @project }) %>
+        </div>
 
-      <div class="row">
-        <h2 class="lead fw-bolder d-flex justify-content-center">Completed Jobs</h2>
-        <div id="completed_jobs" class="row">
-          <%- @project.completed_jobs.each do |job| -%>
-          <div class="col-md-4" id="<%= "job_#{job.cluster}_#{job.id}" %>">
-            <%= render(partial: 'job_details_content', locals: { job: job, project: @project }) %>
+        <div class="row">
+          <h2 class="lead fw-bolder d-flex justify-content-center">Completed Jobs</h2>
+          <div id="completed_jobs" class="row pill-box">
+            <%- @project.completed_jobs.each do |job| -%>
+            <div class="job-pill" id="<%= "job_#{job.cluster}_#{job.id}" %>">
+              <%= render(partial: 'job_details_content', locals: { job: job, project: @project }) %>
+            </div>
+            <%- end -%>
           </div>
-          <%- end -%>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-6">
-    <div id="directory_browser" class="border border-2 p-3 mt-3 mb-5 bg-white rounded">
-      <h2 class="lead fw-bolder d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
-      <hr>
-      <%= turbo_frame_tag 'project_directory', 
-            src: directory_frame_path(
-              files: @files,
-              path: @project&.directory
-           ) do
-      %>
-        <div class="d-flex justify-content-center">
-          <div id="loading-icon" class="spinner-border rem-5" role="status">
-            <span class="sr-only">Loading...</span> 
+    <div class="col-12 col-lg-7 jobs-files-item">
+      <div id="directory_browser" class="border border-2 px-1 py-3 mt-3 mb-5 bg-white rounded">
+        <h2 class="lead fw-bolder d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
+        <hr>
+        <%= turbo_frame_tag 'project_directory', 
+              src: directory_frame_path(
+                files: @files,
+                path: @project&.directory
+            ) do
+        %>
+          <div class="d-flex justify-content-center">
+            <div id="loading-icon" class="spinner-border rem-5" role="status">
+              <span class="sr-only">Loading...</span> 
+            </div>
           </div>
-        </div>
-      <%- end -%>
+        <%- end -%>
+      </div>
     </div>
   </div>
 </div>

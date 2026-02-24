@@ -653,8 +653,8 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(dir)
 
-      fifo_row = find('tbody a', exact_text: fifo).ancestor('tr')
-      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+      fifo_row = find('tbody span', exact_text: fifo).ancestor('tr')
+      cant_read_row = find('tbody span', exact_text: cant_read).ancestor('tr')
 
       fifo_row.find('button.dropdown-toggle').click
       fifo_links = fifo_row.all('td > div.btn-group > ul > li > a').map(&:text)
@@ -673,7 +673,7 @@ class FilesTest < ApplicationSystemTestCase
   test 'block devices are not downloadable' do
     visit files_url('/dev')
 
-    null_row = find('tbody a', exact_text: 'null').ancestor('tr')
+    null_row = find('tbody span', exact_text: 'null').ancestor('tr')
     null_row.find('button.dropdown-toggle').click
     null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
@@ -695,7 +695,7 @@ class FilesTest < ApplicationSystemTestCase
       visit files_url(dir)
 
       can_read_row = find('tbody a', exact_text: can_read).ancestor('tr')
-      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+      cant_read_row = find('tbody span', exact_text: cant_read).ancestor('tr')
 
       can_read_row.find('input[type="checkbox"]').check
 
@@ -716,7 +716,7 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(dir)
 
-      cant_read_row = find('tbody a', exact_text: cant_read).ancestor('tr')
+      cant_read_row = find('tbody span', exact_text: cant_read).ancestor('tr')
       cant_read_row.find('input[type="checkbox"]').check
       assert find('#download-btn').disabled?
 
@@ -737,8 +737,8 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(dir)
 
-      cant_read1_row = find('tbody a', exact_text: cant_read1).ancestor('tr')
-      cant_read2_row = find('tbody a', exact_text: cant_read2).ancestor('tr')
+      cant_read1_row = find('tbody span', exact_text: cant_read1).ancestor('tr')
+      cant_read2_row = find('tbody span', exact_text: cant_read2).ancestor('tr')
 
       cant_read1_row.find('input[type="checkbox"]').check
       assert find('#download-btn').disabled?
@@ -953,5 +953,32 @@ class FilesTest < ApplicationSystemTestCase
 
     # Restore original fetch
     page.execute_script('window.fetch = window.originalFetch;')
+  end
+
+  test 'file transfer failure displays error and disables spinner' do
+    Dir.mktmpdir do |dir|
+      FileUtils.touch(File.join(dir, 'foo'))
+
+      visit files_url(dir)
+
+      # Rename file to the same name to trigger alert
+      tr = find('a', exact_text: 'foo').ancestor('tr')
+      tr.find('button.dropdown-toggle').click
+      tr.find('.rename-file').click
+
+      find('#files_input_modal_input').set('foo')
+      find('#files_input_modal_ok_button').click
+
+      assert_selector '.alert-danger', wait: MAX_WAIT
+      assert_no_selector '#full_page_spinner', visible: true, wait: MAX_WAIT
+
+      alert_text = "Error occurred when attempting to rename file: these files already exist: #{dir}/foo"
+      assert_selector '.alert-danger span', text: alert_text
+
+      # Close alert modal
+      find('.alert-danger button').click
+
+      assert_no_selector '.alert-danger', visible: true
+    end
   end
 end

@@ -1,3 +1,19 @@
+.justify-self-center {
+  justify-self: center;
+}
+
+.vertical-align-middle {
+  vertical-align: middle !important;
+}
+
+th.d-above-xl, td.d-above-xl {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: table-cell;
+  }
+}
+
 .project-card {
   width: fit-content;
 }
@@ -36,6 +52,48 @@
   }
 }
 
+.project-icon.shared {
+  padding: 1.75rem 2rem;
+
+  .project-title {
+    margin: .5rem 0rem;
+  }
+
+  small {
+    display: block;
+    font-size: 1rem;
+  }
+}
+
+.thin-outline {
+  outline: 0.15em solid rgb(36, 36, 36);
+}
+
+.button-icon {
+  font-size: 175%;
+  margin-left: 2rem;
+}
+
+#import-wrapper {
+  padding-bottom: 1rem;
+  border-radius: 0px 0px var(--bs-border-radius) var(--bs-border-radius);
+
+  .project-icon {
+    width: fit-content;
+    aspect-ratio: 1;
+  }
+
+  .app-icon {
+    font-size: 4rem;
+    height: auto;
+  }
+
+  .project-title {
+    width: 7rem;
+    font-size: 1rem;
+  }
+}
+
 .job-info {
   cursor: default;
 }
@@ -56,6 +114,10 @@
   float: right;
 }
 
+.launcher-item {
+  justify-content: right;
+}
+
 .launcher-title {
   font-size: 1em;
   font-weight: bold;
@@ -66,4 +128,68 @@
   width: 100%;
   margin: .2rem 0px;
   text-wrap:nowrap;
+}
+
+.workflow-item {
+  justify-content: right;
+}
+
+#project_jobs_files_col {
+  padding-right: 0px;
+
+  .jobs-files-item {
+    padding-right: 0px;
+  }
+
+  #jobs_item {
+    @media (min-width: 992px) {
+      padding-right: calc(var(--bs-gutter-x) * 0.5);
+    }
+  }
+}
+
+.pill-box {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0px;
+  padding: 0px;
+
+  .job-pill {
+    width: min-content;
+    padding: 0rem 1rem;
+
+    button.badge {
+      color: var(--bs-btn-hover-color);
+    }
+
+    button.badge.collapsed {
+      color: var(--bs-badge-color);
+    }
+
+    button.badge.collapsed:hover {
+      color: var(--bs-btn-hover-color);
+    }
+  }
+
+  .job-popup {
+    position: absolute;
+    z-index: 1;  
+    left: 5.75%;
+    width: 88.5%; // 2*left + width should always = 100
+
+    @media (min-width: 576px) {
+      left: 37%;
+      width: 59.5%;
+    }
+
+    @media (min-width: 992px) {
+      left: 18.5%;
+      width: 30.5%;
+    }
+
+    @media (min-width: 1600px) {
+      left: 18%;
+      width: 31.9%;
+    }
+  }
 }

@@ -387,7 +387,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal 'pzs1124', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
@@ -434,7 +434,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal 'pzs1124', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
@@ -476,7 +476,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # assert defaults
       assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
-      assert_equal 'pzs0715', find('#launcher_auto_accounts').value
+      assert_equal 'pzs1124', find('#launcher_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#launcher_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
 
@@ -674,21 +674,21 @@ class ProjectManagerTest < ApplicationSystemTestCase
         attributes:
           auto_accounts:
             options:
-            - pzs0715
-            - pzs0714
             - pzs1124
             - pzs1118
             - pzs1117
             - pzs1010
+            - pzs0715
+            - pzs0714
             - pde0006
             - pas2051
             - pas1871
-            - pas1754
-            - pas1604
             - p_s1.71
             - p-s1.71
             - p.s1.71
-            value: pzs0715
+            - pas1754
+            - pas1604
+            value: pzs1124
             label: Account
             help: ''
             required: false
@@ -788,8 +788,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # There are 7 allowed accounts before the 4 excluded ones
       counter = 7
-      exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
-      exclude_accounts.each do |acct|
+      exclude_accounts = ['pas2051', 'pas1871', 'p_s1.71', 'p-s1.71']
+      exclude_accounts.each do |_acct|
         counter += 1
         html_acct = "option#{counter}"
         rm_btn = find("#launcher_auto_accounts_remove_#{html_acct}")
@@ -813,7 +813,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # now let's check launchers#show to see if they've actually been excluded.
       show_account_options = page.all('#launcher_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
-        assert(!show_account_options.include?(acct))
+        refute(show_account_options.include?(acct), "#{acct} is shown as an option")
       end
 
       visit edit_project_launcher_path(project_id, launcher_id)
@@ -969,10 +969,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'submitting launchers from a template project works' do
     Dir.mktmpdir do |dir|
       # use different accounts than what the template was generated with
-      Open3
-        .stubs(:capture3)
-        .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', stdin_data: '')
-        .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts_alt.txt'), '', exit_success])
+      ['oakley', 'owens'].each do |cluster|
+        Open3.stubs(:capture3)
+             .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
+                   'format=account,qos', 'where', 'user=me', "cluster=#{cluster}", stdin_data: '')
+             .returns([File.read("test/fixtures/cmd_output/sacctmgr_show_accts_#{cluster}_alt.txt"), '', exit_success])
+      end
 
       Project.stubs(:dataroot).returns(Pathname.new(dir))
       Configuration.stubs(:project_template_dir).returns("#{Rails.root}/test/fixtures/projects")
@@ -989,11 +991,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_dir = Dir.children(dir).select { |p| Pathname.new("#{dir}/#{p}").directory? }.first
       project_dir = "#{dir}/#{project_dir}"
 
-      # NOTE: we're using pzs1715 from sacctmgr_show_accts_alt.txt instead of psz0175
+      # NOTE: we're using pzs2124 from sacctmgr_show_accts_alt.txt instead of pzs1124
       # from the template.
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-D', project_dir, '-A', 'pzs1715', '--export', 'NONE', '--parsable', '-M', 'owens',
+        .with({}, 'sbatch', '-D', project_dir, '-A', 'pzs2124', '--export', 'NONE', '--parsable', '-M', 'owens',
               stdin_data: input_data)
         .returns(['job-id-123', '', exit_success])
 
@@ -1015,7 +1017,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       Project.stubs(:dataroot).returns(Pathname.new(dir))
 
       visit(projects_root_path)
-      click_on(I18n.t('dashboard.jobs_import_shared_project'))
+      assert_text(I18n.t('dashboard.jobs_import_shared_project'))
+      find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
 
       fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
       click_on(I18n.t('dashboard.import'))

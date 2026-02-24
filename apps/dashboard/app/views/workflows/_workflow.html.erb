@@ -12,6 +12,12 @@
         <div class="col workflow-title">
           <%= workflow.name %>
         </div>
+
+        <div class="col-auto">
+          <%= link_to clone_project_workflow_path(@project.id, workflow.id), title: "Clone workflow" do %>
+            <%= icon_tag(URI.parse("fas://clone")) %>
+          <% end %>
+        </div>
       </div>
 
       <div class="row">
@@ -20,6 +26,7 @@
                       class: "btn btn-info launcher-button" %>
         </div>
       </div>
+      <% if workflow.editable? %>
       <div class="row">
         <div class="col">
           <%= link_to I18n.t('dashboard.edit'), edit_project_workflow_path(@project.id, workflow.id),
@@ -28,10 +35,11 @@
         <div class="col">
           <%= button_to I18n.t('dashboard.delete'), project_workflow_path(@project.id, workflow.id),
                         method: :delete,
-                        data: { confirm: t('dashboard.jobs_project_delete_project_confirmation') },
+                        data: { confirm: t('dashboard.jobs_workflow_delete_confirmation') },
                         class: "btn btn-danger launcher-button" %>
         </div>
       </div>
+      <% end %>
     </div>
     <%- end -%>
   </div>

@@ -79,6 +79,7 @@
   SSLCertificateKeyFile /etc/pki/tls/private/example.com.key
   SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt
 
+
   # OIDC configuration
   #
   OIDCProviderMetadataURL https://example.com:5554/.well-known/openid-configuration
@@ -128,6 +129,8 @@
     AllowOverride None
     Require all granted
   </Directory>
+
+
 
 
 

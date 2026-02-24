@@ -2,6 +2,7 @@
 
 class Workflow
   include ActiveModel::Model
+  include ProjectPermissions
 
   class << self
     def workflow_dir(project_dir)
@@ -10,16 +11,16 @@ class Workflow
 
     def find(id, project_dir)
       file = "#{workflow_dir(project_dir)}/#{id}.yml"
-      Workflow.from_yaml(file, project_dir)
+      Workflow.from_yaml(file)
     end
 
     def all(project_dir)
       Dir.glob("#{workflow_dir(project_dir)}/*.yml").map do |file|
-        Workflow.from_yaml(file, project_dir)
+        Workflow.from_yaml(file)
       end.compact.sort_by { |s| s.created_at }
     end
 
-    def from_yaml(file, project_dir)
+    def from_yaml(file)
       contents = File.read(file)
       opts = YAML.safe_load(contents).deep_symbolize_keys
       new(opts)
@@ -31,10 +32,20 @@ class Workflow
     def next_id
       SecureRandom.alphanumeric(8).downcase
     end
+
+    def build_submit_params(metadata, project_dir)
+      meta = metadata[:metadata] || {}
+      {
+        launcher_ids: meta[:boxes].map { |b| b["id"] },
+        source_ids: meta[:edges].map { |e| e["from"] },
+        target_ids: meta[:edges].map { |e| e["to"] },
+        project_dir: project_dir,
+        start_launcher: meta[:start_launcher] || nil
+      }
+    end
   end
 
-  # TODO: Remove launcher_ids, source_ids, target_ids and use metadata only
-  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids, :metadata
+  attr_accessor :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata
 
   validates :name, presence: true
   validates :launcher_ids, length: {minimum: 1}
@@ -43,11 +54,9 @@ class Workflow
     @id = attributes[:id]
     @name = attributes[:name]
     @description = attributes[:description]
-    @project_dir = attributes[:project_dir]
+    @project_dir = attributes[:project_dir].to_s
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
-    @source_ids = attributes[:source_ids] || []
-    @target_ids = attributes[:target_ids] || []
     @metadata = attributes[:metadata] || {}
   end
 
@@ -59,8 +68,6 @@ class Workflow
       :created_at => created_at,
       :project_dir => project_dir,
       :launcher_ids => launcher_ids,
-      :source_ids => source_ids,
-      :target_ids => target_ids,
       :metadata => metadata
     }
   end
@@ -68,7 +75,7 @@ class Workflow
   def save
     return false unless valid?(:create)
 
-    if @project_dir.nil?
+    if @project_dir.empty?
       errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
       return false
     end
@@ -80,7 +87,9 @@ class Workflow
 
   def save_manifest(operation)
     FileUtils.touch(manifest_file) unless manifest_file.exist?
-    Pathname(manifest_file).write(to_h.deep_stringify_keys.compact.to_yaml)
+    if editable?
+      Pathname(manifest_file).write(to_h.as_json.compact.to_yaml)
+    end
 
     true
   rescue StandardError => e
@@ -116,6 +125,10 @@ class Workflow
     end
   end
 
+  def editable?
+    manifest_file.writable? || !shared?(manifest_file)
+  end
+
   def submit(attributes = {})
     graph = Dag.new(attributes)
     if graph.has_cycle
@@ -141,7 +154,7 @@ class Workflow
       begin
         jobs = dependent_launchers.map { |id| job_id_hash.dig(id, :job_id) }.compact
         opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
-        job_id = launcher.submit(opts)
+        job_id = launcher.submit(opts, write_cache: false)
         if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
         else
@@ -161,7 +174,7 @@ class Workflow
   end
 
   def submit_launcher_params(launcher, dependent_jobs)
-    launcher_data = launcher.smart_attributes.each_with_object({}) do |attr, hash|
+    launcher_data = launcher.cacheless_attributes.each_with_object({}) do |attr, hash|
       hash[attr.id.to_s] = attr.opts[:value]
     end
     launcher_data["afterok"] = Array(dependent_jobs)

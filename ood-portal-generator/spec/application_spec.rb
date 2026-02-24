@@ -81,6 +81,15 @@ describe OodPortalGenerator::Application do
       described_class.generate()
     end
 
+    it 'generates a template SSL proxying configurations supplied' do
+      config = YAML.load(read_fixture('ood_portal.yaml.ssl-proxy'))
+      allow(described_class).to receive(:context).and_return(config)
+      expected_rendered = read_fixture('ood-portal.conf.ssl-proxy')
+
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+
     it 'generates without maintenance' do
       config = { use_maintenance: false }.merge(oidc_auth)
       allow(described_class).to receive(:context).and_return(config)

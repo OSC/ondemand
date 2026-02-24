@@ -263,6 +263,35 @@
 # Default: null (disable this feature)
 #rnode_uri: null
 
+# This path will force the upstream connection to use HTTPS or WSS, used for
+# backend applications that are running their own SSL termination
+# Sub-uri used to reverse proxy to backend web server running on node that knows
+# the full URI path
+# Example:
+#     secure_node_uri: '/secure-node'
+# Default: null (disable this feature)
+#secure_node_uri: null
+
+# This path will force the upstream connection to use HTTPS or WSS, used for
+# backend applications that are running their own SSL termination
+# Sub-uri used to reverse proxy to backend web server running on node that
+# ONLY uses *relative* URI paths
+# Example:
+#     secure_rnode_uri: '/secure-rnode'
+# Default: null (disable this feature)
+#secure_rnode_uri: null
+
+# List of SSL Proxy Apache directives
+# These settings control SSL validation for the upstream connection and require
+# a secure_[r]node_uri to be defined
+# to.
+# Example:
+#     ssl_proxy:
+#       - 'SSLProxyCheckPeerCN Off'
+#       - 'SSLProxyCheckPeerName Off'
+# Default: [] (no additional SSL proxy settings)
+#ssl_proxy: []
+
 #
 # Per-user NGINX Passenger apps
 #
@@ -490,6 +519,7 @@
 #      name: LDAP
 #      config:
 #        host: openldap.my_center.edu:636
+#        rootCA: /etc/ssl/certs/ldap-ca.pem
 #        insecureSkipVerify: false
 #        bindDN: cn=admin,dc=example,dc=org
 #        bindPW: admin

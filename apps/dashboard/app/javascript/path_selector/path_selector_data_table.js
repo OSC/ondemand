@@ -1,5 +1,5 @@
 import { OODAlertError } from '../alert';
-import { hide, show } from "../utils";
+import { ariaNotify, hide, show } from "../utils";
 
 export class PathSelectorTable {
   _table = null;
@@ -91,6 +91,7 @@ export class PathSelectorTable {
     try {
       $(this.tableWrapper()).hide();
       show(`${this.tableId}_spinner`);
+      ariaNotify('Loading directory contents');
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
@@ -99,6 +100,7 @@ export class PathSelectorTable {
       this.setLastVisited(data.path);
       this._table.draw();
       this.resetTable();
+      ariaNotify('Directory loaded with ' + data.files.length + ' items');
     } catch (err) {
       this.resetTable();
       if (err.message) {
@@ -135,6 +137,9 @@ export class PathSelectorTable {
   clickRow(event) {
     const row = $(event.target).closest('tr').get(0) || event.target;
     const url = row.dataset['apiUrl'];
+    if (url === undefined) {
+      return;
+    }
     const pathType = row.dataset['pathType'];
     this.activateFavorite(row);
 
@@ -159,7 +164,10 @@ export class PathSelectorTable {
   }
 
   clickBreadcrumb(event) {
-    const path = event.target.id;
+    const path = event.target.id || undefined;
+    if (path === undefined) {
+      return;
+    }
     this.activateFavorite(event.target);
     this.reloadTable(path);
   }

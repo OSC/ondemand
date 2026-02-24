@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Manifest
   attr_accessor :name, :path, :host, :notes, :script
 
@@ -22,28 +24,28 @@ class Manifest
   # @option opts [String] "notes" Notes associated with the templated workflow
   # @option opts [String] "script" The relative path of the submit script in the templated workflow
   def initialize(path, opts)
-    raise InvalidContentError.new("Invalid Content in manifest.yml") unless(opts && opts.is_a?(Hash))
+    raise InvalidContentError, 'Invalid Content in manifest.yml' unless opts.is_a?(Hash)
 
     @path = Pathname.new(path)
 
-    @name = opts.fetch("name", default_name)
-    @host = opts.fetch("host", default_host)
-    @notes = opts.fetch("notes", default_notes)
+    @name = opts.fetch('name', default_name)
+    @host = opts.fetch('host', default_host)
+    @notes = opts.fetch('notes', default_notes)
 
     if Configuration.render_template_notes_as_markdown?
       begin
         @notes = OodAppkit.markdown.render(@notes)
-      rescue StandardError => e
-        Rails.logger.warn "Markdown rendering failed for manifest #{@path.to_s}"
+      rescue StandardError
+        Rails.logger.warn "Markdown rendering failed for manifest #{@path}"
       end
     end
 
-    @script = opts.fetch("script", default_script)
+    @script = opts.fetch('script', default_script)
   end
 
   def script_path
     # manifest path includes the manifest.yml so use dirname
-    script ? path.dirname.join(script).to_s : ""
+    script ? path.dirname.join(script).to_s : ''
   end
 
   # all based on path
@@ -52,16 +54,20 @@ class Manifest
   end
 
   def default_host
-    OODClusters.first ? OODClusters.first.id.to_s : ""
+    OODClusters.first ? OODClusters.first.id.to_s : ''
   end
 
   def default_notes
-    return "Change these notes by editing the manifest.yml in this template's directory"
+    "Change these notes by editing the manifest.yml in this template's directory"
   end
 
   # Grab the first file name ending in .pbs or .sh
   def default_script
-    (Dir.entries(path.dirname).select{ |f| f =~ /\.pbs$/i  }.first || Dir.entries(path.dirname).select{ |f| f =~ /\.sh$/i  }.first) if path.dirname.directory?
+    return unless path.dirname.directory?
+
+    Dir.entries(path.dirname).select { |f| f =~ /\.pbs$/i }.first || Dir.entries(path.dirname).select do |f|
+      f =~ /\.sh$/i
+    end.first
   end
 end
 
@@ -69,7 +75,7 @@ class InvalidManifest < Manifest
   attr_reader :exception
 
   def initialize(exception)
-    super("", { "name" => "Invalid Manifest", "notes" => exception})
+    super('', { 'name' => 'Invalid Manifest', 'notes' => exception })
 
     @exception = exception
   end

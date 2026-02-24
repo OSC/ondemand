@@ -21,6 +21,26 @@ module ProjectsHelper
     render(partial: "projects/buttons/#{button_category(status)}_buttons", locals: locals) unless button_partial.nil?
   end
 
+  def native_message(native)
+    state = native[:state] || native[:job_state]
+    state = state.to_s.strip
+    msg = "Current job state is '#{state}'"
+
+    reason = native[:reason] || native[:comment]
+    reason = reason.to_s.strip
+    msg += " because of '#{reason}'" if reason.present? && reason != 'None'
+
+    dependency = native[:dependency] || native[:depend]
+    dependency = dependency.to_s.strip
+    if dependency.present? && dependency != '(null)'
+      dependency = truncate(dependency.gsub('afterok:', ' '), length: 50)
+      msg += ". Job depends on job-id#{dependency}"
+    end
+
+    msg += '.'
+    msg
+  end
+
   def button_category(status)
     case status
     when 'queued_held'
@@ -30,5 +50,9 @@ module ProjectsHelper
     else
       status
     end
+  end
+
+  def form_label_tooltip(content)
+    "<i class='fa fa-question-circle vertical-align-middle' data-bs-toggle='tooltip' data-bs-placement='right' title='#{content}'></i>"
   end
 end

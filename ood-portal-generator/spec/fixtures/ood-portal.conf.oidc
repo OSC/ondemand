@@ -63,6 +63,7 @@
 
   Header always set Content-Security-Policy "frame-ancestors http://ondemand.example.com;"
 
+
   # OIDC configuration
   #
   OIDCProviderMetadataURL https://idp.example.com/auth/realms/osc/.well-known/openid-configuration
@@ -116,6 +117,8 @@
     AllowOverride None
     Require all granted
   </Directory>
+
+
 
 
 

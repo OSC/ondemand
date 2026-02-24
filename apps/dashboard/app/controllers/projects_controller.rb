@@ -34,6 +34,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
+    @project = Project.new
     @projects = Project.all
     @templates = templates
   end
@@ -45,10 +46,10 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
-  # GET /projects/import
-  def import
-    @project = Project.new
+  # GET /projects/possible_imports
+  def possible_imports
     @projects = Project.possible_imports
+    render(partial: 'projects/possible_imports', layout: false)
   end
 
   # GET /projects/:id/edit
@@ -74,7 +75,7 @@ class ProjectsController < ApplicationController
     if @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      message = if @project.errors[:save].empty?
+      message = if @project.errors[:update].empty?
                   I18n.t('dashboard.jobs_project_validation_error')
                 else
                   I18n.t(
@@ -113,10 +114,10 @@ class ProjectsController < ApplicationController
       if Project.import_to_lookup(@project)
         redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_imported')
       else
-        redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
+        redirect_to projects_path, alert: @project.collect_errors
       end
     else
-      redirect_to project_import_path, alert: @project.errors.full_messages.join('. ')
+      redirect_to projects_path, alert: @project.collect_errors
     end
   end
 
@@ -130,10 +131,14 @@ class ProjectsController < ApplicationController
       return
     end
 
-    if @project.destroy!
-      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_deleted')
-    else
-      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+    # We call deletable? here because it is always false after destroy!
+    deletable = @project.deletable?
+    begin
+      @project.destroy!
+      message_key = "dashboard.jobs_project_#{deletable ? 'deleted' : 'removed'}"
+      redirect_to projects_path, notice: I18n.t(message_key)
+    rescue StandardError => e
+      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_generic_error', error: "#{e.class}: #{e.message}")
     end
   end
 
@@ -172,30 +177,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # POST /projects/:project_id/zip
-  # zip current project using project.zip_to_template
-  def zip_to_template
-    @project = Project.find(zip_to_template_params[:project_id])
-
-    if @project.nil?
-      redirect_to projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: zip_to_template_params[:project_id])
-      return
-    end
-
-    begin
-      zip_file = @project.zip_to_template
-      redirect_to(
-        project_path(@project.id),
-        notice: I18n.t('dashboard.project_zip_success_message')
-      )
-    rescue StandardError => e
-      redirect_to(
-        project_path(@project.id),
-        alert: I18n.t('dashboard.project_zip_error_message', error: e.message.to_s)
-      )
-    end
-  end
-
   # POST /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
     @project = Project.find(job_details_params[:project_id])
@@ -227,7 +208,7 @@ class ProjectsController < ApplicationController
       label = project.title
       data = {
         'data-description' => project.description,
-        'data-icon'        => project.icon
+        'data-icon'        => project.icon_class
       }
       [label, project.directory, data]
     end
@@ -236,7 +217,7 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:name, :directory, :description, :icon, :id, :template)
+      .permit(:name, :directory, :description, :icon, :id, :template, :group_owner, :setgid)
   end
 
   def show_project_params

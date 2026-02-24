@@ -1,6 +1,6 @@
 # Table of Contents
 
-1. [Contributing](#Contributing)
+1. [Contributing](#contributing) 
     1. [Issues](#issues)
     2. [Other repositories](#other-repositories)
     3. [Branches and Tags](#branches-and-tags)
@@ -10,7 +10,8 @@
     2. [Fixing a Bug](#fixing-a-bug)
     3. [Tagging Your Issue](#tagging-your-issue)
     4. [Pull Request Comments](#pull-request-comments)
-3. [Project Style Guide](#project-styleguide)
+    5. [Tests in Pull Requests](#tests-in-pull-requests)
+3. [Project Style Guide](#project-style-guide)
     1. [Project Conventions](#project-conventions)
     2. [Linters](#linters)
     3. [Ruby Style](#ruby-style)
@@ -29,13 +30,13 @@
 
 # Contributing
 
-First off - Thank you for your interest in contributing to the Open OnDemand project!
+Thank you for your interest in contributing to the Open OnDemand project!
 
-There is no pull request too small! Everything from simple misspellings to very
-large feature requests are welcome. If you're not quite sure where to get started
-you can search our list of [good first issues].
+There is no pull request (PR) too small! Everything from simple misspellings to very
+large feature requests are welcome. If you're not quite sure where to start,
+take a look at our list of [good first issues].
 
-Please note we have a [code of conduct], please follow it in all your
+Please note we have a [code of conduct]. We ask that you please follow it in all your
 interactions with the project.
 
 ## Issues
@@ -43,8 +44,8 @@ interactions with the project.
 Issues, bug reports, questions and feature requests are always welcome. Feel
 free to open an issue and use any [issue labels] as appropriate.
 
-We mostly use [Discourse] for general questions or help. If you're unsure
-of where to route your question, Discourse may be the best forum for it.
+We use [Discourse] for general questions or for getting help. If you're unsure
+of where to route your question, Discourse may be the best option.
 
 ## Other Repositories
 
@@ -58,20 +59,14 @@ these out too.
 
 All development work happens in the `master` branch.
 
-Once the software reaches a state the maintainers feel is good enough to release,
-they tag the `v<version>` tag from the `master` branch. At this time, on the same
-commit as the tag, a `release_<version>` branch is made.
+Once the software reaches a state to release, they tag the `v<version>` tag from the
+`master` branch. At this time, on the same commit as the tag, a `release_<version>` branch is made.
 
 Once the release branch is made maintainers will need to backport any bugfixes
 to the release branch for that version. They will also make tag off of the release
 branch for patch releases of that version.
 
-## Pull Request Process
-
-If you have a large feature it may be preferential to open an issue and discuss
-it first before putting a lot of work into coding something that may not be accepted. Don't
-let this discourage you though! Feel free to open tickets and engage with the development
-team on proposed changes.
+Below is the basic pull request workflow for mechanics and expactations:
 
 1.  [Fork this repo].
 2.  Branch off of the master branch.
@@ -79,6 +74,23 @@ team on proposed changes.
     and will start reviewing it.
 4.  If changes are being requested, don't let this discourage you! This is a
     natural part of getting changes right and ensuring quality in what we're building.
+
+## Pull Request Process
+
+If you have a large feature it may be preferential to open an issue and discuss
+it first in case the pull requests isn't ultimately merged.
+
+All contributor pull requests are reviewed by maintainers before merging.
+
+Reviews may include:
+* Providing documentation for any new features or enhancements
+* Questions to clarify intent, scope, or edge cases
+* Suggestions for follow-up issues or splitting the work into smaller PRs
+* Requests for tests or manual testing findings
+* Feedback on style or maintainability
+
+We aim to keep reviews collaborative and constructive.  As discussion in PRs is normal and encouraged, 
+we are open to answering questions and hearing proposed alternatives.
 
 ## Branch Naming and Issue Tagging
 
@@ -106,10 +118,27 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 
 * "fixes #1234"
 
-## Project StyleGuide
+## Tests in Pull Requests
+
+Our project style guide includes the follow items about testing:
 
 * **Any new code *must* also include testing.**
-* If you need help with writing tests, please include the `test help` tag.
+* If you need help with writing tests or are unsure how to test your PR, please include the `test help`
+tag.
+
+Including tests with pull requests is increasingly expected due to the growing backlog of untested 
+behavior and merging changes without tests increases risk for the project.
+
+When tests may not be needed: 
+* Documentation only changes
+* Minor refactors with no behavior changes
+
+If you do not include tests, add a short note in the PR description that explains:
+* Why tests were not added
+* What manual testing was performed
+* Any areas reviewers should pay close attention to
+
+## Project Style Guide 
 
 ### Project Conventions
 
@@ -295,11 +324,10 @@ In addition to the [RuboCop] rules described above, we follow common Ruby style 
 
 ### Comments
 
-* We require comments in the code.
-* Use proper grammar and punctuation.
-* Focus on *why* the code is the way it is if it is not obvious.
-* Focus less on *how* the code works, that should be evident from the code.
-* At the top of each class and method please add a description of the intent of the Class or Method
+* Comments in the code are required.
+* Please use clear language with proper grammar and punctuation.
+* When the intent is not obvious, explain *why* the code is written this way.
+* Each class and method must include a brief description at the top explaining its purpose and intent.
 ```javascript
 /**
  * Format passed string to snake_case. All characters become lowercase. Existing

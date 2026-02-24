@@ -29,7 +29,7 @@ module ActiveJobs
       self.account = info.accounting_id || ''
       self.status = info.status.state.to_s
       self.cluster = cluster.id.to_s
-      self.cluster_title = cluster.metadata.title ||  cluster.id.to_s.titleize
+      self.cluster_title = cluster.title
       self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
       self.queue = info.queue_name
       self.gpus = info.gpus

@@ -3,10 +3,11 @@
 class Launcher
   include ActiveModel::Model
   include JobLogger
+  include ProjectPermissions
 
   class ClusterNotFound < StandardError; end
 
-  attr_reader :title, :id, :created_at, :project_dir, :smart_attributes
+  attr_reader :title, :id, :created_at, :project_dir, :cacheless_attributes, :smart_attributes
 
   class << self
     def launchers_dir(project_dir)
@@ -59,14 +60,16 @@ class Launcher
   ID_REX = /\A\w{8}\Z/.freeze
 
   validates(:id, format: { with: ID_REX, message: "ID does not match #{Launcher::ID_REX.inspect}" }, on: [:save])
+  validates(:title, presence: true)
 
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
 
-    @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
+    @project_dir = (opts[:project_dir] || raise(StandardError, 'You must set the project directory')).to_s
     @id = opts[:id].to_s.match?(ID_REX) ? opts[:id].to_s : Launcher.next_id
     @title = opts[:title].to_s
     @created_at = opts[:created_at]
+    @source_path = opts[:source_path]
     sm_opts = {
       form:       opts[:form] || [],
       attributes: opts[:attributes] || {}
@@ -75,14 +78,20 @@ class Launcher
     add_required_fields(**sm_opts)
     # add defaults if it's a brand new launcher with only title and directory.
     add_default_fields(**sm_opts) if opts.size <= 2
+
+    # we generate two sets of attributes here depending on whether we want the initial
+    # form values to come from the form defaults or from the cache.
+    @cacheless_attributes = build_smart_attributes(**sm_opts, use_cache: false)
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
-  def build_smart_attributes(form: [], attributes: {})
+  def build_smart_attributes(form: [], attributes: {}, use_cache: true)
     form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
-      cache_value = cached_values[form_item_id]
-      attrs[:value] = cache_value if cache_value.present?
+      if use_cache
+        cache_value = cached_values[form_item_id]
+        attrs[:value] = cache_value if cache_value.present?
+      end
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
@@ -149,9 +158,14 @@ class Launcher
     return false unless valid?(:save)
 
     @created_at = Time.now.to_i if @created_at.nil?
-    path = Launcher.path(project_dir, id)
 
-    path.mkpath unless path.exist?
+    if File.readable?(@source_path.to_s)
+      @smart_attributes = Launcher.from_yaml(@source_path, project_dir).smart_attributes
+    end
+
+    make_launcher_dir
+
+    path = Launcher.path(project_dir, id)
     File.write(Launcher.launcher_form_file(path), to_yaml)
 
     true
@@ -182,7 +196,7 @@ class Launcher
     update_attributes(params)
   end
 
-  def submit(options)
+  def submit(options, write_cache: true)
     cluster_id =  if options.has_key?(:auto_batch_clusters)
                     options[:auto_batch_clusters]
                   else
@@ -198,7 +212,7 @@ class Launcher
       adapter.submit(job_script, **dependency_helper(options))
     end
     update_job_log(job_id, cluster_id.to_s)
-    write_job_options_to_cache(options)
+    write_job_options_to_cache(options) if write_cache
 
     job_id
   rescue StandardError => e
@@ -228,6 +242,11 @@ class Launcher
     true
   end
 
+  def editable?
+    form_path = Launcher.launcher_form_file(Launcher.path(project_dir, id))
+    File.writable?(form_path) || !shared?(form_path)
+  end
+
   private
 
   def self.path(root_dir, launcher_id)
@@ -244,6 +263,13 @@ class Launcher
 
   def self.launcher_form_file(path)
     File.join(path, "form.yml")
+  end
+
+  def make_launcher_dir
+    with_proper_umask(project_dir) do
+      dir_path = Launcher.path(project_dir, id)
+      dir_path.mkpath unless dir_path.exist?
+    end
   end
 
   # parameters you got from the controller that affect the attributes, not form.
@@ -293,7 +319,7 @@ class Launcher
   end
 
   def cache_file_path
-    Pathname.new(File.join(Launcher.path(project_dir, id), "cache.json"))
+    Pathname.new(File.join(Launcher.path(project_dir, id), "#{CurrentUser.name}-cache.json"))
   end
 
   def cache_file_exists?
@@ -302,7 +328,6 @@ class Launcher
 
   def cached_values
     @cached_values ||= begin
-      cache_file_path = OodAppkit.dataroot.join(Launcher.launchers_dir("#{project_dir}"), "#{id}_opts.json")
       cache_file_content = File.read(cache_file_path) if cache_file_path.exist?
       
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}

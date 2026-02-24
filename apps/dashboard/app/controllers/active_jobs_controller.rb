@@ -55,12 +55,12 @@ class ActiveJobsController < ApplicationController
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
         sleep(2.0)
-        redirect_to activejobs_path, :notice => "Successfully deleted #{job_id}"
+        redirect_to active_jobs_path, :notice => "Successfully deleted #{job_id}"
       rescue StandardError
-        redirect_to activejobs_path, :alert => "Failed to delete #{job_id}"
+        redirect_to active_jobs_path, :alert => "Failed to delete #{job_id}"
       end
     else
-      redirect_to activejobs_path, :alert => 'Failed to delete.'
+      redirect_to active_jobs_path, :alert => 'Failed to delete.'
     end
   end
 

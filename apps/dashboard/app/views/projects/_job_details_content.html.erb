@@ -4,14 +4,18 @@
 -%>
 
 <div>
-  <button class="badge <%= status_class(job.status.to_s) %> rounded-pill border-0 btn" type="button" data-bs-toggle="collapse" data-bs-target="#<%= id %>_data">
+  <button class="badge <%= status_class(job.status.to_s) %> rounded-pill border-0 btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<%= id %>_data">
     <span>
-      <%= job.id %> <%= status_text(job.status.to_s) %>
+      <%= job.id %> <%= status_text(job.status.to_s) unless job.status.to_s == 'completed' %>
     </span>
   </button>
-  <div class="collapse" id="<%= id %>_data">
+  <div class="accordion-collapse collapse job-popup" id="<%= id %>_data" data-bs-parent="#jobs_item">
     <div class="card card-body">
       <table class="table table-bordered table-sm m-0 mb-2">
+        <tr>
+          <td><strong> Message </strong></td>
+          <td><%= native_message(job.native) %></td>
+        </tr>
         <% job.to_human_display.each do |name, value| %>
           <tr>
             <td><strong><%= name %></strong></td>

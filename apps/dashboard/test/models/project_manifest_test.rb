@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class ProjectManifestTest < ActiveSupport::TestCase
-
   test 'ProjectManifest writes files entries' do
     opts = { files: ['file1', 'file2'] }
 

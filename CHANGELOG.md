@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.1] - 01-28-2026
+
+### Fixed
+- Files app no longer serves undefined links in [5024](https://github.com/OSC/ondemand/pull/5024).
+- File naming modal now responds to 'Enter' key for submission in [5030](https://github.com/OSC/ondemand/pull/5030).
+
+### Changed
+- Launcher cache no longer impacts workflow parameters in [5019](https://github.com/OSC/ondemand/pull/5019).
+- The AppsController uses rails render to serve icons in [5029](https://github.com/OSC/ondemand/pull/5029), reverting [5007](https://github.com/OSC/ondemand/pull/5007).
+
+## [4.1.0] - 01-23-2026
+
 ### Fixed
 - Icon picker correctly shows all icons when the search string is empty in [4065](https://github.com/OSC/ondemand/pull/4065).
 - Batch connect cards correctly display cores in [4057](https://github.com/OSC/ondemand/pull/4057)
@@ -50,6 +62,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove world writable from files in OOD packaged gems in [4717](https://github.com/OSC/ondemand/pull/4717).
 - Special characters can now appear in auto_accounts by adding data-alias in [4673](https://github.com/OSC/ondemand/pull/4673).
 - Maintenance and needs auth pages are never cached in [4799](https://github.com/OSC/ondemand/pull/4799).
+- password_fields are never displayable in [4875](https://github.com/OSC/ondemand/pull/4875).
+- Popups now correctly render markdown in [4888](https://github.com/OSC/ondemand/pull/4888).
 
 ### Added
 - Added support to render widgets partial without any layout furniture in [3989](https://github.com/OSC/ondemand/pull/3989).
@@ -97,6 +111,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - register_path, register_method and register_method_options have been added to ood_portal.yml in [4763](https://github.com/OSC/ondemand/pull/4763).
 - nsf_access_events widget has been added in [4726](https://github.com/OSC/ondemand/pull/4726).
 - Resolution widgets now have a help field for clarity in [4765](https://github.com/OSC/ondemand/pull/4765).
+- Added el10 support in [4804](https://github.com/OSC/ondemand/pull/4804).
+- Two reverse proxy paths have been added to support SSL/TLS transport to origins in [4839](https://github.com/OSC/ondemand/pull/4839).
 
 ### Changed
 - The Project Manager's navbar title is now 'Project Manager' in [4076](https://github.com/OSC/ondemand/pull/4076).
@@ -116,6 +132,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect index now stops polling when all jobs are complete in [4488](https://github.com/OSC/ondemand/pull/4488).
 - OnDemand 4.1 dependencies have been updated in [4646](https://github.com/OSC/ondemand/pull/4646).
 - Apache logs will now correctly respond to | commands in [4710](https://github.com/OSC/ondemand/pull/4710).
+- Announcements now respond to 'message' key, replacing 'msg' in [4845](https://github.com/OSC/ondemand/pull/4845).
+- The AppsController uses nginx to serve icons in [5007](https://github.com/OSC/ondemand/pull/5007).
 
 ### Security
 - The path_selector correctly escapes file names that contain HTML in [4302](https://github.com/OSC/ondemand/pull/4302).
@@ -1761,7 +1779,9 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.0.8...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.1...HEAD
+[4.1.1]: https://github.com/OSC/ondemand/compare/v4.1.0...v4.1.1
+[4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
 [4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
