@@ -68,6 +68,7 @@ $(document).ready(function(){
             start_joyride();
         }
 
+        // Click handler
         $('#job-list-table tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('active')) {
@@ -80,12 +81,20 @@ $(document).ready(function(){
             update_job_details_panel();
             update_display(active_var());
         });
+
+        // Keydown handler to also trigger on Enter key when row is focused
+        $('#job-list-table tbody').on('keydown', 'tr', function (e) {
+            var key = e.which || e.keyCode;
+            if (key === 13) { // Enter
+                $(this).trigger('click');
+            }
+        });
     }
 
     if ($('#new-job-template-table').length) {
         table = $('#new-job-template-table').DataTable();
 
-
+        // Click handler
         $('#new-job-template-table tbody').on('click', 'tr', function () {
             if ($(this).hasClass('active')) {
                 // do nothing
@@ -95,6 +104,14 @@ $(document).ready(function(){
                 $(this).addClass('active');
             }
             update_new_job_display(active_row());
+        });
+
+        // Keydown handler to also trigger on Enter key when row is focused
+        $('#new-job-template-table tbody').on('keydown', 'tr', function (e) {
+            var key = e.which || e.keyCode;
+            if (key === 13) { // Enter
+                $(this).trigger('click');
+            }
         });
     }
 
