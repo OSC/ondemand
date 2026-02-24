@@ -260,8 +260,10 @@ function create_datatable(options){
                 "autoWidth":        true
             },
             {
+                orderable:         false,
                 data:               null,
                 "autoWidth":        true,
+                searchable:        false,
                 render: function(data, type, row, meta) {
                   let { jobname, pbsid, cluster, delete_path } = data;
                   let support_ticket = "";

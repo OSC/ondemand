@@ -190,6 +190,7 @@ class DataTable {
             autoWidth: false,
             language: {
                 search: 'Filter:',
+                infoFiltered: ""
             },
             order: [[1, "asc"], [2, "asc"]],
             rowId: 'id',
@@ -203,23 +204,27 @@ class DataTable {
                 // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
                 selector: 'td:not(:first-child)'
             },
-            // https://datatables.net/reference/option/dom
-            // dom: '', dataTables_info nowrap
-            //
-            // put breadcrmbs below filter!!!
-            dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-                "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-end'><'transfers-status'>>>>" +
-                "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
+            layout: {
+                top1Start: {
+                    div: {
+                        className: 'transfers-status'
+                    }
+                },
+                topStart: 'info',
+                topEnd: 'search',
+                bottomStart: null,
+                bottomEnd: null
+            },
             columns: [
                 {
                     data: null,
                     orderable: false,
                     defaultContent: '<input type="checkbox">',
                     render: (data, type, row, meta) => {
-                        return `<input type='checkbox' data-dl-url='${row.download_url}'>`;
+                        return `<input type='checkbox' class='file-select' data-dl-url='${row.download_url}'>`;
                     }
                 },
-                { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
+                { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only">directory</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only">file</span></span>' }, // type
                 { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => this.renderNameColumn(data, type, row, meta) }, // name
                 { name: 'actions', orderable: false, searchable: false, data: null, render: (data, type, row, meta) => this.actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd', data: row }) },
                 {
@@ -257,8 +262,8 @@ class DataTable {
             ]
         });
 
-        $('#directory-contents_filter').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
-        $('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
+        $('div.dt-search').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" class="vertical-align-middle" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
+        $('div.dt-search').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" class="vertical-align-middle" ${this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
 
         this.updateGlobus();
     }
@@ -295,7 +300,7 @@ class DataTable {
             $('#open-in-terminal-btn').removeClass('disabled');
 
             if ($('#select_all').is(':checked')) {
-                $('#select_all').click();
+                $('#select_all').trigger();
             }
 
             let result = await Promise.resolve(data);
@@ -523,7 +528,7 @@ class DataTable {
             page_info = api.page.info(),
             msg = page_info.recordsTotal == page_info.recordsDisplay ? `Showing ${page_info.recordsDisplay} rows` : `Showing ${page_info.recordsDisplay} of ${page_info.recordsTotal} rows`;
 
-        $('.datatables-status').html(`${msg} - ${rows} rows selected`);
+        $('#directory-contents_info').html(`${msg} - ${rows} rows selected`);
     }
 
     goto(url, pushState = true, show_processing_indicator = true) {
