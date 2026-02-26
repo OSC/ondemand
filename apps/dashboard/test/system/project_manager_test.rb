@@ -226,6 +226,41 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(990, icons.size)
   end
 
+  test 'project directory shows all files' do 
+    Dir.mktmpdir do |dir|
+      # setup directory
+      project_id = setup_project(dir)
+      project_dir = "#{dir}/projects/#{project_id}"
+      `echo 'sample' > #{project_dir}/data.json`
+      `echo '#Title' > #{project_dir}/README.md` 
+
+      visit project_path(project_id)
+
+      # check non-table display elements
+      assert_selector('#directory_browser', visible: true)
+      assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+      tframe_selector = 'turbo-frame#project_directory'
+      assert_selector(tframe_selector, visible: true)
+      assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+      # check table
+      headers = all("#{tframe_selector} th")
+      assert 5,      headers.length
+      assert '',     headers[0].text
+      assert 'Name', headers[1].text
+      assert '',     headers[2].text
+      assert 'Size', headers[3].text
+      assert 'Date', headers[4].text
+
+      rows = all("#{tframe_selector} tbody tr")
+      assert 6, rows.length
+      top_row_data = rows[0].all('td')
+      assert 'fa fa-folder', top_row_data[0][:class]
+      assert '..', top_row_data[1].text
+    end
+  end
+
+
   test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
