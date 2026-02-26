@@ -234,8 +234,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   def check_link(link, text, path)
     assert_equal text, link.text
-    href = link[:href]
-    assert_equal path, href[href.rindex('/frame')..]
+    href = link[:href].split('/')[3..].join('/')
+    assert_equal path, "/#{href}"
   end
 
   def check_top_directory_row(row_data, tmpdir)
@@ -287,6 +287,37 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal '', row_2_data[3].text
       # this is the real date, so we can only test presence
       assert 0 < row_2_data[4].text.length
+
+      # only variables between files are title and size
+      files = {'my_cool_script.sh' => 19, 'my_cooler_script.bash' => 9, 'data.json' => 7, 'README.md' => 7}
+      files.each_with_index do |(name, size), index|
+        row_data = rows[2 + index].all('td')
+        check_icon(row_data[0].find('i'), :file)
+        link = row_data[1].find('a')
+        check_link(link, name, files_path("#{project_dir}/#{name}"))
+
+        actions_row = row_data[2]
+        actions_row.find('button[data-bs-toggle="dropdown"]').click
+        actions_row.assert_selector('ul.show')
+        actions_btns = actions_row.all('ul.show li a[target="_top"]')
+        assert_equal 3, actions_btns.length
+
+        check_link(actions_btns[0], 'View',     files_path("#{project_dir}/#{name}"))
+        check_link(actions_btns[1], 'Edit',     OodAppkit.editor.edit(path: "#{project_dir}/#{name}").to_s)
+        check_link(actions_btns[2], 'Download', files_path("#{project_dir}/#{name}", download: '1'))
+        
+        assert_equal 'fas fa-eye',      actions_btns[0].find('i[aria-hidden="true"]')[:class]
+        assert_equal 'fas fa-edit',     actions_btns[1].find('i[aria-hidden="true"]')[:class]
+        assert_equal 'fas fa-download', actions_btns[2].find('i[aria-hidden="true"]')[:class]
+
+        actions_row.find('button[data-bs-toggle="dropdown"].show').click
+
+        assert_equal "#{size} B", row_data[3].text
+        assert 0 < row_data[4].text.length
+      end
+
+      files_app_btn = find("#{tframe_selector} a[target='_top'].files-button")
+      check_link(files_app_btn, 'Open in files app', files_path(project_dir))
     end
   end
 
