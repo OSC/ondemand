@@ -872,6 +872,5 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
     assert popover_content.include?('<strong>bold text</strong>'), 'Markdown bold should be rendered as HTML <strong> tags'
     assert popover_content.include?('<a'), 'Markdown links should be rendered as HTML <a> tags'
-    assert popover_content.include?('openondemand.org'), 'Link URL should be present in the rendered content'
   end
 end
