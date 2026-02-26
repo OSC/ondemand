@@ -12645,9 +12645,16 @@ hterm.ScrollPort.prototype.decorate = function(div, callback) {
     }
   };
 
+  const agent = window.navigator.userAgent;
+  const versionMatch = agent.match(/Firefox\/(\d+\.\d+)/);
+  let ffVersion = null;
+  if(versionMatch !== null && versionMatch.length == 2) {
+    ffVersion = versionMatch[1];
+  }
+
   // Insert Iframe content asynchronously in FF.  Otherwise when the frame's
   // load event fires in FF it clears out the content of the iframe.
-  if ('mozInnerScreenX' in window) { // detect a FF only property
+  if ('mozInnerScreenX' in window && ffVersion != null && ffVersion < "148.0" ) { // detect a FF only property
     this.iframe_.addEventListener('load', () => onLoad());
   } else {
     onLoad();
