@@ -226,8 +226,31 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(990, icons.size)
   end
 
+  def check_icon(icon, type)
+    iclass = type == :file ? 'fa-file' : 'fa-folder'
+    assert_equal "fa #{iclass}",       icon[:class]
+    assert_equal type.to_s.capitalize, icon.find('.sr-only').text
+  end
+
+  def check_link(link, text, path)
+    assert_equal text, link.text
+    href = link[:href]
+    assert_equal path, href[href.rindex('/frame')..]
+  end
+
+  def check_top_directory_row(row_data, tmpdir)
+    check_icon(row_data[0].find('i'), :directory)
+    link = row_data[1].find('a')
+    check_link(link, '..', directory_frame_path(path: "#{tmpdir}/projects"))
+    assert_equal 0, row_data[2].all('*').length
+    assert_equal '', row_data[3].text
+    assert_equal '', row_data[4].text
+  end
+
   test 'project directory shows all files' do 
     Dir.mktmpdir do |dir|
+      # simulate private project
+      CurrentUser.stubs(:home).returns(dir)
       # setup directory
       project_id = setup_project(dir)
       project_dir = "#{dir}/projects/#{project_id}"
@@ -245,18 +268,25 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       # check table
       headers = all("#{tframe_selector} th")
-      assert 5,      headers.length
-      assert '',     headers[0].text
-      assert 'Name', headers[1].text
-      assert '',     headers[2].text
-      assert 'Size', headers[3].text
-      assert 'Date', headers[4].text
+      assert_equal 5,         headers.length
+      assert_equal 'Type',    headers[0].find('.sr-only').text
+      assert_equal 'Name',    headers[1].text
+      assert_equal 'Actions', headers[2].find('.sr-only').text
+      assert_equal 'Size',    headers[3].text
+      assert_equal 'Date',    headers[4].text
 
       rows = all("#{tframe_selector} tbody tr")
-      assert 6, rows.length
-      top_row_data = rows[0].all('td')
-      assert 'fa fa-folder', top_row_data[0][:class]
-      assert '..', top_row_data[1].text
+      assert_equal 6, rows.length
+      check_top_directory_row(rows[0].all('td'), dir)
+
+      row_2_data = rows[1].all('td')
+      check_icon(row_2_data[0].find('i'), :directory)
+      row_2_link = row_2_data[1].find('a')
+      check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
+      assert_equal 0,  row_2_data[2].all('*').length
+      assert_equal '', row_2_data[3].text
+      # this is the real date, so we can only test presence
+      assert 0 < row_2_data[4].text.length
     end
   end
 
