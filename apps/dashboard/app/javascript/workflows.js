@@ -1,5 +1,6 @@
 import { DAG } from './dag.js';
 import { rootPath } from './config.js';
+import { OrthogonalEdge, createOrthogonalEdge } from './edge.js';
 
 /*
  * Helper Classes to support Drag and Drop UI 
@@ -26,7 +27,7 @@ class WorkflowState {
   clearWorkflow() {
     this.boxes.forEach(b => b.el.remove());
     this.boxes.clear();
-    this.edges.forEach(e => e.el.remove());
+    this.edges.forEach(e => e.remove());
     this.edges.length = 0;
     this.dag.reset();
     this.pointer.resetZoom();
@@ -328,42 +329,6 @@ class Box {
   }
 }
 
-// Edge represents a connection between two launcher boxes
-class Edge {
-  constructor(fromBox, toBox, el, clickEl) {
-    this.fromBox = fromBox;
-    this.toBox = toBox;
-    this.el = el;
-    this.clickEl = clickEl
-  }
-
-  intersectRect(cx, cy, w, h, dx, dy) {
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-    let scale = 0.5 / Math.max(absDx / w, absDy / h);
-    scale = Math.min(scale, 1);
-    return { x: cx + dx * scale, y: cy + dy * scale };
-  }
-
-  update() {
-    const { fromBox, toBox } = this;
-    const cx1 = fromBox.x + fromBox.w / 2, cy1 = fromBox.y + fromBox.h / 2;
-    const cx2 = toBox.x + toBox.w / 2, cy2 = toBox.y + toBox.h / 2;
-    const dx = cx2 - cx1, dy = cy2 - cy1;
-    const start = this.intersectRect(cx1, cy1, fromBox.w, fromBox.h, dx, dy);
-    const end = this.intersectRect(cx2, cy2, toBox.w, toBox.h, -dx, -dy);
-
-    this.el.setAttribute('x1', start.x);
-    this.el.setAttribute('y1', start.y);
-    this.el.setAttribute('x2', end.x);
-    this.el.setAttribute('y2', end.y);
-    this.clickEl.setAttribute('x1', start.x);
-    this.clickEl.setAttribute('y1', start.y);
-    this.clickEl.setAttribute('x2', end.x);
-    this.clickEl.setAttribute('y2', end.y);
-  }
-}
-
 // Pointer tracks mouse on screen and translates to stage coordinates
 class Pointer {
   constructor(stage, zoomRef, step, max, min, applyZoomCb) {
@@ -506,7 +471,7 @@ class DragController {
     box.moveTo(x, y);
     this.edges.forEach(edge => {
       if (edge.fromBox === box || edge.toBox === box) {
-        edge.update();
+        edge.updateForBoxMove(box);
       }
     });
   }
@@ -654,27 +619,16 @@ class DragController {
       return;
     }
 
-    const clickArea = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    clickArea.classList.add('edge', 'click-area');
-    edgesSvg.appendChild(clickArea);
-
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.classList.add('edge');
-    edgesSvg.appendChild(line);
-    
-    const edge = new Edge(boxes.get(fromId), boxes.get(toId), line, clickArea);
-    edges.push(edge);
-    edge.update();
-
-    clickArea.addEventListener('click', (e) => {
-      e.stopPropagation();
+    const edge = createOrthogonalEdge(edgesSvg, boxes, fromId, toId, (selectedE) => {
       document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
       document.querySelectorAll('.launcher-box.selected').forEach(el => el.classList.remove('selected'));
       selectedLauncherId = null;
 
-      line.classList.add('selected');
-      selectedEdge = edge;
+      selectedE.group.classList.add('selected');
+      selectedEdge = selectedE;
     });
+
+    edges.push(edge);
   }
 
   function makeLauncher(row, col, id, title) {
@@ -683,10 +637,12 @@ class DragController {
       $.get(url, function(html) {
         const $launcher = $(`
           <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
+            <span class='port port-in' title='Input'></span>
             <div class='row'>
               <div class='col launcher-title-grab'>${title}</div>
             </div>
             ${html}
+            <span class='port port-out' title='Output'></span>
           </div>
         `);
 
@@ -738,7 +694,7 @@ class DragController {
     for (let i = edges.length - 1; i >= 0; i--) {
       const e = edges[i];
       if (e.fromBox.id === selectedLauncherId || e.toBox.id === selectedLauncherId) {
-        e.el.remove();
+        e.remove();
         edges.splice(i, 1);
       }
     }
@@ -751,7 +707,7 @@ class DragController {
 
   function deleteSelectedEdge() {
     if (!selectedEdge) return;
-    selectedEdge.el.remove();
+    selectedEdge.remove();
     dag.removeEdge(selectedEdge.fromBox.id, selectedEdge.toBox.id);
     edges.splice(edges.indexOf(selectedEdge), 1);
     selectedEdge = null;
