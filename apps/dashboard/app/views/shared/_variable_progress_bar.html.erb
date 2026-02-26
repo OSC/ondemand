@@ -9,7 +9,7 @@
 -%>
 
 <div class="progress">
-  <div class="progress-bar <%= bg_class %> w-<%= percent.round %>"
+  <div class="progress-bar <%= bg_class %> w-<%= [percent.round, 100].min %>"
       role="progressbar"
       aria-busy="false"
       aria-valuenow="<%= percent %>"
