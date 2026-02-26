@@ -871,6 +871,6 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     popover_content = app_link['data-bs-content']
 
     assert popover_content.include?('<strong>bold text</strong>'), 'Markdown bold should be rendered as HTML <strong> tags'
-    assert popover_content.include?('<a'), 'Markdown links should be rendered as HTML <a> tags'
+    assert popover_content.include?('<a href="https://openondemand.org"'), 'Markdown links should be rendered as HTML <a> tags'
   end
 end
