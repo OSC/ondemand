@@ -863,4 +863,14 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert(find("##{bc_ele_id('thing_to_hide_or_show')}").visible?)
     end
   end
+
+  test 'batch connect app list popover renders markdown formatting' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    popover_content = app_link['data-bs-content']
+
+    assert popover_content.include?('<strong>bold text</strong>'), 'Markdown bold should be rendered as HTML <strong> tags'
+    assert popover_content.include?('<a href="https://openondemand.org"'), 'Markdown links should be rendered as HTML <a> tags'
+  end
 end

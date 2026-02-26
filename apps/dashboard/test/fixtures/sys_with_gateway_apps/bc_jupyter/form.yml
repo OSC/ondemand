@@ -4,7 +4,7 @@ cluster:
   - "owens"
   - "oakley"
 description: |
-  This is a test jupyter app.
+  This is a test jupyter app. Markdown including **bold text** and [links](https://openondemand.org) should render correctly.
 form_header: |
   <span class="form_header_supports_some_html">
     This is Markdown with [a link](https://openondemand.org).
