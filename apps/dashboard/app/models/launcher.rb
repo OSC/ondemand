@@ -139,7 +139,7 @@ class Launcher
   end
 
   def original_parameter(string)
-    match = /([\w_]+)_(?:min|max|exclude|fixed)/.match(string)
+    match = /([\w_]+)_(?:min|max|exclude|fixed|port_type)/.match(string)
     match[1]
   end
 
@@ -275,7 +275,7 @@ class Launcher
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
-    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") }
+    ['min', 'max', 'exclude', 'fixed', 'port_type'].any? { |postfix| name && name.end_with?("_#{postfix}") }
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
@@ -297,6 +297,7 @@ class Launcher
       self[orig_param].min = value if key.end_with?('_min') && !value.to_s.empty?
       self[orig_param].max = value if key.end_with?('_max') && !value.to_s.empty?
       self[orig_param].opts[:fixed] = true if key.end_with?('_fixed')
+      self[orig_param].port_type = value if key.end_with?('_port_type') 
 
       if key.end_with?('_exclude')
         exclude_list = value.split(',').to_a
