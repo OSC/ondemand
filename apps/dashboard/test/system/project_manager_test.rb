@@ -247,7 +247,49 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal '', row_data[4].text
   end
 
-  test 'project directory shows all files' do 
+  def check_files(name, size, project_dir, row_data)
+    check_icon(row_data[0].find('i'), :file)
+    link = row_data[1].find('a')
+    check_link(link, name, files_path("#{project_dir}/#{name}"))
+
+    actions_row = row_data[2]
+    actions_row.find('button[data-bs-toggle="dropdown"]').click
+    actions_row.assert_selector('ul.show')
+    actions_btns = actions_row.all('ul.show li a[target="_top"]')
+    assert_equal 3, actions_btns.length
+
+    check_link(actions_btns[0], 'View',     files_path("#{project_dir}/#{name}"))
+    check_link(actions_btns[1], 'Edit',     OodAppkit.editor.edit(path: "#{project_dir}/#{name}").to_s)
+    check_link(actions_btns[2], 'Download', files_path("#{project_dir}/#{name}", download: '1'))
+    
+    assert_equal 'fas fa-eye',      actions_btns[0].find('i[aria-hidden="true"]')[:class]
+    assert_equal 'fas fa-edit',     actions_btns[1].find('i[aria-hidden="true"]')[:class]
+    assert_equal 'fas fa-download', actions_btns[2].find('i[aria-hidden="true"]')[:class]
+
+    actions_row.find('button[data-bs-toggle="dropdown"].show').click
+
+    unless size.nil?
+      assert_equal "#{size} B", row_data[3].text
+      assert 0 < row_data[4].text.length
+    end
+  end
+
+  def check_directory_breakpoints
+    original_size = page.current_window.size
+    frame_selector = '#directory_browser'
+    [1027, 576, 500, 350].each do |width|
+      page.current_window.resize_to(width, original_size[1])
+      max_width = find(frame_selector).rect.width
+      selectors = ['h2.justify-content-center', 'div.justify-content-center strong', 'table']
+      selectors.each do |selector|
+        ele_width = find("#{frame_selector} #{selector}").rect.width
+        assert max_width > ele_width, "#{selector} (#{ele_width}px) is wider than container (#{max_width}px) at #{width}px screen width"
+      end
+    end
+    page.current_window.resize_to(*original_size)
+  end
+
+  test 'private project directory shows all files' do 
     Dir.mktmpdir do |dir|
       # simulate private project
       CurrentUser.stubs(:home).returns(dir)
@@ -292,35 +334,92 @@ class ProjectManagerTest < ApplicationSystemTestCase
       files = {'my_cool_script.sh' => 19, 'my_cooler_script.bash' => 9, 'data.json' => 7, 'README.md' => 7}
       files.each_with_index do |(name, size), index|
         row_data = rows[2 + index].all('td')
-        check_icon(row_data[0].find('i'), :file)
-        link = row_data[1].find('a')
-        check_link(link, name, files_path("#{project_dir}/#{name}"))
-
-        actions_row = row_data[2]
-        actions_row.find('button[data-bs-toggle="dropdown"]').click
-        actions_row.assert_selector('ul.show')
-        actions_btns = actions_row.all('ul.show li a[target="_top"]')
-        assert_equal 3, actions_btns.length
-
-        check_link(actions_btns[0], 'View',     files_path("#{project_dir}/#{name}"))
-        check_link(actions_btns[1], 'Edit',     OodAppkit.editor.edit(path: "#{project_dir}/#{name}").to_s)
-        check_link(actions_btns[2], 'Download', files_path("#{project_dir}/#{name}", download: '1'))
-        
-        assert_equal 'fas fa-eye',      actions_btns[0].find('i[aria-hidden="true"]')[:class]
-        assert_equal 'fas fa-edit',     actions_btns[1].find('i[aria-hidden="true"]')[:class]
-        assert_equal 'fas fa-download', actions_btns[2].find('i[aria-hidden="true"]')[:class]
-
-        actions_row.find('button[data-bs-toggle="dropdown"].show').click
-
-        assert_equal "#{size} B", row_data[3].text
-        assert 0 < row_data[4].text.length
+        check_files(name, size, project_dir, row_data)
       end
 
       files_app_btn = find("#{tframe_selector} a[target='_top'].files-button")
       check_link(files_app_btn, 'Open in files app', files_path(project_dir))
+
+      check_directory_breakpoints
     end
   end
 
+  test 'shared project directory displays owner mode' do
+    Dir.mktmpdir do |dir|                                                                       
+      # setup directory                                                                                                 
+      project_id = setup_project(dir)
+      project_dir = "#{dir}/projects/#{project_id}"
+      `echo 'sample' > #{project_dir}/data.json`
+      `echo '#Title' > #{project_dir}/README.md`
+      
+      File.chmod(0o750, "#{project_dir}/data.json", "#{project_dir}/README.md")
+
+      visit project_path(project_id)
+      
+      # check non-table display elements                                                                          
+      assert_selector('#directory_browser', visible: true)
+      assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+      tframe_selector = 'turbo-frame#project_directory'
+      assert_selector(tframe_selector, visible: true)
+      assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+      # check table
+      headers = all("#{tframe_selector} th")
+      assert_equal 7,         headers.length
+      assert_equal 'Type',    headers[0].find('.sr-only').text
+      assert_equal 'Name',    headers[1].text
+      assert_equal 'Actions', headers[2].find('.sr-only').text
+      assert_equal 'Size',    headers[3].text
+      assert_equal 'Date',    headers[4].text
+      assert_equal 'Owner',   headers[5].text
+      assert_equal 'Mode',    headers[6].text
+      
+      rows = all("#{tframe_selector} tbody tr")
+      assert_equal 6, rows.length
+      check_top_directory_row(rows[0].all('td'), dir)
+
+      row_2_data = rows[1].all('td')
+      check_icon(row_2_data[0].find('i'), :directory)
+      row_2_link = row_2_data[1].find('a')
+      check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
+      assert_equal 0,  row_2_data[2].all('*').length
+      assert_equal '', row_2_data[3].text
+      # this is the real date, so we can only test presence
+      assert 0 < row_2_data[4].text.length
+
+      # This time files also vary mode
+      files = {'my_cool_script.sh' => [19, 644], 'my_cooler_script.bash' => [9, 644], 'data.json' => [7, 750], 'README.md' => [7, 750]}
+      files.each_with_index do |(name, (size, mode)), index|
+        row_data = rows[2 + index].all('td')
+        check_files(name, size, project_dir, row_data)
+
+        assert_equal CurrentUser.name, row_data[5].text
+        assert_equal mode.to_s,        row_data[6].text
+      end
+
+      # When screen width decreases, size and date disappear
+      original_size = page.current_window.size
+      page.current_window.resize_to(1199, original_size[1])
+
+      new_headers = all("#{tframe_selector} th")
+      assert_equal 5,         new_headers.length
+      assert_equal 'Type',    new_headers[0].find('.sr-only').text
+      assert_equal 'Name',    new_headers[1].text
+      assert_equal 'Actions', new_headers[2].find('.sr-only').text
+      assert_equal 'Owner',    new_headers[3].text
+      assert_equal 'Mode',    new_headers[4].text
+
+      files.each_with_index do |(name, (size, mode)), index|
+        row_data = rows[2 + index].all('td')
+        check_files(name, nil, project_dir, row_data)
+
+        assert_equal CurrentUser.name, row_data[3].text
+        assert_equal mode.to_s,        row_data[4].text
+      end
+      page.current_window.resize_to(*original_size)
+      check_directory_breakpoints
+    end
+  end
 
   test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
