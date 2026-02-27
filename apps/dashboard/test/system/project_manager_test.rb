@@ -252,10 +252,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
     link = row_data[1].find('a')
     check_link(link, name, files_path("#{project_dir}/#{name}"))
 
-    actions_row = row_data[2]
-    actions_row.find('button[data-bs-toggle="dropdown"]').click
-    actions_row.assert_selector('ul.show')
-    actions_btns = actions_row.all('ul.show li a[target="_top"]')
+    actions_cell = row_data[2]
+    actions_cell.find('button[data-bs-toggle="dropdown"]').click
+    actions_cell.assert_selector('ul.show')
+    actions_btns = actions_cell.all('ul.show li a[target="_top"]')
     assert_equal 3, actions_btns.length
 
     check_link(actions_btns[0], 'View',     files_path("#{project_dir}/#{name}"))
@@ -266,7 +266,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal 'fas fa-edit',     actions_btns[1].find('i[aria-hidden="true"]')[:class]
     assert_equal 'fas fa-download', actions_btns[2].find('i[aria-hidden="true"]')[:class]
 
-    actions_row.find('button[data-bs-toggle="dropdown"].show').click
+    actions_cell.find('button[data-bs-toggle="dropdown"].show').click
 
     unless size.nil?
       assert_equal "#{size} B", row_data[3].text
@@ -418,6 +418,81 @@ class ProjectManagerTest < ApplicationSystemTestCase
       end
       page.current_window.resize_to(*original_size)
       check_directory_breakpoints
+    end
+  end
+
+  test 'project directory responds to file permissions' do
+    Dir.mktmpdir do |dir|                                                                       
+      # setup directory                                                                                                 
+      project_id = setup_project(dir)
+      project_dir = "#{dir}/projects/#{project_id}"
+      `mkdir #{project_dir}/unreadable`
+      `echo 'sample' > #{project_dir}/data.json`
+      `echo '#Title' > #{project_dir}/README.md`
+
+      File.chmod(0o100, "#{project_dir}/unreadable", "#{project_dir}/data.json")
+      File.chmod(0o500, "#{project_dir}/README.md")
+
+      visit project_path(project_id)
+
+      # check non-table display elements                                                                          
+      assert_selector('#directory_browser', visible: true)
+      assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+      tframe_selector = 'turbo-frame#project_directory'
+      assert_selector(tframe_selector, visible: true)
+      assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+      # just check count since the previous test checks the same header text
+      assert_equal 7, all("#{tframe_selector} th").length
+
+      rows = all("#{tframe_selector} tbody tr")
+      assert_equal 7, rows.length
+    
+      # set baseline for readable and writable files
+      writable_data = rows[3].all('td')
+      check_link(writable_data[1].find('a'), 'my_cool_script.sh', files_path("#{project_dir}/my_cool_script.sh"))
+
+      actions_cell = writable_data[2]
+      actions_cell.find('button[data-bs-toggle="dropdown"]').click
+      actions_cell.assert_selector('ul.show')
+      actions_btns = actions_cell.all('ul.show li a[target="_top"]')
+      assert_equal 3, actions_btns.length
+  
+      check_link(actions_btns[0], 'View',     files_path("#{project_dir}/my_cool_script.sh"))
+      check_link(actions_btns[1], 'Edit',     OodAppkit.editor.edit(path: "#{project_dir}/my_cool_script.sh").to_s)
+      check_link(actions_btns[2], 'Download', files_path("#{project_dir}/my_cool_script.sh", download: '1'))
+      
+      assert_equal 'fas fa-eye',      actions_btns[0].find('i[aria-hidden="true"]')[:class]
+      assert_equal 'fas fa-edit',     actions_btns[1].find('i[aria-hidden="true"]')[:class]
+      assert_equal 'fas fa-download', actions_btns[2].find('i[aria-hidden="true"]')[:class]
+  
+      actions_cell.find('button[data-bs-toggle="dropdown"].show').click
+
+      # unwritable files don't show edit links
+      unwritable_data = rows[6].all('td')
+      check_link(unwritable_data[1].find('a'), 'README.md', files_path("#{project_dir}/README.md"))
+
+      unwritable_actions_cell = unwritable_data[2]
+      unwritable_actions_cell.find('button[data-bs-toggle="dropdown"]').click
+      unwritable_actions_cell.assert_selector('ul.show')
+      unwritable_actions_btns = unwritable_actions_cell.all('ul.show li a[target="_top"]')
+      assert_equal 2, unwritable_actions_btns.length
+  
+      check_link(unwritable_actions_btns[0], 'View',     files_path("#{project_dir}/README.md"))
+      check_link(unwritable_actions_btns[1], 'Download', files_path("#{project_dir}/README.md", download: '1'))
+      
+      assert_equal 'fas fa-eye',      unwritable_actions_btns[0].find('i[aria-hidden="true"]')[:class]
+      assert_equal 'fas fa-download', unwritable_actions_btns[1].find('i[aria-hidden="true"]')[:class]
+  
+      unwritable_actions_cell.find('button[data-bs-toggle="dropdown"].show').click
+
+      # unreadable files should not show any links
+      unreadable_data = rows[5].all('td')
+      assert_equal 0, unreadable_data[1].all('a').length
+      unreadable_data[1].assert_selector('span', text: 'data.json')
+      
+      unreadable_actions_cell = unreadable_data[2]
+      assert_equal 0, unreadable_actions_cell.all('*').length
     end
   end
 

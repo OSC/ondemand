@@ -26,14 +26,16 @@
   <td></td>
 </tr>
 <% files.each do |file| %>
+  <% full_path = "#{path}/#{file[:name]}" %>
+  <% readable = File.readable?(full_path) %>
+  <% writable = File.writable?(full_path) %>
   <tr>
     <td>
       <% type = I18n.t("dashboard.#{file[:directory] ? 'directory' : 'file'}") %>
       <i class="fa fa-<%= file[:directory] ? 'folder' : 'file' %>" title="<%= type %>">
       <span class="sr-only"> <%= type %> </span>
     </td>
-    <% full_path = "#{path}/#{file[:name]}" %>
-    <%- if file[:directory] -%>
+    <%- if file[:directory] && readable-%>
       <td>
         <%= link_to(
           file[:name], 
@@ -46,7 +48,7 @@
         %>
       </td>
       <td></td>
-    <%- else -%>
+    <%- elsif readable -%>
       <td>
         <%= 
           link_to(
@@ -54,7 +56,7 @@
             files_path(full_path),
             format: :html,
             target: "_top",
-          )
+          ) 
         %>
       </td>
       <td class="p-0 py-1">
@@ -66,7 +68,7 @@
                   aria-expanded="false">
             <span class="fa fa-ellipsis-v"></span>
           </button>
-          <ul class="dropdown-menu" aria-labelledby="actionsDropdown_<%= h full_path %>">
+          <ul class="dropdown-menu">
             <li>
               <%= link_to files_path(full_path, format: :html),
                           target: '_top',
@@ -79,11 +81,13 @@
 
             <% if file[:downloadable] %>
               <li>
-                <%= link_to OodAppkit.editor.edit(path: full_path).to_s,
-                            target: '_top',
-                            class: 'edit-file dropdown-item' do %>
-                  <i class="fas fa-edit" aria-hidden="true"></i>
-                  Edit
+                <% if writable %>
+                  <%= link_to OodAppkit.editor.edit(path: full_path).to_s,
+                              target: '_top',
+                              class: 'edit-file dropdown-item' do %>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                    Edit
+                  <% end %>
                 <% end %>
               </li>
 
@@ -99,6 +103,9 @@
           </ul>
         </div>
       </td>
+    <%- else -%>
+      <td><span><%= file[:name] %></span></td>
+      <td></td>
     <%- end -%>
     <td class="<%= file[:directory] ? '' : 'update-to-human-size' %> <%= private_dir ? '' : 'd-above-xl' %>">
       <%= file[:size] %>
