@@ -486,13 +486,14 @@ class ProjectManagerTest < ApplicationSystemTestCase
   
       unwritable_actions_cell.find('button[data-bs-toggle="dropdown"].show').click
 
-      # unreadable files should not show any links
-      unreadable_data = rows[5].all('td')
-      assert_equal 0, unreadable_data[1].all('a').length
-      unreadable_data[1].assert_selector('span', text: 'data.json')
-      
-      unreadable_actions_cell = unreadable_data[2]
-      assert_equal 0, unreadable_actions_cell.all('*').length
+      # unreadable files and directories should not show any links
+      {'unreadable' => rows[2], 'data.json' => rows[5]}.each do |name, row| 
+        unreadable_data = row.all('td')
+        assert_equal 0, unreadable_data[1].all('a').length
+        unreadable_data[1].assert_selector('span', text: name)
+        unreadable_actions_cell = unreadable_data[2]
+        assert_equal 0, unreadable_actions_cell.all('*').length
+      end
     end
   end
 
