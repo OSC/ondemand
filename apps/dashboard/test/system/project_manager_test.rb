@@ -352,7 +352,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       `echo 'sample' > #{project_dir}/data.json`
       `echo '#Title' > #{project_dir}/README.md`
       
-      File.chmod(0o750, "#{project_dir}/data.json", "#{project_dir}/README.md")
+      File.chmod(0o650, "#{project_dir}/data.json", "#{project_dir}/README.md")
 
       visit project_path(project_id)
       
@@ -388,7 +388,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert 0 < row_2_data[4].text.length
 
       # This time files also vary mode
-      files = {'my_cool_script.sh' => [19, 644], 'my_cooler_script.bash' => [9, 644], 'data.json' => [7, 750], 'README.md' => [7, 750]}
+      files = {'my_cool_script.sh' => [19, 644], 'my_cooler_script.bash' => [9, 644], 'data.json' => [7, 650], 'README.md' => [7, 650]}
       files.each_with_index do |(name, (size, mode)), index|
         row_data = rows[2 + index].all('td')
         check_files(name, size, project_dir, row_data)
