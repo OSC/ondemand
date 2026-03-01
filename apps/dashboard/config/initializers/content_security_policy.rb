@@ -13,7 +13,7 @@ if Configuration.csp_enabled?
     policy.img_src     :self, :data
     policy.object_src  :none
     policy.script_src(*Configuration.script_sources)
-    policy.style_src   :self
+    policy.style_src :self
     policy.connect_src(*Configuration.connect_sources)
 
     # Specify URI for violation reports
