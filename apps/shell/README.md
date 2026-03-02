@@ -110,6 +110,7 @@ So you've updated hterm and now something is broken.  Maybe only on one platform
 changes. If you're lucky you may be able to cherry pick them, if not, hopefully we've made an issue where you can reference and you can at least see the commit. 
 
 * 0cbc84e3d53386064e278a0495c940a217f4f18b - that fixed [issue 64](https://github.com/OSC/ood-shell/issues/64)
+* <commit needed> - that fixed [issue 5101](https://github.com/OSC/ondemand/issues/5101)
 
 This commit seems to have been fixed upstream, so no need to add it. We're just leaving it here
 in the documentation for historical purposes. For completeness, this was fixed upstream in
