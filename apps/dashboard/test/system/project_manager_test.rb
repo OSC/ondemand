@@ -331,7 +331,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert 0 < row_2_data[4].text.length
 
       # only variables between files are title and size
-      files = {'my_cool_script.sh' => 19, 'my_cooler_script.bash' => 9, 'data.json' => 7, 'README.md' => 7}
+      files = {'README.md' => 7, 'data.json' => 7, 'my_cool_script.sh' => 19, 'my_cooler_script.bash' => 9}
       files.each_with_index do |(name, size), index|
         row_data = rows[2 + index].all('td')
         check_files(name, size, project_dir, row_data)
@@ -388,7 +388,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert 0 < row_2_data[4].text.length
 
       # This time files also vary mode
-      files = {'my_cool_script.sh' => [19, 644], 'my_cooler_script.bash' => [9, 644], 'data.json' => [7, 650], 'README.md' => [7, 650]}
+      files = {'README.md' => [7, 650], 'data.json' => [7, 650], 'my_cool_script.sh' => [19, 644], 'my_cooler_script.bash' => [9, 644]}
       files.each_with_index do |(name, (size, mode)), index|
         row_data = rows[2 + index].all('td')
         check_files(name, size, project_dir, row_data)
@@ -450,7 +450,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 8, rows.length
     
       # set baseline for readable and writable files
-      writable_data = rows[4].all('td')
+      writable_data = rows[6].all('td')
       check_link(writable_data[1].find('a'), 'my_cool_script.sh', files_path("#{project_dir}/my_cool_script.sh"))
 
       actions_cell = writable_data[2]
@@ -470,7 +470,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       actions_cell.find('button[data-bs-toggle="dropdown"].show').click
 
       # unwritable files don't show edit links
-      unwritable_data = rows[7].all('td')
+      unwritable_data = rows[4].all('td')
       check_link(unwritable_data[1].find('a'), 'README.md', files_path("#{project_dir}/README.md"))
 
       unwritable_actions_cell = unwritable_data[2]
@@ -492,7 +492,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       check_link(unwritable_dir_link, 'unwritable', directory_frame_path(path: "#{project_dir}/unwritable"))
 
       # unreadable files and directories should not show any links
-      {'unreadable' => rows[2], 'data.json' => rows[6]}.each do |name, row| 
+      {'unreadable' => rows[2], 'data.json' => rows[5]}.each do |name, row| 
         unreadable_data = row.all('td')
         assert_equal 0, unreadable_data[1].all('a').length
         unreadable_data[1].assert_selector('span', text: name)
@@ -528,7 +528,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         check_link(dir_link, 'samples', directory_frame_path(path: "#{project_dir}/samples"))
 
         # files do not show any links
-        file_row = rows[5]
+        file_row = rows[3]
         assert_equal 'data.json', file_row.all('td')[1].text
         assert_equal 0, file_row.all('a').length
       end
