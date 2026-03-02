@@ -48,7 +48,7 @@
         %>
       </td>
       <td></td>
-    <%- elsif readable -%>
+    <%- elsif readable && file[:downloadable] -%>
       <td>
         <%= 
           link_to(
@@ -78,28 +78,24 @@
                 View
               <% end %>
             </li>
-
-            <% if file[:downloadable] %>
-              <li>
-                <% if writable %>
+            <% if writable %>
+	      <li>
                   <%= link_to OodAppkit.editor.edit(path: full_path).to_s,
                               target: '_top',
                               class: 'edit-file dropdown-item' do %>
                     <i class="fas fa-edit" aria-hidden="true"></i>
                     Edit
                   <% end %>
-                <% end %>
               </li>
-
-              <li>
-                <%= link_to files_path(full_path, download: '1'),
-                            target: '_top',
-                            class: 'download-file dropdown-item' do %>
-                  <i class="fas fa-download" aria-hidden="true"></i>
-                  Download
-                <% end %>
-              </li>
-            <% end %>
+	    <% end %>
+            <li>
+              <%= link_to files_path(full_path, download: '1'),
+                          target: '_top',
+                          class: 'download-file dropdown-item' do %>
+                <i class="fas fa-download" aria-hidden="true"></i>
+                Download
+              <% end %>
+            </li>
           </ul>
         </div>
       </td>

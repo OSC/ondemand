@@ -502,6 +502,39 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'project directory hides non-navigational links for users with downloads disabled' do 
+    with_modified_env({OOD_DOWNLOAD_ENABLED: 'false'}) do
+      Dir.mktmpdir do |dir|
+        # setup directory                                                                                                 
+        project_id = setup_project(dir)
+        project_dir = "#{dir}/projects/#{project_id}"
+        `mkdir #{project_dir}/samples`
+        `echo 'sample' > #{project_dir}/data.json`
+
+        visit project_path(project_id)
+
+        # check non-table display elements                                                                          
+        assert_selector('#directory_browser', visible: true)
+        assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+        tframe_selector = 'turbo-frame#project_directory'
+        assert_selector(tframe_selector, visible: true)
+        assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+        rows = all("#{tframe_selector} tbody tr")
+        assert_equal 6, rows.length
+
+        # directories only show directory frame link
+        dir_link = rows[2].find('a')
+        check_link(dir_link, 'samples', directory_frame_path(path: "#{project_dir}/samples"))
+
+        # files do not show any links
+        file_row = rows[5]
+        assert_equal 'data.json', file_row.all('td')[1].text
+        assert_equal 0, file_row.all('a').length
+      end
+    end
+  end
+  
   test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
