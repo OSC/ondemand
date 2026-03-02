@@ -425,13 +425,14 @@ class ProjectManagerTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|                                                                       
       # setup directory                                                                                                 
       project_id = setup_project(dir)
-      project_dir = "#{dir}/projects/#{project_id}"
+      project_dir = "#{dir}/projects/#{project_id}"   
       `mkdir #{project_dir}/unreadable`
+      `mkdir #{project_dir}/unwritable`
       `echo 'sample' > #{project_dir}/data.json`
       `echo '#Title' > #{project_dir}/README.md`
 
       File.chmod(0o100, "#{project_dir}/unreadable", "#{project_dir}/data.json")
-      File.chmod(0o500, "#{project_dir}/README.md")
+      File.chmod(0o500, "#{project_dir}/unwritable", "#{project_dir}/README.md")
 
       visit project_path(project_id)
 
@@ -446,10 +447,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 7, all("#{tframe_selector} th").length
 
       rows = all("#{tframe_selector} tbody tr")
-      assert_equal 7, rows.length
+      assert_equal 8, rows.length
     
       # set baseline for readable and writable files
-      writable_data = rows[3].all('td')
+      writable_data = rows[4].all('td')
       check_link(writable_data[1].find('a'), 'my_cool_script.sh', files_path("#{project_dir}/my_cool_script.sh"))
 
       actions_cell = writable_data[2]
@@ -469,7 +470,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       actions_cell.find('button[data-bs-toggle="dropdown"].show').click
 
       # unwritable files don't show edit links
-      unwritable_data = rows[6].all('td')
+      unwritable_data = rows[7].all('td')
       check_link(unwritable_data[1].find('a'), 'README.md', files_path("#{project_dir}/README.md"))
 
       unwritable_actions_cell = unwritable_data[2]
@@ -486,8 +487,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
   
       unwritable_actions_cell.find('button[data-bs-toggle="dropdown"].show').click
 
+      # unwritable directories still show navigational links
+      unwritable_dir_link = rows[3].find('a')
+      check_link(unwritable_dir_link, 'unwritable', directory_frame_path(path: "#{project_dir}/unwritable"))
+
       # unreadable files and directories should not show any links
-      {'unreadable' => rows[2], 'data.json' => rows[5]}.each do |name, row| 
+      {'unreadable' => rows[2], 'data.json' => rows[6]}.each do |name, row| 
         unreadable_data = row.all('td')
         assert_equal 0, unreadable_data[1].all('a').length
         unreadable_data[1].assert_selector('span', text: name)
