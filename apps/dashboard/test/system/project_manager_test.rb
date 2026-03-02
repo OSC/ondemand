@@ -499,6 +499,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
         unreadable_actions_cell = unreadable_data[2]
         assert_equal 0, unreadable_actions_cell.all('*').length
       end
+      # reverse file mode changes for easy deletion
+      File.chmod(0o700, "#{project_dir}/unreadable", "#{project_dir}/data.json", "#{project_dir}/unwritable", "#{project_dir}/README.md")
     end
   end
 
