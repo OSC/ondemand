@@ -849,6 +849,10 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             options:
               - ["None", "", data-hide-thing-to-hide-or-show: true]
               - ["Some", "some"]
+          thing_to_hide_or_show:
+            header: |
+              ## Hidden field header
+              This header should always remain visible.
       HEREDOC
 
       make_bc_app(dir, form)
@@ -856,10 +860,13 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       # None is selected by default and 'thing_to_hide_or_show' is hidden
       assert_equal('', find_value('select_that_hides'))
+      header = find('h2', text: 'Hidden field header')
+      assert header.visible?, 'Header should remain visible while the field is hidden'
       refute(find("##{bc_ele_id('thing_to_hide_or_show')}", visible: :hidden).visible?)
 
       # now choose 'some' and 'thing_to_hide_or_show' is visible
       select('Some', from: bc_ele_id('select_that_hides'))
+      assert header.visible?, 'Header should remain visible after the field is shown'
       assert(find("##{bc_ele_id('thing_to_hide_or_show')}").visible?)
     end
   end
