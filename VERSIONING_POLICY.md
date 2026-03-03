@@ -1,6 +1,6 @@
 # Open OnDemand Versioning Policy
 ## Version Numbering
-Open OnDemand code releases utilize a XXX.YYY.ZZZ numbering scheme (e.g. 2.0.29), where:
+Open OnDemand releases follow a three-part versioning scheme: XXX.YYY.ZZZ, such as `4.1.3`, where:
 * XXX is the major version number
 * YYY is the minor version number
 * ZZZ is the patch version number
@@ -12,51 +12,60 @@ They can also include removal of functionality or configuration that has been
 deprecated in previous versions.
 
 ## Minor Versions
-Minor versions will contain new functionality that's backward compatible. They may
-also contain bug fixes that are not in the prior releases' patch versions.
+Minor versions contain new functionality that's backward compatible. They may
+also include accumulated bug fixes and security fixes in addition to new functionality.
 
 Minor versions will also introduce deprecations to functionality or configurations
 that may be removed in the next major version.
 
 ## Patch Versions
-Patch versions will only contain security fixes and bug fixes.
+Patch versions primarily contain security fixes and bug fixes and are not intended to 
+introduce new functionality.
 
 ## Nightly versions
-Nightly packages (.rpm and .deb) are built every night from of the current commit in
-the main branch and released to the nightly repository.  They have varying degrees of
-stability, mostly related to the release cycle. The closer in time they are to a release
-the more stable they're generally considered.
+Nightly packages (.rpm and .deb) are built every night from the current commit in
+the main branch and released to the nightly repository.  Stability varies depending on 
+the development cycle. Nightly builds closer to a release candidate are generally more
+stable, though no guarantees are provided.
 
 ## Dependency updates
-Dependency updates may come anywhere in the release cycle. For example even in
-a patch release. Dependencies (like `ruby` or `nodejs`) updates are largely driven
-by the operating systems we support.
-
-If a dependency has reached it's end of life for support from an operating system,
-we may update that dependency even in a patch release.
+Dependency updates may come anywhere in the release cycle. For example, even in
+a patch release. Dependencies such as `ruby` or `nodejs` are largely driven
+by operating system support policies and security requirements.
 
 Minor, major and patch versions may all include dependency updates should a dependency
 reach the end of life within a given release cycle.
 
 ## Tagging
-We create two types of tags. The first are regular tags like `v3.0.0` which is a real
-production version.  The other are release candidates like `v3.0.0-rc8`.  Release candidates
-are created for testing purposes by OSC, though they're freely available to anyone to
-also test. Release candidates are considered stable, but could contain bugs.
-
+We create two types of tags. The first are regular tags like `v4.0.0` which is a real
+production version.  The other are release candidates like `v4.0.0-rc2`.  Release 
+candidates are created primarily for testing at OSC and early adopter sites, but are 
+publicly available for broader testing. Release candidates are considered stable, 
+but could contain bugs.
 
 ## Version Timing
-Patch versions are released as needed.  Major and minor versions are released as
-time permits the team to develop features.
+Patch versions are generally released on an approximately 8-week cadence from announcement 
+to announcement. This cadence was introduced to provide sites with a more predictable 
+planning window for updates. Exceptions may occur for high-impact bugs or security 
+vulnerabilities, which may be released outside of the standard patch window.
 
-All versions are typically tested first in production for at least a week at OSC
-and other early adopter sites prior to being marked as an official release.
+Major and minor versions are released as new functionality is ready and validated through 
+internal testing and subsequent production deployment at OSC. 
+
+Versions are typically deployed in OSC production for a minimum of one week prior to 
+being announced as an official release. This validation period may be shortened in 
+cases of urgent security vulnerabilities or high-impact issues.
 
 ## Backporting and Support
-The Open OnDemand team will only provide general support / backporting for a major/minor version
-for a period of 3 months after the next major/minor version is released
-(i.e. version 2.0 will only be supported for 3 months after the release of 3.0).  This includes
-providing concurrent patch versions for relevant security / bug fixes where possible
-(i.e. the developers would release a 2.0.1 version alongside a 3.0.1 version if released within
-3 months of the 3.0 release).  The Open OnDemand community is welcome to generate pull requests
-for additional backport code changes outside of that time frame.
+The Open OnDemand team provides support and backporting for active major and minor release 
+series. While a support window has previously been defined, its application has varied. 
+This policy clarifies and standardizes that approach.
+
+The team provides approximately four months of support after a subsequent major or minor 
+version is released. This aligns with the current patch cadence and generally results
+in two patch cycles of overlap.
+
+During this overlap period, concurrent patch releases may be provided for relevant security 
+fixes and significant bug fixes where feasible. Outside of this window, additional backports 
+are not typically provided by the core team. Community members may maintain and apply their 
+own patches as needed.
