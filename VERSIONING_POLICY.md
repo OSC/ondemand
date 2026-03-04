@@ -6,35 +6,32 @@ Open OnDemand releases follow a three-part versioning scheme: XXX.YYY.ZZZ, such 
 * ZZZ is the patch version number
 
 ## Major Versions
-Major versions have large sets of new features and functionalities.  They can
-include breaking changes that prevent seamless upgrading from previous versions.
-They can also include removal of functionality or configuration that has been
-deprecated in previous versions.
+Major versions introduce significant new features and functionality.  They may
+include breaking changes that prevent seamless upgrades from previous versions and
+may remove functionality or configuration that was deprecated in previous versions.
 
 ## Minor Versions
-Minor versions contain new functionality that's backward compatible. They may
-also include accumulated bug fixes and security fixes in addition to new functionality.
+Minor versions contain new functionality that is backward compatible and include bug fixes,
+including fixes previously released in patch versions. They may also include security fixes.
 
-Minor versions will also introduce deprecations to functionality or configurations
+Minor versions may also introduce deprecations to functionality or configurations 
 that may be removed in the next major version.
 
 ## Patch Versions
 Patch versions primarily contain security fixes and bug fixes and are not intended to 
 introduce new functionality.
 
-## Nightly versions
+## Nightly Versions
 Nightly packages (.rpm and .deb) are built every night from the current commit in
 the main branch and released to the nightly repository.  Stability varies depending on 
 the development cycle. Nightly builds closer to a release candidate are generally more
 stable, though no guarantees are provided.
 
-## Dependency updates
-Dependency updates may come anywhere in the release cycle. For example, even in
-a patch release. Dependencies such as `ruby` or `nodejs` are largely driven
-by operating system support policies and security requirements.
-
-Minor, major and patch versions may all include dependency updates should a dependency
-reach the end of life within a given release cycle.
+## Dependency Updates
+Dependency updates may occur at any point in the release cycle, including in patch releases
+when necessary. Updates to dependencies such as `ruby` or `nodejs` are often driven
+by operating system support policies and security requirements, particularly when a 
+dependency reaches end of life.
 
 ## Tagging
 We create two types of tags. The first are regular tags like `v4.0.0` which is a real
