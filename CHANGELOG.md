@@ -8,6 +8,46 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.4] - 2026-03-03
+
+### Fixed
+
+- The shell application no longer crashes when using FireFox version 148.0 or higher.
+- The `quotas` widget now correctly works in custom pages.
+- Users can correctly navigate directories when download capabilities have been disabled.
+
+## [4.0.10] - 2026-03-03
+
+### Fixed
+
+- The shell application no longer crashes when using FireFox version 148.0 or higher.
+
+## [4.1.3] - 2026-02-19
+
+### Security
+
+- This version updated RubyGems `rack`, `nokogiri` and `faraday` which had CVEs
+  associated with them. Additionally it updates the `qs` NodeJS package in the shell
+  application which also had a CVE associated with it.
+
+## [4.0.9] - 2026-02-13
+
+### Security
+
+- Resolves **CVE-2026-26002**. This version resolves a security issue related to malicious
+  input when navigating to directories.
+
+## [4.1.2] - 2026-02-13
+
+### Fixed
+
+- The 'delete job' button on the ActiveJobs page now correctly works again.
+
+### Security
+
+- Resolves **CVE-2026-26002**. This version resolves a security issue related to malicious
+  input when navigating to directories.
+
 ## [4.1.1] - 2026-01-28
 
 ### Fixed
@@ -1778,9 +1818,14 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.4...HEAD
+[4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
+[4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
+[4.1.2]: https://github.com/OSC/ondemand/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/OSC/ondemand/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
+[4.0.10]: https://github.com/OSC/ondemand/compare/v4.0.9...v4.0.10
+[4.0.9]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.0.9
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
 [4.0.7]: https://github.com/OSC/ondemand/compare/v4.0.6...v4.0.7
 [4.0.6]: https://github.com/OSC/ondemand/compare/v4.0.5...v4.0.6
