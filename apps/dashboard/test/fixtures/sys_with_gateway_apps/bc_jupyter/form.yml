@@ -4,7 +4,24 @@ cluster:
   - "owens"
   - "oakley"
 description: |
-  This is a test jupyter app. Markdown including **bold text** and [links](https://openondemand.org) should render correctly.
+  # Header 1
+  ## Header 2
+  ### Header 3
+  **Bold text** *Italic text* plain text [link text](www.example.com)
+  1. Numbered
+  2. Lists
+  
+  - Bullets
+  - Like
+  - These
+  - Items
+
+  <!-- we omit images since they are not recommended in popops -->
+  `code-font`
+
+  ```
+  code block
+  ```
 form_header: |
   <span class="form_header_supports_some_html">
     This is Markdown with [a link](https://openondemand.org).

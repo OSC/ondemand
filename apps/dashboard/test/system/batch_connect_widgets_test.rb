@@ -868,9 +868,38 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
-    popover_content = app_link['data-bs-content']
+    app_link.hover
+    assert_selector('div.popover')
 
-    assert popover_content.include?('<strong>bold text</strong>'), 'Markdown bold should be rendered as HTML <strong> tags'
-    assert popover_content.include?('<a href="https://openondemand.org"'), 'Markdown links should be rendered as HTML <a> tags'
+    # assert markdown html
+    expected_html = <<~HEREDOC
+    <h1>Header 1</h1>
+
+    <h2>Header 2</h2>
+
+    <h3>Header 3</h3>
+
+    <p><strong>Bold text</strong> <em>Italic text</em> plain text <a href=\"www.example.com\">link text</a>
+    1. Numbered
+    2. Lists</p>
+
+    <ul>
+    <li>Bullets</li>
+    <li>Like</li>
+    <li>These</li>
+    <li>Items</li>
+    </ul>
+    
+    <p><!-- we omit images since they are not recommended in popops -->
+    <code>code-font</code></p>
+
+    <pre><code>code block
+    </code></pre>
+    HEREDOC
+    
+    assert_equal expected_html, find('div.popover div.ood-appkit.markdown')['innerHTML']
+
+    # assert markdown styling
+    
   end
 end
