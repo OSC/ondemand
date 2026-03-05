@@ -47,7 +47,7 @@ class SmartAttributes::AutoBatchClustersTest < ActiveSupport::TestCase
     attribute = SmartAttributes::AttributeFactory.build('auto_batch_clusters')
 
     assert_instance_of SmartAttributes::Attributes::AutoBatchClusters, attribute
-    assert_equal(4, attribute.select_choices.length)
+    assert_equal(5, attribute.select_choices.length)
     assert_equal('oakley', attribute.select_choices[0].first)
     assert_equal('owens', attribute.select_choices[1].first)
     assert_equal('quick', attribute.select_choices[2].first)
