@@ -922,4 +922,43 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert(find("##{bc_ele_id('thing_to_hide_or_show')}").visible?)
     end
   end
+
+  test 'batch connect app list popover renders markdown formatting' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    app_link.hover
+    assert_selector('div.popover')
+
+    # assert markdown html
+    expected_html = <<~HEREDOC
+    <h1>Header 1</h1>
+
+    <h2>Header 2</h2>
+
+    <h3>Header 3</h3>
+
+    <p><strong>Bold text</strong> <em>Italic text</em> plain text <a href=\"www.example.com\">link text</a>
+    1. Numbered
+    2. Lists</p>
+
+    <ul>
+    <li>Bullets</li>
+    <li>Like</li>
+    <li>These</li>
+    <li>Items</li>
+    </ul>
+    
+    <p><!-- we omit images since they are not recommended in popops -->
+    <code>code-font</code></p>
+
+    <pre><code>code block
+    </code></pre>
+    HEREDOC
+    
+    assert_equal expected_html, find('div.popover div.ood-appkit.markdown')['innerHTML']
+
+    # assert markdown styling
+    
+  end
 end
