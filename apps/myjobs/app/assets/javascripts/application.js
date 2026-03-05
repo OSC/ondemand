@@ -69,8 +69,14 @@ $(document).ready(function(){
         }
 
         // Click handler
-        $('#job-list-table tbody').on('click', 'tr', function () {
-
+        $('#job-list-table tbody').on('click keyup', 'tr', function (e) {
+	    if (event.type === 'keyup') {
+		const key = e.which || e.keyCode;
+		if (key !== 13) {
+		    return
+		}
+	    }
+	    
             if ($(this).hasClass('active')) {
                 $(this).removeClass('active');
             }
@@ -81,21 +87,20 @@ $(document).ready(function(){
             update_job_details_panel();
             update_display(active_var());
         });
-
-        // Keydown handler to also trigger on Enter key when row is focused
-        $('#job-list-table tbody').on('keydown', 'tr', function (e) {
-            var key = e.which || e.keyCode;
-            if (key === 13) { // Enter
-                $(this).trigger('click');
-            }
-        });
     }
 
     if ($('#new-job-template-table').length) {
         table = $('#new-job-template-table').DataTable();
 
         // Click handler
-        $('#new-job-template-table tbody').on('click', 'tr', function () {
+        $('#new-job-template-table tbody').on('click keyup', 'tr', function (e) {
+	    if (event.type === 'keyup') {
+                const key = e.which || e.keyCode;
+                if (key !== 13) {
+                    return
+                }
+            }
+	    
             if ($(this).hasClass('active')) {
                 // do nothing
             }
@@ -104,14 +109,6 @@ $(document).ready(function(){
                 $(this).addClass('active');
             }
             update_new_job_display(active_row());
-        });
-
-        // Keydown handler to also trigger on Enter key when row is focused
-        $('#new-job-template-table tbody').on('keydown', 'tr', function (e) {
-            var key = e.which || e.keyCode;
-            if (key === 13) { // Enter
-                $(this).trigger('click');
-            }
         });
     }
 
