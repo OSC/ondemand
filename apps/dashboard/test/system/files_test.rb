@@ -438,14 +438,11 @@ class FilesTest < ApplicationSystemTestCase
 
       tr = find('a', exact_text: File.basename(file)).ancestor('tr')
       tr.find('button.dropdown-toggle').click
-      edit_window = window_opened_by { tr.find('.edit-file').click }
+      tr.find('.edit-file').click
+      find('#editor').click
+      find('textarea.ace_text-input', visible: false).send_keys('foobar')
 
-      within_window edit_window do
-        find('#editor').click
-        find('textarea.ace_text-input', visible: false).send_keys('foobar')
-
-        find('#save-button').click
-      end
+      find('#save-button').click
 
       sleep 1 # FIXME: should avoid using sleep here
       assert_equal 'foobar', File.read(file)

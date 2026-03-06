@@ -42,13 +42,13 @@ locals: {
       <% end %>
       <li>
         <%= t('dashboard.batch_connect_sessions_data_html',
-            title: @app.title,
-            data_link_tag: link_to(
-              t('dashboard.batch_connect_sessions_staged_root'),
-              OodAppkit.files.url(path: @session.staged_root).to_s,
-              target: "_blank")
+              title: @app.title,
+              data_link_tag: link_to(
+                t('dashboard.batch_connect_sessions_staged_root'),
+                OodAppkit.files.url(path: @session.staged_root).to_s
+	      )
             )
-            %>
+	 %>
       </li>
     </ul>
   </div>
@@ -85,13 +85,13 @@ locals: {
         <%= render "form" %>
         <p>
           <%= t('dashboard.batch_connect_form_session_data_html',
-                title: @app.title,
-                data_link_tag: link_to(
-                  t('dashboard.batch_connect_form_data_root'),
-                  OodAppkit.files.url(
-                    path: BatchConnect::Session.dataroot(@app.token)
-                  ).to_s,
-                  target: "_blank")
+                  title: @app.title,
+                  data_link_tag: link_to(
+                    t('dashboard.batch_connect_form_data_root'),
+                    OodAppkit.files.url(
+                      path: BatchConnect::Session.dataroot(@app.token)
+                    ).to_s,
+                  )
                 )
           %>
         </p>

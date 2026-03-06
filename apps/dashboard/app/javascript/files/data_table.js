@@ -457,7 +457,6 @@ class DataTable {
                 const viewLink = document.createElement('a');
                 viewLink.href = data.url;
                 viewLink.classList.add('view-file', 'dropdown-item');
-                viewLink.target = '_blank';
                 viewLink.setAttribute('data-row-index', rowIndex);
                 viewLink.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i> View';
                 viewItem.appendChild(viewLink);
@@ -469,7 +468,6 @@ class DataTable {
                 const editLink = document.createElement('a');
                 editLink.href = data.edit_url;
                 editLink.classList.add('edit-file', 'dropdown-item');
-                editLink.target = '_blank';
                 editLink.setAttribute('data-row-index', rowIndex);
                 editLink.innerHTML = '<i class="fas fa-edit" aria-hidden="true"></i> Edit';
                 editItem.appendChild(editLink);
