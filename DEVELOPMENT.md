@@ -160,8 +160,10 @@ with the same group and user id.  Starting the container will prompt
 you to set a password.  This is only credentials for web access to the
 container.
 
-Pull down this source code and start the container.  We support podman
-by setting the environment variable `CONTAINER_RT=podman`.
+Pull down this source code and start the container.  We default to podman
+as this has better compatibility than docker (see #4555), but if you would 
+like enhanced docker support, you can leave a comment on that issue or 
+contribute a change that resolves it.
 
 ```text
 mkdir -p ~/ondemand
