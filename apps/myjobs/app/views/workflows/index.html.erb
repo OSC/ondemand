@@ -79,7 +79,7 @@
 
           <tbody>
           <% @workflows.each do |workflow| %>
-              <tr class="job-row<%= " missing-cluster" unless workflow.batch_host_exists? %><%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
+              <tr class="job-row<%= " missing-cluster" unless workflow.batch_host_exists? %><%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>" tabindex="0">
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
                 <td><span title="<%= workflow.name %>"><strong><%= workflow.name %></strong></span></td>
                 <%# FIXME: AJAX causes a problem with this change %>
@@ -108,7 +108,7 @@
     </div>
   </div>
 
-  <div class="col-md-5" id="job-details-container">
+  <div class="col-md-5" id="job-details-container" aria-live="polite">
     <div class="panel panel-default" id="job-details-panel" hidden>
       <div class="panel-heading">
         <h3 class="panel-title">Job Details</h3>
