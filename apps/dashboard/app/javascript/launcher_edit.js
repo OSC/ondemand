@@ -1,6 +1,10 @@
 'use strict';
 
 let newFieldTemplate = undefined;
+const PORT_LIMITS = {
+  input_port: 5,
+  output_port: 5
+};
 
 const newFieldData = {
   bc_num_hours: {
@@ -57,6 +61,55 @@ function enableNewFieldButton() {
   newFieldButton.text('No more options');
 }
 
+function countPortsByType() {
+  const counts = {
+    input_port: 0,
+    output_port: 0
+  };
+
+  const checkedPortRadios = document.querySelectorAll('input[type="radio"][name*="_port_type"]:checked');
+  checkedPortRadios.forEach(radio => {
+    if (radio.value === 'input_port') {
+      counts.input_port++;
+    } else if (radio.value === 'output_port') {
+      counts.output_port++;
+    }
+  });
+  
+  return counts;
+}
+
+function updatePortTypeLimits() {
+  const counts = countPortsByType();
+  const inputRemaining = PORT_LIMITS.input_port - counts.input_port;
+  const outputRemaining = PORT_LIMITS.output_port - counts.output_port;
+  
+  // Update all port type groups
+  const portTypeGroups = document.querySelectorAll('.port-type-group');
+  portTypeGroups.forEach(group => {
+    const inputRadio = group.querySelector('input[value="input_port"]');
+    const outputRadio = group.querySelector('input[value="output_port"]');
+
+    let remainingDisplay = group.querySelector('.port-remaining-display');
+    if (!remainingDisplay) {
+      remainingDisplay = document.createElement('div');
+      remainingDisplay.className = 'port-remaining-display mt-2 small text-muted';
+      group.appendChild(remainingDisplay);
+    }
+    remainingDisplay.innerHTML = `
+      <span class="me-3">Input Ports Remaining: <strong class="${inputRemaining === 0 ? 'text-danger' : 'text-success'}">${inputRemaining}</strong></span>
+      <span>Output Ports Remaining: <strong class="${outputRemaining === 0 ? 'text-danger' : 'text-success'}">${outputRemaining}</strong></span>
+    `;
+
+    if (inputRadio) {
+      inputRadio.disabled = inputRemaining <= 0 && !inputRadio.checked;
+    }
+    if (outputRadio) {
+      outputRadio.disabled = outputRemaining <= 0 && !outputRadio.checked;
+    }
+  });
+}
+
 function addNewField(_event) {
   const newFieldButton = addNewFieldButton();
   newFieldButton.attr('disabled', true);
@@ -102,7 +155,7 @@ function addHelpTextForOption(event) {
 function removeInProgressField(event) {
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
-  enableNewFieldButton()
+  enableNewFieldButton();
 }
 
 function removeField(event) {
@@ -110,6 +163,7 @@ function removeField(event) {
   const entireDiv = event.target.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
+  updatePortTypeLimits();
 }
 
 function showEditField(event) {
@@ -162,9 +216,13 @@ function addInProgressField(event) {
   justAdded.find('[data-auto-environment-variable="name"]')
            .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
 
+  justAdded.find('.port-type-group input[type="radio"]')
+           .on('change', (event) => { updatePortTypeLimits(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
+  updatePortTypeLimits();
 }
 
 function updateAutoEnvironmentVariable(event) {
@@ -183,8 +241,25 @@ function updateAutoEnvironmentVariable(event) {
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
 
+  // Update port type radio buttons
+  const portTypeGroup = event.target.parentElement.children[3];
+  if (portTypeGroup && portTypeGroup.classList.contains('port-type-group')) {
+    const portTypeRadios = portTypeGroup.querySelectorAll('input[type="radio"]');
+    portTypeRadios.forEach((radio) => {
+      const portTypeVal = radio.value;
+      radio.name = `launcher[auto_environment_variable_${aev_name}_port_type]`;
+      radio.id = `${idString}_port_type_${portTypeVal}`;
+      const label = radio.nextElementSibling;
+      if (label) label.setAttribute('for', radio.id);
+
+      $(radio).off('change', updatePortTypeLimits);
+      $(radio).on('change', updatePortTypeLimits);
+    });
+    updatePortTypeLimits();
+  }
+
   // Update the checkbox so that environment variables can be fixed when created
-  let fixedBoxGroup = event.target.parentElement.children[3].children[0].children[0];
+  let fixedBoxGroup = event.target.parentElement.children[4].children[0].children[0];
 
   let checkbox = fixedBoxGroup.children[0];
   checkbox.id = `${idString}_fixed`;
@@ -411,6 +486,10 @@ jQuery(() => {
   $('[data-auto-environment-variable="name"]')
       .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
 
+  $('.port-type-group input[type="radio"]')
+      .on('change', () => { updatePortTypeLimits() });
+
   initSelectFields();
   initFixedFields();
+  updatePortTypeLimits();
 });
