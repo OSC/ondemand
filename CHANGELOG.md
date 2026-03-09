@@ -7,18 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
-Upgrade Datatables to v2.3 (#5046)\
-Fix select all headers bug in files table (#5043)\
-Revise versioning policy details (#5117)\
-Add tests for dynamic forms with clusters containing dashes or underscores (#5059)\
-Fix quota bar when over 100%. (#5103)\
-Bump immutable from 4.3.7 to 4.3.8 in /apps/dashboard (#5123)\
-update changelog for new versions (#5119)\
-lint a random file (#5118)\
-update hterm to deal with FF 148 (#5104)\
-Test that form item headers are not hideable (#5099)\
-Permit navigational directory links with downloads disabled (#5110)\
-update dependencies (#5109)
+
+### Fixed
+- Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
+- Select all checkbox is more accessible in [5043](https://github.com/OSC/ondemand/pull/5043).
+- hterm correctly works with FF 148 in [5104](https://github.com/OSC/ondemand/pull/5104).
+- Directory navigation correctly works when downloads are disabled in [5110](https://github.com/OSC/ondemand/pull/5110).
 
 ## [4.1.4] - 2026-03-03
 
