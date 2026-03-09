@@ -1,0 +1,4 @@
+test-account-has-no-qoses|
+test-account-has-qos1|test-qos1
+test-account-has-qos2|test-qos2
+test-account-has-qos1-qos2|test-qos1,test-qos2
