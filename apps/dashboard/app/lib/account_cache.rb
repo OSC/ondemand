@@ -174,9 +174,6 @@ module AccountCache
     true
   end
 
-    end
-  end
-
   def disabled_account_data(disabled_accounts)
     counter = 0
     disabled_accounts.map do |account|
