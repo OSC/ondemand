@@ -21,7 +21,7 @@ The repo:
 - https://github.com/OSC/ood-documentation
 - Notice the repo has many branches but `latest` and `develop` are the 2 which matter 
   because they generate GitHub Pages which serve the documentation for the community.
-- Branch off `latest` and push to `develop` for *unreleased feautures*. These changes
+- Branch off `latest` and push to `develop` for *unreleased features*. These changes
   are periodically merged into `latest` before each major or minor release.
 - For *typos and fixes*, push your branch back to `latest`. This ensures that these
   changes take effect immediately.
@@ -42,7 +42,7 @@ ruby package manager `bundler`.
   the development dashboard code and our local `gem`s without polluting the system `gem`s.
   - After configuring bundler, `bundle install` executed in the same directory as the `Gemfile`
   will install the gems and generate the `Gemfile.lock`. Note that you rarely need to manually
-  exectute this command in the dashboard, as it is executed as part of the `bin/setup` script.
+  execute this command in the dashboard, as it is executed as part of the `bin/setup` script.
 
 OOD has 4 `gem`s itself, some of which can be largely ignored, some which are quite useful:
 - `ood_packaging`: https://rubygems.org/gems/ood_packaging largely for OOD internal team 
@@ -139,7 +139,7 @@ OOD uses Ruby for its backend language and a templating engine called `ERB` whic
 - Notice, we can use this to generate or read data on the backend. 
 - This pattern prevalent in most apps you pull down from OSC and you can know which files use this convention by looking for file names that 
 end in `*.erb` such as `script.sh.erb` or `form.yml.erb`, all that matters to `ERB` is that file extension name which 
-then tells the templating engine to uptake that file and execute the ruby code found in the file betweem tse `ERB` tags. 
+then tells the templating engine to uptake that file and execute the ruby code found in the file between the `ERB` tags. 
 - The engine will either then return a string in place of the expression, or it will render as blank ultimately but provide a ruby 
 statement for a variable or branching logic or some type of code you need to run but wish to not actually return anything in the file itself.
 
