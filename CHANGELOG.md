@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
+- Select all checkbox is more accessible in [5043](https://github.com/OSC/ondemand/pull/5043).
+- hterm correctly works with FF 148 in [5104](https://github.com/OSC/ondemand/pull/5104).
+- Directory navigation correctly works when downloads are disabled in [5110](https://github.com/OSC/ondemand/pull/5110).
+
 ## [4.1.4] - 2026-03-03
 
 ### Fixed
