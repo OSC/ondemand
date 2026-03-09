@@ -168,15 +168,23 @@ module AccountCache
     end
   end
 
+  @@account_aliases = {}
+  def get_or_create_account_alias(account)
+    if @@account_aliases.key?(account)
+      return @@account_aliases[account]
+    end
+    new_alias = "account#{@@account_aliases.length()}"
+    @@account_aliases[account] = new_alias
+    return new_alias
+  end
+
   def disabled_account_data(disabled_accounts)
-    counter = 0
     disabled_accounts.map do |account|
-      counter += 1
       # check if account contains anything other than digits and lowercase letters
       if /\A[a-z0-9]+\z/.match?(account)
         [["data-option-for-auto-accounts-#{account}", false]] 
       else
-        acct_alias = "account#{counter}"
+        acct_alias = get_or_create_account_alias(account)
         [
           ["data-alias-#{acct_alias}", account],
           ["data-option-for-auto-accounts-#{acct_alias}", false]
