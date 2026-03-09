@@ -5,7 +5,7 @@
     <%= image_tag product.app.icon_uri, class: 'app-icon', title: product.app.icon_path %>
   </p>
   <div class="alert alert-info">
-    <small>This app uses the icon.png shown. To use a FontAwesome icon, remove or rename the icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>" target="_blank">this</a> directory.</small>
+    <small>This app uses the icon.png shown. To use a FontAwesome icon, remove or rename the icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>">this</a> directory.</small>
   </div>
 <% else %>
   <% if product.app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/ %>
@@ -35,6 +35,6 @@
 
   </div>
   <div class="alert alert-info">
-    <small>To use a custom icon, add an icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>" target="_blank">this</a> directory.</small>
+    <small>To use a custom icon, add an icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>">this</a> directory.</small>
   </div>
 <% end %>

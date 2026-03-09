@@ -39,10 +39,10 @@
     <div class="card-body">
       <% if CurrentUser.name == data.username %>
         <% if Configuration.can_access_files? %>
-          <%= link_to("#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-dark m-1", :target => "_blank") if data.file_explorer_url %>
+          <%= link_to("#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-dark m-1") if data.file_explorer_url %>
         <% end %>
         <% if Configuration.ood_bc_ssh_to_compute_node && Configuration.can_access_shell? %>
-          <%= link_to("#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-dark m-1", :target => "_blank") if data.shell_url %>
+          <%= link_to("#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-dark m-1") if data.shell_url %>
         <% end %>
           <%= link_to("#{fa_icon("trash", classes: nil)} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-outline-danger pull-right m-1", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" }) %>
       <% end %>
