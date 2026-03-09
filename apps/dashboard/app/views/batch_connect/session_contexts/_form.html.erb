@@ -3,6 +3,9 @@
 
 <%= render "prefill_templates" if Configuration.bc_saved_settings? %>
 
+<% if Configuration.bc_dynamic_js? %>
+  <span class='sr-only' tabindex='0'> The following form may change dynamically as options are selected. All changes will be announced and are reversible </span>
+<% end %>
 <%= bootstrap_form_for(@session_context, html: { autocomplete: "off", }) do |f| %>
   <% f.object.each do |attrib| %>
     <%= create_widget(f, attrib, format: @render_format) %>
