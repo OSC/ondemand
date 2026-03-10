@@ -744,8 +744,9 @@ function minOrMax(key) {
 }
 
 /**
- * if a string *starts with* one of our memorized form tokens,
- * reconstruct the form element ID for that token
+ * Turn a MountainCase token into a form element id.
+ * If the input MountainCase string *starts with* one of our memorized form tokens,
+ * this will return the form element ID for that token.
  *
  * @example
  *  NodeType -> batch_connect_session_context_node_type
