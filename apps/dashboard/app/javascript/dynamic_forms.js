@@ -828,7 +828,7 @@ function exclusiveOptionForFromToken(str) {
   return sharedOptionForFromToken(str, 'exclusiveOptionFor');
 }
 
-function sharedToggleOptionsFor(_event, elementId, contextStr) {
+function sharedToggleOptionsFor(_event, elementId, optionForType) {
   const options = [...document.querySelectorAll(`#${elementId} option`)];
   let hideSelectedValue = undefined;
 
@@ -841,15 +841,15 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
     for (let key of Object.keys(option.dataset)) {
       let optionFor = '';
 
-      if (contextStr == 'optionFor') {
+      if (optionForType == 'optionFor') {
         optionFor = optionForFromToken(key);
-      } else if (contextStr == 'exclusiveOptionFor') {
+      } else if (optionForType == 'exclusiveOptionFor') {
         optionFor = exclusiveOptionForFromToken(key);
       }
-      let optionForId = idFromToken(key.replace(new RegExp(`^${contextStr}`),''));
+      let optionForId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
 
       // it's some other directive type, so just keep going and/or not real
-      if(!key.startsWith(contextStr) || optionForId === undefined) {
+      if(!key.startsWith(optionForType) || optionForId === undefined) {
         continue;
       }
       const value = document.getElementById(optionForId).value;
@@ -864,13 +864,13 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       if (optionForValue.match(/^\d/)) {
         optionForValue = `-${optionForValue}`;
       }
-      if (contextStr == 'optionFor') {
+      if (optionForType == 'optionFor') {
         let key = `optionFor${optionFor}${optionForValue}`;
         if (!(key in option.dataset)) {
           key = `optionFor${optionFor}${optionForAlias}`;
         }
         hide = option.dataset[key] === 'false';
-      } else if (contextStr == 'exclusiveOptionFor') {
+      } else if (optionForType == 'exclusiveOptionFor') {
         let key = `exclusiveOptionFor${optionFor}${optionForValue}`;
         if (!(key in option.dataset)){
           key = `exclusiveOptionFor${optionFor}${optionForAlias}`;
