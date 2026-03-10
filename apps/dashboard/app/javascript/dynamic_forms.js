@@ -4,7 +4,7 @@ import { ariaNotify } from './utils'
 var idPrefix = undefined;
 var shortNameRex = undefined;
 
-// a "token" is a reformatted HTML element ID
+// a "form token" is a reformatted HTML element ID of a form field
 // example: batch_connect_session_context_auto_accounts => AutoAccounts
 // @example ['NodeType', 'Cluster']
 const formTokens = [];
@@ -803,7 +803,7 @@ function cacheAliases(elementId) {
 }
 
 /**
- * Extract the token out of an option-for directive.
+ * Extract the form token see (`formTokens`) out of an option-for directive.
  *
  * @example
  *  optionForClusterOakley -> Cluster
@@ -812,7 +812,7 @@ function cacheAliases(elementId) {
  * @param {*} str
  * @returns - the option for string
  */
-function sharedTokenFromOptionForDirective(str, optionForType) {
+function sharedOptionForFormToken(str, optionForType) {
   return formTokens.map((token) => {
     let match = str.match(`^${optionForType}${token}`);
 
@@ -824,12 +824,12 @@ function sharedTokenFromOptionForDirective(str, optionForType) {
   })[0];
 }
 
-function tokenFromOptionForDirective(str) {
-  return sharedTokenFromOptionForDirective(str, 'optionFor');
+function optionForFormToken(str) {
+  return sharedOptionForFormToken(str, 'optionFor');
 }
 
-function tokenFromExclusiveOptionForDirective(str) {
-  return sharedTokenFromOptionForDirective(str, 'exclusiveOptionFor');
+function exclusiveOptionForFormToken(str) {
+  return sharedOptionForFormToken(str, 'exclusiveOptionFor');
 }
 
 function sharedToggleOptionsFor(_event, targetId, optionForType) {
@@ -843,12 +843,12 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
-      let causeToken = '';
+      let causeFormToken = '';
 
       if (optionForType == 'optionFor') {
-        causeToken = tokenFromOptionForDirective(key);
+        causeFormToken = optionForFormToken(key);
       } else if (contextStr == 'exclusiveOptionFor') {
-        causeToken = tokenFromExclusiveOptionForDirective(key);
+        causeFormToken = exclusiveOptionForFormToken(key);
       }
       let causeId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
 
@@ -869,15 +869,15 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
         causeValue = `-${causeValue}`;
       }
       if (optionForType == 'optionFor') {
-        let key = `optionFor${causeToken}${causeValue}`;
+        let key = `optionFor${causeFormToken}${causeValue}`;
         if (!(key in option.dataset)) {
-          key = `optionFor${causeToken}${causeValueAlias}`;
+          key = `optionFor${causeFormToken}${causeValueAlias}`;
         }
         hide = option.dataset[key] === 'false';
       } else if (optionForType == 'exclusiveOptionFor') {
-        let key = `exclusiveOptionFor${causeToken}${causeValue}`;
+        let key = `exclusiveOptionFor${causeFormToken}${causeValue}`;
         if (!(key in option.dataset)){
-          key = `exclusiveOptionFor${causeToken}${causeValueAlias}`;
+          key = `exclusiveOptionFor${causeFormToken}${causeValueAlias}`;
         }
         hide = !(option.dataset[key] === 'true');
       }
