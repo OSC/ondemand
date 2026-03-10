@@ -820,14 +820,6 @@ function sharedOptionForFromToken(str, optionForType) {
   })[0];
 }
 
-function optionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'optionFor');
-}
-
-function exclusiveOptionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'exclusiveOptionFor');
-}
-
 function sharedToggleOptionsFor(_event, targetId, optionForType) {
   const options = [...document.querySelectorAll(`#${targetId} option`)];
   let hideSelectedValue = undefined;
@@ -841,11 +833,7 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
     for (let key of Object.keys(option.dataset)) {
       let optionFor = '';
 
-      if (optionForType == 'optionFor') {
-        optionFor = optionForFromToken(key);
-      } else if (optionForType == 'exclusiveOptionFor') {
-        optionFor = exclusiveOptionForFromToken(key);
-      }
+      optionFor = sharedOptionForFromToken(key, optionForType);
       let optionForId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
 
       // it's some other directive type, so just keep going and/or not real
