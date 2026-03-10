@@ -31,11 +31,17 @@ const hideLookup = {};
 const labelLookup = {};
 const helpLookup = {};
 
-// aliasLookup is a nested hash of the form
-// {optionId: {value: alias}}
-// Note that values can have special characters so you must access with [] operator
-// example: {Cluster: {"foo-bar": "cluster1"}}
+// aliasLookup is a nested hash of the form {targetFormToken: {causeValue: causeValueAlias}}
+// example form:
+//   <select id="batch_connect_session_context_auto_queues">
+//     <option data-option-for-cluster-foo-bar=false>
+//   </select>
+// example aliases:
+//   {"AutoQueues": {"foo-bar": "cluster1"}}
+// in this example, auto_queues is the target, AutoQueues is the target form token,
+// foo-bar is the cause value, and cluster1 is the cause value alias
 // see `disabled_account_data` in `account_cache.rb`
+// Note that values can have special characters so you must access with [] operator
 const aliasLookup = {};
 
 // the regular expression for mountain casing
