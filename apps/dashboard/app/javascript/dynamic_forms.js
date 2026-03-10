@@ -144,10 +144,10 @@ function makeChangeHandlers(prefix){
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
                 let token = key.replace(/^optionFor/,'');
-                addOptionForHandler(idFromToken(token), element['id']);
+                addOptionForHandler(idFromTokenPrefix(token), element['id']);
               } else if (key.startsWith('exclusiveOptionFor')) {
                 let token = key.replace(/^exclusiveOptionFor/, '');
-                addExclusiveOptionForHandler(idFromToken(token), element['id']);
+                addExclusiveOptionForHandler(idFromTokenPrefix(token), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('set')) {
@@ -183,7 +183,7 @@ function makeChangeHandlers(prefix){
 };
 
 function addHideHandler(optionId, option, key, configValue) {
-  const changeId = idFromToken(key.replace(/^hide/,''));
+  const changeId = idFromTokenPrefix(key.replace(/^hide/,''));
 
   if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, undefined);
   const table = hideLookup[optionId];
@@ -218,7 +218,7 @@ function updateLabel(changeId, changeElement, key) {
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
-  const changeId = idFromToken(key.replace(/^label/, ''));
+  const changeId = idFromTokenPrefix(key.replace(/^label/, ''));
   const changeElement = $(`#${optionId}`);
 
   if(labelLookup[optionId] === undefined) labelLookup[optionId] = new Table(changeId, undefined);
@@ -258,7 +258,7 @@ function updateHelp(changeId, changeElement, key) {
 }
 
 function addHelpHandler(optionId, option, key, configValue) {
-  const changeId = idFromToken(key.replace(/^help/, ''));
+  const changeId = idFromTokenPrefix(key.replace(/^help/, ''));
   const changeElement = $(`#${optionId}`);
 
   if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
@@ -352,7 +352,7 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
  */
 function addSetHandler(optionId, option, key, configValue) {
   const k = key.replace(/^set/,'');
-  const id = String(idFromToken(k));
+  const id = String(idFromTokenPrefix(k));
   if(id === 'undefined') return;
 
   // id is account. optionId is classroom
@@ -692,19 +692,19 @@ function parseMinMaxFor(key) {
 
   if(tokens == null) {
     // the key is likely just maxNumCores with no For clause
-    subjectId = idFromToken(k);
+    subjectId = idFromTokenPrefix(k);
 
   } else if(tokens.length == 3) {
     const subject = tokens[1];
     const predicateFull = tokens[2];
-    subjectId = idFromToken(subject);
+    subjectId = idFromTokenPrefix(subject);
 
     const predicateTokens = predicateFull.split(/(?=[A-Z])/);
     if(predicateTokens && predicateTokens.length >= 2) {
 
       // if there are only 2 tokens then it's like 'ClusterOwens' which is easy
       if(predicateTokens.length == 2) {
-        predicateId = idFromToken(predicateTokens[0]);
+        predicateId = idFromTokenPrefix(predicateTokens[0]);
         predicateValue = predicateTokens[1];
 
       // else it's like NodeTypeFooBar, so it's a little more difficult
@@ -715,7 +715,7 @@ function parseMinMaxFor(key) {
           if(done) { return; }
 
           tokenString = `${tokenString}${pt}`
-          let tokenId = idFromToken(tokenString);
+          let tokenId = idFromTokenPrefix(tokenString);
           if(tokenId !== undefined) {
             done = true;
             predicateId = tokenId;
@@ -744,15 +744,18 @@ function minOrMax(key) {
 }
 
 /**
- * Turn a MountainCase token into a form element id
+ * if a string *starts with* one of our memorized formTokens,
+ * reconstruct the HTML element ID for that token
  *
  * @example
  *  NodeType -> batch_connect_session_context_node_type
+ *  NodeType1 -> batch_connect_session_context_node_type
+ *  NodeTypewriter -> batch_connect_session_context_node_type
  *
  * @param {*} str
  * @returns
  */
-function idFromToken(str) {
+function idFromTokenPrefix(str) {
   elements = formTokens.map((token) => {
     let match = str.match(`^${token}{1}`);
 
@@ -846,7 +849,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       } else if (contextStr == 'exclusiveOptionFor') {
         optionFor = exclusiveOptionForFromToken(key);
       }
-      let optionForId = idFromToken(key.replace(new RegExp(`^${contextStr}`),''));
+      let optionForId = idFromTokenPrefix(key.replace(new RegExp(`^${contextStr}`),''));
 
       // it's some other directive type, so just keep going and/or not real
       if(!key.startsWith(contextStr) || optionForId === undefined) {
