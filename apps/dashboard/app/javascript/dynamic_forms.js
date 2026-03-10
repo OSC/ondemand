@@ -744,10 +744,13 @@ function minOrMax(key) {
 }
 
 /**
- * Turn a MountainCase token into a form element id
+ * if a string *starts with* one of our memorized form tokens,
+ * reconstruct the form element ID for that token
  *
  * @example
  *  NodeType -> batch_connect_session_context_node_type
+ *  NodeTypewriter -> batch_connect_session_context_node_typewriter
+ *  NodeTypeForClusterFooBar -> batch_connect_session_context_node_type
  *
  * @param {*} str
  * @returns
