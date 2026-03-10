@@ -805,12 +805,12 @@ function cacheAliases(elementId) {
  *  optionForClusterOakley -> Cluster
  *  exclusiveOptionForClusterOakley -> Cluster
  *
- * @param {*} str
+ * @param {*} directive
  * @returns - the option for string
  */
-function sharedTokenFromOptionForDirective(str, optionForType) {
+function sharedTokenFromOptionFor(directive, optionForType) {
   return formTokens.map((token) => {
-    let match = str.match(`^${optionForType}${token}`);
+    let match = directive.match(`^${optionForType}${token}`);
 
     if (match && match.length >= 1) {
       return token;
@@ -820,12 +820,12 @@ function sharedTokenFromOptionForDirective(str, optionForType) {
   })[0];
 }
 
-function tokenFromOptionForDirective(str) {
-  return sharedTokenFromOptionForDirective(str, 'optionFor');
+function tokenFromOptionFor(directive) {
+  return sharedTokenFromOptionFor(directive, 'optionFor');
 }
 
-function tokenFromExclusiveOptionForDirective(str) {
-  return sharedTokenFromOptionForDirective(str, 'exclusiveOptionFor');
+function tokenFromExclusiveOptionFor(directive) {
+  return sharedTokenFromOptionFor(directive, 'exclusiveOptionFor');
 }
 
 function sharedToggleOptionsFor(_event, elementId, contextStr) {
@@ -842,9 +842,9 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       let optionFor = '';
 
       if (contextStr == 'optionFor') {
-        optionFor = tokenFromOptionForDirective(key);
+        optionFor = tokenFromOptionFor(key);
       } else if (contextStr == 'exclusiveOptionFor') {
-        optionFor = tokenFromExclusiveOptionForDirective(key);
+        optionFor = tokenFromExclusiveOptionFor(key);
       }
       let optionForId = idFromToken(key.replace(new RegExp(`^${contextStr}`),''));
 
