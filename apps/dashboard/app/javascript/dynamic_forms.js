@@ -860,7 +860,7 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
       let causeValue = mountainCaseWords(causeValueRaw);
 
       let causeValueAlias = '';
-      if ((targetId in aliasLookup) && (causeValueRaw in aliasLookup[elementId])) {
+      if ((targetId in aliasLookup) && (causeValueRaw in aliasLookup[targetId])) {
         causeValueAlias = aliasLookup[targetId][causeValueRaw];
       }
       // handle special case where the very first token here is a number.
