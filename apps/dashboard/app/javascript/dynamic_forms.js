@@ -143,11 +143,11 @@ function makeChangeHandlers(prefix){
           if(keys.length !== 0) {
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
-                let token = key.replace(/^optionFor/,'');
-                addOptionForHandler(idFromToken(token), element['id']);
+                let suffix = key.replace(/^optionFor/,'');
+                addOptionForHandler(idFromToken(suffix), element['id']);
               } else if (key.startsWith('exclusiveOptionFor')) {
-                let token = key.replace(/^exclusiveOptionFor/, '');
-                addExclusiveOptionForHandler(idFromToken(token), element['id']);
+                let suffix = key.replace(/^exclusiveOptionFor/, '');
+                addExclusiveOptionForHandler(idFromToken(suffix), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('set')) {
@@ -688,15 +688,15 @@ function parseMinMaxFor(key) {
   }
 
   //trying to parse maxNumCoresForClusterOwens
-  const tokens = k.match(/^(\w+)For(\w+)$/);
+  const groups = k.match(/^(\w+)For(\w+)$/);
 
-  if(tokens == null) {
+  if(groups == null) {
     // the key is likely just maxNumCores with no For clause
     subjectId = idFromToken(k);
 
-  } else if(tokens.length == 3) {
-    const subject = tokens[1];
-    const predicateFull = tokens[2];
+  } else if(groups.length == 3) {
+    const subject = groups[1];
+    const predicateFull = groups[2];
     subjectId = idFromToken(subject);
 
     const predicateTokens = predicateFull.split(/(?=[A-Z])/);
