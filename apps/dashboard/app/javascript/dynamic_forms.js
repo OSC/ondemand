@@ -847,7 +847,7 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
 
       if (optionForType == 'optionFor') {
         causeFormToken = getFormTokenFromOptionForDirective(key);
-      } else if (contextStr == 'exclusiveOptionFor') {
+      } else if (optionForType == 'exclusiveOptionFor') {
         causeFormToken = getFormTokenFromExclusiveOptionForToken(key);
       }
       let causeId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
