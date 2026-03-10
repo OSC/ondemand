@@ -4,6 +4,8 @@ import { ariaNotify } from './utils'
 var idPrefix = undefined;
 var shortNameRex = undefined;
 
+// a "form token" is a reformatted HTML element ID of a form field
+// example: batch_connect_session_context_auto_accounts => AutoAccounts
 // @example ['NodeType', 'Cluster']
 const formTokens = [];
 
@@ -29,8 +31,16 @@ const hideLookup = {};
 const labelLookup = {};
 const helpLookup = {};
 
-// aliasLookup is a nested hash of the form
-// {optionId: {value: alias}}
+// aliasLookup is a nested hash of the form {targetFormToken: {causeValue: causeValueAlias}}
+// example form:
+//   <select id="batch_connect_session_context_auto_queues">
+//     <option data-option-for-cluster-foo-bar=false>
+//   </select>
+// example aliases:
+//   {"AutoQueues": {"foo-bar": "cluster1"}}
+// in this example, auto_queues is the target, AutoQueues is the target form token,
+// foo-bar is the cause value, and cluster1 is the cause value alias
+// see `disabled_account_data` in `account_cache.rb`
 // Note that values can have special characters so you must access with [] operator
 const aliasLookup = {};
 
@@ -803,7 +813,7 @@ function cacheAliases(elementId) {
 }
 
 /**
- * Extract the option for out of an option for directive.
+ * Extract the form token see (`formTokens`) out of an option-for directive.
  *
  * @example
  *  optionForClusterOakley -> Cluster
@@ -812,7 +822,7 @@ function cacheAliases(elementId) {
  * @param {*} str
  * @returns - the option for string
  */
-function sharedOptionForFromToken(str, optionForType) {  
+function sharedGetFormTokenFromOptionForDirective(str, optionForType) {
   return formTokens.map((token) => {
     let match = str.match(`^${optionForType}${token}`);
 
@@ -824,12 +834,12 @@ function sharedOptionForFromToken(str, optionForType) {
   })[0];
 }
 
-function optionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'optionFor');
+function getFormTokenFromOptionForDirective(str) {
+  return sharedGetFormTokenFromOptionForDirective(str, 'optionFor');
 }
 
-function exclusiveOptionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'exclusiveOptionFor');
+function getFormTokenFromExclusiveOptionForToken(str) {
+  return sharedGetFormTokenFromOptionForDirective(str, 'exclusiveOptionFor');
 }
 
 function sharedToggleOptionsFor(_event, targetId, optionForType) {
@@ -843,41 +853,41 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
-      let optionFor = '';
+      let causeFormToken = '';
 
       if (optionForType == 'optionFor') {
-        optionFor = optionForFromToken(key);
+        causeFormToken = getFormTokenFromOptionForDirective(key);
       } else if (optionForType == 'exclusiveOptionFor') {
-        optionFor = exclusiveOptionForFromToken(key);
+        causeFormToken = getFormTokenFromExclusiveOptionForToken(key);
       }
-      let optionForId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
+      let causeId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
 
       // it's some other directive type, so just keep going and/or not real
-      if(!key.startsWith(optionForType) || optionForId === undefined) {
+      if(!key.startsWith(optionForType) || causeId === undefined) {
         continue;
       }
-      const value = document.getElementById(optionForId).value;
-      let optionForValue = mountainCaseWords(value);
+      const causeValueRaw = document.getElementById(causeId).value;
+      let causeValue = mountainCaseWords(causeValueRaw);
 
-      let optionForAlias = '';
-      if ((targetId in aliasLookup) && (value in aliasLookup[targetId])) {
-        optionForAlias = aliasLookup[targetId][value];
+      let causeValueAlias = '';
+      if ((targetId in aliasLookup) && (causeValueRaw in aliasLookup[targetId])) {
+        causeValueAlias = aliasLookup[targetId][causeValueRaw];
       }
       // handle special case where the very first token here is a number.
       // browsers expect a prefix of hyphens as if it's the next token.
-      if (optionForValue.match(/^\d/)) {
-        optionForValue = `-${optionForValue}`;
+      if (causeValue.match(/^\d/)) {
+        causeValue = `-${causeValue}`;
       }
       if (optionForType == 'optionFor') {
-        let key = `optionFor${optionFor}${optionForValue}`;
+        let key = `optionFor${causeFormToken}${causeValue}`;
         if (!(key in option.dataset)) {
-          key = `optionFor${optionFor}${optionForAlias}`;
+          key = `optionFor${causeFormToken}${causeValueAlias}`;
         }
         hide = option.dataset[key] === 'false';
       } else if (optionForType == 'exclusiveOptionFor') {
-        let key = `exclusiveOptionFor${optionFor}${optionForValue}`;
+        let key = `exclusiveOptionFor${causeFormToken}${causeValue}`;
         if (!(key in option.dataset)){
-          key = `exclusiveOptionFor${optionFor}${optionForAlias}`;
+          key = `exclusiveOptionFor${causeFormToken}${causeValueAlias}`;
         }
         hide = !(option.dataset[key] === 'true');
       }
