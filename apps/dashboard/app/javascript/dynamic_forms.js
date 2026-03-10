@@ -812,7 +812,7 @@ function cacheAliases(elementId) {
  * @param {*} str
  * @returns - the option for string
  */
-function sharedOptionForFormToken(str, optionForType) {
+function sharedGetFormTokenFromOptionForDirective(str, optionForType) {
   return formTokens.map((token) => {
     let match = str.match(`^${optionForType}${token}`);
 
@@ -824,12 +824,12 @@ function sharedOptionForFormToken(str, optionForType) {
   })[0];
 }
 
-function optionForFormToken(str) {
-  return sharedOptionForFormToken(str, 'optionFor');
+function getFormTokenFromOptionForDirective(str) {
+  return sharedGetFormTokenFromOptionForDirective(str, 'optionFor');
 }
 
-function exclusiveOptionForFormToken(str) {
-  return sharedOptionForFormToken(str, 'exclusiveOptionFor');
+function getFormTokenFromExclusiveOptionForToken(str) {
+  return sharedGetFormTokenFromOptionForDirective(str, 'exclusiveOptionFor');
 }
 
 function sharedToggleOptionsFor(_event, targetId, optionForType) {
@@ -846,9 +846,9 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
       let causeFormToken = '';
 
       if (optionForType == 'optionFor') {
-        causeFormToken = optionForFormToken(key);
+        causeFormToken = getFormTokenFromOptionForDirective(key);
       } else if (contextStr == 'exclusiveOptionFor') {
-        causeFormToken = exclusiveOptionForFormToken(key);
+        causeFormToken = getFormTokenFromExclusiveOptionForToken(key);
       }
       let causeId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
 
