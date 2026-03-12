@@ -1,27 +1,29 @@
 <turbo-stream action="replace" target="system-status">
   <template>
-    <% Configuration.job_clusters.each do |c| %>
+    <% Configuration.job_clusters.each_with_index do |c, cindex| %>
       <% job_adapter = c.job_adapter %>
       <div class="col">
         <div class="border rounded text-center p-2 m-2">
           
-          <div class="h4"><strong><%= title(c) %></strong></div>
+          <div id="cluster-title-<%= cindex %>" class="h4" tabindex="0"><strong><%= title(c) %></strong></div>
 
-          <% components_status(job_adapter).each do |current_status| %>
+          <% components_status(job_adapter).each_with_index do |current_status, subindex| %>
             <div class="container py-2">
-              <span><%= current_status[:message] %></span>
+              <span id="component-title-<%= cindex %>-<%= subindex %>" tabindex="0"><%= current_status[:message] %></span>
 
               <% if valid_percent?(current_status[:percent]) %>
                 <div class="progress">
                   <div class="progress-bar w-<%= current_status[:percent].to_i %>" role="progressbar"></div>
                 </div>
-                <span class="text-muted"><%= current_status[:percent] %> in use</span>
+                <span id="component-value-<%= cindex %>-<%= subindex %>" class="text-muted" tabindex="0">
+		  <%= current_status[:percent] %> in use
+		</span>
               <% end %>
             </div>
           <% end %>
 
           <div class="col">
-            <table class="table mb-0">
+            <table id="jobs-table-<%= cindex %>" class="table mb-0" tabindex="0">
               <thead>
                 <tr>
                   <th scope="col">Jobs Running</th>

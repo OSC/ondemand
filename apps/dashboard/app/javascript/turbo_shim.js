@@ -22,6 +22,7 @@ export function replaceHTML(id, html) {
 }
 
 export function pollAndReplace(url, delay, id, callback, continuePolling = () => true) {
+  var focusedId = null;
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
     .then((response) => {
       if(response.status == 200) {
@@ -33,7 +34,17 @@ export function pollAndReplace(url, delay, id, callback, continuePolling = () =>
       }
     })
     .then((r) => r.text())
-    .then((html) => replaceHTML(id, html))
+    .then((html) => {
+      const focusedElement = document.activeElement
+      if (jQuery.contains(document.getElementById(id), focusedElement)) {
+        focusedId = focusedElement.id;
+      }
+      replaceHTML(id, html);
+      const newFocus = document.getElementById(focusedId);
+      if (newFocus) {
+        newFocus.focus();
+      }	
+    })
     .then(() => {
       if (continuePolling()) {
         setTimeout(pollAndReplace, delay, url, delay, id, callback, continuePolling);
