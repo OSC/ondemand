@@ -12,12 +12,15 @@
               <span id="component-title-<%= cindex %>-<%= subindex %>" tabindex="0"><%= current_status[:message] %></span>
 
               <% if valid_percent?(current_status[:percent]) %>
-                <div class="progress">
-                  <div class="progress-bar w-<%= current_status[:percent].to_i %>" role="progressbar"></div>
+                <div class="progress" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow="<%= current_status[:percent].to_i %>" role="progressbar"
+                    aria-labelledby="component-value-<%= cindex %>-<%= subindex %>"
+                >
+                  <div class="progress-bar w-<%= current_status[:percent].to_i %>"></div>
                 </div>
                 <span id="component-value-<%= cindex %>-<%= subindex %>" class="text-muted" tabindex="0">
-		  <%= current_status[:percent] %> in use
-		</span>
+		              <%= current_status[:percent] %> in use
+		            </span>
               <% end %>
             </div>
           <% end %>
