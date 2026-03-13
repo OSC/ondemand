@@ -1,0 +1,11 @@
+---
+v2:
+  metadata:
+    title: "Test Cluster"
+    url: "https://example.edu/hpc"
+    hidden: false
+  login:
+    host: "login.example.edu"
+  job:
+    adapter: "slurm"
+    cluster: "test-cluster"
