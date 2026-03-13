@@ -13,12 +13,26 @@ module SmartAttributes
           super
   
           @key = @opts.delete(:key)
+          @port_type = @opts[:port_type] || 'none'
           # reset the id to be unique from other auto_environment_variable_*
           @id = @key ? "#{id}_#{normalize_key(@key)}" : id
         end
 
         def widget
           'text_field'
+        end
+
+        def port_type
+          @port_type
+        end
+
+        def port_type=(value)
+          @port_type = value
+          @opts[:port_type] = value
+        end
+
+        def options_to_serialize(fmt: nil)
+          super.merge({ port_type: @port_type })
         end
 
         def original_label
