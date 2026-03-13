@@ -45,7 +45,7 @@ class RemoteFile
       valid_encoding = stats[:name].to_s.valid_encoding?
       Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid_encoding
       valid_encoding
-    end.sort_by { |p| p[:directory] ? 0 : 1 }
+    end.sort_by { |p| [ p[:directory] ? 0 : 1, p[:name] ] }
   end
 
   def can_download_as_zip?(timeout: Configuration.download_dir_timeout_seconds, download_directory_size_limit: Configuration.download_dir_max)
