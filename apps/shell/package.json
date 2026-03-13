@@ -17,7 +17,7 @@
     "csrf": "^3.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.20.0",
-    "glob": "^7.1.6",
+    "glob": "^13",
     "hbs": "^4.1.0",
     "js-yaml": "^4.1.1",
     "minimist": "^1.2.6",
@@ -36,7 +36,7 @@
     "encodeurl": "2.0.0"
   },
   "devDependencies": {
-    "jest": "^26.1.0"
+    "jest": "^30"
   },
   "scripts": {
     "test": "jest --verbose"
