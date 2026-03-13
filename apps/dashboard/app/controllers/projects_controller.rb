@@ -156,6 +156,7 @@ class ProjectsController < ApplicationController
     render(partial: 'job_details', locals: { job: hpc_job, project: @project })
   end
 
+  # TODO: Refactor it to `?from_workflow=true`
   # DELETE /projects/:project_id/jobs/:cluster/:jobid
   def delete_job
     @project = Project.find(job_details_params[:project_id])
@@ -177,6 +178,7 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # TODO: Refactor it to `?from_workflow=true`
   # POST /projects/:project_id/jobs/:cluster/:jobid/stop
   def stop_job
     @project = Project.find(job_details_params[:project_id])
@@ -189,10 +191,14 @@ class ProjectsController < ApplicationController
 
     begin
       cluster.job_adapter.delete(jobid.to_s) unless hpc_job.status.to_s == 'completed'
-      redirect_to(
-        project_path(job_details_params[:project_id]),
-        notice: I18n.t('dashboard.jobs_project_job_stopped', job_id: jobid)
-      )
+      if request.format.html?
+        redirect_to(
+          project_path(job_details_params[:project_id]),
+          notice: I18n.t('dashboard.jobs_project_job_stopped', job_id: jobid)
+        )
+      else
+        render json: { message: I18n.t('dashboard.jobs_project_job_stopped', job_id: jobid) }
+      end
     rescue StandardError => e
       redirect_to(
         project_path(job_details_params[:project_id]),
