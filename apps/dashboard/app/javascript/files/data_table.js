@@ -437,6 +437,7 @@ class DataTable {
         button.setAttribute('data-bs-toggle', 'dropdown');
         button.setAttribute('aria-haspopup', 'true');
         button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('title', 'Actions');
           
         // Create the icon inside the button
         const icon = document.createElement('span');
