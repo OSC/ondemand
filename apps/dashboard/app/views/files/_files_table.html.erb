@@ -1,5 +1,5 @@
 <div class="col-md-9">
-<%# TODO put search box ABOVE the breadcrumbs %>
+  <%# TODO put search box ABOVE the breadcrumbs %>
     <ol id="path-breadcrumbs" class="breadcrumb breadcrumb-no-delimiter rounded">
       <%= render partial: 'breadcrumb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path } %>
     </ol>
