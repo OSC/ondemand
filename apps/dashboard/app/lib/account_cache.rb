@@ -132,13 +132,7 @@ module AccountCache
 
   # do you have _any_ account that can submit to this queue?
   def blocked_queue?(queue)
-    allow_accounts = queue.allow_accounts
-
-    if allow_accounts.nil?
-      false
-    else
-      allow_accounts.intersection(account_names).empty?
-    end
+    (accounts.select {|account| account_allowed?(queue, account)}).none?
   end
 
   def queues_per_cluster
