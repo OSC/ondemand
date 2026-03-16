@@ -5,8 +5,8 @@
     </ol>
 
     <label id="select_all_label" class="sr-only">Select All</label>
-    <span id="location_description" class="sr-only" aria-live="assertive"> <%= "contents of directory #{@path}" %> </span>
-    <table class="table table-striped table-condensed w-100" id="directory-contents">
+    <span id="location_description" class="sr-only"> <%= "contents of directory #{@path}" %> </span>
+    <table class="table table-striped table-condensed w-100" id="directory-contents" aria-describedby='location_description'>
       <thead>
         <tr>
           <th>
