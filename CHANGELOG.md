@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Select all checkbox is more accessible in [5043](https://github.com/OSC/ondemand/pull/5043).
 - hterm correctly works with FF 148 in [5104](https://github.com/OSC/ondemand/pull/5104).
 - Directory navigation correctly works when downloads are disabled in [5110](https://github.com/OSC/ondemand/pull/5110).
-- Screen readers will now show text about dynmaic forms in [5126](https://github.com/OSC/ondemand/pull/5126).
+- Screen readers will now show text about dynamic forms in [5126](https://github.com/OSC/ondemand/pull/5126).
 - The system status page is now keyboard navigable in [5079](https://github.com/OSC/ondemand/pull/5079).
 - The job composer now responds to enter to show data and tabs to navigate the table in [5060](https://github.com/OSC/ondemand/pull/5060).
 - Pinned apps and recently used apps visually react from tab focus in [5076](https://github.com/OSC/ondemand/pull/5076).
