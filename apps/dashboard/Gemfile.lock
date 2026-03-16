@@ -128,7 +128,7 @@ GEM
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
-    dotiw (5.3.3)
+    dotiw (5.5.0)
       activesupport
       i18n
     drb (2.2.3)
@@ -379,7 +379,7 @@ GEM
     thor (1.5.0)
     tilt (2.7.0)
     timecop (0.9.10)
-    timeout (0.6.0)
+    timeout (0.6.1)
     tsort (0.2.0)
     turbo-rails (2.0.7)
       actionpack (>= 6.0.0)
