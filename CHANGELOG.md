@@ -7,28 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
-Enable basic keyboard navigation in job composer (#5060)\
-Make system-status keyboard navigable (#5079)\
-remove redundant conditionals (#5148)\
-Enhance documentation to idFromToken. (#5145)\
-Depend on ondemand-runtime 4.1.0-3 to fix Amazon 2023 npm dependency (#5127)\
-element -> target (#5144)\
-contextStr -> objectForType (#5143)\
-change container default to podman (#4955)\
-lint a random file (#5139)\
-add focus-within to hover behavior (#5076)\
-Remove new tab links (#5114)\
-Update Changelog (#5130)\
-update dependencies (#5131)\
-lint a random file (#5129)\
-add disclaimer about dynamic action (#5126)\
-Copy contributor jam guide into main repo (#5128)
 
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
 - Select all checkbox is more accessible in [5043](https://github.com/OSC/ondemand/pull/5043).
 - hterm correctly works with FF 148 in [5104](https://github.com/OSC/ondemand/pull/5104).
 - Directory navigation correctly works when downloads are disabled in [5110](https://github.com/OSC/ondemand/pull/5110).
+- Screen readers will now show text about dynmaic forms in [5126](https://github.com/OSC/ondemand/pull/5126).
+- The system status page is now keyboard navigable in [5079](https://github.com/OSC/ondemand/pull/5079).
+- The job composer now responds to enter to show data and tabs to navigate the table in [5060](https://github.com/OSC/ondemand/pull/5060).
+- Pinned apps and recently used apps visually react from tab focus in [5076](https://github.com/OSC/ondemand/pull/5076).
+
+### Changed
+- Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
+- Container tasks now default to podman in [4955](https://github.com/OSC/ondemand/pull/4955).
 
 ## [4.1.4] - 2026-03-03
 
