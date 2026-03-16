@@ -147,7 +147,7 @@ module AccountCache
   end
 
   def queue_account_data(queue)
-    unavailable_accounts = account_names.reject do |account| 
+    unavailable_accounts = accounts.reject do |account| 
       account_allowed?(queue, account)
     end
     disabled_account_data(unavailable_accounts)
@@ -180,7 +180,7 @@ module AccountCache
   end
 
   def disabled_account_data(disabled_accounts)
-    disabled_accounts.map do |account|
+    disabled_accounts.map(&:to_s).map do |account|
       # check if account contains anything other than digits and lowercase letters
       if /\A[a-z0-9]+\z/.match?(account)
         [["data-option-for-auto-accounts-#{account}", false]] 
