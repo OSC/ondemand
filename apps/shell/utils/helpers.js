@@ -1,4 +1,4 @@
-const minimatch = require('minimatch');
+const { minimatch } = require('minimatch');
 const glob      = require('glob');
 const path      = require('path');
 const yaml      = require('js-yaml');
