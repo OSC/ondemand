@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if command -v startplasma-x11 > /dev/null 2>&1; then
     exec startplasma-x11
 elif command -v startkde > /dev/null 2>&1; then
