@@ -55,6 +55,11 @@ class HpcModule
         all(cluster: cluster.id).select { |m| m.name == module_name.to_s }
       end.flatten.uniq(&:to_s).sort_by(&:version).reverse
     end
+
+    # Get all versions of a module for a specific cluster, sorted and unique
+    def all_versions(module_name, cluster_name)
+      all(cluster: cluster_name).select { |m| m.name == module_name.to_s }.uniq(&:to_s).sort_by(&:version).reverse
+    end
   end
 
   attr_reader :name, :version, :dependencies, :cluster, :hidden
