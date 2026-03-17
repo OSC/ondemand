@@ -168,8 +168,8 @@ module AccountCache
     end
   end
 
-  @account_aliases = {}
   def get_or_create_account_alias(account)
+    @account_aliases ||= {}
     if @account_aliases.key?(account)
       return @account_aliases[account]
     end
