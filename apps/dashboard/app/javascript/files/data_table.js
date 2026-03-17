@@ -299,8 +299,15 @@ class DataTable {
             this._table.draw();
 
             $(`${CONTENTID} a[data-type="d"]`).each(function (_index) {
-                document.getElementById(SUBDIRSID).innerHTML += `<li> <a href="${this.href}"> ${this.textContent} </a> </li>`}
-            );
+                const a = document.createElement('a');
+                a.href = this.href;
+                a.textContent = this.textContent;
+
+                // Create elements
+                const li = document.createElement('li');
+                li.appendChild(a);
+                document.getElementById(SUBDIRSID).appendChild(li);
+            });
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
