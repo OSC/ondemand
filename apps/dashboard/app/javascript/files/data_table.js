@@ -397,7 +397,7 @@ class DataTable {
             element = document.createElement('span');
         } else {
             element = document.createElement('a');
-            element.href = row.url;
+            element.href = `${row.url}#location_description`;
         }
 
         // dataset.type is only used in testing.
