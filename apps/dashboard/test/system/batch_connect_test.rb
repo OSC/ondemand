@@ -2300,7 +2300,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       queues = find_all_options("auto_queues", nil)
       aliases = []
       for queue in queues
-        (1..accounts.size).each do |i|
+        (0..accounts.size).each do |i|
           if !queue["data-alias-account#{i}"].nil?
             aliases.append([queue.value, "account#{i}", queue["data-alias-account#{i}"]])
           end
