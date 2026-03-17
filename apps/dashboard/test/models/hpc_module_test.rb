@@ -75,4 +75,18 @@ class HpcModuleTest < ActiveSupport::TestCase
       assert_equal(expected, HpcModule.all_versions('mkl').map(&:to_s))
     end
   end
+
+  test 'modules with same name and version with different dependencies' do
+    stub_sys_apps
+    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
+      # "openpmpi/5.0.8" in trillium.json has parentAA [["StdEnv/2023", "gcc/14.3"], ["StdEnv/2023", "intel/2025.2.0"], ["StdEnv/2023", "llvm/21.1.5"]]
+      expected = [
+        'openpmpi/5.0.8'
+      ]
+      assert_equal(expected, HpcModule.all_versions('openpmpi', cluster: 'trillium').find { |m| m.version == '5.0.8' }.to_s)
+      openpmpi_508 = HpcModule.all_versions('openpmpi', cluster: 'trillium').find { |m| m.version == '5.0.8' }
+      assert_equal([['StdEnv/2023', 'gcc/14.3'], ['StdEnv/2023', 'intel/2025.2.0'], ['StdEnv/2023', 'llvm/21.1.5']], openpmpi_508.dependencies)
+    end
+  end
+
 end
