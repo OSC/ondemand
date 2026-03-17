@@ -53,7 +53,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#new-dir-btn').click
       find('#files_input_modal_input').set('bar')
       find('#files_input_modal_ok_button').click
-      find('#subdirectory_list a', exact_text: 'bar', wait: MAX_WAIT)
+      find('#subdirectory_list a', exact_text: 'bar', visible: false, wait: MAX_WAIT)
       find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
       assert File.directory? File.join(dir, 'bar')
     end
@@ -110,19 +110,19 @@ class FilesTest < ApplicationSystemTestCase
 
       # now step through all the empty directories and see they're there.
       visit files_url("#{dir}/dest")
-      find('#subdirectory_links a', exact_text: 'src', wait: MAX_WAIT)
+      find('#subdirectory_links a', exact_text: 'src', visible: false,  wait: MAX_WAIT)
       find('tbody a', exact_text: 'src', wait: MAX_WAIT)
 
       visit files_url("#{dir}/dest/src")
-      find('#subdirectory_links a', exact_text: 'dir', wait: MAX_WAIT)
+      find('#subdirectory_links a', exact_text: 'dir', visible: false, wait: MAX_WAIT)
       find('tbody a', exact_text: 'dir')
 
       visit files_url("#{dir}/dest/src/dir")
-      find('#subdirectory_links a', exact_text: 'one', wait: MAX_WAIT)
+      find('#subdirectory_links a', exact_text: 'one', visible: false, wait: MAX_WAIT)
       find('tbody a', exact_text: 'one')
 
       visit files_url("#{dir}/dest/src/dir/one")
-      find('#subdirectory_links a', exact_text: 'two', wait: MAX_WAIT)
+      find('#subdirectory_links a', exact_text: 'two', visible: false, wait: MAX_WAIT)
       find('tbody a', exact_text: 'two')
 
       visit files_url("#{dir}/dest/src/dir/one/two")
@@ -397,25 +397,25 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'changing directory' do
     visit files_url(Rails.root.to_s)
-    find('#subdirectory_links a', exact_text: 'app')
+    find('#subdirectory_links a', exact_text: 'app', visible: false)
     find('tbody a', exact_text: 'app')
-    find('#subdirectory_links a', exact_text: 'config')
+    find('#subdirectory_links a', exact_text: 'config', visible: false)
     find('tbody a', exact_text: 'config')
 
     find('#goto-btn').click
     find('#files_input_modal_input').set(Rails.root.join('app'))
     find('#files_input_modal_ok_button').click
-    find('#subdirectory_links a', exact_text: 'helpers')
+    find('#subdirectory_links a', exact_text: 'helpers', visible: false)
     find('tbody a', exact_text: 'helpers')
-    find('#subdirectory_links a', exact_text: 'contorllers')
+    find('#subdirectory_links a', exact_text: 'contorllers', visible: false)
     find('tbody a', exact_text: 'controllers')
 
     find('#goto-btn').click
     find('#files_input_modal_input').set(Rails.root.to_s)
     find('#files_input_modal_ok_button').click
-    find('#subdirectory_links a', exact_text: 'app')
+    find('#subdirectory_links a', exact_text: 'app', visible: false)
     find('tbody a', exact_text: 'app')
-    find('#subdirectory_links a', exact_text: 'config')
+    find('#subdirectory_links a', exact_text: 'config', visible: false)
     find('tbody a', exact_text: 'config')
   end
 
