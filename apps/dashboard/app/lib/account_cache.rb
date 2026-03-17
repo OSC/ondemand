@@ -168,13 +168,13 @@ module AccountCache
     end
   end
 
-  @@account_aliases = {}
+  @account_aliases = {}
   def get_or_create_account_alias(account)
-    if @@account_aliases.key?(account)
-      return @@account_aliases[account]
+    if @account_aliases.key?(account)
+      return @account_aliases[account]
     end
-    new_alias = "account#{@@account_aliases.length()}"
-    @@account_aliases[account] = new_alias
+    new_alias = "account#{@account_aliases.length()}"
+    @account_aliases[account] = new_alias
     return new_alias
   end
 
