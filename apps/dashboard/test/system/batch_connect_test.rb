@@ -2227,7 +2227,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_equal 'owens', find_value('cluster')
 
         # notice that there are no duplicates. These accounts are not cluster aware
-        expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
+        expected_accounts = ['foo-bar', 'pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
                              'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
 
         id = bc_ele_id('auto_accounts')
