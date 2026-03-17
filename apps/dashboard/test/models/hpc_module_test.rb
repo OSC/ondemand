@@ -76,16 +76,33 @@ class HpcModuleTest < ActiveSupport::TestCase
     end
   end
 
-  test 'modules with same name and version with different dependencies' do
+  test 'modules with same name and version with different dependency sets' do
     stub_sys_apps
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      # "openpmpi/5.0.8" in trillium.json has parentAA [["StdEnv/2023", "gcc/14.3"], ["StdEnv/2023", "intel/2025.2.0"], ["StdEnv/2023", "llvm/21.1.5"]]
-      expected = [
-        'openpmpi/5.0.8'
-      ]
-      assert_equal(expected, HpcModule.all_versions('openpmpi', cluster: 'trillium').find { |m| m.version == '5.0.8' }.to_s)
-      openpmpi_508 = HpcModule.all_versions('openpmpi', cluster: 'trillium').find { |m| m.version == '5.0.8' }
-      assert_equal([['StdEnv/2023', 'gcc/14.3'], ['StdEnv/2023', 'intel/2025.2.0'], ['StdEnv/2023', 'llvm/21.1.5']], openpmpi_508.dependencies)
+    Dir.mktmpdir do |tmpdir|
+      # Only look at Owens LAMMPS modules
+      FileUtils.cp("#{fixture_dir}/owens.json", "#{tmpdir}/owens.json")
+      with_modified_env({ OOD_MODULE_FILE_DIR: tmpdir }) do
+        expected = [
+          'lammps/5Jun19', 'lammps/3Mar20', 'lammps/29Oct20', 'lammps/22Aug18', 'lammps/16Mar18'
+        ]
+        assert_equal(expected, HpcModule.all_versions('lammps').map(&:to_s))
+        lammps_3mar20 = HpcModule.all_versions('lammps').find { |m| m.version == '3Mar20' }
+        expected = [['intel/19.0.3', 'openmpi/4.0.3-hpcx'], ['intel/19.0.5', 'openmpi/4.0.3-hpcx'], 
+                    ['intel/19.0.3', 'openmpi/4.0.3'], ['intel/19.0.5', 'openmpi/4.0.3'],
+                    ['intel/19.0.3', 'intelmpi/2019.7'], ['intel/19.0.5', 'intelmpi/2019.7'],
+                    ['intel/19.0.3', 'intelmpi/2019.3'], ['intel/19.0.5', 'intelmpi/2019.3'],
+                    ['intel/19.0.3', 'intelmpi/.2019.5'], ['intel/19.0.5', 'intelmpi/.2019.5'],
+                    ['intel/19.0.3', 'mvapich2-gdr/2.3.4'], ['intel/19.0.5', 'mvapich2-gdr/2.3.4'],
+                    ['intel/19.0.3', 'mvapich2-gdr/2.3.5'], ['intel/19.0.5',  'mvapich2-gdr/2.3.5'],
+                    ['intel/19.0.3', 'mvapich2/2.3.2'], ['intel/19.0.5', 'mvapich2/2.3.2'],
+                    ['intel/19.0.3', 'mvapich2/2.3.1'], ['intel/19.0.5', 'mvapich2/2.3.1'],
+                    ['intel/19.0.3', 'mvapich2/2.3.6'], ['intel/19.0.5', 'mvapich2/2.3.6'],
+                    ['intel/19.0.3', 'mvapich2/2.3.5'], ['intel/19.0.5', 'mvapich2/2.3.5'],
+                    ['intel/19.0.3', 'mvapich2/2.3.4'], ['intel/19.0.5', 'mvapich2/2.3.4'],
+                    ['intel/19.0.3', 'mvapich2/2.3.3'], ['intel/19.0.5', 'mvapich2/2.3.3']
+        ]
+        assert_equal(expected, lammps_3mar20.dependencies)
+      end
     end
   end
 
