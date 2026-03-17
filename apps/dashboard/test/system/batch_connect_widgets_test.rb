@@ -898,8 +898,5 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     HEREDOC
     
     assert_equal expected_html, find('div.popover div.ood-appkit.markdown')['innerHTML']
-
-    # assert markdown styling
-    
   end
 end
