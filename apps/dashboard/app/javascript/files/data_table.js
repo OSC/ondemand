@@ -11,6 +11,7 @@ const EVENTNAME = {
     goto: 'goto',
 };
 
+const SUBDIRSID = 'subdirectory_links';
 const CONTENTID = '#directory-contents';
 const SPINNERID = '#tloading_spinner';
 
@@ -292,10 +293,14 @@ class DataTable {
             history.state.currentFilenames = Array.from(data.files, x => x.name);
             $('#shell-wrapper').replaceWith(this.cleanHtml(data.shell_dropdown_html));
 
+            document.getElementById(SUBDIRSID).innerHTML = '';
             this._table.clear();
             this._table.rows.add(data.files);
             this._table.draw();
 
+            $(`${CONTENTID} a[data-type="d"]`).each(function (_index) {
+                document.getElementById(SUBDIRSID).innerHTML += `<li> <a href="${this.href}"> ${this.textContent} </a> </li>`}
+            );
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
@@ -396,8 +401,9 @@ class DataTable {
         if(row.type == 'f' && (!downloadEnabled() || row.url === undefined || this.isInvalidURL(row.url))) {
             element = document.createElement('span');
         } else {
+            const url = (row.type == 'f') ? row.url : `${row.url}#${SUBDIRSID}`;
             element = document.createElement('a');
-            element.href = `${row.url}#location_description`;
+            element.href = url;
         }
 
         // dataset.type is only used in testing.

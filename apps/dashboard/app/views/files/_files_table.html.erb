@@ -5,9 +5,10 @@
     </ol>
 
     <label id="select_all_label" class="sr-only">Select All</label>
-    <span id="location_description" class="sr-only"> <%= "Contents of directory #{@path}" %> </span>
     <div role="region" aria-label="Directory contents">
+      <ul class="sr-only" id="subdirectory_links" aria-label="Subdirectories"> </ul>
       <table class="table table-striped table-condensed w-100" id="directory-contents">
+	<caption class="sr-only"> <%= "Contents of directory #{@path}" %> </caption>
         <thead>
           <tr>
             <th>
