@@ -7,14 +7,14 @@
 if Configuration.csp_enabled?
   Rails.application.configure do
     config.content_security_policy do |policy|
-    policy.default_src :self
-    policy.font_src    :self, :data
-    policy.img_src     :self, :data
-    policy.object_src  :none
-    policy.script_src(*Configuration.script_sources)
-    policy.style_src   :self
-    policy.connect_src(*Configuration.connect_sources)
-
+      policy.default_src :self
+      policy.font_src    :self, :data
+      policy.img_src     :self, :data
+      policy.object_src  :none
+      policy.script_src(*Configuration.script_sources)
+      policy.style_src   :self
+      policy.connect_src(*Configuration.connect_sources)
+    end
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
     # If you are using UJS then enable automatic nonce generation
