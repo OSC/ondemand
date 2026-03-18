@@ -63,7 +63,7 @@ chdir APP_ROOT do
 
   puts "\n== Installing dependencies =="
   system! "gem install bundler --conservative"
-  system! "bin/bundle check 1>/dev/null 2>&1" || system! "bin/bundle install --jobs 4 --retry 2"
+  system! "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
 
   puts "\n== Installing yarn =="
   system! "npm install --production --prefix tmp yarn"
