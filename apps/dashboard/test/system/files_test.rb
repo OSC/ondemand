@@ -53,7 +53,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#new-dir-btn').click
       find('#files_input_modal_input').set('bar')
       find('#files_input_modal_ok_button').click
-      find('#subdirectory_list a', exact_text: 'bar', visible: false, wait: MAX_WAIT)
+      assert_selector('#subdirectory_list a', text: 'bar', visible: false)
       find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
       assert File.directory? File.join(dir, 'bar')
     end
@@ -407,7 +407,7 @@ class FilesTest < ApplicationSystemTestCase
     find('#files_input_modal_ok_button').click
     find('#subdirectory_links a', exact_text: 'helpers', visible: false)
     find('tbody a', exact_text: 'helpers')
-    find('#subdirectory_links a', exact_text: 'contorllers', visible: false)
+    find('#subdirectory_links a', exact_text: 'controllers', visible: false)
     find('tbody a', exact_text: 'controllers')
 
     find('#goto-btn').click
