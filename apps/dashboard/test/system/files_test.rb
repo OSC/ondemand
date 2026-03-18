@@ -53,7 +53,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#new-dir-btn').click
       find('#files_input_modal_input').set('bar')
       find('#files_input_modal_ok_button').click
-      assert_selector('#subdirectory_list a', text: 'bar', visible: false)
+      assert_selector('#subdirectory_links a', text: 'bar', visible: false)
       find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
       assert File.directory? File.join(dir, 'bar')
     end
