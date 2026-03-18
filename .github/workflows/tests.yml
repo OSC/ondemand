@@ -31,9 +31,9 @@ jobs:
           # Test versions from RHEL8 & RHEL9 & RHEL10
           - os: ubuntu-latest
             ruby: "3.3"
-	  # Test 3.4 in anticipation of future os releases
-	  - os: ubuntu-latest
-	    ruby: "3.4"
+          # Test 3.4 in anticipation of future os releases
+          - os: ubuntu-latest
+            ruby: "3.4"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
