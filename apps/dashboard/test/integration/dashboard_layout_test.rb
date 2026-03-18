@@ -17,7 +17,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     Router.instance_variable_set('@pinned_apps', nil)
   end
 
-  def test_env
+  def get_test_env
     {
       MOTD_FORMAT:    'osc',
       MOTD_PATH:      Rails.root.join('test/fixtures/files/motd_valid').to_s,
@@ -88,7 +88,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -121,7 +121,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -215,7 +215,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -265,7 +265,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -299,7 +299,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
