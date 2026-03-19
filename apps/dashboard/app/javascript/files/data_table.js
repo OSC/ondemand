@@ -312,7 +312,6 @@ class DataTable {
             // set focus
             if (window.location.href.endsWith(`#${SUBDIRSID}`)) {
                 const links = $(`#${SUBDIRSID} a`);
-                console.log(links)
                 if (links.length > 0) {
                     document.getElementById(SUBDIRSID).focus();
                 } else {
