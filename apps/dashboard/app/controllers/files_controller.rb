@@ -143,8 +143,7 @@ class FilesController < ApplicationController
     elsif touch
       @path.touch
     else
-      content = request.body.read
-
+      content = JSON.parse(update_params[:content])
       # forcing utf-8 because File.write seems to require it. request bodies are
       # in ASCII-8BIT and need to be re encoded otherwise errors are thrown.
       # see test cases for plain text, utf-8 text, images and binary files
@@ -155,7 +154,7 @@ class FilesController < ApplicationController
 
     render json: {}
   rescue StandardError => e
-    render json: { error_message: e.message }
+    render json: { error_message: e.message }, status: :internal_server_error
   end
 
   # POST
@@ -382,7 +381,7 @@ class FilesController < ApplicationController
   end
 
   def update_params
-    params.permit(:format, :filepath, :fs, :dir, :file, :touch)
+    params.permit(:format, :filepath, :fs, :dir, :file, :touch, :content)
   end
 
   def upload_params
