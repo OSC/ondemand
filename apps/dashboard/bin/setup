@@ -48,6 +48,7 @@ APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
 APP_NAME = "dashboard"
 
 def system!(*args)
+  puts *args
   system(*args, exception: true)
 end
 
