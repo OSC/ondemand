@@ -79,7 +79,7 @@
               <% end %>
             </li>
             <% if writable %>
-	      <li>
+	            <li>
                   <%= link_to OodAppkit.editor.edit(path: full_path).to_s,
                               target: '_top',
                               class: 'edit-file dropdown-item' do %>
@@ -87,7 +87,7 @@
                     Edit
                   <% end %>
               </li>
-	    <% end %>
+	          <% end %>
             <li>
               <%= link_to files_path(full_path, download: '1'),
                           target: '_top',
