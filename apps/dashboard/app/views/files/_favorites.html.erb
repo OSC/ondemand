@@ -1,21 +1,19 @@
   <div id="clipboard" class="sticky-top">
   </div>
 
-  <nav>
-    <ul id="favorites" class="nav nav-pills flex-column">
-      <li role="presentation" class="nav-item">
-        <%= link_to files_path(Dir.home), class: "nav-link d bg-light" do %>
-          <%= fa_icon "home", classes: '' %>
-          Home Directory
+  <ul id="favorites" class="nav nav-pills flex-column" role="region" aria-label="Favorites">
+    <li role="presentation" class="nav-item">
+      <%= link_to files_path(Dir.home), class: "nav-link d bg-light" do %>
+        <%= fa_icon "home", classes: '' %>
+        Home Directory
+      <% end %>
+    </li>
+    <% OodFilesApp.new.favorite_paths.each do |p| %>
+      <li class="nav-item">
+        <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light" do %>
+        <%= fa_icon p.icon, classes: '' %>
+        <%= p.title || p.path.to_s  %>
         <% end %>
       </li>
-      <% OodFilesApp.new.favorite_paths.each do |p| %>
-        <li class="nav-item">
-          <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light" do %>
-          <%= fa_icon p.icon, classes: '' %>
-          <%= p.title || p.path.to_s  %>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
-  </nav>
+    <% end %>
+  </ul>
