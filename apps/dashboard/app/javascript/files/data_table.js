@@ -308,6 +308,18 @@ class DataTable {
                 li.appendChild(a);
                 document.getElementById(SUBDIRSID).appendChild(li);
             });
+            
+            // set focus
+            if (window.location.href.endsWith(`#${SUBDIRSID}`)) {
+                const links = $(`#${SUBDIRSID} a`);
+                console.log(links)
+                if (links.length > 0) {
+                    document.getElementById(SUBDIRSID).focus();
+                } else {
+                    document.getElementById('select_all').focus();
+                }
+            }
+
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
