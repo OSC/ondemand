@@ -58,6 +58,39 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'navigation stays on the same page' do 
+    Dir.mktmpdir do |dir|
+      `mkdir -p #{dir}/subdir #{dir}/fav_dir`
+      `touch #{dir}/subdir/foo.txt`
+      `touch #{dir}/fav_dir/bar.txt`
+      favorites = [FavoritePath.new("#{dir}/fav_dir")]
+      OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
+
+      visit files_url(dir)
+
+      assert_selector '#directory-contents tbody tr', count: 2
+
+      # standard navigation (link in table)
+      expect_no_page_reload do
+        find('#directory-contents a', exact_text: 'subdir').click
+        assert_selector('tbody a', exact_text: 'foo.txt')
+      end
+
+      # breadcrumb navigation
+      expect_no_page_reload do
+        dirname = dir.split('/')[2]
+        find('li.breadcrumb-item a', exact_text: "#{dirname} /").click
+        assert_selector('tbody a', exact_text: 'subdir')
+      end
+
+      # favorites navigation
+      expect_no_page_reload do
+        find('#favorites a', exact_text: "#{dir}/fav_dir").click
+        assert_selector('tbody a', exact_text: 'bar.txt')
+      end
+    end
+  end
+
   test 'copying files' do
     visit files_url(Rails.root.to_s)
     ['app', 'config', 'manifest.yml'].each do |f|
