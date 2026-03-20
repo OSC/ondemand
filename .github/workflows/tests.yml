@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["3.3.5"]
+        ruby: ["ruby-head"]
         include:
           # Test versions from Debian 12
           - os: ubuntu-latest
