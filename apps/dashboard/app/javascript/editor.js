@@ -170,7 +170,7 @@ jQuery(function () {
             'Content-Type': 'text/plain',
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
           },
-          success: function (_data) {
+          success: function (data) {
             toggleSaveSpinner();
             toggleSaveConfirmed();
             setTimeout(function () {
@@ -181,12 +181,8 @@ jQuery(function () {
             $("#save-button").prop("disabled", editor.session.getUndoManager().isClean());
             setBeforeUnloadState();
           },
-          error: function (request, _status) {
-            var error = request.responseJSON?.error_message;
-            if (error === undefined) {
-              error = '';
-            }
-            alert(`An error occurred attempting to save this file!\n ${error}`);
+          error: function (request, status, error) {
+            alert("An error occurred attempting to save this file!\n" + error);
             toggleSaveSpinner();
           }
         });
