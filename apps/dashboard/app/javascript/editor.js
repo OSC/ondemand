@@ -108,7 +108,7 @@ jQuery(function () {
     function toggleSaveConfirmed() {
       $("#save-icon").toggleClass("glyphicon-save");
       $("#save-icon").toggleClass("glyphicon-saved");
-      $("save-button").toggleClass("success")	
+      $("#save-button").toggleClass("file-saved")
     };
 
     // Sets the key binding to the selected option
@@ -165,8 +165,9 @@ jQuery(function () {
         $.ajax({
           url: apiUrl,
           type: 'PUT',
-          data: {content: JSON.stringify(editor.getValue())},
+          data: editor.getValue(),
           headers: {
+            'Content-Type': 'text/plain',
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
           },
           success: function (_data) {
