@@ -276,7 +276,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_equal 3, error_widgets.size
     assert_equal true, %r{Missing partial widgets/_this_widget_doesnt_exist}.match?(error_widgets[0].text)
     puts error_widgets[1].text
-    assert_equal true, /undefined method `woops!'/.match?(error_widgets[1].text)
+    assert_equal true, /undefined method [`']woops!'/.match?(error_widgets[1].text)
     assert_equal true, /cannot load such file -- the_missing_gem/.match?(error_widgets[2].text)
   end
 
