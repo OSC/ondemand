@@ -397,6 +397,9 @@ class DataTable {
             element = document.createElement('span');
         } else {
             element = document.createElement('a');
+            if (row.type == 'd') {
+                element.classList.add('d');
+            }
             element.href = row.url;
         }
 
@@ -532,32 +535,34 @@ class DataTable {
 
     goto(url, pushState = true, show_processing_indicator = true) {
         if(url == history.state.currentDirectoryUrl)
-          pushState = false;
-        this.reloadTable(url)
-          .then((data) => {
-            if(data) {
-                $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
-                if(pushState) {
-                    // Clear search query when moving to another directory.
-                    this._table.search('').draw();
-            
-                    history.pushState({
-                        currentDirectory: data.path,
-                        currentDirectoryUrl: data.url,
-                        currentFilesPath: data.files_path,
-                        currentFilesUploadPath: data.files_upload_path,
-                        currentFilesystem: data.filesystem,
-                        currentFilenames: Array.from(data.files, x => x.name)
-                    }, data.name, data.url);
-                }
-                this.updateGlobus();
-            }
-          })
-          .finally(() => {
-            //TODO: after processing is available via ActiveJobs merge
-            // if(show_processing_indicator)
-            //   table.processing(false)
-          });
-      }    
+            pushState = false;
 
+	const shouldPushState = pushState;
+	const navigatingTo = url;
+        this.reloadTable(url)
+	    .then((data) => {
+                if(data) {
+                    $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
+                    if(shouldPushState && location.href !== navigatingTo) {
+                        // Clear search query when moving to another directory.
+                        this._table.search('').draw();
+
+                        history.pushState({
+                            currentDirectory: data.path,
+                            currentDirectoryUrl: data.url,
+                            currentFilesPath: data.files_path,
+                            currentFilesUploadPath: data.files_upload_path,
+                            currentFilesystem: data.filesystem,
+                            currentFilenames: Array.from(data.files, x => x.name)
+                        }, data.name, data.url);
+                    }
+                    this.updateGlobus();
+                }
+            })
+            .finally(() => {
+                //TODO: after processing is available via ActiveJobs merge
+                // if(show_processing_indicator)
+                //   table.processing(false)
+            });
+    } 
 }

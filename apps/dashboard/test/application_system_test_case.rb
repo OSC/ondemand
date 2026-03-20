@@ -58,4 +58,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     assert_equal message, find('div[role="alert"]').find('pre').text
     find('div[role="alert"]').find('button').click
   end
+
+  def expect_no_page_reload(&block)
+    page.execute_script("window.__no_reload_marker = true")
+    block.call
+    assert page.execute_script("return window.__no_reload_marker"), "Expected no page reload, but the page was reloaded"
+  end
 end
