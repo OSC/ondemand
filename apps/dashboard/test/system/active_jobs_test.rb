@@ -167,13 +167,13 @@ class ActiveJobsTest < ApplicationSystemTestCase
     button_select = "#{MAIN_BODY_SELECT} .details-control"
     assert_equal 2, all(button_select).length
 
-    # Click buttons
-    all(button_select).map(&:click)
+    # Click first job button
+    all(button_select)[0].click
     
 
     # Wait for load
-    details_select = "#{MAIN_BODY_SELECT} div.panel.panel-default"
-    assert_selector("#{details_select} tr")
+    details_select = "#job_details"
+    assert_selector("#{details_select}")
     
     # Confirm details
     card_header_items = all("#{details_select} div.card-header span")
@@ -207,6 +207,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     assert_equal DETAILS_HEADERS, headers.map(&:text)
     assert_equal exp_details, details.map(&:text)
 
+    all(button_select)[1].click
     assert_selector('div.alert-warning')
   end
 
