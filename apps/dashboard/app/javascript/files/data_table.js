@@ -397,6 +397,7 @@ class DataTable {
             element = document.createElement('span');
         } else {
             element = document.createElement('a');
+            element.classList.add('d')
             element.href = row.url;
         }
 
