@@ -178,7 +178,7 @@ function create_datatable(options){
                 "searchable":       false,
                 render: function (data, type, row, meta) {
                   let { cluster_title, jobname, } = row
-                  return `<button class="details-control fa fa-plus btn btn-default" aria-label="Show details for job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
+                  return `<button class="details-control fa fa-plus btn btn-default" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
                 },
             },
             {
