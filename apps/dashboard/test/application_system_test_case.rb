@@ -18,7 +18,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
-  Capybara.server = :webrick
 
   def find_option_style(ele, opt)
     find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
