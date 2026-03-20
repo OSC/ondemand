@@ -398,7 +398,7 @@ class DataTable {
         } else {
             element = document.createElement('a');
             if (row.type == 'd') {
-                element.classList.add('d')
+                element.classList.add('d');
             }
             element.href = row.url;
         }
