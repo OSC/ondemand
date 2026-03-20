@@ -155,7 +155,7 @@ class FilesController < ApplicationController
 
     render json: {}
   rescue StandardError => e
-    render json: { error_message: e.message }, status: :internal_server_error
+    render json: { error_message: e.message }
   end
 
   # POST
@@ -382,7 +382,7 @@ class FilesController < ApplicationController
   end
 
   def update_params
-    params.permit(:format, :filepath, :fs, :dir, :file, :touch, :content)
+    params.permit(:format, :filepath, :fs, :dir, :file, :touch)
   end
 
   def upload_params
