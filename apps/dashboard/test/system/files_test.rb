@@ -449,6 +449,28 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'file editor reports errors' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+    File.stubs(:write).raises(StandardError.new('File could not be accessed'))
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'foo.txt')
+      FileUtils.touch file
+
+      visit files_url(dir)
+
+      tr = find('a', exact_text: File.basename(file)).ancestor('tr')
+      tr.find('button.dropdown-toggle').click
+      tr.find('.edit-file').click
+      find('#editor').click
+      find('textarea.ace_text-input', visible: false).send_keys('foobar')
+
+      accept_alert("An error occurred attempting to save this file!\nFile could not be accessed") do
+        find('#save-button').click
+      end
+    end
+  end
+
   test 'uppy localization' do
     with_modified_env(FILE_UPLOAD_MAX: '10') do
       Dir.mktmpdir do |dir|
