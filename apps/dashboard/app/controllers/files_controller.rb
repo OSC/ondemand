@@ -143,7 +143,8 @@ class FilesController < ApplicationController
     elsif touch
       @path.touch
     else
-      content = JSON.parse(update_params[:content])
+      content = request.body.read
+
       # forcing utf-8 because File.write seems to require it. request bodies are
       # in ASCII-8BIT and need to be re encoded otherwise errors are thrown.
       # see test cases for plain text, utf-8 text, images and binary files
