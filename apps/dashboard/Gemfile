@@ -90,3 +90,5 @@ gem "sinatra-contrib", require: false
 gem "erubi", require: false
 gem "dalli", require: false
 
+
+gem "puma", "~> 7.2"
