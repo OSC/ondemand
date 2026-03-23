@@ -68,8 +68,15 @@ $(document).ready(function(){
             start_joyride();
         }
 
-        $('#job-list-table tbody').on('click', 'tr', function () {
-
+        // Click handler
+        $('#job-list-table tbody').on('click keyup', 'tr', function (e) {
+	    if (e.type === 'keyup') {
+            const key = e.which || e.keyCode;
+                if (key !== 13) {
+                    return
+                }
+            }
+	    
             if ($(this).hasClass('active')) {
                 $(this).removeClass('active');
             }
@@ -85,8 +92,15 @@ $(document).ready(function(){
     if ($('#new-job-template-table').length) {
         table = $('#new-job-template-table').DataTable();
 
-
-        $('#new-job-template-table tbody').on('click', 'tr', function () {
+        // Click handler
+        $('#new-job-template-table tbody').on('click keyup', 'tr', function (e) {
+	        if (e.type === 'keyup') {
+                const key = e.which || e.keyCode;
+                if (key !== 13) {
+                    return
+                }
+            }
+	    
             if ($(this).hasClass('active')) {
                 // do nothing
             }

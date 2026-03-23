@@ -3,8 +3,26 @@ title: "Jupyter Notebook"
 cluster:
   - "owens"
   - "oakley"
+  - "x-nextgen_ascend"
 description: |
-  This is a test jupyter app.
+  # Header 1
+  ## Header 2
+  ### Header 3
+  **Bold text** *Italic text* plain text [link text](www.example.com)
+  1. Numbered
+  2. Lists
+  
+  - Bullets
+  - Like
+  - These
+  - Items
+
+  <!-- we omit images since they are not recommended in popops -->
+  `code-font`
+
+  ```
+  code block
+  ```
 form_header: |
   <span class="form_header_supports_some_html">
     This is Markdown with [a link](https://openondemand.org).
@@ -43,6 +61,8 @@ attributes:
           data-max-bc-num-slots-for-cluster-owens: 7,
           data-min-bc-num-slots-for-cluster-oakley: 4,
           data-max-bc-num-slots-for-cluster-oakley: 8,
+          data-min-bc-num-slots-for-cluster-x-nextgen-ascend: 5,
+          data-max-bc-num-slots-for-cluster-x-nextgen-ascend: 10,
           data-min-gpus: 0,
           data-max-gpus: 0,
           data-hide-gpus-num-v100: true,
@@ -71,12 +91,18 @@ attributes:
           data-max-bc-num-hours-for-cluster-oakley: 99,
           data-min-bc-num-hours-for-cluster-oakley: 90,
 
+          data-max-bc-num-slots-for-cluster-x-nextgen-ascend: 32,
+          data-min-bc-num-slots-for-cluster-x-nextgen-ascend: 4,
+          data-max-bc-num-hours-for-cluster-x-nextgen-ascend: 96,
+          data-min-bc-num-hours-for-cluster-x-nextgen-ascend: 85,
+
           data-min-gpus: 1,
           data-max-gpus: 4,
         ]
       - [
           "hugemem",
           data-option-for-cluster-oakley: "false",
+          data-option-for-cluster-x-nextgen-ascend: "false",
           data-hide-cuda-version: true,
           data-hide-advanced-options: true,
           data-hide-bc-email-on-started: true,
@@ -90,6 +116,7 @@ attributes:
       - [
           "advanced",
           data-option-for-cluster-oakley: "false",
+          data-option-for-cluster-x-nextgen-ascend: "false",
           data-hide-cuda-version: true,
           data-max-bc-num-slots-for-cluster-oakley: 9001,
 

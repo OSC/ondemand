@@ -744,10 +744,14 @@ function minOrMax(key) {
 }
 
 /**
- * Turn a MountainCase token into a form element id
+ * Turn a MountainCase token into a form element id.
+ * If the input MountainCase string *starts with* one of our memorized form tokens,
+ * this will return the form element ID for that token.
  *
  * @example
  *  NodeType -> batch_connect_session_context_node_type
+ *  NodeTypewriter -> batch_connect_session_context_node_typewriter
+ *  NodeTypeForClusterFooBar -> batch_connect_session_context_node_type
  *
  * @param {*} str
  * @returns
@@ -820,16 +824,8 @@ function sharedOptionForFromToken(str, optionForType) {
   })[0];
 }
 
-function optionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'optionFor');
-}
-
-function exclusiveOptionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'exclusiveOptionFor');
-}
-
-function sharedToggleOptionsFor(_event, elementId, contextStr) {
-  const options = [...document.querySelectorAll(`#${elementId} option`)];
+function sharedToggleOptionsFor(_event, targetId, optionForType) {
+  const options = [...document.querySelectorAll(`#${targetId} option`)];
   let hideSelectedValue = undefined;
 
   options.forEach(option => {
@@ -841,36 +837,32 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
     for (let key of Object.keys(option.dataset)) {
       let optionFor = '';
 
-      if (contextStr == 'optionFor') {
-        optionFor = optionForFromToken(key);
-      } else if (contextStr == 'exclusiveOptionFor') {
-        optionFor = exclusiveOptionForFromToken(key);
-      }
-      let optionForId = idFromToken(key.replace(new RegExp(`^${contextStr}`),''));
+      optionFor = sharedOptionForFromToken(key, optionForType);
+      let optionForId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
 
       // it's some other directive type, so just keep going and/or not real
-      if(!key.startsWith(contextStr) || optionForId === undefined) {
+      if(!key.startsWith(optionForType) || optionForId === undefined) {
         continue;
       }
       const value = document.getElementById(optionForId).value;
       let optionForValue = mountainCaseWords(value);
 
       let optionForAlias = '';
-      if ((elementId in aliasLookup) && (value in aliasLookup[elementId])) {
-        optionForAlias = aliasLookup[elementId][value];
+      if ((targetId in aliasLookup) && (value in aliasLookup[targetId])) {
+        optionForAlias = aliasLookup[targetId][value];
       }
       // handle special case where the very first token here is a number.
       // browsers expect a prefix of hyphens as if it's the next token.
       if (optionForValue.match(/^\d/)) {
         optionForValue = `-${optionForValue}`;
       }
-      if (contextStr == 'optionFor') {
+      if (optionForType == 'optionFor') {
         let key = `optionFor${optionFor}${optionForValue}`;
         if (!(key in option.dataset)) {
           key = `optionFor${optionFor}${optionForAlias}`;
         }
         hide = option.dataset[key] === 'false';
-      } else if (contextStr == 'exclusiveOptionFor') {
+      } else if (optionForType == 'exclusiveOptionFor') {
         let key = `exclusiveOptionFor${optionFor}${optionForValue}`;
         if (!(key in option.dataset)){
           key = `exclusiveOptionFor${optionFor}${optionForAlias}`;
@@ -882,18 +874,18 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       }
     };
 
-    const elementInfo = getWidgetInfo(elementId);
+    const targetInfo = getWidgetInfo(targetId);
     if(hide) {
       if(option.selected) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
       var prefix = option.selected ? 'Selected' : '';
-      ariaStream(`${prefix} option ${option.value} disabled for ${elementInfo}`);
+      ariaStream(`${prefix} option ${option.value} disabled for ${targetInfo}`);
       option.style.display = 'none';
       option.disabled = true;
     } else {
-      ariaStream(`Option ${option.value} enabled for ${elementInfo}`);
+      ariaStream(`Option ${option.value} enabled for ${targetInfo}`);
       option.style.display = '';
       option.disabled = false;
     }
@@ -903,7 +895,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   // be the current selected value.
   // if you've hidden what _was_ selected.
   if(hideSelectedValue !== undefined) {
-    let others = [...document.querySelectorAll(`#${elementId} option[value='${hideSelectedValue}']`)];
+    let others = [...document.querySelectorAll(`#${targetId} option[value='${hideSelectedValue}']`)];
     let newSelectedOption = undefined;
 
     // You have hidden what _was_ selected, so try to find a duplicate option that is visible
@@ -918,7 +910,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
 
     // no duplicates are visible, so just pick the first visible option
     if (newSelectedOption === undefined) {
-      others = document.querySelectorAll(`#${elementId} option`);
+      others = document.querySelectorAll(`#${targetId} option`);
       others.forEach(ele => {
         if(newSelectedOption === undefined && ele.style.display === '') {
           newSelectedOption = ele;
@@ -932,7 +924,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   }
 
   // now that we're done, propagate this change to data-set or data-hide handlers
-  document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
+  document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
 }
 
 // get attributes based on widget id

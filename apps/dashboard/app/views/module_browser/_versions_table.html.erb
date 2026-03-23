@@ -12,7 +12,7 @@
       <% clusters.each do |cluster| %>
         <% cluster_versions = versions_by_cluster[cluster] || [] %>
         <tr>
-          <td><%= cluster.to_s.titleize %></td>
+          <td><%= Configuration.job_clusters[cluster].title %></td>
           <td>
             <% if cluster_versions.any? %>
               <% cluster_versions.uniq { |v| v.version }.sort_by(&:version).reverse.each do |mod| %>

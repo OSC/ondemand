@@ -634,6 +634,58 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-option-for-cluster with dashed cluster names' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - ['Next Gen Ascend', 'next-gen_ascend']
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-next-gen-ascend: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # owens is selected, standard and gpu are both visible
+      select('owens', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      # select gpu, to test that it's deselected properly when nextgen-ascend is selected
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      # Next Gen Ascend is selected, gpu is not visible
+      select('Next Gen Ascend', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+
+      # value of node_type has gone back to standard
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+
   test 'form element headers support markdown and html' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -849,6 +901,10 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             options:
               - ["None", "", data-hide-thing-to-hide-or-show: true]
               - ["Some", "some"]
+          thing_to_hide_or_show:
+            header: |
+              ## Hidden field header
+              This header should always remain visible.
       HEREDOC
 
       make_bc_app(dir, form)
@@ -856,11 +912,50 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       # None is selected by default and 'thing_to_hide_or_show' is hidden
       assert_equal('', find_value('select_that_hides'))
+      header = find('h2', text: 'Hidden field header')
+      assert header.visible?, 'Header should remain visible while the field is hidden'
       refute(find("##{bc_ele_id('thing_to_hide_or_show')}", visible: :hidden).visible?)
 
       # now choose 'some' and 'thing_to_hide_or_show' is visible
       select('Some', from: bc_ele_id('select_that_hides'))
+      assert header.visible?, 'Header should remain visible after the field is shown'
       assert(find("##{bc_ele_id('thing_to_hide_or_show')}").visible?)
     end
+  end
+
+  test 'batch connect app list popover renders markdown formatting' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    app_link.hover
+    assert_selector('div.popover')
+
+    # assert markdown html
+    expected_html = <<~HEREDOC
+    <h1>Header 1</h1>
+
+    <h2>Header 2</h2>
+
+    <h3>Header 3</h3>
+
+    <p><strong>Bold text</strong> <em>Italic text</em> plain text <a href=\"www.example.com\">link text</a>
+    1. Numbered
+    2. Lists</p>
+
+    <ul>
+    <li>Bullets</li>
+    <li>Like</li>
+    <li>These</li>
+    <li>Items</li>
+    </ul>
+    
+    <p><!-- we omit images since they are not recommended in popops -->
+    <code>code-font</code></p>
+
+    <pre><code>code block
+    </code></pre>
+    HEREDOC
+    
+    assert_equal expected_html, find('div.popover div.ood-appkit.markdown')['innerHTML']
   end
 end
