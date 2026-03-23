@@ -276,8 +276,9 @@ class RemoteFilesTest < ApplicationSystemTestCase
         visit files_url('alias_remote', '/bucket')
         find('a', exact_text: 'app').ancestor('tr').find('input[type="checkbox"]').click
         find('a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
-        find('#delete-btn').click
-        find('#files_input_modal_ok_button').click
+        accept_alert do
+          find('#delete-btn').click
+        end
 
         # Allow time for file to be removed
         sleep 1
