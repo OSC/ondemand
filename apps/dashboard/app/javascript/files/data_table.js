@@ -398,6 +398,7 @@ class DataTable {
         } else {
             element = document.createElement('a');
             if (row.type == 'd') {
+				// This class keeps directory links stay on the same page
                 element.classList.add('d');
             }
             element.href = row.url;
