@@ -221,7 +221,7 @@ class DataTable {
                     orderable: false,
                     defaultContent: '<input type="checkbox">',
                     render: (data, type, row, meta) => {
-                        return `<input type='checkbox' class='file-select' data-dl-url='${row.download_url}'>`;
+                        return `<input type='checkbox' class='file-select' data-dl-url='${row.download_url}' aria-label="Select row">`;
                     }
                 },
                 { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only">directory</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only">file</span></span>' }, // type
