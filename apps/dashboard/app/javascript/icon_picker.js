@@ -1,9 +1,11 @@
 'use strict';
 
 import ALL_ICONS from './icons';
+import { ariaNotify } from './utils';
 
 const ICON_SHOW_ID = "product_icon"
 const ICON_SELECT_ID = "product_icon_select"
+const LIST_ID = "icon_picker_list"
 
 // simple boolean for whether there are currently any hidden icons
 let hiddenIcons = false;
@@ -12,7 +14,9 @@ function listItem(name) {
   return `<li 
               id="${iconId(name)}" 
               class="btn btn-outline-dark"
-              role='button'>
+              role='button'
+              tabindex='0'
+              aria-label="${name} icon">
             <i class="fas fa-${name} fa-fw"></i>
           </li>`;
 }
@@ -29,6 +33,7 @@ function iconFromId(id) {
 function picked(event) {
   const icon = iconFromId(event.currentTarget.id);
   updateIcon(icon);
+  ariaNotify(`${icon} icon selected`)
   showAllIcons();
 }
 
