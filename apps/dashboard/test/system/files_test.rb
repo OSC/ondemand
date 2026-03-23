@@ -306,8 +306,9 @@ class FilesTest < ApplicationSystemTestCase
       visit files_url(dir)
       find('tbody a', exact_text: 'app').ancestor('tr').check
       find('tbody a', exact_text: 'single_file').ancestor('tr').check
-      find('#delete-btn').click
-      find('#files_input_modal_ok_button').click
+      accept_alert do
+        find('#delete-btn').click
+      end
 
       # verify app dir deleted according to UI
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
