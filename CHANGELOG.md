@@ -7,19 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
-Minor fixes to files table (#5170)\
-Improve file editor error reporting (#5179)\
-Bump bcrypt from 3.1.16 to 3.1.22 in /ood-portal-generator (#5176)\
-Bump loofah from 2.25.0 to 2.25.1 in /apps/dashboard (#5171)\
-Bump json from 2.19.1 to 2.19.2 in /apps/dashboard (#5174)\
-Add test for popover markdown (#5093)\
-fix selinux policy to work for dev dashboard (#5166)\
-New versions of KDE use startplasma-x11 (#5156)\
-add title to files actions button (#5158)\
-update dependencies (#5159)\
-Update jest3 (#5147)\
-update system status progress bars for accessability (#5153)\
-Update Changelog (#5154)
 
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
@@ -30,6 +17,10 @@ Update Changelog (#5154)
 - The system status page is now keyboard navigable in [5079](https://github.com/OSC/ondemand/pull/5079).
 - The job composer now responds to enter to show data and tabs to navigate the table in [5060](https://github.com/OSC/ondemand/pull/5060).
 - Pinned apps and recently used apps visually react from tab focus in [5076](https://github.com/OSC/ondemand/pull/5076).
+- KDE desktops can now correctly use startplasma-x11 if it's available in [5156](https://github.com/OSC/ondemand/pull/5156).
+- System status progress bars are more accessible in [5153](https://github.com/OSC/ondemand/pull/5153).
+- Files actions button now have a title in [5158](https://github.com/OSC/ondemand/pull/5158).
+- File editor correctly reports errors in [5179](https://github.com/OSC/ondemand/pull/5179).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
