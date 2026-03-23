@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+Minor fixes to files table (#5170)\
+Improve file editor error reporting (#5179)\
+Bump bcrypt from 3.1.16 to 3.1.22 in /ood-portal-generator (#5176)\
+Bump loofah from 2.25.0 to 2.25.1 in /apps/dashboard (#5171)\
+Bump json from 2.19.1 to 2.19.2 in /apps/dashboard (#5174)\
+Add test for popover markdown (#5093)\
+fix selinux policy to work for dev dashboard (#5166)\
+New versions of KDE use startplasma-x11 (#5156)\
+add title to files actions button (#5158)\
+update dependencies (#5159)\
+Update jest3 (#5147)\
+update system status progress bars for accessability (#5153)\
+Update Changelog (#5154)
 
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
