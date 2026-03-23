@@ -276,9 +276,9 @@ class FileOps {
         showCancelButton: true,
       }
     };
-
-    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
-
+    if (confirm(eventData.inputOptions.text)) {
+      $(CONTENTID).trigger(eventData.action, eventData);
+    }
   }
 
   
