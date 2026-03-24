@@ -1,4 +1,3 @@
-
 export default function initPopovers() {
   customizePopoverTriggers();
    
@@ -14,7 +13,6 @@ export default function initPopovers() {
     title: function(){ return $(this).text() }
   });
 
-  $('[data-bs-toggle="popover"]').popover({delay: {'show': 0, 'hide': 500}});
   $('[data-bs-toggle="tooltip"]').tooltip();
 }
 
@@ -26,7 +24,8 @@ function customizePopoverTriggers() {
     let popoverEl = null;
     let triggerHovered = false;  // Manual hover tracking
     let popoverHovered = false;  // Manual hover tracking
-    let popoverOpen = false
+    let popoverOpen = false;
+    let hiddenClone = false;
 
     const instance = bootstrap.Popover.getOrCreateInstance(trigger, {
       trigger: 'manual'
@@ -51,15 +50,19 @@ function customizePopoverTriggers() {
       }
     };
 
+    const forceHide = () => {
+      instance.hide();
+      popoverOpen = false;
+    }
+
     const scheduleHide = () => {
       forceCancel();
       hideTimeout = setTimeout(() => {
         const triggerFocused = trigger.contains(document.activeElement);
-        const popoverFocused = popoverEl && popoverEl.contains(document.activeElement);
+        const popoverFocused = hiddenClone && hiddenClone.contains(document.activeElement);
 
         if (!triggerHovered && !popoverHovered && !triggerFocused && !popoverFocused) {
-          instance.hide();
-          popoverOpen = false;
+          forceHide();    
         }
       }, HIDE_DELAY);
     };
@@ -81,14 +84,41 @@ function customizePopoverTriggers() {
       popoverEl = getTip();
       if (!popoverEl) return;
 
+      // duplicate content (not required but practically necessary to follow links)
+      if (!hiddenClone) {
+        hiddenClone = popoverEl.cloneNode(true);
+        hiddenClone.classList.add('sr-only');
+        hiddenClone.id = '';
+        hiddenClone.style = '';
+        trigger.insertAdjacentElement('afterend', hiddenClone);
+        
+        hiddenClone.addEventListener('focusin', () => {
+          show();
+        });
+
+        hiddenClone.addEventListener('focusout', () => {
+          scheduleHide();
+        })
+      }
+
+      // Keep popover open if hovered (required by wcag)
       popoverEl.addEventListener('mouseenter', () => {
         popoverHovered = true;
         forceCancel();
       });
+
       popoverEl.addEventListener('mouseleave', () => {
         popoverHovered = false;
         scheduleHide();
       });
+
+      // Keyboard override to close (required by wcag)
+      window.addEventListener('keyup', (e) => {
+          if(e.key === "Escape") {
+              forceHide()
+          }
+      }
+      )
     });
 
     trigger.addEventListener('hidden.bs.popover', () => {

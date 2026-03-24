@@ -1,5 +1,9 @@
 // Bootstrap custom CSS
 
+.sr-only * {
+    @extend .sr-only;
+}
+
 .card {
   a {
     text-decoration: none !important;
