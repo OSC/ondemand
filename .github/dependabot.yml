@@ -1,0 +1,43 @@
+version: 2
+updates:
+  # Bundler – root Gemfile (master)
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "master"
+    
+  # Bundler – apps/dashboard (master)
+  - package-ecosystem: "bundler"
+    directory: "/apps/dashboard"
+    schedule:
+      interval: "weekly"
+    target-branch: "master"
+    
+  # npm – apps/dashboard (master)
+  - package-ecosystem: "npm"
+    directory: "/apps/dashboard"
+    schedule:
+      interval: "weekly"
+    target-branch: "master"
+  
+  # Bundler – root Gemfile (release_4.x)
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.*"
+
+  # Bundler – apps/dashboard (release_4.x)
+  - package-ecosystem: "bundler"
+    directory: "/apps/dashboard"
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.*"
+
+  # npm – apps/dashboard (release_4.x)
+  - package-ecosystem: "npm"
+    directory: "/apps/dashboard"
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.*"
