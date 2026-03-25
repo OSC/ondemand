@@ -20,6 +20,20 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "master"
+
+  # npm - apps/shell (master)
+  - package-ecosystem: "npm"
+    directory: "/apps/shell"
+    schedule:
+      interval: "weekly"
+    target-branch: "master"
+  
+  # Bundler - apps/myjobs (master)
+  - package-ecosystem: "bundler"
+    directory: "/apps/myjobs"
+    schedule:
+      interval: "weekly"
+    target-branch: "master"
   
   # Bundler – root Gemfile (release_4.x)
   - package-ecosystem: "bundler"
@@ -38,6 +52,20 @@ updates:
   # npm – apps/dashboard (release_4.x)
   - package-ecosystem: "npm"
     directory: "/apps/dashboard"
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.*"
+
+  # npm - apps/shell (release_4.x)
+  - package-ecosystem: "npm"
+    directory: "/apps/shell"
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.*"
+    
+  # Bundler - apps/myjobs (release_4.x)
+  - package-ecosystem: "bundler"
+    directory: "/apps/myjobs"
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
