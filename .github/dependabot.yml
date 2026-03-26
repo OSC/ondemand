@@ -34,7 +34,21 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "master"
-  
+
+  # Bundler - ood_portal_generator (master)
+  - package-ecosystem: "bundler"
+    directory: "/ood_portal_generator"
+    schedule:
+      interval: "weekly"
+    target-branch: "master"
+    
+  # Bundler - nginx_stage (master)
+  - package-ecosystem: "bundler"
+    directory: "/nginx_stage"
+    schedule:
+      interval: "weekly"
+    target-branch: "master"
+
   # Bundler – root Gemfile (release_4.x)
   - package-ecosystem: "bundler"
     directory: "/"
@@ -66,6 +80,20 @@ updates:
   # Bundler - apps/myjobs (release_4.x)
   - package-ecosystem: "bundler"
     directory: "/apps/myjobs"
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.*"
+
+  # Bundler - ood_portal_generator (release_4.x)
+  - package-ecosystem: "bundler"
+    directory: "/ood_portal_generator"
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.*"
+    
+  # Bundler - nginx_stage (release_4.x)
+  - package-ecosystem: "bundler"
+    directory: "/nginx_stage"
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
