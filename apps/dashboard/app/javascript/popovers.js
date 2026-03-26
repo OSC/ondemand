@@ -103,6 +103,27 @@ function customizePopoverTriggers() {
         })
       }
 
+      // Simulate focus on visible popover
+      hiddenClone.addEventListener('focusin', () => {
+        // when navigated backwards, this listener fires before shown.bs.popover
+        if (!popoverEl) {
+          popoverEl = getTip();
+        }
+        const activeElement = document.activeElement;
+        const focusedElement = activeElement.tagName;
+
+        const hiddenMatches = $(hiddenClone).find(focusedElement);
+        const matches = $(popoverEl).find(focusedElement);
+
+        const index = hiddenMatches.index(activeElement)
+        const duplicateElement = matches[index];
+
+        duplicateElement.classList.add('pseudo-focus')
+        activeElement.addEventListener('focusout', () => {
+          duplicateElement.classList.remove('pseudo-focus');
+        })
+      })
+
       // Keep popover open if hovered (required by wcag)
       popoverEl.addEventListener('mouseenter', () => {
         popoverHovered = true;
