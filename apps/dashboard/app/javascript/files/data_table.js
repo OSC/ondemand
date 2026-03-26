@@ -3,7 +3,7 @@ import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
 export { CONTENTID, EVENTNAME };
 import { OODAlertError } from '../alert.js';
-import { toHumanSize } from '../utils.js';
+import { toHumanSize, ariaNotify } from '../utils.js';
 
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
@@ -302,6 +302,9 @@ class DataTable {
             if ($('#select_all').is(':checked')) {
                 $('#select_all').trigger();
             }
+
+	    $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
+	    ariaNotify(`navigated to ${data.path}`);
 
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
