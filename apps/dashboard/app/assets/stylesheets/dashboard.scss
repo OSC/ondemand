@@ -10,7 +10,7 @@ ul.dropdown-menu .popover {
   width:300px;
 }
 
-.motd {
+.motd, .popover-body dl {
   overflow-wrap: break-word;
   word-wrap: break-word;
   -ms-word-break: break-all;
