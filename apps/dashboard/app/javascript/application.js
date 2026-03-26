@@ -36,9 +36,6 @@ import { createPopper } from '@popperjs/core';
 // Import Bootstrap 5
 import 'bootstrap/dist/js/bootstrap';
 
-import * as BS from 'bootstrap';
-window.bootstrap = BS;
-
 import initPopovers from './popovers'
 
 // lot's of inline scripts and stuff rely on jquery just being available

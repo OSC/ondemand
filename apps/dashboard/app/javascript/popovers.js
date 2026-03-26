@@ -1,3 +1,5 @@
+import { Popover } from 'bootstrap'
+
 export default function initPopovers() {
   customizePopoverTriggers();
    
@@ -27,7 +29,7 @@ function customizePopoverTriggers() {
     let popoverOpen = false;
     let hiddenClone = false;
 
-    const instance = bootstrap.Popover.getOrCreateInstance(trigger, {
+    const instance = Popover.getOrCreateInstance(trigger, {
       trigger: 'manual'
     });
 
