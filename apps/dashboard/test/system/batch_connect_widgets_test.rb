@@ -985,8 +985,8 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     popover_id = app_link['aria-describedby']
     assert_selector("div##{popover_id}", visible: true)
 
+    # send pointer and focus somewhere else
     all('form select').first.hover.click
-    sleep 10
     refute_selector("div##{popover_id}")
   end
 end
