@@ -63,7 +63,6 @@ chdir APP_ROOT do
   puts "RAILS_RELATIVE_URL_ROOT = #{APP.url    || "not set"}"
 
   puts "\n== Installing dependencies =="
-  system! "gem install bundler --conservative"
   system! "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
 
   puts "\n== Installing yarn =="
