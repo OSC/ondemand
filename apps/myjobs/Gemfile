@@ -56,7 +56,7 @@ gem 'font-awesome-sass', '~> 5.0'
 gem "local_time", "~> 1.0.3"
 gem 'dotenv-rails', '~> 2.1'
 gem 'jquery-datatables-rails', '~> 3.4'
-gem "js-routes", "~> 1.2.4"
+gem "js-routes", "~> 2.3.6"
 gem 'osc_machete_rails', '~> 2.1.2'
 gem 'pbs', '~> 2.2.1'
 gem 'ood_appkit', '~> 2.0'
