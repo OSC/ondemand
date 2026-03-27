@@ -157,8 +157,7 @@ GEM
     js-routes (1.2.9)
       railties (>= 3.2)
       sprockets-rails
-    local_time (1.0.3)
-      coffee-rails
+    local_time (3.0.3)
     logger (1.7.0)
     lograge (0.14.0)
       actionpack (>= 4)
@@ -339,7 +338,7 @@ DEPENDENCIES
   jquery-datatables-rails (~> 3.4)
   jquery-rails
   js-routes (~> 1.2.4)
-  local_time (~> 1.0.3)
+  local_time (~> 3.0.3)
   minitest (< 6.0)
   mocha (~> 2.1)
   net-imap (~> 0.3, < 0.4)
