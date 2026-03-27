@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "syslog", "~> 0.1.0"
+  spec.add_dependency "syslog", ">= 0.1", "< 0.5"
   spec.add_dependency 'dotenv', '~> 2.1'
 
   spec.add_development_dependency "bundler"
