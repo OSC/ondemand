@@ -3,6 +3,7 @@ updates:
   # Bundler – root Gemfile (master)
   - package-ecosystem: "bundler"
     directory: "/"
+    open-pull-requests-limit: 0 # only allow essential security updates
     schedule:
       interval: "weekly"
     target-branch: "master"
@@ -10,6 +11,7 @@ updates:
   # Bundler – apps/dashboard (master)
   - package-ecosystem: "bundler"
     directory: "/apps/dashboard"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "master"
@@ -17,6 +19,7 @@ updates:
   # npm – apps/dashboard (master)
   - package-ecosystem: "npm"
     directory: "/apps/dashboard"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "master"
@@ -24,6 +27,7 @@ updates:
   # npm - apps/shell (master)
   - package-ecosystem: "npm"
     directory: "/apps/shell"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "master"
@@ -31,6 +35,7 @@ updates:
   # Bundler - apps/myjobs (master)
   - package-ecosystem: "bundler"
     directory: "/apps/myjobs"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "master"
@@ -38,6 +43,7 @@ updates:
   # Bundler - ood_portal_generator (master)
   - package-ecosystem: "bundler"
     directory: "/ood_portal_generator"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "master"
@@ -45,6 +51,7 @@ updates:
   # Bundler - nginx_stage (master)
   - package-ecosystem: "bundler"
     directory: "/nginx_stage"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "master"
@@ -52,6 +59,7 @@ updates:
   # Bundler – root Gemfile (release_4.x)
   - package-ecosystem: "bundler"
     directory: "/"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
@@ -59,6 +67,7 @@ updates:
   # Bundler – apps/dashboard (release_4.x)
   - package-ecosystem: "bundler"
     directory: "/apps/dashboard"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
@@ -66,6 +75,7 @@ updates:
   # npm – apps/dashboard (release_4.x)
   - package-ecosystem: "npm"
     directory: "/apps/dashboard"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
@@ -73,6 +83,7 @@ updates:
   # npm - apps/shell (release_4.x)
   - package-ecosystem: "npm"
     directory: "/apps/shell"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
@@ -87,6 +98,7 @@ updates:
   # Bundler - ood_portal_generator (release_4.x)
   - package-ecosystem: "bundler"
     directory: "/ood_portal_generator"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
@@ -94,6 +106,7 @@ updates:
   # Bundler - nginx_stage (release_4.x)
   - package-ecosystem: "bundler"
     directory: "/nginx_stage"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
     target-branch: "release_4.*"
