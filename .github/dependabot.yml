@@ -3,7 +3,7 @@ updates:
   # Bundler – root Gemfile (master)
   - package-ecosystem: "bundler"
     directory: "/"
-    open-pull-requests-limit: 0 // only allow essential security updates
+    open-pull-requests-limit: 0 # only allow essential security updates
     schedule:
       interval: "weekly"
     target-branch: "master"
