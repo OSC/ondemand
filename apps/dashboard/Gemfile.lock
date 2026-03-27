@@ -84,8 +84,8 @@ GEM
     addressable (2.8.9)
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
-    autoprefixer-rails (10.2.5.1)
-      execjs (> 0)
+    autoprefixer-rails (10.4.21.0)
+      execjs (~> 2)
     base64 (0.3.0)
     benchmark (0.5.0)
     bigdecimal (4.0.1)
@@ -408,7 +408,7 @@ PLATFORMS
 DEPENDENCIES
   abbrev
   addressable (~> 2.4)
-  autoprefixer-rails (~> 10.2.5)
+  autoprefixer-rails (~> 10.4.21)
   bootstrap_form (= 5.4)
   browser (~> 2.2)
   byebug
