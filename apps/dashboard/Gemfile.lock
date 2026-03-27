@@ -92,7 +92,7 @@ GEM
     bootstrap_form (5.4.0)
       actionpack (>= 6.1)
       activemodel (>= 6.1)
-    browser (2.7.1)
+    browser (6.2.0)
     builder (3.3.0)
     byebug (13.0.0)
       reline (>= 0.6.0)
@@ -410,7 +410,7 @@ DEPENDENCIES
   addressable (~> 2.4)
   autoprefixer-rails (~> 10.2.5)
   bootstrap_form (= 5.4)
-  browser (~> 2.2)
+  browser (~> 6.2)
   byebug
   capybara
   climate_control (~> 0.2)
