@@ -268,7 +268,7 @@ GEM
     psych (5.3.1)
       date
       stringio
-    public_suffix (5.1.1)
+    public_suffix (7.0.5)
     racc (1.8.1)
     rack (3.2.5)
     rack-protection (4.2.1)
@@ -433,7 +433,7 @@ DEPENDENCIES
   ood_support (~> 0.0.2)
   ostruct
   pry
-  public_suffix (~> 5.0, < 6.0)
+  public_suffix (~> 7.0)
   rails (= 7.1.6)
   redcarpet (~> 3.3)
   rest-client (~> 2.0)
