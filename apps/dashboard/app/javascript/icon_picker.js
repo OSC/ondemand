@@ -5,7 +5,6 @@ import { ariaNotify } from './utils';
 
 const ICON_SHOW_ID = "product_icon"
 const ICON_SELECT_ID = "product_icon_select"
-const LIST_ID = "icon_picker_list"
 
 // simple boolean for whether there are currently any hidden icons
 let hiddenIcons = false;
