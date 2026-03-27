@@ -1,7 +1,7 @@
 {
   "name": "openondemand-dashboard",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fortawesome/fontawesome-free": "^7.2.0",
     "@hotwired/turbo-rails": ">=7.3.0 <8",
     "@popperjs/core": "^2.11.8",
     "@rails/ujs": "^7.0.1",
