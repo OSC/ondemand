@@ -29,6 +29,9 @@ class ActiveJobsController < ApplicationController
         raise ActionController::RoutingError, 'Not Found'
       end
       format.json do
+        # cache the response
+        expires_in(5.minutes, public: true)
+
         # Only allow the configured servers to respond
         if (cluster = OODClusters[params[:cluster].to_s.to_sym])
           render '/active_jobs/extended_data', :locals => { :jobstatusdata => get_job(params[:pbsid], cluster) }

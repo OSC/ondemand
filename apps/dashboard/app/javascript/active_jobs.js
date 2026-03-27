@@ -47,21 +47,22 @@ function clean_options(options) {
 }
 
 function fetch_job_data(tr, row, options) {
-  let btn = tr.find('button.details-control');
-  if (row.child.isShown()) {
-    // This row is already open - close it
-    row.child.hide();
-    tr.removeClass("shown");
+  const btn = tr.find('button.details-control')[0];
 
-    btn.removeClass("fa-chevron-down");
-    btn.addClass("fa-chevron-right");
-    btn.attr("aria-expanded", false);
-  } else {
-    tr.addClass("shown");
+  // just clearing out the previous selection.
+  if(btn.classList.contains('fa-minus')) {
+    btn.classList.replace('fa-minus', 'fa-plus');
+    const details = document.getElementById('job_details');
+    details.innerHTML = null;
 
-    btn.removeClass("fa-chevron-right");
-    btn.addClass("fa-chevron-down");
-    btn.attr("aria-expanded", true);
+    return;
+  }
+
+  $('button.fa-minus').each((_i, button) => {
+    button.classList.replace('fa-minus', 'fa-plus');
+  });
+
+  btn.classList.replace('fa-plus', 'fa-minus');
 
     let data = {
       pbsid: row.data().pbsid,
@@ -69,30 +70,16 @@ function fetch_job_data(tr, row, options) {
     };
     let jobDataUrl = `${options.base_uri}/activejobs/json?${new URLSearchParams(data)}`;
 
-    $.getJSON(jobDataUrl, function (data) {
-      // Open this row
-      row.child(data.html_extended_layout).show();
-      // Add the data panel to the view
-      $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
-        .hide()
-        .html(data.html_extended_data_table)
-        .fadeIn(250);
-      // Update the status label in the parent row
-      tr.find(".status-label").html(data.status);
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-      let error_panel = `
-        <div class="alert alert-danger" role="alert">
-          <strong>Error:</strong> The information could not be displayed.
-          <em>${jqXHR.status} (${errorThrown})</em>
-        </div>
-      `;
-
-      $(`div[data-jobid="${row.data().pbsid}]"`)
-        .hide()
-        .html(error_panel)
-        .fadeIn(250);
-    });
-  }
+    fetch(jobDataUrl, { headers: {
+        'Accpet': 'application/json',
+      }})
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error('Login failed: IDP redirect failed')))
+      .then(response => response.json())
+      .then(response => {
+        const ele = document.getElementById('job_details');
+        ele.innerHTML = response.html_extended_data_table
+      })
+      .catch(error => console.log(error));
 }
 
 function fetch_table_data(table, options){
@@ -191,7 +178,7 @@ function create_datatable(options){
                 "searchable":       false,
                 render: function (data, type, row, meta) {
                   let { cluster_title, jobname, } = row
-                  return `<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details for job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
+                  return `<button class="details-control fa fa-plus btn btn-default" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
                 },
             },
             {
