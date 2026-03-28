@@ -132,13 +132,7 @@ module AccountCache
 
   # do you have _any_ account that can submit to this queue?
   def blocked_queue?(queue)
-    allow_accounts = queue.allow_accounts
-
-    if allow_accounts.nil?
-      false
-    else
-      allow_accounts.intersection(account_names).empty?
-    end
+    (accounts.select {|account| account_allowed?(queue, account)}).none?
   end
 
   def queues_per_cluster
@@ -152,25 +146,31 @@ module AccountCache
   end
 
   def queue_account_data(queue)
-    unavailable_accounts = account_names.reject do |account| 
+    unavailable_accounts = accounts.reject do |account| 
       account_allowed?(queue, account)
     end
     disabled_account_data(unavailable_accounts)
   end
 
-  def account_allowed?(queue, account_name)
-    return false if queue.deny_accounts.any? { |account| account == account_name }
-
-    if queue.allow_accounts.nil?
-      true
-    else
-      queue.allow_accounts.any? { |account| account == account_name }
-    end
+  # can _this_ account submit to this queue?
+  # This is the simplest possible implementation, and may not reflect the actual behavior of any
+  # given resource manager. For example, Slurm completely ignores DenyQos when AllowQos exists.
+  # This behavior is replicated in OOD Core by conditionally setting deny_qos to an empty array.
+  def account_allowed?(queue, account)
+    # some accounts are explicitly allowed and this account is not one of them
+    return false if !queue.allow_accounts.nil? && !queue.allow_accounts.empty? && !queue.allow_accounts.include?(account.to_s)
+    # this account is explicitly denied
+    return false if queue.deny_accounts.include?(account.to_s)
+    # this account doesn't have any of the required QoSes
+    return false if !queue.allow_qos.empty? && (account.qos & queue.allow_qos).empty?
+    # all of this account's QoSes are denied
+    return false if !queue.deny_qos.empty? && !account.qos.empty? && (account.qos.to_set - queue.deny_qos.to_set).empty?
+    true
   end
 
   def disabled_account_data(disabled_accounts)
     counter = 0
-    disabled_accounts.map do |account|
+    disabled_accounts.map(&:to_s).map do |account|
       counter += 1
       # check if account contains anything other than digits and lowercase letters
       if /\A[a-z0-9]+\z/.match?(account)
