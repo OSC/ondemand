@@ -303,8 +303,10 @@ class DataTable {
                 $('#select_all').trigger();
             }
 
-	    $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
-	    ariaNotify(`navigated to ${data.path}`);
+            $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
+            ariaNotify(`navigated to ${data.path}`);
+
+            this.customizeHeaders();
 
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
@@ -525,6 +527,23 @@ class DataTable {
           
         // Return the button group element html as a string
         return btnGroup.outerHTML;          
+    }
+
+    customizeHeaders() {
+        $(`${CONTENTID} th.dt-orderable-asc`).each(function(_index, el) {
+            const sortButton = $(el).find('span.dt-column-order');
+            const ariaLabel = sortButton.attr('aria-label');
+            const newId = `${el.textContent.replaceAll(' ', '_').toLowerCase()}_label`;
+            var labelSpan = document.getElementById(newId);
+            if (labelSpan === null) {
+                labelSpan = document.createElement('span');
+                labelSpan.id = newId;
+                $('#header_labels').append(labelSpan);
+            }
+            labelSpan.textContent = ariaLabel;
+            sortButton.attr('aria-label', '');
+            sortButton.attr('aria-describedby', newId)
+        })
     }
 
     updateDatatablesStatus() {
