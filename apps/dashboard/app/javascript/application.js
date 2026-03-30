@@ -36,6 +36,8 @@ import { createPopper } from '@popperjs/core';
 // Import Bootstrap 5
 import 'bootstrap/dist/js/bootstrap';
 
+import initPopovers from './popovers'
+
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
 window.$ = jQuery;
@@ -43,19 +45,5 @@ window.$ = jQuery;
 Rails.start();
 
 jQuery(function(){
-
-  $('li.vdi').popover({
-    trigger: "hover",
-    content: "A VDI (Virtual Desktop Interface) gives you desktop access to a shared node. This is the graphical version of a login node. Use this for lightweight tasks like accessing & viewing files, submitting jobs, and for visualizations.",
-    title: function(){ return $(this).text() }
-  });
-
-  $('li.ihpc').popover({
-    trigger: "hover",
-    content: "An Interactive HPC session gives you dedicated access to one or more nodes on the cluster. This is similar to an interactive batch session with an accessible desktop on the primary node. Use this for heavyweight jobs such as long-running compute tasks or where you need dedicated resources.",
-    title: function(){ return $(this).text() }
-  });
-
-  $('[data-bs-toggle="popover"]').popover();
-  $('[data-bs-toggle="tooltip"]').tooltip();
+  initPopovers();
 });
