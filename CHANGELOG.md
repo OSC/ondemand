@@ -21,10 +21,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - System status progress bars are more accessible in [5153](https://github.com/OSC/ondemand/pull/5153).
 - Files actions button now have a title in [5158](https://github.com/OSC/ondemand/pull/5158).
 - File editor correctly reports errors in [5179](https://github.com/OSC/ondemand/pull/5179).
+- The file browser correctly updates the table instead of navigating to a new page in [5182](https://github.com/OSC/ondemand/pull/5182).
+- Links to Ganglia images now have alt text [5193](https://github.com/OSC/ondemand/pull/5193).
+- The files table now has a caption and aria notification when it updates in [5201](https://github.com/OSC/ondemand/pull/5201).
+- Deleting files is more accessible in [5188](https://github.com/OSC/ondemand/pull/5188).
+- Select row checkboxes in the files table have the correct aria-label attribute in [5187](https://github.com/OSC/ondemand/pull/5187).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
 - Container tasks now default to podman in [4955](https://github.com/OSC/ondemand/pull/4955).
+- ActiveJobs extended data is being changed for improved accessibility in [5181](https://github.com/OSC/ondemand/pull/5181).
 
 ## [4.1.4] - 2026-03-03
 
