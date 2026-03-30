@@ -61,7 +61,7 @@ jobs:
           # try to update gems - this can fail on ruby 3.0
           gem update --system || true
           bundle config path ~/vendor/bundle
-          bundle install
+          bundle install --without e2e
           gem install rake
 
       - name: Run unit tests
@@ -130,6 +130,7 @@ jobs:
           - amzn2023
           - ubuntu-24.04
           - debian-12
+          - debian-13
         arch:
           - x86_64
           - aarch64
@@ -146,11 +147,11 @@ jobs:
           - dist: amzn2023
             arch: ppc64le
           # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
-          - dist: ubuntu-22.04
-            arch: ppc64le
           - dist: ubuntu-24.04
             arch: ppc64le
           - dist: debian-12
+            arch: ppc64le
+          - dist: debian-13
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
@@ -174,6 +175,10 @@ jobs:
           # have to use docker for el8 packaging.
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
+          fi
+          # debian-13 needs privileged podman in order to run things like chown and chmod
+          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+            export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
           fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
         timeout-minutes: 10

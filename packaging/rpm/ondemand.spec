@@ -157,7 +157,7 @@ export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
 bundle config set --global force_ruby_platform true
 bundle config --global build.nokogiri --use-system-libraries
 bundle config --global build.sqlite3 --enable-system-libraries
-BUNDLE_WITHOUT='doc test package development' bundle install
+BUNDLE_WITHOUT='doc test package development e2e' bundle install
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache
 rm -rf apps/*/node_modules/.cache
