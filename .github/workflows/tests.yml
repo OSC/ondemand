@@ -20,11 +20,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["3.3.5"]
+        ruby: ["3.4"]
         include:
-          # Test versions from Ubuntu 22.04
-          - os: ubuntu-latest
-            ruby: "3.0"
           # Test versions from Debian 12
           - os: ubuntu-latest
             ruby: "3.1"
@@ -131,7 +128,6 @@ jobs:
           - el9
           - el10
           - amzn2023
-          - ubuntu-22.04
           - ubuntu-24.04
           - debian-12
         arch:

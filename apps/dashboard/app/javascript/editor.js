@@ -108,6 +108,7 @@ jQuery(function () {
     function toggleSaveConfirmed() {
       $("#save-icon").toggleClass("glyphicon-save");
       $("#save-icon").toggleClass("glyphicon-saved");
+      $("#save-button").toggleClass("file-saved")
     };
 
     // Sets the key binding to the selected option
