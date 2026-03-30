@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+Restrict dependabot to security updates only (#5233)\
+start to refactor extened active jobs data (#5181)\
+Add dependabot scanning on release_4.x branches (#5203)\
+wrap words in app settings popovers (#5206)\
+Bump picomatch from 2.3.1 to 2.3.2 in /apps/dashboard (#5204)\
+add caption and aria notification to files table (#5201)\
+add alt text to ganglia images (#5193)\
+lint a random file (#5197)\
+Fix same page files navigation (#5182)\
+Remove file delete modal (#5188)\
+add aria-label to files table checkboxes (#5187)\
+Update Changelog (#5183)\
+update dependencies (#5184)
 
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
