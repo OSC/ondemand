@@ -3,20 +3,21 @@
     <%= data.error %>
   </div>
 <% else %>
-<div class="card ms-5">
+<div class="card">
   <div class="card-header">
     <%# FIXME: ul/li with css %>
     <strong>
       <%= status_label(data.status) %>
       <span class="text-break ms-3"><%= data.jobname %></span>
       <span class="ms-3"><%= data.pbsid %></span>
+      <button class="btn-close float-end" id="dismiss_details" onclick="closeExtendedDetails()"></button>
     </strong>
   </div>
   <div class="card-body">
-    <ul class="row list-group list-group-horizontal">
-      <% data.native_attribs do |attrib| %>
-        <li class="list-group-item flex-fill">
-          <%= attrib.name %>: <%= attrib.value %>
+    <ul class="list-group">
+      <% data.native_attribs.each do |attrib| %>
+        <li class="list-group-item">
+          <strong><%= attrib.name %>:</strong> <%= attrib.value %>
         </li>
       <% end %>
     </ul>
