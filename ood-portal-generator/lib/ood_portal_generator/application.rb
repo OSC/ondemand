@@ -251,6 +251,9 @@ module OodPortalGenerator
             FileUtils.chmod(0o600, dex_config, verbose: true)
           else
             puts 'No change in the Dex config.'
+            puts ''
+            puts "If this is not expected please make sure that auth is set in #{config}"
+            puts 'Visit https://osc.github.io/ood-documentation/latest/authentication.html for more info'
           end
         end
 
