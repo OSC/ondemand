@@ -13,17 +13,13 @@
     </strong>
   </div>
   <div class="card-body">
-    <table class="table table-sm table-striped">
-      <tbody>
-      <% data.native_attribs.each do |attrib| %>
-        <tr>
-          <!-- FIXME: col-xs-2... -->
-        <td class="col-xs-2"><strong><%= attrib.name %></strong></td>
-        <td class="col-xs-10"><%= attrib.value %></td>
-      </tr>
-    <% end %>
-      </tbody>
-    </table>
+    <ul class="row list-group list-group-horizontal">
+      <% data.native_attribs do |attrib| %>
+        <li class="list-group-item flex-fill">
+          <%= attrib.name %>: <%= attrib.value %>
+        </li>
+      <% end %>
+    </ul>
   </div>
     <% if data.submit_args %>
     <div class="card-body">
