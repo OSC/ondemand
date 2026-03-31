@@ -165,7 +165,6 @@ export function customizeTableHeaders(tableId) {
       labelSpan.textContent = ariaLabel;
       sortButton.removeAttr('aria-label');
       sortButton.attr('aria-describedby', labelId);
-      console.log(sortButton[0]);
   });
 }
 
