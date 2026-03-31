@@ -3,7 +3,7 @@ import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
 export { CONTENTID, EVENTNAME };
 import { OODAlertError } from '../alert.js';
-import { toHumanSize, ariaNotify } from '../utils.js';
+import { toHumanSize, ariaNotify, customizeTableHeaders } from '../utils.js';
 
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
@@ -204,6 +204,9 @@ class DataTable {
                 // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
                 selector: 'td:not(:first-child)'
             },
+            drawCallback: function() {
+                customizeTableHeaders(CONTENTID);
+            },
             layout: {
                 top1Start: {
                     div: {
@@ -305,8 +308,6 @@ class DataTable {
 
             $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
             ariaNotify(`navigated to ${data.path}`);
-
-            this.customizeHeaders();
 
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
@@ -527,23 +528,6 @@ class DataTable {
           
         // Return the button group element html as a string
         return btnGroup.outerHTML;          
-    }
-
-    customizeHeaders() {
-        $(`${CONTENTID} th.dt-orderable-asc`).each(function(_index, el) {
-            const sortButton = $(el).find('span.dt-column-order');
-            const ariaLabel = sortButton.attr('aria-label');
-            const newId = `${el.textContent.replaceAll(' ', '_').toLowerCase()}_label`;
-            var labelSpan = document.getElementById(newId);
-            if (labelSpan === null) {
-                labelSpan = document.createElement('span');
-                labelSpan.id = newId;
-                $('#header_labels').append(labelSpan);
-            }
-            labelSpan.textContent = ariaLabel;
-            sortButton.attr('aria-label', '');
-            sortButton.attr('aria-describedby', newId)
-        })
     }
 
     updateDatatablesStatus() {
