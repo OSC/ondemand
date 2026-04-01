@@ -215,6 +215,7 @@ en:
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
+    files_title: File browsing
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     name: Name

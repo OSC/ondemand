@@ -212,6 +212,7 @@ ja_JP:
     mode: モード
     module_browser_last_updated: '最終更新日: %{last_updated}'
     module_browser_title: モジュールブラウザ
+    files_title: ファイルブラウジング
     motd_erb_render_error: 'MOTD が正しく解析またはレンダリングされませんでした: %{error_message}'
     motd_title: 今日のメッセージ
     name: 名前
