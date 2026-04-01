@@ -83,9 +83,9 @@ GEM
     base64 (0.3.0)
     benchmark (0.5.0)
     bigdecimal (4.1.0)
-    bootstrap_form (5.4.0)
-      actionpack (>= 6.1)
-      activemodel (>= 6.1)
+    bootstrap_form (5.6.0)
+      actionpack (>= 7.2)
+      activemodel (>= 7.2)
     browser (2.7.1)
     builder (3.3.0)
     byebug (13.0.0)
@@ -405,7 +405,7 @@ DEPENDENCIES
   abbrev
   addressable (~> 2.4)
   autoprefixer-rails (~> 10.4.21)
-  bootstrap_form (= 5.4)
+  bootstrap_form (= 5.6)
   browser (~> 2.2)
   byebug
   capybara
