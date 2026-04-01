@@ -854,6 +854,12 @@ class FilesTest < ApplicationSystemTestCase
 
       # none of the HTML elements have hrefs.
       assert(file_elements.all? { |e| e[:href].nil? })
+
+      assert_selector('tr a.dropdown-item', visible: false) # rename links still exist
+      # delete and rename links don't point anywhere
+      all('tr .dropdown-menu a', visible: false).each do |link|
+        assert(link[:href].end_with?('#'), "#{link.text(:all)} link was served with downloads disabled")
+      end
     end
   end
 
