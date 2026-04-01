@@ -715,8 +715,8 @@ class FilesTest < ApplicationSystemTestCase
       cant_read_row.find('button.dropdown-toggle').click
       cant_read_links = cant_read_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-      # NOTE: download and view are not an expected links.
-      expected_links = ['Edit', 'Rename', 'Delete']
+      # NOTE: download, view, and edit are not an expected links.
+      expected_links = ['Rename', 'Delete']
 
       assert_equal(expected_links, fifo_links)
       assert_equal(expected_links, cant_read_links)
