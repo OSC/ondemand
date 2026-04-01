@@ -13,7 +13,6 @@ function listItem(name) {
   return `<li 
               id="${iconId(name)}" 
               class="btn btn-outline-dark"
-              role='button'
               tabindex='0'
               aria-label="${name} icon">
             <i class="fas fa-${name} fa-fw"></i>
