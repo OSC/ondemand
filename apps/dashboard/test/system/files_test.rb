@@ -730,8 +730,8 @@ class FilesTest < ApplicationSystemTestCase
     null_row.find('button.dropdown-toggle').click
     null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-    # NOTE: download and view are not an expected links.
-    expected_links = ['Edit', 'Rename', 'Delete']
+    # NOTE: download, view and edit are not an expected links.
+    expected_links = ['Rename', 'Delete']
 
     assert_equal(expected_links, null_links)
   end
