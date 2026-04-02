@@ -715,8 +715,8 @@ class FilesTest < ApplicationSystemTestCase
       cant_read_row.find('button.dropdown-toggle').click
       cant_read_links = cant_read_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-      # NOTE: download and view are not an expected links.
-      expected_links = ['Edit', 'Rename', 'Delete']
+      # NOTE: download, view, and edit are not an expected links.
+      expected_links = ['Rename', 'Delete']
 
       assert_equal(expected_links, fifo_links)
       assert_equal(expected_links, cant_read_links)
@@ -730,8 +730,8 @@ class FilesTest < ApplicationSystemTestCase
     null_row.find('button.dropdown-toggle').click
     null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-    # NOTE: download and view are not an expected links.
-    expected_links = ['Edit', 'Rename', 'Delete']
+    # NOTE: download, view, and edit are not an expected links.
+    expected_links = ['Rename', 'Delete']
 
     assert_equal(expected_links, null_links)
   end
@@ -854,6 +854,12 @@ class FilesTest < ApplicationSystemTestCase
 
       # none of the HTML elements have hrefs.
       assert(file_elements.all? { |e| e[:href].nil? })
+
+      assert_selector('tr a.dropdown-item', visible: false) # rename links still exist
+      # delete and rename links don't point anywhere
+      all('tr .dropdown-menu a', visible: false).each do |link|
+        assert(link[:href].end_with?('#'), "#{link.text(:all)} link was served with downloads disabled")
+      end
     end
   end
 
