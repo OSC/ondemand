@@ -237,7 +237,7 @@ module OodPortalGenerator
         else
           puts 'No change in Apache config.'
           puts "  If this is not expected, please make sure that auth is set in #{config}"
-          puts '  for more info on  auth visit https://osc.github.io/ood-documentation/latest/authentication.html'
+          puts '  for more info on auth visit https://osc.github.io/ood-documentation/latest/authentication.html'
         end
 
         unless File.zero?(new_dex_config.path)
@@ -254,7 +254,7 @@ module OodPortalGenerator
           else
             puts 'No change in the Dex config.'
             puts "  If this is not expected, please make sure that auth is set in #{config}"
-            puts '  for more info on  auth visit https://osc.github.io/ood-documentation/latest/authentication.html'
+            puts '  for more info on auth visit https://osc.github.io/ood-documentation/latest/authentication.html'
           end
         end
 
