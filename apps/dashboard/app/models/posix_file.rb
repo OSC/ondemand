@@ -105,7 +105,7 @@ class PosixFile
       PosixFile.new(child_path)
     end.select(&:valid?)
         .map(&:to_h)
-        .sort_by { |p| p[:directory] ? 0 : 1 }
+        .sort_by { |p| [ p[:directory] ? 0 : 1, p[:name] ] }
   end
 
   def valid?
