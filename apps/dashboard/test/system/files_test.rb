@@ -635,8 +635,8 @@ class FilesTest < ApplicationSystemTestCase
       cant_read_row.find('button.dropdown-toggle').click
       cant_read_links = cant_read_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-      # NOTE: download is not an expected link.
-      expected_links = ['View', 'Edit', 'Rename', 'Delete']
+      # NOTE: download and edit are not an expected links.
+      expected_links = ['View', 'Rename', 'Delete']
 
       assert_equal(expected_links, fifo_links)
       assert_equal(expected_links, cant_read_links)
@@ -650,8 +650,8 @@ class FilesTest < ApplicationSystemTestCase
     null_row.find('button.dropdown-toggle').click
     null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-    # NOTE: download is not an expected link.
-    expected_links = ['View', 'Edit', 'Rename', 'Delete']
+    # NOTE: download and edit are not an expected links.
+    expected_links = ['View', 'Rename', 'Delete']
 
     assert_equal(expected_links, null_links)
   end
@@ -744,6 +744,42 @@ class FilesTest < ApplicationSystemTestCase
 
       alert_text = find('.alert > span').text
       assert_equal('/etc does not have an ancestor directory specified in ALLOWLIST_PATH', alert_text)
+    end
+  end
+
+  test 'files have hrefs when download is enabled' do
+    visit(files_url(Rails.root))
+    find('#show-dotfiles').click
+    files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+    file_elements = find_all('[data-type="f"]')
+
+    # all files are shown in the table.
+    assert_equal(files.size, file_elements.size)
+
+    # all the HTML elements have hrefs.
+    assert(file_elements.all? { |e| !e[:href].nil? })
+  end
+
+  test 'files do not have hrefs when download is enabled' do
+    with_modified_env({ OOD_DOWNLOAD_ENABLED: 'false' }) do
+      visit(files_url(Rails.root))
+      find('#show-dotfiles').click
+      files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+      file_elements = find_all('[data-type="f"]')
+
+      # all files are shown in the table.
+      assert_equal(files.size, file_elements.size)
+
+      # none of the HTML elements have hrefs.
+      assert(file_elements.all? { |e| e[:href].nil? })
+
+      assert_selector('tr a.dropdown-item', visible: false) # rename links still exist
+      # delete and rename links don't point anywhere
+      all('tr .dropdown-menu a', visible: false).each do |link|
+        assert(link[:href].end_with?('#'), "#{link.text(:all)} link was served with downloads disabled")
+      end
     end
   end
 end
