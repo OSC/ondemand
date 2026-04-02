@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Setup Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
@@ -46,7 +46,7 @@ jobs:
           rubygems: 'latest'
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-1
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload system test failures.
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: system-test-failures-${{ matrix.ruby }}
           path: |
@@ -99,9 +99,13 @@ jobs:
     name: Kubernetes tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Create kind cluster
-        uses: container-tools/kind-action@v2
+        uses: helm/kind-action@v1
+        with:
+          version: v0.31.0
+          cluster_name: kind
+          node_image: kindest/node:v1.32.11@sha256:5fc52d52a7b9574015299724bd68f183702956aa4a2116ae75a63cb574b35af8
       - name: Apply ondemand RBAC
         run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
       - name: Get ondemand token
@@ -158,7 +162,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -208,7 +212,7 @@ jobs:
 
       - name: Test OnDemand
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
-        uses: uraimo/run-on-arch-action@v2
+        uses: uraimo/run-on-arch-action@v3
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ env.DISTRO }}
