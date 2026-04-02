@@ -682,7 +682,8 @@ class DragController {
       const url = `${baseLauncherUrl}/${id}/render_button`;
       $.get(url, function(html) {
         const $launcher = $(`
-          <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
+          <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'
+               tabindex='0' role='group' aria-label='Launcher: ${title}'>
             <div class='row'>
               <div class='col launcher-title-grab'>${title}</div>
             </div>
@@ -690,7 +691,11 @@ class DragController {
           </div>
         `);
 
-        $('#stage').append($launcher);
+        $launcher.find('button.launcher-button[id^="launch_"]')
+          .attr('aria-label', `Begin workflow from launcher ${title}`);
+
+        edgesSvg ? edgesSvg.before($launcher[0]) : $('#stage').append($launcher);
+
         const pos = drag.cellToXY(row, col);
         $launcher.css({ transform: `translate(${pos.x}px, ${pos.y}px)` });
         const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
@@ -705,6 +710,25 @@ class DragController {
           $launcher.addClass('selected');
           pointer.update(e);
           drag.beginDrag(box);
+        });
+
+        $launcher.on('keydown', function(e) {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          e.stopPropagation();
+          if (connectMode) {
+            $launcher.trigger('click');
+          } else {
+            selectedLauncherId = id;
+            $('.launcher-box.selected').removeClass('selected');
+            $launcher.addClass('selected');
+          }
+        });
+
+        $launcher.on('focus', function() {
+          selectedLauncherId = id;
+          $('.launcher-box.selected').removeClass('selected');
+          $launcher.addClass('selected');
         });
 
         // Connect mode click
@@ -871,6 +895,7 @@ class DragController {
   function init() {
     edgesSvg.setAttribute('width', stage.offsetWidth);
     edgesSvg.setAttribute('height', stage.offsetHeight);
+    edgesSvg.setAttribute('aria-hidden', 'true');
   }
 
   await workflowState.restorePreviousState(makeLauncher, createEdge);

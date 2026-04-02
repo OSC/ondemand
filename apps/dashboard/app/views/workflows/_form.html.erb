@@ -17,12 +17,13 @@
     <div class="card">
       <div class='card-body'>
         <% launcher_error = @workflow.errors.select{|e| e.attribute.to_s == 'launcher_ids' }.first %>
-        <div class="field">
-          <strong>Pick Launchers</strong><br>
+        <fieldset class="field" role="group" aria-labelledby="pick-launchers-label">
+          <legend id="pick-launchers-label" class="fw-bold">Pick Launchers</legend>
           <div class="p-3 <%= launcher_error.nil? ? '' : 'border border-danger rounded is-invalid'%>">
           <div class="form-check">
             <%= check_box_tag "select_all_launchers", "", false,
-                  id: "select_all_launchers", class: "form-check-input" %>
+                  id: "select_all_launchers", class: "form-check-input",
+                  "aria-label": "Select or deselect all launchers" %>
             <%= label_tag "select_all_launchers", "Select All", class: "form-check-label" %>
           </div>
 
@@ -40,7 +41,7 @@
               <%= I18n.t('dashboard.jobs_workflow_missing_launchers', count: launcher_error.options.count) %>
             </div>
           <% end %>
-        </div>
+        </fieldset>
       </div>
     </div>
   </div>
