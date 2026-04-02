@@ -71,10 +71,10 @@ def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
   when 'ubuntu-24.04'
     'noble'
-  when 'ubuntu-22.04'
-    'jammy'
   when 'debian-12'
     'bookworm'
+  when 'debian-13'
+    'trixie'
   end
 end
 
