@@ -84,7 +84,7 @@ class OodApp
       # assumes Home Directory is primary...
       [
         OodAppLink.new(
-          title: "Home Directory",
+          title: I18n.t('dashboard.home_directory'),
           description: manifest.description,
           url: OodAppkit::Urls::Files.new(base_url: url).url(path: Dir.home),
           icon_uri: "fas://home",

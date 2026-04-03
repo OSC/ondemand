@@ -6,7 +6,7 @@
       <li role="presentation" class="nav-item">
         <%= link_to files_path(Dir.home), class: "nav-link d bg-light" do %>
           <%= fa_icon "home", classes: '' %>
-          Home Directory
+          <%= I18n.t('dashboard.home_directory') %>
         <% end %>
       </li>
       <% OodFilesApp.new.favorite_paths.each do |p| %>

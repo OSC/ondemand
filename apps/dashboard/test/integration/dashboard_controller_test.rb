@@ -42,7 +42,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     dditems = dropdown_list_items(dropdown_list('Files'))
     assert dditems.any?, 'dropdown list items not found'
     assert_equal [
-      'Home Directory',
+      I18n.t('dashboard.home_directory'),
       "Scratch #{scratch_path}",
       project_path,
       project_path2.to_s,
