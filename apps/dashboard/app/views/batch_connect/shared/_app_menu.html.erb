@@ -1,4 +1,6 @@
 <nav aria-label="Interactive Apps Menu">
+<%= render partial: 'batch_connect/shared/saved_settings_menu' %>
+
 <%- usr_app_groups.each do |app_group| -%>
   <%=
     render(
