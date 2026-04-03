@@ -38,7 +38,6 @@ export class PathSelectorTable {
   }
 
   initDataTable() {
-    const tableId = this.tableId;
     this._table = $(`#${this.tableId}`).DataTable({
       autoWidth: false,
       language: {
@@ -56,8 +55,8 @@ export class PathSelectorTable {
           // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
           selector: 'td:not(:first-child)'
       },
-      drawCallback: function() {
-        customizeTableHeaders(`#${tableId}`);
+      headerCallback: (thead, _data, _start, _end, _display) => {
+        customizeTableHeaders(thead);
       },
       // https://datatables.net/reference/option/dom
       // dom: '', dataTables_info nowrap

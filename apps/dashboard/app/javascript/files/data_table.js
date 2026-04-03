@@ -204,8 +204,8 @@ class DataTable {
                 // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
                 selector: 'td:not(:first-child)'
             },
-            drawCallback: function() {
-                customizeTableHeaders(CONTENTID);
+            headerCallback: (thead, _data, _start, _end, _display) => {
+                customizeTableHeaders(thead);
             },
             layout: {
                 top1Start: {

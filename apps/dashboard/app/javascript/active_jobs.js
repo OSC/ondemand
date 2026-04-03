@@ -165,10 +165,12 @@ function create_datatable(options){
                                     },
         processing: true,           // Add the "processing" while json is being downloaded.
         drawCallback: function(settings){
-          customizeTableHeaders('#job_status_table');
           if(options.drawCallback){
             options.drawCallback(settings);
           }
+        },
+        headerCallback: (thead, _data, _start, _end, _display) => {
+          customizeTableHeaders(thead);
         },
         columns: [
             {
