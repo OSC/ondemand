@@ -151,8 +151,8 @@ export function pushNotify(message, options = {}) {
 }
 
 // rearrange table header labels so button labels are not part of header
-export function customizeTableHeaders(tableId) {
-  $(`${tableId} th.dt-orderable-asc`).each(function(_index, el) {
+export function customizeTableHeaders(tableIdSelector) {
+  $(`${tableIdSelector} th.dt-orderable-asc`).each(function(_index, el) {
       const sortButton = $(el).find('span.dt-column-order');
       const ariaLabel = sortButton.attr('aria-label');
       const labelId = `${el.textContent.replaceAll(' ', '_').toLowerCase()}_label`;
