@@ -185,6 +185,7 @@ module OodPortalGenerator
         # convenience defaults for folks who are using dex or OIDC
         view.auth = Dex.default_auth if dex_enabled && !view.auth?
         content = view.auth? ? view.render(template.read) : view.render(no_auth_template.read)
+        @auth_set = view.auth?
 
         output.write(content)
         dex_output.write(dex.render) if dex_enabled
@@ -236,8 +237,10 @@ module OodPortalGenerator
           end
         else
           puts 'No change in Apache config.'
-          puts "  If this is not expected, please make sure that auth is set in #{config}"
-          puts '  for more info on auth visit https://osc.github.io/ood-documentation/latest/authentication.html'
+          unless @auth_set
+            puts "'auth' section in ood_portal.yml is still missing."
+            puts 'See https://osc.github.io/ood-documentation/latest/authentication/overview/configure-authentication.html#configure-authentication-module for more.'
+          end
         end
 
         unless File.zero?(new_dex_config.path)
@@ -253,8 +256,6 @@ module OodPortalGenerator
             FileUtils.chmod(0o600, dex_config, verbose: true)
           else
             puts 'No change in the Dex config.'
-            puts "  If this is not expected, please make sure that auth is set in #{config}"
-            puts '  for more info on auth visit https://osc.github.io/ood-documentation/latest/authentication.html'
           end
         end
 
