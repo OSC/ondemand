@@ -155,6 +155,7 @@ en:
     files_shell_dropdown: Select Cluster to Open in Terminal
     files_doesnt_exist: "%{path} does not exist."
     files_not_readable: "You do not have sufficient permissions to read '%{path}'."
+    home_directory: Home Directory
     import: Import
     job_info: Job Info
     jobs_create_blank_project: Create a new project
