@@ -160,6 +160,7 @@ export function customizeTableHeaders(tableIdSelector) {
       if (labelSpan === null) {
           labelSpan = document.createElement('span');
           labelSpan.id = labelId;
+          labelSpan.setAttribute('aria-live', 'polite');
           $('#header_labels').append(labelSpan);
       }
       labelSpan.textContent = ariaLabel;
