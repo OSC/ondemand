@@ -7,30 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
-Internationalize "Home Directory" text across dashboard (#5246)\
-Continue activejobs refactor (#5247)\
-Bump rack from 2.2.22 to 2.2.23 in /apps/myjobs (#5271)\
-Bump express from 4.22.1 to 5.2.1 in /apps/shell (#5208)\
-Bump rack from 3.1.20 to 3.1.21 in /apps/dashboard (#5270)\
-Update actions to avoid NodeJS deprecations for actions (#5267)\
-Add project directory system tests (#5112)\
-Bump lodash from 4.17.23 to 4.18.1 in /apps/dashboard (#5266)\
-Bump rack from 3.1.18 to 3.1.20 in /apps/dashboard (#5264)\
-Don't serve edit links when downloads disabled (#5253)\
-Support Debian 13 and drop Ubuntu 22.04 (#5243)\
-update Gemfile.lock (#5254)\
-Bump autoprefixer-rails from 10.2.5.1 to 10.4.21.0 in /apps/dashboard (#5219)\
-fix flaky tests by commenting out this test (#5258)\
-Bump Rails to 7.2 (#5168)\
-Bump rspec from 3.13.0 to 3.13.2 (#5207)\
-Popover wcag accessibility (#5195)\
-Update rake requirement from ~> 13.0.1 to ~> 13.3.1 in /nginx_stage (#5212)\
-Bump rubocop-rspec from 3.6.0 to 3.9.0 (#5214)\
-Update Changelog (#5238)\
-Prep 4.2 release dependencies (#5237)\
-Bump path-to-regexp from 0.1.12 to 0.1.13 in /apps/shell (#5240)\
-update dependencies (#5239)\
-lint a random file (#5236)
+
+### Added
+- "Home Directory" now responds to internationalization in [5246](https://github.com/OSC/ondemand/pull/5246).
 
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
@@ -50,11 +29,15 @@ lint a random file (#5236)
 - The files table now has a caption and aria notification when it updates in [5201](https://github.com/OSC/ondemand/pull/5201).
 - Deleting files is more accessible in [5188](https://github.com/OSC/ondemand/pull/5188).
 - Select row checkboxes in the files table have the correct aria-label attribute in [5187](https://github.com/OSC/ondemand/pull/5187).
+- Popovers are now accessible in [5195](https://github.com/OSC/ondemand/pull/5195).
+- Several components will now not serve edit links when downloads disabled in [5253](https://github.com/OSC/ondemand/pull/5253) and [5112](https://github.com/OSC/ondemand/pull/5112).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
 - Container tasks now default to podman in [4955](https://github.com/OSC/ondemand/pull/4955).
 - ActiveJobs extended data is being changed for improved accessibility in [5181](https://github.com/OSC/ondemand/pull/5181).
+- Passenger has been upgraded to 6.1.2 and Nginx has been upgraded to 1.28.0 in [5237](https://github.com/OSC/ondemand/pull/5237).
+- Support for Debian 13 has been added while support for Ubuntu 22.04 has been dropped in [5243](https://github.com/OSC/ondemand/pull/5243).
 
 ## [4.1.4] - 2026-03-03
 
