@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- "Home Directory" now responds to internationalization in [5246](https://github.com/OSC/ondemand/pull/5246).
+
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
 - Select all checkbox is more accessible in [5043](https://github.com/OSC/ondemand/pull/5043).
@@ -26,11 +29,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The files table now has a caption and aria notification when it updates in [5201](https://github.com/OSC/ondemand/pull/5201).
 - Deleting files is more accessible in [5188](https://github.com/OSC/ondemand/pull/5188).
 - Select row checkboxes in the files table have the correct aria-label attribute in [5187](https://github.com/OSC/ondemand/pull/5187).
+- Popovers are now accessible in [5195](https://github.com/OSC/ondemand/pull/5195).
+- Several components will now not serve edit links when downloads disabled in [5253](https://github.com/OSC/ondemand/pull/5253) and [5112](https://github.com/OSC/ondemand/pull/5112).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
 - Container tasks now default to podman in [4955](https://github.com/OSC/ondemand/pull/4955).
 - ActiveJobs extended data is being changed for improved accessibility in [5181](https://github.com/OSC/ondemand/pull/5181).
+- Passenger has been upgraded to 6.1.2 and Nginx has been upgraded to 1.28.0 in [5237](https://github.com/OSC/ondemand/pull/5237).
+- Support for Debian 13 has been added while support for Ubuntu 22.04 has been dropped in [5243](https://github.com/OSC/ondemand/pull/5243).
 
 ## [4.1.4] - 2026-03-03
 
