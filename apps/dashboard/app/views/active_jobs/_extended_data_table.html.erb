@@ -3,7 +3,7 @@
     <%= data.error %>
   </div>
 <% else %>
-<div class="card mw-20em">
+<div class="card">
   <div class="card-header">
     <%# FIXME: ul/li with css %>
     <strong>
@@ -44,6 +44,7 @@
           <%= link_to("#{fa_icon("trash", classes: nil)} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-outline-danger pull-right m-1", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" }) %>
       <% end %>
     </div>
-  </div>
+
+  <%= render(partial: "extended_layout", locals: {d: data}) %>
 </div>
 <% end %>
