@@ -1,22 +1,16 @@
+@use "sass:map";
+
 .active-jobs-extended-panel {
 
-  @media (min-width: 0) {
-    max-width: 100%;
-  }
-
-  @media (min-width: 768px) {
-    max-width: 100%;
-  }
-
-  @media (min-width: 920px) {
-    max-width: 20em;
-  }
-
-  @media (min-width: 1140px) {
+  @media (min-width: map.get($grid-breakpoints, lg)) {
     max-width: 30em;
   }
 
-  @media (min-width: 1260px) {
+  @media (min-width: map.get($grid-breakpoints, xl)) {
+    max-width: 30em;
+  }
+
+  @media (min-width: map.get($grid-breakpoints, xxl)) {
     max-width: 30em;
   }
 }
