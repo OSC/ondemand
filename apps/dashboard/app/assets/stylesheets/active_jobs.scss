@@ -3,7 +3,7 @@
 .active-jobs-extended-panel {
 
   @media (min-width: map.get($grid-breakpoints, lg)) {
-    max-width: 30em;
+    max-width: 15em;
   }
 
   @media (min-width: map.get($grid-breakpoints, xl)) {
