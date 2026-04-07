@@ -69,9 +69,9 @@ module BatchConnect::SessionContextsHelper
               concat (
                 content_tag(:div, class: "input-group") do
                   concat (content_tag(:div, class: "input-group-prepend") do
-                    content_tag(:div, "width", class: "input-group-text")
+                    content_tag(:div, 'width', class: "input-group-text")
                   end)
-                  concat number_field_tag("#{id}_x_field", nil, class: "form-control", min: 100, required: opts[:required])
+                  concat number_field_tag("#{id}_x_field", nil, class: "form-control", min: 100, aria:{ label:'Resolution width' }, required: opts[:required])
                   concat (content_tag(:div, class: "input-group-append") do
                     content_tag(:div, "px", class: "input-group-text")
                   end)
@@ -86,7 +86,7 @@ module BatchConnect::SessionContextsHelper
                   concat (content_tag(:div, class: "input-group-prepend") do
                     content_tag(:div, "height", class: "input-group-text")
                   end)
-                  concat number_field_tag("#{id}_y_field", nil, class: "form-control", min: 100, required: opts[:required])
+                  concat number_field_tag("#{id}_y_field", nil, class: "form-control", min: 100, aria:{ label:'Resolution height' }, required: opts[:required])
                   concat (content_tag(:div, class: "input-group-append") do
                     content_tag(:div, "px", class: "input-group-text")
                   end)
@@ -94,67 +94,12 @@ module BatchConnect::SessionContextsHelper
               )
             end
           )
-          concat content_tag(:small, opts[:help], class: 'form-text text-muted') if opts[:help]
+          concat content_tag(:small, opts[:help], id:"#{id}_help", class: 'form-text text-muted') if opts[:help]
           concat (
             content_tag(:div) do 
               button_tag(t('dashboard.batch_connect_form_reset_resolution'), id: "#{id}_reset", type: "button", class: "btn btn-light")
             end
           )
-        end
-      )
-      
-      concat(
-        content_tag(:script) do
-          <<-EOT.html_safe
-            (function() {
-              // Target elements
-              var $target  = $('##{id}_field');
-              var $targetX = $('##{id}_x_field');
-              var $targetY = $('##{id}_y_field');
-              var $targetR = $('##{id}_reset');
-
-              // Helper methods
-              var setX = function(x) {
-                y = getY();
-                $target.val(x + 'x' + y);
-                $targetX.val(x);
-              };
-              var setY = function(y) {
-                x = getX();
-                $target.val(x + 'x' + y);
-                $targetY.val(y);
-              };
-              var getX = function() {
-                return $target.val().split('x')[0];
-              };
-              var getY = function() {
-                return $target.val().split('x')[1];
-              };
-              var resetXY = function() {
-                setX(window.screen.width  * 0.8 | 0);
-                setY(window.screen.height * 0.8 | 0);
-              };
-
-              // Set defaults if not already set
-              if ( !$target.val() ) {
-                resetXY();
-              } else {
-                setX(getX());
-                setY(getY());
-              }
-
-              // Event listeners
-              $targetX.change(function() {
-                setX($(this).val());
-              });
-              $targetY.change(function() {
-                setY($(this).val());
-              });
-              $targetR.click(function() {
-                resetXY();
-              });
-            })();
-          EOT
         end
       )
     end
