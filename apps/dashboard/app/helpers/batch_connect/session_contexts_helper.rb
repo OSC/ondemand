@@ -71,7 +71,7 @@ module BatchConnect::SessionContextsHelper
                   concat (content_tag(:div, class: "input-group-prepend") do
                     content_tag(:div, 'width', class: "input-group-text")
                   end)
-                  concat number_field_tag("#{id}_x_field", nil, class: "form-control", min: 100, aria:{ label:'Resolution width' }, required: opts[:required])
+                  concat number_field_tag("#{id}_x_field", nil, class: "form-control", min: 100, aria:{ label:I18n.t('dashboard.batch_connect_form_resolution_width') }, required: opts[:required])
                   concat (content_tag(:div, class: "input-group-append") do
                     content_tag(:div, "px", class: "input-group-text")
                   end)
@@ -86,7 +86,7 @@ module BatchConnect::SessionContextsHelper
                   concat (content_tag(:div, class: "input-group-prepend") do
                     content_tag(:div, "height", class: "input-group-text")
                   end)
-                  concat number_field_tag("#{id}_y_field", nil, class: "form-control", min: 100, aria:{ label:'Resolution height' }, required: opts[:required])
+                  concat number_field_tag("#{id}_y_field", nil, class: "form-control", min: 100, aria:{ label:I18n.t('dashboard.batch_connect_form_resolution_height') }, required: opts[:required])
                   concat (content_tag(:div, class: "input-group-append") do
                     content_tag(:div, "px", class: "input-group-text")
                   end)
