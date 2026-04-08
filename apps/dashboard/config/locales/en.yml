@@ -8,6 +8,7 @@ en:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
+    active_jobs_close_details: "Close extended details panel."
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
