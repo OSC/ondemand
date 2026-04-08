@@ -200,6 +200,7 @@ en:
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. Does not affect projects in your home directory.
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project to import
+    jobs_toggle_details: Click to toggle details for job %{job_id}
     jobs_workflow_created: Workflow successfully created!
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
     jobs_workflow_deleted: Workflow successfully deleted!
