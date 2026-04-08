@@ -46,7 +46,7 @@ en:
     batch_connect_form_prefill: Use saved settings
     batch_connect_form_prefill_error: Oops... Something is wrong with your template
     batch_connect_form_reset_resolution: Reset Resolution
-    batch_connect_form_save: Save settings 
+    batch_connect_form_save: Save settings
     batch_connect_form_save_new_template: save new settings
     batch_connect_form_save_submit: Save settings and close
     batch_connect_form_select_template: select saved settings
