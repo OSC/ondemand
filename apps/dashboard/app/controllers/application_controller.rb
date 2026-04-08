@@ -77,7 +77,38 @@ class ApplicationController < ActionController::Base
   end
 
   def set_announcements
-    @announcements ||= Announcements.all(@user_configuration.announcement_path)
+    all_announcements = Announcements.all(@user_configuration.announcement_path)
+
+    parse_errors, announcements = all_announcements.partition(&:parse_error?)
+    if parse_errors.any?
+      flash.now[:alert] = helpers.safe_join(
+        parse_errors.map do |a|
+          source = a.source.presence || a.id.presence || 'unknown'
+          short_name =
+            begin
+              Pathname.new(source.to_s).basename.sub_ext('').to_s
+            rescue StandardError
+              source.to_s
+            end
+
+          headline = "Could not render announcement '#{short_name}' because of error"
+          details = [a.error_class.presence, a.error_message.presence].compact.join(': ')
+          details = a.message.presence || a.msg.presence || 'Error parsing announcement.' if details.blank?
+
+          helpers.content_tag(:div) do
+            helpers.safe_join(
+              [
+                helpers.content_tag(:div, headline, class: 'card-header bg-transparent'),
+                helpers.content_tag(:div, details.to_s, class: 'card-body py-2'),
+              ]
+            )
+          end
+        end,
+        helpers.safe_join([helpers.tag.br, helpers.tag.br])
+      )
+    end
+
+    @announcements ||= announcements
   rescue => e
     logger.warn "Error parsing announcements: #{e.message}"
     @announcements ||= []
