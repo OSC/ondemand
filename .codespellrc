@@ -4,4 +4,4 @@ skip = .git*,*.svg,locale,vendor,*.lock,*.css,*.min.*,.codespellrc,legacy,fixtur
 check-hidden = true
 ignore-regex = \b(Fro|Ownes|Requestor|forIn|afterAll|File::WRONLY)\b|/sombody/
 # dne == do-not-exists
-ignore-words-list = dne
+ignore-words-list = defaultY
