@@ -1,6 +1,6 @@
 <% if has_ganglia(data.cluster) || has_grafana(data.cluster) %>
 
-<div class="card ms-5 mt-3">
+<div class="card mt-3">
 
         <% if has_ganglia(data.cluster) %>
           <div class="card-header">Node: <%= node %> <span class="float-end">Job: <%= data.pbsid %> </span></div>
@@ -27,7 +27,7 @@
             <% grafana_panels.each do |name| %>
               <% if supports_grafana_panel?(data.cluster, name) %>
                 <iframe src="<%= build_grafana_link(data.cluster, data.starttime, name, node, data.pbsid) %>" 
-                  width="450" height="200" frameborder="0">
+                  class="active-jobs-iframe" frameborder="0">
                 </iframe>
               <% end %>
             <% end%>

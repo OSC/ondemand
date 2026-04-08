@@ -1,0 +1,21 @@
+@use "sass:map";
+
+.active-jobs-extended-panel {
+
+  @media (min-width: map.get($grid-breakpoints, lg)) {
+    max-width: 15em;
+  }
+
+  @media (min-width: map.get($grid-breakpoints, xl)) {
+    max-width: 30em;
+  }
+
+  @media (min-width: map.get($grid-breakpoints, xxl)) {
+    max-width: 30em;
+  }
+}
+
+.active-jobs-iframe {
+  width: 100%;
+  height: 20em;
+}
