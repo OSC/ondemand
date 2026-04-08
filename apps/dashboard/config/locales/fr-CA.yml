@@ -155,6 +155,7 @@ fr-CA:
     files_send_to_target_title_default: Envoyer les métadonnées des fichiers sélectionnés à l'application externe
     files_shell: Ouvrir dans le terminal
     files_shell_dropdown: Sélectionner le cluster à ouvrir dans le terminal
+    home_directory: Répertoire Personnel
     import: Importer
     job_info: Informations sur le travail
     jobs_create_blank_project: Créer un nouveau projet

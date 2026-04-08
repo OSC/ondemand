@@ -928,7 +928,8 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
     app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
     app_link.hover
-    assert_selector('div.popover')
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}")
 
     # assert markdown html
     expected_html = <<~HEREDOC
@@ -956,6 +957,36 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     </code></pre>
     HEREDOC
     
-    assert_equal expected_html, find('div.popover div.ood-appkit.markdown')['innerHTML']
+    assert_equal expected_html, find("div##{popover_id} div.ood-appkit.markdown")['innerHTML']
+  end
+
+  test 'interactive app popovers meet wcag guidelines' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    app_link.hover
+
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}", visible: true)
+
+    # hoverable
+    find("div##{popover_id}").hover
+    assert_selector("div##{popover_id}", visible: true)
+
+    app_link.hover
+    assert_selector("div##{popover_id}", visible: true)
+
+    #dismissable
+    app_link.send_keys(:escape)
+    refute_selector("div##{popover_id}")
+
+    # removes when hover leaves
+    find('form').hover
+    app_link.hover
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}", visible: true)
+
+    # send pointer and focus somewhere else
+    all('form select').first.hover.click
+    refute_selector("div##{popover_id}")
   end
 end

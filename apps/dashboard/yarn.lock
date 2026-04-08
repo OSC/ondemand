@@ -156,9 +156,9 @@
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
 "@rails/actioncable@^7.0":
-  version "7.2.300"
-  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.2.300.tgz#5bf24ffded6dd659d8b42cc67fb68fb51767b989"
-  integrity sha512-bmrp+HgCPd2BlhDfJ81hJ6Nvd6yh0B2hIW8ThOmUdOr3L+sFjU1glpBmn+MoQF2K0HLvnWCGqF3TxT/S0jj3QA==
+  version "7.2.301"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.2.301.tgz#63035b8e00790343148457cc6dd8b391d1161720"
+  integrity sha512-tFLZ5tocUeUkyQeHjN5l/lL7Jnvy0eeQZlwyq4pe4Ggew+rGdiKYudG3mHMqfKHBzmC4nV31aRhnsSjrNmNBGQ==
 
 "@rails/ujs@^7.0.1":
   version "7.1.600"
@@ -514,10 +514,10 @@ jquery-ujs@^1.2.2:
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
-lodash@^4.17.21, lodash@^4.17.23:
-  version "4.17.23"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.23.tgz#f113b0378386103be4f6893388c73d0bde7f2c5a"
-  integrity sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==
+lodash@^4.17.21, lodash@^4.18.1:
+  version "4.18.1"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.18.1.tgz#ff2b66c1f6326d59513de2407bf881439812771c"
+  integrity sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==
 
 mime-match@^1.0.2:
   version "1.0.2"
@@ -571,14 +571,14 @@ p-timeout@^6.1.2:
   integrity sha512-MyIV3ZA/PmyBN/ud8vV9XzwTrNtR4jFrObymZYnZqMmW0zA8Z17vnT0rBgFE/TlohB+YCHqXMgZzb3Csp49vqg==
 
 picomatch@^2.0.4, picomatch@^2.2.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
-  integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.2.tgz#5a942915e26b372dc0f0e6753149a16e6b1c5601"
+  integrity sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==
 
 preact@^10.5.13:
-  version "10.29.0"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.29.0.tgz#a6e5858670b659c4d471c6fea232233e03b403e8"
-  integrity sha512-wSAGyk2bYR1c7t3SZ3jHcM6xy0lcBcDel6lODcs9ME6Th++Dx2KU+6D3HD8wMMKGA8Wpw7OMd3/4RGzYRpzwRg==
+  version "10.29.1"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.29.1.tgz#2a5b936efe91cfe1e773cdb55dceb55d148d1d4b"
+  integrity sha512-gQCLc/vWroE8lIpleXtdJhTFDogTdZG9AjMUpVkDf2iTCNwYNWA+u16dL41TqUDJO4gm2IgrcMv3uTpjd4Pwmg==
 
 readdirp@~3.6.0:
   version "3.6.0"

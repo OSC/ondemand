@@ -20,11 +20,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["3.3.5"]
+        ruby: ["3.4"]
         include:
-          # Test versions from Ubuntu 22.04
-          - os: ubuntu-latest
-            ruby: "3.0"
           # Test versions from Debian 12
           - os: ubuntu-latest
             ruby: "3.1"
@@ -39,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Setup Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
@@ -49,7 +46,7 @@ jobs:
           rubygems: 'latest'
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-1
@@ -64,7 +61,7 @@ jobs:
           # try to update gems - this can fail on ruby 3.0
           gem update --system || true
           bundle config path ~/vendor/bundle
-          bundle install
+          bundle install --without e2e
           gem install rake
 
       - name: Run unit tests
@@ -90,7 +87,7 @@ jobs:
 
       - name: Upload system test failures.
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: system-test-failures-${{ matrix.ruby }}
           path: |
@@ -102,9 +99,13 @@ jobs:
     name: Kubernetes tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Create kind cluster
-        uses: container-tools/kind-action@v2
+        uses: helm/kind-action@v1
+        with:
+          version: v0.31.0
+          cluster_name: kind
+          node_image: kindest/node:v1.32.11@sha256:5fc52d52a7b9574015299724bd68f183702956aa4a2116ae75a63cb574b35af8
       - name: Apply ondemand RBAC
         run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
       - name: Get ondemand token
@@ -131,14 +132,14 @@ jobs:
           - el9
           - el10
           - amzn2023
-          - ubuntu-22.04
           - ubuntu-24.04
           - debian-12
+          - debian-13
         arch:
           - x86_64
           - aarch64
           - ppc64le
-        version: ["4.1"]
+        version: ["4.2"]
         exclude:
           # el10 on aarch64 times out
           - dist: el10
@@ -150,18 +151,18 @@ jobs:
           - dist: amzn2023
             arch: ppc64le
           # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
-          - dist: ubuntu-22.04
-            arch: ppc64le
           - dist: ubuntu-24.04
             arch: ppc64le
           - dist: debian-12
+            arch: ppc64le
+          - dist: debian-13
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -178,6 +179,10 @@ jobs:
           # have to use docker for el8 packaging.
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
+          fi
+          # debian-13 needs privileged podman in order to run things like chown and chmod
+          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+            export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
           fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
         timeout-minutes: 10
@@ -207,7 +212,7 @@ jobs:
 
       - name: Test OnDemand
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
-        uses: uraimo/run-on-arch-action@v2
+        uses: uraimo/run-on-arch-action@v3
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ env.DISTRO }}

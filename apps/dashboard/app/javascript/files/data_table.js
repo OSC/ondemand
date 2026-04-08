@@ -3,7 +3,7 @@ import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
 export { CONTENTID, EVENTNAME };
 import { OODAlertError } from '../alert.js';
-import { toHumanSize } from '../utils.js';
+import { toHumanSize, ariaNotify } from '../utils.js';
 
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
@@ -309,6 +309,9 @@ class DataTable {
                 $('#select_all').trigger();
             }
 
+            
+        $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
+        ariaNotify(`navigated to ${data.path}`);
             this.updatePageTitle(data.path);
 
             let result = await Promise.resolve(data);

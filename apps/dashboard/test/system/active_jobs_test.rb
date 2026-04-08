@@ -167,46 +167,46 @@ class ActiveJobsTest < ApplicationSystemTestCase
     button_select = "#{MAIN_BODY_SELECT} .details-control"
     assert_equal 2, all(button_select).length
 
-    # Click buttons
-    all(button_select).map(&:click)
+    # Click first job button
+    all(button_select)[0].click
     
 
     # Wait for load
-    details_select = "#{MAIN_BODY_SELECT} div.panel.panel-default"
-    assert_selector("#{details_select} tr")
+    details_select = "#job_details"
+    assert_selector("#{details_select}")
     
     # Confirm details
     card_header_items = all("#{details_select} div.card-header span")
     exp_header_data = ['Queued', 'Sample2', '345']
     assert_equal exp_header_data, card_header_items.map(&:text)
 
-    headers = all("#{details_select} div.card-body td.col-xs-2")
-    details = all("#{details_select} div.card-body td.col-xs-10")
-
-    exp_details = [
-      'Oakley',
-      '345',
-      '12345',
-      '1',
-      'Sample2',
-      'currentuser',
-      'account2',
-      'short',
-      'running',
-      'None',
-      '2',
-      '64',
-      '01:00:00',
-      '00:02:00',
-      '2025-08-28 14:00:00',
-      '2025-08-28 15:00:00',
-      '128GB',
-      'gpu:2'
+    expected_list_details = [
+      'Cluster: Oakley',
+      'Job Id: 345',
+      'Array Job Id: 12345',
+      'Array Task Id: 1',
+      'Job Name: Sample2',
+      'User: currentuser',
+      'Account: account2',
+      'Partition: short',
+      'State: running',
+      'Reason: None',
+      'Total Nodes: 2',
+      'Total CPUs: 64',
+      'Time Limit: 01:00:00',
+      'Time Used: 00:02:00',
+      'Start Time: 2025-08-28 14:00:00',
+      'End Time: 2025-08-28 15:00:00',
+      'Memory: 128GB',
+      'GRES: gpu:2'
     ]
 
-    assert_equal DETAILS_HEADERS, headers.map(&:text)
-    assert_equal exp_details, details.map(&:text)
+    actual_list = find_all("#job_details_list li").map(&:text)
+    actual_list.each_with_index do |actual_list_item, index|
+      assert_equal(expected_list_details[index], actual_list_item)
+    end
 
+    all(button_select)[1].click
     assert_selector('div.alert-warning')
   end
 

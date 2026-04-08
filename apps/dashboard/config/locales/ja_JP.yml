@@ -152,6 +152,7 @@ ja_JP:
     files_send_to_target_title_default: 選択したファイルのメタデータを外部アプリケーションに送信
     files_shell: ターミナルで開く
     files_shell_dropdown: ターミナルで開くクラスターを選択
+    home_directory: ホームディレクトリ
     import: インポート
     job_info: ジョブ情報
     jobs_create_blank_project: 新しいプロジェクトを作成

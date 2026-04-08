@@ -1,5 +1,13 @@
 // Bootstrap custom CSS
 
+.sr-only * {
+    @extend .sr-only;
+}
+
+.sr-only.focusable, .sr-only.focusable * {
+    position: initial;
+}
+
 .card {
   a {
     text-decoration: none !important;
