@@ -1,4 +1,5 @@
-<% content_for :title, "#{t('dashboard.files_title')} -git  #{@user_configuration.dashboard_title}#{@path.present? ? " - #{@path}" : ""}" %>
+<% dir_title = @path.present? ? (@path == Pathname.new('/') ? 'Root' : @path.basename.to_s) : nil %>
+<% content_for :title, "#{t('dashboard.files_title')} - #{@user_configuration.dashboard_title}#{dir_title ? " - #{dir_title}" : ""}" %>
 <%# z-index:999 cause dropdowns are 1000 default sticky-top is 1020 https://getbootstrap.com/docs/4.6/layout/overview/#z-index %>
 
 <div class="text-end sticky-top bg-white p-2 mb-4 d-flex flex-wrap gap-2 justify-content-end z-index-999">

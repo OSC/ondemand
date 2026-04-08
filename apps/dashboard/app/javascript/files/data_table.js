@@ -169,8 +169,14 @@ jQuery(function () {
 
 class DataTable {
     _table = null;
+    _filesTitle = null;
+    _dashboardTitle = null;
 
     constructor() {
+        const config = document.getElementById('files_page_load_config');
+        this._filesTitle = config?.dataset?.filesTitle;
+        this._dashboardTitle = config?.dataset?.dashboardTitle;
+
         this.loadDataTable();
         this.reloadTable();
     }
@@ -303,6 +309,8 @@ class DataTable {
                 $('#select_all').trigger();
             }
 
+            this.updatePageTitle(data.path);
+
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
                 if (event.which === 13) {
@@ -388,6 +396,45 @@ class DataTable {
                 .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
                 .catch((e) => reject(e))
         });
+    }
+
+    updatePageTitle(path) {
+        const filesTitle = this._filesTitle || document.title;
+        const dashboardTitle = this._dashboardTitle;
+
+        if (!filesTitle || !dashboardTitle) return;
+
+        const normalized = (path || '').replace(/\/+$/, '');
+        const dir =
+            (!normalized || normalized === '/')
+                ? 'Root'
+                : normalized.split('/').filter(Boolean).pop();
+
+        const title = `${filesTitle} - ${dashboardTitle} - ${dir}`;
+
+        // If embedded, ask parent/top page to update its tab title.
+        try {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage(
+                    { application: 'dashboard', action: 'setTitle', title },
+                    window.location.origin
+                );
+            }
+        } catch (e) {
+            // ignore
+        }
+
+        // Attempt to update the top-level document title when accessible.
+        try {
+            if (window.top && window.top.document) {
+                window.top.document.title = title;
+                return;
+            }
+        } catch (e) {
+            // Cross-origin framing can throw; fall back to current document.
+        }
+
+        document.title = title;
     }
 
     renderNameColumn(data, type, row, meta) {

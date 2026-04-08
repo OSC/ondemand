@@ -42,6 +42,17 @@ window.$ = jQuery;
 
 Rails.start();
 
+// Allow embedded apps (e.g. Files) to request a tab title update when the content
+// changes without a full page load (e.g. same-page navigation within a frame).
+window.addEventListener('message', function (event) {
+  if (event.origin !== window.location.origin) return;
+  const data = event.data;
+  if (!data || data.application !== 'dashboard' || data.action !== 'setTitle') return;
+  if (typeof data.title !== 'string') return;
+
+  document.title = data.title;
+});
+
 jQuery(function(){
 
   $('li.vdi').popover({
