@@ -34,7 +34,7 @@ export function updateResolutions() {
         setX(defaultX);
         setY(defaultY);
         if (announce)
-          ariaNotify(`Resolution reset to ${defaultX} by ${defaultY} pixels.`)
+          ariaNotify(`Resolution reset to ${defaultX} by ${defaultY} pixels.`);
       };
 
       // Set defaults if not already set
@@ -47,10 +47,10 @@ export function updateResolutions() {
 
       // Event listeners
       $targetX.on('change', () => {
-        setX($(this).val());
+        setX($targetX.val());
       });
       $targetY.on('change', () => {
-        setY($(this).val());
+        setY($targetY.val());
       });
       $targetR.on('click', () => {
         resetXY(true);
