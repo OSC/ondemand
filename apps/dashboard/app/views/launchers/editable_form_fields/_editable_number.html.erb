@@ -23,12 +23,16 @@
     <label for="<%= min_edit_id %>">Minimum</label>
     <input  min="1" step="1"
             class="form-control edit-field" type="number" value="<%= current_min %>" 
-            name="<%= min_edit_name %>" id="<%= min_edit_id %>">
+            name="<%= min_edit_name %>" id="<%= min_edit_id %>"
+            aria-label="<%= t('dashboard.jobs_launchers_min_value_label', label: attrib.label) %>"
+    >
 
     <label for="<%= max_edit_id %>">Maximum</label>
     <input  min="1" step="1"
             class="form-control edit-field" type="number" value="<%= current_max %>" 
-            name="<%= max_edit_name %>" id="<%= max_edit_id %>">
+            name="<%= max_edit_name %>" id="<%= max_edit_id %>"
+            aria-label="<%= t('dashboard.jobs_launchers_max_value_label', label: attrib.label) %>"
+    >
 
   </div>
 
