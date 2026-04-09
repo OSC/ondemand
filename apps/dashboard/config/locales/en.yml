@@ -165,12 +165,17 @@ en:
     jobs_create_template_project: Create a new project from a template
     jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
+    jobs_launchers_clone: Clone launcher %{name}
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
+    jobs_launchers_delete: Delete launcher %{name}
     jobs_launchers_delete_script_confirmation: Delete all contents of launcher?
     jobs_launchers_deleted: Launcher successfully deleted!
+    jobs_launchers_edit: Edit form for launcher %{name}
     jobs_launchers_fixed_field: Fixed Value
     jobs_launchers_not_found: Cannot find Launcher %{launcher_id}
+    jobs_launchers_show_form: Show form for launcher %{name}
+    jobs_launchers_submit_launcher_title: Launch script with cached or default values for launcher %{name}
     jobs_launchers_submitted: Successfully submitted job %{job_id}.
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
@@ -201,16 +206,20 @@ en:
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project to import
     jobs_toggle_details: Click to toggle details for job %{job_id}
+    jobs_workflow_clone: Clone workflow %{name}
     jobs_workflow_created: Workflow successfully created!
+    jobs_workflow_delete_title: Delete workflow %{name}
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description
+    jobs_workflow_edit_settings: Modify settings for workflow %{name}
     jobs_workflow_failed: Workflow failed with error %{error}
     jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_missing_launchers: select at least %{count}
     jobs_workflow_name_placeholder: Workflow name
     jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
+    jobs_workflow_show_graph: Open workflow %{name} in graph editor
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflows: Workflows

@@ -1,8 +1,10 @@
 <%-
   disabled = !@valid_project
   disabled_class = disabled ? 'disabled' : ''
-  edit_title = "#{t('dashboard.edit')} launcher #{launcher.title}"
-  delete_title = "#{t('dashboard.delete')} launcher #{launcher.title}"
+  launch_title = t('dashboard.jobs_launchers_submit_launcher_title', name: launcher.title)
+  show_title = t('dashboard.jobs_launchers_show_form', name: launcher.title)
+  edit_title = t('dashboard.jobs_launchers_edit', name: launcher.title)
+  delete_title = t('dashboard.jobs_launchers_delete', name: launcher.title)
   remove_delete_button = @remove_delete_button
   show_job_info_button = @show_job_info_button
 -%>
@@ -12,7 +14,7 @@
     <%= button_to(
       submit_project_launcher_path(@project.id, launcher.id),
       class: 'btn btn-success launcher-button',
-      title: 'Launch script with cached or default values',
+      aria: {label: launch_title},
       disabled: disabled,
       params: launcher.quick_launch_params,
       id: "launch_#{launcher.id}"
@@ -26,6 +28,7 @@
     <%= link_to(
       project_launcher_path(@project.id, launcher.id),
       class: "btn btn-info launcher-button #{disabled_class}",
+      aria: {label: show_title},
       id: "show_#{launcher.id}"
       ) do
     %>
@@ -41,7 +44,7 @@
         edit_project_launcher_path(@project.id, launcher.id),
         class: "btn btn-primary launcher-button #{disabled_class}",
         id: "edit_#{launcher.id}",
-        title: edit_title) do
+        aria: {label: edit_title}) do
       %>
         <%= I18n.t('dashboard.edit') %>
       <%- end %>
@@ -53,7 +56,7 @@
           project_launcher_path(@project.id, launcher.id),
           id: "delete_#{launcher.id}",
           class: "btn btn-danger launcher-button",
-          title: delete_title,
+          aria: {label: delete_title},
           data: { confirm: I18n.t('dashboard.jobs_launchers_delete_script_confirmation') },
           method: :delete) do
         %>
