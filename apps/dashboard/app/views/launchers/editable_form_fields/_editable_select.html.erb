@@ -49,5 +49,5 @@
   <input type="hidden" id='<%= exclude_id %>' name='<%= exclude_name %>'
     value="<%= attrib.exclude_select_choices.join(',') %>">
 
-  <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
+  <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id, label: attrib.label }) %>
 </div>
