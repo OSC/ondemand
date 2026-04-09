@@ -128,6 +128,7 @@ en:
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
+    cancel: Cancel
     clear: Clear
     close: Close
     custom_pages:
@@ -171,9 +172,11 @@ en:
     jobs_launchers_deleted: Launcher successfully deleted!
     jobs_launchers_edit_form_item: Edit form item %{label}
     jobs_launchers_fixed_field: Fixed Value
+    jobs_launchers_new_field_select: Select item to add to form
     jobs_launchers_not_found: Cannot find Launcher %{launcher_id}
     jobs_launchers_preview_form_item: Preview of form item %{label}
     jobs_launchers_remove_form_item: Remove form item %{label}
+    jobs_launchers_save_form: Save form
     jobs_launchers_save_form_item: Save changes to form item %{label}
     jobs_launchers_submitted: Successfully submitted job %{job_id}.
     jobs_launchers_updated: Launcher manifest updated!
