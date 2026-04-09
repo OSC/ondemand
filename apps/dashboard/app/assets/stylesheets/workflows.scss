@@ -158,16 +158,21 @@ svg.edges {
   inset: 0;
   pointer-events: none;
   z-index: 1;
+
+  .edge {
+    pointer-events: auto;
+  }
 }
 
-.edge {
+.orthogonal-edge {
   stroke: var(--accent);
   stroke-width: 2;
   marker-end: url(#arrow);
   pointer-events: none;
+  transition: stroke 0.15s;
 }
 
-.edge.click-area {
+.edge.click-area.orthogonal-edge {
   stroke: transparent;
   stroke-width: 20px;
   pointer-events: stroke;
@@ -175,10 +180,57 @@ svg.edges {
   marker-end: none; 
 }
 
-.edge.selected {
+.edge.selected .orthogonal-edge {
   stroke: var(--danger);
   stroke-width: 3;
   filter: drop-shadow(0 0 4px var(--danger-weak));
+}
+
+.edge.selected .click-area.orthogonal-edge {
+  stroke: transparent;
+}
+
+.edge-handle {
+  stroke: #fff;
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 0.15s, fill 0.15s;
+  pointer-events: all;
+  cursor: grab;
+}
+
+.corner-handle {
+  fill: var(--accent);
+  r: 6;
+}
+
+.midpoint-handle {
+  fill: var(--accent);
+  fill-opacity: 0.5;
+  stroke-opacity: 0.6;
+}
+
+.edge:hover .corner-handle,
+.edge.selected .corner-handle {
+  opacity: 1;
+}
+
+.edge:hover .midpoint-handle,
+.edge.selected .midpoint-handle {
+  opacity: 0.7;
+}
+
+.edge-handle.dragging {
+  fill: var(--accent-weak);
+  cursor: grabbing;
+  opacity: 1 !important;
+  fill-opacity: 1;
+}
+
+.edge-handle:hover {
+  fill: #fff;
+  opacity: 1 !important;
+  fill-opacity: 1;
 }
 
 .launcher-box {
@@ -207,6 +259,28 @@ svg.edges {
 
 .launcher-box.connect-queued {
   outline: 3px dashed var(--accent);
+}
+
+.port {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.port-in  { left: -7px; }
+.port-out { right: -7px; }
+
+.launcher-box.connect-queued .port-out {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
 }
 
 .launcher-box.running {
