@@ -227,6 +227,8 @@ en:
     jobs_workflows: Workflows
     launch: Launch
     logo_alt_text: Welcome to Open OnDemand
+    maximum: Maximum
+    minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
