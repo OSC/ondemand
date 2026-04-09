@@ -3,6 +3,8 @@
 import oboe from 'oboe';
 import { supportPath } from './config.js';
 import { cssBadgeForState, capitalizeFirstLetter } from './utils.js'
+import { ariaNotify } from './utils.js';
+import { OODAlertError } from './alert.js';
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
@@ -50,6 +52,7 @@ function clean_options(options) {
 function resetExtendedDataButtons() {
   $('button.fa-minus').each((_i, button) => {
     button.classList.replace('fa-minus', 'fa-plus');
+    button.ariaExpanded = false;
   });
 }
 
@@ -65,6 +68,7 @@ function fetch_job_data(tr, row, options) {
   // just clearing out the previous selection.
   if(btn.classList.contains('fa-minus')) {
     btn.classList.replace('fa-minus', 'fa-plus');
+    btn.ariaExpanded = false;
     const details = document.getElementById('job_details');
     details.innerHTML = null;
 
@@ -74,6 +78,7 @@ function fetch_job_data(tr, row, options) {
   resetExtendedDataButtons();
 
   btn.classList.replace('fa-plus', 'fa-minus');
+  btn.ariaExpanded = true;
 
     let data = {
       pbsid: row.data().pbsid,
@@ -84,13 +89,14 @@ function fetch_job_data(tr, row, options) {
     fetch(jobDataUrl, { headers: {
         'Accpet': 'application/json',
       }})
-      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error('Login failed: IDP redirect failed')))
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error('Failed to load job details.')))
       .then(response => response.json())
       .then(response => {
         const ele = document.getElementById('job_details');
         ele.innerHTML = response.html_extended_data_table;
+        ariaNotify("Job details list loaded.");
       })
-      .catch(error => console.log(error));
+      .catch(error => OODAlertError(error));
 }
 
 function fetch_table_data(table, options){
@@ -189,7 +195,7 @@ function create_datatable(options){
                 "searchable":       false,
                 render: function (data, type, row, meta) {
                   let { cluster_title, jobname, } = row
-                  return `<button class="details-control fa fa-plus btn btn-default" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
+                  return `<button class="details-control fa fa-plus btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
                 },
             },
             {
