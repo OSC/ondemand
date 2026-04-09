@@ -24,7 +24,7 @@ module BatchConnect::SessionContextsHelper
                 when 'radio', 'radio_button'
                   form.form_group attrib.id, help: field_options[:help] do
                     opts = {
-                      label:   label_tag(attrib.id, attrib.label),
+                      label:   attrib.label,
                       checked: (attrib.value.presence || attrib.field_options[:checked])
                     }
                     content_tag(:div, id: [form.object_name, attrib.id].join('_')) do
