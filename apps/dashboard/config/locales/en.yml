@@ -130,6 +130,8 @@ en:
     breadcrumbs_support_ticket: Support Ticket
     clear: Clear
     close: Close
+    close_alert: Close this alert.
+    close_notice: Close this notice.
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date

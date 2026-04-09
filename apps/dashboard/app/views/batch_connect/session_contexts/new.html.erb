@@ -19,7 +19,6 @@ locals: {
 
 <%- if @session && @session.errors.any? -%>
   <div class="alert alert-danger alert-dismissible" role="alert">
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 
     <% @session.errors.each do |error| %>
       <% if error.attribute == :submit %>
@@ -51,6 +50,7 @@ locals: {
 	 %>
       </li>
     </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" title="<%= t('dashboard.close_alert') %>"></button>
   </div>
 <%- end -%>
 
