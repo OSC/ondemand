@@ -45,6 +45,8 @@ en:
     batch_connect_form_launch: Launch
     batch_connect_form_prefill: Use saved settings
     batch_connect_form_prefill_error: Oops... Something is wrong with your template
+    batch_connect_form_resolution_height: Resolution height (pixels)
+    batch_connect_form_resolution_width: Resolution width (pixels)
     batch_connect_form_reset_resolution: Reset Resolution
     batch_connect_form_save: Save settings
     batch_connect_form_save_new_template: save new settings
@@ -203,6 +205,7 @@ en:
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. Does not affect projects in your home directory.
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project to import
+    jobs_toggle_details: Click to toggle details for job %{job_id}
     jobs_workflow_clone: Clone workflow %{name}
     jobs_workflow_created: Workflow successfully created!
     jobs_workflow_delete_title: Delete workflow %{name}
