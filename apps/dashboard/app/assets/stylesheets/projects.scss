@@ -168,10 +168,9 @@ div#directory_browser td a {
 
     button.badge.collapsed {
       color: var(--bs-badge-color);
-    }
-
-    button.badge.collapsed:hover {
-      color: var(--bs-btn-hover-color);
+      &:hover, &:focus-within {
+        color: var(--bs-btn-hover-color);
+      }
     }
   }
 
