@@ -23,7 +23,7 @@ jQuery(function() {
 // The following function makes collections of radio buttons and checkboxes accessible following the behavior
 //  of bootstrap-form v5.6. This should be removed when bootstrap-form is upgraded to this version.
 function updateRadioCollections() {
-  $('[data-widget-type="radio"]').each(function(_index, wrapper){
+  $('[data-widget-type="radio"], [data-widget-type="radio_button"]').each(function(_index, wrapper){
     const groupId = $(wrapper).attr('id').replace('_wrapper', '');
     const labelId = `${groupId}_label`;
     // Find the label.form-label inside this widget
