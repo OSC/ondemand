@@ -41,6 +41,7 @@ en:
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
     batch_connect_form_choose_template_name: Choose a template name
     batch_connect_form_data_root: data root directory
+    batch_connect_form_dynamic_disclaimer: The following form may change dynamically as options are selected. All changes will be announced and are reversible.
     batch_connect_form_invalid: The form.yml has missing options in the %{id} form field.
     batch_connect_form_launch: Launch
     batch_connect_form_prefill: Use saved settings
