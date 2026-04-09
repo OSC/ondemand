@@ -8,6 +8,7 @@ window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
 window.set_cluster_id = set_cluster_id;
 window.set_filter_id = set_filter_id;
+window.closeExtendedDetails = closeExtendedDetails;
 
 var entityMap = {
   '&': '&amp;',
@@ -46,6 +47,18 @@ function clean_options(options) {
   return options;
 }
 
+function resetExtendedDataButtons() {
+  $('button.fa-minus').each((_i, button) => {
+    button.classList.replace('fa-minus', 'fa-plus');
+  });
+}
+
+function closeExtendedDetails() {
+  resetExtendedDataButtons();
+  const ele = document.getElementById('job_details');
+  ele.innerHTML = null;
+}
+
 function fetch_job_data(tr, row, options) {
   const btn = tr.find('button.details-control')[0];
 
@@ -58,9 +71,7 @@ function fetch_job_data(tr, row, options) {
     return;
   }
 
-  $('button.fa-minus').each((_i, button) => {
-    button.classList.replace('fa-minus', 'fa-plus');
-  });
+  resetExtendedDataButtons();
 
   btn.classList.replace('fa-plus', 'fa-minus');
 
@@ -77,7 +88,7 @@ function fetch_job_data(tr, row, options) {
       .then(response => response.json())
       .then(response => {
         const ele = document.getElementById('job_details');
-        ele.innerHTML = response.html_extended_data_table
+        ele.innerHTML = response.html_extended_data_table;
       })
       .catch(error => console.log(error));
 }

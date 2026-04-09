@@ -6,6 +6,7 @@ import { prefillSubmitHandler } from './prefill_templates/prefill_submit';
 import { isBCDynamicJSEnabled } from './config';
 import { makeChangeHandlers } from './dynamic_forms';
 import { setupNotificationToggle } from './batch_connect/bc_notifications';
+import { updateResolutions } from './batch_connect/resolution_field';
 
 jQuery(function() {
   if(isBCDynamicJSEnabled()){
@@ -16,7 +17,8 @@ jQuery(function() {
   prefillTemplatesHandler();
   prefillSubmitHandler();
   updateRadioCollections();
-
+  updateResolutions();
+  
   setupNotificationToggle('notification_toggle');
 });
 

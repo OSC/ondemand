@@ -7,7 +7,7 @@ module BatchConnect::SessionsHelper
   def render_connection(session)
     if session.running?
       if session.view
-        views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
+        views = { partial: "custom", locals: { view: session.view, connect: session.connect, session: session } }
       else
         if session.vnc?
           views = []
