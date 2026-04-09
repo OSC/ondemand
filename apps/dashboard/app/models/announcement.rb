@@ -52,6 +52,7 @@ class Announcement
   # Whether this is a valid announcement
   # @return [Boolean] whether it is valid
   def valid?
+    return false if parse_error?
     return false unless message
     return false if dismissible? && !id
     true
