@@ -6,10 +6,10 @@
 -%>
 
 <div class="editable-form-field">
-  <%=  create_widget(form, attrib, format: format, hide_excludable: false, hide_fixed: false) %>
-
+  <%= render(partial: 'launchers/editable_form_fields/form_item_preview', locals: {form: form, attrib: attrib, format: format }) %>
+  
   <div class="d-none edit-group">
-
+  
     <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
     <ol class="list-group text-center col-md-4 mb-3">
@@ -48,7 +48,6 @@
 
   <input type="hidden" id='<%= exclude_id %>' name='<%= exclude_name %>'
     value="<%= attrib.exclude_select_choices.join(',') %>">
-  </input>
 
   <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
 </div>

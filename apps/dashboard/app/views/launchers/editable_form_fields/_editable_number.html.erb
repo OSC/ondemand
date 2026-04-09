@@ -14,7 +14,7 @@
 -%>
 
 <div class="editable-form-field">
-  <%=  create_widget(form, attrib, format: format, hide_fixed: false) %>
+  <%= render(partial: 'launchers/editable_form_fields/form_item_preview', locals: {form: form, attrib: attrib, format: format }) %>
 
   <div class="d-none edit-group mb-3">
 
