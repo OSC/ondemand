@@ -1,8 +1,8 @@
 <%-
   disabled = !@valid_project
   disabled_class = disabled ? 'disabled' : ''
-  edit_title = "#{t('dashboard.edit')} launcher #{launcher.title}"
-  delete_title = "#{t('dashboard.delete')} launcher #{launcher.title}"
+  edit_title = t('dashboard.launcher_edit_title', title: launcher.title)
+  delete_title = t('dashboard.launcher_delete_title', title: launcher.title)
   remove_delete_button = @remove_delete_button
   show_job_info_button = @show_job_info_button
 -%>
