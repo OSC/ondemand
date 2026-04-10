@@ -190,7 +190,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
+      assert_text I18n.t('dashboard.jobs_project_validation_error')
+      assert_selector '.alert-danger', wait: 10
     end
   end
 
@@ -201,7 +202,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#product_icon_select').set('fas://bad&icon')
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
+      assert_text I18n.t('dashboard.jobs_project_validation_error')
+      assert_selector '.alert-danger', wait: 10
     end
   end
 
