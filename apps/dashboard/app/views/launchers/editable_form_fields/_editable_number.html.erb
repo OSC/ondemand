@@ -14,23 +14,27 @@
 -%>
 
 <div class="editable-form-field">
-  <%=  create_widget(form, attrib, format: format, hide_fixed: false) %>
+  <%= render(partial: 'launchers/editable_form_fields/form_item_preview', locals: {form: form, attrib: attrib, format: format }) %>
 
   <div class="d-none edit-group mb-3">
 
     <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
-    <label for="<%= min_edit_id %>">Minimum</label>
+    <label for="<%= min_edit_id %>"><%= t('dashboard.minimum') %></label>
     <input  min="1" step="1"
             class="form-control edit-field" type="number" value="<%= current_min %>" 
-            name="<%= min_edit_name %>" id="<%= min_edit_id %>">
+            name="<%= min_edit_name %>" id="<%= min_edit_id %>"
+            aria-label="<%= t('dashboard.jobs_launchers_min_value_label', label: attrib.label) %>"
+    >
 
-    <label for="<%= max_edit_id %>">Maximum</label>
+    <label for="<%= max_edit_id %>"><%= t('dashboard.maximum') %></label>
     <input  min="1" step="1"
             class="form-control edit-field" type="number" value="<%= current_max %>" 
-            name="<%= max_edit_name %>" id="<%= max_edit_id %>">
+            name="<%= max_edit_name %>" id="<%= max_edit_id %>"
+            aria-label="<%= t('dashboard.jobs_launchers_max_value_label', label: attrib.label) %>"
+    >
 
   </div>
 
-  <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons', locals: { field_id: field_id }) %>
+  <%= render(partial: 'launchers/editable_form_fields/edit_field_buttons', locals: { field_id: field_id, label: attrib.label }) %>
 </div>
