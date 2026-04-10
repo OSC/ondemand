@@ -75,4 +75,35 @@ class HpcModuleTest < ActiveSupport::TestCase
       assert_equal(expected, HpcModule.all_versions('mkl').map(&:to_s))
     end
   end
+
+  test 'modules with same name and version with different dependency sets' do
+    stub_sys_apps
+    Dir.mktmpdir do |tmpdir|
+      # Only look at Owens LAMMPS modules
+      FileUtils.cp("#{fixture_dir}/owens.json", "#{tmpdir}/owens.json")
+      with_modified_env({ OOD_MODULE_FILE_DIR: tmpdir }) do
+        expected = [
+          'lammps/5Jun19', 'lammps/3Mar20', 'lammps/29Oct20', 'lammps/22Aug18', 'lammps/16Mar18'
+        ]
+        assert_equal(expected, HpcModule.all_versions('lammps').map(&:to_s))
+        lammps_3mar20 = HpcModule.all_versions('lammps').find { |m| m.version == '3Mar20' }
+        expected = [['intel/19.0.3', 'openmpi/4.0.3-hpcx'], ['intel/19.0.5', 'openmpi/4.0.3-hpcx'], 
+                    ['intel/19.0.3', 'openmpi/4.0.3'], ['intel/19.0.5', 'openmpi/4.0.3'],
+                    ['intel/19.0.3', 'intelmpi/2019.7'], ['intel/19.0.5', 'intelmpi/2019.7'],
+                    ['intel/19.0.3', 'intelmpi/2019.3'], ['intel/19.0.5', 'intelmpi/2019.3'],
+                    ['intel/19.0.3', 'intelmpi/.2019.5'], ['intel/19.0.5', 'intelmpi/.2019.5'],
+                    ['intel/19.0.3', 'mvapich2-gdr/2.3.4'], ['intel/19.0.5', 'mvapich2-gdr/2.3.4'],
+                    ['intel/19.0.3', 'mvapich2-gdr/2.3.5'], ['intel/19.0.5',  'mvapich2-gdr/2.3.5'],
+                    ['intel/19.0.3', 'mvapich2/2.3.2'], ['intel/19.0.5', 'mvapich2/2.3.2'],
+                    ['intel/19.0.3', 'mvapich2/2.3.1'], ['intel/19.0.5', 'mvapich2/2.3.1'],
+                    ['intel/19.0.3', 'mvapich2/2.3.6'], ['intel/19.0.5', 'mvapich2/2.3.6'],
+                    ['intel/19.0.3', 'mvapich2/2.3.5'], ['intel/19.0.5', 'mvapich2/2.3.5'],
+                    ['intel/19.0.3', 'mvapich2/2.3.4'], ['intel/19.0.5', 'mvapich2/2.3.4'],
+                    ['intel/19.0.3', 'mvapich2/2.3.3'], ['intel/19.0.5', 'mvapich2/2.3.3']
+        ]
+        assert_equal(expected, lammps_3mar20.dependencies)
+      end
+    end
+  end
+
 end
