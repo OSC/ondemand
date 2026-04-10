@@ -14,7 +14,8 @@ function listItem(name) {
               id="${iconId(name)}" 
               class="btn btn-outline-dark"
               tabindex='0'
-              aria-label="${name} icon">
+          >
+            <span class="sr-only">${name} icon</span>
             <i class="fas fa-${name} fa-fw"></i>
           </li>`;
 }
