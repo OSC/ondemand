@@ -217,6 +217,7 @@ fr-CA:
     module_browser_last_updated: 'Dernière mise à jour : %{last_updated}'
     module_browser_title: Navigateur de modules
     motd_erb_render_error: 'Le MOTD n’a pas été analysé ou rendu correctement : %{error_message}'
+    files_title: Navigation de fichiers
     motd_title: Message du jour
     name: Nom
     nav_all_apps: Toutes les applications

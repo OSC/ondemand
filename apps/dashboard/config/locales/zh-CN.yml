@@ -202,6 +202,7 @@ zh-CN:
     mode: 模式
     module_browser_last_updated: 最后更新：%{last_updated}
     module_browser_title: 模块浏览器
+    files_title: 文件浏览
     motd_erb_render_error: MOTD 未正确解析或渲染：%{error_message}
     motd_title: 每日信息
     name: 名称
