@@ -2,7 +2,7 @@
 
 import oboe from 'oboe';
 import { supportPath } from './config.js';
-import { cssBadgeForState, capitalizeFirstLetter } from './utils.js'
+import { cssBadgeForState, capitalizeFirstLetter, customizeTableHeaders } from './utils.js'
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
@@ -179,6 +179,9 @@ function create_datatable(options){
           if(options.drawCallback){
             options.drawCallback(settings);
           }
+        },
+        headerCallback: (thead, _data, _start, _end, _display) => {
+          customizeTableHeaders(thead);
         },
         columns: [
             {

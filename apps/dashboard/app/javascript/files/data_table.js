@@ -3,7 +3,7 @@ import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
 export { CONTENTID, EVENTNAME };
 import { OODAlertError } from '../alert.js';
-import { toHumanSize, ariaNotify } from '../utils.js';
+import { toHumanSize, ariaNotify, customizeTableHeaders } from '../utils.js';
 
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
@@ -204,6 +204,9 @@ class DataTable {
                 // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
                 selector: 'td:not(:first-child)'
             },
+            headerCallback: (thead, _data, _start, _end, _display) => {
+                customizeTableHeaders(thead);
+            },
             layout: {
                 top1Start: {
                     div: {
@@ -303,8 +306,8 @@ class DataTable {
                 $('#select_all').trigger();
             }
 
-	    $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
-	    ariaNotify(`navigated to ${data.path}`);
+            $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
+            ariaNotify(`navigated to ${data.path}`);
 
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
