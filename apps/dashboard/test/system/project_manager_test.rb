@@ -646,7 +646,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
@@ -999,6 +999,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - p.s1.71
             - pas1754
             - pas1604
+            - foo-bar
             value: pzs1124
             label: Account
             help: ''
