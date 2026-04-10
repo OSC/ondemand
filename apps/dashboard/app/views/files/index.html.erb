@@ -1,5 +1,4 @@
-<% dir_title = @path.present? ? (@path == Pathname.new('/') ? 'Root' : @path.basename.to_s) : nil %>
-<% content_for :title, "#{t('dashboard.files_title')} - #{@user_configuration.dashboard_title}#{dir_title ? " - #{dir_title}" : ""}" %>
+<% content_for :title, files_browse_page_title(@path) %>
 <%# z-index:999 cause dropdowns are 1000 default sticky-top is 1020 https://getbootstrap.com/docs/4.6/layout/overview/#z-index %>
 
 <div class="text-end sticky-top bg-white p-2 mb-4 d-flex flex-wrap gap-2 justify-content-end z-index-999">
@@ -7,6 +6,7 @@
   <% if Configuration.files_enable_shell_button %>
     <%= render partial: 'shell_dropdown' %>
   <% end %>
+  
     <button id="refresh-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fa fa-rotate-right" aria-hidden="true"></i> Refresh</button>
     <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
     <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
