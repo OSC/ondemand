@@ -176,6 +176,7 @@ en:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
+    jobs_project_delete_label: Delete project %{name}
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_removed: Project removed from lookup!
@@ -183,6 +184,7 @@ en:
     jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
+    jobs_project_edit_label: Edit project %{name}
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
     jobs_project_group_help: Make sure to choose the group that includes all intended collaborators. If this is not a collaborative project, the default group is recommended
     jobs_project_group_owner: Group
@@ -196,6 +198,8 @@ en:
     jobs_project_name_placeholder: Project name
     jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
     jobs_project_not_found: Cannot find project %{project_id}
+    jobs_project_open_label: Open project %{name}
+    jobs_project_remove_label: Remove project %{name}
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_select_directory: Select project directory
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. Does not affect projects in your home directory.

@@ -33,7 +33,7 @@ div#directory_browser td a {
   justify-content: center;
   width: 20rem;
 
-  &:hover {
+  &:hover, &:focus {
     outline: 0.4em solid rgb(26, 118, 211);
   }
 
