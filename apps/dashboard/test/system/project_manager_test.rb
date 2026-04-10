@@ -165,11 +165,16 @@ class ProjectManagerTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
 
-      click_on 'Edit'
+      within(:css, "[id='#{project_id}']") do
+        click_on 'Edit'
+      end
+      assert_selector 'h1', text: 'Editing: Test Project'
       find('#project_name').set('my-test-project', clear: :backspace)
       click_on 'Save'
       assert_selector "[href='/projects/#{project_id}']", text: 'My Test Project'
-      click_on 'Edit'
+      within(:css, "[id='#{project_id}']") do
+        click_on 'Edit'
+      end
       assert_selector 'h1', text: 'Editing: My Test Project'
       assert_equal 'my-test-project', find('#project_name').value
       assert_equal "#{dir}/projects/#{project_id}", find('#project_directory').value
@@ -190,7 +195,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
+      assert_text I18n.t('dashboard.jobs_project_validation_error')
+      assert_selector '.alert-danger'
     end
   end
 
@@ -201,7 +207,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#product_icon_select').set('fas://bad&icon')
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
+      assert_text I18n.t('dashboard.jobs_project_validation_error')
+      assert_selector '.alert-danger'
     end
   end
 
@@ -444,7 +451,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
 
       # just check count since the previous test checks the same header text
-      assert_equal 7, all("#{tframe_selector} th").length
+      assert_selector "#{tframe_selector} th", count: 7
 
       rows = all("#{tframe_selector} tbody tr")
       assert_equal 8, rows.length
