@@ -44,6 +44,9 @@ window.$ = jQuery;
 
 Rails.start();
 
+// Import AI Assistant widget
+import './assistant';
+
 jQuery(function(){
   initPopovers();
 });
