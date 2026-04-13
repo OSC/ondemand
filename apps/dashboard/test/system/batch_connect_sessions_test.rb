@@ -185,7 +185,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
   test 'session cards hold focus when replaced' do 
     Dir.mktmpdir do |dir|
-      with_modified_env({OOD_BC_SESSIONS_POLL_DELAY: '5'}) do
+      with_modified_env({OOD_BC_SESSIONS_POLL_DELAY: '10'}) do
         create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
         stub_scheduler(:running, nodes: 2, cores: 2)
         visit(batch_connect_sessions_path)
@@ -200,8 +200,10 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
           focusable_selectors.each do |selector|
             assert_selector(selector)
+            execute_script("$('#{card_selector}').attr('data-original-marker', 'true')")
             execute_script("$('#{card_selector} #{selector}').focus()")
-            sleep 0.01
+
+            assert_no_selector("#{card_selector}[data-original-marker='true']")
             assert_equal(selector.split('.')[1..], evaluate_script('document.activeElement.classList'))
           end
         end
