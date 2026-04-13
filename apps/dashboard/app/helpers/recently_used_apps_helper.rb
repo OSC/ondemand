@@ -13,12 +13,6 @@ module RecentlyUsedAppsHelper
     end
   end
 
-  # Clear the recently used apps cache
-  # Call this when an app's form.yml.erb may have been modified
-  def clear_recently_used_apps_cache
-    Rails.cache.delete('recently_used_apps')
-  end
-
   private
 
   # Returns the 4 most recently used interactive applications based on their cache file
