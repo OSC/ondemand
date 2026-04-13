@@ -8,7 +8,8 @@
           <%= t('dashboard.bc_saved_settings.no_settings_title') %>
         </span>
       <% end %>
-      <% all_settings.sort.each_with_index do | (app_token, app_saved_settings), index|
+      <% valid_settings = all_settings.select { |app_token, _| BatchConnect::App.from_token(app_token.to_s).valid? } %>
+      <% valid_settings.each_with_index do | (app_token, app_saved_settings), index|
         app = BatchConnect::App.from_token(app_token.to_s)
         link = app.link
       %>
