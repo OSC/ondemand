@@ -149,7 +149,7 @@ module BatchConnect
 
     # Set the rendering format for displaying attributes
     def set_prefill_templates
-      @prefill_templates ||= bc_templates(@app)
+      @set_prefill_templates ||= bc_templates(@app)
     end
 
     def save_template
@@ -160,9 +160,9 @@ module BatchConnect
 
     # Only permit certain parameters
     def session_contexts_param
-      if params[:batch_connect_session_context].present?
-        params.require(:batch_connect_session_context).permit(@session_context.attributes.keys)
-      end
+      return unless params[:batch_connect_session_context].present?
+
+      params.require(:batch_connect_session_context).permit(@session_context.attributes.keys)
     end
 
     # Store session context into a cache file
