@@ -149,7 +149,7 @@ module BatchConnect
 
     # Set the rendering format for displaying attributes
     def set_prefill_templates
-      @set_prefill_templates ||= bc_templates(@app)
+      @prefill_templates ||= bc_templates(@app)
     end
 
     def save_template
