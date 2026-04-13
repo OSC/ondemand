@@ -182,4 +182,30 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       assert_equal("Jupyter (#{get_test_job_id})\n2 nodes | 2 cores | Starting", header_text)
     end
   end
+
+  test 'session cards hold focus when replaced' do 
+    Dir.mktmpdir do |dir|
+      with_modified_env({OOD_BC_SESSIONS_POLL_DELAY: '5'}) do
+        create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+        stub_scheduler(:running, nodes: 2, cores: 2)
+        visit(batch_connect_sessions_path)
+  
+        card_selector = "#id_#{get_test_bc_id}"
+
+        assert_selector(card_selector)
+        within(card_selector) do 
+          focusable_elements = all('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+          # since these elements are repeated on every card, they must have a unique classlist within a card
+          focusable_selectors = focusable_elements.map{ |el| "#{el.tag_name}.#{el[:class].split(' ').join('.')}" }
+
+          focusable_selectors.each do |selector|
+            assert_selector(selector)
+            execute_script("$('#{card_selector} #{selector}').focus()")
+            sleep 0.01
+            assert_equal(selector.split('.')[1..], evaluate_script('document.activeElement.classList'))
+          end
+        end
+      end
+    end
+  end
 end
