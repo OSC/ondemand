@@ -122,6 +122,7 @@ function showEditField(event) {
 
   saveButton.classList.remove('d-none');
   editButton.disabled = true;
+  editButton.setAttribute('aria-expanded', 'true')
 
   saveButton.onclick = (event) => { saveEdit(event) };
 }
@@ -136,6 +137,7 @@ function saveEdit(event) {
 
   saveButton.classList.add('d-none');
   editButton.disabled = false;
+  editButton.setAttribute('aria-expanded', 'false')
 }
 
 function addInProgressField(event) {  
