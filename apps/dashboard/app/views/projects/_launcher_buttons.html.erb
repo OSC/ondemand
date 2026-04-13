@@ -14,7 +14,7 @@
     <%= button_to(
       submit_project_launcher_path(@project.id, launcher.id),
       class: 'btn btn-success launcher-button',
-      aria: {label: launch_title},
+      title: launch_title,
       disabled: disabled,
       params: launcher.quick_launch_params,
       id: "launch_#{launcher.id}"
