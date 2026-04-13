@@ -1,9 +1,10 @@
 <%
-  safe_title = title.to_s.parameterize.presence || "group"  
-  card_dom_id = "bc-app-list-#{safe_title}"
-  list_dom_id = "bc-app-list-#{safe_title}-items"
+  # HTML ids use underscores per project convention (see CONTRIBUTING.md).
+  # Parameterize the card title so ids stay valid and pair with aria-controls.
+  slug = title.to_s.parameterize(separator: "_").presence || "group"
+  list_dom_id = "bc_app_list_#{slug}_items"
 %>
-<div class="card collapsible-app-card <%= local_assigns.fetch(:style, "system-and-shared-apps-header") %>" data-collapsible-sidebar-card data-card-id="<%= card_dom_id %>">
+<div class="card collapsible-app-card <%= local_assigns.fetch(:style, "system-and-shared-apps-header") %>" data-collapsible-sidebar-card>
   <button
     class="card-header collapsible-app-card-toggle"
     type="button"
