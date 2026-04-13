@@ -16,7 +16,7 @@
 <div class="editable-form-field">
   <%= render(partial: 'launchers/editable_form_fields/form_item_preview', locals: {form: form, attrib: attrib, format: format }) %>
 
-  <div class="d-none edit-group mb-3">
+  <div id="edit_field_<%= field_id %>" class="d-none edit-group mb-3">
 
     <%= render(partial: 'launchers/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
