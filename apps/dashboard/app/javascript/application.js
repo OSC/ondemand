@@ -37,6 +37,7 @@ import { createPopper } from '@popperjs/core';
 import 'bootstrap/dist/js/bootstrap';
 
 import initPopovers from './popovers'
+import './batch_connect/sidebar_collapsible';
 
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;

@@ -1,6 +1,18 @@
-<div class="card <%= local_assigns.fetch(:style, "system-and-shared-apps-header") %>">
-  <div class="card-header"><%= title %></div>
-  <div class="list-group list-group-flush">
+<%
+  safe_title = title.to_s.parameterize.presence || "group"  
+  card_dom_id = "bc-app-list-#{safe_title}"
+  list_dom_id = "bc-app-list-#{safe_title}-items"
+%>
+<div class="card collapsible-app-card <%= local_assigns.fetch(:style, "system-and-shared-apps-header") %>" data-collapsible-sidebar-card data-card-id="<%= card_dom_id %>">
+  <button
+    class="card-header collapsible-app-card-toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="<%= list_dom_id %>"
+  >
+    <span><%= title %></span>
+  </button>
+  <div id="<%= list_dom_id %>" class="list-group list-group-flush">
   <%-
     OodAppGroup.groups_for(
       apps: apps,
