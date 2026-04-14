@@ -43,23 +43,19 @@
   }
 
   .collapsible-app-card-toggle::after {
-    content: "▸";
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0.3rem 0 0.3rem 0.45rem;
+    border-color: transparent transparent transparent currentColor;
     margin-left: 0.5rem;
+    flex-shrink: 0;
     transition: transform 0.2s ease;
   }
 
-  .list-group {
-    display: none;
-  }
-
-  &.is-open {
-    .collapsible-app-card-toggle::after {
-      transform: rotate(90deg);
-    }
-
-    .list-group {
-      display: block;
-    }
+  .collapsible-app-card-toggle[aria-expanded="true"]::after {
+    transform: rotate(90deg);
   }
 }
 
