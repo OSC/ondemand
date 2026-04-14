@@ -26,7 +26,11 @@ describe 'OnDemand installed with packages' do
 
   describe file('/etc/sudoers.d/ood') do
     it { is_expected.to be_file }
-    its(:content) { is_expected.to include "Defaults:#{apache_user}" }
+    if host_inventory['platform'] == 'ubuntu' && host_inventory['platform_version'].to_i >= 26.04
+      its(:content) { is_expected.to include "Defaults:#{apache_user} !authenticate" }
+    else
+      its(:content) { is_expected.to include "Defaults:#{apache_user} !requiretty, !authenticate" }
+    end
   end
 
   describe file('/etc/cron.d/ood') do

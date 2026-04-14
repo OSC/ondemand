@@ -14,7 +14,7 @@ Package: ondemand
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends},
-  ruby, apache2, sudo, lsof, lua-posix, tzdata, file,
+  ruby, apache2, sudo | sudo-rs, lsof, lua-posix, tzdata, file,
   nodejs (>= 22.0), nodejs (<< 23.0),
   ondemand-nginx (>= 1.28.0.p6.1.2.ood4.2.0),  ondemand-nginx (<< 1.29),
   ondemand-passenger (>= 6.1.2.ood4.2.0), ondemand-passenger (<< 6.1.3),

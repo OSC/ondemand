@@ -294,4 +294,11 @@ module RakeHelper
 
     'httpd'
   end
+
+  def sudo_user_default_options
+    # Ubuntu 26.04 uses sudo-rs which does not include 'requiretty'
+    return '!authenticate' if os_release['ID'] == 'ubuntu' && os_release['VERSION_ID'].to_i >= 26.04
+
+    '!requiretty, !authenticate'
+  end
 end
