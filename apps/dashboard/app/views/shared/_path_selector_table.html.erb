@@ -37,7 +37,7 @@
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
                 <div id="favorites" class="list-group text-nowrap">
-                  <% homedir = FavoritePath.new(Dir.home, title:'Home Directory') %>
+                  <% homedir = FavoritePath.new(Dir.home, title:I18n.t('dashboard.home_directory')) %>
                   <%= render(partial: 'batch_connect/session_contexts/favorites', collection: favorites.unshift(homedir), as: :path) %>
                 </div>
               </div>

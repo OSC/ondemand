@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- "Home Directory" now responds to internationalization in [5246](https://github.com/OSC/ondemand/pull/5246).
+- view.html.erb now has access to the session object in [5294](https://github.com/OSC/ondemand/pull/5294).
+
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
 - Select all checkbox is more accessible in [5043](https://github.com/OSC/ondemand/pull/5043).
@@ -26,11 +30,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The files table now has a caption and aria notification when it updates in [5201](https://github.com/OSC/ondemand/pull/5201).
 - Deleting files is more accessible in [5188](https://github.com/OSC/ondemand/pull/5188).
 - Select row checkboxes in the files table have the correct aria-label attribute in [5187](https://github.com/OSC/ondemand/pull/5187).
+- Popovers are now accessible in [5195](https://github.com/OSC/ondemand/pull/5195).
+- Several components will now not serve edit links when downloads disabled in [5253](https://github.com/OSC/ondemand/pull/5253) and [5112](https://github.com/OSC/ondemand/pull/5112).
+- The job composer has a bypass block in [5282](https://github.com/OSC/ondemand/pull/5282).
+- resolution_fields now correctly have aria-labels in [5289](https://github.com/OSC/ondemand/pull/5289).
+- Certian job composer errors now correctly redirect in [4835](https://github.com/OSC/ondemand/pull/4835).
+- The files app correctly shows the title to include directory in [5252](https://github.com/OSC/ondemand/pull/5252).
+- My interactive sessions page has better landmark navigation in [5279](https://github.com/OSC/ondemand/pull/5279).
+- Project Manager index is more accessible in [5263](https://github.com/OSC/ondemand/pull/5263).
+- Radio buttons now correctly read their label in [5272](https://github.com/OSC/ondemand/pull/5272).
+- Project Manager job pills now have better focus and titles in [5298](https://github.com/OSC/ondemand/pull/5298).
+- Project Manager workflow editor is more accessible in [5273](https://github.com/OSC/ondemand/pull/5273).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
 - Container tasks now default to podman in [4955](https://github.com/OSC/ondemand/pull/4955).
 - ActiveJobs extended data is being changed for improved accessibility in [5181](https://github.com/OSC/ondemand/pull/5181).
+- Passenger has been upgraded to 6.1.2 and Nginx has been upgraded to 1.28.0 in [5237](https://github.com/OSC/ondemand/pull/5237).
+- Support for Debian 13 has been added while support for Ubuntu 22.04 has been dropped in [5243](https://github.com/OSC/ondemand/pull/5243).
 
 ## [4.1.4] - 2026-03-03
 

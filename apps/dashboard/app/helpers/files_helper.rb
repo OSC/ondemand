@@ -2,6 +2,14 @@
 module FilesHelper
   include ApplicationHelper
   
+  def files_browse_page_title(path)
+    prefix = "#{t('dashboard.files_title')} - #{@user_configuration.dashboard_title}"
+    return prefix if path.blank?
+
+    dir_segment = (path.to_s == '/') ? 'Root' : path.basename.to_s
+    "#{prefix} - #{dir_segment}"
+  end
+
   def path_segment_with_slash(filesystem, segment, counter, total)
     # TODO: add check for counter == total - 1 if we decide to omit trailing slash on current directory
     if counter == 0

@@ -2747,7 +2747,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       sleep 3
       favorites = get_favorites
       assert_equal(3, favorites.size)
-      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal(I18n.t('dashboard.home_directory'), favorites[0].text.strip)
       assert_equal('/tmp', favorites[1].text.strip)
       assert_equal('/var', favorites[2].text.strip)
     end
@@ -2784,7 +2784,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       sleep 3
       favorites = get_favorites
       assert_equal(3, favorites.size)
-      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal(I18n.t('dashboard.home_directory'), favorites[0].text.strip)
       assert_equal('/fs/ess', favorites[1].text.strip)
       assert_equal('/fs/scratch', favorites[2].text.strip)
     end

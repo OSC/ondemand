@@ -41,11 +41,14 @@ fr-CA:
     batch_connect_form_attr_cache_error: Impossible d'utiliser les valeurs en cache, utilisation des valeurs par défaut. (%{error_message})
     batch_connect_form_choose_template_name: Choisir un nom de modèle
     batch_connect_form_data_root: répertoire racine des données
+    batch_connect_form_dynamic_disclaimer: Le formulaire suivant peut changer dynamiquement à mesure que des options sont sélectionnées. Tous les changements seront annoncés et sont réversibles.
     batch_connect_form_invalid: Le form.yml a des options manquantes dans le champ de formulaire %{id}.
     batch_connect_form_launch: Lancer
     batch_connect_form_prefill: Utiliser les paramètres sauvegardés
     batch_connect_form_prefill_error: Oups... Quelque chose ne va pas avec votre modèle
     batch_connect_form_reset_resolution: Réinitialiser la résolution
+    batch_connect_form_resolution_height: Hauteur de résolution (pixels)
+    batch_connect_form_resolution_width: Largeur de résolution (pixels)
     batch_connect_form_save: Enregistrer les paramètres
     batch_connect_form_save_new_template: enregistrer de nouveaux paramètres
     batch_connect_form_save_submit: Enregistrer et fermer
@@ -155,6 +158,8 @@ fr-CA:
     files_send_to_target_title_default: Envoyer les métadonnées des fichiers sélectionnés à l'application externe
     files_shell: Ouvrir dans le terminal
     files_shell_dropdown: Sélectionner le cluster à ouvrir dans le terminal
+    files_title: Navigation de fichiers
+    home_directory: Répertoire Personnel
     import: Importer
     job_info: Informations sur le travail
     jobs_create_blank_project: Créer un nouveau projet
@@ -172,12 +177,14 @@ fr-CA:
     jobs_launchers_updated: Manifest du lancement mis à jour !
     jobs_new_launcher: Nouveau lancement
     jobs_project_created: Projet créé avec succès !
+    jobs_project_delete_label: Supprimer le projet %{name}
     jobs_project_delete_project_confirmation: Supprimer tout le contenu du répertoire du projet ?
     jobs_project_deleted: Projet supprimé avec succès !
     jobs_project_description_placeholder: Description du projet
     jobs_project_directory_error: Le chemin du répertoire du projet n'est pas défini pour ce flux de travail
     jobs_project_directory_help_html: 'Laisser vide et un nouveau répertoire sera créé. <br />Emplacement par défaut : %{root_directory}'
     jobs_project_directory_placeholder: Chemin absolu du répertoire du projet
+    jobs_project_edit_label: Modifier le projet %{name}
     jobs_project_generic_error: 'Erreur lors du traitement de votre requête : %{error}'
     jobs_project_group_help: Assurez-vous de choisir le groupe qui inclut tous les collaborateurs prévus. Si ce n'est pas un projet collaboratif, le groupe par défaut est recommandé.
     jobs_project_group_owner: Groupe
@@ -191,12 +198,15 @@ fr-CA:
     jobs_project_name_placeholder: Nom du projet
     jobs_project_name_validation: Le nom du projet ne peut contenir que des lettres, chiffres, tirets, soulignés et espaces
     jobs_project_not_found: Impossible de trouver le projet %{project_id}
+    jobs_project_open_label: Ouvrir le projet %{name}
+    jobs_project_remove_label: Retirer le projet %{name}
     jobs_project_removed: Projet retiré de la recherche !
     jobs_project_save_error: Impossible d’enregistrer le manifest dans %{path}
     jobs_project_select_directory: Sélectionner le répertoire du projet
     jobs_project_setgid_help: Laisser l'option setgid cochée garantit que les fichiers du projet sont créés avec le groupe sélectionné. N'affecte pas les projets dans votre répertoire personnel.
     jobs_project_validation_error: Requête invalide. Veuillez vérifier les erreurs ci-dessous
     jobs_select_directory_placeholder: Cliquez sur le projet ci-dessous pour l'importer sur votre page d'accueil (optionnel)
+    jobs_toggle_details: Cliquez pour afficher ou masquer les détails du travail %{job_id}
     jobs_workflow_created: Flux de travail créé avec succès !
     jobs_workflow_delete_confirmation: Supprimer tous les contenus du flux de travail ?
     jobs_workflow_deleted: Flux de travail supprimé avec succès !

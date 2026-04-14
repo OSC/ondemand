@@ -3,7 +3,7 @@ before_script:
   - MAJOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f1)
   - MINOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f2)
   - '[ "x$CI_COMMIT_TAG" != "x" ] && OOD_PACKAGING_RELEASE="${MAJOR_VERSION}.${MINOR_VERSION}" || OOD_PACKAGING_RELEASE=main'
-  - bundle install --path vendor/bundle --without test
+  - bundle install --path vendor/bundle --without test e2e
 stages:
   - build
   - deploy
@@ -34,7 +34,7 @@ build-nightly:
         # OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_ARCH: [x86_64]
       # Ubuntu and Debian don't have way to get NodeJS 20+ on ppc64le
-      - OOD_PACKAGING_DIST: [ubuntu-22.04, ubuntu-24.04, debian-12]
+      - OOD_PACKAGING_DIST: [ubuntu-24.04, debian-12, debian-13]
         # Only build nightlies as x86 as that's all OSC uses
         # OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_ARCH: [x86_64]
@@ -69,7 +69,7 @@ build:
       - OOD_PACKAGING_DIST: [el10]
         OOD_PACKAGING_ARCH: [x86_64, ppc64le]
       # Ubuntu and Debian don't have way to get NodeJS 20+ on ppc64le
-      - OOD_PACKAGING_DIST: [ubuntu-22.04, ubuntu-24.04, debian-12]
+      - OOD_PACKAGING_DIST: [ubuntu-24.04, debian-12, debian-13]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
       # Amazon 2023 on aarch64 is slow and will time out
       - OOD_PACKAGING_DIST: [amzn2023]

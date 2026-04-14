@@ -26,7 +26,7 @@ class WorkflowState {
   clearWorkflow() {
     this.boxes.forEach(b => b.el.remove());
     this.boxes.clear();
-    this.edges.forEach(e => e.el.remove());
+    this.edges.forEach(e => e.removeAll());
     this.edges.length = 0;
     this.dag.reset();
     this.pointer.resetZoom();
@@ -92,10 +92,15 @@ class WorkflowState {
     }
 
     try {
+      // Sort boxes (top-left to bottom-right) to match the order on canvas for accessibility
       if (metadata.boxes) {
-        await Promise.all(
-          metadata.boxes.map(b => makeLauncher(b.row, b.col, b.id, b.title))
+        const sortedBoxes = [...metadata.boxes].sort((a, b) =>
+          a.row - b.row || a.col - b.col
         );
+
+        for (const b of sortedBoxes) {
+          await makeLauncher(b.row, b.col, b.id, b.title);
+        }
       }
       if (metadata.edges) {
         metadata.edges.forEach(e => createEdge(e.from, e.to));
@@ -334,7 +339,12 @@ class Edge {
     this.fromBox = fromBox;
     this.toBox = toBox;
     this.el = el;
-    this.clickEl = clickEl
+    this.clickEl = clickEl;
+  }
+
+  removeAll() {
+    this.el.remove();
+    this.clickEl.remove();
   }
 
   intersectRect(cx, cy, w, h, dx, dy) {
@@ -654,13 +664,30 @@ class DragController {
       return;
     }
 
+    const fromTitle = boxes.get(fromId).el.querySelector('.launcher-title-grab')?.textContent?.trim() || fromId;
+    const toTitle = boxes.get(toId).el.querySelector('.launcher-title-grab')?.textContent?.trim() || toId;
+
     const clickArea = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     clickArea.classList.add('edge', 'click-area');
     edgesSvg.appendChild(clickArea);
 
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.classList.add('edge');
+    line.setAttribute('tabindex', '0');
+    line.setAttribute('role', 'button');
+    line.setAttribute('aria-label', `Edge from ${fromTitle} to ${toTitle}`);
     edgesSvg.appendChild(line);
+
+    line.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectEdge(edge);
+      }
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
+        deleteSelectedEdge();
+      }
+    });
     
     const edge = new Edge(boxes.get(fromId), boxes.get(toId), line, clickArea);
     edges.push(edge);
@@ -668,13 +695,16 @@ class DragController {
 
     clickArea.addEventListener('click', (e) => {
       e.stopPropagation();
-      document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
-      document.querySelectorAll('.launcher-box.selected').forEach(el => el.classList.remove('selected'));
-      selectedLauncherId = null;
-
-      line.classList.add('selected');
-      selectedEdge = edge;
+      selectEdge(edge);
     });
+  }
+
+  function selectEdge(edge) {
+    document.querySelectorAll('.edge.selected').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.launcher-box.selected').forEach(el => el.classList.remove('selected'));
+    selectedLauncherId = null;
+    edge.el.classList.add('selected');
+    selectedEdge = edge;
   }
 
   function makeLauncher(row, col, id, title) {
@@ -682,7 +712,8 @@ class DragController {
       const url = `${baseLauncherUrl}/${id}/render_button`;
       $.get(url, function(html) {
         const $launcher = $(`
-          <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'>
+          <div class='launcher-box' id='launcher_${id}' data-row='${row}' data-col='${col}'
+               tabindex='0' role='group' aria-label='Launcher: ${title}'>
             <div class='row'>
               <div class='col launcher-title-grab'>${title}</div>
             </div>
@@ -690,7 +721,11 @@ class DragController {
           </div>
         `);
 
-        $('#stage').append($launcher);
+        $launcher.find('button.launcher-button[id^="launch_"]')
+          .attr('aria-label', `Begin workflow from launcher ${title}`);
+
+        edgesSvg ? edgesSvg.before($launcher[0]) : $('#stage').append($launcher);
+
         const pos = drag.cellToXY(row, col);
         $launcher.css({ transform: `translate(${pos.x}px, ${pos.y}px)` });
         const box = new Box(id, $launcher[0], row, col, $launcher.outerWidth(), $launcher.outerHeight());
@@ -705,6 +740,17 @@ class DragController {
           $launcher.addClass('selected');
           pointer.update(e);
           drag.beginDrag(box);
+        });
+
+        $launcher.on('keydown', function(e) {
+          if (document.activeElement !== this) return;
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+
+          selectedLauncherId = id;
+          $('.launcher-box.selected').removeClass('selected');
+          $launcher.addClass('selected');
+          $launcher.trigger('click');
         });
 
         // Connect mode click
@@ -738,7 +784,7 @@ class DragController {
     for (let i = edges.length - 1; i >= 0; i--) {
       const e = edges[i];
       if (e.fromBox.id === selectedLauncherId || e.toBox.id === selectedLauncherId) {
-        e.el.remove();
+        e.removeAll();
         edges.splice(i, 1);
       }
     }
@@ -751,7 +797,7 @@ class DragController {
 
   function deleteSelectedEdge() {
     if (!selectedEdge) return;
-    selectedEdge.el.remove();
+    selectedEdge.removeAll();
     dag.removeEdge(selectedEdge.fromBox.id, selectedEdge.toBox.id);
     edges.splice(edges.indexOf(selectedEdge), 1);
     selectedEdge = null;

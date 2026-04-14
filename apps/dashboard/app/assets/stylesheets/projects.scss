@@ -14,6 +14,10 @@ th.d-above-xl, td.d-above-xl {
   }
 }
 
+div#directory_browser td a {
+  overflow-wrap: anywhere;
+}
+
 .project-card {
   width: fit-content;
 }
@@ -29,7 +33,7 @@ th.d-above-xl, td.d-above-xl {
   justify-content: center;
   width: 20rem;
 
-  &:hover {
+  &:hover, &:focus {
     outline: 0.4em solid rgb(26, 118, 211);
   }
 
@@ -164,10 +168,9 @@ th.d-above-xl, td.d-above-xl {
 
     button.badge.collapsed {
       color: var(--bs-badge-color);
-    }
-
-    button.badge.collapsed:hover {
-      color: var(--bs-btn-hover-color);
+      &:hover, &:focus-within {
+        color: var(--bs-btn-hover-color);
+      }
     }
   }
 
