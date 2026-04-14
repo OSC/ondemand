@@ -39,11 +39,14 @@ ja_JP:
     batch_connect_form_attr_cache_error: 以前にキャッシュされた値を使用できません。代わりにデフォルトを使用します。(%{error_message})
     batch_connect_form_choose_template_name: テンプレート名を選択してください
     batch_connect_form_data_root: データルートディレクトリ
+    batch_connect_form_dynamic_disclaimer: 以下のフォームは、オプションが選択されると動的に変更される場合があります。すべての変更は通知され、元に戻すことができます。
     batch_connect_form_invalid: form.ymlに%{id}フォームフィールドのオプションが欠落しています。
     batch_connect_form_launch: 起動
     batch_connect_form_prefill: 保存された設定を使用
     batch_connect_form_prefill_error: おっと... テンプレートに問題があります
     batch_connect_form_reset_resolution: 解像度をリセット
+    batch_connect_form_resolution_height: 解像度の高さ（ピクセル）
+    batch_connect_form_resolution_width: 解像度の幅（ピクセル）
     batch_connect_form_save: 設定を保存
     batch_connect_form_save_new_template: 新しい設定を保存
     batch_connect_form_save_submit: 設定を保存して閉じる
@@ -152,6 +155,7 @@ ja_JP:
     files_send_to_target_title_default: 選択したファイルのメタデータを外部アプリケーションに送信
     files_shell: ターミナルで開く
     files_shell_dropdown: ターミナルで開くクラスターを選択
+    files_title: ファイルブラウジング
     home_directory: ホームディレクトリ
     import: インポート
     job_info: ジョブ情報
@@ -170,12 +174,14 @@ ja_JP:
     jobs_launchers_updated: ランチャーマニフェストが更新されました！
     jobs_new_launcher: 新しいランチャー
     jobs_project_created: プロジェクトが正常に作成されました！
+    jobs_project_delete_label: プロジェクト %{name} を削除
     jobs_project_delete_project_confirmation: プロジェクトディレクトリのすべての内容を削除しますか？
     jobs_project_deleted: プロジェクトが正常に削除されました！
     jobs_project_description_placeholder: プロジェクトの説明
     jobs_project_directory_error: このワークフローのためにプロジェクトディレクトリパスが設定されていません。
     jobs_project_directory_help_html: '空のままにすると新しいディレクトリが作成されます。<br />デフォルトの場所: %{root_directory}'
     jobs_project_directory_placeholder: プロジェクトディレクトリの絶対パス
+    jobs_project_edit_label: プロジェクト %{name} を編集
     jobs_project_generic_error: 'リクエストの処理中にエラーが発生しました: %{error}'
     jobs_project_group_help: すべての意図したコラボレーターを含むグループを選択してください。これはコラボレーションプロジェクトでない場合、デフォルトのグループを推奨します。
     jobs_project_group_owner: グループ
@@ -189,12 +195,15 @@ ja_JP:
     jobs_project_name_placeholder: プロジェクト名
     jobs_project_name_validation: プロジェクト名には文字、数字、ダッシュ、アンダースコア、スペースのみを含めることができます。
     jobs_project_not_found: プロジェクト%{project_id}が見つかりません。
+    jobs_project_open_label: プロジェクト %{name} を開く
+    jobs_project_remove_label: プロジェクト %{name} を削除
     jobs_project_removed: プロジェクトがルックアップから削除されました！
     jobs_project_save_error: マニフェストを%{path}に保存できません。
     jobs_project_select_directory: プロジェクトディレクトリを選択
     jobs_project_setgid_help: setgidをチェックしたままにすると、プロジェクトファイルが選択したグループで作成されます。ホームディレクトリ内のプロジェクトには影響しません。
     jobs_project_validation_error: 無効なリクエストです。以下のエラーを確認してください。
     jobs_select_directory_placeholder: ホームページにインポートするために以下のプロジェクトをクリックしてください（オプション）
+    jobs_toggle_details: ジョブ %{job_id} の詳細を切り替えるにはクリックしてください
     jobs_workflow_created: ワークフローが正常に作成されました！
     jobs_workflow_delete_confirmation: ワークフローのすべての内容を削除しますか？
     jobs_workflow_deleted: ワークフローが正常に削除されました！

@@ -19,3 +19,9 @@
   width: 100%;
   height: 20em;
 }
+
+.details-control {
+  &:hover, &:focus {
+    outline: 3px solid blue;
+  }
+}
