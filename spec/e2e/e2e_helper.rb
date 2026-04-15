@@ -253,7 +253,7 @@ def bootstrap_flask
 end
 
 def dl_ctr_logs
-  on hosts, "journalctl -u #{apache_service} -e"
+  on hosts, 'journalctl -xe'
   dir = File.join(proj_root, 'tmp/e2e_ctr').tap { |d| `mkdir -p #{d}` }
 
   hosts.each do |host|
