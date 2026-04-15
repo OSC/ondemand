@@ -9,31 +9,11 @@ class HpcModule
           file = "#{Configuration.module_file_dir}/#{cluster}.json"
           if File.file?(file) && File.readable?(file)
             begin
-              data = JSON.parse(File.read(file))
-
-              # Group entries by name+version and aggregate dependency sets
-              grouped = Hash.new { |h, k| h[k] = { name: k[0], version: k[1], dependencies: [], hidden: false } }
-
-              # Iterate through the data and populate the grouped hash
-              data.each do |name, spider_output|
-                spider_output.each do |_, mod|
-                  version = mod['Version']
-                  key = [name, version]
-                  grouped[key][:hidden] ||= !!mod['hidden']
-
-                  deps = mod['parentAA']
-                  # If parentAA is an array of dependency pairs; append them
-                  if deps.is_a?(Array)
-                    grouped[key][:dependencies].concat(deps)
-                  end
+              JSON.parse(File.read(file)).map do |name, spider_output|
+                spider_output.map do |_, mod|
+                  HpcModule.new(name, version: mod['Version'], dependencies: mod['parentAA'], cluster: cluster, hidden: mod['hidden'])
                 end
-              end
-
-              # Convert grouped hash to HpcModule instances, ensuring dependencies are unique
-              grouped.values.map do |info|
-                deps = info[:dependencies].uniq
-                HpcModule.new(info[:name], version: info[:version], dependencies: deps, cluster: cluster, hidden: info[:hidden])
-              end.reject(&:hidden?)
+              end.flatten.uniq.reject(&:hidden?)
             rescue StandardError => e
               Rails.logger.warn("Did not read #{file} correctly because #{e.class}:#{e.message}")
               []
@@ -55,7 +35,6 @@ class HpcModule
         all(cluster: cluster.id).select { |m| m.name == module_name.to_s }
       end.flatten.uniq(&:to_s).sort_by(&:version).reverse
     end
-
   end
 
   attr_reader :name, :version, :dependencies, :cluster, :hidden
