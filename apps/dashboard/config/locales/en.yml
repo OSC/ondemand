@@ -155,6 +155,9 @@ en:
     files_new_directory: New Directory
     files_copy_move: Copy/Move
     files_delete: Delete
+    files_download: Download
+    files_upload: Upload
+    files_open_in_globus: Open in Globus
     files_table_select_all: Select All
     files_table_content_of_directory: Contents of directory %{path}
     files_table_select: Select
@@ -165,6 +168,9 @@ en:
     files_table_modified_at: Modified at
     files_table_owner: Owner
     files_table_mode: Mode
+    files_go_up_directory: Go up directory
+    files_change_directory: Change directory
+    files_copy_path: Copy path
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
