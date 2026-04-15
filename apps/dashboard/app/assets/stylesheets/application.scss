@@ -27,20 +27,9 @@
 
 
 * { // Contrast fixes. Do not edit without re-checking accessibility
-  --bs-link-color: rgb(31, 110, 178);
-  --bs-link-color-rgb: 31, 110, 178;
-  --bs-danger: rgb(218, 52, 67);
-  --bs-danger-rbg: 218, 52, 67;
-}
-
-.btn-danger {
-  --bs-btn-bg: rgb(218, 52, 67);
-  --bs-btn-border-color: rgb(218, 52, 67);
-}
-
-.btn-secondary {
-  --bs-btn-bg: rgb(107 117 128);
-  --bs-btn-border-color: rgb(107 117 128);
+  $bs-link-color: rgb(31, 110, 178);
+  $bs-danger: rgb(218, 52, 67);
+  $bs-secondary: rgb(107 117 128);
 }
 
 .bg-white {
