@@ -86,7 +86,8 @@ class HpcModuleTest < ActiveSupport::TestCase
           'lammps/5Jun19', 'lammps/3Mar20', 'lammps/29Oct20', 'lammps/22Aug18', 'lammps/16Mar18'
         ]
         assert_equal(expected, HpcModule.all_versions('lammps').map(&:to_s))
-        lammps_3mar20 = HpcModule.all_versions('lammps').find { |m| m.version == '3Mar20' }
+        lammps_3mar20_entries = HpcModule.all(cluster: 'owens').select { |m| m.name == 'lammps' && m.version == '3Mar20' }
+        merged_dependencies = lammps_3mar20_entries.flat_map { |m| Array(m.dependencies) }.uniq
         expected = [['intel/19.0.3', 'openmpi/4.0.3-hpcx'], ['intel/19.0.5', 'openmpi/4.0.3-hpcx'], 
                     ['intel/19.0.3', 'openmpi/4.0.3'], ['intel/19.0.5', 'openmpi/4.0.3'],
                     ['intel/19.0.3', 'intelmpi/2019.7'], ['intel/19.0.5', 'intelmpi/2019.7'],
@@ -101,7 +102,7 @@ class HpcModuleTest < ActiveSupport::TestCase
                     ['intel/19.0.3', 'mvapich2/2.3.4'], ['intel/19.0.5', 'mvapich2/2.3.4'],
                     ['intel/19.0.3', 'mvapich2/2.3.3'], ['intel/19.0.5', 'mvapich2/2.3.3']
         ]
-        assert_equal(expected, lammps_3mar20.dependencies)
+        assert_equal(expected, merged_dependencies)
       end
     end
   end
