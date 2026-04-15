@@ -1,6 +1,24 @@
-<button id='<%= "edit_#{field_id}" %>' class="btn btn-primary" type="button"><%= t('dashboard.edit') %></button>
-<button id='<%= "save_#{field_id}" %>' class="btn btn-success ms-3 me-1 d-none" type="button"><%= t('dashboard.save') %></button>
+<button id='<%= "edit_#{field_id}" %>' 
+  class="btn btn-primary" 
+  type="button" 
+  aria-label="<%= t('dashboard.jobs_launchers_edit_form_item', label: label)%>"
+  data-edit-label="<%= t('dashboard.jobs_launchers_edit_form_item', label: label)%>"
+  data-save-label="<%= t('dashboard.jobs_launchers_save_form_item', label: label)%>"
+  data-edit-text="<%= t('dashboard.edit') %>"
+  data-save-text="<%= t('dashboard.save') %>"
+  aria-expanded="false"
+  aria-controls="edit_field_<%= field_id %>"
+>
+  <%= t('dashboard.edit') %>
+</button>
+
 
 <% if script_removable_field?(field_id) %>
-  <button id='<%= "remove_#{field_id}" %>' class="btn btn-danger float-end" type="button"><%= t('dashboard.remove') %></button>
+  <button id='<%= "remove_#{field_id}" %>' 
+    class="btn btn-danger float-end" 
+    type="button"
+    aria-label="<%= t('dashboard.jobs_launchers_remove_form_item', label: label)%>"
+  >
+    <%= t('dashboard.remove') %>
+  </button>
 <% end %>
