@@ -26,8 +26,8 @@ describe 'OnDemand installed with packages' do
 
   describe file('/etc/sudoers.d/ood') do
     it { is_expected.to be_file }
-    if host_inventory['platform'] == 'ubuntu' && host_inventory['platform_version'].to_i >= 26.04
-      its(:content) { is_expected.to include "Defaults:#{apache_user} !authenticate" }
+    if host_inventory['platform'] == 'ubuntu' && host_inventory['platform_version'].to_i >= 26
+      its(:content) { is_expected.to include "Defaults:#{apache_user} !pwfeedback, !use_pty" }
     else
       its(:content) { is_expected.to include "Defaults:#{apache_user} !requiretty, !authenticate" }
     end
