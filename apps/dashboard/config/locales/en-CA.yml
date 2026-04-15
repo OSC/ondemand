@@ -41,11 +41,14 @@ en-CA:
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
     batch_connect_form_choose_template_name: Choose a template name
     batch_connect_form_data_root: data root directory
+    batch_connect_form_dynamic_disclaimer: The following form may change dynamically as options are selected. All changes will be announced and are reversible.
     batch_connect_form_invalid: The form.yml has missing options in the %{id} form field.
     batch_connect_form_launch: Launch
     batch_connect_form_prefill: Use saved settings
     batch_connect_form_prefill_error: Oops... Something is wrong with your template
     batch_connect_form_reset_resolution: Reset Resolution
+    batch_connect_form_resolution_height: Resolution height (pixels)
+    batch_connect_form_resolution_width: Resolution width (pixels)
     batch_connect_form_save: Save settings
     batch_connect_form_save_new_template: save new settings
     batch_connect_form_save_submit: Save settings and close
@@ -155,6 +158,7 @@ en-CA:
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
+    files_title: File browsing
     home_directory: Home Directory
     import: Import
     job_info: Job Info
@@ -173,12 +177,14 @@ en-CA:
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
+    jobs_project_delete_label: Delete project %{name}
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
+    jobs_project_edit_label: Edit project %{name}
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
     jobs_project_group_help: Make sure to choose the group that includes all intended collaborators. If this is not a collaborative project, the default group is recommended.
     jobs_project_group_owner: Group
@@ -192,12 +198,15 @@ en-CA:
     jobs_project_name_placeholder: Project name
     jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
     jobs_project_not_found: Cannot find project %{project_id}
+    jobs_project_open_label: Open project %{name}
+    jobs_project_remove_label: Remove project %{name}
     jobs_project_removed: Project removed from lookup!
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_select_directory: Select project directory
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. This does not affect projects in your home directory.
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
+    jobs_toggle_details: Click to toggle details for job %{job_id}
     jobs_workflow_created: Workflow successfully created!
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
     jobs_workflow_deleted: Workflow successfully deleted!

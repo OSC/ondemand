@@ -33,7 +33,7 @@ div#directory_browser td a {
   justify-content: center;
   width: 20rem;
 
-  &:hover {
+  &:hover, &:focus {
     outline: 0.4em solid rgb(26, 118, 211);
   }
 
@@ -168,10 +168,9 @@ div#directory_browser td a {
 
     button.badge.collapsed {
       color: var(--bs-badge-color);
-    }
-
-    button.badge.collapsed:hover {
-      color: var(--bs-btn-hover-color);
+      &:hover, &:focus-within {
+        color: var(--bs-btn-hover-color);
+      }
     }
   }
 
