@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The icon picker is much more screen reader friendly in [5186](https://github.com/OSC/ondemand/pull/5186).
 - Project Manager's launcher form builder has better accessibility in [5302](https://github.com/OSC/ondemand/pull/5302).
 - Project Manager's launcher/workflow lists has better accessibility in [5296](https://github.com/OSC/ondemand/pull/5296).
+- Updated some color contrasts to be 4.5+ in [5329](https://github.com/OSC/ondemand/pull/5329).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
