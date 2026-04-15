@@ -866,7 +866,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       fill_in('launcher_bc_num_hours_min', with: 20)
       fill_in('launcher_bc_num_hours_max', with: 101)
       find('#launcher_bc_num_hours_fixed').click
-      find('#save_launcher_bc_num_hours').click
+      find('#edit_launcher_bc_num_hours').click
 
       # add auto_environment_variable
       add_auto_environment_variable(project_id, launcher_id)
@@ -875,7 +875,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
       find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'some_value')
 
-      find('#save_launcher_auto_environment_variable').click
+      find('#edit_launcher_auto_environment_variable').click
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
