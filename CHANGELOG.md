@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.0] - 2026-04-15
+
 ### Added
 - "Home Directory" now responds to internationalization in [5246](https://github.com/OSC/ondemand/pull/5246).
 - view.html.erb now has access to the session object in [5294](https://github.com/OSC/ondemand/pull/5294).
+- ood_portal_generator will now display a message when 'auth' has not been set in [5275](https://github.com/OSC/ondemand/pull/5275).
+- BatchConnect::App.from_token now caches apps in [5299](https://github.com/OSC/ondemand/pull/5299).
 
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
@@ -34,13 +38,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Several components will now not serve edit links when downloads disabled in [5253](https://github.com/OSC/ondemand/pull/5253) and [5112](https://github.com/OSC/ondemand/pull/5112).
 - The job composer has a bypass block in [5282](https://github.com/OSC/ondemand/pull/5282).
 - resolution_fields now correctly have aria-labels in [5289](https://github.com/OSC/ondemand/pull/5289).
-- Certian job composer errors now correctly redirect in [4835](https://github.com/OSC/ondemand/pull/4835).
+- Certain job composer errors now correctly redirect in [4835](https://github.com/OSC/ondemand/pull/4835).
 - The files app correctly shows the title to include directory in [5252](https://github.com/OSC/ondemand/pull/5252).
 - My interactive sessions page has better landmark navigation in [5279](https://github.com/OSC/ondemand/pull/5279).
 - Project Manager index is more accessible in [5263](https://github.com/OSC/ondemand/pull/5263).
 - Radio buttons now correctly read their label in [5272](https://github.com/OSC/ondemand/pull/5272).
 - Project Manager job pills now have better focus and titles in [5298](https://github.com/OSC/ondemand/pull/5298).
 - Project Manager workflow editor is more accessible in [5273](https://github.com/OSC/ondemand/pull/5273).
+- My interactive sessions page has better landmarks in [5279](https://github.com/OSC/ondemand/pull/5279).
+- Content with role=alert has been corrected for NVDA and Firefox in [5303](https://github.com/OSC/ondemand/pull/5303).
+- My interactive sessions page holds focus better when the page updates in [5310](https://github.com/OSC/ondemand/pull/5310).
+- mod_ood_proxy sets the HSTS header in [5323](https://github.com/OSC/ondemand/pull/5323).
+- The files application has better region navigation in [5248](https://github.com/OSC/ondemand/pull/5248).
+- The icon picker is much more screen reader friendly in [5186](https://github.com/OSC/ondemand/pull/5186).
+- Project Manager's launcher form builder has better accessibility in [5302](https://github.com/OSC/ondemand/pull/5302).
+- Project Manager's launcher/workflow lists has better accessibility in [5296](https://github.com/OSC/ondemand/pull/5296).
+- Updated some color contrasts to be 4.5+ in [5329](https://github.com/OSC/ondemand/pull/5329).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
@@ -1859,7 +1872,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.4...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.0...HEAD
+[4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
 [4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/OSC/ondemand/compare/v4.1.1...v4.1.2
