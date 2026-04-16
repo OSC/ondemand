@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.1] - 2026-04-16
+
+### Added
+- Support for Ubuntu 26.04 in [5326](https://github.com/OSC/ondemand/pull/5326).
+
+### Fixed
+- Fixed some scss variables for contrast in [5334](https://github.com/OSC/ondemand/pull/5334).
+- ood_core and other dependency updates in [5333](https://github.com/OSC/ondemand/pull/5333).
+
 ## [4.2.0] - 2026-04-15
 
 ### Added
@@ -1872,7 +1881,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.1...HEAD
+[4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
 [4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
