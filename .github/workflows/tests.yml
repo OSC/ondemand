@@ -180,6 +180,9 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
+          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+             unset CONTAINER_RT
+           fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
         timeout-minutes: 10
         env:
