@@ -26,11 +26,7 @@
 
 
 
-* { // Contrast fixes. Do not edit without re-checking accessibility
-  $bs-link-color: rgb(31, 110, 178);
-  $bs-danger: rgb(218, 52, 67);
-  $bs-secondary: rgb(107 117 128);
-}
+// Contrast fixes. Do not edit without re-checking accessibility
 
 .bg-white {
   --bs-info: rgb(9, 128, 151);
