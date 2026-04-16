@@ -184,7 +184,7 @@ jobs:
              unset CONTAINER_RT
            fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
-        timeout-minutes: 10
+        timeout-minutes: 20
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
