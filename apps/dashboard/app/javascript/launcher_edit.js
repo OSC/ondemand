@@ -115,27 +115,25 @@ function removeField(event) {
 function showEditField(event) {
   const entireDiv = event.target.parentElement;
   const editField = entireDiv.querySelector('.edit-group');
-  editField.classList.remove('d-none');
 
-  const saveButton = entireDiv.querySelector('.btn-success');
-  const editButton = entireDiv.querySelector('.btn-primary');
+  const editButton = entireDiv.querySelector('.btn-primary, .btn-success');
 
-  saveButton.classList.remove('d-none');
-  editButton.disabled = true;
-
-  saveButton.onclick = (event) => { saveEdit(event) };
-}
-
-function saveEdit(event) {
-  const entireDiv = event.target.parentElement;
-  const editField = entireDiv.querySelector('.edit-group');
-  editField.classList.add('d-none');
-
-  const saveButton = entireDiv.querySelector('.btn-success');
-  const editButton = entireDiv.querySelector('.btn-primary');
-
-  saveButton.classList.add('d-none');
-  editButton.disabled = false;
+  if (editField.classList.contains('d-none')) {
+    editField.classList.remove('d-none');
+    editButton.classList.remove('btn-primary');
+    editButton.classList.add('btn-success');
+    editButton.setAttribute('aria-expanded', 'true');
+    editButton.setAttribute('aria-label', editButton.getAttribute('data-save-label'))
+    editButton.textContent = editButton.getAttribute('data-save-text');
+    
+  } else {
+    editField.classList.add('d-none');
+    editButton.classList.remove('btn-success');
+    editButton.classList.add('btn-primary');
+    editButton.setAttribute('aria-expanded', 'false');
+    editButton.setAttribute('aria-label', editButton.getAttribute('data-edit-label'))
+    editButton.textContent = editButton.getAttribute('data-edit-text');
+  }
 }
 
 function addInProgressField(event) {  
@@ -172,14 +170,14 @@ function updateAutoEnvironmentVariable(event) {
   const labelString = event.target.dataset.labelString;
   const idString = `launcher_auto_environment_variable_${aev_name}`;
   const nameString = `launcher[auto_environment_variable_${aev_name}]`;
-  var input_field = event.target.parentElement.children[2].children[0].children[1];
+  var input_field = event.target.parentElement.children[2].children[0].children[0].children[1];
 
   input_field.removeAttribute('readonly');
   input_field.id = idString;
   input_field.name = nameString;
 
   if (labelString.match(/Environment(&#32;|\s)Variable/)) {
-    const label_field = event.target.parentElement.children[2].children[0].children[0];
+    const label_field = event.target.parentElement.children[2].children[0].children[0].children[0];
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
 

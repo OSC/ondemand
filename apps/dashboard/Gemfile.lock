@@ -126,7 +126,7 @@ GEM
       activesupport
       i18n
     drb (2.2.3)
-    erb (6.0.2)
+    erb (6.0.3)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
     excon (1.4.2)
@@ -208,7 +208,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0407)
+    mime-types-data (3.2026.0414)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.27.0)
@@ -216,8 +216,7 @@ GEM
       ruby2_keywords (>= 0.0.5)
     multi_json (1.20.1)
     multipart-post (2.4.1)
-    mustermann (3.0.4)
-      ruby2_keywords (~> 0.0.1)
+    mustermann (3.1.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
     net-imap (0.3.9)
@@ -240,7 +239,7 @@ GEM
       ood_core (~> 0.1)
       rails (>= 6.0.0)
       redcarpet (~> 3.2)
-    ood_core (0.30.2)
+    ood_core (0.31.0)
       ffi (~> 1.16.3)
       fog-openstack (~> 1.1.5)
       ood_support (~> 0.0.2)
@@ -312,7 +311,7 @@ GEM
       tsort (>= 0.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.3.1)
+    rake (13.4.2)
     rdoc (7.2.0)
       erb
       psych (>= 4.0.0)

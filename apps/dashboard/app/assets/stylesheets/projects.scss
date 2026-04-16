@@ -134,6 +134,20 @@ div#directory_browser td a {
   text-wrap:nowrap;
 }
 
+.btn-success.launcher-button {
+  --bs-btn-bg: rgb(66, 130, 66);
+  --bs-btn-border-color: rgb(66, 130, 66);
+  --bs-btn-hover-bg: rgb(76, 154, 76);
+  --bs-btn-hover-border-color: rgb(76, 154, 76);
+}
+
+.btn-info.launcher-button {
+  --bs-btn-bg: rgb(9, 128, 151);
+  --bs-btn-border-color: rgb(9, 128, 151);
+  --bs-btn-hover-bg: rgb(12, 154, 183);
+  --bs-btn-hover-border-color: rgb(12, 154, 183);
+}
+
 .workflow-item {
   justify-content: right;
 }
@@ -168,6 +182,10 @@ div#directory_browser td a {
 
     button.badge.collapsed {
       color: var(--bs-badge-color);
+      --bs-success: rgb(66, 130, 66);
+      --bs-success-rgb: 66, 130, 66;
+      --bs-info: rgb(9, 128, 151);
+      --bs-info-rgb: 9, 128, 151;
       &:hover, &:focus-within {
         color: var(--bs-btn-hover-color);
       }

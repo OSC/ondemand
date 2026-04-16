@@ -8,6 +8,7 @@ Build-Depends: debhelper (>=11~), curl, build-essential,
   nodejs (>= 22.0), nodejs (<< 23.0),
   sqlite3, libsqlite3-dev, python3@EXTRA_DEPENDS@
 Standards-Version: 4.1.4
+Rules-Requires-Root: binary-targets
 Homepage: https://openondemand.org
 
 Package: ondemand

@@ -183,12 +183,11 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
-          # debian-13 needs privileged podman in order to run things like chown and chmod
           if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
-            export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
-          fi
+             unset CONTAINER_RT
+           fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
-        timeout-minutes: 10
+        timeout-minutes: 20
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
