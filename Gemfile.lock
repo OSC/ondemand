@@ -64,7 +64,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.0)
     net-telnet (0.2.0)
-    ood_packaging (0.22.0)
+    ood_packaging (0.22.1)
       rake (~> 13.0)
     parallel (1.27.0)
     parser (3.3.11.1)
