@@ -44,6 +44,11 @@ describe 'OnDemand installed with packages' do
 
   describe file("/etc/systemd/system/#{apache_service}.service.d/ood.conf") do
     it { is_expected.to be_file }
+    if host_inventory['platform'] == 'ubuntu' && host_inventory['platform_version'].to_i >= 26
+      its(:content) { is_expected.to match %r{InaccessiblePaths=} }
+    else
+      its(:content) { is_expected.not_to match %r{InaccessiblePaths=} }
+    end
   end
 
   describe file("/etc/systemd/system/#{apache_service}.service.d/ood-portal.conf") do
