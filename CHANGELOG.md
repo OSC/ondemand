@@ -7,39 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
-Support Ubuntu 26.04 (#5326)\
-fix scss variables for contrast (#5334)\
-Fix debian-13 builds in Gitlab (#5331)\
-update dependencies (#5333)\
-Update Changelog (#5330)\
-Fix contrast issues in main pages (#5329)\
-This will always set the HSTS header for security purposes (#5323)\
-Lint a random file (#5315)\
-add regions to files table view (#5248)\
-Make icon picker keyboard navigable (#5186)\
-Launcher form builder accessibility (#5302)\
-Make footer 'Powered by Open OnDemand' more prominent (#1986) (#5309)\
-remove this \\A to fix spelling (#5320)\
-Make launcher/workflow lists accessible 5257 (#5296)\
-Hold focus in batch connect session cards (#5310)\
-make the activejobs panel more accessible (#5295)\
-Add caching to BatchConnect::App.from_token (#5299)\
-fixup flash alerts and notices a little bit (#5303)\
-update dependencies (#5318)\
-Update Changelog (#5316)\
-Do not install e2e gems during Gitlab package build (#5313)\
-update localizations (#5317)\
-make project index accessible (#5263)\
-Update files app page title to include directory (fix #2078) (#5252)\
-Redirect launcher and workflow index pages to projects show (#4835)\
-internationalize dynamic form disclaimer (#5305)\
-lint a random file (#5306)\
-add assert selectors to batch_connect_widgets_test.rb (#5308)\
-Make radio buttons accessible with javascript (#5272)\
-add title and focus css to project job pills (#5298)\
-Making workflow editor more accessible (#5273)\
-message added when auth not set (#5275)\
-Add session to running job view locals (#5294)
+
+## [4.2.1] - 2026-04-16
+
+### Added
+- Support for Ubuntu 26.04 in [5326](https://github.com/OSC/ondemand/pull/5326).
+
+### Fixed
+- Fixed some scss variables for contrast in [5334](https://github.com/OSC/ondemand/pull/5334).
+- ood_core and other dependency updates in [5333](https://github.com/OSC/ondemand/pull/5333).
 
 ## [4.2.0] - 2026-04-15
 
@@ -1905,7 +1881,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.1...HEAD
+[4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
 [4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
