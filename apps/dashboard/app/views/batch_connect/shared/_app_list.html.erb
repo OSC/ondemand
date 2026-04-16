@@ -10,12 +10,12 @@
     type="button"
     data-bs-toggle="collapse"
     data-bs-target="#<%= list_dom_id %>"
-    aria-expanded="false"
+    aria-expanded="true"
     aria-controls="<%= list_dom_id %>"
   >
     <span><%= title %></span>
   </button>
-  <div id="<%= list_dom_id %>" class="list-group list-group-flush collapse">
+  <div id="<%= list_dom_id %>" class="list-group list-group-flush collapse show">
   <%-
     OodAppGroup.groups_for(
       apps: apps,

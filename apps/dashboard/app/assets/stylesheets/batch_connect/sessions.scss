@@ -33,29 +33,23 @@
 
 .collapsible-app-card {
   .collapsible-app-card-toggle {
-    width: 100%;
-    text-align: left;
-    border: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
 
-  .collapsible-app-card-toggle::after {
-    content: "";
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0.3rem 0 0.3rem 0.45rem;
-    border-color: transparent transparent transparent currentColor;
-    margin-left: 0.5rem;
-    flex-shrink: 0;
-    transition: transform 0.2s ease;
-  }
+    &::after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0.3rem 0 0.3rem 0.45rem;
+      border-color: transparent transparent transparent currentColor;
+    }
 
-  .collapsible-app-card-toggle[aria-expanded="true"]::after {
-    transform: rotate(90deg);
+    &[aria-expanded="true"]::after {
+      transform: rotate(90deg);
+    }
   }
 }
 
