@@ -15,8 +15,12 @@ const CONTENTID = '#directory-contents';
 const SPINNERID = '#tloading_spinner';
 
 let table = null;
+let filesLabels = null;
 
 jQuery(function () {
+    const configEl = document.getElementById('files_page_load_config');
+    if (!configEl) return;
+    filesLabels = configEl.dataset;
     table = new DataTable();
 
     /* END BUTTON ACTIONS */
@@ -189,7 +193,7 @@ class DataTable {
         }).DataTable({
             autoWidth: false,
             language: {
-                search: 'Filter:',
+                search: filesLabels.labelFilter,
                 infoFiltered: ""
             },
             order: [[1, "asc"], [2, "asc"]],
@@ -221,10 +225,10 @@ class DataTable {
                     orderable: false,
                     defaultContent: '<input type="checkbox">',
                     render: (data, type, row, meta) => {
-                        return `<input type='checkbox' class='file-select' data-dl-url='${row.download_url}' aria-label="Select row">`;
+                        return `<input type='checkbox' class='file-select' data-dl-url='${row.download_url}' aria-label="${filesLabels.labelSelectRow}">`;
                     }
                 },
-                { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only">directory</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only">file</span></span>' }, // type
+                { data: 'type', render: (data, type, row, meta) => data == 'd' ? `<span title="${filesLabels.labelDirectory}" class="fa fa-folder" style="color: gold"><span class="sr-only">${filesLabels.labelDirectory}</span></span>` : `<span title="${filesLabels.labelFile}" class="fa fa-file" style="color: lightgrey"><span class="sr-only">${filesLabels.labelFile}</span></span>` }, // type
                 { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => this.renderNameColumn(data, type, row, meta) }, // name
                 { name: 'actions', orderable: false, searchable: false, data: null, render: (data, type, row, meta) => this.actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd', data: row }) },
                 {
@@ -239,7 +243,7 @@ class DataTable {
                             let date = new Date(data * 1000)
 
                             // Return formatted date "3/23/2021 10:52:28 AM"
-                            return isNaN(data) ? 'Invalid Date' : `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+                            return isNaN(data) ? filesLabels.labelInvalidDate : `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
                         }
                         else {
                             return data;
@@ -262,8 +266,8 @@ class DataTable {
             ]
         });
 
-        $('div.dt-search').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" class="vertical-align-middle" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
-        $('div.dt-search').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" class="vertical-align-middle" ${this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
+        $('div.dt-search').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" class="vertical-align-middle" ${this.getShowDotFiles() ? 'checked' : ''}> ${filesLabels.labelShowDotfiles}</label>`)
+        $('div.dt-search').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" class="vertical-align-middle" ${this.getShowOwnerMode() ? 'checked' : ''}> ${filesLabels.labelShowOwnerMode}</label>`)
 
         this.updateGlobus();
     }
@@ -303,8 +307,8 @@ class DataTable {
                 $('#select_all').trigger();
             }
 
-	    $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
-	    ariaNotify(`navigated to ${data.path}`);
+	    $(`${CONTENTID}_caption`).text(filesLabels.labelContentsOfDirectory.replace('__PATH__', data.path));
+	    ariaNotify(filesLabels.labelNavigatedTo.replace('__PATH__', data.path));
 
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
@@ -384,7 +388,7 @@ class DataTable {
                     if(disposition === null) {
                         return response;
                     } else {
-                        throw new Error("Cannot navigate to a file.");
+                        throw new Error(filesLabels.labelCannotNavigateToFile);
                     }
                 })
                 .then(response => response.json())
@@ -444,7 +448,7 @@ class DataTable {
         button.setAttribute('data-bs-toggle', 'dropdown');
         button.setAttribute('aria-haspopup', 'true');
         button.setAttribute('aria-expanded', 'false');
-        button.setAttribute('title', 'Actions');
+        button.setAttribute('title', filesLabels.labelActions);
           
         // Create the icon inside the button
         const icon = document.createElement('span');
@@ -466,7 +470,7 @@ class DataTable {
                 viewLink.href = data.url;
                 viewLink.classList.add('view-file', 'dropdown-item');
                 viewLink.setAttribute('data-row-index', rowIndex);
-                viewLink.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i> View';
+                viewLink.innerHTML = `<i class="fas fa-eye" aria-hidden="true"></i> ${filesLabels.labelView}`;
                 viewItem.appendChild(viewLink);
                 dropdownMenu.appendChild(viewItem);
             }
@@ -477,7 +481,7 @@ class DataTable {
                 editLink.href = data.edit_url;
                 editLink.classList.add('edit-file', 'dropdown-item');
                 editLink.setAttribute('data-row-index', rowIndex);
-                editLink.innerHTML = '<i class="fas fa-edit" aria-hidden="true"></i> Edit';
+                editLink.innerHTML = `<i class="fas fa-edit" aria-hidden="true"></i> ${filesLabels.labelEdit}`;
                 editItem.appendChild(editLink);
                 dropdownMenu.appendChild(editItem);
             }
@@ -489,7 +493,7 @@ class DataTable {
         renameLink.href = '#';
         renameLink.classList.add('rename-file', 'dropdown-item');
         renameLink.setAttribute('data-row-index', rowIndex);
-        renameLink.innerHTML = '<i class="fas fa-font" aria-hidden="true"></i> Rename';
+        renameLink.innerHTML = `<i class="fas fa-font" aria-hidden="true"></i> ${filesLabels.labelRename}`;
         renameItem.appendChild(renameLink);
         dropdownMenu.appendChild(renameItem);
           
@@ -500,7 +504,7 @@ class DataTable {
             downloadLink.href = data.download_url;
             downloadLink.classList.add('download-file', 'dropdown-item');
             downloadLink.setAttribute('data-row-index', rowIndex);
-            downloadLink.innerHTML = '<i class="fas fa-download" aria-hidden="true"></i> Download';
+            downloadLink.innerHTML = `<i class="fas fa-download" aria-hidden="true"></i> ${filesLabels.labelDownload}`;
             downloadItem.appendChild(downloadLink);
             dropdownMenu.appendChild(downloadItem);
         }
@@ -516,7 +520,7 @@ class DataTable {
         deleteLink.href = '#';
         deleteLink.classList.add('delete-file', 'dropdown-item', 'text-danger');
         deleteLink.setAttribute('data-row-index', rowIndex);
-        deleteLink.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i> Delete';
+        deleteLink.innerHTML = `<i class="fas fa-trash" aria-hidden="true"></i> ${filesLabels.labelDelete}`;
         deleteItem.appendChild(deleteLink);
         dropdownMenu.appendChild(deleteItem);
           
@@ -532,9 +536,9 @@ class DataTable {
         let api = this._table;
         let rows = api.rows({ selected: true }).flatten().length,
             page_info = api.page.info(),
-            msg = page_info.recordsTotal == page_info.recordsDisplay ? `Showing ${page_info.recordsDisplay} rows` : `Showing ${page_info.recordsDisplay} of ${page_info.recordsTotal} rows`;
+            msg = page_info.recordsTotal == page_info.recordsDisplay ? filesLabels.labelShowingRows.replace('__SHOWN__', page_info.recordsDisplay) : filesLabels.labelShowingRowsFiltered.replace('__SHOWN__', page_info.recordsDisplay).replace('__TOTAL__', page_info.recordsTotal);
 
-        $('#directory-contents_info').html(`${msg} - ${rows} rows selected`);
+        $('#directory-contents_info').html(`${msg} - ${filesLabels.labelRowsSelected.replace('__COUNT__', rows)}`);
     }
 
     goto(url, pushState = true, show_processing_indicator = true) {

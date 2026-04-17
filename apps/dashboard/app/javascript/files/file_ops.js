@@ -1,11 +1,11 @@
-import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
-import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
-import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
+import { CONTENTID, EVENTNAME as DATATABLE_EVENTNAME } from './data_table.js';
+import { EVENTNAME as CLIPBOARD_EVENTNAME } from './clip_board.js';
+import { EVENTNAME as SWAL_EVENTNAME } from './sweet_alert.js';
 import _ from 'lodash';
 import { transfersPath, csrfToken } from '../config.js';
 import { OODAlertError } from '../alert';
 
-export {EVENTNAME};
+export { EVENTNAME };
 
 const EVENTNAME = {
   changeDirectory: 'changeDirectory',
@@ -25,56 +25,59 @@ const EVENTNAME = {
   renameFilePrompt: 'renameFilePrompt',
 }
 
-
+let filesLabels = null;
 let fileOps = null;
-export {fileOps};
+export { fileOps };
 
-jQuery(function() {
-  fileOps = new FileOps();  
+jQuery(function () {
+  const configEl = document.getElementById('files_page_load_config');
+  if (!configEl) return;
+  filesLabels = configEl.dataset;
+  fileOps = new FileOps();
 
-  $('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d', function(event){
-    if(fileOps.clickEventIsSignificant(event)){
+  $('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d', function (event) {
+    if (fileOps.clickEventIsSignificant(event)) {
       event.preventDefault();
       event.cancelBubble = true;
-      if(event.stopPropagation) event.stopPropagation();
+      if (event.stopPropagation) event.stopPropagation();
 
       const eventData = {
         'path': this.getAttribute("href"),
       };
-  
+
       $(CONTENTID).trigger(DATATABLE_EVENTNAME.goto, eventData);
-  
+
     }
   });
 
   $('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbox]', function (e) {
     if (this.dataset['dlUrl'] == 'undefined' && this.checked) {
       $("#download-btn").attr('disabled', true);
-    } else if ($("input[data-dl-url='undefined']:checked" ).length == 0) {
+    } else if ($("input[data-dl-url='undefined']:checked").length == 0) {
       $("#download-btn").attr('disabled', false);
     }
   });
-  
-  $('#directory-contents tbody').on('dblclick', 'tr td:not(:first-child)', function(){
+
+  $('#directory-contents tbody').on('dblclick', 'tr td:not(:first-child)', function () {
     // handle double-click
     let a = this.parentElement.querySelector('a');
-    if(a.classList.contains('d')) {
+    if (a.classList.contains('d')) {
       const eventData = {
         'path': a.getAttribute("href"),
       };
-  
+
       $(CONTENTID).trigger(DATATABLE_EVENTNAME.goto, eventData);
     }
   });
 
-  $('#directory-contents tbody').on('click', '.download-file', function(e){
+  $('#directory-contents tbody').on('click', '.download-file', function (e) {
     e.preventDefault();
 
     const table = $(CONTENTID).DataTable();
     const row = e.currentTarget.dataset.rowIndex;
 
     const eventData = {
-      selection:  table.rows(row).data()
+      selection: table.rows(row).data()
     };
 
     $(CONTENTID).trigger(EVENTNAME.download, eventData);
@@ -89,14 +92,14 @@ jQuery(function() {
   });
 
   $("#new-dir-btn").on("click", function () {
-      $(CONTENTID).trigger(EVENTNAME.newDirectoryPrompt);
+    $(CONTENTID).trigger(EVENTNAME.newDirectoryPrompt);
   });
 
   $("#download-btn").on("click", function () {
     let table = $(CONTENTID).DataTable();
     let selection = table.rows({ selected: true }).data();
     const eventData = {
-        selection: selection
+      selection: selection
     };
 
     $(CONTENTID).trigger(EVENTNAME.download, eventData);
@@ -108,7 +111,7 @@ jQuery(function() {
     let table = $(CONTENTID).DataTable();
     let files = table.rows({ selected: true }).data().toArray().map((f) => f.name);
     const eventData = {
-        files: files
+      files: files
     };
 
     $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
@@ -116,7 +119,7 @@ jQuery(function() {
   });
 
   $(document).on("click", '#goto-btn', function () {
-      $(CONTENTID).trigger(EVENTNAME.changeDirectoryPrompt);
+    $(CONTENTID).trigger(EVENTNAME.changeDirectoryPrompt);
   });
 
   $(document).on('click', '.rename-file', function (e) {
@@ -127,25 +130,25 @@ jQuery(function() {
     let fileName = $($.parseHTML(row.name)).text();
 
     const eventData = {
-        file: fileName,
+      file: fileName,
     };
-    
+
     $(CONTENTID).trigger(EVENTNAME.renameFilePrompt, eventData);
 
   });
 
   $(document).on('click', '.delete-file', function (e) {
-      e.preventDefault();
-      let table = $(CONTENTID).DataTable();
-      let rowId = e.currentTarget.dataset.rowIndex;
-      let row = table.row(rowId).data();
-      let fileName = $($.parseHTML(row.name)).text();
+    e.preventDefault();
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+    let fileName = $($.parseHTML(row.name)).text();
 
-      const eventData = {
-          files: [fileName]
-      };
+    const eventData = {
+      files: [fileName]
+    };
 
-      $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+    $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
 
   });
 
@@ -174,22 +177,22 @@ jQuery(function() {
   });
 
   $(CONTENTID).on(EVENTNAME.download, function (e, options) {
-    if(options.selection.length == 0) {
-      OODAlertError('Select a file, files, or directory to download. You have selected none.');
+    if (options.selection.length == 0) {
+      OODAlertError(filesLabels.labelDownloadErrorMsg);
     } else {
       fileOps.download(options.selection);
     }
   });
 
   $(CONTENTID).on(EVENTNAME.deletePrompt, function (e, options) {
-    if(options.files.length == 0) {
-      OODAlertError('Select a file, files, or directory to delete. You have selected none.');
+    if (options.files.length == 0) {
+      OODAlertError(filesLabels.labelDeleteErrorMsg);
     } else {
       fileOps.deletePrompt(options.files);
     }
   });
 
-  $(CONTENTID).on(EVENTNAME.deleteFile, function (e, options) {    
+  $(CONTENTID).on(EVENTNAME.deleteFile, function (e, options) {
     fileOps.delete(options.files, options.from_fs);
   });
 
@@ -223,7 +226,7 @@ class FileOps {
   clickEventIsSignificant(event) {
     return !(
       // (event.target && (event.target as any).isContentEditable)
-         event.defaultPrevented
+      event.defaultPrevented
       || event.which > 1
       || event.altKey
       || event.ctrlKey
@@ -245,18 +248,18 @@ class FileOps {
     const eventData = {
       action: 'changeDirectory',
       'inputOptions': {
-        title: 'Change Directory',
+        title: filesLabels.labelChangeDirectoryTitle,
         input: 'text',
-        inputLabel: 'Path',
-        inputValue:  history.state.currentDirectory,
+        inputLabel: filesLabels.labelPath,
+        inputValue: history.state.currentDirectory,
         inputAttributes: {
           spellcheck: 'false',
         },
         showCancelButton: true,
         inputValidator: (value) => {
-          if (! value || ! value.startsWith('/')) {
+          if (!value || !value.startsWith('/')) {
             // TODO: validate filenames against listing
-            return 'Provide an absolute pathname'
+            return filesLabels.labelProvideAbsolutePath
           }
         }
       }
@@ -271,8 +274,8 @@ class FileOps {
       action: EVENTNAME.deleteFile,
       files: files,
       'inputOptions': {
-        title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
-        text: 'Are you sure you want to delete the files: ' + files.join(', '),
+        title: files.length == 1 ? filesLabels.labelDeleteSingle.replace('__FILE__', files[0]) : filesLabels.labelDeleteMultiple.replace('__COUNT__', files.length),
+        text: filesLabels.labelDeleteConfirm.replace('__FILES__', files.join(', ')),
         showCancelButton: true,
       }
     };
@@ -281,10 +284,10 @@ class FileOps {
     }
   }
 
-  
+
   removeFiles(files) {
     this.transferFiles(files, "rm", "remove files", history.state.currentFilesystem)
-  } 
+  }
 
   renameFile(fileName, newFileName) {
     let files = {};
@@ -297,20 +300,20 @@ class FileOps {
       action: EVENTNAME.renameFile,
       files: fileName,
       'inputOptions': {
-        title: 'Rename',
+        title: filesLabels.labelRename,
         input: 'text',
-        inputLabel: 'Filename',
+        inputLabel: filesLabels.labelFilename,
         inputValue: fileName,
         inputAttributes: {
           spellcheck: 'false',
         },
         showCancelButton: true,
         inputValidator: (value) => {
-          if (! value) {
+          if (!value) {
             // TODO: validate filenames against listing
-            return 'Provide a filename to rename this to';
+            return filesLabels.labelProvideRenameFilename;
           } else if (value.includes('/') || value.includes('..')) {
-           return 'Filename cannot include / or ..';
+            return filesLabels.labelFilenameIllegalChars;
           }
         }
       }
@@ -327,18 +330,18 @@ class FileOps {
     const eventData = {
       action: EVENTNAME.createFile,
       'inputOptions': {
-        title: 'New File',
+        title: filesLabels.labelNewFile,
         input: 'text',
-        inputLabel: 'Filename',
+        inputLabel: filesLabels.labelFilename,
         showCancelButton: true,
         inputValidator: (value) => {
           if (!value) {
             // TODO: validate filenames against listing
-            return 'Provide a non-empty filename.'
+            return filesLabels.labelProvideNonemptyFilename
           }
           else if (value.includes("/")) {
             // TODO: validate filenames against listing
-            return 'Illegal character (/) not allowed in filename.'
+            return filesLabels.labelFilenameIllegalSlash
           }
         }
       }
@@ -356,7 +359,7 @@ class FileOps {
         myFileOp.reloadTable();
       })
       .catch(function (e) {
-        OODAlertError(`Error occurred when attempting to create new file: ${e.message}`);
+        OODAlertError(filesLabels.labelErrorCreateFile.replace('__ERROR__', e.message));
       });
   }
 
@@ -365,14 +368,14 @@ class FileOps {
     const eventData = {
       action: EVENTNAME.createDirectory,
       'inputOptions': {
-        title: 'New Directory',
+        title: filesLabels.labelNewDirectory,
         input: 'text',
-        inputLabel: 'Directory name',
+        inputLabel: filesLabels.labelDirectoryName,
         showCancelButton: true,
         inputValidator: (value) => {
           if (!value || value.includes("/")) {
             // TODO: validate filenames against listing
-            return 'Provide a directory name that does not have / in it'
+            return filesLabels.labelProvideDirectoryName
           }
         }
       }
@@ -384,19 +387,19 @@ class FileOps {
 
   newDirectory(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, { method: 'put', headers: { 'X-CSRF-Token': csrfToken() } })
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
       })
       .catch(function (e) {
-        OODAlertError(`Error occurred when attempting to create new directory: ${e.message}`);
+        OODAlertError(filesLabels.labelErrorCreateDirectory.replace('__ERROR__', e.message));
       });
   }
 
   download(selection) {
-    selection.toArray().forEach( (f) => {
-      if(f.type == 'd') {
+    selection.toArray().forEach((f) => {
+      if (f.type == 'd') {
         this.downloadDirectory(f);
       } else if (f.type == 'f') {
         this.downloadFile(f);
@@ -406,17 +409,17 @@ class FileOps {
 
   downloadDirectory(file) {
     let filename = $($.parseHTML(file.name)).text(),
-        canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
+      canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
 
-    this.showSwalLoading('preparing to download directory: ' + file.name);
-  
+    this.showSwalLoading(filesLabels.labelPreparingDownload.replace('__NAME__', file.name));
+
     fetch(canDownloadReq, {
-        method: 'GET',
-        headers: {
-          'X-CSRF-Token': csrfToken(),
-          'Accept': 'application/json'
-        }
-      })
+      method: 'GET',
+      headers: {
+        'X-CSRF-Token': csrfToken(),
+        'Accept': 'application/json'
+      }
+    })
       .then(response => this.dataFromJsonResponse(response))
       .then(data => {
         if (data.can_download) {
@@ -424,58 +427,58 @@ class FileOps {
           this.downloadFile(file)
         } else {
           this.doneLoading();
-          OODAlertError(`Error while downloading: ${data.error_message}`);
+          OODAlertError(filesLabels.labelErrorDownloading.replace('__ERROR__', data.error_message));
         }
       })
       .catch(e => {
         this.doneLoading();
-        OODAlertError(`Error while downloading: ${e.message}`);
+        OODAlertError(filesLabels.labelErrorDownloading.replace('__ERROR__', e.message));
       })
   }
-  
- 
+
+
   downloadFile(file) {
     // creating the temporary iframe is exactly what the CloudCmd does
     // so this just repeats the status quo
-  
+
     let filename = $($.parseHTML(file.name)).text(),
-        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
-        iframe = document.createElement('iframe'),
-        TIME = 30 * 1000;
-  
+      downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
+      iframe = document.createElement('iframe'),
+      TIME = 30 * 1000;
+
     iframe.setAttribute('class', 'd-none');
     iframe.setAttribute('src', downloadUrl);
-  
+
     document.body.appendChild(iframe);
-  
-    setTimeout(function() {
+
+    setTimeout(function () {
       document.body.removeChild(iframe);
     }, TIME);
   }
-  
+
   dataFromJsonResponse(response) {
     return new Promise((resolve, reject) => {
-        Promise.resolve(response)
-            .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
-            .then(response => response.json())
-            .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
-            .catch((e) => reject(e))
+      Promise.resolve(response)
+        .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+        .then(response => response.json())
+        .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
+        .catch((e) => reject(e))
     });
   }
-    
-  
-  delete(files) {
-    this.showSwalLoading('Deleting files...: ');
 
-    this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrfToken() );
+
+  delete(files) {
+    this.showSwalLoading(filesLabels.labelDeletingFiles);
+
+    this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrfToken());
   }
 
-  transferFiles(files, action, summary, from_fs, to_fs){
+  transferFiles(files, action, summary, from_fs, to_fs) {
 
     this._failures = 0;
 
     this.showSwalLoading(_.startCase(summary));
-  
+
     return fetch(transfersPath(), {
       method: 'post',
       body: JSON.stringify({
@@ -486,61 +489,61 @@ class FileOps {
       }),
       headers: { 'X-CSRF-Token': csrfToken() }
     })
-    .then(response => this.dataFromJsonResponse(response))
-    .then((data) => {
-  
-      if(! data.completed){
-        // was async, gotta report on progress and start polling
-        this.reportTransfer(data);
-        this.findAndUpdateTransferStatus(data);
-      } else {
-        // if(data.target_dir == history.state.currentDirectory){
-        // }
-        // this.findAndUpdateTransferStatus(data);
-      }
-  
-      if(action == 'mv' || action == 'cp') {
+      .then(response => this.dataFromJsonResponse(response))
+      .then((data) => {
+
+        if (!data.completed) {
+          // was async, gotta report on progress and start polling
+          this.reportTransfer(data);
+          this.findAndUpdateTransferStatus(data);
+        } else {
+          // if(data.target_dir == history.state.currentDirectory){
+          // }
+          // this.findAndUpdateTransferStatus(data);
+        }
+
+        if (action == 'mv' || action == 'cp') {
+          this.reloadTable();
+          this.clearClipboard();
+          this.updateClipboard();
+        }
+
+        this.fadeOutTransferStatus(data);
+        this.doneLoading();
         this.reloadTable();
-        this.clearClipboard();
-        this.updateClipboard();
-      }
 
-      this.fadeOutTransferStatus(data);
-      this.doneLoading();
-      this.reloadTable();
-
-    })
-    .then(() => this.doneLoading())
-    .catch(e => {
-      this.doneLoading();
-      OODAlertError(`Error occurred when attempting to ${summary}: ${e.message}`);
-    })
+      })
+      .then(() => this.doneLoading())
+      .catch(e => {
+        this.doneLoading();
+        OODAlertError(filesLabels.labelErrorTransfer.replace('__SUMMARY__', summary).replace('__ERROR__', e.message));
+      })
   }
-  
+
   findAndUpdateTransferStatus(data) {
     let id = `#${data.id}`;
-  
-    if($(id).length){
+
+    if ($(id).length) {
       $(id).replaceWith(this.reportTransferTemplate(data));
-    } else{
+    } else {
       $('.transfers-status').append(this.reportTransferTemplate(data));
     }
   }
-  
-  fadeOutTransferStatus(data){
+
+  fadeOutTransferStatus(data) {
     let id = `#${data.id}`;
     $(id).fadeOut(4000);
   }
 
   reportTransferTemplate(data) {
     let html = '';
-    
+
     if (data.completed) {
       if (data.error_summary) {
         html += `
           <div id="${data.id}" class="alert alert-danger alert-dismissible fade show" role="alert">
             <b><i class="fas fa-exclamation-triangle"></i> ${data.error_summary}</b>
-            <button class="btn btn-outline-dark btn-sm ms-3 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${data.id}-error-report" aria-expanded="false" aria-controls="${data.id}-error-report">See details</button>
+            <button class="btn btn-outline-dark btn-sm ms-3 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${data.id}-error-report" aria-expanded="false" aria-controls="${data.id}-error-report">${filesLabels.labelSeeDetails}</button>
             <div id="${data.id}-error-report" class="collapse">
               <div class="mt-3 card">
                 <pre class="card-body">${data.error_message}</pre>
@@ -563,10 +566,10 @@ class FileOps {
         </span>
       `;
     }
-    
+
     return html;
   };
-  
+
   poll(data) {
 
     let that = this;
@@ -574,9 +577,9 @@ class FileOps {
     $.getJSON(data.show_json_url, function (newdata) {
       that.findAndUpdateTransferStatus(newdata);
 
-      if(newdata.completed) {
-        if(! newdata.error_message) {
-          if(newdata.target_dir == history.state.currentDirectory) {
+      if (newdata.completed) {
+        if (!newdata.error_message) {
+          if (newdata.target_dir == history.state.currentDirectory) {
             that.reloadTable();
           }
           // 3. fade out after 5 seconds
@@ -584,28 +587,28 @@ class FileOps {
         }
       } else {
         // not completed yet, so poll again
-        setTimeout(function() {
+        setTimeout(function () {
           that.poll(data);
         }, that._timeout);
       }
-    }).fail(function() {
+    }).fail(function () {
       if (that._failures >= 3) {
-        OODAlertError('Operation may not have happened. Failed to retrieve file operation status.');
+        OODAlertError(filesLabels.labelOperationFailed);
       } else {
-        setTimeout(function(){
+        setTimeout(function () {
           that._failures++;
           that.poll(data);
         }, that._timeout);
       }
     });
   }
-  
+
 
   reportTransfer(data) {
     // 1. add the transfer label
     this.findAndUpdateTransferStatus(data);
     this.poll(data);
-  } 
+  }
 
   move(files, token, from_fs, to_fs) {
     this.transferFiles(files, 'mv', 'move files', from_fs, to_fs);

@@ -137,45 +137,89 @@ en:
     edit: Edit
     file: File
     file_quotas: File Quotas
+    files_action_view: View
+    files_actions: Actions
+    files_cannot_navigate_to_file: Cannot navigate to a file.
+    files_change_directory: Change directory
+    files_change_directory_title: Change Directory
+    files_clipboard_close: Close
+    files_clipboard_copy: Copy
+    files_clipboard_description: "Copy or move the files below from <code>%{from}</code> to the current directory:"
+    files_clipboard_move: Move
+    files_contents_of_directory: "Contents of directory %{path}"
+    files_copy_move: Copy/Move
+    files_copy_move_error: Select a file, files, or directory to copy or move. You have selected none.
+    files_copy_path: Copy path
+    files_copy_successful: Copied path to clipboard!
+    files_delete: Delete
+    files_delete_confirm: "Are you sure you want to delete the files: %{files}"
+    files_delete_error_msg: Select a file, files, or directory to delete. You have selected none.
+    files_delete_multiple: "Delete %{count} selected files?"
+    files_delete_single: "Delete %{file}?"
+    files_deleting_files: "Deleting files..."
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
+    files_directory_name_label: Directory name
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_doesnt_exist: "%{path} does not exist."
+    files_download: Download
+    files_download_error_msg: Select a file, files, or directory to download. You have selected none.
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_download_zip: Download as zip
+    files_edit: Edit
+    files_error_create_directory: "Error occurred when attempting to create new directory: %{error}"
+    files_error_create_file: "Error occurred when attempting to create new file: %{error}"
+    files_error_downloading: "Error while downloading: %{error}"
+    files_error_transfer: "Error occurred when attempting to %{summary}: %{error}"
     files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
+    files_filename_illegal_chars: Filename cannot include / or ..
+    files_filename_illegal_slash: Illegal character (/) not allowed in filename.
+    files_filename_label: Filename
+    files_filter: "Filter:"
+    files_go_up_directory: Go up directory
+    files_invalid_date: Invalid Date
+    files_navigated_to: "navigated to %{path}"
+    files_new_directory: New Directory
+    files_new_file: New File
+    files_not_readable: "You do not have sufficient permissions to read '%{path}'."
+    files_open_in_globus: Open in Globus
+    files_operation_failed: Operation may not have happened. Failed to retrieve file operation status.
+    files_path_label: Path
+    files_preparing_download: "preparing to download directory: %{name}"
+    files_provide_absolute_path: Provide an absolute pathname
+    files_provide_directory_name: Provide a directory name that does not have / in it
+    files_provide_nonempty_filename: Provide a non-empty filename.
+    files_provide_rename_filename: Provide a filename to rename this to
+    files_refresh: Refresh
+    files_rename: Rename
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
-    files_refresh: Refresh
-    files_new_file: New File
-    files_new_directory: New Directory
-    files_copy_move: Copy/Move
-    files_delete: Delete
-    files_download: Download
-    files_upload: Upload
-    files_open_in_globus: Open in Globus
-    files_table_select_all: Select All
-    files_table_content_of_directory: Contents of directory %{path}
-    files_table_select: Select
-    files_table_type: Type
-    files_table_name: Name
-    files_table_actions: Actions
-    files_table_size: Size
-    files_table_modified_at: Modified at
-    files_table_owner: Owner
-    files_table_mode: Mode
-    files_go_up_directory: Go up directory
-    files_change_directory: Change directory
-    files_copy_path: Copy path
+    files_rows_selected: "%{count} rows selected"
+    files_see_details: See details
+    files_select_row: Select row
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
-    files_doesnt_exist: "%{path} does not exist."
-    files_not_readable: "You do not have sufficient permissions to read '%{path}'."
+    files_show_dotfiles: Show Dotfiles
+    files_show_owner_mode: Show Owner/Mode
+    files_showing_rows: "Showing %{shown} rows"
+    files_showing_rows_filtered: "Showing %{shown} of %{total} rows"
+    files_table_actions: Actions
+    files_table_content_of_directory: Contents of directory %{path}
+    files_table_modified_at: Modified at
+    files_table_mode: Mode
+    files_table_name: Name
+    files_table_owner: Owner
+    files_table_select: Select
+    files_table_select_all: Select All
+    files_table_size: Size
+    files_table_type: Type
+    files_upload: Upload
     home_directory: Home Directory
     import: Import
     job_info: Job Info

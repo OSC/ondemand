@@ -1,11 +1,11 @@
 import ClipboardJS from 'clipboard';
-import {CONTENTID} from './data_table.js';
-import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
-import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
+import { CONTENTID } from './data_table.js';
+import { EVENTNAME as SWAL_EVENTNAME } from './sweet_alert.js';
+import { EVENTNAME as FILEOPS_EVENTNAME } from './file_ops.js';
 import { csrfToken } from '../config.js';
 import { OODAlertError } from '../alert.js';
 
-export {EVENTNAME};
+export { EVENTNAME };
 
 const EVENTNAME = {
   clearClipboard: 'clearClipboard',
@@ -13,7 +13,12 @@ const EVENTNAME = {
   updateClipboardView: 'updateClipboardView',
 }
 
+let filesLabels = null;
+
 jQuery(function () {
+  const configEl = document.getElementById('files_page_load_config');
+  if (!configEl) return;
+  filesLabels = configEl.dataset;
 
   var clipBoard = new ClipBoard();
 
@@ -30,8 +35,8 @@ jQuery(function () {
   });
 
 
-  $(CONTENTID).on('success', function (e) {
-    $(e.trigger).tooltip({ title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom' }).tooltip('show');
+  clipBoard.getClipBoard().on('success', function (e) {
+    $(e.trigger).tooltip({ title: filesLabels.labelCopySuccessful, trigger: 'manual', placement: 'bottom' }).tooltip('show');
     setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
     e.clearSelection();
   });
@@ -47,7 +52,7 @@ jQuery(function () {
 
   $(CONTENTID).on(EVENTNAME.updateClipboard, function (e, options) {
     if (options.selection.length == 0) {
-      OODAlertError('Select a file, files, or directory to copy or move. You have selected none.');
+      OODAlertError(filesLabels.labelCopyMoveError);
       $(CONTENTID).trigger(EVENTNAME.clearClipboard);
 
     } else {
@@ -114,12 +119,12 @@ class ClipBoard {
       closeButton.type = 'button';
       closeButton.className = 'btn-close';
       closeButton.setAttribute('data-bs-dismiss', 'alert');
-      closeButton.setAttribute('aria-label', 'Close');
+      closeButton.setAttribute('aria-label', filesLabels.labelClipboardClose);
       cardBody.appendChild(closeButton);
 
       const description = document.createElement('p');
       description.className = 'mt-4';
-      description.innerHTML = `Copy or move the files below from <code>${clipboard.from}</code> to the current directory:`;
+      description.innerHTML = filesLabels.labelClipboardDescription.replace('__FROM__', clipboard.from);
       cardBody.appendChild(description);
 
       card.appendChild(cardBody);
@@ -133,7 +138,7 @@ class ClipBoard {
         listItem.className = 'list-group-item';
 
         const icon = document.createElement('span');
-        icon.title = file.directory ? 'directory' : 'file';
+        icon.title = file.directory ? filesLabels.labelDirectory : filesLabels.labelFile;
         icon.className = file.directory
           ? 'fa fa-folder color-gold'
           : 'fa fa-file color-lightgrey';
@@ -154,13 +159,13 @@ class ClipBoard {
       const copyButton = document.createElement('button');
       copyButton.id = 'clipboard-copy-to-dir';
       copyButton.className = 'btn btn-primary';
-      copyButton.textContent = 'Copy';
+      copyButton.textContent = filesLabels.labelClipboardCopy;
       actionsBody.appendChild(copyButton);
 
       const moveButton = document.createElement('button');
       moveButton.id = 'clipboard-move-to-dir';
       moveButton.className = 'btn btn-danger float-end';
-      moveButton.textContent = 'Move';
+      moveButton.textContent = filesLabels.labelClipboardMove;
       actionsBody.appendChild(moveButton);
 
       card.appendChild(actionsBody);
