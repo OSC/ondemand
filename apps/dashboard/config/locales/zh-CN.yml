@@ -66,10 +66,12 @@ zh-CN:
     batch_connect_sandbox: " [沙盒]"
     batch_connect_sessions_cancel_confirm: 你确定吗？
     batch_connect_sessions_cancel_title: 取消
+    batch_connect_sessions_cancel_full_title: "取消 %{title} 会话"
     batch_connect_sessions_data_html: 你可以通过%{data_link_tag}来获取会话数据%{title}。
     batch_connect_sessions_delete_confirm: 你确定吗？
     batch_connect_sessions_delete_hover: 删除会话
     batch_connect_sessions_delete_title: 删除
+    batch_connect_sessions_delete_full_title: "删除 %{title} 会话"
     batch_connect_sessions_edit_title: 使用此会话参数编辑新的 %{title}
     batch_connect_sessions_error_invalid_job_name_html: 如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
     batch_connect_sessions_errors_staging: 无法调用模板，并显示以下错误：
@@ -78,6 +80,7 @@ zh-CN:
     batch_connect_sessions_novnc_view_only: 只读 (共享链接)
     batch_connect_sessions_path_selector_forbidden_error: 您没有权限选择该目录或文件。
     batch_connect_sessions_relaunch_title: 重新启动
+    batch_connect_sessions_relaunch_full_title: "重新启动 %{title} 会话"
     batch_connect_sessions_staged_root: 暂存根目录
     batch_connect_sessions_stats_created_at: 创建于：
     batch_connect_sessions_stats_host: 主机：
@@ -124,6 +127,8 @@ zh-CN:
     development_apps_caption: 沙盒应用
     directory: 目录
     edit: 编辑
+    launcher_delete_title: "删除启动器 %{title}"
+    launcher_edit_title: "编辑启动器 %{title}"
     file: 文件
     file_quotas: 文件配额
     files_directory_download_error_modal_title: 目录太大，无法下载
@@ -211,6 +216,10 @@ zh-CN:
     mode: 模式
     module_browser_last_updated: 最后更新：%{last_updated}
     module_browser_title: 模块浏览器
+    files_title: 文件浏览
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
+    root: 根目录
     motd_erb_render_error: MOTD 未正确解析或渲染：%{error_message}
     motd_title: 每日信息
     name: 名称
@@ -242,10 +251,12 @@ zh-CN:
     pinned_apps_category: 应用
     pinned_apps_title: 固定应用
     project: 项目
+    project_directory: 项目目录
     project_balances: 项目余额
     project_zip_error_message: 创建 ZIP 文件时出错：%{error}
     project_zip_success_message: 成功：project.zip 已在您的项目目录中创建。
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
+    quota_message: "%{quota}。%{additional_message}"
     quota_block: 配额使用量%{used} 可用 %{available}
     quota_block_shared: "(您的配额%{used_exclusive} )"
     quota_file: 文件配额使用量%{used} 可用 %{available}
