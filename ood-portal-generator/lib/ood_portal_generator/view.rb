@@ -96,6 +96,10 @@ module OodPortalGenerator
       @pun_pre_hook_exports   = opts.fetch(:pun_pre_hook_exports, nil)
       @pun_pre_hook_root_cmd  = opts.fetch(:pun_pre_hook_root_cmd, nil)
 
+      # mTLS proxy sub-uri (header stripping at Apache layer)
+      @pun_proxy_uri          = opts.fetch(:pun_proxy_uri, nil)
+      @pun_rproxy_uri         = opts.fetch(:pun_rproxy_uri, @pun_proxy_uri ? "/pun/rproxy" : nil)
+
       # OpenID Connect sub-uri
       @oidc_uri           = opts.fetch(:oidc_uri, nil)
       @oidc_discover_uri  = opts.fetch(:oidc_discover_uri, nil)
