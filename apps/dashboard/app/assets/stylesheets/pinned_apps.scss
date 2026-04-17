@@ -199,3 +199,35 @@
 .app-launcher-hover:hover, .app-launcher-hover:focus-within {
   transform: scale(0.98);
 }
+
+.pinned-apps-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.pinned-apps-grid {
+  max-height: 460px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#pinnedAppsModal .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#pinnedAppsModal .pinned-apps-checkbox-list {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.375rem;
+  /* Extra start padding so Bootstrap’s negative-offset checkboxes aren’t clipped */
+  padding: 0.75rem 1rem 0.75rem 2rem;
+}
+
+#pinnedAppsModal .pinned-apps-checkbox-list .form-check {
+  margin-bottom: 0.35rem;
+}

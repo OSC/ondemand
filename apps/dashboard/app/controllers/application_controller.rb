@@ -1,5 +1,7 @@
 # The parent controller for all other controllers.
 class ApplicationController < ActionController::Base
+  include UserSettingStore
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -10,7 +12,7 @@ class ApplicationController < ActionController::Base
   before_action :check_required_announcements
 
   def check_required_announcements
-    return if instance_of?(SettingsController)
+    return if instance_of?(SettingsController) || instance_of?(PinnedAppsController)
 
     render inline: '', layout: :default if @announcements.select(&:required?).reject(&:completed?).any?
   end
@@ -73,7 +75,14 @@ class ApplicationController < ActionController::Base
   end
 
   def set_pinned_apps
-    @pinned_apps ||= Router.pinned_apps(@user_configuration.pinned_apps, nav_all_apps)
+    settings = user_settings
+    tokens = if settings.key?(:custom_pinned_apps) && !settings[:custom_pinned_apps].nil?
+               Array.wrap(settings[:custom_pinned_apps])
+             else
+               @user_configuration.pinned_apps
+             end
+
+    @pinned_apps ||= Router.pinned_apps(tokens, nav_all_apps)
   end
 
   def set_announcements
