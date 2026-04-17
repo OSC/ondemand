@@ -35,5 +35,13 @@ module FilesHelper
   def frame_path(path)
     path.to_s
   end
+
+  def url_encode_segment(segment)
+    ERB::Util.url_encode(segment.to_s)
+  end
+
+  def url_encode_path(path)
+    path.to_s.split('/').map { |seg| url_encode_segment(seg) }.join('/')
+  end
 end
 

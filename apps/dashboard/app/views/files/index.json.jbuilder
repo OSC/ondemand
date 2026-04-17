@@ -12,9 +12,12 @@ json.files @files do |f|
   json.type f[:directory] ? 'd' : 'f'
   json.name f[:name]
 
-  json.url files_path(@filesystem, @path.join(f[:name]).to_s) if (f[:directory] || f[:downloadable])
-  json.download_url files_path(@filesystem, @path.join(f[:name]).to_s, download: '1') if f[:downloadable]
-  json.edit_url OodAppkit.editor.edit(path: @path.join(f[:name]).to_s, fs: @filesystem).to_s if f[:downloadable]
+  encoded_name = url_encode_segment(f[:name])
+  encoded_filepath = url_encode_path(@path.join(f[:name]))
+
+  json.url "#{files_path(@filesystem, @path)}/#{encoded_name}" if (f[:directory] || f[:downloadable])
+  json.download_url "#{files_path(@filesystem, @path)}/#{encoded_name}?download=1" if f[:downloadable]
+  json.edit_url "#{controller.relative_url_root}/files/edit/#{@filesystem}#{encoded_filepath}" if f[:downloadable]
 
   json.size f[:size]
   json.human_size f[:human_size]
