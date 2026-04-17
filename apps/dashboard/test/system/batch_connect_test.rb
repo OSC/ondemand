@@ -36,6 +36,14 @@ class BatchConnectTest < ApplicationSystemTestCase
                                  .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
   end
 
+  # note: some queues have display: none, but others may be completely absent
+  def assert_auto_queues_queue_displayed(queue, displayed)
+    account = find_value('auto_accounts')
+    expected = displayed ? "" : "display: none;"
+    msg = "#{queue} #{displayed ? "should" : "should not"} be displayed for account #{account}"
+    assert_equal(expected, find_option_style('auto_queues', queue), msg)
+  end
+
   test 'cluster choice changes node types' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -2341,6 +2349,49 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
         assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
       end
+    end
+  end
+
+  test 'auto queues qos aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - test-cluster
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal 'test-cluster', find_value('cluster')
+
+      select('test-account-has-no-qoses', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1', false)
+      assert_auto_queues_queue_displayed('test-partition-deny-qos2', true)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', false)
+
+      select('test-account-has-qos1', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1', true)
+      assert_auto_queues_queue_displayed('test-partition-deny-qos2', true)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', true)
+
+      select('test-account-has-qos2', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1', false)
+      assert_auto_queues_queue_displayed('test-partition-deny-qos2', false)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', false)
+
+      select('test-account-has-qos1-qos2', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1', true)
+      assert_auto_queues_queue_displayed('test-partition-deny-qos2', true)
+      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', true)
     end
   end
 
