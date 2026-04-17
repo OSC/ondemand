@@ -1,6 +1,6 @@
 <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory, sort: group.sort).each_with_index do |g, index| %>
   <%= content_tag(:li, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
-  <%= content_tag(:li, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
+  <%= content_tag(:li, t("dashboard.nav_group_#{g.title.downcase.gsub(' ','_')}", default: g.title), class: ["dropdown-header"]) unless g.title.empty? %>
   <% g.apps.each do |app| %>
     <% app.links.each do |link| %>
       <li role="none">

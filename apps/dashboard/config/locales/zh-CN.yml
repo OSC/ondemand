@@ -1,4 +1,3 @@
----
 zh-CN:
   activemodel:
     errors:
@@ -112,6 +111,8 @@ zh-CN:
     breadcrumbs_home: 主页
     breadcrumbs_my_sessions: 我的交互会话
     breadcrumbs_support_ticket: 支持票
+    browser_warning: OnDemand 需要较新版本的浏览器。当前浏览器要求包括 IE Edge, Firefox 19+, Chrome 34+,
+      Safari 8+。
     clear: 清除
     close: 关闭
     custom_pages:
@@ -130,62 +131,63 @@ zh-CN:
     files_change_directory_title: 更改目录
     files_clipboard_close: 关闭
     files_clipboard_copy: 复制
-    files_clipboard_description: "将以下文件从 <code>%{from}</code> 复制或移动到当前目录："
+    files_clipboard_description: 将以下文件从 <code>%{from}</code> 复制或移动到当前目录：
     files_clipboard_move: 移动
-    files_contents_of_directory: "目录 %{path} 的内容"
+    files_contents_of_directory: 目录 %{path} 的内容
     files_copy_move: 复制/移动
     files_copy_move_error: 请选择要复制或移动的文件或目录。您尚未选择任何内容。
     files_copy_path: 复制路径
     files_copy_successful: 已复制路径至剪贴板
     files_delete: 删除
-    files_delete_confirm: "您确定要删除以下文件吗：%{files}"
+    files_delete_confirm: 您确定要删除以下文件吗：%{files}
     files_delete_error_msg: 请选择要删除的文件或目录。您尚未选择任何内容。
-    files_delete_multiple: "删除 %{count} 个选定的文件？"
-    files_delete_single: "删除 %{file}？"
-    files_deleting_files: "正在删除文件..."
+    files_delete_multiple: 删除 %{count} 个选定的文件？
+    files_delete_single: 删除 %{file}？
+    files_deleting_files: 正在删除文件...
     files_directory_download_error_modal_title: 目录太大，无法下载
     files_directory_download_unauthorized: 您只能下载您具有读取和执行权限的文件或目录
     files_directory_name_label: 目录名称
     files_directory_size_calculation_error: 尝试确定目录大小时超时。
     files_directory_size_calculation_timeout: 尝试确定目录大小时超时。
     files_directory_size_unknown: 尝试确定目录大小时出现状态 %{exit_code} 的错误：%{error}
-    files_directory_too_large: 该目录太大，无法作为 zip 下载。目录应小于 %{download_directory_size_limit} 字节。
+    files_directory_too_large: 该目录太大，无法作为 zip 下载。目录应小于 %{download_directory_size_limit}
+      字节。
     files_doesnt_exist: "%{path} 不存在。"
     files_download: 下载
     files_download_error_msg: 请选择要下载的文件或目录。您尚未选择任何内容。
     files_download_not_enabled: 此服务器上未启用文件下载。
     files_download_zip: 下载为 zip
     files_edit: 编辑
-    files_error_create_directory: "创建新目录时出错：%{error}"
-    files_error_create_file: "创建新文件时出错：%{error}"
-    files_error_downloading: "下载时出错：%{error}"
-    files_error_transfer: "尝试 %{summary} 时出错：%{error}"
+    files_error_create_directory: 创建新目录时出错：%{error}
+    files_error_create_file: 创建新文件时出错：%{error}
+    files_error_downloading: 下载时出错：%{error}
+    files_error_transfer: 尝试 %{summary} 时出错：%{error}
     files_file_too_large: 文件太大，无法下载。文件下载应小于 %{download_file_size_limit} 字节。
     files_filename_illegal_chars: 文件名不能包含 / 或 ..
     files_filename_illegal_slash: 文件名中不允许使用非法字符 (/)。
     files_filename_label: 文件名
-    files_filter: "筛选："
+    files_filter: 筛选：
     files_go_up_directory: 返回上级目录
     files_invalid_date: 无效日期
-    files_navigated_to: "已导航到 %{path}"
+    files_navigated_to: 已导航到 %{path}
     files_new_directory: 新建目录
     files_new_file: 新建文件
     files_not_readable: 您没有足够的权限读取 '%{path}'。
     files_open_in_globus: 在 Globus 中打开
     files_operation_failed: 操作可能未成功。无法获取文件操作状态。
     files_path_label: 路径
-    files_preparing_download: "正在准备下载目录：%{name}"
+    files_preparing_download: 正在准备下载目录：%{name}
     files_provide_absolute_path: 请提供绝对路径名
     files_provide_directory_name: 请提供不包含 / 的目录名称
     files_provide_nonempty_filename: 请提供非空文件名。
     files_provide_rename_filename: 请提供要重命名的文件名
     files_refresh: 刷新
-    files_rename: 重命名
     files_remote_dir_not_created: 未创建目录 %{path}
     files_remote_disabled: 未启用远程文件支持
     files_remote_empty_dir_unsupported: 远程不支持空目录
     files_remote_error_listing_remotes: 列出 Rclone 远程时出错：%{error}
-    files_rows_selected: "已选择 %{count} 行"
+    files_rename: 重命名
+    files_rows_selected: 已选择 %{count} 行
     files_see_details: 查看详情
     files_select_row: 选择行
     files_send_to_target_title_default: 将选定文件的元数据发送到外部应用程序
@@ -193,12 +195,12 @@ zh-CN:
     files_shell_dropdown: 选择要在终端中打开的集群
     files_show_dotfiles: 显示隐藏文件
     files_show_owner_mode: 显示所有者/权限
-    files_showing_rows: "显示 %{shown} 行"
-    files_showing_rows_filtered: "显示 %{total} 中的 %{shown} 行"
+    files_showing_rows: 显示 %{shown} 行
+    files_showing_rows_filtered: 显示 %{total} 中的 %{shown} 行
     files_table_actions: 操作
     files_table_content_of_directory: 目录 %{path} 的内容
-    files_table_modified_at: 修改时间
     files_table_mode: 权限
+    files_table_modified_at: 修改时间
     files_table_name: 名称
     files_table_owner: 所有者
     files_table_select: 选择
@@ -263,6 +265,7 @@ zh-CN:
     jobs_workflow_submitted: 工作流提交成功！
     jobs_workflows: 工作流
     launch: 启动
+    layout_title: 控制面板 - %{title}
     logo_alt_text: 欢迎使用 Open OnDemand
     mode: 模式
     module_browser_last_updated: 最后更新：%{last_updated}
@@ -275,6 +278,10 @@ zh-CN:
     nav_develop_my_sandbox_apps_dev: 我的沙盒应用 (Development)
     nav_develop_my_sandbox_apps_prod: 我的沙盒应用 (Production)
     nav_develop_title: 开发
+    nav_group_clusters: 集群
+    nav_group_files: 文件
+    nav_group_interactive_apps: 交互式应用
+    nav_group_jobs: 作业
     nav_help_change_password: 修改HPC密码
     nav_help_custom: 导航帮助自定义
     nav_help_docs: 帮助文档
@@ -297,6 +304,7 @@ zh-CN:
     pinned_apps_caption_html: 一个精选的<a href="%{all_apps_url}">所有可用应用</a>子集
     pinned_apps_category: 应用
     pinned_apps_title: 固定应用
+    powered_by_ood: 由 Open OnDemand 提供支持
     project: 项目
     project_balances: 项目余额
     project_zip_error_message: 创建 ZIP 文件时出错：%{error}
@@ -339,6 +347,7 @@ zh-CN:
     skip_navigation: 跳过导航
     soft_tabs: 软制表符
     soft_tabs_info: 软制表符是文件中的空格，而不是实际的制表符字符。
+    software_license: 软件许可协议
     submit: 提交
     support_ticket:
       creation_success: 支持票电子邮件已发送至：%{to}
@@ -361,11 +370,13 @@ zh-CN:
           attachments_js: 最大附件大小为 %{max}。所选文件大小为 %{size}
       validation_error: 无效请求。请查看下面的错误信息
     system_apps_caption: 系统已安装应用
+    toggle_navigation: 切换导航栏
     type: 类型
     unknown: 未知
     uppy: Uppy
     user_configuration:
       support_ticket_error: support_ticket 配置错误。请在配置 YAML 中添加后端实现。
+    version: OnDemand 版本：%{version}
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>

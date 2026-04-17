@@ -1,9 +1,8 @@
 <% if !browser.modern? %>
     <div class="alert alert-danger alert-dismissible" role="alert">
       <button type="button" class="btn-close" data-bs-dismiss="alert">
-        <span class="sr-only">Close</span>
+        <span class="sr-only"><%= t('dashboard.close') %></span>
       </button>
-      OnDemand requires a newer version of the browser you are using.
-      Current browser requirements include IE Edge, Firefox 19+, Chrome 34+, Safari 8+.
+      <%= t('dashboard.browser_warning') %>
     </div>
 <% end %>

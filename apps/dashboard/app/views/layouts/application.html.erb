@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="<%= Configuration.locale %>">
 <head>
-  <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{@user_configuration.dashboard_title}" %></title>
+  <title><%= content_for?(:title) ? yield(:title) : t('dashboard.layout_title', title: @user_configuration.dashboard_title) %></title>
   <%= favicon %>
 
   <%= javascript_include_tag 'application', nonce: true %>
@@ -41,7 +41,7 @@
       <ul class="navbar-nav w-100 align-items-center" role="menubar">
         <%= render partial: 'layouts/nav/logo' %>
       
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="<%= t('dashboard.toggle_navigation') %>">
           <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -88,7 +88,7 @@
     <div id="js-alert-danger-template" class="d-none" aria-hidden="true">
       <div class="alert alert-danger alert-dismissible" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
+          <span class="sr-only"><%= t('dashboard.close') %></span>
         </button>
         ALERT_MSG
       </div>
@@ -97,7 +97,7 @@
     <% if alert %>
       <div class="alert alert-danger alert-dismissible" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
+          <span class="sr-only"><%= t('dashboard.close') %></span>
         </button>
         <%= alert %>
       </div>
@@ -106,7 +106,7 @@
     <% if notice %>
       <div class="alert alert-success alert-dismissible" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
+          <span class="sr-only"><%= t('dashboard.close') %></span>
         </button>
         <%= notice %>
       </div>

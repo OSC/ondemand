@@ -5,11 +5,11 @@
         image_tag(
           "OpenOnDemand_powered_by_RGB.svg",
           class: "footer-logo",
-          alt: "Powered by Open OnDemand",
+          alt: t('dashboard.powered_by_ood'),
           height: "40px",
         )
       %>
     <% end %>
   </div>
-  <span id="ood_version">OnDemand version: <%= Configuration.ood_version %><br><a href="https://openondemand.org/licensing">Software License Notice</a></span>
+  <span id="ood_version"><%= t('dashboard.version', version: Configuration.ood_version) %><br><a href="https://openondemand.org/licensing"><%= t('dashboard.software_license') %></a></span>
 </footer>
