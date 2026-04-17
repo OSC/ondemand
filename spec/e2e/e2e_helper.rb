@@ -74,6 +74,8 @@ def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
   when 'ubuntu-24.04'
     'noble'
+  when 'ubuntu-26.04'
+    'resolute'
   when 'debian-12'
     'bookworm'
   when 'debian-13'
@@ -245,7 +247,7 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  if host_inventory['platform'] == 'debian' || host_inventory['platform_version'] == '24.04'
+  if host_inventory['platform'] == 'debian' || host_inventory['platform'] == 'ubuntu'
     install_packages(['python3', 'python3-flask'])
   else
     install_packages(['python3', 'python3-pip'])
@@ -254,6 +256,7 @@ def bootstrap_flask
 end
 
 def dl_ctr_logs
+  on hosts, 'journalctl -xe'
   dir = File.join(proj_root, 'tmp/e2e_ctr').tap { |d| `mkdir -p #{d}` }
 
   hosts.each do |host|

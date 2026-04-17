@@ -1,9 +1,9 @@
 <div class="list-group bg-white rounded mt-4">
-  <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+  <button class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
       data-bs-toggle="collapse" data-bs-target="#workflow_list"
       aria-expanded="true" aria-controls="workflow_list">
     <span class="lead fw-bolder"><%= t('dashboard.jobs_workflows') %></span>
-  </a>
+  </button>
 
   <div id="workflow_list" class="collapse show">
     <%- @workflows.each do |workflow| -%>
@@ -14,7 +14,8 @@
         </div>
 
         <div class="col-auto">
-          <%= link_to clone_project_workflow_path(@project.id, workflow.id), title: "Clone workflow" do %>
+          <%= link_to clone_project_workflow_path(@project.id, workflow.id), 
+                aria:{ label: I18n.t('dashboard.jobs_workflow_clone', name: workflow.name) } do %>
             <%= icon_tag(URI.parse("fas://clone")) %>
           <% end %>
         </div>
@@ -23,20 +24,23 @@
       <div class="row">
         <div class="col">
           <%= link_to I18n.t('dashboard.show'), project_workflow_path(@project.id, workflow.id),
-                      class: "btn btn-info launcher-button" %>
+                      class: "btn btn-info launcher-button",
+                      aria:{ label: I18n.t('dashboard.jobs_workflow_show_graph', name: workflow.name) } %>
         </div>
       </div>
       <% if workflow.editable? %>
       <div class="row">
         <div class="col">
           <%= link_to I18n.t('dashboard.edit'), edit_project_workflow_path(@project.id, workflow.id),
-                      class: "btn btn-primary launcher-button" %>
+                      class: "btn btn-primary launcher-button",
+                      aria:{ label: I18n.t('dashboard.jobs_workflow_edit_settings', name: workflow.name) } %>
         </div>
         <div class="col">
           <%= button_to I18n.t('dashboard.delete'), project_workflow_path(@project.id, workflow.id),
                         method: :delete,
                         data: { confirm: t('dashboard.jobs_workflow_delete_confirmation') },
-                        class: "btn btn-danger launcher-button" %>
+                        class: "btn btn-danger launcher-button",
+                        aria:{ label: I18n.t('dashboard.jobs_workflow_delete_title', name: workflow.name) }%>
         </div>
       </div>
       <% end %>

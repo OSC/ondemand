@@ -8,6 +8,7 @@ en:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
+    active_jobs_close_details: "Close extended details panel."
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
@@ -132,8 +133,11 @@ en:
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
+    cancel: Cancel
     clear: Clear
     close: Close
+    close_alert: Close this alert.
+    close_notice: Close this notice.
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date
@@ -171,12 +175,28 @@ en:
     jobs_create_template_project: Create a new project from a template
     jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
+    jobs_launchers_add_select_option: Add select option %{name}
+    jobs_launchers_clone: Clone launcher %{name}
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
+    jobs_launchers_delete: Delete launcher %{name}
     jobs_launchers_delete_script_confirmation: Delete all contents of launcher?
     jobs_launchers_deleted: Launcher successfully deleted!
+    jobs_launchers_edit: Edit form for launcher %{name}
+    jobs_launchers_edit_form_item: Edit form item %{label}
     jobs_launchers_fixed_field: Fixed Value
+    jobs_launchers_fixed_field_help: Fix current value
+    jobs_launchers_max_value_label: Maximum value for number field %{label}
+    jobs_launchers_min_value_label: Minimum value for number field %{label}
+    jobs_launchers_new_field_select: Select item to add to form
     jobs_launchers_not_found: Cannot find Launcher %{launcher_id}
+    jobs_launchers_preview_form_item: Preview of form item %{label}
+    jobs_launchers_remove_form_item: Remove form item %{label}
+    jobs_launchers_remove_select_option: Remove select option %{name}
+    jobs_launchers_save_form: Save form
+    jobs_launchers_save_form_item: Save changes to form item %{label}
+    jobs_launchers_show_form: Show form for launcher %{name}
+    jobs_launchers_submit_launcher_title: Launch script with cached or default values for launcher %{name}
     jobs_launchers_submitted: Successfully submitted job %{job_id}.
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
@@ -211,21 +231,27 @@ en:
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project to import
     jobs_toggle_details: Click to toggle details for job %{job_id}
+    jobs_workflow_clone: Clone workflow %{name}
     jobs_workflow_created: Workflow successfully created!
+    jobs_workflow_delete_title: Delete workflow %{name}
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description
+    jobs_workflow_edit_settings: Modify settings for workflow %{name}
     jobs_workflow_failed: Workflow failed with error %{error}
     jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_missing_launchers: select at least %{count}
     jobs_workflow_name_placeholder: Workflow name
     jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
+    jobs_workflow_show_graph: Open workflow %{name} in graph editor
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflows: Workflows
     launch: Launch
     logo_alt_text: Welcome to Open OnDemand
+    maximum: Maximum
+    minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser

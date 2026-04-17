@@ -1,6 +1,10 @@
 #directory-contents .selected {
   color: white;
   background-color: rgb(0, 136, 204);
+
+  .dropdown-menu a {
+    color: var(--bs-dropdown-link-color);
+  }
 }
 
 #directory-contents .selected a.name {
@@ -32,3 +36,4 @@ div.datatables-status, div.transfers-status {
 .z-index-999 {
   z-index: 999;
 }
+
