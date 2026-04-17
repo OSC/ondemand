@@ -18,7 +18,7 @@ locals: {
 %>
 
 <%- if @session && @session.errors.any? -%>
-  <div class="alert alert-danger alert-dismissible" role="alert">
+  <div class="alert alert-danger alert-dismissible" role="alert" data-notice="true">
 
     <% @session.errors.each do |error| %>
       <% if error.attribute == :submit %>

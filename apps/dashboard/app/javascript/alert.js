@@ -7,6 +7,22 @@ export function OODAlertSuccess(message) {
   OODAlert(message, 'success');
 }
 
+// Many pages are loaded with role="alert" div/content, but these are not
+// read by all browser/OS/Screen reader combinations. This is a simple hack to simply
+// replace the content with itself after some delay for force all combinations
+// to correctly read alerts.
+// see https://github.com/OSC/ondemand/issues/2077 for more details.
+export function updateAlerts() {
+  const alerts = document.querySelectorAll('[data-notice]');
+  alerts.forEach((alert) => {
+    setTimeout(() => {
+      const tmpHtml = alert.innerHTML;
+      alert.innerHTML = null;
+      alert.innerHTML = tmpHtml;
+    }, 200);
+  });
+}
+
 function OODAlert(message, type) {
   const div = alertDiv(message, type);
   const main = document.getElementById('main_container');
