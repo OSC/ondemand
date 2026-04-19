@@ -5,11 +5,11 @@
 <%= render 'breadcrumbs' %>
 
 <p>
-  <%= link_to 'New App', new_product_path(type: @type), class: 'btn btn-default' %>
+  <%= link_to t('dashboard.products_new_app'), new_product_path(type: @type), class: 'btn btn-default' %>
   <span class="float-end">
-    <%= render(partial: 'shared/shell_button', locals: { label: 'Launch Shell', path: product_class.router.base_path.realdirpath }) %>
+    <%= render(partial: 'shared/shell_button', locals: { label: t('dashboard.products_launch_shell'), path: product_class.router.base_path.realdirpath }) %>
     <% if Configuration.can_access_files? %>
-      <%= link_to 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, class: 'btn btn-default' %>
+      <%= link_to t('dashboard.products_launch_files'), OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, class: 'btn btn-default' %>
     <% end %>
   </span>
 </p>
@@ -20,10 +20,10 @@
   <thead>
     <tr>
       <th data-orderable="false" data-searchable="false"></th>
-      <th>Directory Name</th>
-      <th>App Details</th>
+      <th><%= t('dashboard.products_dir_name') %></th>
+      <th><%= t('dashboard.products_app_details') %></th>
       <th data-orderable="false" data-searchable="false"></th>
-      <th>Last Modified</th>
+      <th><%= t('dashboard.products_last_modified') %></th>
       <th data-orderable="false" data-searchable="false"></th>
       <th data-orderable="false" data-searchable="false"></th>
     </tr>

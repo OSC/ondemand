@@ -1,5 +1,5 @@
 <div class="card <%= local_assigns.fetch(:style, "system-and-shared-apps-header") %>">
-  <div class="card-header"><%= title %></div>
+  <div class="card-header"><%= t("dashboard.nav_group_#{title.downcase.gsub(' ','_')}", default: title) %></div>
   <div class="list-group list-group-flush">
   <%-
     OodAppGroup.groups_for(
@@ -11,7 +11,7 @@
     <%=
       content_tag(
         "p",
-        app_group.title,
+        t("dashboard.nav_group_#{app_group.title.downcase.gsub(' ','_')}", default: app_group.title),
         class: "list-group-item mb-0 header border-0"
       ) unless app_group.title.blank?
     %>

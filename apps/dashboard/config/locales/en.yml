@@ -42,6 +42,8 @@ en:
       defaults instead. (%{error_message})
     batch_connect_form_choose_template_name: Choose a template name
     batch_connect_form_data_root: data root directory
+    batch_connect_form_dynamic_warning: The following form may change dynamically
+      as options are selected. All changes will be announced and are reversible
     batch_connect_form_invalid: The form.yml has missing options in the %{id} form
       field.
     batch_connect_form_launch: Launch
@@ -118,6 +120,22 @@ en:
       Your session is currently starting... Please be patient as this process can
       take a few minutes.
     batch_connect_sessions_word: Session
+    batch_connect_toggle_notifications: Toggle push notifications
+    batch_connect_vnc_client_connect_html: Open a VNC client and connect to <code>localhost:%{port}</code>
+      within the client
+    batch_connect_vnc_download_html: Download any VNC viewer, %{realvnc_link} is a
+      good option.
+    batch_connect_vnc_mac_connection_html: 'Use the code below to establish the VNC
+      connection:'
+    batch_connect_vnc_open_terminal: Open a terminal window
+    batch_connect_vnc_password_html: 'Use the VNC password: <code>%{password}</code>'
+    batch_connect_vnc_ssh_tunnel: 'Copy/paste in your terminal to establish the SSH
+      tunnel:'
+    batch_connect_vnc_ssh_tunnel_replace_host_html: 'Copy/paste in your terminal and
+      replace <code>SSH_HOST</code> with a valid HPC login server to establish the
+      SSH tunnel:'
+    batch_connect_vnc_windows_terminals_html: 'For terminals in Windows you can use:
+      %{pwsh}, %{putty} and %{wsl} distributions'
     bc_saved_settings:
       delete_confirm: Are you sure?
       delete_title: Delete %{settings_name} saved settings
@@ -135,9 +153,6 @@ en:
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
-    browser_warning: OnDemand requires a newer version of the browser you are using.
-      Current browser requirements include IE Edge, Firefox 19+, Chrome 34+, Safari
-      8+.
     clear: Clear
     close: Close
     custom_pages:
@@ -263,6 +278,10 @@ en:
     jobs_launchers_submitted: Successfully submitted job %{job_id}.
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
+    jobs_project_active_jobs: Active Jobs
+    jobs_project_back_to_projects: Back to Projects
+    jobs_project_clone_launcher: Clone launcher
+    jobs_project_completed_jobs: Completed Jobs
     jobs_project_created: Project successfully created!
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
@@ -271,6 +290,7 @@ en:
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created.
       <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
+    jobs_project_edit_project_directory: Edit project directory
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
     jobs_project_group_help: Make sure to choose the group that includes all intended
       collaborators. If this is not a collaborative project, the default group is
@@ -284,22 +304,33 @@ en:
     jobs_project_job_deleted: Successfully deleted job %{job_id}
     jobs_project_job_not_deleted: Cannot delete job %{job_id}
     jobs_project_job_stopped: Successfully stopped job %{job_id}
+    jobs_project_manager: Project Manager
     jobs_project_manifest_updated: Project manifest updated!
+    jobs_project_message: Message
     jobs_project_name_placeholder: Project name
     jobs_project_name_validation: Project name may only contain letters, digits, dashes,
       underscores, and spaces
+    jobs_project_new: New Project
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_removed: Project removed from lookup!
+    jobs_project_return_to_projects_page: Return to projects page
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_select_directory: Select project directory
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created
       with the selected group. Does not affect projects in your home directory.
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project to import
+    jobs_workflow_add_launcher: Add Launcher
+    jobs_workflow_connect_launchers: Connect Launchers
     jobs_workflow_created: Workflow successfully created!
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
+    jobs_workflow_delete_edge: Delete Edge
+    jobs_workflow_delete_launcher: Delete Launcher
+    jobs_workflow_delete_selected_edge: Delete selected edge (Del/Backspace)
+    jobs_workflow_delete_selected_launcher: Delete selected launcher (Del/Backspace)
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description
+    jobs_workflow_editing: 'Editing: %{name}'
     jobs_workflow_failed: Workflow failed with error %{error}
     jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers
       with 'Connect Launchers' selected
@@ -308,14 +339,21 @@ en:
     jobs_workflow_name_placeholder: Workflow name
     jobs_workflow_name_validation: Workflow name may only contain letters, digits,
       dashes, underscores, and spaces
+    jobs_workflow_new: New Workflow
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflows: Workflows
     launch: Launch
-    layout_title: Dashboard - %{title}
+    layout_title:
+    loading: Loading...
     logo_alt_text: Welcome to Open OnDemand
     mode: Mode
+    module_browser_copy: Copy
+    module_browser_dependencies: 'Dependencies:'
     module_browser_last_updated: 'Last updated: %{last_updated}'
+    module_browser_load_command: 'Load command:'
+    module_browser_none: None
+    module_browser_showing_results: Showing %{count} results
     module_browser_title: Module Browser
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
@@ -326,7 +364,9 @@ en:
     nav_develop_my_sandbox_apps_prod: My Shared Apps (Production)
     nav_develop_title: Develop
     nav_group_clusters: Clusters
+    nav_group_desktops: Desktops
     nav_group_files: Files
+    nav_group_guis: GUIs
     nav_group_interactive_apps: Interactive Apps
     nav_group_jobs: Jobs
     nav_help_change_password: Change HPC Password
@@ -345,14 +385,21 @@ en:
     nsf_access_events: NSF ACCESS Events
     ok: OK
     owner: Owner
+    path_selector_caption: Choose a file or directory to use in the form.
     path_selector_default_popup_title: Select Your Working Directory
+    path_selector_favorites: Favorites
     path_selector_home: home
     path_selector_parent_directory: parent directory
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available
       apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
-    powered_by_ood: Powered by Open OnDemand
+    products_app_details: App Details
+    products_dir_name: Directory Name
+    products_last_modified: Last Modified
+    products_launch_files: Launch Files
+    products_launch_shell: Launch Shell
+    products_new_app: New App
     project: Project
     project_balances: Project Balances
     project_zip_error_message: 'Error creating ZIP file: %{error}'
@@ -399,7 +446,6 @@ en:
     skip_navigation: Skip Navigation
     soft_tabs: Soft Tabs
     soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
-    software_license: Software License Notice
     submit: Submit
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
@@ -425,14 +471,15 @@ en:
           attachments_js: Max attachment size is %{max}. Selected file size is %{size}
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
-    toggle_navigation: Toggle navigation
+    system_status_in_use: "%{percent} in use"
+    system_status_jobs_queued: Jobs Queued
+    system_status_jobs_running: Jobs Running
     type: Type
     unknown: Unknown
     uppy: Uppy
     user_configuration:
       support_ticket_error: support_ticket is misconfigured. Please add a backend
         implementation in the configuration YAML.
-    version: 'OnDemand version: %{version}'
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>

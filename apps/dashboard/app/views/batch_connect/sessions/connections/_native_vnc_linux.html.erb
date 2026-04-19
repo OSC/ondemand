@@ -1,33 +1,31 @@
 <ol>
-  <li>Open a terminal window</li>
+  <li><%= t('dashboard.batch_connect_vnc_open_terminal') %></li>
   <li>
     <% if Configuration.native_vnc_login_host %>
     <p>
-      Copy/paste in your terminal to establish the SSH tunnel:
+      <%= t('dashboard.batch_connect_vnc_ssh_tunnel') %>
     </p>
     <pre><code>ssh -f -N -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %>@<%= Configuration.native_vnc_login_host %></code></pre>
     <% else %>
     <p>
-      Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
-      valid HPC login server to establish the SSH tunnel:
+      <%= t('dashboard.batch_connect_vnc_ssh_tunnel_replace_host_html').html_safe %>
     </p>
     <pre><code>ssh -f -N -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %>@<strong>SSH_HOST</strong></code></pre>
     <% end %>
   </li>
   <% if browser.platform == :mac %>
     <li>
-      <p>Use the code below to establish the VNC connection:</p>
+      <p><%= t('dashboard.batch_connect_vnc_mac_connection_html').html_safe %></p>
       <pre>open vnc://:<%= connect.password %>@localhost:<%= localport %></pre>
     </li>
   <% else %>
     <li>
       <p>
-        Open a VNC client and connect to
-        <code>localhost:<%= localport %></code> within the client
+        <%= t('dashboard.batch_connect_vnc_client_connect_html', port: localport).html_safe %>
       </p>
     </li>
     <li>
-      <p>Use the VNC password: <code><%= connect.password %></code></p>
+      <p><%= t('dashboard.batch_connect_vnc_password_html', password: connect.password).html_safe %></p>
     </li>
   <% end %>
 </ol>

@@ -14,7 +14,7 @@
     <h1 class="my-2 h3"><%= @project.title %></h1>
   </div>
   <div class="col-6 col-sm-3 align-self-center justify-content-end d-flex mt-2 order-3">
-    <%= link_to 'Back to Projects', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
+    <%= link_to t('dashboard.jobs_project_back_to_projects'), projects_path, class: 'btn btn-default align-self-start', title: t('dashboard.jobs_project_return_to_projects_page') %>
   </div>
 </div>
 
@@ -36,7 +36,7 @@
             </div>
 
             <div class="col-auto">
-              <%= link_to clone_project_launcher_path(@project.id, launcher.id), title: "Clone launcher" do %>
+              <%= link_to clone_project_launcher_path(@project.id, launcher.id), title: t('dashboard.jobs_project_clone_launcher') do %>
                 <%= icon_tag(URI.parse("fas://clone")) %>
               <% end %>
             </div>
@@ -59,12 +59,12 @@
     <div id="jobs_item" class="accordion col-12 col-lg-5 jobs-files-item" aria-live="assertive">
       <div class="border border-2 p-3 mt-3 mb-5 bg-white rounded">
         <div class="row pill-box">
-          <h2 class="lead fw-bolder d-flex justify-content-center">Active Jobs</h2>
+          <h2 class="lead fw-bolder d-flex justify-content-center"><%= t('dashboard.jobs_project_active_jobs') %></h2>
           <%= render(partial: 'job_details', collection: @project.active_jobs, as: :job, locals: { project: @project }) %>
         </div>
 
         <div class="row">
-          <h2 class="lead fw-bolder d-flex justify-content-center">Completed Jobs</h2>
+          <h2 class="lead fw-bolder d-flex justify-content-center"><%= t('dashboard.jobs_project_completed_jobs') %></h2>
           <div id="completed_jobs" class="row pill-box">
             <%- @project.completed_jobs.each do |job| -%>
             <div class="job-pill" id="<%= "job_#{job.cluster}_#{job.id}" %>">
@@ -87,7 +87,7 @@
         %>
           <div class="d-flex justify-content-center">
             <div id="loading-icon" class="spinner-border rem-5" role="status">
-              <span class="sr-only">Loading...</span> 
+              <span class="sr-only"><%= t('dashboard.loading') %></span> 
             </div>
           </div>
         <%- end -%>

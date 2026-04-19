@@ -1,29 +1,25 @@
 <ol>
   <li>
-    Download any VNC viewer,
-    <a href="https://www.realvnc.com/en/connect/download/viewer/" rel="noopener">RealVNC</a>
-    is a good option.
+    <%= t('dashboard.batch_connect_vnc_download_html', realvnc_link: '<a href="https://www.realvnc.com/en/connect/download/viewer/" rel="noopener">RealVNC</a>').html_safe %>
   </li>
   <li>
     <% if Configuration.native_vnc_login_host %>
     <p>
-      Copy/paste in your terminal to establish the SSH tunnel:
+      <%= t('dashboard.batch_connect_vnc_ssh_tunnel') %>
     </p>
     <pre><code>ssh -f -N -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %>@<%= Configuration.native_vnc_login_host %></code></pre>
     <% else %>
     <p>
-      Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
-      valid HPC login server to establish the SSH tunnel:
+      <%= t('dashboard.batch_connect_vnc_ssh_tunnel_replace_host_html').html_safe %>
     </p>
     <pre><code>ssh -f -N -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %>@<strong>SSH_HOST</strong></code></pre>
     <% end %>
-    <p>For terminals in Windows you can use: <a href="https://github.com/PowerShell/PowerShell/releases/latest">Powershell</a>,  <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/">PuTTy</a> and <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem Linux</a> distributions</p>
+    <p><%= t('dashboard.batch_connect_vnc_windows_terminals_html', pwsh: '<a href="https://github.com/PowerShell/PowerShell/releases/latest">Powershell</a>', putty: '<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/">PuTTy</a>', wsl: '<a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem Linux</a>').html_safe %></p>
   </li>
   <li>
-    Open a VNC client and connect to
-    <code>localhost:<%= localport %></code> within the client
+    <%= t('dashboard.batch_connect_vnc_client_connect_html', port: localport).html_safe %>
   </li>
   <li>
-    <p>Use the VNC password: <code><%= connect.password %></code></p>
+    <p><%= t('dashboard.batch_connect_vnc_password_html', password: connect.password).html_safe %></p>
   </li>
 </ol>

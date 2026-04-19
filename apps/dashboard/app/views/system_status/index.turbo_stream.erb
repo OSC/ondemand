@@ -19,7 +19,7 @@
                   <div class="progress-bar w-<%= current_status[:percent].to_i %>"></div>
                 </div>
                 <span id="component-value-<%= cindex %>-<%= subindex %>" class="text-muted" tabindex="0">
-                  <%= current_status[:percent] %> in use
+                  <%= t('dashboard.system_status_in_use', percent: current_status[:percent]) %>
                 </span>
               <% end %>
             </div>
@@ -29,8 +29,8 @@
             <table id="jobs-table-<%= cindex %>" class="table mb-0" tabindex="0">
               <thead>
                 <tr>
-                  <th scope="col">Jobs Running</th>
-                  <th scope="col">Jobs Queued</th>
+                  <th scope="col"><%= t('dashboard.system_status_jobs_running') %></th>
+                  <th scope="col"><%= t('dashboard.system_status_jobs_queued') %></th>
                 </tr>
               </thead>
 

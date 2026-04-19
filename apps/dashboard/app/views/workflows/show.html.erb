@@ -6,13 +6,13 @@
 <input type="hidden" id="base-launcher-url" value="<%= project_launchers_path(@project.id) %>">
 
 <div id="workflows_app">
-  <div class="toolbar" aria-label="toolbar">
+  <div class="row m-1 p-2 w-100 toolbar d-flex justify-content-center text-center pb-2 bg-light">
     <% hidden_class = @workflow.editable? ? '' : 'd-none' %>
     <%= select_tag "select_launcher", options_from_collection_for_select(@launchers, :id, :title), include_blank: false, class: "form-control w-25 #{hidden_class}" %>
-    <button id="btn-add" class="<%= hidden_class %>">Add Launcher</button>
-    <button id="btn-connect" class="<%= hidden_class %>" aria-pressed="false">Connect Launchers</button>
-    <button id="btn-delete-launcher" class="danger <%= hidden_class %>" title="Delete selected launcher (Del/Backspace)">Delete Launcher</button>
-    <button id="btn-delete-edge" class="danger <%= hidden_class %>" title="Delete selected edge (Del/Backspace)">Delete Edge</button>
+    <button id="btn-add" class="<%= hidden_class %>"><%= t('dashboard.jobs_workflow_add_launcher') %></button>
+    <button id="btn-connect" class="<%= hidden_class %>" aria-pressed="false"><%= t('dashboard.jobs_workflow_connect_launchers') %></button>
+    <button id="btn-delete-launcher" class="danger <%= hidden_class %>" title="<%= t('dashboard.jobs_workflow_delete_selected_launcher') %>"><%= t('dashboard.jobs_workflow_delete_launcher') %></button>
+    <button id="btn-delete-edge" class="danger <%= hidden_class %>" title="<%= t('dashboard.jobs_workflow_delete_selected_edge') %>"><%= t('dashboard.jobs_workflow_delete_edge') %></button>
     <div class="workflow-actions">
       <button id="btn-submit-workflow"><%= I18n.t('dashboard.submit') %></button>
       <button id="btn-restore-workflow" class="<%= hidden_class %>"><%= I18n.t('dashboard.restore') %></button>

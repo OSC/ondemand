@@ -13,7 +13,7 @@
     <div class="card card-body">
       <table class="table table-bordered table-sm m-0 mb-2">
         <tr>
-          <td><strong> Message </strong></td>
+          <td><strong> <%= t('dashboard.jobs_project_message') %> </strong></td>
           <td><%= native_message(job.native) %></td>
         </tr>
         <% job.to_human_display.each do |name, value| %>
