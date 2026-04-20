@@ -8,6 +8,7 @@ fr-CA:
         required: "%{attribute} est requis"
         used: "%{attribute} est déjà utilisé"
   dashboard:
+    active_jobs_close_details: Fermer le panneau de détails étendus.
     active_sessions_caption_html: <a href="%{all_sessions_url}"> voir tout (%{number_of_sessions})</a>
     active_sessions_title: Sessions interactives actives
     add: Ajouter
@@ -129,8 +130,11 @@ fr-CA:
     breadcrumbs_home: Accueil
     breadcrumbs_my_sessions: Mes sessions interactives
     breadcrumbs_support_ticket: Billet de soutien
+    cancel: Annuler
     clear: Effacer
     close: Fermer
+    close_alert: Fermer cette alerte.
+    close_notice: Fermer cet avis.
     custom_pages:
       invalid: 'Code de page invalide : %{page}. Cette page n’a pas été configurée'
     date: Date
@@ -167,12 +171,28 @@ fr-CA:
     jobs_create_template_project: Créer un nouveau projet à partir d’un modèle
     jobs_import_shared_project: Importer un projet partagé
     jobs_launchers: Lancements
+    jobs_launchers_add_select_option: Ajouter l'option sélectionnée %{name}
+    jobs_launchers_clone: Cloner le lanceur %{name}
     jobs_launchers_created: Lancement créé avec succès !
     jobs_launchers_default_created: Un « hello_world.sh » a aussi été ajouté à ce projet.
+    jobs_launchers_delete: Supprimer le lanceur %{name}
     jobs_launchers_delete_script_confirmation: Supprimer tout le contenu du lancement ?
     jobs_launchers_deleted: Lancement supprimé avec succès !
+    jobs_launchers_edit: Modifier le formulaire pour le lanceur %{name}
+    jobs_launchers_edit_form_item: Modifier l'élément de formulaire %{label}
     jobs_launchers_fixed_field: Valeur fixe
+    jobs_launchers_fixed_field_help: Corriger la valeur actuelle
+    jobs_launchers_max_value_label: Valeur maximale pour le champ numérique %{label}
+    jobs_launchers_min_value_label: Valeur minimale pour le champ numérique %{label}
+    jobs_launchers_new_field_select: Sélectionner un élément à ajouter au formulaire
     jobs_launchers_not_found: Impossible de trouver le lancement %{launcher_id}
+    jobs_launchers_preview_form_item: Aperçu de l'élément de formulaire %{label}
+    jobs_launchers_remove_form_item: Supprimer l'élément de formulaire %{label}
+    jobs_launchers_remove_select_option: Supprimer l'option sélectionnée %{name}
+    jobs_launchers_save_form: Enregistrer le formulaire
+    jobs_launchers_save_form_item: Enregistrer les modifications de l'élément de formulaire %{label}
+    jobs_launchers_show_form: Afficher le formulaire pour le lanceur %{name}
+    jobs_launchers_submit_launcher_title: Lancer le script avec des valeurs mises en cache ou par défaut pour le lanceur %{name}
     jobs_launchers_submitted: Travail %{job_id} soumis avec succès.
     jobs_launchers_updated: Manifest du lancement mis à jour !
     jobs_new_launcher: Nouveau lancement
@@ -207,10 +227,13 @@ fr-CA:
     jobs_project_validation_error: Requête invalide. Veuillez vérifier les erreurs ci-dessous
     jobs_select_directory_placeholder: Cliquez sur le projet ci-dessous pour l'importer sur votre page d'accueil (optionnel)
     jobs_toggle_details: Cliquez pour afficher ou masquer les détails du travail %{job_id}
+    jobs_workflow_clone: Cloner le flux de travail %{name}
     jobs_workflow_created: Flux de travail créé avec succès !
     jobs_workflow_delete_confirmation: Supprimer tous les contenus du flux de travail ?
+    jobs_workflow_delete_title: Supprimer le flux de travail %{name}
     jobs_workflow_deleted: Flux de travail supprimé avec succès !
     jobs_workflow_description_placeholder: Description du flux de travail
+    jobs_workflow_edit_settings: Modifier les paramètres pour le flux de travail %{name}
     jobs_workflow_failed: Le flux de travail a échoué avec l'erreur %{error}
     jobs_workflow_help: Cliquez sur le titre pour sélectionner et faire glisser. Connectez en cliquant sur deux lanceurs avec 'Connecter les lanceurs' sélectionné.
     jobs_workflow_manifest_updated: Manifeste du flux de travail mis à jour !
@@ -218,10 +241,13 @@ fr-CA:
     jobs_workflow_name_placeholder: Nom du flux de travail
     jobs_workflow_name_validation: Le nom du flux de travail ne peut contenir que des lettres, des chiffres, des tirets, des traits de soulignement et des espaces
     jobs_workflow_not_found: Impossible de trouver le flux de travail %{workflow_id}
+    jobs_workflow_show_graph: Ouvrir le flux de travail %{name} dans l'éditeur de graphique
     jobs_workflow_submitted: Flux de travail soumis avec succès !
     jobs_workflows: Flux de travail
     launch: Lancer
     logo_alt_text: Bienvenue dans Open OnDemand
+    maximum: Maximum
+    minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Dernière mise à jour : %{last_updated}'
     module_browser_title: Navigateur de modules

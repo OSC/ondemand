@@ -8,6 +8,7 @@ zh-CN:
         required: "%{attribute} 是必需的"
         used: "%{attribute} 已被使用"
   dashboard:
+    active_jobs_close_details: 关闭扩展详细信息面板。
     active_sessions_caption_html: <a href="%{all_sessions_url}"> 查看全部 (%{number_of_sessions})</a>
     active_sessions_title: 活动交互会话
     add: 添加
@@ -115,8 +116,11 @@ zh-CN:
     breadcrumbs_home: 主页
     breadcrumbs_my_sessions: 我的交互会话
     breadcrumbs_support_ticket: 支持票
+    cancel: 取消
     clear: 清除
     close: 关闭
+    close_alert: 关闭此警报。
+    close_notice: 关闭此通知。
     custom_pages:
       invalid: 无效的页面代码：%{page}。此页面尚未配置
     date: 日期
@@ -153,12 +157,28 @@ zh-CN:
     jobs_create_template_project: 从模板创建新项目
     jobs_import_shared_project: 导入共享项目
     jobs_launchers: 启动器
+    jobs_launchers_add_select_option: 添加选择选项 %{name}
+    jobs_launchers_clone: 克隆启动器 %{name}
     jobs_launchers_created: 启动器成功创建！
     jobs_launchers_default_created: 该项目还添加了一个 'hello_world.sh'。
+    jobs_launchers_delete: 删除启动器 %{name}
     jobs_launchers_delete_script_confirmation: 是否删除启动器的所有内容？
     jobs_launchers_deleted: 启动器成功删除！
+    jobs_launchers_edit: 编辑启动器 %{name} 的表单
+    jobs_launchers_edit_form_item: 编辑表单项 %{label}
     jobs_launchers_fixed_field: 固定值
+    jobs_launchers_fixed_field_help: 修复当前值
+    jobs_launchers_max_value_label: 数字字段 %{label} 的最大值
+    jobs_launchers_min_value_label: 数字字段 %{label} 的最小值
+    jobs_launchers_new_field_select: 选择要添加到表单的项目
     jobs_launchers_not_found: 找不到启动器 %{launcher_id}
+    jobs_launchers_preview_form_item: 表单项 %{label} 的预览
+    jobs_launchers_remove_form_item: 移除表单项 %{label}
+    jobs_launchers_remove_select_option: 移除选择选项 %{name}
+    jobs_launchers_save_form: 保存表单
+    jobs_launchers_save_form_item: 保存对表单项 %{label} 的更改
+    jobs_launchers_show_form: 显示启动器 %{name} 的表单
+    jobs_launchers_submit_launcher_title: 使用缓存或默认值启动启动器 %{name} 的脚本
     jobs_launchers_submitted: 成功提交作业 %{job_id}。
     jobs_launchers_updated: 启动器清单已更新！
     jobs_new_launcher: 新启动器
@@ -193,10 +213,13 @@ zh-CN:
     jobs_project_validation_error: 无效请求。请查看以下错误
     jobs_select_directory_placeholder: 单击下面的项目以导入到您的主页（可选）
     jobs_toggle_details: 点击切换工作 %{job_id} 的详细信息
+    jobs_workflow_clone: 克隆工作流 %{name}
     jobs_workflow_created: 工作流创建成功！
     jobs_workflow_delete_confirmation: 删除工作流的所有内容？
+    jobs_workflow_delete_title: 删除工作流 %{name}
     jobs_workflow_deleted: 工作流删除成功！
     jobs_workflow_description_placeholder: 工作流描述
+    jobs_workflow_edit_settings: 修改工作流 %{name} 的设置
     jobs_workflow_failed: 工作流失败，错误 %{error}
     jobs_workflow_help: 点击标题以选择并拖动。通过点击两个选中的发射器并选择“连接发射器”来连接
     jobs_workflow_manifest_updated: 工作流清单已更新！
@@ -204,10 +227,13 @@ zh-CN:
     jobs_workflow_name_placeholder: 工作流名称
     jobs_workflow_name_validation: 工作流名称只能包含字母、数字、短横线、下划线和空格
     jobs_workflow_not_found: 找不到工作流 %{workflow_id}
+    jobs_workflow_show_graph: 在图形编辑器中打开工作流 %{name}
     jobs_workflow_submitted: 工作流提交成功！
     jobs_workflows: 工作流
     launch: 启动
     logo_alt_text: 欢迎使用 Open OnDemand
+    maximum: 最大值
+    minimum: 最小值
     mode: 模式
     module_browser_last_updated: 最后更新：%{last_updated}
     module_browser_title: 模块浏览器
