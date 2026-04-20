@@ -142,8 +142,6 @@ en-CA:
     directory: Directory
     edit: Edit
     file: File
-    launcher_delete_title: "Delete launcher %{title}"
-    launcher_edit_title: "Edit launcher %{title}"
     file_quotas: File Quotas
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a directory as zip that you have read and execute access to

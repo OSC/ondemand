@@ -127,8 +127,6 @@ zh-CN:
     development_apps_caption: 沙盒应用
     directory: 目录
     edit: 编辑
-    launcher_delete_title: "删除启动器 %{title}"
-    launcher_edit_title: "编辑启动器 %{title}"
     file: 文件
     file_quotas: 文件配额
     files_directory_download_error_modal_title: 目录太大，无法下载

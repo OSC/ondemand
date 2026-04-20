@@ -141,8 +141,6 @@ fr-CA:
     development_apps_caption: Application bac à sable
     directory: Répertoire
     edit: Modifier
-    launcher_delete_title: "Supprimer le lancement %{title}"
-    launcher_edit_title: "Modifier le lancement %{title}"
     file: Fichier
     file_quotas: Quotas de fichiers
     files_directory_download_error_modal_title: Répertoire trop volumineux à télécharger
