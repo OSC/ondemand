@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+Update Changelog (#5336)\
+Support Ubuntu 26.04 (#5326)\
+fix scss variables for contrast (#5334)\
+Fix debian-13 builds in Gitlab (#5331)\
+update dependencies (#5333)\
+Update Changelog (#5330)\
+Fix contrast issues in main pages (#5329)\
+This will always set the HSTS header for security purposes (#5323)\
+Lint a random file (#5315)\
+add regions to files table view (#5248)\
+Make icon picker keyboard navigable (#5186)\
+Launcher form builder accessibility (#5302)\
+Make footer 'Powered by Open OnDemand' more prominent (#1986) (#5309)\
+remove this \\A to fix spelling (#5320)\
+Make launcher/workflow lists accessible 5257 (#5296)\
+Hold focus in batch connect session cards (#5310)\
+make the activejobs panel more accessible (#5295)\
+Add caching to BatchConnect::App.from_token (#5299)\
+fixup flash alerts and notices a little bit (#5303)\
+update dependencies (#5318)\
+Update Changelog (#5316)\
+Do not install e2e gems during Gitlab package build (#5313)\
+update localizations (#5317)
 
 ## [4.2.1] - 2026-04-16
 
