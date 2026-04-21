@@ -4,8 +4,8 @@
   <table class="table table-bordered">
     <thead class="table-light">
       <tr>
-        <th>Cluster</th>
-        <th>Versions</th>
+        <th><%= t('dashboard.module_browser_table_cluster') %></th>
+        <th><%= t('dashboard.module_browser_table_versions') %></th>
       </tr>
     </thead>
     <tbody>
@@ -30,7 +30,7 @@
                 </button>
               <% end %>
             <% else %>
-              <span class="text-muted">None</span>
+              <span class="text-muted"><%= t('dashboard.module_browser_none') %></span>
             <% end %>
           </td>
         </tr>

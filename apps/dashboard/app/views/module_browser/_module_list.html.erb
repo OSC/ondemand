@@ -18,7 +18,10 @@
       <div id="collapse_<%= name %>" class="collapse">
         <div class="border rounded p-4">
           <div class="mb-3">
-            <div class="mb-3 h5"><strong>Available modules: </strong><span class="text-muted small">(select version)</span></div>
+            <div class="mb-3 h5">
+              <strong><%= t('dashboard.module_browser_available_modules') %></strong>
+              <span class="text-muted small">(<%= t('dashboard.module_browser_select_version_hint') %>)</span>
+            </div>
             <%= render 'versions_table', versions: versions, clusters: versions.map(&:cluster).uniq %>
           </div>
 
@@ -52,7 +55,7 @@
                   class="btn btn-outline-secondary btn-sm ms-2"
                   data-role="copy-btn"
                   data-clipboard-target="#module_info_<%= name %> [data-role='module-load-command']"
-                  aria-label="Copy load command for <%= name %>"
+                  aria-label="<%= t('dashboard.module_browser_copy_load_command_aria', module: name) %>"
                 >
                   <%= t('dashboard.module_browser_copy') %>
                 </button>

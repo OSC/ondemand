@@ -1,12 +1,12 @@
 <div class="d-flex flex-wrap align-items-end gap-3 mb-4">
   <div class="flex-grow-1">
-    <label for="module_search" class="form-label">Search Modules</label>
-    <input type="text" class="form-control" id="module_search" placeholder="Search by module name...">
+    <label for="module_search" class="form-label"><%= t('dashboard.module_browser_search_modules') %></label>
+    <input type="text" class="form-control" id="module_search" placeholder="<%= t('dashboard.module_browser_search_placeholder') %>">
   </div>
   <div>
-    <label for="cluster_filter" class="form-label">Cluster</label>
+    <label for="cluster_filter" class="form-label"><%= t('dashboard.module_browser_cluster') %></label>
     <select id="cluster_filter" class="form-select">
-      <option value="">All Clusters</option>
+      <option value=""><%= t('dashboard.module_browser_all_clusters') %></option>
       <% Configuration.job_clusters.each do |cluster| %>
         <option value="<%= cluster.id %>">
           <%= cluster.title %>

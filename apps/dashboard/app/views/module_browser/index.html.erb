@@ -10,4 +10,12 @@
 <%= render 'toolbar' %>
 <%= render 'module_list', modules: @modules %>
 
+<div
+  id="module_browser_i18n"
+  class="d-none"
+  data-copy-text="<%= t('dashboard.module_browser_copy') %>"
+  data-copied-text="<%= t('dashboard.module_browser_copied') %>"
+  data-showing-results-template="<%= t('dashboard.module_browser_showing_results', count: '%{count}') %>"
+></div>
+
 <%= javascript_include_tag 'module_browser', nonce: true %>

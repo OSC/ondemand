@@ -408,11 +408,21 @@ en:
     logo_alt_text: Welcome to Open OnDemand
     mode: Mode
     module_browser_copy: Copy
+    module_browser_copied: Copied!
     module_browser_dependencies: 'Dependencies:'
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_load_command: 'Load command:'
     module_browser_none: None
     module_browser_showing_results: Showing %{count} results
+    module_browser_search_modules: Search Modules
+    module_browser_search_placeholder: Search by module name...
+    module_browser_cluster: Cluster
+    module_browser_all_clusters: All Clusters
+    module_browser_available_modules: 'Available modules:'
+    module_browser_select_version_hint: select version
+    module_browser_table_cluster: Cluster
+    module_browser_table_versions: Versions
+    module_browser_copy_load_command_aria: Copy load command for %{module}
     module_browser_title: Module Browser
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day

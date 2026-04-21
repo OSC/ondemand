@@ -2,6 +2,13 @@ import { debounce } from 'lodash';
 import { hide, show } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', function () {
+  const i18nElem = document.getElementById('module_browser_i18n');
+  const i18n = {
+    copyText: i18nElem?.dataset?.copyText || 'Copy',
+    copiedText: i18nElem?.dataset?.copiedText || 'Copied!',
+    showingResultsTemplate: i18nElem?.dataset?.showingResultsTemplate || 'Showing %{count} results',
+  };
+
   document.querySelectorAll('[data-name]').forEach(card => {
     const versions = card.querySelectorAll("[data-role='selectable-version']");
     const infoBox = card.querySelector("[data-role='module-info']");
@@ -97,8 +104,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const text = target.textContent;
       navigator.clipboard.writeText(text)
         .then(() => {
-          button.textContent = 'Copied!';
-          setTimeout(() => button.textContent = 'Copy', 2000);
+          button.textContent = i18n.copiedText;
+          setTimeout(() => (button.textContent = i18n.copyText), 2000);
         })
         .catch(err => {
           console.error('Clipboard write failed:', err);
@@ -154,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update visible module count
     const resultsCountElem = document.getElementById('module_results_count');
     if (resultsCountElem) {
-      resultsCountElem.textContent = `Showing ${resultsCount} results`;
+      resultsCountElem.textContent = i18n.showingResultsTemplate.replace('%{count}', resultsCount);
     }
   }
 
