@@ -543,6 +543,15 @@ en:
     system_status_in_use: "%{percent} in use"
     system_status_jobs_queued: Jobs Queued
     system_status_jobs_running: Jobs Running
+    system_status_jobs_running_with_count: "%{count} Jobs Running"
+    system_status_jobs_queued_with_count: "%{count} Jobs Queued"
+    system_status_cluster_title: "%{cluster_title} Cluster Status"
+    system_status_component_available: "%{component} Available: %{available}"
+    system_status_components:
+      nodes: Nodes
+      processors: Processors
+      gpus: GPUs
+    system_status_not_supported: "Cluster information is not available with %{scheduler}. Currently, only Slurm clusters are supported."
     type: Type
     unknown: Unknown
     uppy: Uppy

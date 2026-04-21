@@ -3,12 +3,16 @@
 # Helpers for the system status page /dashboard/systemstatus
 module SystemStatusHelper
   def title(cluster)
-    "#{cluster.title} Cluster Status"
+    t('dashboard.system_status_cluster_title', cluster_title: cluster.title)
   end
 
-  def status_hash(name, active, total)
+  def status_hash(component_key, active, total)
     {
-      message: "#{name} Available: #{number_with_delimiter(total - active)}",
+      message: t(
+        'dashboard.system_status_component_available',
+        component: t("dashboard.system_status_components.#{component_key}"),
+        available: number_with_delimiter(total - active)
+      ),
       percent: percent(active, total)
     }
   end
@@ -16,7 +20,7 @@ module SystemStatusHelper
   def not_slurm_hash(job_adapter)
     scheduler = job_adapter.class.name.demodulize
     {
-      message: "Cluster information is not available with #{scheduler}. Currently, only Slurm clusters are supported.",
+      message: t('dashboard.system_status_not_supported', scheduler: scheduler),
       percent: -1
     }
   end
@@ -29,9 +33,9 @@ module SystemStatusHelper
     end
 
     [
-      status_hash('Nodes', cluster_info.active_nodes, cluster_info.total_nodes),
-      status_hash('Processors', cluster_info.active_processors, cluster_info.total_processors),
-      status_hash('GPUs', cluster_info.active_gpus, cluster_info.total_gpus)
+      status_hash(:nodes, cluster_info.active_nodes, cluster_info.total_nodes),
+      status_hash(:processors, cluster_info.active_processors, cluster_info.total_processors),
+      status_hash(:gpus, cluster_info.active_gpus, cluster_info.total_gpus)
     ]
   end
 
@@ -51,7 +55,7 @@ module SystemStatusHelper
 
   def active_job_status(job_adapter)
     num_jobs = number_with_delimiter(active_jobs(job_adapter))
-    "#{num_jobs} Jobs Running"
+    t('dashboard.system_status_jobs_running_with_count', count: num_jobs)
   end
 
   def queued_jobs(job_adapter)
@@ -62,7 +66,7 @@ module SystemStatusHelper
 
   def queued_job_status(job_adapter)
     num_jobs = number_with_delimiter(queued_jobs(job_adapter))
-    "#{num_jobs} Jobs Queued"
+    t('dashboard.system_status_jobs_queued_with_count', count: num_jobs)
   end
 
   def active_job_pct(job_adapter)
