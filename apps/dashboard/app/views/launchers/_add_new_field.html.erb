@@ -7,9 +7,9 @@
 </div>
 
 <template id="new_field_template">
-  <div class="editable-form-field">
+  <div class="editable-form-field" data-in-progress-field>
 
-    <div class="row mx-0 justify-text-center my-2" aria-live="polite">
+    <div class="row mx-0 justify-text-center my-2" aria-live="polite" data-new-field-help>
       <!-- help text is going to be place here in javascript -->
     </div>
 
@@ -19,8 +19,8 @@
       </select>
 
       <div class='mt-3 p-0'>
-        <button class="btn btn-success" type="button"><%= t('dashboard.add') %></button>
-        <button class="btn btn-danger float-end" type="button"><%= t('dashboard.cancel') %></button>
+        <button class="btn btn-success" type="button" data-new-field-action="add"><%= t('dashboard.add') %></button>
+        <button class="btn btn-danger float-end" type="button" data-new-field-action="cancel"><%= t('dashboard.cancel') %></button>
       </div>
     </div>
   </div>
