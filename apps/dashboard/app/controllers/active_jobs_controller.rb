@@ -58,12 +58,12 @@ class ActiveJobsController < ApplicationController
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
         sleep(2.0)
-        redirect_to active_jobs_path, :notice => "Successfully deleted #{job_id}"
+        redirect_to active_jobs_path, :notice => t('dashboard.active_jobs.delete_success', job_id: job_id, default: "Successfully deleted %{job_id}")
       rescue StandardError
-        redirect_to active_jobs_path, :alert => "Failed to delete #{job_id}"
+        redirect_to active_jobs_path, :alert => t('dashboard.active_jobs.delete_failure_with_id', job_id: job_id, default: "Failed to delete %{job_id}")
       end
     else
-      redirect_to active_jobs_path, :alert => 'Failed to delete.'
+      redirect_to active_jobs_path, :alert => t('dashboard.active_jobs.delete_failure_generic', default: 'Failed to delete.')
     end
   end
 
@@ -82,12 +82,12 @@ class ActiveJobsController < ApplicationController
 
     ActiveJobs::Jobstatusdata.new(data, cluster, true)
   rescue OodCore::JobAdapterError
-    OpenStruct.new(name: jobid, error: 'No job details because job has already left the queue.',
+    OpenStruct.new(name: jobid, error: t('dashboard.active_jobs.job_details_left_queue', default: 'No job details because job has already left the queue.'),
                    status: 'completed')
   rescue StandardError => e
     Rails.logger.info("#{e}:#{e.message}")
     Rails.logger.info(e.backtrace.join("\n"))
-    OpenStruct.new(name: jobid, error: "No job details available.\n#{e.backtrace}", status: '')
+    OpenStruct.new(name: jobid, error: "#{t('dashboard.active_jobs.job_details_unavailable', default: 'No job details available.')}\n#{e.backtrace}", status: '')
   end
 
   # Returns the filter id from the parameter if it is valid

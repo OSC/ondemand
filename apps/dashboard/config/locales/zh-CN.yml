@@ -1,4 +1,7 @@
 zh-CN:
+  "Active Jobs": "活动作业"
+  "Job Composer": "作业编辑器"
+  "Project Manager": "项目管理器"
   activemodel:
     errors:
       messages:
@@ -7,6 +10,62 @@ zh-CN:
         required: "%{attribute} 是必需的"
         used: "%{attribute} 已被使用"
   dashboard:
+    datatables:
+      search: "筛选: "
+      emptyTable: "表中无数据可用"
+      info: "显示第 _START_ 至 _END_ 项，共 _TOTAL_ 项"
+      infoEmpty: "显示第 0 至 0 项，共 0 项"
+      infoFiltered: "（从 _MAX_ 项中过滤）"
+      lengthMenu: "每页显示 _MENU_ 项"
+      zeroRecords: "没有找到匹配的记录"
+      entries:
+        1: "条"
+        _: "条"
+      lengthLabels:
+        "-1": "全部"
+    active_jobs:
+      title: "活动作业"
+      header_details: "详情"
+      header_id: "ID"
+      header_name: "名称"
+      header_user: "用户"
+      header_account: "帐户"
+      header_time_used: "使用时间"
+      header_queue: "队列"
+      header_status: "状态"
+      header_cluster: "集群"
+      header_actions: "操作"
+      all_clusters: "所有集群"
+      label_hold: "保留"
+      label_undetermined: "未定"
+      error_status_code: "请求作业失败，状态码："
+      error_parsing: "请求作业失败：正文解析错误。"
+      error_remote: "从远程服务器获取数据时出错。"
+      search_filter: "筛选: "
+      toggle_visibility: "切换在 %{cluster_title} 上的作业 %{jobname} 的可见性"
+      submit_ticket_title: "提交支持票"
+      submit_ticket_aria: "为 ID 为 %{pbsid} 的作业提交支持票"
+      delete_confirm: "您确定要删除 %{jobname} - %{pbsid} 吗？"
+      delete_aria: "删除 ID 为 %{pbsid} 的作业 %{jobname}"
+      delete_title: "删除作业"
+      delete_success: "已成功删除 %{job_id}"
+      delete_failure_with_id: "删除 %{job_id} 失败"
+      delete_failure_generic: "删除失败。"
+      job_details_left_queue: "无法获取作业详情，因为该作业已离开队列。"
+      job_details_unavailable: "无法获取作业详情。"
+      submit_args: "提交参数："
+      output_location: "输出位置："
+      open_in_file_manager: "在文件管理器中打开"
+      open_in_terminal: "在终端中打开"
+      delete: "删除"
+      filter_user: "您的作业"
+      filter_all: "所有作业"
+      empty_table: "表中无数据可用"
+      info: "显示第 _START_ 至 _END_ 项，共 _TOTAL_ 项"
+      info_empty: "显示第 0 至 0 项，共 0 项"
+      info_filtered: "（从 _MAX_ 项中过滤）"
+      length_menu: "每页显示 _MENU_ 项"
+      zero_records: "没有找到匹配的记录"
     active_sessions_caption_html: <a href="%{all_sessions_url}"> 查看全部 (%{number_of_sessions})</a>
     active_sessions_title: 活动交互会话
     add: 添加

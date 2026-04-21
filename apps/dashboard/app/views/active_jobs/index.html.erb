@@ -9,7 +9,7 @@
           <% filters.each do |filter| %>
             <%= '<li class="divider"></li>'.html_safe if filter == filters.last %>
             <li id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');">
-              <a class="dropdown-item" href="#"><%= filter.title %></a>
+              <a class="dropdown-item" href="#"><%= t("dashboard.active_jobs.filter_#{filter.filter_id}", default: filter.title) %></a>
             </li>
           <% end %>
         </ul>
@@ -26,8 +26,8 @@
               </li>
           <% end %>
           <li class="divider"></li>
-          <li id="cluster-id-all" onclick="set_cluster_id('all');" data-title="All Clusters">
-            <a class="dropdown-item" href="#">All Clusters</a>
+          <li id="cluster-id-all" onclick="set_cluster_id('all');" data-title="<%= t('dashboard.active_jobs.all_clusters', default: 'All Clusters') %>">
+            <a class="dropdown-item" href="#"><%= t('dashboard.active_jobs.all_clusters', default: 'All Clusters') %></a>
           </li>
         </ul>
       </div>
@@ -42,20 +42,20 @@
     </div>
   </div>
   <div class="col-auto col-lg col-md-12 table-responsive">
-    <h2>Active Jobs</h2>
+    <h2><%= t('dashboard.active_jobs.title', default: 'Active Jobs') %></h2>
     <table id="job_status_table" class="table datatable table-hover" cellspacing="0" width="100%">
       <thead>
       <tr>
-        <th>Details</th>
-        <th>ID<span aria-hidden="true"></span></th>
-        <th>Name<span aria-hidden="true"></span></th>
-        <th>User<span aria-hidden="true"></span></th>
-        <th>Account<span aria-hidden="true"></span></th>
-        <th>Time Used<span aria-hidden="true"></span></th>
-        <th>Queue<span aria-hidden="true"></span></th>
-        <th>Status<span aria-hidden="true"></span></th>
-        <th>Cluster<span aria-hidden="true"></span></th>
-        <th>Actions<span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_details', default: 'Details') %></th>
+        <th><%= t('dashboard.active_jobs.header_id', default: 'ID') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_name', default: 'Name') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_user', default: 'User') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_account', default: 'Account') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_time_used', default: 'Time Used') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_queue', default: 'Queue') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_status', default: 'Status') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_cluster', default: 'Cluster') %><span aria-hidden="true"></span></th>
+        <th><%= t('dashboard.active_jobs.header_actions', default: 'Actions') %><span aria-hidden="true"></span></th>
       </tr>
       </thead>
     </table>
@@ -70,6 +70,24 @@
   data-console-log-performance-report='<%= Configuration.console_log_performance_report? %>'
   data-base-uri='<%= controller.relative_url_root %>'
   data-ood-version='<%= Configuration.ood_version %>'
+  data-label-hold='<%= t("dashboard.active_jobs.label_hold", default: "Hold") %>'
+  data-label-undetermined='<%= t("dashboard.active_jobs.label_undetermined", default: "Undetermined") %>'
+  data-error-status-code='<%= t("dashboard.active_jobs.error_status_code", default: "Request for jobs failed with status code: ") %>'
+  data-error-parsing='<%= t("dashboard.active_jobs.error_parsing", default: "Request for jobs failed due to body parsing error.") %>'
+  data-error-remote='<%= t("dashboard.active_jobs.error_remote", default: "There was an error getting data from the remote server.") %>'
+  data-search-filter='<%= t("dashboard.active_jobs.search_filter", default: "Filter: ") %>'
+  data-empty-table='<%= t("dashboard.active_jobs.empty_table", default: "No data available in table") %>'
+  data-info='<%= t("dashboard.active_jobs.info", default: "Showing _START_ to _END_ of _TOTAL_ entries") %>'
+  data-info-empty='<%= t("dashboard.active_jobs.info_empty", default: "Showing 0 to 0 of 0 entries") %>'
+  data-info-filtered='<%= t("dashboard.active_jobs.info_filtered", default: "(filtered from _MAX_ total entries)") %>'
+  data-length-menu='<%= t("dashboard.active_jobs.length_menu", default: "_MENU_ entries per page") %>'
+  data-zero-records='<%= t("dashboard.active_jobs.zero_records", default: "No matching records found") %>'
+  data-toggle-visibility='<%= t("dashboard.active_jobs.toggle_visibility", default: "Toggle visibility of job %{jobname} on %{cluster_title}") %>'
+  data-submit-ticket-title='<%= t("dashboard.active_jobs.submit_ticket_title", default: "Submit Support Ticket") %>'
+  data-submit-ticket-aria='<%= t("dashboard.active_jobs.submit_ticket_aria", default: "Submit support ticket for job with ID %{pbsid}") %>'
+  data-delete-confirm='<%= t("dashboard.active_jobs.delete_confirm", default: "Are you sure you want to delete %{jobname} - %{pbsid}") %>'
+  data-delete-aria='<%= t("dashboard.active_jobs.delete_aria", default: "Delete job %{jobname} with ID %{pbsid}") %>'
+  data-delete-title='<%= t("dashboard.active_jobs.delete_title", default: "Delete Job") %>'
 >
 </div>
 

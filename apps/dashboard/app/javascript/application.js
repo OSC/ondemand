@@ -42,6 +42,28 @@ import initPopovers from './popovers'
 window.jQuery = jQuery;
 window.$ = jQuery;
 
+function setGlobalDatatablesLanguageDefaults() {
+  const configEl = document.getElementById('ood_config');
+  if (!configEl) return;
+
+  const raw = configEl.dataset.datatablesLanguage;
+  if (!raw) return;
+
+  let language;
+  try {
+    language = JSON.parse(raw);
+  } catch (_e) {
+    // If malformed, avoid breaking the whole app JS.
+    return;
+  }
+
+  if (!jQuery?.fn?.dataTable?.defaults) return;
+
+  jQuery.extend(true, jQuery.fn.dataTable.defaults, { language });
+}
+
+setGlobalDatatablesLanguageDefaults();
+
 Rails.start();
 
 jQuery(function(){

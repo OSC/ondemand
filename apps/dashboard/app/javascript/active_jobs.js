@@ -84,7 +84,7 @@ function fetch_job_data(tr, row, options) {
     fetch(jobDataUrl, { headers: {
         'Accpet': 'application/json',
       }})
-      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error('Login failed: IDP redirect failed')))
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error('Request failed')))
       .then(response => response.json())
       .then(response => {
         const ele = document.getElementById('job_details');
@@ -122,13 +122,13 @@ function fetch_table_data(table, options){
     }
   }).fail(function(errorReport){
     if(errorReport.statusCode != null){
-      show_errors(["Request for jobs failed with status code: " + errorReport.statusCode]);
+      show_errors([activeJobsConfig.errorStatusCode + errorReport.statusCode]);
     }
     else{
       //FIXME: this error appears even when the above 404 occurs, for example
       // that is because a 404 response for json request returns a plain text response
       // and parsing that as json fails
-       show_errors(["Request for jobs failed due to body parsing error."])
+       show_errors([activeJobsConfig.errorParsing]);
     }
 
     table.processing(false);
@@ -138,11 +138,11 @@ function fetch_table_data(table, options){
 
 function status_label(status){
   const labelClass = cssBadgeForState(status);
-  var label = "Undetermined"
+  var label = activeJobsConfig.labelUndetermined;
 
   if(status === "queued_held") {
-    label = "Hold";
-  } else {
+    label = activeJobsConfig.labelHold;
+  } else if(status && status !== "undetermined") {
     label = capitalizeFirstLetter(status);
   }
 
@@ -158,12 +158,19 @@ function create_datatable(options){
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
         autoWidth: true,            // Automatically calculate column width
-        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
+        // Values only. DataTables 2 uses language.lengthLabels for the -1 label.
+        "lengthMenu": [10, 25, 50, -1],
         "bStateSave": true,         // Save user selected table state
         "aaSorting": [],            // Turn off auto sort.
         "pageLength": 50,           // Set the number of rows
-        "oLanguage": {
-            "sSearch": "Filter: "
+        "language": {
+            "search": activeJobsConfig.searchFilter,
+            "emptyTable": activeJobsConfig.emptyTable,
+            "info": activeJobsConfig.info,
+            "infoEmpty": activeJobsConfig.infoEmpty,
+            "infoFiltered": activeJobsConfig.infoFiltered,
+            "lengthMenu": activeJobsConfig.lengthMenu,
+            "zeroRecords": activeJobsConfig.zeroRecords
         },
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
@@ -189,7 +196,8 @@ function create_datatable(options){
                 "searchable":       false,
                 render: function (data, type, row, meta) {
                   let { cluster_title, jobname, } = row
-                  return `<button class="details-control fa fa-plus btn btn-default" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
+                  let ariaLabel = activeJobsConfig.toggleVisibility.replace('%{jobname}', escapeHtml(jobname)).replace('%{cluster_title}', cluster_title);
+                  return `<button class="details-control fa fa-plus btn btn-default" aria-label="${ariaLabel}"></button>`;
                 },
             },
             {
@@ -269,14 +277,15 @@ function create_datatable(options){
                     const support_url = new URL(support_path, document.location);
                     support_url.searchParams.set("job_id", pbsid);
                     support_url.searchParams.set("cluster", cluster);
+                    let ariaSupport = activeJobsConfig.submitTicketAria.replace('%{pbsid}', pbsid);
                     support_ticket = `
                         <a
                           class="btn btn-primary btn-xs"
                           href="${escapeHtml(support_url.toString())}"
-                          aria-labeled-by"title"
-                          aria-label="Submit support ticket for job with ID ${pbsid}"
+                          aria-labeled-by="title"
+                          aria-label="${ariaSupport}"
                           data-toggle="tooltip"
-                          title="Submit Support Ticket"
+                          title="${activeJobsConfig.submitTicketTitle}"
                         >
                           <i class='fas fa-medkit fa-fw' aria-hidden='true'></i>
                         </a>
@@ -288,17 +297,19 @@ function create_datatable(options){
                     // This will be empty when support ticket is disabled.
                     return `<div>${support_ticket}</div>`;
                   } else {
+                    let confirmText = activeJobsConfig.deleteConfirm.replace('%{jobname}', escapeHtml(jobname)).replace('%{pbsid}', pbsid);
+                    let ariaDelete = activeJobsConfig.deleteAria.replace('%{jobname}', escapeHtml(jobname)).replace('%{pbsid}', pbsid);
                     return `
                       <div>
                         <a
                           class="btn btn-danger btn-xs"
                           data-method="delete"
-                          data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
+                          data-confirm="${confirmText}"
                           href="${escapeHtml(delete_path)}"
-                          aria-labeled-by"title"
-                          aria-label="Delete job ${escapeHtml(jobname)} with ID ${pbsid}"
+                          aria-labeled-by="title"
+                          aria-label="${ariaDelete}"
                           data-toggle="tooltip"
-                          title="Delete Job"
+                          title="${activeJobsConfig.deleteTitle}"
                         >
                           <i class='fas fa-trash-alt fa-fw' aria-hidden='true'></i>
                         </a>
@@ -311,7 +322,7 @@ function create_datatable(options){
         ]
     }).on( 'error.dt', function ( e, settings, techNote, message ) {
         // Event is fired when there's an error loading or parsing the datatable.
-        show_errors(['There was an error getting data from the remote server.']);
+        show_errors([activeJobsConfig.errorRemote]);
     } );
 
     // Override the Datatables default error message functionality

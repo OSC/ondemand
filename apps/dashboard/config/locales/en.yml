@@ -1,4 +1,7 @@
 en:
+  "Active Jobs": "Active Jobs"
+  "Job Composer": "Job Composer"
+  "Project Manager": "Project Manager"
   activemodel:
     errors:
       messages:
@@ -7,6 +10,62 @@ en:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
+    datatables:
+      search: "Filter: "
+      emptyTable: "No data available in table"
+      info: "Showing _START_ to _END_ of _TOTAL_ entries"
+      infoEmpty: "Showing 0 to 0 of 0 entries"
+      infoFiltered: "(filtered from _MAX_ total entries)"
+      lengthMenu: "_MENU_ entries per page"
+      zeroRecords: "No matching records found"
+      entries:
+        1: "entry"
+        _: "entries"
+      lengthLabels:
+        "-1": "All"
+    active_jobs:
+      title: "Active Jobs"
+      header_details: "Details"
+      header_id: "ID"
+      header_name: "Name"
+      header_user: "User"
+      header_account: "Account"
+      header_time_used: "Time Used"
+      header_queue: "Queue"
+      header_status: "Status"
+      header_cluster: "Cluster"
+      header_actions: "Actions"
+      all_clusters: "All Clusters"
+      label_hold: "Hold"
+      label_undetermined: "Undetermined"
+      error_status_code: "Request for jobs failed with status code: "
+      error_parsing: "Request for jobs failed due to body parsing error."
+      error_remote: "There was an error getting data from the remote server."
+      search_filter: "Filter: "
+      toggle_visibility: "Toggle visibility of job %{jobname} on %{cluster_title}"
+      submit_ticket_title: "Submit Support Ticket"
+      submit_ticket_aria: "Submit support ticket for job with ID %{pbsid}"
+      delete_confirm: "Are you sure you want to delete %{jobname} - %{pbsid}"
+      delete_aria: "Delete job %{jobname} with ID %{pbsid}"
+      delete_title: "Delete Job"
+      delete_success: "Successfully deleted %{job_id}"
+      delete_failure_with_id: "Failed to delete %{job_id}"
+      delete_failure_generic: "Failed to delete."
+      job_details_left_queue: "No job details because job has already left the queue."
+      job_details_unavailable: "No job details available."
+      submit_args: "Submit Args:"
+      output_location: "Output Location:"
+      open_in_file_manager: "Open in File Manager"
+      open_in_terminal: "Open in Terminal"
+      delete: "Delete"
+      filter_user: "Your Jobs"
+      filter_all: "All Jobs"
+      empty_table: "No data available in table"
+      info: "Showing _START_ to _END_ of _TOTAL_ entries"
+      info_empty: "Showing 0 to 0 of 0 entries"
+      info_filtered: "(filtered from _MAX_ total entries)"
+      length_menu: "_MENU_ entries per page"
+      zero_records: "No matching records found"
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
