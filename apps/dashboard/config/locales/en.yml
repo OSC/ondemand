@@ -10,6 +10,11 @@ en:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
+    batch_connect_apps:
+      sys_bc_desktop:
+        title: Desktop
+        description: |
+          This app will launch an interactive desktop on one or more compute nodes. You will have full access to the resources these nodes provide. This is analogous to an interactive batch job.
     datatables:
       search: "Filter: "
       emptyTable: "No data available in table"
@@ -23,6 +28,21 @@ en:
         _: "entries"
       lengthLabels:
         "-1": "All"
+    smart_attributes:
+      labels:
+        bc_account: Account
+        bc_email_on_started: I would like to receive an email when the session starts
+        bc_num_hours: Number of hours
+        bc_num_nodes: Number of nodes
+        bc_num_slots: Number of nodes
+        bc_queue: Queue
+        bc_vnc_idle: Idle timeout
+        bc_vnc_resolution: Resolution
+        desktop: Desktop environment
+        node_type: Node type
+      helps:
+        bc_vnc_idle: Exit if # seconds elapse with no VNC viewer connections
+        bc_vnc_resolution: Resolution is only used by native VNC connections
     active_jobs:
       title: "Active Jobs"
       header_details: "Details"
@@ -403,7 +423,7 @@ en:
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflows: Workflows
     launch: Launch
-    layout_title:
+    layout_title: "Dashboard - %{title}"
     loading: Loading...
     logo_alt_text: Welcome to Open OnDemand
     mode: Mode
@@ -552,6 +572,7 @@ en:
       processors: Processors
       gpus: GPUs
     system_status_not_supported: "Cluster information is not available with %{scheduler}. Currently, only Slurm clusters are supported."
+    toggle_navigation: Toggle navigation
     type: Type
     unknown: Unknown
     uppy: Uppy

@@ -3,17 +3,17 @@
     link_to(
       link.url.to_s,
       class: "list-group-item list-group-item-action border-0 #{"active" if local_assigns[:current_url] == link.url}",
-      title: link.title,
+      title: t(link.title, default: link.title),
       data: {
         'bs-toggle': "popover",
-        'bs-content': content_tag(:div, manifest_markdown(link.description), class: 'ood-appkit markdown'),
+        'bs-content': content_tag(:div, manifest_markdown(t(link.description, default: link.description)), class: 'ood-appkit markdown'),
         'bs-html': true,
         'bs-trigger': "hover focus",
         container: "body",
       }.merge(link.data)
     ) do
   %>
-    <%= icon_tag(link.icon_uri) %> <%= link.title %>
+    <%= icon_tag(link.icon_uri) %> <%= t(link.title, default: link.title) %>
     <%- if show_owner -%>
       <small>(<%= app.owner %>)</small>
     <%- end -%>

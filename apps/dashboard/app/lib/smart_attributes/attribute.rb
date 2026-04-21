@@ -73,20 +73,35 @@ module SmartAttributes
     # @param fmt [String, nil] formatting of form label
     # @return [String] form label
     def label(fmt: nil)
-      (opts[:label] || id.titleize).to_s
+      return opts[:label].to_s if opts.key?(:label)
+
+      I18n.t(
+        "dashboard.smart_attributes.labels.#{id}",
+        default: id.titleize
+      ).to_s
     end
 
     # Header to render before this attribute
     # @return [String] header text
     def header
-      opts[:header].to_s
+      return opts[:header].to_s if opts.key?(:header)
+
+      I18n.t(
+        "dashboard.smart_attributes.headers.#{id}",
+        default: ''
+      ).to_s
     end
 
     # Help text for this attribute
     # @param fmt [String, nil] formatting of help text
     # @return [String] help text
     def help(fmt: nil)
-      opts[:help].to_s
+      return opts[:help].to_s if opts.key?(:help)
+
+      I18n.t(
+        "dashboard.smart_attributes.helps.#{id}",
+        default: ''
+      ).to_s
     end
 
     def help_html(fmt: nil)

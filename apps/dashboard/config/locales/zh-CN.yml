@@ -10,6 +10,26 @@ zh-CN:
         required: "%{attribute} 是必需的"
         used: "%{attribute} 已被使用"
   dashboard:
+    batch_connect_apps:
+      sys_bc_desktop:
+        title: 桌面
+        description: |
+          此应用将在一个或多个计算节点上启动交互式桌面。你将能够完全使用这些节点提供的资源。这类似于一个交互式批处理作业。
+    smart_attributes:
+      labels:
+        bc_account: 帐户
+        bc_email_on_started: 我希望在会话开始时收到电子邮件
+        bc_num_hours: 小时数
+        bc_num_nodes: 节点数
+        bc_num_slots: 节点数
+        bc_queue: 队列
+        bc_vnc_idle: 空闲超时
+        bc_vnc_resolution: 分辨率
+        desktop: 桌面环境
+        node_type: 节点类型
+      helps:
+        bc_vnc_idle: 如果在指定秒数内没有 VNC 查看器连接，则退出
+        bc_vnc_resolution: 分辨率仅用于原生 VNC 连接
     datatables:
       search: "筛选: "
       emptyTable: "表中无数据可用"

@@ -89,7 +89,10 @@ module BatchConnect
     # Title for the batch connect app
     # @return [String] title of app
     def title
-      form_config.fetch(:title, default_title)
+      I18n.t(
+        "dashboard.batch_connect_apps.#{token_i18n_key}.title",
+        default: form_config.fetch(:title, default_title)
+      )
     end
 
     # Default title for the batch connect app
@@ -103,7 +106,10 @@ module BatchConnect
     # Description for the batch connect app
     # @return [String] description of app
     def description
-      form_config.fetch(:description, default_description)
+      I18n.t(
+        "dashboard.batch_connect_apps.#{token_i18n_key}.description",
+        default: form_config.fetch(:description, default_description)
+      )
     end
 
     # Default description for the batch connect app
@@ -138,7 +144,10 @@ module BatchConnect
     end
 
     def form_header
-      form_config.fetch(:form_header, '')
+      I18n.t(
+        "dashboard.batch_connect_apps.#{token_i18n_key}.form_header",
+        default: form_config.fetch(:form_header, '')
+      )
     end
 
     def ssh_allow?
@@ -365,6 +374,10 @@ module BatchConnect
     end
 
     private
+
+    def token_i18n_key
+      token.tr('/', '_')
+    end
 
     def url
       helpers = Rails.application.routes.url_helpers

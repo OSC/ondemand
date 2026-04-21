@@ -22,7 +22,9 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        (opts[:label] || 'Account').to_s
+        return opts[:label].to_s if opts.key?(:label)
+
+        I18n.t('dashboard.smart_attributes.labels.bc_account', default: 'Account').to_s
       end
 
       # Submission hash describing how to submit this attribute

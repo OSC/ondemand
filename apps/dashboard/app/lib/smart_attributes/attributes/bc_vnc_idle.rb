@@ -26,14 +26,21 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        (opts[:label] || "Idle timeout").to_s
+        return opts[:label].to_s if opts.key?(:label)
+
+        I18n.t('dashboard.smart_attributes.labels.bc_vnc_idle', default: 'Idle timeout').to_s
       end
 
       # Help text for this attribute
       # @param fmt [String, nil] formatting of help text
       # @return [String] help text
       def help(fmt: nil)
-        (opts[:help] || "Exit if # seconds elapse with no VNC viewer connections").to_s
+        return opts[:help].to_s if opts.key?(:help)
+
+        I18n.t(
+          'dashboard.smart_attributes.helps.bc_vnc_idle',
+          default: 'Exit if # seconds elapse with no VNC viewer connections'
+        ).to_s
       end
 
       # Submission hash describing how to submit this attribute

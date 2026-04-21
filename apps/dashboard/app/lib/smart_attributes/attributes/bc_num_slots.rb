@@ -33,15 +33,18 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        str = opts[:label] || case fmt
-                              when 'lsf'
-                                'Number of processors'
-                              when 'pbspro'
-                                'Number of CPUs on single node'
-                              else
-                                'Number of nodes'
-                              end
-        str.to_s
+        return opts[:label].to_s if opts.key?(:label)
+
+        default = case fmt
+                  when 'lsf'
+                    'Number of processors'
+                  when 'pbspro'
+                    'Number of CPUs on single node'
+                  else
+                    'Number of nodes'
+                  end
+
+        I18n.t('dashboard.smart_attributes.labels.bc_num_slots', default: default).to_s
       end
 
       # Whether this attribute is required

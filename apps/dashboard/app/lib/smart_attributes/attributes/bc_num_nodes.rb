@@ -33,7 +33,9 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        (opts[:label] || 'Number of nodes').to_s
+        return opts[:label].to_s if opts.key?(:label)
+
+        I18n.t('dashboard.smart_attributes.labels.bc_num_nodes', default: 'Number of nodes').to_s
       end
 
       # Submission hash describing how to submit this attribute

@@ -22,13 +22,16 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        str = opts[:label] || case fmt
-                              when 'slurm'
-                                'Partition'
-                              else
-                                'Queue'
-                              end
-        str.to_s
+        return opts[:label].to_s if opts.key?(:label)
+
+        default = case fmt
+                  when 'slurm'
+                    'Partition'
+                  else
+                    'Queue'
+                  end
+
+        I18n.t('dashboard.smart_attributes.labels.bc_queue', default: default).to_s
       end
 
       # Submission hash describing how to submit this attribute

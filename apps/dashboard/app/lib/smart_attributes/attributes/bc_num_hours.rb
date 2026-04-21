@@ -33,7 +33,9 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        (opts[:label] || 'Number of hours').to_s
+        return opts[:label].to_s if opts.key?(:label)
+
+        I18n.t('dashboard.smart_attributes.labels.bc_num_hours', default: 'Number of hours').to_s
       end
 
       # Whether this attribute is required

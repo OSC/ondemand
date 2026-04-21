@@ -22,11 +22,18 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        (opts[:label] || 'Resolution').to_s
+        return opts[:label].to_s if opts.key?(:label)
+
+        I18n.t('dashboard.smart_attributes.labels.bc_vnc_resolution', default: 'Resolution').to_s
       end
 
       def help(fmt: nil)
-        (opts[:help] || 'Resolution is only used by native VNC connections').to_s
+        return opts[:help].to_s if opts.key?(:help)
+
+        I18n.t(
+          'dashboard.smart_attributes.helps.bc_vnc_resolution',
+          default: 'Resolution is only used by native VNC connections'
+        ).to_s
       end
 
       # Submission hash describing how to submit this attribute
