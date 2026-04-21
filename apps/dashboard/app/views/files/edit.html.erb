@@ -242,5 +242,5 @@
     <div class="card-body border-0"></div>
 
   </div>
-  <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= "#{controller.relative_url_root}/files/#{@filesystem}#{url_encode_path(@path)}" %>"><%= @content %></pre>
+  <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= files_editor_api_url(path: @path, filesystem: @filesystem) %>"><%= @content %></pre>
 </div>

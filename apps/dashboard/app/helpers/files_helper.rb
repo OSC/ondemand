@@ -36,12 +36,13 @@ module FilesHelper
     path.to_s
   end
 
-  def url_encode_segment(segment)
-    ERB::Util.url_encode(segment.to_s)
+  def url_encode_path(path)
+    path.to_s.split('/').map { |seg| ERB::Util.url_encode(seg.to_s) }.join('/')
   end
 
-  def url_encode_path(path)
-    path.to_s.split('/').map { |seg| url_encode_segment(seg) }.join('/')
+  def files_editor_api_url(path:, filesystem:)
+    api_url = OodAppkit.files.api(path: '/', fs: filesystem).to_s
+    base = api_url.chomp('/')
+    "#{controller.relative_url_root}#{base.match(%r{(/files/api/v1/fs).*})[1]}#{url_encode_path(path.to_s)}"
   end
 end
-

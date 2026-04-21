@@ -12,7 +12,7 @@ json.files @files do |f|
   json.type f[:directory] ? 'd' : 'f'
   json.name f[:name]
 
-  encoded_name = url_encode_segment(f[:name])
+  encoded_name = url_encode_path(f[:name])
   encoded_filepath = url_encode_path(@path.join(f[:name]))
 
   json.url "#{files_path(@filesystem, @path)}/#{encoded_name}" if (f[:directory] || f[:downloadable])
