@@ -45,7 +45,7 @@
           <% end %>
 
             <div class="<%= favorites ? 'col-sm-7' : 'col-sm-12' %>">
-              <nav>
+              <nav aria-label="<%= "#{popup_title} Breadcrumb" %>">
                 <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter rounded">
                 </ol>
               </nav>
