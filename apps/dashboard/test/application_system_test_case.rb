@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'accessibility_helper'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
@@ -18,6 +19,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
+
+  def visit(path)
+    super(path)
+    inject_contrast_observer
+  end
 
   def find_option_style(ele, opt)
     find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
