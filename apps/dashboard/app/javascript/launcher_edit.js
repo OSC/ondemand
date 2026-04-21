@@ -239,7 +239,7 @@ function toggleFixedField(event) {
   } else {
     dataElement.disabled = false;
     // Field enabled, remove the hidden field with the same name needed when disabled.
-    $(event.target).closest('.editable-form-field').find(`input[type=hidden][name="${dataElement.name}"]`).remove();
+    $(`input[type=hidden][name="${dataElement.name}"]`).remove();
 
     if (dataElement.nodeName == 'SELECT') {
       fixExcludeBasedOnSelect(dataElement);
