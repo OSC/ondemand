@@ -10,6 +10,28 @@ zh-CN:
         required: "%{attribute} 是必需的"
         used: "%{attribute} 已被使用"
   dashboard:
+    xdmod:
+      open_xdmod: Open XDMoD
+      recently_completed_jobs: 最近完成的作业
+      efficiency_report_title: "%{unit_title} 效率报告"
+      efficient: 高效
+      inefficient: 低效
+      aria_percent_efficient: 高效百分比
+      aria_percent_inefficient: 低效百分比
+      count_bad_over_total: "<span class=\"text-danger\">%{count_bad} 个低效%{unit}</span> &frasl; 共 %{count} 个%{unit}"
+      loading: 加载中...
+      no_data_available: 无可用数据。
+      analytics_toggle: 展开分析
+      analytics: 分析
+      header_id: ID
+      header_name: 名称
+      header_date: 日期
+      logged_into_open_xdmod_first: 先登录 Open XDMoD
+      error_ensure_logged_in: "%{error} 请先<a href=\"%{url}\">%{logged_in}</a>，然后再重试。"
+      unit_jobs: 作业
+      unit_title_jobs: 作业
+      unit_core_hours: 核心小时
+      unit_title_core_hours: 核心小时
     batch_connect_apps:
       sys_bc_desktop:
         title: 桌面

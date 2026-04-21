@@ -24,7 +24,7 @@ function card(context, helpers) {
 function cardHeader(helpers) {
   const div = document.createElement('div');
   div.classList.add('card-header');
-  div.innerHTML = `<a href="${helpers.xdmod_url()}" class="float-end">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
+  div.innerHTML = `<a href="${helpers.xdmod_url()}" class="float-end">${helpers.i18n?.open_xdmod || 'Open XDMoD'} <span class="fa fa-external-link-square-alt"></span></a>
                    <h3>${helpers.title()} - ${helpers.date_range()}</h3>`;
 
   return div;
@@ -43,16 +43,21 @@ function cardBody(context, helpers) {
 function errorBody(error, helpers) {
   const div = simpleCardBody();
   
-  const content = `<div class="alert alert-danger mb-0">
-                      ${error} Please ensure you are <a href="${helpers.xdmod_url()}">logged into Open XDMoD first</a>, and then try again.
-                    </div>`;
+  const loggedInText = helpers.i18n?.logged_into_open_xdmod_first || 'logged into Open XDMoD first';
+  const tpl = helpers.i18n?.error_ensure_logged_in || '%{error} Please ensure you are <a href="%{url}">%{logged_in}</a>, and then try again.';
+  const content = `<div class="alert alert-danger mb-0">${
+    tpl
+      .replace('%{error}', error)
+      .replace('%{url}', helpers.xdmod_url())
+      .replace('%{logged_in}', loggedInText)
+  }</div>`;
   div.innerHTML = content;
   return div;
 }
 
 function loadingBody() {
   const div = simpleCardBody();
-  div.innerHTML = '<p class="card-text">LOADING...</p>';
+  div.innerHTML = `<p class="card-text">${helpers.i18n?.loading || 'LOADING...'}</p>`;
 
   return div;
 }
@@ -81,13 +86,14 @@ function table(context, helpers) {
 
   const thead = document.createElement('thead');
   // Empty th to accommodate for the job analytics button
-  thead.innerHTML = '<tr> \
-                      <th class="sr-only">Analytics Toggle</th> \
-                      <th class="id">ID</th> \
-                      <th class="name">Name</th> \
-                      <th class="date">Date</th> \
-                      <th class="sr-only">Analytics</th> \
-                    </tr>';
+  const i18n = helpers.i18n || {};
+  thead.innerHTML = `<tr>
+                      <th class="sr-only">${i18n.analytics_toggle || 'Analytics Toggle'}</th>
+                      <th class="id">${i18n.header_id || 'ID'}</th>
+                      <th class="name">${i18n.header_name || 'Name'}</th>
+                      <th class="date">${i18n.header_date || 'Date'}</th>
+                      <th class="sr-only">${i18n.analytics || 'Analytics'}</th>
+                    </tr>`;
 
   const tbody = document.createElement('tbody');
   tbody.append(...tableRows(context, helpers));
@@ -157,7 +163,7 @@ function tableRows(context, helpers) {
     const td4 = document.createElement('td');
     td4.id = `details_${job.jobid}`;
     td4.classList.add('job-analytics', 'collapse');
-    td4.innerHTML = '<div class="job-analytics-content"><span>LOADING...</span></div>';
+    td4.innerHTML = `<div class="job-analytics-content"><span>${helpers.i18n?.loading || 'LOADING...'}</span></div>`;
     // Call JobAnalytics API after the collapse is fully open to avoid awkward animation.
     td4.addEventListener('shown.bs.collapse', function(event) {
       getJobAnalytics(job, helpers);
@@ -187,7 +193,7 @@ function linkSpan(){
 function noDataRow() {
   const td = document.createElement('td');
   td.setAttribute('colspan', '7');
-  td.innerHTML = 'No data available.';
+  td.innerHTML = (helpers?.i18n?.no_data_available || 'No data available.');
 
   const tr = document.createElement('tr');
   tr.append(td);

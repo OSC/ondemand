@@ -10,6 +10,28 @@ en:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
+    xdmod:
+      open_xdmod: Open XDMoD
+      recently_completed_jobs: Recently Completed Jobs
+      efficiency_report_title: "%{unit_title} Efficiency Report"
+      efficient: efficient
+      inefficient: inefficient
+      aria_percent_efficient: percent efficient
+      aria_percent_inefficient: percent inefficient
+      count_bad_over_total: "<span class=\"text-danger\">%{count_bad} inefficient %{unit}</span> &frasl; %{count} total %{unit}"
+      loading: LOADING...
+      no_data_available: No data available.
+      analytics_toggle: Analytics Toggle
+      analytics: Analytics
+      header_id: ID
+      header_name: Name
+      header_date: Date
+      logged_into_open_xdmod_first: logged into Open XDMoD first
+      error_ensure_logged_in: "%{error} Please ensure you are <a href=\"%{url}\">%{logged_in}</a>, and then try again."
+      unit_jobs: jobs
+      unit_title_jobs: Jobs
+      unit_core_hours: core hours
+      unit_title_core_hours: Core Hours
     batch_connect_apps:
       sys_bc_desktop:
         title: Desktop

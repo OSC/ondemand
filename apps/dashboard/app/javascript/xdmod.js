@@ -1,14 +1,16 @@
 import _ from 'lodash';
-import {xdmodUrl, analyticsPath} from './config';
+import {xdmodUrl, analyticsPath, xdmodI18n} from './config';
 import {today, startOfYear, thirtyDaysAgo, reportErrorForAnalytics} from './utils';
 import { jobsPanel } from './xdmod/jobs';
 
 const jobsPageLimit = 10;
+const i18n = xdmodI18n();
 
 const jobHelpers = {
   realm: 'Jobs',
+  i18n: i18n,
   title: function(){
-    return "Recently Completed Jobs";
+    return i18n.recently_completed_jobs || "Recently Completed Jobs";
   },
   date_range: function() {
     return thirtyDaysAgo() + " to " + today();
@@ -67,7 +69,8 @@ const jobHelpers = {
 
 var efficiencyHelpers = {
   title: function(){
-    return this.unit_title + " Efficiency Report";
+    const tpl = i18n.efficiency_report_title || "%{unit_title} Efficiency Report";
+    return tpl.replace("%{unit_title}", this.unit_title);
   },
   date_range: function() {
     return thirtyDaysAgo() + " to " + today();
@@ -221,7 +224,7 @@ function renderEfficiencyPanel(panelId, context) {
   const link = document.createElement('a');
   link.href = efficiencyHelpers.xdmod_url();
   link.className = 'float-end';
-  link.innerHTML = 'Open XDMoD <span class="fa fa-external-link-square-alt"></span>';
+  link.innerHTML = `${i18n.open_xdmod || 'Open XDMoD'} <span class="fa fa-external-link-square-alt"></span>`;
   cardHeader.appendChild(link);
 
   const title = document.createElement('h3');
@@ -236,7 +239,12 @@ function renderEfficiencyPanel(panelId, context) {
   if (context.error) {
     const alert = document.createElement('div');
     alert.className = 'alert alert-danger mb-0';
-    alert.innerHTML = `${context.error} Please ensure you are <a href="${efficiencyHelpers.xdmod_url()}">logged into Open XDMoD first</a>, and then try again.`;
+    const loggedInText = i18n.logged_into_open_xdmod_first || 'logged into Open XDMoD first';
+    const tpl = i18n.error_ensure_logged_in || '%{error} Please ensure you are <a href="%{url}">%{logged_in}</a>, and then try again.';
+    alert.innerHTML = tpl
+      .replace('%{error}', context.error)
+      .replace('%{url}', efficiencyHelpers.xdmod_url())
+      .replace('%{logged_in}', loggedInText);
     cardBody.appendChild(alert);
   } else if (context.nodata) {
     const paragraph = document.createElement('p');
@@ -246,7 +254,9 @@ function renderEfficiencyPanel(panelId, context) {
   } else {
     const efficiencyParagraph = document.createElement('p');
     efficiencyParagraph.className = 'd-flex justify-content-between card-text font-weight-bold';
-    efficiencyParagraph.innerHTML = `<span class="text-success">${efficiencyHelpers.good_percent.call(context)}% efficient</span> <span class="text-danger">${efficiencyHelpers.bad_percent.call(context)}% inefficient</span>`;
+    const efficient = i18n.efficient || 'efficient';
+    const inefficient = i18n.inefficient || 'inefficient';
+    efficiencyParagraph.innerHTML = `<span class="text-success">${efficiencyHelpers.good_percent.call(context)}% ${efficient}</span> <span class="text-danger">${efficiencyHelpers.bad_percent.call(context)}% ${inefficient}</span>`;
     cardBody.appendChild(efficiencyParagraph);
 
     const progressDiv = document.createElement('div');
@@ -256,7 +266,7 @@ function renderEfficiencyPanel(panelId, context) {
     progressBarSuccess.className = 'progress-bar bg-success';
     progressBarSuccess.style.width = `${efficiencyHelpers.good_percent.call(context)}%`;
     progressBarSuccess.setAttribute('role', 'progressbar');
-    progressBarSuccess.setAttribute('aria-label', 'percent efficient');
+    progressBarSuccess.setAttribute('aria-label', i18n.aria_percent_efficient || 'percent efficient');
     progressBarSuccess.setAttribute('aria-valuenow', efficiencyHelpers.good_percent.call(context));
     progressBarSuccess.setAttribute('aria-valuemin', '0');
     progressBarSuccess.setAttribute('aria-valuemax', '100');
@@ -266,7 +276,7 @@ function renderEfficiencyPanel(panelId, context) {
     progressBarDanger.className = 'progress-bar bg-danger';
     progressBarDanger.style.width = `${efficiencyHelpers.bad_percent.call(context)}%`;
     progressBarDanger.setAttribute('role', 'progressbar');
-    progressBarDanger.setAttribute('aria-label', 'percent inefficient');
+    progressBarDanger.setAttribute('aria-label', i18n.aria_percent_inefficient || 'percent inefficient');
     progressBarDanger.setAttribute('aria-valuenow', efficiencyHelpers.bad_percent.call(context));
     progressBarDanger.setAttribute('aria-valuemin', '0');
     progressBarDanger.setAttribute('aria-valuemax', '100');
@@ -276,7 +286,11 @@ function renderEfficiencyPanel(panelId, context) {
 
     const countParagraph = document.createElement('p');
     countParagraph.className = 'card-text text-center mt-2';
-    countParagraph.innerHTML = `<span class="text-danger">${context.count_bad} inefficient ${context.unit} </span> &frasl; ${context.count} total ${context.unit}`;
+    const tpl = i18n.count_bad_over_total || '<span class="text-danger">%{count_bad} inefficient %{unit}</span> &frasl; %{count} total %{unit}';
+    countParagraph.innerHTML = tpl
+      .replace('%{count_bad}', context.count_bad)
+      .replaceAll('%{unit}', context.unit)
+      .replace('%{count}', context.count);
     cardBody.appendChild(countParagraph);
   }
 
@@ -285,11 +299,17 @@ function renderEfficiencyPanel(panelId, context) {
 }
 
 function renderJobsEfficiency(context) {
-  renderEfficiencyPanel(jobEfficiencyPanelId, _.merge(context, {unit: "jobs", unit_title: "Jobs"}));
+  renderEfficiencyPanel(jobEfficiencyPanelId, _.merge(context, {
+    unit: i18n.unit_jobs || "jobs",
+    unit_title: i18n.unit_title_jobs || "Jobs"
+  }));
 }
 
 function renderCoreHoursEfficiency(context) {
-  renderEfficiencyPanel(coreEfficiencyPanelId, _.merge(context, {unit: "core hours", unit_title: "Core Hours"}));
+  renderEfficiencyPanel(coreEfficiencyPanelId, _.merge(context, {
+    unit: i18n.unit_core_hours || "core hours",
+    unit_title: i18n.unit_title_core_hours || "Core Hours"
+  }));
 }
 
 function createJobsWidget() {
@@ -359,8 +379,9 @@ function createEfficiencyWidgets() {
 jQuery(() => {
   // initialize the panels
   renderJobs({ loading: true });
-  renderJobsEfficiency({nodata: true, msg: 'LOADING...'});
-  renderCoreHoursEfficiency({nodata: true, msg: 'LOADING...'});
+  const loading = i18n.loading || 'LOADING...';
+  renderJobsEfficiency({nodata: true, msg: loading});
+  renderCoreHoursEfficiency({nodata: true, msg: loading});
 
   createJobsWidget();
   createEfficiencyWidgets();

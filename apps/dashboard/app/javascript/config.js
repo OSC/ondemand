@@ -49,6 +49,12 @@ export function uppyLocale() {
   return JSON.parse(cfgData['uppyLocale']);
 }
 
+export function xdmodI18n() {
+  const cfgData = configData();
+  const raw = cfgData['xdmodI18n'];
+  return raw ? JSON.parse(raw) : {};
+}
+
 export function isBCDynamicJSEnabled() {
   const cfgData = configData();
   return cfgData['bcDynamicJs'] == 'true'
