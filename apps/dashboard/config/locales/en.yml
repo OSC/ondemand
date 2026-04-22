@@ -242,6 +242,7 @@ en:
     jobs_workflow_show_graph: Open workflow %{name} in graph editor
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
+    jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same OOD_WORKFLOW_SYNC_KEY environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
     launch: Launch
     logo_alt_text: Welcome to Open OnDemand

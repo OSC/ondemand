@@ -355,10 +355,13 @@ class Launcher
       # force some values for scripts like the 'workdir'. We could use auto
       # attributes, but this is not optional and not variable.
       {
-        workdir: project_dir.to_s,
-        job_environment: { 'OOD_WORKFLOW_SYNC_KEY' => options[:ood_workflow_sync_key] }.compact
+        workdir: project_dir.to_s
       }
-    )
+    ).tap do |opts|
+      if options[:ood_workflow_sync_key]
+        opts[:job_environment] = (opts[:job_environment] || {}).merge('OOD_WORKFLOW_SYNC_KEY' => options[:ood_workflow_sync_key])
+      end
+    end
   end
 
   def adapter(cluster_id)
