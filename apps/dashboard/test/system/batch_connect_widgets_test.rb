@@ -991,7 +991,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     refute_selector("div##{popover_id}")
   end
 
-  test 'apps with spaces' do
+  test 'app that needs escape sequences' do
     Dir.mktmpdir do |dir|
       form = <<~HEREDOC
       ---
