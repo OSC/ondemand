@@ -228,33 +228,35 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       stub_sacctmgr
       stub_git("#{dir}/app")
       base_id = 'batch_connect_session_context_path'
-      name = '#foo+bar.txt#'
-      filename = "#{Rails.root}/tmp/#{name}"
-      FileUtils.touch(filename)
+      Dir.mktmpdir do |tmpdir|
+        name = '#foo+bar.txt#'
+        filename = "#{tmpdir}/#{name}"
+        FileUtils.touch(filename)
 
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - path
-        attributes:
-          path:
-            widget: 'path_selector'
-            directory: "#{Rails.root}/tmp"
-      HEREDOC
+        form = <<~HEREDOC
+          ---
+          cluster:
+            - owens
+          form:
+            - path
+          attributes:
+            path:
+              widget: 'path_selector'
+              directory: "#{tmpdir}"
+        HEREDOC
 
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+        Pathname.new("#{dir}/app/").join('form.yml').write(form)
 
-      visit new_batch_connect_session_context_url('sys/app')
+        visit new_batch_connect_session_context_url('sys/app')
 
-      click_on 'Select Path'
-      sleep 0.5
+        click_on 'Select Path'
+        sleep 0.5
 
-      find('span', exact_text: name).click
-      find("##{base_id}_path_selector_button").click
+        find('span', exact_text: name).click
+        find("##{base_id}_path_selector_button").click
 
-      assert_equal(filename, find("##{base_id}").value)
+        assert_equal(filename, find("##{base_id}").value)
+      end
     end
   end
 
