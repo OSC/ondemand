@@ -7,20 +7,24 @@ export function OODAlertSuccess(message) {
   OODAlert(message, 'success');
 }
 
-// Many pages are loaded with role="alert" div/content, but these are not
-// read by all browser/OS/Screen reader combinations. This is a simple hack to simply
-// replace the content with itself after some delay for force all combinations
-// to correctly read alerts.
-// see https://github.com/OSC/ondemand/issues/2077 for more details.
+// The role="alert" has inconsistent behaviour across browser/OS/Screen reader
+// combinations when it has content on page load.  Because of this, these elements
+// d-none class on page load (they're hidden).
+// This simple helper simply updates the content with itself after a small time
+// to consistently generate an announcement to the screen reader.
+// See https://github.com/OSC/ondemand/issues/2077 for more details.
 export function updateAlerts() {
   const alerts = document.querySelectorAll('[data-notice]');
   alerts.forEach((alert) => {
-    setTimeout(() => {
       const tmpHtml = alert.innerHTML;
       alert.innerHTML = null;
-      alert.innerHTML = tmpHtml;
-    }, 200);
+      setTimeout(setAlert, 200, alert, tmpHtml);
   });
+}
+
+function setAlert(alert, html) {
+  alert.innerHTML = html;
+  alert.classList.remove('d-none');
 }
 
 function OODAlert(message, type) {
