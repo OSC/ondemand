@@ -13,7 +13,7 @@ json.files @files do |f|
   json.name f[:name]
 
   json.url files_path(@filesystem, @path.join(f[:name]).to_s) if (f[:directory] || f[:downloadable])
-  json.download_url files_path(@filesystem, @path.join(f[:name]).to_s, download: '1') if f[:downloadable]
+  json.download_url url_encode_url_path(files_path(@filesystem, @path.join(f[:name]).to_s, download: '1').to_s) if f[:downloadable]
   json.edit_url url_encode_url_path(OodAppkit.editor.edit(path: @path.join(f[:name]).to_s, fs: @filesystem).to_s) if f[:downloadable]
 
   json.size f[:size]

@@ -1,4 +1,7 @@
 # Helper for /files pages.
+
+require 'uri'
+
 module FilesHelper
   include ApplicationHelper
   
