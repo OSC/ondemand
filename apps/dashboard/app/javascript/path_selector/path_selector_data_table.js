@@ -3,6 +3,7 @@ import { hide, show } from "../utils";
 
 export class PathSelectorTable {
   _table = null;
+  _currentListPath = undefined;
 
   // input data that should be passed into the constructor
   tableId             = undefined;
@@ -93,6 +94,7 @@ export class PathSelectorTable {
       show(`${this.tableId}_spinner`);
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
+      this._currentListPath = data.path;
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
       this._table.clear();
       this._table.rows.add(data.files);
@@ -135,8 +137,18 @@ export class PathSelectorTable {
     // only reload table for directories. and correct last visited
     // if it's a file.
     if(pathType == 'f') {
-      const path = url.replace(this.filesPath, '').replaceAll('//','/');
-      this.setLastVisited(path, pathType);
+      // Use JSON path + name instead of URL since URLs are encoded and can break filenames like + or #
+      const $tr = $(event.target).closest('tr');
+      const inMainTable = $tr.length && $tr.closest(`#${this.tableId}`).length > 0;
+      const rowData = inMainTable ? this._table.row($tr).data() : null;
+      let fsPath;
+      if (this._currentListPath && rowData && rowData.name) {
+        const base = this._currentListPath.replace(/\/$/, '');
+        fsPath = `${base}/${rowData.name}`;
+      } else {
+        fsPath = url.replace(this.filesPath, '').replaceAll('//','/');
+      }
+      this.setLastVisited(fsPath, pathType);
     } else {
       this.reloadTable(url);
     }

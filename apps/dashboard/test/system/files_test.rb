@@ -746,4 +746,238 @@ class FilesTest < ApplicationSystemTestCase
       assert_equal('/etc does not have an ancestor directory specified in ALLOWLIST_PATH', alert_text)
     end
   end
+
+  test 'files have hrefs when download is enabled' do
+    visit(files_url(Rails.root))
+    find('#show-dotfiles').click
+    files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+    file_elements = find_all('[data-type="f"]')
+
+    # all files are shown in the table.
+    assert_equal(files.size, file_elements.size)
+
+    # all the HTML elements have hrefs.
+    assert(file_elements.all? { |e| !e[:href].nil? })
+  end
+
+  test 'files do not have hrefs when download is enabled' do
+    with_modified_env({ OOD_DOWNLOAD_ENABLED: 'false' }) do
+      visit(files_url(Rails.root))
+      find('#show-dotfiles').click
+      files = Dir.children(Rails.root).reject { |f| Pathname.new(f).directory? }
+
+      file_elements = find_all('[data-type="f"]')
+
+      # all files are shown in the table.
+      assert_equal(files.size, file_elements.size)
+
+      # none of the HTML elements have hrefs.
+      assert(file_elements.all? { |e| e[:href].nil? })
+
+      assert_selector('tr a.dropdown-item', visible: false) # rename links still exist
+      # delete and rename links don't point anywhere
+      all('tr .dropdown-menu a', visible: false).each do |link|
+        assert(link[:href].end_with?('#'), "#{link.text(:all)} link was served with downloads disabled")
+      end
+    end
+  end
+
+  test 'filenames are correctly escaped' do
+    bad_fname = '<img src=1 onerror=alert(\"hello\")>'
+    `touch "tmp/#{bad_fname}"`
+    visit(files_url("#{Rails.root}/tmp"))
+
+    # innerHTML returns escaped text, i.e., '&lt;' not '<'.
+    actual_text = find('tbody a', text: 'onerror')[:innerHTML]
+
+    assert_equal('&lt;img src=1 onerror=alert("hello")&gt;', actual_text)
+  end
+
+  test 'filenames with # are url-escaped' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      name = '#foo.txt#'
+      FileUtils.touch(File.join(dir, name))
+
+      visit files_url(dir)
+
+      row = find('tbody a', exact_text: name).ancestor('tr')
+
+      row.find('button.dropdown-toggle').click
+      href = row.find('a.edit-file')[:href]
+
+      assert_includes href, '%23'
+      refute_includes href, '#'
+    end
+  end
+
+  test 'will not render HTML files by default' do
+    data = <<-HEREDOC
+    <html>
+      <body><h1>hello world</h1></body>
+      <script>window.alert('hello world');</script>
+    </html>
+    HEREDOC
+
+    src_file = "#{Rails.root}/tmp/file.html"
+    FileUtils.rm(src_file) if File.exist?(src_file)
+    File.write(src_file, data)
+
+    visit(files_url("#{Rails.root}/tmp"))
+
+    find('tbody a', exact_text: 'file.html').click
+    assert_equal(current_path, files_path("#{Rails.root}/tmp/file.html"))
+
+    # there's no need to confirm the javascript window.alert, because it's
+    # not rendered as HTML, only test. There is no <h1> or <script> elements
+    assert_no_selector('h1')
+    assert_no_selector('script')
+    assert_equal(data.chomp, find('pre').text.chomp)
+  end
+
+  test 'will render HTML when configured to do so' do
+    with_modified_env({ OOD_UNSAFE_RENDER_HTML: 'true' }) do
+      data = <<-HEREDOC
+      <html>
+        <body><h1>hello world</h1></body>
+        <script>window.alert('hello world');</script>
+      </html>
+      HEREDOC
+
+      src_file = "#{Rails.root}/tmp/file.html"
+      FileUtils.rm(src_file) if File.exist?(src_file)
+      File.write(src_file, data)
+
+      dest_file = DOWNLOAD_DIRECTORY.join('file.html')
+      FileUtils.rm(dest_file) if File.exist?(dest_file)
+
+      visit(files_url("#{Rails.root}/tmp"))
+
+      # note that there's no accept_alert block in the previous test.
+      accept_alert 'hello world' do
+        find('tbody a', exact_text: 'file.html').click
+      end
+
+      assert_equal(current_path, files_path("#{Rails.root}/tmp/file.html"))
+      assert_equal('hello world', find('h1').text)
+    end
+  end
+
+  test 'send to target feature sends selected files' do
+    stub_user_configuration(
+      {
+        files_select_target: {
+          endpoint: '/pun/sys/passenger_app',
+          label: 'Send to App',
+          icon: 'fas://paper-plane',
+          title: 'Send selected files to the external application',
+          expiration: 10
+        }
+      }
+    )
+
+    token_value = 'test-token-12345'
+
+    # Visit files app with token parameter
+    visit files_url(Rails.root.to_s, files_select_target_token: token_value)
+
+    # Verify button is present and enabled
+    button = find('#send_to_target_btn')
+    assert button.present?
+    refute button.disabled?
+
+    # Select manifest.yml file
+    find('tbody a', exact_text: 'manifest.yml').ancestor('tr').find('input[type="checkbox"]').click
+
+    # Select config directory
+    find('tbody a', exact_text: 'config').ancestor('tr').find('input[type="checkbox"]').click
+
+    # Verify two items are selected
+    assert_selector '.selected', count: 2
+
+    # Mock window.fetch to capture the request
+    page.execute_script(<<~JS)
+      window.fetchRequests = [];
+      window.originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        window.fetchRequests.push({ url: url, options: options });
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({})
+        });
+      };
+    JS
+
+    # Click send to target button
+    button.click
+
+    # Wait for the fetch request to complete
+    sleep 1
+
+    # Verify fetch was called
+    fetch_requests = page.evaluate_script('window.fetchRequests')
+    assert_equal 1, fetch_requests.length, 'Expected exactly one fetch request'
+
+    request = fetch_requests[0]
+    assert_equal '/pun/sys/passenger_app', request['url']
+    assert_equal 'POST', request['options']['method']
+    assert_equal 'application/json', request['options']['headers']['Content-Type']
+
+    # Parse the request body
+    payload = JSON.parse(request['options']['body'])
+
+    # Verify main fields
+    assert_equal token_value, payload['token']
+    assert_equal 'fs', payload['filesystem']
+    assert_equal Rails.root.to_s, payload['directory']
+    assert_equal 2, payload['files'].length
+
+    # Verify file details
+    file_names = payload['files'].map { |f| f['name'] }
+    assert_includes file_names, 'manifest.yml'
+    assert_includes file_names, 'config'
+
+    manifest_file = payload['files'].find { |f| f['name'] == 'manifest.yml' }
+    assert_equal "#{Rails.root}/manifest.yml", manifest_file['file_path']
+    assert_equal 'f', manifest_file['type']
+    assert_equal false, manifest_file['directory']
+
+    config_dir = payload['files'].find { |f| f['name'] == 'config' }
+    assert_equal "#{Rails.root}/config", config_dir['file_path']
+    assert_equal 'd', config_dir['type']
+    assert_equal true, config_dir['directory']
+
+    # Restore original fetch
+    page.execute_script('window.fetch = window.originalFetch;')
+  end
+
+  test 'file transfer failure displays error and disables spinner' do
+    Dir.mktmpdir do |dir|
+      FileUtils.touch(File.join(dir, 'foo'))
+
+      visit files_url(dir)
+
+      # Rename file to the same name to trigger alert
+      tr = find('a', exact_text: 'foo').ancestor('tr')
+      tr.find('button.dropdown-toggle').click
+      tr.find('.rename-file').click
+
+      find('#files_input_modal_input').set('foo')
+      find('#files_input_modal_ok_button').click
+
+      assert_selector '.alert-danger', wait: MAX_WAIT
+      assert_no_selector '#full_page_spinner', visible: true, wait: MAX_WAIT
+
+      alert_text = "Error occurred when attempting to rename file: these files already exist: #{dir}/foo"
+      assert_selector '.alert-danger span', text: alert_text
+
+      # Close alert modal
+      find('.alert-danger button').click
+
+      assert_no_selector '.alert-danger', visible: true
+    end
+  end
 end
