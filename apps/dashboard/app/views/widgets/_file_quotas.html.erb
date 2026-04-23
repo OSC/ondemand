@@ -6,7 +6,7 @@
   <li class="list-group-item">
     <b><%= quota.path %></b>: <%= quota %>
     <%=
-      render(partial: "shared/variable_progress_bar", locals: { percent: quota.percent_total_usage })
+      render(partial: "shared/variable_progress_bar", locals: { percent: [quota.percent_total_usage, 100].min })
     -%>
   </li>
 
