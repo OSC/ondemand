@@ -175,8 +175,12 @@ small.form-text {
   max-width: 150px;
 }
 
+:where(.progress-bar[class^="w-"], .progress-bar[class*=" w-"]) {
+  width: 100%;
+}
+
 // Add width classes for every whole percentage between 0 and 100
-@for $i from 1 through 100 {
+@for $i from 0 through 100 {
   .w-#{$i} {
     width: $i * 1%;
   }
