@@ -45,6 +45,7 @@ zh-CN:
         bc_num_nodes: 节点数
         bc_num_slots: 节点数
         bc_queue: 队列
+        cluster: 集群
         bc_vnc_idle: 空闲超时
         bc_vnc_resolution: 分辨率
         desktop: 桌面环境

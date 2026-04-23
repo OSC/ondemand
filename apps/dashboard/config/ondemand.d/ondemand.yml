@@ -1,6 +1,4 @@
 pinned_apps:
-  - sys/files
-  - sys/jobs
   - sys/*
 pinned_apps_menu_length: 4
 pinned_apps_group_by: category
