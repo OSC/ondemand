@@ -14,7 +14,7 @@ module ActiveSupport
     # Add more helper methods to be used by all tests here...
 
     UserDouble = Struct.new(:name, :groups)
-    DEFAULT_CLUSTERS = ['owens', 'oakley', 'x-nextgen_ascend'].freeze
+    DEFAULT_CLUSTERS = ['owens', 'oakley', 'x-nextgen_ascend', 'test-cluster'].freeze
 
     class BrokenAdapter < OodCore::Job::Adapter
       SUBMIT_ERR_MSG = 'this adapter cannot submit jobs'
