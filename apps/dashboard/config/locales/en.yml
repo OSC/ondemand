@@ -32,11 +32,6 @@ en:
       unit_title_jobs: Jobs
       unit_core_hours: core hours
       unit_title_core_hours: Core Hours
-    batch_connect_apps:
-      sys_bc_desktop:
-        title: Desktop
-        description: |
-          This app will launch an interactive desktop on one or more compute nodes. You will have full access to the resources these nodes provide. This is analogous to an interactive batch job.
     datatables:
       search: "Filter: "
       emptyTable: "No data available in table"
@@ -58,6 +53,7 @@ en:
         bc_num_nodes: Number of nodes
         bc_num_slots: Number of nodes
         bc_queue: Queue
+        cluster: Cluster
         bc_vnc_idle: Idle timeout
         bc_vnc_resolution: Resolution
         desktop: Desktop environment
@@ -187,6 +183,8 @@ en:
       following error:'
     batch_connect_sessions_errors_submission: 'Failed to submit session with the following
       error:'
+    powered_by_ood: Powered by Open OnDemand
+    browser_warning: OnDemand requires a newer browser. Current browser requirements include IE Edge, Firefox 19+, Chrome 34+,
     batch_connect_sessions_novnc_launch: Launch %{app_title}
     batch_connect_sessions_novnc_view_only: View Only (Share-able Link)
     batch_connect_sessions_path_selector_forbidden_error: You do not have permission
@@ -462,6 +460,8 @@ en:
     module_browser_all_clusters: All Clusters
     module_browser_available_modules: 'Available modules:'
     module_browser_select_version_hint: select version
+    version: "OnDemand version: %{version}"
+    software_license: Software License
     module_browser_table_cluster: Cluster
     module_browser_table_versions: Versions
     module_browser_copy_load_command_aria: Copy load command for %{module}

@@ -32,11 +32,6 @@ zh-CN:
       unit_title_jobs: 作业
       unit_core_hours: 核心小时
       unit_title_core_hours: 核心小时
-    batch_connect_apps:
-      sys_bc_desktop:
-        title: 桌面
-        description: |
-          此应用将在一个或多个计算节点上启动交互式桌面。你将能够完全使用这些节点提供的资源。这类似于一个交互式批处理作业。
     smart_attributes:
       labels:
         bc_account: 帐户

@@ -1,19 +1,25 @@
 <% app.links.each do |link| %>
+  <% title_text = link.title.to_s %>
+  <% desc_text = link.description.to_s %>
   <%=
     link_to(
       link.url.to_s,
       class: "list-group-item list-group-item-action border-0 #{"active" if local_assigns[:current_url] == link.url}",
-      title: t(link.title, default: link.title),
+      title: title_text.presence,
       data: {
         'bs-toggle': "popover",
-        'bs-content': content_tag(:div, manifest_markdown(t(link.description, default: link.description)), class: 'ood-appkit markdown'),
+        'bs-content': content_tag(
+          :div,
+          manifest_markdown(desc_text),
+          class: 'ood-appkit markdown'
+        ),
         'bs-html': true,
         'bs-trigger': "hover focus",
         container: "body",
       }.merge(link.data)
     ) do
   %>
-    <%= icon_tag(link.icon_uri) %> <%= t(link.title, default: link.title) %>
+    <%= icon_tag(link.icon_uri) %> <%= title_text %>
     <%- if show_owner -%>
       <small>(<%= app.owner %>)</small>
     <%- end -%>
