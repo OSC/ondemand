@@ -50,8 +50,9 @@ jQuery(function() {
         return Promise.all(this.empty_dirs.map((d) => {
           // "fullPath" should actually be the path relative to the current directory
           let filename = _.trimStart(d.fullPath, '/');
+          let encoded = filename.split('/').map(encodeURIComponent).join('/');
 
-          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
+          return fetch(`${history.state.currentDirectoryUrl}/${encoded}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
           //TODO: parse json response verify if there was an error creating directory and handle error
 
         })).then(() => this.empty_dirs = []);
