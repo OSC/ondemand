@@ -14,6 +14,10 @@ th.d-above-xl, td.d-above-xl {
   }
 }
 
+div#directory_browser td a {
+  overflow-wrap: anywhere;
+}
+
 .project-card {
   width: fit-content;
 }
@@ -29,7 +33,7 @@ th.d-above-xl, td.d-above-xl {
   justify-content: center;
   width: 20rem;
 
-  &:hover {
+  &:hover, &:focus {
     outline: 0.4em solid rgb(26, 118, 211);
   }
 
@@ -130,6 +134,20 @@ th.d-above-xl, td.d-above-xl {
   text-wrap:nowrap;
 }
 
+.btn-success.launcher-button {
+  --bs-btn-bg: rgb(66, 130, 66);
+  --bs-btn-border-color: rgb(66, 130, 66);
+  --bs-btn-hover-bg: rgb(76, 154, 76);
+  --bs-btn-hover-border-color: rgb(76, 154, 76);
+}
+
+.btn-info.launcher-button {
+  --bs-btn-bg: rgb(9, 128, 151);
+  --bs-btn-border-color: rgb(9, 128, 151);
+  --bs-btn-hover-bg: rgb(12, 154, 183);
+  --bs-btn-hover-border-color: rgb(12, 154, 183);
+}
+
 .workflow-item {
   justify-content: right;
 }
@@ -164,10 +182,13 @@ th.d-above-xl, td.d-above-xl {
 
     button.badge.collapsed {
       color: var(--bs-badge-color);
-    }
-
-    button.badge.collapsed:hover {
-      color: var(--bs-btn-hover-color);
+      --bs-success: rgb(66, 130, 66);
+      --bs-success-rgb: 66, 130, 66;
+      --bs-info: rgb(9, 128, 151);
+      --bs-info-rgb: 9, 128, 151;
+      &:hover, &:focus-within {
+        color: var(--bs-btn-hover-color);
+      }
     }
   }
 

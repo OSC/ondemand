@@ -1,4 +1,5 @@
 json.path @path.to_s
+json.page_title files_browse_page_title(@path)
 json.url files_path(@filesystem, @path).to_s
 #TODO: support array of shell urls, along with the default shell url which could be above
 json.shell_url OodAppkit.shell.url(path: @path.to_s).to_s
@@ -13,7 +14,7 @@ json.files @files do |f|
 
   json.url files_path(@filesystem, @path.join(f[:name]).to_s) if (f[:directory] || f[:downloadable])
   json.download_url files_path(@filesystem, @path.join(f[:name]).to_s, download: '1') if f[:downloadable]
-  json.edit_url OodAppkit.editor.edit(path: @path.join(f[:name]).to_s, fs: @filesystem).to_s
+  json.edit_url OodAppkit.editor.edit(path: @path.join(f[:name]).to_s, fs: @filesystem).to_s if f[:downloadable]
 
   json.size f[:size]
   json.human_size f[:human_size]

@@ -426,38 +426,38 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'changing directory' do
     visit files_url(Rails.root.to_s)
-    find('tbody a', exact_text: 'app')
-    find('tbody a', exact_text: 'config')
+    assert_selector('tbody a', exact_text: 'app')
+    assert_selector('tbody a', exact_text: 'config')
 
     find('#goto-btn').click
     find('#files_input_modal_input').set(Rails.root.join('app'))
     find('#files_input_modal_ok_button').click
-    find('tbody a', exact_text: 'helpers')
-    find('tbody a', exact_text: 'controllers')
+    assert_selector('tbody a', exact_text: 'helpers')
+    assert_selector('tbody a', exact_text: 'controllers')
 
     find('#goto-btn').click
     find('#files_input_modal_input').set(Rails.root.to_s)
     find('#files_input_modal_ok_button').click
-    find('tbody a', exact_text: 'app')
-    find('tbody a', exact_text: 'config')
+    assert_selector('tbody a', exact_text: 'app')
+    assert_selector('tbody a', exact_text: 'config')
   end
 
   test 'window.onpopstate does not overwrite browser state' do
     visit files_url(Rails.root.to_s)
     find('tbody a', exact_text: 'app').click
     find('tbody a', exact_text: 'apps').click
-    find('tbody a', exact_text: 'ood_app.rb')
+    assert_selector('tbody a', exact_text: 'ood_app.rb')
 
     page.driver.go_back
-    find('tbody a', exact_text: 'assets')
+    assert_selector('tbody a', exact_text: 'assets')
 
     page.driver.go_back
-    find('tbody a', exact_text: 'app')
-    find('tbody a', exact_text: 'config')
+    assert_selector('tbody a', exact_text: 'app')
+    assert_selector('tbody a', exact_text: 'config')
 
     page.driver.go_forward
-    find('tbody a', exact_text: 'apps')
-    find('tbody a', exact_text: 'assets')
+    assert_selector('tbody a', exact_text: 'apps')
+    assert_selector('tbody a', exact_text: 'assets')
   end
 
   test 'edit file' do
@@ -478,7 +478,7 @@ class FilesTest < ApplicationSystemTestCase
 
       find('#save-button').click
 
-      sleep 1 # FIXME: should avoid using sleep here
+      assert_selector('#save-button.file-saved')
       assert_equal 'foobar', File.read(file)
     end
   end
@@ -511,12 +511,12 @@ class FilesTest < ApplicationSystemTestCase
         # No localization (default)
         visit files_url(dir)
         find('#upload-btn').click
-        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+        assert_selector('.uppy-Dashboard-AddFiles')
 
         src_file = 'test/fixtures/files/upload/osc-logo.png'
         attach_file 'files[]', src_file, visible: false, match: :first
 
-        find('.uppy.uppy-Informer', text: /osc-logo.png exceeds [\w ]+ size of 10 B/, wait: MAX_WAIT)
+        assert_selector('.uppy.uppy-Informer', text: /osc-logo.png exceeds [\w ]+ size of 10 B/)
 
         # Temporarily add localization for max upload size error
         en = { :dashboard => { :uppy => { :strings => { :exceedsSize => 'custom error, %{file}, %{size}' } } } }
@@ -524,12 +524,12 @@ class FilesTest < ApplicationSystemTestCase
 
         visit files_url(dir)
         find('#upload-btn').click
-        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+        assert_selector('.uppy-Dashboard-AddFiles')
 
         src_file = 'test/fixtures/files/upload/osc-logo.png'
         attach_file 'files[]', src_file, visible: false, match: :first
 
-        find('.uppy.uppy-Informer', text: 'custom error, osc-logo.png, 10 B', wait: MAX_WAIT)
+        assert_selector('.uppy.uppy-Informer', text: 'custom error, osc-logo.png, 10 B')
 
         I18n.backend.reload!
         # Clear browser logs
@@ -715,8 +715,8 @@ class FilesTest < ApplicationSystemTestCase
       cant_read_row.find('button.dropdown-toggle').click
       cant_read_links = cant_read_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-      # NOTE: download and view are not an expected links.
-      expected_links = ['Edit', 'Rename', 'Delete']
+      # NOTE: download, view, and edit are not an expected links.
+      expected_links = ['Rename', 'Delete']
 
       assert_equal(expected_links, fifo_links)
       assert_equal(expected_links, cant_read_links)
@@ -730,8 +730,8 @@ class FilesTest < ApplicationSystemTestCase
     null_row.find('button.dropdown-toggle').click
     null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-    # NOTE: download and view are not an expected links.
-    expected_links = ['Edit', 'Rename', 'Delete']
+    # NOTE: download, view, and edit are not an expected links.
+    expected_links = ['Rename', 'Delete']
 
     assert_equal(expected_links, null_links)
   end
@@ -854,6 +854,12 @@ class FilesTest < ApplicationSystemTestCase
 
       # none of the HTML elements have hrefs.
       assert(file_elements.all? { |e| e[:href].nil? })
+
+      assert_selector('tr a.dropdown-item', visible: false) # rename links still exist
+      # delete and rename links don't point anywhere
+      all('tr .dropdown-menu a', visible: false).each do |link|
+        assert(link[:href].end_with?('#'), "#{link.text(:all)} link was served with downloads disabled")
+      end
     end
   end
 

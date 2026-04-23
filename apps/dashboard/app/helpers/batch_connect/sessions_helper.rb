@@ -7,7 +7,7 @@ module BatchConnect::SessionsHelper
   def render_connection(session)
     if session.running?
       if session.view
-        views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
+        views = { partial: "custom", locals: { view: session.view, connect: session.connect, session: session } }
       else
         if session.vnc?
           views = []
@@ -119,7 +119,7 @@ module BatchConnect::SessionsHelper
     button_to(
       new_batch_connect_session_context_path(token: session.token),
       method: :get,
-      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner],
+      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner edit-session],
       form_class: %w[d-inline edit-session],
       title: title,
       'aria-label': title,

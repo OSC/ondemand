@@ -8,6 +8,7 @@ en-CA:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
+    active_jobs_close_details: Close extended details panel.
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
@@ -41,11 +42,14 @@ en-CA:
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
     batch_connect_form_choose_template_name: Choose a template name
     batch_connect_form_data_root: data root directory
+    batch_connect_form_dynamic_disclaimer: The following form may change dynamically as options are selected. All changes will be announced and are reversible.
     batch_connect_form_invalid: The form.yml has missing options in the %{id} form field.
     batch_connect_form_launch: Launch
     batch_connect_form_prefill: Use saved settings
     batch_connect_form_prefill_error: Oops... Something is wrong with your template
     batch_connect_form_reset_resolution: Reset Resolution
+    batch_connect_form_resolution_height: Resolution height (pixels)
+    batch_connect_form_resolution_width: Resolution width (pixels)
     batch_connect_form_save: Save settings
     batch_connect_form_save_new_template: save new settings
     batch_connect_form_save_submit: Save settings and close
@@ -126,8 +130,11 @@ en-CA:
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
+    cancel: Cancel
     clear: Clear
     close: Close
+    close_alert: Close this alert.
+    close_notice: Close this notice.
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date
@@ -155,6 +162,8 @@ en-CA:
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
+    files_title: File browsing
+    home_directory: Home Directory
     import: Import
     job_info: Job Info
     jobs_create_blank_project: Create a new project
@@ -162,22 +171,40 @@ en-CA:
     jobs_create_template_project: Create a new project from a template
     jobs_import_shared_project: Import a shared project
     jobs_launchers: Launchers
+    jobs_launchers_add_select_option: Add select option %{name}
+    jobs_launchers_clone: Clone launcher %{name}
     jobs_launchers_created: Launcher successfully created!
     jobs_launchers_default_created: A 'hello_world.sh' was also added to this project.
+    jobs_launchers_delete: Delete launcher %{name}
     jobs_launchers_delete_script_confirmation: Delete all contents of launcher?
     jobs_launchers_deleted: Launcher successfully deleted!
+    jobs_launchers_edit: Edit form for launcher %{name}
+    jobs_launchers_edit_form_item: Edit form item %{label}
     jobs_launchers_fixed_field: Fixed Value
+    jobs_launchers_fixed_field_help: Fix current value
+    jobs_launchers_max_value_label: Maximum value for number field %{label}
+    jobs_launchers_min_value_label: Minimum value for number field %{label}
+    jobs_launchers_new_field_select: Select item to add to form
     jobs_launchers_not_found: Cannot find Launcher %{launcher_id}
+    jobs_launchers_preview_form_item: Preview of form item %{label}
+    jobs_launchers_remove_form_item: Remove form item %{label}
+    jobs_launchers_remove_select_option: Remove select option %{name}
+    jobs_launchers_save_form: Save form
+    jobs_launchers_save_form_item: Save changes to form item %{label}
+    jobs_launchers_show_form: Show form for launcher %{name}
+    jobs_launchers_submit_launcher_title: Launch script with cached or default values for launcher %{name}
     jobs_launchers_submitted: Successfully submitted job %{job_id}.
     jobs_launchers_updated: Launcher manifest updated!
     jobs_new_launcher: New Launcher
     jobs_project_created: Project successfully created!
+    jobs_project_delete_label: Delete project %{name}
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
     jobs_project_directory_placeholder: Project directory absolute path
+    jobs_project_edit_label: Edit project %{name}
     jobs_project_generic_error: 'There was an error processing your request: %{error}'
     jobs_project_group_help: Make sure to choose the group that includes all intended collaborators. If this is not a collaborative project, the default group is recommended.
     jobs_project_group_owner: Group
@@ -191,16 +218,22 @@ en-CA:
     jobs_project_name_placeholder: Project name
     jobs_project_name_validation: Project name may only contain letters, digits, dashes, underscores, and spaces
     jobs_project_not_found: Cannot find project %{project_id}
+    jobs_project_open_label: Open project %{name}
+    jobs_project_remove_label: Remove project %{name}
     jobs_project_removed: Project removed from lookup!
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_select_directory: Select project directory
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. This does not affect projects in your home directory.
     jobs_project_validation_error: Invalid Request. Please review the errors below
     jobs_select_directory_placeholder: Click on project below to import to your home page (Optional)
+    jobs_toggle_details: Click to toggle details for job %{job_id}
+    jobs_workflow_clone: Clone workflow %{name}
     jobs_workflow_created: Workflow successfully created!
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
+    jobs_workflow_delete_title: Delete workflow %{name}
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description
+    jobs_workflow_edit_settings: Modify settings for workflow %{name}
     jobs_workflow_failed: Workflow failed with error %{error}
     jobs_workflow_help: Click the title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected.
     jobs_workflow_manifest_updated: Workflow manifest updated!
@@ -208,10 +241,13 @@ en-CA:
     jobs_workflow_name_placeholder: Workflow name
     jobs_workflow_name_validation: Workflow name may only contain letters, digits, dashes, underscores, and spaces
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
+    jobs_workflow_show_graph: Open workflow %{name} in graph editor
     jobs_workflow_submitted: Workflow successfully submitted!
     jobs_workflows: Workflows
     launch: Launch
     logo_alt_text: Welcome to Open OnDemand
+    maximum: Maximum
+    minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser

@@ -1,10 +1,10 @@
 HOSTS:
-  ubuntu2204:
+  debian13:
     roles:
       - agent
-    platform: ubuntu-22.04-amd64
+    platform: debian-13-amd64
     hypervisor : docker
-    image: arm64v8/ubuntu:22.04
+    image: arm64v8/debian:13
     docker_preserve_image: true
     docker_cmd: '["/sbin/init"]'
     docker_image_commands:
@@ -16,7 +16,7 @@ HOSTS:
       - LANGUAGE=en_US.UTF-8
       - LC_ALL=en_US.UTF-8
       - DEBIAN_FRONTEND=noninteractive
-    docker_container_name: 'ondemand-ubuntu2204'
+    docker_container_name: 'ondemand-debian13'
     docker_port_bindings:
       22/tcp:
         - HostPort: '2222'

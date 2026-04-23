@@ -37,7 +37,7 @@
       <a href="#main_container" class="skip-link"><%= t('dashboard.skip_navigation') %></a>
     </span>
 
-    <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>">
+    <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>" aria-label="Main Menu">
       <ul class="navbar-nav w-100 align-items-center" role="menubar">
         <%= render partial: 'layouts/nav/logo' %>
       
@@ -96,19 +96,15 @@
 
     <% if alert %>
       <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
-        </button>
         <%= alert %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" title="<%= t('dashboard.close_alert') %>"></button>
       </div>
     <% end %>
 
     <% if notice %>
       <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
-        </button>
         <%= notice %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" title="<%= t('dashboard.close_notice') %>"></button>
       </div>
     <% end %>
 

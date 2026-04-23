@@ -8,6 +8,7 @@ ja_JP:
         required: "%{attribute}は必須です"
         used: "%{attribute}はすでに使用されています"
   dashboard:
+    active_jobs_close_details: 詳細パネルを閉じる。
     active_sessions_caption_html: <a href="%{all_sessions_url}"> すべて表示 (%{number_of_sessions})</a>
     active_sessions_title: アクティブなインタラクティブセッション
     add: 追加
@@ -39,11 +40,14 @@ ja_JP:
     batch_connect_form_attr_cache_error: 以前にキャッシュされた値を使用できません。代わりにデフォルトを使用します。(%{error_message})
     batch_connect_form_choose_template_name: テンプレート名を選択してください
     batch_connect_form_data_root: データルートディレクトリ
+    batch_connect_form_dynamic_disclaimer: 以下のフォームは、オプションが選択されると動的に変更される場合があります。すべての変更は通知され、元に戻すことができます。
     batch_connect_form_invalid: form.ymlに%{id}フォームフィールドのオプションが欠落しています。
     batch_connect_form_launch: 起動
     batch_connect_form_prefill: 保存された設定を使用
     batch_connect_form_prefill_error: おっと... テンプレートに問題があります
     batch_connect_form_reset_resolution: 解像度をリセット
+    batch_connect_form_resolution_height: 解像度の高さ（ピクセル）
+    batch_connect_form_resolution_width: 解像度の幅（ピクセル）
     batch_connect_form_save: 設定を保存
     batch_connect_form_save_new_template: 新しい設定を保存
     batch_connect_form_save_submit: 設定を保存して閉じる
@@ -123,8 +127,11 @@ ja_JP:
     breadcrumbs_home: ホーム
     breadcrumbs_my_sessions: 私のインタラクティブセッション
     breadcrumbs_support_ticket: サポートチケット
+    cancel: キャンセル
     clear: クリア
     close: 閉じる
+    close_alert: このアラートを閉じる。
+    close_notice: この通知を閉じる。
     custom_pages:
       invalid: 無効なページコード：%{page}。このページは構成されていません
     date: 日付
@@ -152,6 +159,8 @@ ja_JP:
     files_send_to_target_title_default: 選択したファイルのメタデータを外部アプリケーションに送信
     files_shell: ターミナルで開く
     files_shell_dropdown: ターミナルで開くクラスターを選択
+    files_title: ファイルブラウジング
+    home_directory: ホームディレクトリ
     import: インポート
     job_info: ジョブ情報
     jobs_create_blank_project: 新しいプロジェクトを作成
@@ -159,22 +168,40 @@ ja_JP:
     jobs_create_template_project: テンプレートから新しいプロジェクトを作成
     jobs_import_shared_project: 共有プロジェクトをインポート
     jobs_launchers: ランチャー
+    jobs_launchers_add_select_option: 選択オプション %{name} を追加
+    jobs_launchers_clone: ランチャー %{name} を複製
     jobs_launchers_created: ランチャーが正常に作成されました！
     jobs_launchers_default_created: "'hello_world.sh'もこのプロジェクトに追加されました。"
+    jobs_launchers_delete: ランチャー %{name} を削除
     jobs_launchers_delete_script_confirmation: ランチャーのすべての内容を削除しますか？
     jobs_launchers_deleted: ランチャーが正常に削除されました！
+    jobs_launchers_edit: ランチャー %{name} のフォームを編集
+    jobs_launchers_edit_form_item: フォームアイテム %{label} を編集
     jobs_launchers_fixed_field: 固定値
+    jobs_launchers_fixed_field_help: 現在の値を修正
+    jobs_launchers_max_value_label: 数値フィールド %{label} の最大値
+    jobs_launchers_min_value_label: 数値フィールド %{label} の最小値
+    jobs_launchers_new_field_select: フォームに追加するアイテムを選択
     jobs_launchers_not_found: ランチャー%{launcher_id}が見つかりません。
+    jobs_launchers_preview_form_item: フォームアイテム %{label} のプレビュー
+    jobs_launchers_remove_form_item: フォームアイテム %{label} を削除
+    jobs_launchers_remove_select_option: 選択オプション %{name} を削除
+    jobs_launchers_save_form: フォームを保存
+    jobs_launchers_save_form_item: フォームアイテム %{label} の変更を保存
+    jobs_launchers_show_form: ランチャー %{name} のフォームを表示
+    jobs_launchers_submit_launcher_title: ランチャー %{name} のキャッシュまたはデフォルト値でスクリプトを実行
     jobs_launchers_submitted: ジョブ%{job_id}が正常に送信されました。
     jobs_launchers_updated: ランチャーマニフェストが更新されました！
     jobs_new_launcher: 新しいランチャー
     jobs_project_created: プロジェクトが正常に作成されました！
+    jobs_project_delete_label: プロジェクト %{name} を削除
     jobs_project_delete_project_confirmation: プロジェクトディレクトリのすべての内容を削除しますか？
     jobs_project_deleted: プロジェクトが正常に削除されました！
     jobs_project_description_placeholder: プロジェクトの説明
     jobs_project_directory_error: このワークフローのためにプロジェクトディレクトリパスが設定されていません。
     jobs_project_directory_help_html: '空のままにすると新しいディレクトリが作成されます。<br />デフォルトの場所: %{root_directory}'
     jobs_project_directory_placeholder: プロジェクトディレクトリの絶対パス
+    jobs_project_edit_label: プロジェクト %{name} を編集
     jobs_project_generic_error: 'リクエストの処理中にエラーが発生しました: %{error}'
     jobs_project_group_help: すべての意図したコラボレーターを含むグループを選択してください。これはコラボレーションプロジェクトでない場合、デフォルトのグループを推奨します。
     jobs_project_group_owner: グループ
@@ -188,16 +215,22 @@ ja_JP:
     jobs_project_name_placeholder: プロジェクト名
     jobs_project_name_validation: プロジェクト名には文字、数字、ダッシュ、アンダースコア、スペースのみを含めることができます。
     jobs_project_not_found: プロジェクト%{project_id}が見つかりません。
+    jobs_project_open_label: プロジェクト %{name} を開く
+    jobs_project_remove_label: プロジェクト %{name} を削除
     jobs_project_removed: プロジェクトがルックアップから削除されました！
     jobs_project_save_error: マニフェストを%{path}に保存できません。
     jobs_project_select_directory: プロジェクトディレクトリを選択
     jobs_project_setgid_help: setgidをチェックしたままにすると、プロジェクトファイルが選択したグループで作成されます。ホームディレクトリ内のプロジェクトには影響しません。
     jobs_project_validation_error: 無効なリクエストです。以下のエラーを確認してください。
     jobs_select_directory_placeholder: ホームページにインポートするために以下のプロジェクトをクリックしてください（オプション）
+    jobs_toggle_details: ジョブ %{job_id} の詳細を切り替えるにはクリックしてください
+    jobs_workflow_clone: ワークフロー %{name} を複製
     jobs_workflow_created: ワークフローが正常に作成されました！
     jobs_workflow_delete_confirmation: ワークフローのすべての内容を削除しますか？
+    jobs_workflow_delete_title: ワークフロー %{name} を削除
     jobs_workflow_deleted: ワークフローが正常に削除されました！
     jobs_workflow_description_placeholder: ワークフローの説明
+    jobs_workflow_edit_settings: ワークフロー %{name} の設定を変更
     jobs_workflow_failed: ワークフローがエラー %{error} で失敗しました
     jobs_workflow_help: タイトルをクリックして選択し、ドラッグします。 'ランチャーを接続'が選択されている状態で、2つのランチャーをクリックして接続します
     jobs_workflow_manifest_updated: ワークフローのマニフェストが更新されました！
@@ -205,10 +238,13 @@ ja_JP:
     jobs_workflow_name_placeholder: ワークフロー名
     jobs_workflow_name_validation: ワークフロー名には、文字、数字、ダッシュ、アンダースコア、スペースのみを含めることができます
     jobs_workflow_not_found: ワークフロー %{workflow_id} が見つかりません
+    jobs_workflow_show_graph: グラフエディタでワークフロー %{name} を開く
     jobs_workflow_submitted: ワークフローが正常に送信されました！
     jobs_workflows: ワークフロー
     launch: 起動
     logo_alt_text: Open OnDemandへようこそ
+    maximum: 最大
+    minimum: 最小
     mode: モード
     module_browser_last_updated: '最終更新日: %{last_updated}'
     module_browser_title: モジュールブラウザ

@@ -1,0 +1,16 @@
+[Service]
+KillSignal=SIGTERM
+KillMode=process
+PrivateTmp=false
+ProtectHome=false
+ProtectSystem=false
+<% if apache_inaccessible_paths? -%>
+# Same as what ships with Ubuntu 26.04 but allows access to sudo files
+InaccessiblePaths=
+InaccessiblePaths=/boot
+InaccessiblePaths=/root
+InaccessiblePaths=-/etc/ssh
+InaccessiblePaths=-/etc/apt
+InaccessiblePaths=-/etc/.git
+InaccessiblePaths=-/etc/.svn
+<% end -%>

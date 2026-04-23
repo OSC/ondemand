@@ -138,7 +138,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       visit new_batch_connect_session_context_url('sys/app')
 
-      find('.alert-danger')
+      assert_selector('.alert-danger')
     end
   end
 
@@ -690,6 +690,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # Span exists (HTML works).
+    assert_selector(class: 'test_form_element_header', text: 'Some text in a span')
     header_span = find(class: 'test_form_element_header', text: 'Some text in a span')
     # Markdown element exists (## => h2).
     markdown_header = header_span.find(:xpath, './/../../h2', text: 'Header using Markdown')
@@ -988,5 +989,61 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     # send pointer and focus somewhere else
     all('form select').first.hover.click
     refute_selector("div##{popover_id}")
+  end
+
+  test 'app that needs escape sequences' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:  
+      - oakley
+      form:
+        - software
+        - node_type
+        - gpu_type
+      attributes:
+        software:
+          widget: select
+          options:
+            - ruby
+            - python
+        node_type:
+          widget: select
+          options:
+            - regular
+            - [ "broken option '", broken, data-exclusive-option-for-software-python: true ]
+        gpu_type:
+          widget: select
+          options:
+            - good
+            - [ better, better, data-exclusive-option-for-node-type-broken: true ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+
+      # select python and broken node type is available
+      select('python', from: bc_ele_id('software'))
+      assert_equal('', find_option_style('node_type', 'broken'))
+
+      # select broken node and better gpu type is available
+      select('broken option \'', from: bc_ele_id('node_type'))
+      assert_equal('', find_option_style('gpu_type', 'better'))
+
+      # flip back to ruby and get defaults back
+      select('ruby', from: bc_ele_id('software'))
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+    end
   end
 end

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.1.6'
+gem 'rails', '7.2.3.1'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -62,7 +62,7 @@ gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
 gem 'bootstrap_form', '5.4'
-gem 'autoprefixer-rails', '~> 10.2.5'
+gem 'autoprefixer-rails', '~> 10.4.21'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'zip_kit', '~> 6.2'
@@ -90,3 +90,5 @@ gem "sinatra-contrib", require: false
 gem "erubi", require: false
 gem "dalli", require: false
 
+
+gem "puma", "~> 7.2"

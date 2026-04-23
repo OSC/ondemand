@@ -308,6 +308,9 @@ class DataTable {
 
             $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
             ariaNotify(`navigated to ${data.path}`);
+            if (data.page_title) {
+                document.title = data.page_title;
+            }
 
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {

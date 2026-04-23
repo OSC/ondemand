@@ -20,8 +20,7 @@ locals: {
 
 <div class="row">
   <%- if any_apps -%>
-    <nav class="col-md-3" aria-label="Interactive Apps Menu">
-      <%= render partial: 'batch_connect/shared/saved_settings_menu' %>
+    <div class="col-md-3">
       <%=
         render(
           partial: "batch_connect/shared/app_menu",
@@ -33,7 +32,7 @@ locals: {
           }
         )
       %>
-    </nav>
+    </div>
     <div class="col-md-9" role="region" aria-label="Active Sessions">
       <div id="batch_connect_sessions">
         <%= render(partial: 'panels') %>

@@ -32,28 +32,35 @@ APP = App.new(
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+APP_NAME = "job-composer"
+
+def system!(*args)
+  puts *args
+  system(*args, exception: true)
+end
 
 chdir APP_ROOT do
-  # This script is a starting point to setup your application.
-  # Add necessary setup steps to this file:
+  # This script is a way to set up or update your development environment automatically.
+  # This script is idempotent, so that you can run it at any time and get an expectable outcome.
+  # Add necessary setup steps to this file.
 
   puts "\n== Building My Jobs App =="
   puts "RAILS_ENV               = #{APP.env}"
   puts "RAILS_RELATIVE_URL_ROOT = #{APP.url    || "not set"}"
 
   puts "\n== Installing dependencies =="
-  sh "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
+  system! "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
 
   if APP.production?
     puts "\n== Compiling assets =="
-    sh "bin/rake assets:clobber"
-    sh "bin/rake assets:precompile"
+    system! "bin/rake assets:clobber"
+    system! "bin/rake assets:precompile"
   end
 
   puts "\n== Removing old logs and tempfiles =="
-  sh "bin/rake log:clear tmp:clear"
+  system! "bin/rake log:clear tmp:clear"
 
   puts "\n== Restarting application server =="
-  touch "tmp/restart.txt"
+  system! "touch tmp/restart.txt"
   puts ""
 end
