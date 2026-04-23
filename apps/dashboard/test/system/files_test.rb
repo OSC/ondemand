@@ -821,6 +821,26 @@ class FilesTest < ApplicationSystemTestCase
     assert_equal('&lt;img src=1 onerror=alert("hello")&gt;', actual_text)
   end
 
+  test 'filenames with # are url-escaped' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      name = '#foo.txt#'
+      FileUtils.touch(File.join(dir, name))
+
+      visit files_url(dir)
+
+      row = find('tbody a', exact_text: name).ancestor('tr')
+
+      row.find('button.dropdown-toggle').click
+      href = row.find('a.edit-file')[:href]
+
+      assert_includes href, '%23'
+      refute_includes href, '#'
+    end
+  end
+
   test 'will not render HTML files by default' do
     data = <<-HEREDOC
     <html>
