@@ -155,7 +155,6 @@ export function customizeTableHeaders(thead) {
   $(thead).find('th.dt-orderable-asc').each(function(_index, el) {
     const sortButton = $(el).find('span.dt-column-order');
     const ariaLabel = sortButton.attr('aria-label');
-    const headerText = $(el).find('.dt-column-title').text();
     $(el).attr('aria-label', ariaLabel).attr('tabindex', '0');
     sortButton.removeAttr('aria-label')
               .removeAttr('tabindex')
