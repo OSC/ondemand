@@ -153,19 +153,14 @@ export function pushNotify(message, options = {}) {
 // rearrange table header labels so button labels are not part of header
 export function customizeTableHeaders(thead) {
   $(thead).find('th.dt-orderable-asc').each(function(_index, el) {
-      const sortButton = $(el).find('span.dt-column-order');
-      const ariaLabel = sortButton.attr('aria-label');
-      const labelId = `${el.textContent.replaceAll(' ', '_').toLowerCase()}_label`;
-      var labelSpan = document.getElementById(labelId);
-      if (labelSpan === null) {
-          labelSpan = document.createElement('span');
-          labelSpan.id = labelId;
-          labelSpan.setAttribute('aria-live', 'polite');
-          $('#header_labels').append(labelSpan);
-      }
-      labelSpan.textContent = ariaLabel;
-      sortButton.removeAttr('aria-label');
-      sortButton.attr('aria-describedby', labelId);
+    const sortButton = $(el).find('span.dt-column-order');
+    const ariaLabel = sortButton.attr('aria-label');
+    const headerText = $(el).find('.dt-column-title').text();
+    $(el).attr('aria-label', ariaLabel).attr('tabindex', '0');
+    sortButton.removeAttr('aria-label')
+              .removeAttr('tabindex')
+              .removeAttr('role')
+              .attr('aria-hidden', 'true');
   });
 }
 

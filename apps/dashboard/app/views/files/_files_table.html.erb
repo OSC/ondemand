@@ -3,6 +3,7 @@
     <ol id="path-breadcrumbs" class="breadcrumb breadcrumb-no-delimiter rounded">
       <%= render partial: 'breadcrumb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path } %>
     </ol>
+    <span id="select_all_label" class="d-none">Select All</span>
     <table class="table table-striped table-condensed w-100" id="directory-contents">
       <caption id="directory-contents_caption" class="sr-only" aria-live='polite'> <%= "Contents of directory #{@path}" %> </caption>
       <thead>
@@ -23,8 +24,5 @@
       <tbody>
       </tbody>
     </table>
-    <div id='header_labels' class='sr-only'>
-      <span id="select_all_label">Select All</span>
-    </div>
     <%= render partial: "spinner" %>
 </div>
