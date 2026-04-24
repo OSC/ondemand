@@ -381,26 +381,23 @@ function setValue(event, changeId) {
   if (table === undefined) return;
 
   const changeVal = table.get(chosenVal, undefined);
+  if (changeVal === undefined) return;
 
-  if(changeVal !== undefined) {
-    const element = document.getElementById(changeId);
-    const elementInfo = getWidgetInfo(changeId);
-    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+  const element = document.getElementById(changeId);
+  const matches = element.value === changeVal;
+  const isCheckbox = element.type === "checkbox";
+  const needUpdate = isCheckbox ? element.checked !== matches : !matches;
 
-    if(element['type'] == 'checkbox') {
-      setCheckboxValue(element, changeVal);
+  if (needUpdate) {
+    if (isCheckbox) {
+      element.checked = matches;
     } else {
       element.value = changeVal;
     }
-  }
-}
 
-function setCheckboxValue(checkbox, value) {
-  const positiveValue = checkbox.value;
-  if(value == positiveValue) {
-    checkbox.checked = true;
-  } else {
-    checkbox.checked = false;
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+    element.dispatchEvent(new Event('change', { bubbles: true }));
   }
 }
 
