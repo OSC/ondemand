@@ -142,11 +142,18 @@ en:
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    editor: Editor
+    editor_font_size: Font Size
+    theme: Theme
+    bright: Bright
+    dark: Dark
+    wrap: Wrap
+    editor_key_bindings: Key Bindings
+    editor_key_bindings_default: Default
     files_turboframe:
       size: Size
       date: Date
       owner: Owner
-      mode: Mode
       actions: Actions
       type: Type
       name: Name
@@ -193,16 +200,7 @@ en:
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
-    files_editor:
-      save: Save
-      key_bindings: Key Bindings
-      key_bindings_default: Default
-      font_size: Font Size
-      mode: Mode
-      theme: Theme
-      theme_bright: Bright
-      theme_dark: Dark
-      wrap: Wrap
+    save: Save
     files_doesnt_exist: "%{path} does not exist."
     files_not_readable: "You do not have sufficient permissions to read '%{path}'."
     home_directory: Home Directory
