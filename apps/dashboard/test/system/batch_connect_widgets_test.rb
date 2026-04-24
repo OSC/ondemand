@@ -220,6 +220,46 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'path_selector handles filenames with # and +' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      base_id = 'batch_connect_session_context_path'
+      Dir.mktmpdir do |tmpdir|
+        name = '#foo+bar.txt#'
+        filename = "#{tmpdir}/#{name}"
+        FileUtils.touch(filename)
+
+        form = <<~HEREDOC
+          ---
+          cluster:
+            - owens
+          form:
+            - path
+          attributes:
+            path:
+              widget: 'path_selector'
+              directory: "#{tmpdir}"
+        HEREDOC
+
+        Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+        sleep 0.5
+
+        find('span', exact_text: name).click
+        find("##{base_id}_path_selector_button").click
+
+        assert_equal(filename, find("##{base_id}").value)
+      end
+    end
+  end
+
   test 'path_selector retains URL encodes if they are present' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
@@ -989,5 +1029,61 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     # send pointer and focus somewhere else
     all('form select').first.hover.click
     refute_selector("div##{popover_id}")
+  end
+
+  test 'app that needs escape sequences' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:  
+      - oakley
+      form:
+        - software
+        - node_type
+        - gpu_type
+      attributes:
+        software:
+          widget: select
+          options:
+            - ruby
+            - python
+        node_type:
+          widget: select
+          options:
+            - regular
+            - [ "broken option '", broken, data-exclusive-option-for-software-python: true ]
+        gpu_type:
+          widget: select
+          options:
+            - good
+            - [ better, better, data-exclusive-option-for-node-type-broken: true ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+
+      # select python and broken node type is available
+      select('python', from: bc_ele_id('software'))
+      assert_equal('', find_option_style('node_type', 'broken'))
+
+      # select broken node and better gpu type is available
+      select('broken option \'', from: bc_ele_id('node_type'))
+      assert_equal('', find_option_style('gpu_type', 'better'))
+
+      # flip back to ruby and get defaults back
+      select('ruby', from: bc_ele_id('software'))
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+    end
   end
 end
