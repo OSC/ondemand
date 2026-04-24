@@ -126,7 +126,7 @@ GEM
       activesupport
       i18n
     drb (2.2.3)
-    erb (6.0.3)
+    erb (6.0.4)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
     excon (1.4.2)
