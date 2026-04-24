@@ -27,6 +27,9 @@ def browser_login(browser)
   browser.text_field(id: 'username').set 'ood@localhost'
   browser.text_field(id: 'password').set 'password'
   browser.button(id: 'submit-login').click
+  Watir::Wait.until(timeout: 90, interval: 1) do
+    browser.title == 'Dashboard - Open OnDemand'
+  end
 end
 
 def hook_fixture(file)
