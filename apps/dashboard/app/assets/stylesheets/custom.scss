@@ -1,11 +1,11 @@
 // Bootstrap custom CSS
 
-.sr-only * {
-    @extend .sr-only;
+.sr-only, .sr-only * {
+  @extend .visually-hidden;
 }
 
 .sr-only.focusable, .sr-only.focusable * {
-    position: initial;
+  @extend .visually-hidden-focusable;
 }
 
 .card {
