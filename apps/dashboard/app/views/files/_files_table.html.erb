@@ -5,22 +5,22 @@
     </ol>
 
     <div role="region" aria-label="Directory contents">
-      <span id="select_all_label" class="sr-only">Select All</span>
+      <span id="select_all_label" class="sr-only"><%= t('dashboard.files_select_all') %></span>
       <table class="table table-striped table-condensed w-100" id="directory-contents">
         <caption id="directory-contents_caption" class="sr-only" aria-live='polite'> <%= "Contents of directory #{@path}" %> </caption>
         <thead>
           <tr>
             <th>
               <input type="checkbox" id="select_all" class="file-select" aria-labelledby="select_all_label"></input>
-              <span class="sr-only">Select</span>
+              <span class="sr-only"><%= t('dashboard.files_select') %></span>
             </th>
-            <th>Type</th>
-            <th>Name</th>
-            <th><span class="sr-only">Actions</span></th>
-            <th>Size</th>
-            <th>Modified at</th>
-            <th>Owner</th>
-            <th>Mode</th>
+            <th><%= t('dashboard.files_type') %></th>
+            <th><%= t('dashboard.files_name') %></th>
+            <th><span class="sr-only"><%= t('dashboard.files_actions') %></span></th>
+            <th><%= t('dashboard.files_size') %></th>
+            <th><%= t('dashboard.files_modified_at') %></th>
+            <th><%= t('dashboard.files_owner') %></th>
+            <th><%= t('dashboard.files_mode') %></th>
           </tr>
         </thead>
         <tbody>
