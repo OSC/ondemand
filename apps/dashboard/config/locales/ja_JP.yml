@@ -34,6 +34,7 @@ ja_JP:
     back: 戻る
     balance_additional_message: 追加の%{balanace_units}をリクエストすることを検討してください
     balance_message: "%{units_balance}は%{value}です"
+    balance_no_warnings_html: "%{threshold} 日の残高警告しきい値の範囲内にあるプロジェクトはありません。"
     balance_reload_message_html: ページを再読み込みして、更新された残高を確認してください。残高は毎日更新されます。<br>最終更新は %{last_update} でした。
     balance_warning_prefix_html: "%{units_balance} の警告"
     batch_connect_apps_menu_title: インタラクティブアプリ

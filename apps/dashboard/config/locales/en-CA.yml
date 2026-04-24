@@ -36,6 +36,7 @@ en-CA:
     back: Back
     balance_additional_message: Consider requesting additional %{balanace_units}
     balance_message: "%{units_balance} is %{value}"
+    balance_no_warnings_html: "No projects are within the %{threshold} day balance warning threshold."
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
     balance_warning_prefix_html: "%{units_balance} warning for"
     batch_connect_apps_menu_title: Interactive Apps
