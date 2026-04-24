@@ -54,6 +54,9 @@ class ActiveSupport::TestCase
 
       function checkElement(el) {
         if (!isVisible(el) || !hasText(el) || el.nodeType !== Node.ELEMENT_NODE) return;
+
+        if (el.classList.contains('sr-only') || el.classList.contains('visually-hidden')) return;
+
         const style = window.getComputedStyle(el);
         const fg = style.color;
         var bg = style.backgroundColor;
@@ -62,9 +65,15 @@ class ActiveSupport::TestCase
         // ascend tree to get first defined background
         var current = el
         while (bg === 'rgba(0, 0, 0, 0)') {
-          let parent = current.parentElement
-          current = parent
-          bg = window.getComputedStyle(parent).backgroundColor
+          let parent = current.parentElement;
+          if (!parent) { // raise error if no background found
+            el.style = 'background-color: red;';
+            throw `${el.tagName} element has no defined background color. (look for red highlight in screenshot)`;
+          }
+          if (parent.hasAttribute('disabled')) return;
+
+          current = parent;
+          bg = window.getComputedStyle(parent).backgroundColor;
         }
         const ratio = getContrastRatio(fg, bg);
         const fontSize = parseFloat(style.fontSize);
