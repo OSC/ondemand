@@ -181,6 +181,16 @@ zh-CN:
     files_send_to_target_title_default: 将选定文件的元数据发送到外部应用程序
     files_shell: 在终端中打开
     files_shell_dropdown: 选择要在终端中打开的集群
+    files_editor:
+      save: 保存
+      key_bindings: 键绑定
+      key_bindings_default: 默认
+      font_size: 字体大小
+      mode: 模式
+      theme: 主题
+      theme_bright: 明亮
+      theme_dark: 深色
+      wrap: 自动换行
     files_title: 文件浏览
     home_directory: 主目录
     import: 导入
