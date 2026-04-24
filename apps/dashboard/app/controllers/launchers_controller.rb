@@ -112,7 +112,7 @@ class LaunchersController < ApplicationController
 
   def save_launcher_params
     auto_env_params = params[:launcher].keys.select do |k|
-      k.match?('auto_environment_variable')
+      k.match?(/auto_environment_variable_\w+/)
     end
 
     allowlist = SAVE_LAUNCHER_KEYS + auto_env_params
