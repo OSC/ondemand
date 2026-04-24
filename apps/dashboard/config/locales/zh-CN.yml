@@ -121,6 +121,7 @@ zh-CN:
     close: 关闭
     close_alert: 关闭此警报。
     close_notice: 关闭此通知。
+    files_contents_of_directory: "目录内容 %{path}"
     custom_pages:
       invalid: 无效的页面代码：%{page}。此页面尚未配置
     date: 日期
@@ -137,28 +138,9 @@ zh-CN:
     editor_key_bindings: 键绑定
     editor_key_bindings_default: 默认
     file: 文件
-    files_turboframe:
-      size: 大小
-      date: 日期
-      owner: 所有者
-      mode: 模式
-      actions: 操作
-      type: 类型
-      name: 名称
-      view: 查看
-      edit: 编辑
-      download: 下载
-      show_parent_directory: 显示父目录
-      show_directory: 显示 %{name} 目录
     files_select_all: 选择所有
-    files_select: 选择
-    files_type: 类型
-    files_name: 名称
-    files_actions: 操作
-    files_size: 大小
+    select: 选择
     files_modified_at: 修改时间
-    files_owner: 所有者
-    files_mode: 模式
     loading: 加载中
     file_quotas: 文件配额
     files_change_directory: 更改目录
@@ -347,6 +329,8 @@ zh-CN:
       <br>自定义共享应用程序可以在下面使用。
     shell_app_title: "%{cluster_title} Shell 访问"
     show: 显示
+    files_show_directory: 显示 %{name} 目录
+    files_show_parent_directory: 显示父目录
     size: 大小
     skip_navigation: 跳过导航
     soft_tabs: 软制表符
@@ -374,6 +358,10 @@ zh-CN:
       validation_error: 无效请求。请查看下面的错误信息
     system_apps_caption: 系统已安装应用
     type: 类型
+    actions: 操作
+    download: 下载
+    upload: 上传
+    view: 查看
     unknown: 未知
     uppy: Uppy
     user_configuration:

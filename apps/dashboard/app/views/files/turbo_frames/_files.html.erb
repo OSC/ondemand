@@ -12,7 +12,7 @@
         directory_frame_path(
           path: "#{path.parent}"
         ),
-        title: t('dashboard.files_turboframe.show_parent_directory'),
+        title: t('dashboard.files_show_parent_directory'),
         data: { turbo_frame: "project_directory" }
       )
     %>
@@ -44,7 +44,7 @@
           directory_frame_path(
             path: full_path
           ),
-          title: t('dashboard.files_turboframe.show_directory', name: file[:name]),
+          title: t('dashboard.files_show_directory', name: file[:name]),
           data: { turbo_frame: "project_directory" }
         )
         %>
@@ -77,7 +77,7 @@
                           class: 'view-file dropdown-item',
                           data: { row_index: nil } do %>
                 <i class="fas fa-eye" aria-hidden="true"></i>
-                <%= t('dashboard.files_turboframe.view') %>
+                <%= t('dashboard.view') %>
               <% end %>
             </li>
             <% if writable %>
@@ -86,7 +86,7 @@
                               target: '_top',
                               class: 'edit-file dropdown-item' do %>
                     <i class="fas fa-edit" aria-hidden="true"></i>
-                    <%= t('dashboard.files_turboframe.edit') %>
+                    <%= t('dashboard.edit') %>
                   <% end %>
               </li>
 	          <% end %>
@@ -95,7 +95,7 @@
                           target: '_top',
                           class: 'download-file dropdown-item' do %>
                 <i class="fas fa-download" aria-hidden="true"></i>
-                <%= t('dashboard.files_turboframe.download') %>
+                <%= t('dashboard.download') %>
               <% end %>
             </li>
           </ul>

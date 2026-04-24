@@ -150,27 +150,9 @@ en:
     wrap: Wrap
     editor_key_bindings: Key Bindings
     editor_key_bindings_default: Default
-    files_turboframe:
-      size: Size
-      date: Date
-      owner: Owner
-      actions: Actions
-      type: Type
-      name: Name
-      view: View
-      edit: Edit
-      download: Download
-      show_parent_directory: Show parent directory
-      show_directory: Show %{name} directory
     files_select_all: Select All
-    files_select: Select
-    files_type: Type
-    files_name: Name
-    files_actions: Actions
-    files_size: Size
+    select: Select
     files_modified_at: Modified at
-    files_owner: Owner
-    files_mode: Mode
     loading: Loading...
     file: File
     file_quotas: File Quotas
@@ -360,6 +342,9 @@ en:
       <br>Custom shared apps are available below.
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
+    files_contents_of_directory: "Contents of directory %{path}"
+    files_show_directory: Show %{name} directory
+    files_show_parent_directory: Show parent directory
     size: Size
     skip_navigation: Skip Navigation
     soft_tabs: Soft Tabs
@@ -387,6 +372,10 @@ en:
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
     type: Type
+    actions: Actions
+    download: Download
+    upload: Upload
+    view: View
     unknown: Unknown
     uppy: Uppy
     user_configuration:
