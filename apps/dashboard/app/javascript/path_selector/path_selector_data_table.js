@@ -176,6 +176,7 @@ export class PathSelectorTable {
     const last = this.getLastVisited();
     const inputField = document.getElementById(this.inputFieldId);
     inputField.value = last.path;
+    inputField.dispatchEvent(new Event('input', { bubbles: true }));
     $(`#${this.modalId}`).modal('hide');
   }
 
