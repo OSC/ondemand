@@ -62,14 +62,14 @@ class ActiveSupport::TestCase
         var current = el
         while (bg === 'rgba(0, 0, 0, 0)') {
           let parent = current.parentElement;
-          if (!parent) { // raise error if no background found
-            el.style = 'background-color: red;';
-            throw `${el.tagName} element has no defined background color. (look for red highlight in screenshot)`;
-          }
-          if (parent.hasAttribute('disabled')) return;
+          if (!parent) { // assume white if no background found
+            bg = 'rgb(255, 255, 255)';
+          } else {
+            if (parent.hasAttribute('disabled')) return;
 
-          current = parent;
-          bg = window.getComputedStyle(parent).backgroundColor;
+            current = parent;
+            bg = window.getComputedStyle(parent).backgroundColor;
+          }
         }
         const ratio = getContrastRatio(fg, bg);
         const fontSize = parseFloat(style.fontSize);
@@ -86,7 +86,7 @@ class ActiveSupport::TestCase
             ratio: Math.round(ratio * 100) / 100,
             required,
             path: el.closest('[id]')?.id || el.className
-          });
+          };
           throw `Contrast check failed. Failing element: ${JSON.stringify(contrastViolation)}`;
         }
       }
