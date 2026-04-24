@@ -19,17 +19,13 @@ class ActiveSupport::TestCase
       }
 
       function getContrastRatio(color1, color2) {
-        try {
-          const [r1,g1,b1] = parse(color1);
-          const [r2,g2,b2] = parse(color2);
-          const l1 = getLuminance(r1,g1,b1);
-          const l2 = getLuminance(r2,g2,b2);
-          const lighter = Math.max(l1, l2);
-          const darker  = Math.min(l1, l2);
-          return (lighter + 0.05) / (darker + 0.05);
-        } catch (error) {
-          throw `color1: ${color1}, color2: ${color2}, error: ${error}`;
-        } 
+        const [r1,g1,b1] = parse(color1);
+        const [r2,g2,b2] = parse(color2);
+        const l1 = getLuminance(r1,g1,b1);
+        const l2 = getLuminance(r2,g2,b2);
+        const lighter = Math.max(l1, l2);
+        const darker  = Math.min(l1, l2);
+        return (lighter + 0.05) / (darker + 0.05);
       }
 
       function isVisible(el) {
@@ -83,7 +79,7 @@ class ActiveSupport::TestCase
         const required = isLargeText ? 3.0 : 4.5;
 
         if (ratio < required) {
-          window.__contrastViolations.push({
+          const contrastViolation = {
             tag: el.tagName,
             text: el.innerText?.slice(0, 50),
             fg, bg,
@@ -91,7 +87,7 @@ class ActiveSupport::TestCase
             required,
             path: el.closest('[id]')?.id || el.className
           });
-          throw `Contrast check failed. Failing elements are ${JSON.stringify(window.__contrastViolations)}`;
+          throw `Contrast check failed. Failing element: ${JSON.stringify(contrastViolation)}`;
         }
       }
 
