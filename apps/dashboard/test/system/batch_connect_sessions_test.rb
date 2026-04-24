@@ -51,6 +51,30 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     assert_equal(I18n.t('dashboard.batch_connect_no_sessions'), no_session_text)
   end
 
+  test 'collapsible batch connect app menu toggles' do
+    visit(batch_connect_sessions_path)
+
+    within('nav[aria-label="Interactive Apps Menu"]') do
+      card = find('.collapsible-app-card', match: :first)
+      button = card.find('button.collapsible-app-card-toggle')
+      target_id = button['aria-controls']
+      list_group = card.find("##{target_id}", visible: :all)
+
+      assert_equal('false', button['aria-expanded'])
+      assert_not_includes(list_group[:class], 'show')
+
+      button.click
+
+      assert_selector("##{target_id}.show")
+      assert_equal('true', button['aria-expanded'])
+
+      button.click
+
+      assert_no_selector("##{target_id}.show")
+      assert_equal('false', button['aria-expanded'])
+    end
+  end
+
   test 'queued session' do
     Dir.mktmpdir do |dir|
       create_test_file(dir)
