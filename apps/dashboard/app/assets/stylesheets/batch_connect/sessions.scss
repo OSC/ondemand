@@ -17,6 +17,10 @@
   }
 }
 
+.system-and-shared-apps-header.card, .sandbox-apps-header.card {
+  overflow: hidden;
+}
+
 .list-group .app-icon{
   width: 14px;
   height: 14px;
