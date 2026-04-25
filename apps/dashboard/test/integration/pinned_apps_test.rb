@@ -418,12 +418,14 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_links, 1
     assert_select pinned_app_link('/apps/show/my_shared_app/usr/me'), 1
 
-    assert_select 'h2', 1
+    assert_select 'h2', 2
     assert css_select('h2')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h2')[1].text
 
-    # no MOTD or xdmod
+    # default MOTD is markdown-based 
     assert_select "div[class='motd']", 0
     assert_select "h3[class='motd_title']", 0
+    assert_select '[data-motd-md]', 1
     assert_select "div[class='xdmod']", 0
   end
 
@@ -458,12 +460,14 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_link('/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
     assert_select pinned_app_link('/batch_connect/sys/bc_paraview/session_contexts/new'), 1
 
-    assert_select 'h2', 1
+    assert_select 'h2', 2
     assert css_select('h2')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h2')[1].text
 
-    # no MOTD or xdmod
+    # default MOTD is markdown-based
     assert_select "div[class='motd']", 0
     assert_select "h3[class='motd_title']", 0
+    assert_select '[data-motd-md]', 1
     assert_select "div[class='xdmod']", 0
   end
 

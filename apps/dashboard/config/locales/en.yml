@@ -253,6 +253,17 @@ en:
     files_title: File browsing
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
+    motd_default_md: |
+      Development of Open OnDemand is supported through the [National Science Foundation](https://www.nsf.gov/)
+      under grant numbers [1534949](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1534949) and
+      [1835725](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1835725).
+
+      Learn more or get involved:
+
+      - [Discourse](https://discourse.openondemand.org/)
+      - [Open OnDemand repository](https://github.com/OSC/ondemand)
+      - [ood-core repository](https://github.com/OSC/ood_core)
+      - [Documentation](https://osc.github.io/ood-documentation/latest/)
     name: Name
     nav_all_apps: All Apps
     nav_develop_docs: Developer Documentation
