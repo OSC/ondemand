@@ -18,6 +18,17 @@ zh-CN:
     queue: 队列
     status: 状态
     cluster: 集群
+    node: 节点
+    job: 作业
+    detailed_metrics: 详细指标
+    cpu_report: CPU 报告
+    load_report: 负载报告
+    memory_report: 内存报告
+    network_report: 网络报告
+    active_jobs_ganglia_alt_cpu: Ganglia 的 CPU 图像。
+    active_jobs_ganglia_alt_load: Ganglia 的系统平均负载图像。
+    active_jobs_ganglia_alt_memory: Ganglia 的内存使用情况图像。
+    active_jobs_ganglia_alt_network: Ganglia 的网络使用情况图像。
     all_clusters: 所有集群
     active_sessions_caption_html: <a href="%{all_sessions_url}"> 查看全部 (%{number_of_sessions})</a>
     active_sessions_title: 活动交互会话
