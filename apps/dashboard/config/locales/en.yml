@@ -9,6 +9,16 @@ en:
         used: "%{attribute} is already used"
   dashboard:
     active_jobs_close_details: "Close extended details panel."
+    active_jobs: Active Jobs
+    details: Details
+    id: ID
+    user: User
+    account: Account
+    time_used: Time Used
+    queue: Queue
+    status: Status
+    cluster: Cluster
+    all_clusters: All Clusters
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
@@ -135,6 +145,7 @@ en:
     close: Close
     close_alert: Close this alert.
     close_notice: Close this notice.
+    files_contents_of_directory: "Contents of directory %{path}"
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date

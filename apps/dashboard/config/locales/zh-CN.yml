@@ -9,6 +9,16 @@ zh-CN:
         used: "%{attribute} 已被使用"
   dashboard:
     active_jobs_close_details: 关闭扩展详细信息面板。
+    active_jobs: 活动作业
+    details: 详细信息
+    id: ID
+    user: 用户
+    account: 账户
+    time_used: 已用时间
+    queue: 队列
+    status: 状态
+    cluster: 集群
+    all_clusters: 所有集群
     active_sessions_caption_html: <a href="%{all_sessions_url}"> 查看全部 (%{number_of_sessions})</a>
     active_sessions_title: 活动交互会话
     add: 添加
