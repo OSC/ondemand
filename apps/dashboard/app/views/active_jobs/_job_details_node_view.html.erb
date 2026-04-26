@@ -3,21 +3,21 @@
 <div class="card mt-3">
 
         <% if has_ganglia(data.cluster) %>
-          <div class="card-header">Node: <%= node %> <span class="float-end">Job: <%= data.pbsid %> </span></div>
+          <div class="card-header"><%= t('dashboard.node') %>: <%= node %> <span class="float-end"><%= t('dashboard.job') %>: <%= data.pbsid %> </span></div>
           <div class="card-body">
         
-            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: "Ganglia image for CPU."), build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'large'), data: { lightbox: "cpu-report", title: "CPU Report " + node } %>
-            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'load_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: "Ganglia image for system load averages." ), build_ganglia_link(data.cluster, data.starttime, 'load_report', node, 'large'), data: { lightbox: "load-report", title: "Load Report " + node } %>
-            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'mem_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: "Ganglia image for Memory usage." ), build_ganglia_link(data.cluster, data.starttime, 'mem_report', node, 'large'), data: { lightbox: "mem-report", title: "Memory Report " + node } %>
-            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'network_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: "Ganglia image for network usage." ), build_ganglia_link(data.cluster, data.starttime, 'network_report', node, 'large'), data: { lightbox: "network-report", title: "Network Report " + node } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: t('dashboard.active_jobs_ganglia_alt_cpu')), build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'large'), data: { lightbox: "cpu-report", title: "#{t('dashboard.cpu_report')} #{node}" } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'load_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: t('dashboard.active_jobs_ganglia_alt_load') ), build_ganglia_link(data.cluster, data.starttime, 'load_report', node, 'large'), data: { lightbox: "load-report", title: "#{t('dashboard.load_report')} #{node}" } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'mem_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: t('dashboard.active_jobs_ganglia_alt_memory') ), build_ganglia_link(data.cluster, data.starttime, 'mem_report', node, 'large'), data: { lightbox: "mem-report", title: "#{t('dashboard.memory_report')} #{node}" } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'network_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: t('dashboard.active_jobs_ganglia_alt_network') ), build_ganglia_link(data.cluster, data.starttime, 'network_report', node, 'large'), data: { lightbox: "network-report", title: "#{t('dashboard.network_report')} #{node}" } %>
           </div>
         <% elsif has_grafana(data.cluster) %>
           <div class="card-header">
-            Node: <%= node %>
-            <span class="ms-3">Job: <%= data.pbsid %></span>
+            <%= t('dashboard.node') %>: <%= node %>
+            <span class="ms-3"><%= t('dashboard.job') %>: <%= data.pbsid %></span>
             <span class="ms-3">
               <a href="<%= build_grafana_link(data.cluster, data.starttime, 'node', node, data.pbsid) %>">
-                    <span class="fa fa-external-link-square-alt"></span> Detailed Metrics
+                    <span class="fa fa-external-link-square-alt"></span> <%= t('dashboard.detailed_metrics') %>
               </a>
             </span>
           </div>
