@@ -1,5 +1,5 @@
 import { OODAlertError } from '../alert';
-import { ariaNotify, hide, show } from "../utils";
+import { ariaNotify, customizeTableHeaders, hide, show } from "../utils";
 
 export class PathSelectorTable {
   _table = null;
@@ -55,6 +55,9 @@ export class PathSelectorTable {
           // don't trigger select checkbox column as select
           // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
           selector: 'td:not(:first-child)'
+      },
+      headerCallback: (thead, _data, _start, _end, _display) => {
+        customizeTableHeaders(thead);
       },
       // https://datatables.net/reference/option/dom
       // dom: '', dataTables_info nowrap
