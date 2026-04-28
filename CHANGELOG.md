@@ -7,19 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
-lint a random file (#5383)\
-possible fix for browsers not reading alerts (#5322)\
-Update dependabot configuration for release branches (#5366)\
-lint a random file (#5362)\
-Add OOD_WORKFLOW_SYNC_KEY to synchronize all launchers in a workflow (#5348)\
-Fix Datatable header button labels (#5245)\
-Bump erb from 6.0.3 to 6.0.4 in /apps/dashboard (#5360)\
-Fix project form not detecting changes from path selector (#5355)\
-Make project form help text keyboard-focusable (#5352)\
-Fix filename URL encoding for # in Files app (#5202) (#5338)\
-lint a random file (#5349)\
-Escape option values for CSS selectors (#5345)\
-Add aria labels to nav elements (#5332)
+
+## [4.2.2] - 2026-04-28
+
+### Fixed
+- Elements that alert with role="alert" now correctly announce themselves across OS/browser/Screen reader combinations in [5322](https://github.com/OSC/ondemand/pull/5322).
+- Datatable headers are correctly read by NVDA screen reader in [5245](https://github.com/OSC/ondemand/pull/5245).
+- Filenames with # characters correctly redirect in [5338](https://github.com/OSC/ondemand/pull/5338).
+- Dynamic batch connect options with ' characters are correctly escaped in [5345](https://github.com/OSC/ondemand/pull/5345).
+- Make project form help text is now keyboard-focusable in [5352](https://github.com/OSC/ondemand/pull/5352).
+- Project form correctly detects changes from path selector in [5355](https://github.com/OSC/ondemand/pull/5355).
+- Nav elements have aria labels in [5332](https://github.com/OSC/ondemand/pull/5332).
+  
+### Added
+- Workflows will now populate a OOD_WORKFLOW_SYNC_KEY environment variable to synchronize all launchers in a workflow in [5348](https://github.com/OSC/ondemand/pull/5348).
 
 ## [4.2.1] - 2026-04-16
 
@@ -1894,7 +1895,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.2...HEAD
+[4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
