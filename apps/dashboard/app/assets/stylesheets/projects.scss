@@ -175,6 +175,7 @@ div#directory_browser td a {
   .job-pill {
     width: min-content;
     padding: 0rem 1rem;
+    --bs-btn-hover-color: var(--bs-badge-color);
 
     button.badge {
       color: var(--bs-btn-hover-color);
