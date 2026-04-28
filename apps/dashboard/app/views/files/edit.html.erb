@@ -234,5 +234,5 @@
     <div class="card-body border-0"></div>
 
   </div>
-  <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= OodAppkit.files.api(path: @path, fs: @filesystem) %>"><%= @content %></pre>
+  <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= url_encode_url_path(OodAppkit.files.api(path: @path, fs: @filesystem)) %>"><%= @content %></pre>
 </div>

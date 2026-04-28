@@ -746,4 +746,35 @@ class FilesTest < ApplicationSystemTestCase
       assert_equal('/etc does not have an ancestor directory specified in ALLOWLIST_PATH', alert_text)
     end
   end
+
+  test 'filenames are correctly escaped' do
+    bad_fname = '<img src=1 onerror=alert(\"hello\")>'
+    `touch "tmp/#{bad_fname}"`
+    visit(files_url("#{Rails.root}/tmp"))
+
+    # innerHTML returns escaped text, i.e., '&lt;' not '<'.
+    actual_text = find('tbody a', text: 'onerror')[:innerHTML]
+
+    assert_equal('&lt;img src=1 onerror=alert("hello")&gt;', actual_text)
+  end
+
+  test 'filenames with # are url-escaped' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      name = '#foo.txt#'
+      FileUtils.touch(File.join(dir, name))
+
+      visit files_url(dir)
+
+      row = find('tbody a', exact_text: name).ancestor('tr')
+
+      row.find('button.dropdown-toggle').click
+      href = row.find('a.edit-file')[:href]
+
+      assert_includes href, '%23'
+      refute_includes href, '#'
+    end
+  end
 end
