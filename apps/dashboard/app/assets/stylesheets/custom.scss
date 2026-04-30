@@ -1,11 +1,28 @@
 // Bootstrap custom CSS
 
-.sr-only, .sr-only * {
-  @extend .visually-hidden;
+.sr-only * {
+  @extend .sr-only;
 }
 
 .sr-only.focusable, .sr-only.focusable * {
-  @extend .visually-hidden-focusable;
+  position: initial;
+}
+
+.sr-only.focusable.popover-hidden-clone,
+.sr-only.focusable.popover-hidden-clone * {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  pointer-events: none !important;
 }
 
 .card {

@@ -17,10 +17,6 @@
   }
 }
 
-.system-and-shared-apps-header.card, .sandbox-apps-header.card {
-  overflow: hidden;
-}
-
 .list-group .app-icon{
   width: 14px;
   height: 14px;
@@ -44,4 +40,11 @@
 .session-buttons-list {
   display: flex;
   align-items: center;
+}
+
+nav[aria-label="Interactive Apps Menu"] {
+  .list-group-flush > a.list-group-item-action:last-of-type {
+    border-bottom-left-radius: var(--bs-card-border-radius);
+    border-bottom-right-radius: var(--bs-card-border-radius);
+  }
 }
