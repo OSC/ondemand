@@ -89,7 +89,7 @@ function customizePopoverTriggers() {
       // duplicate content (not required but practically necessary to follow links)
       if (!hiddenClone) {
         hiddenClone = popoverEl.cloneNode(true);
-        hiddenClone.classList.add('sr-only','focusable');
+        hiddenClone.classList.add('sr-only', 'focusable', 'popover-hidden-clone');
         hiddenClone.id = '';
         hiddenClone.style = '';
         trigger.insertAdjacentElement('afterend', hiddenClone);
