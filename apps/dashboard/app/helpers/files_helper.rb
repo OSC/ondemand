@@ -4,13 +4,13 @@ require 'uri'
 
 module FilesHelper
   include ApplicationHelper
-  
-  def files_browse_page_title(path)
-    prefix = "#{t('dashboard.files_title')} - #{@user_configuration.dashboard_title}"
-    return prefix if path.blank?
 
-    dir_segment = (path.to_s == '/') ? 'Root' : path.basename.to_s
-    "#{prefix} - #{dir_segment}"
+  def files_browse_page_title(path)
+    site = @user_configuration.dashboard_title
+    page = t('dashboard.files_title')
+    return t('dashboard.page_title', page: page, site: site) unless path.present?
+    dir_segment = path.to_s == '/' ? t('dashboard.root') : path.basename.to_s
+    t('dashboard.page_title_with_dir', page: page, site: site, dir: dir_segment)
   end
 
   def path_segment_with_slash(filesystem, segment, counter, total)

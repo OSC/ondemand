@@ -70,12 +70,14 @@ en:
     batch_connect_sandbox: " [Sandbox]"
     batch_connect_sessions_cancel_confirm: Are you sure?
     batch_connect_sessions_cancel_title: Cancel
+    batch_connect_sessions_cancel_full_title: "Cancel %{title} Session"
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
     batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
+    batch_connect_sessions_delete_full_title: "Delete %{title} Session"
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
     batch_connect_sessions_error_invalid_job_name_html: |
       If this job failed to submit because of an invalid job name
@@ -87,6 +89,7 @@ en:
     batch_connect_sessions_novnc_view_only: View Only (Share-able Link)
     batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.
     batch_connect_sessions_relaunch_title: Relaunch
+    batch_connect_sessions_relaunch_full_title: "Relaunch %{title} Session"
     batch_connect_sessions_staged_root: staged root directory
     batch_connect_sessions_stats_created_at: 'Created at:'
     batch_connect_sessions_stats_host: 'Host:'
@@ -252,6 +255,9 @@ en:
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
     files_title: File browsing
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
+    root: Root
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     name: Name
@@ -283,10 +289,12 @@ en:
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
     project: Project
+    project_directory: Project Directory
     project_balances: Project Balances
     project_zip_error_message: 'Error creating ZIP file: %{error}'
     project_zip_success_message: 'Success: project.zip has been created in your project directory.'
     quota_additional_message: Consider deleting or archiving files to free up disk space.
+    quota_message: "%{quota}. %{additional_message}"
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
     quota_file: Using %{used} files of quota %{available} files

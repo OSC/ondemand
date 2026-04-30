@@ -68,12 +68,14 @@ ja_JP:
     batch_connect_sandbox: " [サンドボックス]"
     batch_connect_sessions_cancel_confirm: 本当によろしいですか？
     batch_connect_sessions_cancel_title: キャンセル
+    batch_connect_sessions_cancel_full_title: "%{title} セッションをキャンセル"
     batch_connect_sessions_data_html: |
       このセッションの %{title} セッションデータは
       %{data_link_tag} の下でアクセスできます。
     batch_connect_sessions_delete_confirm: 本当によろしいですか？
     batch_connect_sessions_delete_hover: セッションを削除
     batch_connect_sessions_delete_title: 削除
+    batch_connect_sessions_delete_full_title: "%{title} セッションを削除"
     batch_connect_sessions_edit_title: このセッションパラメータで新しい%{title}を編集
     batch_connect_sessions_error_invalid_job_name_html: '無効なジョブ名のためにこのジョブの提出に失敗した場合は、管理者に依頼して OnDemand を構成し、環境変数 OOD_JOB_NAME_ILLEGAL_CHARS を設定してください。
 
@@ -84,6 +86,7 @@ ja_JP:
     batch_connect_sessions_novnc_view_only: 表示専用（共有可能なリンク）
     batch_connect_sessions_path_selector_forbidden_error: そのディレクトリまたはファイルを選択する権限がありません。
     batch_connect_sessions_relaunch_title: 再起動
+    batch_connect_sessions_relaunch_full_title: "%{title} セッションを再起動"
     batch_connect_sessions_staged_root: ステージングルートディレクトリ
     batch_connect_sessions_stats_created_at: 作成日時：
     batch_connect_sessions_stats_host: ホスト：
@@ -248,6 +251,10 @@ ja_JP:
     mode: モード
     module_browser_last_updated: '最終更新日: %{last_updated}'
     module_browser_title: モジュールブラウザ
+    files_title: ファイルブラウジング
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
+    root: ルート
     motd_erb_render_error: 'MOTD が正しく解析またはレンダリングされませんでした: %{error_message}'
     motd_title: 今日のメッセージ
     name: 名前
@@ -279,10 +286,12 @@ ja_JP:
     pinned_apps_category: アプリ
     pinned_apps_title: ピン留めされたアプリ
     project: プロジェクト
+    project_directory: プロジェクトディレクトリ
     project_balances: プロジェクト残高
     project_zip_error_message: 'ZIP ファイルの作成中にエラーが発生しました: %{error}'
     project_zip_success_message: '成功: project.zip がプロジェクトディレクトリに作成されました。'
     quota_additional_message: ディスクスペースを空けるためにファイルを削除またはアーカイブすることを検討してください。
+    quota_message: "%{quota}。%{additional_message}"
     quota_block: クォータ %{available} のうち %{used} を使用中
     quota_block_shared: "(%{used_exclusive} はあなたのものです)"
     quota_file: クォータ %{available} ファイルのうち %{used} ファイルを使用中

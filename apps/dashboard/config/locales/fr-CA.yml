@@ -70,12 +70,14 @@ fr-CA:
     batch_connect_sandbox: " [Bac à sable]"
     batch_connect_sessions_cancel_confirm: Êtes-vous sûr ?
     batch_connect_sessions_cancel_title: Annuler
+    batch_connect_sessions_cancel_full_title: "Annuler la session %{title}"
     batch_connect_sessions_data_html: |
       Les données de session %{title} pour cette session sont accessibles
       sous %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Êtes-vous sûr ?
     batch_connect_sessions_delete_hover: Supprimer la session
     batch_connect_sessions_delete_title: Supprimer
+    batch_connect_sessions_delete_full_title: "Supprimer la session %{title}"
     batch_connect_sessions_edit_title: Modifier %{title} avec les paramètres de cette session
     batch_connect_sessions_error_invalid_job_name_html: |
       Si ce travail a échoué en raison d'un nom de travail invalide,
@@ -87,6 +89,7 @@ fr-CA:
     batch_connect_sessions_novnc_view_only: Vue seule (Lien partageable)
     batch_connect_sessions_path_selector_forbidden_error: Vous n'avez pas la permission de sélectionner ce répertoire ou fichier.
     batch_connect_sessions_relaunch_title: Relancer
+    batch_connect_sessions_relaunch_full_title: "Relancer la session %{title}"
     batch_connect_sessions_staged_root: répertoire racine mis en scène
     batch_connect_sessions_stats_created_at: 'Créé le :'
     batch_connect_sessions_stats_host: 'Hôte :'
@@ -252,6 +255,10 @@ fr-CA:
     module_browser_last_updated: 'Dernière mise à jour : %{last_updated}'
     module_browser_title: Navigateur de modules
     motd_erb_render_error: 'Le MOTD n’a pas été analysé ou rendu correctement : %{error_message}'
+    files_title: Navigation de fichiers
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
+    root: Racine
     motd_title: Message du jour
     name: Nom
     nav_all_apps: Toutes les applications
@@ -282,10 +289,12 @@ fr-CA:
     pinned_apps_category: Applications
     pinned_apps_title: Applications épinglées
     project: Projet
+    project_directory: Répertoire du projet
     project_balances: Soldes de projet
     project_zip_error_message: 'Erreur lors de la création du fichier ZIP : %{error}'
     project_zip_success_message: 'SUCCÈS : project.zip a été créé dans votre répertoire de projet.'
     quota_additional_message: Envisagez de supprimer ou d’archiver des fichiers pour libérer de l’espace disque.
+    quota_message: "%{quota}. %{additional_message}"
     quota_block: Utilisation de %{used} sur quota %{available}
     quota_block_shared: "(%{used_exclusive} vous appartiennent)"
     quota_file: Utilisation de %{used} fichiers sur quota %{available} fichiers
