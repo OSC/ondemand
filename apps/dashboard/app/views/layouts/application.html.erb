@@ -95,14 +95,14 @@
     </div>
 
     <% if alert %>
-      <div class="alert alert-danger alert-dismissible" role="alert">
+      <div class="alert alert-danger alert-dismissible d-none" role="alert" data-notice="true">
         <%= alert %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" title="<%= t('dashboard.close_alert') %>"></button>
       </div>
     <% end %>
 
     <% if notice %>
-      <div class="alert alert-success alert-dismissible" role="alert">
+      <div class="alert alert-success alert-dismissible d-none" role="alert" data-notice="true">
         <%= notice %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" title="<%= t('dashboard.close_notice') %>"></button>
       </div>

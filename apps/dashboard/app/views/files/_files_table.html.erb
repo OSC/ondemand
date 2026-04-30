@@ -5,13 +5,13 @@
     </ol>
 
     <div role="region" aria-label="Directory contents">
-      <span id="select_all_label" class="sr-only"><%= t('dashboard.files_select_all') %></span>
+      <span id="select_all_label" class="d-none"><%= t('dashboard.files_select_all') %></span>
       <table class="table table-striped table-condensed w-100" id="directory-contents">
         <caption id="directory-contents_caption" class="sr-only" aria-live='polite'><%= t('dashboard.files_contents_of_directory', path: @path) %></caption>
         <thead>
           <tr>
             <th>
-              <input type="checkbox" id="select_all" class="file-select" aria-labelledby="select_all_label"></input>
+              <input type="checkbox" id="select_all" class="file-select" aria-describedby="select_all_label">
               <span class="sr-only"><%= t('dashboard.select') %></span>
             </th>
             <th><%= t('dashboard.type') %></th>
