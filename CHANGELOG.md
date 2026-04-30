@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## [Unreleased]
+Update Changelog (#5364)\
+update dependencies (#5365)\
+lint a random file (#5383)\
+possible fix for browsers not reading alerts (#5322)\
+Update dependabot configuration for release branches (#5366)\
+lint a random file (#5362)\
+Add OOD_WORKFLOW_SYNC_KEY to synchronize all launchers in a workflow (#5348)\
+Fix Datatable header button labels (#5245)\
+Bump erb from 6.0.3 to 6.0.4 in /apps/dashboard (#5360)\
+Fix project form not detecting changes from path selector (#5355)\
+Make project form help text keyboard-focusable (#5352)\
+Fix filename URL encoding for # in Files app (#5202) (#5338)
 
 ## [4.2.2] - 2026-04-28
 
