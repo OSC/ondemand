@@ -9,6 +9,32 @@ en:
         used: "%{attribute} is already used"
   dashboard:
     active_jobs_close_details: "Close extended details panel."
+    active_jobs: Active Jobs
+    details: Details
+    id: ID
+    user: User
+    account: Account
+    time_used: Time Used
+    queue: Queue
+    status: Status
+    cluster: Cluster
+    node: Node
+    job: Job
+    detailed_metrics: Detailed Metrics
+    cpu_report: CPU Report
+    load_report: Load Report
+    memory_report: Memory Report
+    network_report: Network Report
+    active_jobs_ganglia_alt_cpu: Ganglia image for CPU.
+    active_jobs_ganglia_alt_load: Ganglia image for system load averages.
+    active_jobs_ganglia_alt_memory: Ganglia image for Memory usage.
+    active_jobs_ganglia_alt_network: Ganglia image for network usage.
+    submit_args: Submit Args
+    output_location: Output Location
+    active_jobs_open_in_file_manager: Open in File Manager
+    active_jobs_open_in_terminal: Open in Terminal
+    active_jobs_confirm_delete_job: Are you sure you want to delete %{pbsid}?
+    all_clusters: All Clusters
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
@@ -135,6 +161,7 @@ en:
     close: Close
     close_alert: Close this alert.
     close_notice: Close this notice.
+    files_contents_of_directory: "Contents of directory %{path}"
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date
