@@ -35,6 +35,7 @@ zh-CN:
     back: 返回
     balance_additional_message: 考虑申请额外的 %{balanace_units}
     balance_message: "%{units_balance} 是 %{value}"
+    balance_no_warnings_html: "没有项目处于 %{threshold} 天余额警告阈值范围内。"
     balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
     balance_warning_prefix_html: "%{units_balance} 警告"
     batch_connect_apps_menu_title: 交互式应用
