@@ -18,14 +18,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
   browser that can execute javascript in [5369](https://github.com/OSC/ondemand/pull/5369).
-- /nginx URIs will now alwasy set the Strict-Transport-Security header in [5367](https://github.com/OSC/ondemand/pull/5367).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5367](https://github.com/OSC/ondemand/pull/5367).
 
 ## [4.0.11] - 2026-04-29
 
 ### Security
 - Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
   browser that can execute javascript in [5368](https://github.com/OSC/ondemand/pull/5368).
-- /nginx URIs will now alwasy set the Strict-Transport-Security header in [5401](https://github.com/OSC/ondemand/pull/5401).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5401](https://github.com/OSC/ondemand/pull/5401).
   
 ## [4.2.2] - 2026-04-28
 
