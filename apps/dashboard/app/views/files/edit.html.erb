@@ -8,7 +8,7 @@
       <div class="d-grid gap-2">
         <button class="btn btn-primary" id="save-button">
           <i class="fas fa-save pe-2" aria-hidden="true"></i>
-          <span>Save</span>
+          <span><%= t('dashboard.save') %></span>
         </button>
       </div>
     </div>
@@ -16,15 +16,15 @@
 
     <ul class="list-group list-group-flush border-bottom-0">
       <li class="list-group-item hidden-xs hidden-sm hidden-md px-2 form-group form-inline m-0">
-        <label class="control-label navbar-text px-1" for="keybindings">Key Bindings</label>
+        <label class="control-label navbar-text px-1" for="keybindings"><%= t('dashboard.editor_key_bindings') %></label>
         <select class="form-control input-xs" id="keybindings">
-          <option value="default">Default</option>
+          <option value="default"><%= t('dashboard.editor_key_bindings_default') %></option>
           <option value="ace/keyboard/vim">Vim</option>
           <option value="ace/keyboard/emacs">Emacs</option>
         </select>
       </li>
       <li class="list-group-item hidden-xs px-2 form-group form-inline m-0">
-        <label class="control-label hidden-sm hidden-md navbar-text px-1" for="fontsize">Font Size</label>
+        <label class="control-label hidden-sm hidden-md navbar-text px-1" for="fontsize"><%= t('dashboard.editor_font_size') %></label>
         <select class="form-control input-xs" id="fontsize">
           <option value="8px">8px</option>
           <option value="9px">9px</option>
@@ -46,7 +46,7 @@
         </select>
       </li>
       <li class="list-group-item hidden-xs px-2 form-group form-inline m-0">
-        <label class="control-label hidden-sm hidden-md navbar-text px-1" for="mode">Mode</label>
+        <label class="control-label hidden-sm hidden-md navbar-text px-1" for="mode"><%= t('dashboard.mode') %></label>
         <select class="form-control input-xs" id="mode">
           <option value="abap">ABAP</option>
           <option value="abc">ABC</option>
@@ -181,9 +181,9 @@
         </select>
       </li>
       <li class="list-group-item hidden-xs px-2 form-group form-inline px-1 m-0">
-        <label class="control-label hidden-sm hidden-md px-1 navbar-text" for="theme">Theme</label>
+        <label class="control-label hidden-sm hidden-md px-1 navbar-text" for="theme"><%= t('dashboard.theme') %></label>
         <select class="form-control input-xs" id="theme">
-          <optgroup label="Bright">
+          <optgroup label="<%= t('dashboard.bright') %>">
             <option value="ace/theme/chrome">Chrome</option>
             <option value="ace/theme/clouds">Clouds</option>
             <option value="ace/theme/crimson_editor">Crimson Editor</option>
@@ -200,7 +200,7 @@
             <option value="ace/theme/katzenmilch">KatzenMilch</option>
             <option value="ace/theme/sqlserver">SQL Server</option>
           </optgroup>
-          <optgroup label="Dark">
+          <optgroup label="<%= t('dashboard.dark') %>">
             <option value="ace/theme/ambiance">Ambiance</option>
             <option value="ace/theme/chaos">Chaos</option>
             <option value="ace/theme/clouds_midnight">Clouds Midnight</option>
@@ -224,7 +224,7 @@
         </select>
       </li>
       <li class="list-group-item hidden-xs px-2 form-group form-inline m-0">
-        <label class="control-label hidden-md hidden-lg navbar-text px-1" for="wordwrap">Wrap</label>
+        <label class="control-label hidden-md hidden-lg navbar-text px-1" for="wordwrap"><%= t('dashboard.wrap') %></label>
         <div class="form-switch">
           <input class="form-check-input" role="switch" type="checkbox" id="wordwrap" value="">
         </div>

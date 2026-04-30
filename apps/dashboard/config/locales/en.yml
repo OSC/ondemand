@@ -142,24 +142,47 @@ en:
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    editor: Editor
+    editor_font_size: Font Size
+    theme: Theme
+    bright: Bright
+    dark: Dark
+    wrap: Wrap
+    editor_key_bindings: Key Bindings
+    editor_key_bindings_default: Default
+    files_select_all: Select All
+    select: Select
+    files_modified_at: Modified at
+    loading: Loading...
     file: File
     file_quotas: File Quotas
+    files_change_directory: Change Directory
+    files_copy_path: Copy Path
+    files_copy_move: Copy/Move
+    files_delete: Delete
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_download: Download
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_download_zip: Download as zip
     files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
+    files_go_up_directory: Go up directory
+    files_new_directory: New Directory
+    files_new_file: New File
+    files_refresh: Refresh
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
+    files_upload: Upload
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
+    save: Save
     files_doesnt_exist: "%{path} does not exist."
     files_not_readable: "You do not have sufficient permissions to read '%{path}'."
     home_directory: Home Directory
@@ -320,6 +343,9 @@ en:
       <br>Custom shared apps are available below.
     shell_app_title: "%{cluster_title} Shell Access"
     show: Show
+    files_contents_of_directory: "Contents of directory %{path}"
+    files_show_directory: Show %{name} directory
+    files_show_parent_directory: Show parent directory
     size: Size
     skip_navigation: Skip Navigation
     soft_tabs: Soft Tabs
@@ -347,6 +373,10 @@ en:
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
     type: Type
+    actions: Actions
+    download: Download
+    upload: Upload
+    view: View
     unknown: Unknown
     uppy: Uppy
     user_configuration:

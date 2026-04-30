@@ -121,6 +121,7 @@ zh-CN:
     close: 关闭
     close_alert: 关闭此警报。
     close_notice: 关闭此通知。
+    files_contents_of_directory: "目录内容 %{path}"
     custom_pages:
       invalid: 无效的页面代码：%{page}。此页面尚未配置
     date: 日期
@@ -128,8 +129,24 @@ zh-CN:
     development_apps_caption: 沙盒应用
     directory: 目录
     edit: 编辑
+    editor: 编辑器
+    editor_font_size: 字体大小
+    theme: 主题
+    bright: 明亮
+    dark: 深色
+    wrap: 自动换行
+    editor_key_bindings: 键绑定
+    editor_key_bindings_default: 默认
     file: 文件
+    files_select_all: 选择所有
+    select: 选择
+    files_modified_at: 修改时间
+    loading: 加载中
     file_quotas: 文件配额
+    files_change_directory: 更改目录
+    files_copy_path: 复制路径
+    files_copy_move: 复制/移动
+    files_delete: 删除
     files_directory_download_error_modal_title: 目录太大，无法下载
     files_directory_download_unauthorized: 您只能下载您具有读取和执行权限的文件或目录
     files_directory_size_calculation_error: 尝试确定目录大小时超时。
@@ -139,15 +156,22 @@ zh-CN:
     files_doesnt_exist: "%{path} 不存在。"
     files_download_not_enabled: 此服务器上未启用文件下载。
     files_download_zip: 下载为 zip
+    files_download: 下载
     files_file_too_large: 文件太大，无法下载。文件下载应小于 %{download_file_size_limit} 字节。
+    files_go_up_directory: 上移目录
+    files_new_directory: 新目录
+    files_new_file: 新文件
     files_not_readable: 您没有足够的权限读取 '%{path}'。
+    files_refresh: 刷新
     files_remote_dir_not_created: 未创建目录 %{path}
     files_remote_disabled: 未启用远程文件支持
     files_remote_empty_dir_unsupported: 远程不支持空目录
     files_remote_error_listing_remotes: 列出 Rclone 远程时出错：%{error}
+    files_upload: 上传
     files_send_to_target_title_default: 将选定文件的元数据发送到外部应用程序
     files_shell: 在终端中打开
     files_shell_dropdown: 选择要在终端中打开的集群
+    save: 保存
     files_title: 文件浏览
     home_directory: 主目录
     import: 导入
@@ -305,6 +329,8 @@ zh-CN:
       <br>自定义共享应用程序可以在下面使用。
     shell_app_title: "%{cluster_title} Shell 访问"
     show: 显示
+    files_show_directory: 显示 %{name} 目录
+    files_show_parent_directory: 显示父目录
     size: 大小
     skip_navigation: 跳过导航
     soft_tabs: 软制表符
@@ -332,6 +358,10 @@ zh-CN:
       validation_error: 无效请求。请查看下面的错误信息
     system_apps_caption: 系统已安装应用
     type: 类型
+    actions: 操作
+    download: 下载
+    upload: 上传
+    view: 查看
     unknown: 未知
     uppy: Uppy
     user_configuration:
