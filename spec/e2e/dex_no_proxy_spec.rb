@@ -14,10 +14,6 @@ describe 'OnDemand Dex proxy test' do
 
   after(:all) do
     browser.close
-    upload_portal_config('portal.yml')
-    update_ood_portal
-    restart_apache
-    restart_dex
   end
 
   describe port(8080) do
