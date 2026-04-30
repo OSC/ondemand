@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.5] - 2026-04-29
+
+### Fixed
+
+- The file browser will not serve edit links when downloads are disabled in [5277](https://github.com/OSC/ondemand/pull/5277).
+- The path_selector in project forms correctly detect changes in [5398](https://github.com/OSC/ondemand/pull/5398).
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5369](https://github.com/OSC/ondemand/pull/5369).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5367](https://github.com/OSC/ondemand/pull/5367).
+
+## [4.0.11] - 2026-04-29
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5368](https://github.com/OSC/ondemand/pull/5368).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5401](https://github.com/OSC/ondemand/pull/5401).
+  
 ## [4.2.2] - 2026-04-28
 
 ### Fixed
@@ -21,6 +40,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   
 ### Added
 - Workflows will now populate a OOD_WORKFLOW_SYNC_KEY environment variable to synchronize all launchers in a workflow in [5348](https://github.com/OSC/ondemand/pull/5348).
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5338](https://github.com/OSC/ondemand/pull/5338).
 
 ## [4.2.1] - 2026-04-16
 
@@ -1899,11 +1922,13 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 [4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
+[4.1.5]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.1.5
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
 [4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/OSC/ondemand/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/OSC/ondemand/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
+[4.0.11]: https://github.com/OSC/ondemand/compare/v4.0.10...v4.0.11
 [4.0.10]: https://github.com/OSC/ondemand/compare/v4.0.9...v4.0.10
 [4.0.9]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.0.9
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8
