@@ -255,10 +255,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(990, icons.size)
   end
 
-  def check_icon(icon, type)
+  def check_icon(cell, type)
     iclass = type == :file ? 'fa-file' : 'fa-folder'
+    icon = cell.find('i')
     assert_equal "fa #{iclass}",       icon[:class]
-    assert_equal type.to_s.capitalize, icon.find('.sr-only').text
+    assert_equal type.to_s.capitalize, cell.find('.sr-only').text
   end
 
   def check_link(link, text, path)
@@ -268,7 +269,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   def check_top_directory_row(row_data, tmpdir)
-    check_icon(row_data[0].find('i'), :directory)
+    check_icon(row_data[0], :directory)
     link = row_data[1].find('a')
     check_link(link, '..', directory_frame_path(path: "#{tmpdir}/projects"))
     assert_equal 0, row_data[2].all('*').length
@@ -277,7 +278,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   def check_files(name, size, project_dir, row_data)
-    check_icon(row_data[0].find('i'), :file)
+    check_icon(row_data[0], :file)
     link = row_data[1].find('a')
     check_link(link, name, files_path("#{project_dir}/#{name}"))
 
@@ -351,7 +352,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       check_top_directory_row(rows[0].all('td'), dir)
 
       row_2_data = rows[1].all('td')
-      check_icon(row_2_data[0].find('i'), :directory)
+      check_icon(row_2_data[0], :directory)
       row_2_link = row_2_data[1].find('a')
       check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
       assert_equal 0,  row_2_data[2].all('*').length
@@ -408,7 +409,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       check_top_directory_row(rows[0].all('td'), dir)
 
       row_2_data = rows[1].all('td')
-      check_icon(row_2_data[0].find('i'), :directory)
+      check_icon(row_2_data[0], :directory)
       row_2_link = row_2_data[1].find('a')
       check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
       assert_equal 0,  row_2_data[2].all('*').length
