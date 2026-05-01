@@ -251,20 +251,6 @@ ja_JP:
     path_selector_parent_directory: 親ディレクトリ
     pinned_apps_caption_html: <a href="%{all_apps_url}">すべての利用可能なアプリ</a>の中から特集されたサブセット
     pinned_apps_category: アプリ
-    pinned_apps_clear_all: Clear All
-    pinned_apps_customize: Customize pinned apps
-    pinned_apps_editor_help: Select which apps to show in your Pinned Apps section.
-    pinned_apps_editor_title: Customize Pinned Apps
-    pinned_apps_no_available: No apps are available to pin.
-    pinned_apps_none_yet: No apps pinned yet. Click Edit to choose apps.
-    pinned_apps_reset: Reset to Default
-    pinned_apps_reset_confirm: Reset to system default pinned apps? Your custom selection will be discarded.
-    pinned_apps_reset_notice: Pinned apps reset to system default.
-    pinned_apps_save: Save
-    pinned_apps_saved_notice: Pinned apps updated.
-    pinned_apps_search: Search apps
-    pinned_apps_search_placeholder: Search by app name or token
-    pinned_apps_select_all: Select All
     pinned_apps_title: ピン留めされたアプリ
     project: プロジェクト
     project_balances: プロジェクト残高
