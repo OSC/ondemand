@@ -5,8 +5,19 @@ All notable changes to this project will be documented in this file in a YYYY-MM
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+Entries summarize pull requests merged into the codebase for each release. They may not map 
+one-to-one with a GitHub issue or capture the full discussion behind the work.
+
+Changes are grouped by type:
+- `Added`: new functionality, capabilities or support.
+- `Changed`: updates to existing behavior.
+- `Fixed`: corrections to existing behavior, such as bugs, compatibility issyes, or accessibility improvements.
+- `Security`: fixes that address known vulnerabilities, CVEs, or security risks.
+
 
 ## [Unreleased]
+
+- Nothing at the moment
 
 ## [4.1.5] - 2026-04-29
 
