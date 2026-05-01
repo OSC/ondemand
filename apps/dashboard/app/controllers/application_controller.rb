@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
 
     parse_errors, announcements = all_announcements.partition(&:parse_error?)
     if parse_errors.any?
-      flash.now[:alert] = helpers.safe_join(
+      flash.now[:announcement_parse_errors] = helpers.safe_join(
         parse_errors.map do |a|
           source = a.source.presence || a.id.presence || 'unknown'
           short_name =
