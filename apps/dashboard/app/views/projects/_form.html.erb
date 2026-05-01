@@ -57,7 +57,7 @@
             <div class="field">
               <% help_html = edit_project_action ? '' : form_label_tooltip(I18n.t('dashboard.jobs_project_group_help')) %>
               <%= form.select(:group_owner,
-                              CurrentUser.group_names,
+                              CurrentUser.filtered_group_names,
                               { label: "#{I18n.t('dashboard.jobs_project_group_owner')} #{help_html}".html_safe },
                               { disabled: edit_project_action })
               %>
