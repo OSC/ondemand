@@ -23,4 +23,8 @@
       <p class="text-muted mb-0"><%= t('dashboard.pinned_apps_none_yet') %></p>
     <%- end -%>
   </div>
+
+  <%- if controller_name == 'dashboard' && action_name == 'index' -%>
+    <%= render partial: 'widgets/pinned_apps/editor_modal' %>
+  <%- end -%>
 <%- end -%>

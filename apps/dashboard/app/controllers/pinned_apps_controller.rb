@@ -8,7 +8,7 @@ class PinnedAppsController < ApplicationController
   def update
     tokens = Array(params[:pinned_app_tokens]).map(&:to_s).reject(&:blank?)
     filtered_tokens = tokens.select { |token| valid_pinned_app_tokens.include?(token) }
-    update_user_settings({ custom_pinned_apps: filtered_tokens })
+    update_user_settings({ PINNED_APPS_USER_SETTING_KEY => filtered_tokens })
 
     respond_to do |format|
       format.html { redirect_to root_url, notice: t('dashboard.pinned_apps_saved_notice') }
@@ -17,7 +17,7 @@ class PinnedAppsController < ApplicationController
   end
 
   def destroy
-    clear_user_setting(:custom_pinned_apps)
+    clear_user_setting(PINNED_APPS_USER_SETTING_KEY)
 
     respond_to do |format|
       format.html { redirect_to root_url, notice: t('dashboard.pinned_apps_reset_notice') }
@@ -25,21 +25,4 @@ class PinnedAppsController < ApplicationController
     end
   end
 
-  private
-
-  def valid_pinned_app_tokens
-    build_pinned_app_options.map { |_title, token| token }
-  end
-
-  def build_pinned_app_options
-    nav_all_apps.each_with_object([]) do |app, options|
-      if app.has_sub_apps?
-        app.sub_app_list.select(&:valid?).each do |sub_app|
-          options << [sub_app.title, sub_app.token]
-        end
-      else
-        options << [app.title, app.token]
-      end
-    end
-  end
 end

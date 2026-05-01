@@ -1,6 +1,7 @@
 # The parent controller for all other controllers.
 class ApplicationController < ActionController::Base
   include UserSettingStore
+  PINNED_APPS_USER_SETTING_KEY = :custom_pinned_apps
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -75,14 +76,38 @@ class ApplicationController < ActionController::Base
   end
 
   def set_pinned_apps
-    settings = user_settings
-    tokens = if settings.key?(:custom_pinned_apps) && !settings[:custom_pinned_apps].nil?
-               Array.wrap(settings[:custom_pinned_apps])
-             else
-               @user_configuration.pinned_apps
-             end
+    # Pinned apps are admin-defined defaults with an optional per-user override.
+    # Missing key means "use admin defaults"; present empty array means
+    # "user intentionally selected no pinned apps".
+    tokens = configured_pinned_app_tokens
 
     @pinned_apps ||= Router.pinned_apps(tokens, nav_all_apps)
+  end
+
+  def configured_pinned_app_tokens
+    return @user_configuration.pinned_apps unless custom_pinned_apps_overridden?
+
+    Array.wrap(user_settings[PINNED_APPS_USER_SETTING_KEY])
+  end
+
+  def custom_pinned_apps_overridden?
+    user_settings.key?(PINNED_APPS_USER_SETTING_KEY) && !user_settings[PINNED_APPS_USER_SETTING_KEY].nil?
+  end
+
+  def dashboard_pinned_app_options
+    nav_all_apps.each_with_object([]) do |app, options|
+      if app.has_sub_apps?
+        app.sub_app_list.select(&:valid?).each do |sub_app|
+          options << [sub_app.title, sub_app.token]
+        end
+      else
+        options << [app.title, app.token]
+      end
+    end
+  end
+
+  def valid_pinned_app_tokens
+    @valid_pinned_app_tokens ||= dashboard_pinned_app_options.map { |_title, token| token }
   end
 
   def set_announcements

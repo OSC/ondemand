@@ -1,0 +1,27 @@
+<%
+  modal_id = local_assigns.fetch(:modal_id)
+  title = local_assigns.fetch(:title)
+  title_id = local_assigns.fetch(:title_id)
+  dialog_classes = local_assigns.fetch(:dialog_classes, '')
+  body_content = local_assigns.fetch(:body_content, '')
+  footer_content = local_assigns[:footer_content]
+%>
+
+<div class="modal fade" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= title_id %>" aria-hidden="true">
+  <div class="modal-dialog <%= dialog_classes %>">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="<%= title_id %>"><%= title %></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('dashboard.close') %>"></button>
+      </div>
+      <div class="modal-body">
+        <%= body_content %>
+      </div>
+      <% if footer_content.present? %>
+        <div class="modal-footer">
+          <%= footer_content %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

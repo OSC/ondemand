@@ -35,29 +35,15 @@ module DashboardHelper
     return true if pinned_apps?
     return false unless controller_name == 'dashboard' && action_name == 'index'
 
-    controller.user_settings.key?(:custom_pinned_apps)
+    controller.custom_pinned_apps_overridden?
   end
 
-  # Returns [[title, token], ...] for all nav apps and valid sub-apps.
   def dashboard_pinned_app_options
-    controller.nav_all_apps.each_with_object([]) do |app, options|
-      if app.has_sub_apps?
-        app.sub_app_list.select(&:valid?).each do |sub_app|
-          options << [sub_app.title, sub_app.token]
-        end
-      else
-        options << [app.title, app.token]
-      end
-    end
+    controller.dashboard_pinned_app_options
   end
 
-  # Returns currently selected pinned app tokens.
-  # If a user override does not exist, use the rendered pinned apps.
   def dashboard_selected_pinned_app_tokens
-    settings = controller.user_settings
-    return @pinned_apps.map(&:token) unless settings.key?(:custom_pinned_apps)
-
-    Array.wrap(settings[:custom_pinned_apps])
+    controller.configured_pinned_app_tokens
   end
 
   def motd?
