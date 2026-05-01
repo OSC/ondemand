@@ -33,10 +33,11 @@
 
 .collapsible-app-card {
   .collapsible-app-card-toggle {
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    border: 0;
 
     &::after {
       content: "";
