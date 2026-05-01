@@ -30,7 +30,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div.card div.card-header', text: 'Translations title'
+    assert_select 'div.card button.card-header', text: 'Translations title'
     assert_select 'div.card p.header', text: 'Custom Apps Dropdown Header'
     assert_select 'div.card div.list-group a.list-group-item', 2
     assert_select 'div.card div.list-group a.list-group-item' do |links|
@@ -61,7 +61,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select '.col-md-3 nav div.card div.card-header' do |menu_headers|
+    assert_select '.col-md-3 nav div.card button.card-header' do |menu_headers|
       assert_equal 2, menu_headers.size
       assert_equal 'Shared apps title', menu_headers[0].text
       assert_equal 'Interactive apps title', menu_headers[1].text
@@ -85,7 +85,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div.card div.card-header', text: 'Menu Title'
+    assert_select 'div.card button.card-header', text: 'Menu Title'
     assert_select 'div.card p.header', text: 'Submenu Title'
     assert_select 'div.card div.list-group a.list-group-item', 2
     assert_select 'div.card div.list-group a.list-group-item' do |links|
