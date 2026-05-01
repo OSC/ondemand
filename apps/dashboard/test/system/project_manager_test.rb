@@ -248,6 +248,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(4, icons.size)
   end
 
+  test 'project group dropdown respects auto_groups_filter' do
+    CurrentUser.instance.stubs(:group_names).returns(%w[domain_users project-a project-b other])
+    Configuration.stubs(:auto_groups_filter).returns('^project-')
+
+    visit(new_project_path)
+    options = page.all('#project_group_owner option').map(&:value)
+    assert_equal(%w[project-a project-b], options)
+  end
+
   test 'all icons show after clearing input field' do
     visit(new_project_path)
     find('#product_icon_select').set('')
