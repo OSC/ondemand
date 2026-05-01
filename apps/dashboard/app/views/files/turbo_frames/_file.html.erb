@@ -18,7 +18,12 @@
   <hr>
   <div class="row content-justied-center col-6 mx-auto">
     <div class="btn btn-sm btn-primary">
-      <span><i class="fa fa-folder-open"></i>&nbsp<%= files_button(path) %></span>
+      <% dir_label = I18n.t('dashboard.directory') %>
+      <span>
+        <i class="fa fa-folder-open" aria-hidden="true"></i>
+        <span class="sr-only"><%= dir_label %></span>
+        &nbsp<%= files_button(path) %>
+      </span>
     </div>
   </div>
 <%- end -%>
