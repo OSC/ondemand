@@ -199,18 +199,3 @@
 .app-launcher-hover:hover, .app-launcher-hover:focus-within {
   transform: scale(0.98);
 }
-
-.pinned-apps-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.pinned-apps-grid {
-  max-height: 460px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-

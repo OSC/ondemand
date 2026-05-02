@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   before_action :check_required_announcements
 
   def check_required_announcements
-    return if instance_of?(SettingsController) || instance_of?(PinnedAppsController)
+    return if instance_of?(SettingsController)
 
     render inline: '', layout: :default if @announcements.select(&:required?).reject(&:completed?).any?
   end
@@ -92,22 +92,6 @@ class ApplicationController < ActionController::Base
 
   def custom_pinned_apps_overridden?
     user_settings.key?(PINNED_APPS_USER_SETTING_KEY) && !user_settings[PINNED_APPS_USER_SETTING_KEY].nil?
-  end
-
-  def dashboard_pinned_app_options
-    nav_all_apps.each_with_object([]) do |app, options|
-      if app.has_sub_apps?
-        app.sub_app_list.select(&:valid?).each do |sub_app|
-          options << [sub_app.title, sub_app.token]
-        end
-      else
-        options << [app.title, app.token]
-      end
-    end
-  end
-
-  def valid_pinned_app_tokens
-    @valid_pinned_app_tokens ||= dashboard_pinned_app_options.map { |_title, token| token }
   end
 
   def set_announcements

@@ -29,17 +29,24 @@ module DashboardHelper
     @pinned_apps.present?
   end
 
-  # Show pinned-apps chrome (and dashboard editor) when there are pins, or when the user
-  # has saved a custom list (including an empty list).
   def pinned_apps_widget_visible?
     return true if pinned_apps?
-    return false unless controller_name == 'dashboard' && action_name == 'index'
+    return false unless controller_name == 'dashboard' &&
+                        action_name == 'index'
 
     controller.custom_pinned_apps_overridden?
   end
 
   def dashboard_pinned_app_options
-    controller.dashboard_pinned_app_options
+    controller.nav_all_apps.each_with_object([]) do |app, options|
+      if app.has_sub_apps?
+        app.sub_app_list.select(&:valid?).each do |sub_app|
+          options << [sub_app.title, sub_app.token]
+        end
+      else
+        options << [app.title, app.token]
+      end
+    end
   end
 
   def dashboard_selected_pinned_app_tokens
