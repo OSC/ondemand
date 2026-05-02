@@ -1,6 +1,4 @@
 <%
-  # HTML ids use underscores per project convention (see CONTRIBUTING.md).
-  # Parameterize the card title so ids stay valid and pair with aria-controls.
   slug = title.to_s.parameterize(separator: "_").presence || "group"
   list_dom_id = "bc_app_list_#{slug}_items"
 %>

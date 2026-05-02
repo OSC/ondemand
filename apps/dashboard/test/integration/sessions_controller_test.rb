@@ -63,8 +63,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select '.col-md-3 nav div.card button.card-header' do |menu_headers|
       assert_equal 2, menu_headers.size
-      assert_equal 'Shared apps title', menu_headers[0].text
-      assert_equal 'Interactive apps title', menu_headers[1].text
+      assert_equal 'Shared apps title', menu_headers[0].text.strip
+      assert_equal 'Interactive apps title', menu_headers[1].text.strip
     end
   end
 
