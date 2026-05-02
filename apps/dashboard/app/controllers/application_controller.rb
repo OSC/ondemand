@@ -1,5 +1,8 @@
 # The parent controller for all other controllers.
 class ApplicationController < ActionController::Base
+  include UserSettingStore
+  PINNED_APPS_USER_SETTING_KEY = :custom_pinned_apps
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -73,7 +76,22 @@ class ApplicationController < ActionController::Base
   end
 
   def set_pinned_apps
-    @pinned_apps ||= Router.pinned_apps(@user_configuration.pinned_apps, nav_all_apps)
+    # Pinned apps are admin-defined defaults with an optional per-user override.
+    # Missing key means "use admin defaults"; present empty array means
+    # "user intentionally selected no pinned apps".
+    tokens = configured_pinned_app_tokens
+
+    @pinned_apps ||= Router.pinned_apps(tokens, nav_all_apps)
+  end
+
+  def configured_pinned_app_tokens
+    return @user_configuration.pinned_apps unless custom_pinned_apps_overridden?
+
+    Array.wrap(user_settings[PINNED_APPS_USER_SETTING_KEY])
+  end
+
+  def custom_pinned_apps_overridden?
+    user_settings.key?(PINNED_APPS_USER_SETTING_KEY) && !user_settings[PINNED_APPS_USER_SETTING_KEY].nil?
   end
 
   def set_announcements
