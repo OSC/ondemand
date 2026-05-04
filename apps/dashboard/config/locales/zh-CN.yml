@@ -3,44 +3,29 @@ zh-CN:
   activemodel:
     errors:
       messages:
-        format: "%{attribute} 格式无效或缺失"
-        invalid: "%{attribute} 无效"
-        required: "%{attribute} 是必需的"
-        used: "%{attribute} 已被使用"
+        format: '%{attribute} 格式无效或缺失'
+        invalid: '%{attribute} 无效'
+        required: '%{attribute} 是必需的'
+        used: '%{attribute} 已被使用'
   dashboard:
-    active_jobs_close_details: 关闭扩展详细信息面板。
-    active_jobs: 活动作业
-    details: 详细信息
-    id: ID
-    user: 用户
     account: 账户
-    time_used: 已用时间
-    queue: 队列
-    status: 状态
-    cluster: 集群
-    node: 节点
-    job: 作业
-    detailed_metrics: 详细指标
-    cpu_report: CPU 报告
-    load_report: 负载报告
-    memory_report: 内存报告
-    network_report: 网络报告
+    actions: 操作
+    active_jobs: 活动作业
+    active_jobs_close_details: 关闭扩展详细信息面板。
+    active_jobs_confirm_delete_job: 确定要删除 %{pbsid} 吗？
     active_jobs_ganglia_alt_cpu: Ganglia 的 CPU 图像。
     active_jobs_ganglia_alt_load: Ganglia 的系统平均负载图像。
     active_jobs_ganglia_alt_memory: Ganglia 的内存使用情况图像。
     active_jobs_ganglia_alt_network: Ganglia 的网络使用情况图像。
-    submit_args: 提交参数
-    output_location: 输出位置
     active_jobs_open_in_file_manager: 在文件管理器中打开
     active_jobs_open_in_terminal: 在终端中打开
-    active_jobs_confirm_delete_job: 确定要删除 %{pbsid} 吗？
-    all_clusters: 所有集群
     active_sessions_caption_html: <a href="%{all_sessions_url}"> 查看全部 (%{number_of_sessions})</a>
     active_sessions_title: 活动交互会话
     add: 添加
     all_apps_table_app_column: 名称
     all_apps_table_category_column: 类别
     all_apps_table_sub_category_column: 子类别
+    all_clusters: 所有集群
     announcements_dismissible_button: 确定
     announcements_required_button: 接受
     apps_setup_failure_html: |
@@ -56,13 +41,14 @@ zh-CN:
       <pre>%{exception_message}</pre>
       <h4>堆栈跟踪：</h4>
       <pre>%{exception_trace}</pre>
+      
     apps_system_apps_title: 系统应用
     auto_log_location_title: 日志位置
     back: 返回
     balance_additional_message: 考虑申请额外的 %{balanace_units}
-    balance_message: "%{units_balance} 是 %{value}"
+    balance_message: '%{units_balance} 是 %{value}'
     balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
-    balance_warning_prefix_html: "%{units_balance} 警告"
+    balance_warning_prefix_html: '%{units_balance} 警告'
     batch_connect_apps_menu_title: 交互式应用
     batch_connect_form_attr_cache_error: 无法使用先前缓存的值，改为使用默认值。(%{error_message})
     batch_connect_form_choose_template_name: 选择模版名称
@@ -79,18 +65,21 @@ zh-CN:
     batch_connect_form_save_new_template: 保存为一个新模版
     batch_connect_form_save_submit: 保存设置并关闭
     batch_connect_form_select_template: 选择一个模版
-    batch_connect_form_session_data_html: "* 你可以通过%{data_link_tag}来获取会话数据%{title}。\n"
+    batch_connect_form_session_data_html: |
+      * 你可以通过%{data_link_tag}来获取会话数据%{title}。
+      
     batch_connect_form_template_name_label: 设置名称
     batch_connect_form_type_new_name: 在这里输入你的新模版名称
     batch_connect_form_type_new_name_error: 请输入一个有效的名称以继续
-    batch_connect_invalid_form_array: "'form' 元素在 form.yml 中不是数组"
-    batch_connect_invalid_form_attributes: "'attributes' 元素在 form.yml 中不是映射"
+    batch_connect_invalid_form_array: '''form'' 元素在 form.yml 中不是数组'
+    batch_connect_invalid_form_attributes: '''attributes'' 元素在 form.yml 中不是映射'
     batch_connect_missing_cluster: |
       集群从未设置。请在 form.yml.erb 中使用 `cluster` 或 `form.cluster` 设置，或
       在 submit.yml.erb 中设置 `cluster`。
+      
     batch_connect_no_apps: 没有可用的互动应用程序。
     batch_connect_no_sessions: 您没有可运行的会话。
-    batch_connect_sandbox: " [沙盒]"
+    batch_connect_sandbox: ' [沙盒]'
     batch_connect_sessions_cancel_confirm: 你确定吗？
     batch_connect_sessions_cancel_title: 取消
     batch_connect_sessions_data_html: 你可以通过%{data_link_tag}来获取会话数据%{title}。
@@ -135,43 +124,42 @@ zh-CN:
       missing_settings: 未找到所选的保存设置。
       no_settings_title: 您没有保存的设置。
       outdated_message: 自这些设置创建以来，%{app_title} 参数已更改。
-      saved_message: "%{settings_name} 设置已保存"
+      saved_message: '%{settings_name} 设置已保存'
       settings_values_label: 值
       title: 保存的设置
     breadcrumbs_all_apps: 所有应用
     breadcrumbs_home: 主页
     breadcrumbs_my_sessions: 我的交互会话
     breadcrumbs_support_ticket: 支持票
+    bright: 明亮
     cancel: 取消
     clear: 清除
     close: 关闭
     close_alert: 关闭此警报。
     close_notice: 关闭此通知。
-    files_contents_of_directory: "目录内容 %{path}"
+    cluster: 集群
+    cpu_report: CPU 报告
     custom_pages:
       invalid: 无效的页面代码：%{page}。此页面尚未配置
+    dark: 深色
     date: 日期
     delete: 删除
+    detailed_metrics: 详细指标
+    details: 详细信息
     development_apps_caption: 沙盒应用
     directory: 目录
+    download: 下载
     edit: 编辑
     editor: 编辑器
     editor_font_size: 字体大小
-    theme: 主题
-    bright: 明亮
-    dark: 深色
-    wrap: 自动换行
     editor_key_bindings: 键绑定
     editor_key_bindings_default: 默认
     file: 文件
-    files_select_all: 选择所有
-    select: 选择
-    files_modified_at: 修改时间
-    loading: 加载中
     file_quotas: 文件配额
     files_change_directory: 更改目录
-    files_copy_path: 复制路径
+    files_contents_of_directory: 目录内容 %{path}
     files_copy_move: 复制/移动
+    files_copy_path: 复制路径
     files_delete: 删除
     files_directory_download_error_modal_title: 目录太大，无法下载
     files_directory_download_unauthorized: 您只能下载您具有读取和执行权限的文件或目录
@@ -179,12 +167,13 @@ zh-CN:
     files_directory_size_calculation_timeout: 尝试确定目录大小时超时。
     files_directory_size_unknown: 尝试确定目录大小时出现状态 %{exit_code} 的错误：%{error}
     files_directory_too_large: 该目录太大，无法作为 zip 下载。目录应小于 %{download_directory_size_limit} 字节。
-    files_doesnt_exist: "%{path} 不存在。"
+    files_doesnt_exist: '%{path} 不存在。'
+    files_download: 下载
     files_download_not_enabled: 此服务器上未启用文件下载。
     files_download_zip: 下载为 zip
-    files_download: 下载
     files_file_too_large: 文件太大，无法下载。文件下载应小于 %{download_file_size_limit} 字节。
     files_go_up_directory: 上移目录
+    files_modified_at: 修改时间
     files_new_directory: 新目录
     files_new_file: 新文件
     files_not_readable: 您没有足够的权限读取 '%{path}'。
@@ -193,14 +182,18 @@ zh-CN:
     files_remote_disabled: 未启用远程文件支持
     files_remote_empty_dir_unsupported: 远程不支持空目录
     files_remote_error_listing_remotes: 列出 Rclone 远程时出错：%{error}
-    files_upload: 上传
+    files_select_all: 选择所有
     files_send_to_target_title_default: 将选定文件的元数据发送到外部应用程序
     files_shell: 在终端中打开
     files_shell_dropdown: 选择要在终端中打开的集群
-    save: 保存
+    files_show_directory: 显示 %{name} 目录
+    files_show_parent_directory: 显示父目录
     files_title: 文件浏览
+    files_upload: 上传
     home_directory: 主目录
+    id: ID
     import: 导入
+    job: 作业
     job_info: 作业信息
     jobs_create_blank_project: 创建新项目
     jobs_create_blank_workflow: 新工作流
@@ -279,10 +272,14 @@ zh-CN:
     jobs_workflow_not_found: 找不到工作流 %{workflow_id}
     jobs_workflow_show_graph: 在图形编辑器中打开工作流 %{name}
     jobs_workflow_submitted: 工作流提交成功！
+    jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: 工作流
     launch: 启动
+    load_report: 负载报告
+    loading: 加载中
     logo_alt_text: 欢迎使用 Open OnDemand
     maximum: 最大值
+    memory_report: 内存报告
     minimum: 最小值
     mode: 模式
     module_browser_last_updated: 最后更新：%{last_updated}
@@ -307,9 +304,12 @@ zh-CN:
     nav_restart_server: 重启网页服务器
     nav_sessions: 我的交互会话
     nav_user: 以用户名：%{username}登陆
+    network_report: 网络报告
+    node: 节点
     not_grouped: 其他应用
     nsf_access_events: NSF 访问事件
     ok: 确定
+    output_location: 输出位置
     owner: 所有者
     path_selector_default_popup_title: 选择您的工作目录
     path_selector_home: 主页
@@ -321,11 +321,12 @@ zh-CN:
     project_balances: 项目余额
     project_zip_error_message: 创建 ZIP 文件时出错：%{error}
     project_zip_success_message: 成功：project.zip 已在您的项目目录中创建。
+    queue: 队列
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
     quota_block: 配额使用量%{used} 可用 %{available}
-    quota_block_shared: "(您的配额%{used_exclusive} )"
+    quota_block_shared: (您的配额%{used_exclusive} )
     quota_file: 文件配额使用量%{used} 可用 %{available}
-    quota_file_shared: "(您的文件配额%{used_exclusive})"
+    quota_file_shared: (您的文件配额%{used_exclusive})
     quota_reload_message: 重新加载页面以查看更新的配额。 配额每5分钟更新一次。
     quota_warning_prefix_html: 配额限制警告
     recently_used_apps_title: 最近使用的应用
@@ -334,34 +335,44 @@ zh-CN:
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
+      
     restore: 恢复
     save: 保存
     saved_settings_title: 已保存的设置
+    select: 选择
     select_path: 选择路径
-    select_path_for: "%{element} 选择路径\n"
+    select_path_for: |
+      %{element} 选择路径
+      
     settings_invalid_request: 提交的设置无效
     settings_updated: 设置已更新
     shared_apps_caption: 由 %{owner_title} (%{owner}) 共享
     shared_apps_caption_short: 由 %{owner} 共享
     shared_apps_title: 共享应用
-    sharing_catalog_msg_html: "<br>可以在%{catalog_link_tag}上查看可用应用程序的子集。\n"
+    sharing_catalog_msg_html: |
+      <br>可以在%{catalog_link_tag}上查看可用应用程序的子集。
+      
     sharing_catalog_title: 应用目录
-    sharing_no_shared_apps_html: "<strong>没有可用的自定义共享应用。</strong>\n"
+    sharing_no_shared_apps_html: |
+      <strong>没有可用的自定义共享应用。</strong>
+      
     sharing_support_msg_html: |
       如果您没有找到所需的应用程序，请
       <a href="%{support_url}">联系支持</a>.
+      
     sharing_welcome_msg_html: |
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
-    shell_app_title: "%{cluster_title} Shell 访问"
+      
+    shell_app_title: '%{cluster_title} Shell 访问'
     show: 显示
-    files_show_directory: 显示 %{name} 目录
-    files_show_parent_directory: 显示父目录
     size: 大小
     skip_navigation: 跳过导航
     soft_tabs: 软制表符
     soft_tabs_info: 软制表符是文件中的空格，而不是实际的制表符字符。
+    status: 状态
     submit: 提交
+    submit_args: 提交参数
     support_ticket:
       creation_success: 支持票电子邮件已发送至：%{to}
       generic_error: 处理您的请求时出错：%{error}
@@ -373,25 +384,28 @@ zh-CN:
         creation_success: 在 ServiceNow 中创建的支持票。编号：%{number}
       title: 支持票
       validation:
-        attachments_items: "%{id} 无效。%{items} 已添加，最大附件数量为 %{max}"
-        attachments_size: "%{id} 无效。最大附件大小为 %{max}"
-        email: "%{id} 格式无效。期望一个有效的电子邮件地址"
+        attachments_items: '%{id} 无效。%{items} 已添加，最大附件数量为 %{max}'
+        attachments_size: '%{id} 无效。最大附件大小为 %{max}'
+        email: '%{id} 格式无效。期望一个有效的电子邮件地址'
         items:
           attachments_js: 不允许更多附件
-        required: "%{id} 是必需的"
+        required: '%{id} 是必需的'
         size:
           attachments_js: 最大附件大小为 %{max}。所选文件大小为 %{size}
       validation_error: 无效请求。请查看下面的错误信息
     system_apps_caption: 系统已安装应用
+    theme: 主题
+    time_used: 已用时间
     type: 类型
-    actions: 操作
-    download: 下载
-    upload: 上传
-    view: 查看
     unknown: 未知
+    upload: 上传
     uppy: Uppy
+    user: 用户
     user_configuration:
       support_ticket_error: support_ticket 配置错误。请在配置 YAML 中添加后端实现。
+    view: 查看
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
+      
+    wrap: 自动换行
