@@ -240,6 +240,7 @@ ja_JP:
     jobs_workflow_not_found: ワークフロー %{workflow_id} が見つかりません
     jobs_workflow_show_graph: グラフエディタでワークフロー %{name} を開く
     jobs_workflow_submitted: ワークフローが正常に送信されました！
+    jobs_workflow_sync_key_help: 有効にすると、このワークフロー内のすべてのランチャーは同じ <code>OOD_WORKFLOW_SYNC_KEY</code> 環境変数（各ワークフロー実行に固有のランダムトークン）を受け取ります。これは、同期されたファイル名、ロックファイル、または依存ジョブ間で共有される識別子を生成するのに便利です。
     jobs_workflows: ワークフロー
     launch: 起動
     logo_alt_text: Open OnDemandへようこそ

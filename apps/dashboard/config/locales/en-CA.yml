@@ -243,6 +243,7 @@ en-CA:
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_show_graph: Open workflow %{name} in graph editor
     jobs_workflow_submitted: Workflow successfully submitted!
+    jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). This is useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
     launch: Launch
     logo_alt_text: Welcome to Open OnDemand

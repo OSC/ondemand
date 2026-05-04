@@ -243,6 +243,7 @@ fr-CA:
     jobs_workflow_not_found: Impossible de trouver le flux de travail %{workflow_id}
     jobs_workflow_show_graph: Ouvrir le flux de travail %{name} dans l'éditeur de graphique
     jobs_workflow_submitted: Flux de travail soumis avec succès !
+    jobs_workflow_sync_key_help: Lorsqu'il est activé, chaque lanceur dans ce flux de travail reçoit la même variable d'environnement <code>OOD_WORKFLOW_SYNC_KEY</code> (un jeton aléatoire unique à chaque exécution de flux de travail). Utile pour générer des noms de fichiers synchronisés, des fichiers de verrouillage ou des identifiants partagés entre les tâches dépendantes.
     jobs_workflows: Flux de travail
     launch: Lancer
     logo_alt_text: Bienvenue dans Open OnDemand

@@ -229,6 +229,7 @@ zh-CN:
     jobs_workflow_not_found: 找不到工作流 %{workflow_id}
     jobs_workflow_show_graph: 在图形编辑器中打开工作流 %{name}
     jobs_workflow_submitted: 工作流提交成功！
+    jobs_workflow_sync_key_help: 启用后，此工作流中的每个启动器都会接收到相同的 <code>OOD_WORKFLOW_SYNC_KEY</code> 环境变量（一个对每次工作流运行唯一的随机令牌）。这对于生成同步的文件名、锁文件或跨依赖作业的共享标识符非常有用。
     jobs_workflows: 工作流
     launch: 启动
     logo_alt_text: 欢迎使用 Open OnDemand
