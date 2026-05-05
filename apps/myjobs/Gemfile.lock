@@ -178,7 +178,7 @@ GEM
     minitest (5.27.0)
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
-    multi_json (1.20.1)
+    multi_json (1.21.0)
     mustache (1.1.2)
     net-imap (0.3.10)
       date
@@ -190,7 +190,7 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.5)
-    nokogiri (1.19.2)
+    nokogiri (1.19.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     ood_appkit (2.2.1)
