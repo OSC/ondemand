@@ -70,7 +70,7 @@ module RakeHelper
         mode: 0o444
       },
       {
-        src:  'apache-systemd.ood.conf',
+        src:  'apache-systemd.ood.conf.erb',
         dest: File.join(DESTDIR, "etc/systemd/system/#{apache_service}.service.d/ood.conf"),
         mode: 0o444
       },
@@ -293,5 +293,18 @@ module RakeHelper
     return 'apache2' if debian?
 
     'httpd'
+  end
+
+  def apache_inaccessible_paths?
+    return true if os_release['ID'] == 'ubuntu' && os_release['VERSION_ID'].to_i >= 26
+
+    false
+  end
+
+  def sudo_rs?
+    # Ubuntu 26.04 uses sudo-rs which does not include 'requiretty'
+    return true if os_release['ID'] == 'ubuntu' && os_release['VERSION_ID'].to_i >= 26
+
+    false
   end
 end

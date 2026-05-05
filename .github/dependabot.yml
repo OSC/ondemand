@@ -56,57 +56,114 @@ updates:
       interval: "weekly"
     target-branch: "master"
 
-  # Bundler – root Gemfile (release_4.x)
+  # Bundler – root Gemfile (release_4.1)
   - package-ecosystem: "bundler"
     directory: "/"
     open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
-    target-branch: "release_4.*"
+    target-branch: "release_4.1"
 
-  # Bundler – apps/dashboard (release_4.x)
+  # Bundler – apps/dashboard (release_4.1)
   - package-ecosystem: "bundler"
     directory: "/apps/dashboard"
     open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
-    target-branch: "release_4.*"
+    target-branch: "release_4.1"
 
-  # npm – apps/dashboard (release_4.x)
+  # npm – apps/dashboard (release_4.1)
   - package-ecosystem: "npm"
     directory: "/apps/dashboard"
     open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
-    target-branch: "release_4.*"
+    target-branch: "release_4.1"
 
-  # npm - apps/shell (release_4.x)
+  # npm - apps/shell (release_4.1)
   - package-ecosystem: "npm"
     directory: "/apps/shell"
     open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
-    target-branch: "release_4.*"
+    target-branch: "release_4.1"
     
-  # Bundler - apps/myjobs (release_4.x)
+  # Bundler - apps/myjobs (release_4.1)
   - package-ecosystem: "bundler"
     directory: "/apps/myjobs"
+    open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
-    target-branch: "release_4.*"
+    target-branch: "release_4.1"
 
-  # Bundler - ood_portal_generator (release_4.x)
+  # Bundler - ood_portal_generator (release_4.1)
   - package-ecosystem: "bundler"
     directory: "/ood_portal_generator"
     open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
-    target-branch: "release_4.*"
+    target-branch: "release_4.1"
     
-  # Bundler - nginx_stage (release_4.x)
+  # Bundler - nginx_stage (release_4.1)
   - package-ecosystem: "bundler"
     directory: "/nginx_stage"
     open-pull-requests-limit: 0
     schedule:
       interval: "weekly"
-    target-branch: "release_4.*"
+    target-branch: "release_4.1"
+
+  # Bundler – root Gemfile (release_4.0)
+  - package-ecosystem: "bundler"
+    directory: "/"
+    open-pull-requests-limit: 0
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.0"
+
+  # Bundler – apps/dashboard (release_4.0)
+  - package-ecosystem: "bundler"
+    directory: "/apps/dashboard"
+    open-pull-requests-limit: 0
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.0"
+
+  # npm – apps/dashboard (release_4.0)
+  - package-ecosystem: "npm"
+    directory: "/apps/dashboard"
+    open-pull-requests-limit: 0
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.0"
+
+  # npm - apps/shell (release_4.0)
+  - package-ecosystem: "npm"
+    directory: "/apps/shell"
+    open-pull-requests-limit: 0
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.0"
+    
+  # Bundler - apps/myjobs (release_4.0)
+  - package-ecosystem: "bundler"
+    directory: "/apps/myjobs"
+    open-pull-requests-limit: 0
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.0"
+
+  # Bundler - ood_portal_generator (release_4.0)
+  - package-ecosystem: "bundler"
+    directory: "/ood_portal_generator"
+    open-pull-requests-limit: 0
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.0"
+    
+  # Bundler - nginx_stage (release_4.0)
+  - package-ecosystem: "bundler"
+    directory: "/nginx_stage"
+    open-pull-requests-limit: 0
+    schedule:
+      interval: "weekly"
+    target-branch: "release_4.0"

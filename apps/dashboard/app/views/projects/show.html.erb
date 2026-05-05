@@ -21,11 +21,11 @@
 <div class="row mb-3">
   <div class="col-sm-4 col-lg-2 mt-3">
     <div class="list-group bg-white rounded">
-      <a class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+      <button class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
           data-bs-toggle="collapse" data-bs-target="#launcher_list"
           aria-expanded="true" aria-controls="launcher_list">
         <span class="lead fw-bolder"><%= t('dashboard.jobs_launchers') %></span>
-      </a>
+      </button>
 
       <div id="launcher_list" class="collapse show">
         <%- @launchers.each do |launcher| -%>
@@ -36,7 +36,7 @@
             </div>
 
             <div class="col-auto">
-              <%= link_to clone_project_launcher_path(@project.id, launcher.id), title: "Clone launcher" do %>
+              <%= link_to clone_project_launcher_path(@project.id, launcher.id), aria: {label: t('dashboard.jobs_launchers_clone', name: launcher.title)} do %>
                 <%= icon_tag(URI.parse("fas://clone")) %>
               <% end %>
             </div>

@@ -79,7 +79,7 @@
         <div class="col">
           <div class="field">
           <%= javascript_include_tag('icon_picker', nonce: true, type: 'module') %>
-          <%= form.text_field :icon, placeholder: "cog", id: "product_icon_select", value: @project.icon_class %>
+          <%= form.text_field :icon, placeholder: "cog", id: "product_icon_select", value: @project.icon_class, aria: {label: 'filter icons'} %>
             <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
               <% icon = $2; style = $1 %>
               <p class="text-center">

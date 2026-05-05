@@ -118,6 +118,35 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'project group toggles when path selector sets directory' do
+    Dir.mktmpdir do |home_dir|
+      Dir.mktmpdir do |other_dir|
+        CurrentUser.stubs(:home).returns(home_dir)
+  
+        visit new_project_path
+  
+        owner = find('#project_group_owner', visible: :all)
+        setgid = find('#project_setgid', visible: :all)
+  
+        find('#project_directory').set(other_dir)
+        refute owner.disabled?
+        refute setgid.disabled?
+  
+        home_path = File.join(home_dir, 'projects')
+        execute_script <<~JS
+          const tableId = 'project_directory_path_selector_table';
+          const key = `${tableId}${window.location.pathname.replaceAll('/', '_')}_last_visited`;
+          localStorage.setItem(key, JSON.stringify({ path: #{home_path.to_json}, type: 'd' }));
+          document.getElementById('project_directory_path_selector_button').click();
+        JS
+  
+        assert_equal home_path, find('#project_directory').value
+        assert_selector('#project_group_owner[disabled]', visible: :all)
+        assert_selector('#project_setgid[disabled]', visible: :all)
+      end
+    end
+  end
+
   test 'delete a project from the fs and ensure no table entry' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
@@ -866,7 +895,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       fill_in('launcher_bc_num_hours_min', with: 20)
       fill_in('launcher_bc_num_hours_max', with: 101)
       find('#launcher_bc_num_hours_fixed').click
-      find('#save_launcher_bc_num_hours').click
+      find('#edit_launcher_bc_num_hours').click
 
       # add auto_environment_variable
       add_auto_environment_variable(project_id, launcher_id)
@@ -875,7 +904,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
       find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'some_value')
 
-      find('#save_launcher_auto_environment_variable').click
+      find('#edit_launcher_auto_environment_variable').click
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))

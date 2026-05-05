@@ -43,9 +43,15 @@ class Workflow
         start_launcher: meta[:start_launcher] || nil
       }
     end
+
+    # Generate sync key for entire workflow run, giving users a single synchronized 
+    # token per run that they can build shared filenames, lockfiles, etc. on top of.
+    def generate_sync_key
+      SecureRandom.alphanumeric(16)
+    end
   end
 
-  attr_accessor :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata
+  attr_accessor :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata, :sync_key_enabled
 
   validates :name, presence: true
   validates :launcher_ids, length: {minimum: 1}
@@ -58,6 +64,7 @@ class Workflow
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
     @metadata = attributes[:metadata] || {}
+    @sync_key_enabled = attributes[:sync_key_enabled] || "0"
   end
 
   def to_h
@@ -68,7 +75,8 @@ class Workflow
       :created_at => created_at,
       :project_dir => project_dir,
       :launcher_ids => launcher_ids,
-      :metadata => metadata
+      :metadata => metadata,
+      :sync_key_enabled => sync_key_enabled
     }
   end
 
@@ -119,7 +127,7 @@ class Workflow
   end
 
   def update_attrs(attributes, override = false)
-    [:name, :description, :launcher_ids, :metadata].each do |attribute|
+    [:name, :description, :launcher_ids, :metadata, :sync_key_enabled].each do |attribute|
       next unless override || attributes.key?(attribute)
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
@@ -142,6 +150,7 @@ class Workflow
 
     all_launchers = Launcher.all(attributes[:project_dir])
     job_id_hash = {}  # launcher-job_id hash
+    sync_key = sync_key_enabled == "1" ? Workflow.generate_sync_key : nil
 
     for id in order
       launcher = all_launchers.find { |l| l.id == id }
@@ -153,7 +162,7 @@ class Workflow
 
       begin
         jobs = dependent_launchers.map { |id| job_id_hash.dig(id, :job_id) }.compact
-        opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
+        opts = submit_launcher_params(launcher, jobs, sync_key).to_h.symbolize_keys
         job_id = launcher.submit(opts, write_cache: false)
         if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
@@ -173,11 +182,12 @@ class Workflow
     nil
   end
 
-  def submit_launcher_params(launcher, dependent_jobs)
+  def submit_launcher_params(launcher, dependent_jobs, sync_key)
     launcher_data = launcher.cacheless_attributes.each_with_object({}) do |attr, hash|
       hash[attr.id.to_s] = attr.opts[:value]
     end
     launcher_data["afterok"] = Array(dependent_jobs)
+    launcher_data["ood_workflow_sync_key"] = sync_key if sync_key
     launcher_data
   end
 

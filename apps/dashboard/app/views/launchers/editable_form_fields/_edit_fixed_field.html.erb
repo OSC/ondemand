@@ -6,7 +6,14 @@
 -%>
 <div class="list-group col-md-4">
   <div class="list-group-item mb-3">
-    <input type="checkbox" id="<%= fixed_id %>" name="<%= fixed_name %>" value="true" <%= fixed ? 'checked' : '' %> data-fixed-toggler="<%= field_id %>">
+    <input type="checkbox" 
+      id="<%= fixed_id %>" 
+      name="<%= fixed_name %>" 
+      value="true" 
+      <%= fixed ? 'checked' : '' %> 
+      data-fixed-toggler="<%= field_id %>"
+      aria-label="<%= t('dashboard.jobs_launchers_fixed_field_help') %>"
+    >
     <label class="form-check-label" for="<%= fixed_id %>"><%= t('dashboard.jobs_launchers_fixed_field') %></label>
   </div>
 </div>

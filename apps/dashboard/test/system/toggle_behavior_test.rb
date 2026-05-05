@@ -110,7 +110,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       visit project_path(project_id)
       launcher_id = setup_launcher(project_id)
 
-      toggle_button = find('a[data-bs-target="#launcher_list"]')
+      toggle_button = find('button[data-bs-target="#launcher_list"]')
       launcher_list = find('#launcher_list', visible: :all)
 
       assert launcher_list.visible?, 'Launcher list should be visible initially'
@@ -134,7 +134,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       
       visit project_path(project_id)
 
-      toggle_button = find('a[data-bs-target="#workflow_list"]')
+      toggle_button = find('button[data-bs-target="#workflow_list"]')
       workflow_list = find('#workflow_list', visible: :all)
 
       assert workflow_list.visible?, 'Workflow list should be visible initially'

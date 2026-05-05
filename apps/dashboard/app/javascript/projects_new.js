@@ -33,8 +33,10 @@ function templateChange(event) {
 function toggleSharedSettings(value) {
   const owner = document.getElementById('project_group_owner');
   const setgid = document.getElementById('project_setgid');
+  const setgidHelp = $('label[for="project_setgid"]').find('i')  
   const isDisabled = value.startsWith(home) || value === "";
 
   owner.disabled = isDisabled;
   setgid.disabled = isDisabled;
+  setgidHelp.attr('tabindex', isDisabled ? '-1' : '0');
 }

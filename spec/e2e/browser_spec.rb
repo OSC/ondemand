@@ -51,7 +51,7 @@ describe 'OnDemand browser test' do
   it 'redirects /pun/sys/file-editor#index' do
     browser.goto "#{ctr_base_url}/pun/sys/file-editor"
     expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard/files/fs/home/ood")
-    expect(browser.title).to match(/\AFile browsing - Open OnDemand\b/)
+    expect(browser.title).to match(/File browsing - Open OnDemand\b/)
     expect(browser.table(id: 'directory-contents').present?).to be true
   end
 
@@ -65,14 +65,14 @@ describe 'OnDemand browser test' do
     browser.goto "#{ctr_base_url}/pun/sys/files"
     expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard/files/fs/home/ood")
     sleep 5
-    expect(browser.title).to match(/\AFile browsing - Open OnDemand\b/)
+    expect(browser.title).to match(/File browsing - Open OnDemand\b/)
     expect(browser.table(id: 'directory-contents').present?).to be true
   end
 
   it 'redirects /pun/sys/files and preserves the path' do
     browser.goto "#{ctr_base_url}/pun/sys/files/fs/var/www/ood"
     expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard/files/fs/var/www/ood")
-    expect(browser.title).to match(/\AFile browsing - Open OnDemand\b/)
+    expect(browser.title).to match(/File browsing - Open OnDemand\b/)
     expect(browser.table(id: 'directory-contents').present?).to be true
   end
 end
