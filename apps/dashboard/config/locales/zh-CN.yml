@@ -28,6 +28,7 @@ zh-CN:
     all_clusters: 所有集群
     announcements_dismissible_button: 确定
     announcements_required_button: 接受
+    apps_folder_icon: "FontAwesome 图标指定：文件夹"
     apps_setup_failure_html: |
       <h2>初始化此应用程序的数据时出现问题。</h2>
       <p class="lead">
@@ -155,6 +156,7 @@ zh-CN:
     editor_key_bindings: 键绑定
     editor_key_bindings_default: 默认
     file: 文件
+    files: 文件夹
     file_quotas: 文件配额
     files_change_directory: 更改目录
     files_contents_of_directory: 目录内容 %{path}
