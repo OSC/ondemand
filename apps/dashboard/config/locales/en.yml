@@ -73,8 +73,8 @@ en:
     batch_connect_form_template_name_label: setting name
     batch_connect_form_type_new_name: App settings name
     batch_connect_form_type_new_name_error: Please type a valid name to continue
-    batch_connect_invalid_form_array: '''form'' element in form.yml is not an Array'
-    batch_connect_invalid_form_attributes: '''attributes'' element in form.yml is not a Map'
+    batch_connect_invalid_form_array: '"form" element in form.yml is not an Array'
+    batch_connect_invalid_form_attributes: '"attributes" element in form.yml is not a Map'
     batch_connect_missing_cluster: |
       The cluster was never set. Either set it in form.yml.erb with `cluster` or `form.cluster` or
       set `cluster` in submit.yml.erb.
