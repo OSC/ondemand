@@ -3,20 +3,32 @@ en:
   activemodel:
     errors:
       messages:
-        format: "%{attribute} format invalid or missing"
-        invalid: "%{attribute} is invalid"
-        required: "%{attribute} is required"
-        used: "%{attribute} is already used"
+        format: '%{attribute} format invalid or missing'
+        invalid: '%{attribute} is invalid'
+        required: '%{attribute} is required'
+        used: '%{attribute} is already used'
   dashboard:
-    active_jobs_close_details: "Close extended details panel."
+    account: Account
+    actions: Actions
+    active_jobs: Active Jobs
+    active_jobs_close_details: Close extended details panel.
+    active_jobs_confirm_delete_job: Are you sure you want to delete %{pbsid}?
+    active_jobs_ganglia_alt_cpu: Ganglia image for CPU.
+    active_jobs_ganglia_alt_load: Ganglia image for system load averages.
+    active_jobs_ganglia_alt_memory: Ganglia image for Memory usage.
+    active_jobs_ganglia_alt_network: Ganglia image for network usage.
+    active_jobs_open_in_file_manager: Open in File Manager
+    active_jobs_open_in_terminal: Open in Terminal
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
     all_apps_table_app_column: Name
     all_apps_table_category_column: Category
     all_apps_table_sub_category_column: Sub Category
+    all_clusters: All Clusters
     announcements_dismissible_button: OK
     announcements_required_button: Accept
+    apps_folder_icon: "FontAwesome icon specified: folder"
     apps_setup_failure_html: |
       <h2>A problem occurred while initializing your data for this app.</h2>
       <p class="lead">
@@ -31,13 +43,14 @@ en:
       <pre>%{exception_message}</pre>
       <h4>Stack trace:</h4>
       <pre>%{exception_trace}</pre>
+      
     apps_system_apps_title: System Apps
     auto_log_location_title: Log Location
     back: Back
     balance_additional_message: Consider requesting additional %{balanace_units}
-    balance_message: "%{units_balance} is %{value}"
+    balance_message: '%{units_balance} is %{value}'
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
-    balance_warning_prefix_html: "%{units_balance} warning for"
+    balance_warning_prefix_html: '%{units_balance} warning for'
     batch_connect_apps_menu_title: Interactive Apps
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
     batch_connect_form_choose_template_name: Choose a template name
@@ -47,9 +60,9 @@ en:
     batch_connect_form_launch: Launch
     batch_connect_form_prefill: Use saved settings
     batch_connect_form_prefill_error: Oops... Something is wrong with your template
+    batch_connect_form_reset_resolution: Reset Resolution
     batch_connect_form_resolution_height: Resolution height (pixels)
     batch_connect_form_resolution_width: Resolution width (pixels)
-    batch_connect_form_reset_resolution: Reset Resolution
     batch_connect_form_save: Save settings
     batch_connect_form_save_new_template: save new settings
     batch_connect_form_save_submit: Save settings and close
@@ -57,22 +70,25 @@ en:
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
+      
     batch_connect_form_template_name_label: setting name
     batch_connect_form_type_new_name: App settings name
     batch_connect_form_type_new_name_error: Please type a valid name to continue
-    batch_connect_invalid_form_array: "'form' element in form.yml is not an Array"
-    batch_connect_invalid_form_attributes: "'attributes' element in form.yml is not a Map"
+    batch_connect_invalid_form_array: '"form" element in form.yml is not an Array'
+    batch_connect_invalid_form_attributes: '"attributes" element in form.yml is not a Map'
     batch_connect_missing_cluster: |
       The cluster was never set. Either set it in form.yml.erb with `cluster` or `form.cluster` or
       set `cluster` in submit.yml.erb.
+      
     batch_connect_no_apps: There are no available Interactive Apps.
     batch_connect_no_sessions: You have no active sessions.
-    batch_connect_sandbox: " [Sandbox]"
+    batch_connect_sandbox: ' [Sandbox]'
     batch_connect_sessions_cancel_confirm: Are you sure?
     batch_connect_sessions_cancel_title: Cancel
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
+      
     batch_connect_sessions_delete_confirm: Are you sure?
     batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
@@ -81,6 +97,7 @@ en:
       If this job failed to submit because of an invalid job name
       please ask your administrator to configure OnDemand to set the
       environment variable OOD_JOB_NAME_ILLEGAL_CHARS.
+      
     batch_connect_sessions_errors_staging: 'Failed to stage the template with the following error:'
     batch_connect_sessions_errors_submission: 'Failed to submit session with the following error:'
     batch_connect_sessions_novnc_launch: Launch %{app_title}
@@ -107,12 +124,15 @@ en:
     batch_connect_sessions_status_missing_connection: |
       This app is missing information required to establish a connection. Specifically,
       the view.html.erb file is missing. Please contact support if you see this message.
+      
     batch_connect_sessions_status_queued: |
       Please be patient as your job currently sits in queue. The wait time depends
       on the number of cores as well as time requested.
+      
     batch_connect_sessions_status_starting: |
       Your session is currently starting... Please be patient as this process can
       take a few minutes.
+      
     batch_connect_sessions_word: Session
     bc_saved_settings:
       delete_confirm: Are you sure?
@@ -122,43 +142,44 @@ en:
       launch_title: Launch %{app_title} with %{settings_name} parameters
       missing_settings: Selected saved settings not found.
       no_settings_title: You have no saved settings.
-      outdated_message: "%{app_title} parameters have changed since these settings were created."
-      saved_message: "%{settings_name} settings saved"
+      outdated_message: '%{app_title} parameters have changed since these settings were created.'
+      saved_message: '%{settings_name} settings saved'
       settings_values_label: Values
       title: Saved Settings
     breadcrumbs_all_apps: All Apps
     breadcrumbs_home: Home
     breadcrumbs_my_sessions: My Interactive Sessions
     breadcrumbs_support_ticket: Support Ticket
+    bright: Bright
     cancel: Cancel
     clear: Clear
     close: Close
     close_alert: Close this alert.
     close_notice: Close this notice.
+    cluster: Cluster
+    cpu_report: CPU Report
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
+    dark: Dark
     date: Date
     delete: Delete
+    detailed_metrics: Detailed Metrics
+    details: Details
     development_apps_caption: Sandbox App
     directory: Directory
+    download: Download
     edit: Edit
     editor: Editor
     editor_font_size: Font Size
-    theme: Theme
-    bright: Bright
-    dark: Dark
-    wrap: Wrap
     editor_key_bindings: Key Bindings
     editor_key_bindings_default: Default
-    files_select_all: Select All
-    select: Select
-    files_modified_at: Modified at
-    loading: Loading...
     file: File
+    files: Files
     file_quotas: File Quotas
     files_change_directory: Change Directory
-    files_copy_path: Copy Path
+    files_contents_of_directory: Contents of directory %{path}
     files_copy_move: Copy/Move
+    files_copy_path: Copy Path
     files_delete: Delete
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
@@ -166,27 +187,33 @@ en:
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_doesnt_exist: '%{path} does not exist.'
     files_download: Download
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_download_zip: Download as zip
     files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
     files_go_up_directory: Go up directory
+    files_modified_at: Modified at
     files_new_directory: New Directory
     files_new_file: New File
+    files_not_readable: You do not have sufficient permissions to read '%{path}'.
     files_refresh: Refresh
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
     files_remote_error_listing_remotes: 'Error listing Rclone remotes: %{error}'
-    files_upload: Upload
+    files_select_all: Select All
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
-    save: Save
-    files_doesnt_exist: "%{path} does not exist."
-    files_not_readable: "You do not have sufficient permissions to read '%{path}'."
+    files_show_directory: Show %{name} directory
+    files_show_parent_directory: Show parent directory
+    files_title: File browsing
+    files_upload: Upload
     home_directory: Home Directory
+    id: ID
     import: Import
+    job: Job
     job_info: Job Info
     jobs_create_blank_project: Create a new project
     jobs_create_blank_workflow: New Workflow
@@ -222,7 +249,6 @@ en:
     jobs_project_delete_label: Delete project %{name}
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
-    jobs_project_removed: Project removed from lookup!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
@@ -243,6 +269,7 @@ en:
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_open_label: Open project %{name}
     jobs_project_remove_label: Remove project %{name}
+    jobs_project_removed: Project removed from lookup!
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_select_directory: Select project directory
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. Does not affect projects in your home directory.
@@ -251,12 +278,13 @@ en:
     jobs_toggle_details: Click to toggle details for job %{job_id}
     jobs_workflow_clone: Clone workflow %{name}
     jobs_workflow_created: Workflow successfully created!
-    jobs_workflow_delete_title: Delete workflow %{name}
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
+    jobs_workflow_delete_title: Delete workflow %{name}
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description
     jobs_workflow_edit_settings: Modify settings for workflow %{name}
     jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_missing_launchers: select at least %{count}
     jobs_workflow_name_placeholder: Workflow name
@@ -264,17 +292,18 @@ en:
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_show_graph: Open workflow %{name} in graph editor
     jobs_workflow_submitted: Workflow successfully submitted!
-    jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
     launch: Launch
+    load_report: Load Report
+    loading: Loading...
     logo_alt_text: Welcome to Open OnDemand
     maximum: Maximum
+    memory_report: Memory Report
     minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
-    files_title: File browsing
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     name: Name
@@ -295,9 +324,12 @@ en:
     nav_restart_server: Restart Web Server
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
+    network_report: Network Report
+    node: Node
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
+    output_location: Output Location
     owner: Owner
     path_selector_default_popup_title: Select Your Working Directory
     path_selector_home: home
@@ -309,48 +341,58 @@ en:
     project_balances: Project Balances
     project_zip_error_message: 'Error creating ZIP file: %{error}'
     project_zip_success_message: 'Success: project.zip has been created in your project directory.'
+    queue: Queue
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
-    quota_block_shared: "(%{used_exclusive} are yours)"
+    quota_block_shared: (%{used_exclusive} are yours)
     quota_file: Using %{used} files of quota %{available} files
-    quota_file_shared: "(%{used_exclusive} files are yours)"
+    quota_file_shared: (%{used_exclusive} files are yours)
     quota_reload_message: Reload page to see updated quota. Quotas are updated every 5 minutes.
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
     remove: Remove
     reset: Reset
-    restore: Restore
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
+      
+    restore: Restore
     save: Save
     saved_settings_title: Saved Settings
+    select: Select
     select_path: Select Path
-    select_path_for: "%{element} select path\n"
+    select_path_for: |
+      %{element} select path
+      
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
     shared_apps_caption_short: Shared by %{owner}
     shared_apps_title: Shared Apps
-    sharing_catalog_msg_html: "<br>A subset of the apps available can be viewed on the %{catalog_link_tag}.\n"
+    sharing_catalog_msg_html: |
+      <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
+      
     sharing_catalog_title: App Catalog
-    sharing_no_shared_apps_html: "<strong>No custom shared apps available.</strong>\n"
+    sharing_no_shared_apps_html: |
+      <strong>No custom shared apps available.</strong>
+      
     sharing_support_msg_html: |
       If you don't see the app you are looking for, please
       <a href="%{support_url}">contact support</a>.
+      
     sharing_welcome_msg_html: |
       Cluster access applications are available from the dropdown menus in the navbar above.
       <br>Custom shared apps are available below.
-    shell_app_title: "%{cluster_title} Shell Access"
+      
+    shell_app_title: '%{cluster_title} Shell Access'
     show: Show
-    files_contents_of_directory: "Contents of directory %{path}"
-    files_show_directory: Show %{name} directory
-    files_show_parent_directory: Show parent directory
     size: Size
     skip_navigation: Skip Navigation
     soft_tabs: Soft Tabs
     soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
+    status: Status
     submit: Submit
+    submit_args: Submit Args
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
@@ -372,15 +414,18 @@ en:
           attachments_js: Max attachment size is %{max}. Selected file size is %{size}
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
+    theme: Theme
+    time_used: Time Used
     type: Type
-    actions: Actions
-    download: Download
-    upload: Upload
-    view: View
     unknown: Unknown
+    upload: Upload
     uppy: Uppy
+    user: User
     user_configuration:
       support_ticket_error: support_ticket is misconfigured. Please add a backend implementation in the configuration YAML.
+    view: View
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+      
+    wrap: Wrap
