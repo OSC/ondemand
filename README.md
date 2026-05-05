@@ -8,12 +8,13 @@
 
 _A browser-based portal that gives researchers, students, and engineers remote web access to HPC systems — no client software, no command line required._
 
-![Latest Release](https://img.shields.io/github/release/osc/ondemand.svg?color=informational)
+![GitHub Release](https://img.shields.io/github/release/osc/ondemand.svg?color=informational)
 [![Tests](https://github.com/OSC/ondemand/actions/workflows/tests.yml/badge.svg)](https://github.com/OSC/ondemand/actions/workflows/tests.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 [![Discourse](https://img.shields.io/discourse/posts?server=https%3A%2F%2Fdiscourse.openondemand.org)](https://discourse.openondemand.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 [![Deployments](https://img.shields.io/badge/deployments-2100%2B-brightgreen)](https://www.openondemand.org/about-us#active-deployments)
-[![NSF Funded](https://img.shields.io/badge/NSF-funded-blue)](https://www.nsf.gov/)
+[![NumFOCUS Affiliated](https://img.shields.io/badge/NumFOCUS-Affiliated-orange)](https://numfocus.org/sponsored-projects/affiliated-projects)
+[![NSF Funded](https://img.shields.io/badge/NSF_Funded-blue)](https://www.nsf.gov/)
 
 [Website](https://www.openondemand.org) · [Documentation](https://osc.github.io/ood-documentation/) · [Discourse](https://discourse.openondemand.org) · [Community Hub](https://ondemand.connectci.org) · [Events](https://www.openondemand.org/upcoming-events)
 
@@ -43,43 +44,27 @@ and is the access layer powering some of the world's most capable supercomputers
 
 ## Key Features
 
-- 🖥️ **Web-based shell** — full terminal in the browser, no SSH client needed
-- 📊 **Job Composer & Monitor** — build, submit, and track batch jobs through a visual interface
-- 📁 **File Manager** — upload, download, and manage HPC filesystem files from any device
-- 🔬 **Interactive Apps** — launch Jupyter, RStudio, MATLAB, VS Code, and custom apps directly on compute nodes
-- ⚙️ **Fully Customizable** — tailor the portal to your cluster, scheduler (Slurm, PBS, LSF, SGE), and software stack
-- 🔐 **Authentication Agnostic** — integrates with Keycloak, Shibboleth, LDAP, CILogon, and more
-- 🌍 **Multi-Cluster Support** — a single OOD deployment can serve multiple HPC clusters
-- 📦 **Extensible App Framework** — develop and share your own Passenger apps or Batch Connect applications
+🖥️ **Web-based shell** — full terminal in the browser, no SSH client needed
+📊 **Job Composer & Monitor** — build, submit, and track batch jobs through a visual interface
+📁 **File Manager** — upload, download, and manage HPC filesystem files from any device
+🔬 **Interactive Apps** — launch Jupyter, RStudio, MATLAB, VS Code, and custom apps directly on compute nodes
+⚙️ **Fully Customizable** — tailor the portal to your cluster, scheduler (Slurm, PBS, LSF, SGE), and software stack
+🔐 **Authentication Agnostic** — integrates with Keycloak, Shibboleth, LDAP, CILogon, and more
+🌍 **Multi-Cluster Support** — a single OOD deployment can serve multiple HPC clusters
+📦 **Extensible App Framework** — develop and share your own Passenger apps or Batch Connect applications
 
 ---
 
 ## Getting Started
 
-### Prerequisites
+### Requirements and Install
 
-- RHEL/Rocky/AlmaLinux 8 or 9
-- A supported batch scheduler (Slurm recommended)
-- Root access to the web/login node
-
-### Install
-
-Full installation documentation is available at **[osc.github.io/ood-documentation](https://osc.github.io/ood-documentation/)**.
-
-```bash
-# Add the OOD repository (RHEL/Rocky 9 example)
-sudo dnf install -y https://yum.osc.edu/ondemand/4.1/ondemand-release-web-4.1-1.el9.noarch.rpm
-
-# Install Open OnDemand
-sudo dnf install -y ondemand
-
-# Follow the post-install configuration guide:
-# https://osc.github.io/ood-documentation/latest/installation/
-```
+Full installation documentation, including system requirements, is available at
+**[osc.github.io/ood-documentation/latest/requirements.html](https://osc.github.io/ood-documentation/latest/requirements.html)**.
 
 ### Test Drive
 
-Not ready to install? You can **[test drive Open OnDemand](https://www.openondemand.org/administer-open-ondemand#test-drive-ood)** on our demo instance before deploying it at your site.
+You can **[test drive Open OnDemand](https://www.openondemand.org/administer-open-ondemand#test-drive-ood)** before deploying it at your site.
 
 ---
 
