@@ -22,6 +22,7 @@ en:
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
+    add_attachment: Add attachment
     all_apps_table_app_column: Name
     all_apps_table_category_column: Category
     all_apps_table_sub_category_column: Sub Category
@@ -52,6 +53,7 @@ en:
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
     balance_warning_prefix_html: '%{units_balance} warning for'
     batch_connect_apps_menu_title: Interactive Apps
+    batch_connect_file_attachments_add: Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
     batch_connect_form_choose_template_name: Choose a template name
     batch_connect_form_data_root: data root directory
