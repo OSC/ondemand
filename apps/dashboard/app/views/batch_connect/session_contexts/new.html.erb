@@ -74,7 +74,7 @@ locals: {
     <h3>
       <%= @app.title %>
       <% unless @app.version.nil? %>
-        <small>version: <%= @app.version %></small>
+        <small><%= t('dashboard.version') %>: <%= @app.version %></small>
       <% end %>
     </h3>
     <div class="ood-appkit markdown">
