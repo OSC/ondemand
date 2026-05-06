@@ -139,7 +139,7 @@ zh-CN:
     close_alert: 关闭此警报。
     close_notice: 关闭此通知。
     cluster: 集群
-    cpu_report: CPU 报告
+    cpu_report: CPU 报告 %{node}
     custom_pages:
       invalid: 无效的页面代码：%{page}。此页面尚未配置
     dark: 深色
@@ -277,11 +277,11 @@ zh-CN:
     jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: 工作流
     launch: 启动
-    load_report: 负载报告
+    load_report: 负载报告 %{node}
     loading: 加载中
     logo_alt_text: 欢迎使用 Open OnDemand
     maximum: 最大值
-    memory_report: 内存报告
+    memory_report: 内存报告 %{node}
     minimum: 最小值
     mode: 模式
     module_browser_last_updated: 最后更新：%{last_updated}
@@ -306,7 +306,7 @@ zh-CN:
     nav_restart_server: 重启网页服务器
     nav_sessions: 我的交互会话
     nav_user: 以用户名：%{username}登陆
-    network_report: 网络报告
+    network_report: 网络报告 %{node}
     node: 节点
     not_grouped: 其他应用
     nsf_access_events: NSF 访问事件

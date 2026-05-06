@@ -157,7 +157,7 @@ en:
     close_alert: Close this alert.
     close_notice: Close this notice.
     cluster: Cluster
-    cpu_report: CPU Report
+    cpu_report: CPU Report %{node}
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     dark: Dark
@@ -295,11 +295,11 @@ en:
     jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
     launch: Launch
-    load_report: Load Report
+    load_report: Load Report %{node}
     loading: Loading...
     logo_alt_text: Welcome to Open OnDemand
     maximum: Maximum
-    memory_report: Memory Report
+    memory_report: Memory Report %{node}
     minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
@@ -324,7 +324,7 @@ en:
     nav_restart_server: Restart Web Server
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
-    network_report: Network Report
+    network_report: Network Report %{node}
     node: Node
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
