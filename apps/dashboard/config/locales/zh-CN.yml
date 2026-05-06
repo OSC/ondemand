@@ -407,6 +407,7 @@ zh-CN:
     user: 用户
     user_configuration:
       support_ticket_error: support_ticket 配置错误。请在配置 YAML 中添加后端实现。
+    version: 版本
     view: 查看
     welcome_html: |
       %{logo_img_tag}

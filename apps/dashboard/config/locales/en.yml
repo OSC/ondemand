@@ -425,6 +425,7 @@ en:
     user: User
     user_configuration:
       support_ticket_error: support_ticket is misconfigured. Please add a backend implementation in the configuration YAML.
+    version: Version
     view: View
     welcome_html: |
       %{logo_img_tag}
