@@ -6,7 +6,7 @@
 
 **Connecting Computing Power With Powerful Minds**
 
-_A browser-based portal that gives researchers, students, and engineers remote web access to HPC systems — no client software, no command line required._
+_A browser-based portal that gives researchers, students, and industry professionals remote web access to HPC systems — no client software, no command line required._
 
 ![GitHub Release](https://img.shields.io/github/release/osc/ondemand.svg?color=informational)
 [![Tests](https://github.com/OSC/ondemand/actions/workflows/tests.yml/badge.svg)](https://github.com/OSC/ondemand/actions/workflows/tests.yml)
@@ -34,7 +34,7 @@ _A browser-based portal that gives researchers, students, and engineers remote w
 
 ## What is Open OnDemand?
 
-Open OnDemand (OOD) is an open-source, NSF-funded web portal that makes high-performance computing and resources accessible to everyone. 
+Open OnDemand (OOD) is an open-source, NSF-funded web platform that makes high-performance computing and resources accessible to everyone. 
 Instead of requiring users to learn SSH, command-line job schedulers, or VPN clients, OOD delivers a full HPC experience through any modern browser.
 
 It is deployed at **over 2,100 organizations worldwide** — from major research universities to national labs to technology companies — 
@@ -44,14 +44,14 @@ and is the access layer powering some of the world's most capable supercomputers
 
 ## Key Features
 
-🖥️ **Web-based shell** — full terminal in the browser, no SSH client needed
-📊 **Job Composer & Monitor** — build, submit, and track batch jobs through a visual interface
-📁 **File Manager** — upload, download, and manage HPC filesystem files from any device
-🔬 **Interactive Apps** — launch Jupyter, RStudio, MATLAB, VS Code, and custom apps directly on compute nodes
-⚙️ **Fully Customizable** — tailor the portal to your cluster, scheduler (Slurm, PBS, LSF, SGE), and software stack
-🔐 **Authentication Agnostic** — integrates with Keycloak, Shibboleth, LDAP, CILogon, and more
-🌍 **Multi-Cluster Support** — a single OOD deployment can serve multiple HPC clusters
-📦 **Extensible App Framework** — develop and share your own Passenger apps or Batch Connect applications
+- 🖥️ **Web-Based Shell** — full terminal in the browser, no SSH client needed
+- 📁 **File Manager** — upload, download, edit, and manage files across your HPC storage systems
+- 📊 **Project Manager** — build, submit, and monitor batch jobs through an intuitive interface
+- 🔬 **Interactive Apps** — launch Jupyter, RStudio, MATLAB, VS Code, and more directly on compute nodes
+- 🌍 **Multi-Cluster Support** — a single OOD deployment can serve multiple HPC clusters
+- 🔐 **Flexible Authentication** — integrates with Keycloak, Shibboleth, LDAP/AD, CILogon, OIDC, SAML, and more
+- ⚙️ **Fully Customizable** — tailor branding, authentication, job schedulers, and software environments to fit your institution's needs
+- 📦 **Community App Framework** — develop and share your own Batch Connect and Passenger applications via the Appverse
 
 ---
 
