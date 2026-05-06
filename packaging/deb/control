@@ -19,7 +19,6 @@ Depends: ${misc:Depends}, ${shlibs:Depends},
   nodejs (>= 22.0), nodejs (<< 23.0),
   ondemand-nginx (>= 1.28.0.p6.1.2.ood4.2.0),  ondemand-nginx (<< 1.29),
   ondemand-passenger (>= 6.1.2.ood4.2.0), ondemand-passenger (<< 6.1.3),
-Recommends: rclone
 Description: Open OnDemand is an open source release of the Ohio SuperComputer Center's
   OnDemand platform to provide HPC access via a web browser, supporting web based file
   management, shell access, job submission and interactive work on compute nodes.
