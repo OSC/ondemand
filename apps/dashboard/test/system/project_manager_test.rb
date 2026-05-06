@@ -1109,6 +1109,25 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'workflows are hidden and disabled when unsupported' do
+    Workflow.singleton_class.alias_method(:_supported_orig_for_test, :supported?)
+    Workflow.define_singleton_method(:supported?) { false }
+
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+
+      visit project_path(project_id)
+      assert_no_text(I18n.t('dashboard.jobs_workflows'))
+
+      visit new_project_workflow_path(project_id)
+      assert_current_path(project_path(project_id))
+      assert_selector('.alert-danger', text: I18n.t('dashboard.jobs_workflows_not_supported'))
+    end
+  ensure
+    Workflow.singleton_class.alias_method(:supported?, :_supported_orig_for_test)
+    Workflow.singleton_class.remove_method(:_supported_orig_for_test)
+  end
+
   # this test:
   # creates a project & launcher with auto_accounts
   # excludes some of the accounts from auto_accounts in launcher#edit

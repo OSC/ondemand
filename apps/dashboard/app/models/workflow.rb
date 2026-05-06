@@ -5,6 +5,45 @@ class Workflow
   include ProjectPermissions
 
   class << self
+    def supported?
+      dependency_keys = %i[after afterok afternotok afterany].freeze
+
+      clusters_obj = OodAppkit.clusters
+      clusters =
+        if clusters_obj.respond_to?(:values)
+          Array(clusters_obj.values)
+        elsif clusters_obj.respond_to?(:to_a)
+          Array(clusters_obj.to_a)
+        elsif clusters_obj.respond_to?(:each)
+          clusters_obj.each.to_a
+        else
+          []
+        end.compact
+      return false if clusters.empty?
+
+      clusters.any? do |cluster|
+        job_adapter =
+          begin
+            cluster.respond_to?(:job_adapter) ? cluster.job_adapter : nil
+          rescue OodCore::AdapterNotSpecified => e
+            Rails.logger.debug("Workflow.supported?: adapter not specified for cluster: #{e.message}")
+            nil
+          end
+        next false if job_adapter.nil?
+
+        method = job_adapter.method(:submit)
+        params = method.parameters
+
+        next true if params.any? { |type, _name| type == :keyrest }
+
+        accepted_keys = params.select { |type, _name| type == :key || type == :keyreq }.map { |_type, name| name }.compact.map(&:to_sym)
+
+        (dependency_keys - accepted_keys).empty?
+      rescue NameError, NoMethodError
+        false
+      end
+    end
+
     def workflow_dir(project_dir)
       Pathname.new("#{project_dir}/.ondemand/workflows")
     end

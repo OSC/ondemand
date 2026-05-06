@@ -9,6 +9,7 @@ en:
         used: "%{attribute} is already used"
   dashboard:
     active_jobs_close_details: "Close extended details panel."
+    jobs_workflows_not_supported: "Workflows are not supported by the configured scheduler."
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add

@@ -157,4 +157,31 @@ class LauncherTest < ActiveSupport::TestCase
       refute(Dir.exist?(Launcher.launchers_dir(tmp).to_s))
     end
   end
+
+  class PositionalHashSubmitAdapter
+    def submit(_script, _opts = {}); end
+  end
+
+  class KeywordSubmitAdapter
+    def submit(_script, after: [], afterok: [], afternotok: [], afterany: []); end
+  end
+
+  class KeyrestSubmitAdapter
+    def submit(_script, **_kwargs); end
+  end
+
+  test 'workflows_supported? returns false when submit does not accept keywords' do
+    OodAppkit.stubs(:clusters).returns({ test: OpenStruct.new(job_adapter: PositionalHashSubmitAdapter.new) })
+    assert_equal false, Launcher.workflows_supported?
+  end
+
+  test 'workflows_supported? returns true when submit accepts dependency keywords' do
+    OodAppkit.stubs(:clusters).returns({ test: OpenStruct.new(job_adapter: KeywordSubmitAdapter.new) })
+    assert_equal true, Launcher.workflows_supported?
+  end
+
+  test 'workflows_supported? returns true when submit accepts arbitrary keywords' do
+    OodAppkit.stubs(:clusters).returns({ test: OpenStruct.new(job_adapter: KeyrestSubmitAdapter.new) })
+    assert_equal true, Launcher.workflows_supported?
+  end
 end

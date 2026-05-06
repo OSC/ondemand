@@ -9,6 +9,12 @@ class ApplicationController < ActionController::Base
   before_action :set_featured_group, :set_custom_navigation
   before_action :check_required_announcements
 
+  helper_method :workflows_supported?
+
+  def workflows_supported?
+    @workflows_supported ||= Workflow.supported?
+  end
+  
   def check_required_announcements
     return if instance_of?(SettingsController)
 
