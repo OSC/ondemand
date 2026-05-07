@@ -1,8 +1,7 @@
 <p>
   <strong><%= t('dashboard.batch_connect_sessions_stats_session_id') %></strong>
-  <span class="text-muted"><%= "#{session.id} —" %></span>
   <%= link_to(
-        t('dashboard.batch_connect_sessions_stats_session_dir_link_text'),
+        session.id,
         OodAppkit.files.url(path: session.staged_root).to_s,
         class: 'session-id-link',
         title: t('dashboard.batch_connect_sessions_stats_session_dir_link_title', session_id: session.id),
