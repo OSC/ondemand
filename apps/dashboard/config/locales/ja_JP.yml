@@ -88,6 +88,8 @@ ja_JP:
     batch_connect_sessions_stats_created_at: 作成日時：
     batch_connect_sessions_stats_host: ホスト：
     batch_connect_sessions_stats_session_id: セッションID：
+    batch_connect_sessions_stats_session_dir_link_text: セッションディレクトリを開く
+    batch_connect_sessions_stats_session_dir_link_title: "%{session_id} のセッションディレクトリを開く"
     batch_connect_sessions_stats_support_ticket: このセッションに問題がありますか？
     batch_connect_sessions_stats_support_ticket_link_text: サポートチケットを提出する
     batch_connect_sessions_stats_time_remaining: 残り時間：
