@@ -17,7 +17,9 @@ Changes are grouped by type:
 
 ## [Unreleased]
 
-- Nothing at the moment
+### Fixed
+
+- `FilesController#fs` no longer crashes with `NoMethodError: undefined method 'split' for nil:NilClass` when a request omits the `Accept` header (as Chrome's `<a download>` links sometimes do), which previously caused the global `rescue_action` handler to silently redirect the user to `$HOME` instead of serving the file.
 
 ## [4.1.5] - 2026-04-29
 
