@@ -8,7 +8,7 @@ class FilesController < ApplicationController
   before_action :strip_sendfile_headers, only: [:fs, :directory_frame]
 
   def fs
-    request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
+    request.format = 'json' if request.headers['HTTP_ACCEPT']&.split(',')&.include?('application/json')
     parse_path(fs_params[:filepath], fs_params[:fs])
     validate_path!
 
