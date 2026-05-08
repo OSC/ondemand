@@ -163,6 +163,7 @@ en:
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
+    files_title: File browsing
     files_doesnt_exist: "%{path} does not exist."
     files_not_readable: "You do not have sufficient permissions to read '%{path}'."
     home_directory: Home Directory
@@ -253,10 +254,6 @@ en:
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
-    files_title: File browsing
-    page_title: "%{page} - %{site}"
-    page_title_with_dir: "%{page} - %{site} - %{dir}"
-    root: Root
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     name: Name
@@ -281,6 +278,8 @@ en:
     nsf_access_events: NSF ACCESS Events
     ok: OK
     owner: Owner
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
     path_selector_default_popup_title: Select Your Working Directory
     path_selector_home: home
     path_selector_parent_directory: parent directory
@@ -307,6 +306,7 @@ en:
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
+    root: Root
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
