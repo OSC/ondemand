@@ -17,7 +17,16 @@ Changes are grouped by type:
 
 ## [Unreleased]
 
-- Nothing at the moment
+### Added
+- Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
+- This project has issue templates in [5440](https://github.com/OSC/ondemand/pull/5440) and [5441](https://github.com/OSC/ondemand/pull/5441).
+
+### Fixed 
+- File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
+- All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
+
+### Changed
+- Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 
 ## [4.1.5] - 2026-04-29
 
