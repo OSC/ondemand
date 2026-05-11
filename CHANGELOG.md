@@ -16,24 +16,16 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Refactor pinned app border colors using SASS loop (#5325)\
-modernize README with logo, badges, and ToC (1 of 3) (#5424)\
-Add issue templates to ondemand (#5440)\
-Add issue template config for Discourse (#5441)\
-Bug fix/robust html fetching 5304 (#5346)\
-Add collapsible Batch Connect app sidebar menus (#5321)\
-Vertically align breadcrumbs in files table (#5434)\
-Remove rclone direct dependency (#5436)\
-Fix accessibility for file/folder icons (#4889) (#5419)\
-Bump net-imap from 0.3.10 to 0.4.24 in /apps/myjobs (#5431)\
-Update CHANGELOG.md with entry format details (#5423)\
-update dependencies (#5428)\
-Bump net-imap from 0.3.10 to 0.4.24 in /apps/dashboard (#5430)\
-Fix interactive app menu border hover issue (#5343) (#5361)\
-lint a random file (#5425)\
-update localizations (#5427)
 
-- Nothing at the moment
+### Added
+- Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
+- This project has issue templates in [5440](https://github.com/OSC/ondemand/pull/5440) and [5441](https://github.com/OSC/ondemand/pull/5441).
+
+### Fixed 
+- File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
+
+### Changed
+- Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 
 ## [4.1.5] - 2026-04-29
 
