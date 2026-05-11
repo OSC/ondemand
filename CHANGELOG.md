@@ -23,6 +23,7 @@ Changes are grouped by type:
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
+- All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
