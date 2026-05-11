@@ -350,7 +350,7 @@ class FileOps {
 
   newFile(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrfToken() } })
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrfToken() } })
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
@@ -384,7 +384,7 @@ class FileOps {
 
   newDirectory(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
@@ -406,7 +406,7 @@ class FileOps {
 
   downloadDirectory(file) {
     let filename = $($.parseHTML(file.name)).text(),
-        canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
+        canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?can_download=${Date.now().toString()}`
 
     this.showSwalLoading('preparing to download directory: ' + file.name);
   
@@ -439,7 +439,7 @@ class FileOps {
     // so this just repeats the status quo
   
     let filename = $($.parseHTML(file.name)).text(),
-        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
+        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?download=${Date.now().toString()}`,
         iframe = document.createElement('iframe'),
         TIME = 30 * 1000;
   

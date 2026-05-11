@@ -104,13 +104,38 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     end
   end
 
+  test 'collapsible batch connect app menu toggles' do
+    visit(batch_connect_sessions_path)
+
+    within('nav[aria-label="Interactive Apps Menu"]') do
+      card = find('.collapsible-app-card', match: :first)
+      button = card.find('button.collapsible-app-card-toggle')
+      target_id = button['aria-controls']
+      list_group = card.find("##{target_id}", visible: :all)
+
+      assert_selector("##{target_id}.show")
+      assert_equal('true', button['aria-expanded'])
+
+      button.click
+
+      refute_selector("##{target_id}.show")
+      refute_selector("##{target_id}.collapsing")
+      assert_equal('false', button['aria-expanded'])
+
+      button.click
+      
+      assert_selector("##{target_id}.show")
+      assert_equal('true', button['aria-expanded'])
+    end
+  end
+  
   test 'project launcher list toggle works' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
       visit project_path(project_id)
       launcher_id = setup_launcher(project_id)
 
-      toggle_button = find('a[data-bs-target="#launcher_list"]')
+      toggle_button = find('button[data-bs-target="#launcher_list"]')
       launcher_list = find('#launcher_list', visible: :all)
 
       assert launcher_list.visible?, 'Launcher list should be visible initially'
@@ -134,7 +159,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       
       visit project_path(project_id)
 
-      toggle_button = find('a[data-bs-target="#workflow_list"]')
+      toggle_button = find('button[data-bs-target="#workflow_list"]')
       workflow_list = find('#workflow_list', visible: :all)
 
       assert workflow_list.visible?, 'Workflow list should be visible initially'

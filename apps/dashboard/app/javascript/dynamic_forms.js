@@ -895,7 +895,7 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
   // be the current selected value.
   // if you've hidden what _was_ selected.
   if(hideSelectedValue !== undefined) {
-    let others = [...document.querySelectorAll(`#${targetId} option[value='${hideSelectedValue}']`)];
+    let others = [...document.querySelectorAll(`#${targetId} option[value='${CSS.escape(hideSelectedValue)}']`)];
     let newSelectedOption = undefined;
 
     // You have hidden what _was_ selected, so try to find a duplicate option that is visible

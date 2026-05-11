@@ -148,14 +148,14 @@ class WorkflowsController < ApplicationController
   def permit_params
     params
       .require(:workflow)
-      .permit(:name, :description, :id, launcher_ids: [])
+      .permit(:name, :description, :id, :sync_key_enabled, launcher_ids: [])
       .merge(project_dir: project_directory, metadata: session.delete(:cloned_metadata) || {})
   end
 
   def update_params
     params
       .require(:workflow)
-      .permit(:name, :description, :id, launcher_ids: [])
+      .permit(:name, :description, :id, :sync_key_enabled, launcher_ids: [])
   end
 
   def project_directory

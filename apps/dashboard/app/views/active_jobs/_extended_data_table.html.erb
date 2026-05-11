@@ -10,7 +10,7 @@
       <%= status_label(data.status) %>
       <span class="text-break ms-3"><%= data.jobname %></span>
       <span class="ms-3"><%= data.pbsid %></span>
-      <button class="btn-close float-end" id="dismiss_details" onclick="closeExtendedDetails()"></button>
+      <button class="btn-close float-end" id="dismiss_details" onclick="closeExtendedDetails()" title="<%= t('dashboard.active_jobs_close_details') %>"></button>
     </strong>
   </div>
   <div class="card-body">

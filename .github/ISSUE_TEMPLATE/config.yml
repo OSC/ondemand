@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a Question
+    url: https://discourse.openondemand.org
+    about: Have a question? Ask it on our Discourse forum instead.
