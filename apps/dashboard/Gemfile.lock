@@ -214,12 +214,12 @@ GEM
     minitest (5.27.0)
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
-    multi_json (1.21.0)
+    multi_json (1.21.1)
     multipart-post (2.4.1)
     mustermann (3.1.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.4.24)
+    net-imap (0.6.4)
       date
       net-protocol
     net-pop (0.1.2)
