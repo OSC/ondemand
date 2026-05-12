@@ -213,13 +213,13 @@ class FilesController < ApplicationController
 
   # Whether the incoming request explicitly accepts application/json.
   #
-  # Safe-navigates through the Accept header because some user agents
+  # Coerces the Accept header to a string because some user agents
   # (notably Chrome on `<a download>` links for files linked from
   # Interactive App session views) omit the header entirely, which
   # would otherwise raise NoMethodError on nil.split and leave the
   # global rescue_action handler to redirect users to $HOME.
   def json_request?
-    request.headers['HTTP_ACCEPT']&.split(',')&.include?('application/json')
+    request.headers['HTTP_ACCEPT'].to_s.split(',').include?('application/json')
   end
 
   def rescue_action(exception)
