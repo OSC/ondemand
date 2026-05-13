@@ -24,6 +24,12 @@ module BatchConnect
       end
     end
 
+    # Return smart attribute value for serialization instead of raw attribute object
+    def read_attribute_for_serialization(name)
+      attribute = self[name]
+      attribute ? attribute.value : super
+    end
+
     # @param attributes [Array<Attribute>] list of attribute objects
     def initialize(attributes = [], app_specific_cache_setting = nil)
       @attributes = attributes
