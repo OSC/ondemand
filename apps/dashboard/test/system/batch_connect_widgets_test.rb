@@ -645,7 +645,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             options:
               - 'small'
               - 'medium'
-              - ['large', 'large', data-option-for-classroom-geology: false]
+              - ['large', 'large', data-option-for-classroom-geology: false, data-option-for-inverse: true]
       HEREDOC
 
       Pathname.new("#{dir}/app/").join('form.yml').write(form)

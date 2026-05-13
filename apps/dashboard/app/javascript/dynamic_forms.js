@@ -12,7 +12,7 @@ const formTokens = [];
 // trigger changes to node_type
 const optionForHandlerCache = {};
 const exclusiveOptionForHandlerCache = {};
-// inverse of the forward A -> B dependency
+// dependent field may filter controller via data-option-for-inverse
 const reverseOptionForHandlerCache = {};
 const reverseExclusiveOptionForHandlerCache = {};
 
@@ -122,12 +122,17 @@ function memorizeElements(elements) {
   });
 };
 
+function optionForInverseEnabled(data) {
+  return data.optionForInverse === true || data.optionForInverse === 'true';
+}
+
 function makeChangeHandlers(prefix){
 
   // initialize some global variables.
   idPrefix = prefix;
   shortNameRex = new RegExp(`${idPrefix}_([\\w\\-]+)`);
 
+  formTokens.length = 0;
   const allElements = $(`[id^=${idPrefix}]`);
   memorizeElements(allElements);
 
@@ -147,7 +152,11 @@ function makeChangeHandlers(prefix){
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
                 let token = key.replace(/^optionFor/,'');
-                addOptionForHandler(idFromToken(token), element['id']);
+                const causeId = idFromToken(token);
+                if (optionForInverseEnabled(data)) {
+                  addReverseOptionForMapping(element['id'], causeId, 'optionFor');
+                }
+                addOptionForHandler(causeId, element['id']);
               } else if (key.startsWith('exclusiveOptionFor')) {
                 let token = key.replace(/^exclusiveOptionFor/, '');
                 addExclusiveOptionForHandler(idFromToken(token), element['id']);
@@ -610,10 +619,6 @@ function addReverseOptionForMapping(targetId, causeId, optionForType) {
   if (!targetId || !causeId) {
     return;
   }
-  // skip reverse option-for on cluster to preserve BC form flow
-  if (optionForType === 'optionFor' && shortId(causeId) === 'cluster') {
-    return;
-  }
   const revCache = optionForType == 'optionFor' ? reverseOptionForHandlerCache : reverseExclusiveOptionForHandlerCache;
   if (revCache[targetId] === undefined) {
     revCache[targetId] = [];
@@ -648,7 +653,9 @@ function sharedOptionForHandler(causeId, targetId, optionForType) {
     handlerCache = exclusiveOptionForHandlerCache;
   }
 
-  addReverseOptionForMapping(targetId, causeId, optionForType);
+  if (optionForType == 'exclusiveOptionFor') {
+    addReverseOptionForMapping(targetId, causeId, optionForType);
+  }
   
   if(changeId.length == 0 || handlerCache[causeId].includes(targetId)) {
     // nothing to do. invalid causeId or we already have a handler between the 2
