@@ -621,6 +621,48 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-option-for inverse hides controlling option when dependent changes' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - classroom
+          - classroom_size
+        attributes:
+          classroom:
+            widget: "select"
+            options:
+              - 'Physics'
+              - 'Geology'
+          classroom_size:
+            widget: "select"
+            options:
+              - 'small'
+              - 'medium'
+              - ['large', 'large', data-option-for-classroom-geology: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('Physics', from: 'batch_connect_session_context_classroom')
+      assert_equal '', find_option_style('classroom', 'Geology')
+
+      select('large', from: 'batch_connect_session_context_classroom_size')
+      assert_equal 'display: none;', find_option_style('classroom', 'Geology')
+
+      select('small', from: 'batch_connect_session_context_classroom_size')
+      assert_equal '', find_option_style('classroom', 'Geology')
+    end
+  end
+
   test 'data-option-exlusive-for-' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }

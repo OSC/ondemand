@@ -12,6 +12,9 @@ const formTokens = [];
 // trigger changes to node_type
 const optionForHandlerCache = {};
 const exclusiveOptionForHandlerCache = {};
+// inverse of the forward A -> B dependency
+const reverseOptionForHandlerCache = {};
+const reverseExclusiveOptionForHandlerCache = {};
 
 
 // simples array of string ids for elements that have a handler
@@ -603,6 +606,36 @@ function clamp(currentValue, previous, next) {
   }
 }
 
+function addReverseOptionForMapping(targetId, causeId, optionForType) {
+  if (!targetId || !causeId) {
+    return;
+  }
+  // skip reverse option-for on cluster to preserve BC form flow
+  if (optionForType === 'optionFor' && shortId(causeId) === 'cluster') {
+    return;
+  }
+  const revCache = optionForType == 'optionFor' ? reverseOptionForHandlerCache : reverseExclusiveOptionForHandlerCache;
+  if (revCache[targetId] === undefined) {
+    revCache[targetId] = [];
+  }
+  if (revCache[targetId].includes(causeId)) {
+    return;
+  }
+  revCache[targetId].push(causeId);
+
+  const listenerDataKey = optionForType == 'optionFor' ? 'reverseOptionForBound' : 'reverseExclusiveOptionForBound';
+  const targetElement = $(`#${targetId}`);
+  if (targetElement.data(listenerDataKey)) {
+    return;
+  }
+  targetElement.data(listenerDataKey, true);
+  targetElement.on('change', () => {
+    revCache[targetId].forEach((cid) => {
+      sharedToggleOptionsForInverse(undefined, targetId, cid, optionForType);
+    });
+  });
+}
+
 function sharedOptionForHandler(causeId, targetId, optionForType) {
   const changeId = String(causeId || '');
   let handlerCache = null;
@@ -614,6 +647,8 @@ function sharedOptionForHandler(causeId, targetId, optionForType) {
     if (exclusiveOptionForHandlerCache[causeId] == undefined) exclusiveOptionForHandlerCache[causeId] = [];
     handlerCache = exclusiveOptionForHandlerCache;
   }
+
+  addReverseOptionForMapping(targetId, causeId, optionForType);
   
   if(changeId.length == 0 || handlerCache[causeId].includes(targetId)) {
     // nothing to do. invalid causeId or we already have a handler between the 2
@@ -824,6 +859,44 @@ function sharedOptionForFromToken(str, optionForType) {
   })[0];
 }
 
+/**
+ * After options were hidden, the prior selection may have been cleared with no
+ * option left selected. Pick another visible option (prefer another option with
+ * the same value if duplicates exist).
+ *
+ * @param {string} selectElementId id of the select widget
+ * @param {string|undefined} hideSelectedValue value passed to option[value=...] lookup (historically from textContent)
+ */
+ function replaceDeselectedHiddenOptionSelect(selectElementId, hideSelectedValue) {
+  if (hideSelectedValue === undefined) {
+    return;
+  }
+  let others = [...document.querySelectorAll(`#${selectElementId} option[value='${CSS.escape(hideSelectedValue)}']`)];
+  let newSelectedOption = undefined;
+
+  if (others.length > 1) {
+    others.forEach(ele => {
+      if (ele.style.display === '') {
+        newSelectedOption = ele;
+        return;
+      }
+    });
+  }
+
+  if (newSelectedOption === undefined) {
+    others = [...document.querySelectorAll(`#${selectElementId} option`)];
+    others.forEach(ele => {
+      if (newSelectedOption === undefined && ele.style.display === '') {
+        newSelectedOption = ele;
+      }
+    });
+  }
+
+  if (newSelectedOption !== undefined) {
+    newSelectedOption.selected = true;
+  }
+}
+
 function sharedToggleOptionsFor(_event, targetId, optionForType) {
   const options = [...document.querySelectorAll(`#${targetId} option`)];
   let hideSelectedValue = undefined;
@@ -894,34 +967,7 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
   // now that we've hidden/shown everything, let's choose what should now
   // be the current selected value.
   // if you've hidden what _was_ selected.
-  if(hideSelectedValue !== undefined) {
-    let others = [...document.querySelectorAll(`#${targetId} option[value='${CSS.escape(hideSelectedValue)}']`)];
-    let newSelectedOption = undefined;
-
-    // You have hidden what _was_ selected, so try to find a duplicate option that is visible
-    if(others.length > 1) {
-      others.forEach(ele => {
-        if(ele.style.display === '') {
-          newSelectedOption = ele;
-          return;
-        }
-      });
-    }
-
-    // no duplicates are visible, so just pick the first visible option
-    if (newSelectedOption === undefined) {
-      others = document.querySelectorAll(`#${targetId} option`);
-      others.forEach(ele => {
-        if(newSelectedOption === undefined && ele.style.display === '') {
-          newSelectedOption = ele;
-        }
-      });
-    }
-
-    if (newSelectedOption !== undefined) {
-      newSelectedOption.selected = true;
-    }
-  }
+  replaceDeselectedHiddenOptionSelect(targetId, hideSelectedValue);
 
   // now that we're done, propagate this change to data-set or data-hide handlers
   document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
@@ -952,6 +998,82 @@ function toggleOptionsFor(_event, elementId) {
 function toggleExclusiveOptionsFor(_event, elementId) {
   sharedToggleOptionsFor(_event, elementId, 'exclusiveOptionFor');
 };
+
+/**
+ * Apply option-for / exclusive-option-for rules in the opposite direction: the
+ * dependent field's selected option may rule out values on the controlling field.
+ *
+ * @param {*} _event unused (keeps signature parallel to sharedToggleOptionsFor)
+ * @param {string} targetId select whose options carry data-option-for-* / exclusive-* (dependent)
+ * @param {string} causeId select to filter (controller)
+ * @param {string} optionForType 'optionFor' or 'exclusiveOptionFor'
+ */
+ function sharedToggleOptionsForInverse(_event, targetId, causeId, optionForType) {
+  const targetSelect = document.getElementById(targetId);
+  if (!targetSelect || targetSelect.selectedIndex < 0) {
+    return;
+  }
+  const selectedTargetOption = targetSelect.options[targetSelect.selectedIndex];
+  const causeToken = mountainCaseWords(shortId(causeId));
+  const options = [...document.querySelectorAll(`#${causeId} option`)];
+  let hideSelectedValue = undefined;
+
+  options.forEach(option => {
+    let optionForValue = mountainCaseWords(option.value);
+    if (optionForValue.match(/^\d/)) {
+      optionForValue = `-${optionForValue}`;
+    }
+    let optionForAlias = '';
+    if ((targetId in aliasLookup) && (option.value in aliasLookup[targetId])) {
+      optionForAlias = aliasLookup[targetId][option.value];
+    }
+
+    const primaryKey = `${optionForType}${causeToken}${optionForValue}`;
+    const altKey = `${optionForType}${causeToken}${optionForAlias}`;
+    let hide = false;
+    let skipStyleUpdate = false;
+
+    if (optionForType === 'optionFor') {
+      hide = (primaryKey in selectedTargetOption.dataset && selectedTargetOption.dataset[primaryKey] === 'false')
+        || (optionForAlias !== '' && altKey in selectedTargetOption.dataset && selectedTargetOption.dataset[altKey] === 'false');
+    } else {
+      // forward checks all dependent rows; inverse only checks selected row and skips no-op updates
+      const primaryIn = primaryKey in selectedTargetOption.dataset;
+      const altIn = optionForAlias !== '' && altKey in selectedTargetOption.dataset;
+      if (!primaryIn && !altIn) {
+        skipStyleUpdate = true;
+      } else {
+        const val = primaryIn ? selectedTargetOption.dataset[primaryKey] : selectedTargetOption.dataset[altKey];
+        hide = !(val === 'true');
+      }
+    }
+
+    if (skipStyleUpdate) {
+      return;
+    }
+
+    const causeInfo = getWidgetInfo(causeId);
+    if (hide) {
+      if (option.selected) {
+        option.selected = false;
+        hideSelectedValue = option.textContent;
+      }
+      var prefix = option.selected ? 'Selected' : '';
+      ariaStream(`${prefix} option ${option.value} disabled for ${causeInfo}`);
+      option.style.display = 'none';
+      option.disabled = true;
+    } else {
+      ariaStream(`Option ${option.value} enabled for ${causeInfo}`);
+      option.style.display = '';
+      option.disabled = false;
+    }
+  });
+
+  if (hideSelectedValue !== undefined) {
+    replaceDeselectedHiddenOptionSelect(causeId, hideSelectedValue);
+    document.getElementById(causeId).dispatchEvent((new Event('change', { bubbles: true })));
+  }
+}
 
 export {
   makeChangeHandlers
