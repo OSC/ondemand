@@ -1,2 +1,2 @@
 
-OODClusters = OodCore::Clusters.new(OodAppkit.clusters.select(&:allow?))
+OODClusters = OodCore::Clusters.new(OodAppkit.clusters.select(&:allow?).reject { |c| c.metadata.hidden })
