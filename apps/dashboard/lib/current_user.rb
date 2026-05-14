@@ -3,7 +3,6 @@
 require 'etc'
 require 'singleton'
 require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/object/blank'
 
 # The CurrentUser class represents the current user on the system from Etc.
 # It has a name, a home directory, gid, uid and so on.
@@ -43,10 +42,7 @@ class CurrentUser
   end
 
   def filtered_group_names
-    filter = Configuration.auto_groups_filter
-    return group_names if filter.blank?
-
-    group_names.grep(/#{filter}/)
+    group_names.grep(/#{Configuration.auto_groups_filter}/)
   rescue RegexpError => e
     Rails.logger.warn("auto_groups_filter does not compile, throwing this error: #{e}")
     []
