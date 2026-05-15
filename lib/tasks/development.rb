@@ -72,7 +72,7 @@ namespace :dev do
     end
   end
 
-  def ondemand_dir
+  def ondemand_directory
     pwd = FileUtils.pwd
     target = Pathname.new(pwd).ascend do |path|
       break path if path.basename.to_s == 'ondemand'
@@ -84,7 +84,7 @@ namespace :dev do
   def dev_mounts
     [
       '-v', "#{config_directory}:/etc/ood/config",
-      '-v', "#{ondemand_dir}:#{user.dir}/ondemand"
+      '-v', "#{ondemand_directory}:#{user.dir}/ondemand"
     ].tap do |mnts|
       unless ENV['OOD_MNT_PORTAL'].nil?
         mnts.concat(['-v',
