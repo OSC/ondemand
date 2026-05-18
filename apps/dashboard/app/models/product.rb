@@ -227,7 +227,7 @@ class Product
       if (!title.blank? || !description.blank?) || !app.manifest_path.exist?
         unless manifest.save(app.manifest_path)
           message = manifest.errors[:save].first if manifest.respond_to?(:errors) && manifest.errors[:save].present?
-          errors.add(:base, message || I18n.t('dashboard.products_manifest_save_error', path: app.manifest_path))
+          errors.add(:base, message || I18n.t('dashboard.products_manifest_save_error', path: app.manifest_path.realpath))
           return false
         end
       end
