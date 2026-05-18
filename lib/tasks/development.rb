@@ -81,8 +81,12 @@ namespace :dev do
     return target.nil? ? pwd : target
   end
 
+  def linux_home
+    "/home/#{user.name}"
+  end
+
   def container_ondemand_directory
-    "/home/#{user.name}/ondemand"
+    "#{linux_home}/ondemand"
   end
 
   def dev_mounts
@@ -154,9 +158,9 @@ namespace :dev do
   task :exec do
     ctr_args = [container_runtime, 'exec', '-it']
     # home is set to /root? could be bug for me
-    ctr_args.concat ['-e', "HOME=#{user.dir}"]
+    ctr_args.concat ['-e', "HOME=#{linux_home}"]
     ctr_args.concat term_container_args
-    ctr_args.concat ['--workdir', user.dir.to_s]
+    ctr_args.concat ['--workdir', linux_home.to_s]
     ctr_args.concat [dev_container_name, '/bin/bash']
 
     sh ctr_args.join(' ')
