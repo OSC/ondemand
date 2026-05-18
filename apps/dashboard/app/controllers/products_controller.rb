@@ -69,6 +69,7 @@ class ProductsController < ApplicationController
         format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
       else
+        flash.now[:alert] = @product.errors.full_messages.to_sentence
         format.html { render :edit }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
