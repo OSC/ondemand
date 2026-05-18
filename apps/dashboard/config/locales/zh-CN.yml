@@ -22,6 +22,7 @@ zh-CN:
     active_sessions_caption_html: <a href="%{all_sessions_url}"> 查看全部 (%{number_of_sessions})</a>
     active_sessions_title: 活动交互会话
     add: 添加
+    add_attachment: 添加附件
     all_apps_table_app_column: 名称
     all_apps_table_category_column: 类别
     all_apps_table_sub_category_column: 子类别
@@ -51,6 +52,7 @@ zh-CN:
     balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
     balance_warning_prefix_html: '%{units_balance} 警告'
     batch_connect_apps_menu_title: 交互式应用
+    batch_connect_file_attachments_add: 点击框以添加文件。截图或其他文件可以帮助您解决您的问题。
     batch_connect_form_attr_cache_error: 无法使用先前缓存的值，改为使用默认值。(%{error_message})
     batch_connect_form_choose_template_name: 选择模版名称
     batch_connect_form_data_root: 数据根目录
@@ -405,6 +407,7 @@ zh-CN:
     user: 用户
     user_configuration:
       support_ticket_error: support_ticket 配置错误。请在配置 YAML 中添加后端实现。
+    version: 版本
     view: 查看
     welcome_html: |
       %{logo_img_tag}
