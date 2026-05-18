@@ -282,6 +282,7 @@ en:
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
+    products_manifest_save_error: Cannot save app manifest to %{path}
     project: Project
     project_balances: Project Balances
     project_zip_error_message: 'Error creating ZIP file: %{error}'
