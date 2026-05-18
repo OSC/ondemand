@@ -78,7 +78,7 @@ namespace :dev do
       break path if path.basename.to_s == 'ondemand'
     end
 
-    return target.nil? ? pwd : target
+    return target.nil? ? container_ondemand_directory : target
   end
 
   def linux_home
