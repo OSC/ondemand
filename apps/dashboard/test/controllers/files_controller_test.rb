@@ -1,7 +1,8 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class FilesControllerTest < ActionController::TestCase
-
   def setup
     Configuration.stubs(:remote_files_enabled?).returns(true)
     @date1 = 2.months.ago.to_i.to_s
@@ -9,94 +10,84 @@ class FilesControllerTest < ActionController::TestCase
     @date3 = 2.days.ago.to_i.to_s
     @date4 = 2.hours.ago.to_i.to_s
     @files = [
-      { id: 'abcd1234', name: 'file1', size: 8166357, directory: false, date: @date2, owner: 'msmith', mode: 33188 },
-      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16877 },
-      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33188 },
-      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16877 }
+      { id: 'abcd1234', name: 'file1', size: 8_166_357, directory: false, date: @date2, owner: 'msmith', mode: 33_188 },
+      { id: 'bcde2345', name: 'dir2', size: nil, directory: true, date: @date4, owner: 'dtenant', mode: 16_877 },
+      { id: 'cdef3456', name: 'file2', size: 816, directory: false, date: @date3, owner: 'tbaker', mode: 33_188 },
+      { id: 'defg4567', name: 'dir1', size: nil, directory: true, date: @date1, owner: 'pcapaldi', mode: 16_877 }
     ]
   end
 
-  test "empty path is parsed" do
-    @controller.send(:parse_path, "", "fs")
+  test 'empty path is parsed' do
+    @controller.send(:parse_path, '', 'fs')
     path = @controller.instance_variable_get(:@path)
     assert_kind_of PosixFile, path
-    assert_equal "/", path.to_s
-    assert_equal "fs", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/', path.to_s
+    assert_equal 'fs', @controller.instance_variable_get(:@filesystem)
   end
 
-  test "root path is parsed" do
-    @controller.send(:parse_path, "/", "fs")
+  test 'root path is parsed' do
+    @controller.send(:parse_path, '/', 'fs')
     path = @controller.instance_variable_get(:@path)
     assert_kind_of PosixFile, path
-    assert_equal "/", path.to_s
-    assert_equal "fs", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/', path.to_s
+    assert_equal 'fs', @controller.instance_variable_get(:@filesystem)
   end
 
-  test "posix path is parsed" do
-    @controller.send(:parse_path, "/foo/bar/file.txt", "fs")
+  test 'posix path is parsed' do
+    @controller.send(:parse_path, '/foo/bar/file.txt', 'fs')
     path = @controller.instance_variable_get(:@path)
     assert_kind_of PosixFile, path
-    assert_equal "/foo/bar/file.txt", path.to_s
-    assert_equal "fs", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/foo/bar/file.txt', path.to_s
+    assert_equal 'fs', @controller.instance_variable_get(:@filesystem)
   end
 
-  test "posix path without slash is parsed" do
-    @controller.send(:parse_path, "foo/bar", "fs")
-    @controller.stubs(:params).returns({ :filepath => "" })
+  test 'posix path without slash is parsed' do
+    @controller.send(:parse_path, 'foo/bar', 'fs')
+    @controller.stubs(:params).returns({ :filepath => '' })
     path = @controller.instance_variable_get(:@path)
     assert_kind_of PosixFile, path
-    assert_equal "/foo/bar", path.to_s
-    assert_equal "fs", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/foo/bar', path.to_s
+    assert_equal 'fs', @controller.instance_variable_get(:@filesystem)
   end
 
-  test "empty remote path is parsed" do
-    @controller.send(:parse_path, "", "myremote")
+  test 'empty remote path is parsed' do
+    @controller.send(:parse_path, '', 'myremote')
     path = @controller.instance_variable_get(:@path)
     assert_kind_of RemoteFile, path
-    assert_equal "/", path.path.to_s
-    assert_equal "myremote", path.remote
-    assert_equal "myremote", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/', path.path.to_s
+    assert_equal 'myremote', path.remote
+    assert_equal 'myremote', @controller.instance_variable_get(:@filesystem)
   end
 
-  test "root remote path is parsed" do
-    @controller.send(:parse_path, "/", "myremote")
+  test 'root remote path is parsed' do
+    @controller.send(:parse_path, '/', 'myremote')
     path = @controller.instance_variable_get(:@path)
     assert_kind_of RemoteFile, path
-    assert_equal "/", path.path.to_s
-    assert_equal "myremote", path.remote
-    assert_equal "myremote", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/', path.path.to_s
+    assert_equal 'myremote', path.remote
+    assert_equal 'myremote', @controller.instance_variable_get(:@filesystem)
   end
 
-  test "remote path is parsed" do
-    @controller.send(:parse_path, "/foo/bar/file.txt", "myremote")
+  test 'remote path is parsed' do
+    @controller.send(:parse_path, '/foo/bar/file.txt', 'myremote')
     path = @controller.instance_variable_get(:@path)
     assert_kind_of RemoteFile, path
-    assert_equal "/foo/bar/file.txt", path.path.to_s
-    assert_equal "myremote", path.remote
-    assert_equal "myremote", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/foo/bar/file.txt', path.path.to_s
+    assert_equal 'myremote', path.remote
+    assert_equal 'myremote', @controller.instance_variable_get(:@filesystem)
   end
 
   # https://rclone.org/docs/#valid-remote-names
-  test "remote path supports valid rclone remote names" do
-    @controller.send(:parse_path, "/foo/bar", "my_REMOTE 1.2-")
+  test 'remote path supports valid rclone remote names' do
+    @controller.send(:parse_path, '/foo/bar', 'my_REMOTE 1.2-')
     path = @controller.instance_variable_get(:@path)
     assert_kind_of RemoteFile, path
-    assert_equal "/foo/bar", path.path.to_s
-    assert_equal "my_REMOTE 1.2-", path.remote
-    assert_equal "my_REMOTE 1.2-", @controller.instance_variable_get(:@filesystem)
+    assert_equal '/foo/bar', path.path.to_s
+    assert_equal 'my_REMOTE 1.2-', path.remote
+    assert_equal 'my_REMOTE 1.2-', @controller.instance_variable_get(:@filesystem)
   end
 
   # FIXME: decide expected behaviour
-  '''
-  test "path is posix path if remote files feature is disabled" do
-    Configuration.stubs(:files_app_remote_files?).returns(false)
-    @controller.send(:parse_path, "/foo/bar/file.txt", "myremote")
-    path = @controller.instance_variable_get(:@path)
-    assert_kind_of PosixFile, path
-    assert_equal "/foo/bar/file.txt", path.path.to_s
-    assert_equal "myremote", @controller.instance_variable_get(:@filesystem)
-  end
-  '''
 
   # Tests for files_controller#normalized_path
   test 'normalized_path with empty path' do
