@@ -16,12 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Fix hidden clusters appearing in Active Jobs dropdown (#5458)\
-Fix batch connect form serialization for reserved attribute names (#5455)\
-Fix file editor control panel overflow at small screen widths (#5456)\
-Update Changelog (#5450)\
-update dependencies (#5451)\
-lint a random file (#5449)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -30,6 +24,8 @@ lint a random file (#5449)
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
 - All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
+- Reserved keyword names like 'format' now work in batch connect forms in [5455](https://github.com/OSC/ondemand/pull/5455).
+- Hidden clusters no longer appear in the Active Jobs dropdown in [5458](https://github.com/OSC/ondemand/pull/5458).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
