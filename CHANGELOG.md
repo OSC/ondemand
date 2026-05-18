@@ -16,6 +16,12 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Fix hidden clusters appearing in Active Jobs dropdown (#5458)\
+Fix batch connect form serialization for reserved attribute names (#5455)\
+Fix file editor control panel overflow at small screen widths (#5456)\
+Update Changelog (#5450)\
+update dependencies (#5451)\
+lint a random file (#5449)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
