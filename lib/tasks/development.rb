@@ -81,10 +81,14 @@ namespace :dev do
     return target.nil? ? pwd : target
   end
 
+  def container_ondemand_directory
+    "/home/#{user.name}/ondemand"
+  end
+
   def dev_mounts
     [
       '-v', "#{config_directory}:/etc/ood/config",
-      '-v', "#{ondemand_directory}:#{user.dir}/ondemand"
+      '-v', "#{ondemand_directory}:#{ondemand_directory}"
     ].tap do |mnts|
       unless ENV['OOD_MNT_PORTAL'].nil?
         mnts.concat(['-v',
@@ -116,7 +120,18 @@ namespace :dev do
     ctr_args.concat container_rt_args
 
     ctr_args.concat ["#{dev_image_name}:latest"]
+
     sh ctr_args.join(' ')
+
+    if ondemand_directory != container_ondemand_directory
+      # Create symlink from detected ondemand directory to ~/ondemand inside the container
+      symlink_cmd = [
+        container_runtime, 'exec', dev_container_name,
+        '/bin/bash', '-c',
+        "\"rm -rf #{container_ondemand_directory} && ln -s #{ondemand_directory} #{container_ondemand_directory}\""
+      ]
+      sh symlink_cmd.join(' ')
+    end
   end
 
   desc 'Stop development container'
