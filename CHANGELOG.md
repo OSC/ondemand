@@ -25,6 +25,7 @@ Changes are grouped by type:
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
 - All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
 - Reserved keyword names like 'format' now work in batch connect forms in [5455](https://github.com/OSC/ondemand/pull/5455).
+- File editor control panel cleanly scales to small screen widths in [5456](https://github.com/OSC/ondemand/pull/5456).
 - Hidden clusters no longer appear in the Active Jobs dropdown in [5458](https://github.com/OSC/ondemand/pull/5458).
 
 ### Changed
