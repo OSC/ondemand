@@ -179,9 +179,9 @@ class FilesControllerTest < ActionController::TestCase
   # Tests for files_controller#json_request?
   # Regression test for #5447: a request with no Accept header must not
   # crash FilesController#fs with NoMethodError on nil.split.
-  test 'json_request? returns nil when Accept header is missing' do
+  test 'json_request? returns false when Accept header is missing' do
     @request.env.delete('HTTP_ACCEPT')
-    assert_nil @controller.send(:json_request?)
+    refute @controller.send(:json_request?)
   end
 
   test 'json_request? returns truthy when Accept includes application/json' do
