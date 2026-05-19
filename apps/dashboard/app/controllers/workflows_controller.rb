@@ -123,7 +123,7 @@ class WorkflowsController < ApplicationController
   private
 
   def ensure_workflows_supported!
-    return if workflows_supported?
+    return if Workflow.supported?
 
     message = I18n.t('dashboard.jobs_workflows_not_supported')
 

@@ -55,10 +55,6 @@ class Launcher
       script_attribute = SmartAttributes::AttributeFactory.build('auto_scripts', { directory: project_dir })
       script_attribute.select_choices(hide_excludable: false).any?
     end
-
-    def workflows_supported?
-      Workflow.supported?
-    end
   end
 
   ID_REX = /\A\w{8}\Z/.freeze

@@ -9,7 +9,6 @@ en:
         used: "%{attribute} is already used"
   dashboard:
     active_jobs_close_details: "Close extended details panel."
-    jobs_workflows_not_supported: "Workflows are not supported by the configured scheduler."
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
@@ -245,6 +244,7 @@ en:
     jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
+    jobs_workflows_not_supported: "Workflows are not supported by the configured scheduler."
     launch: Launch
     logo_alt_text: Welcome to Open OnDemand
     maximum: Maximum

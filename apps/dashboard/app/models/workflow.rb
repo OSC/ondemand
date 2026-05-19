@@ -6,19 +6,11 @@ class Workflow
 
   class << self
     def supported?
-      dependency_keys = %i[after afterok afternotok afterany].freeze
+      enabled = Configuration.dashboard_workflows_enabled
+      return enabled unless enabled.nil?
 
-      clusters_obj = OodAppkit.clusters
-      clusters =
-        if clusters_obj.respond_to?(:values)
-          Array(clusters_obj.values)
-        elsif clusters_obj.respond_to?(:to_a)
-          Array(clusters_obj.to_a)
-        elsif clusters_obj.respond_to?(:each)
-          clusters_obj.each.to_a
-        else
-          []
-        end.compact
+      dependency_keys = %i[after afterok afternotok afterany].freeze
+      clusters = Configuration.job_clusters.to_a
       return false if clusters.empty?
 
       clusters.any? do |cluster|
