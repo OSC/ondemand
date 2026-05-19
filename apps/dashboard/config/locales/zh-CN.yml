@@ -101,6 +101,7 @@ zh-CN:
     batch_connect_sessions_stats_created_at: 创建于：
     batch_connect_sessions_stats_host: 主机：
     batch_connect_sessions_stats_session_id: 会话ID：
+    batch_connect_sessions_stats_session_dir_link_title: "打开 %{session_id} 的会话目录"
     batch_connect_sessions_stats_support_ticket: 此会话有问题吗？
     batch_connect_sessions_stats_support_ticket_link_text: 提交支持票
     batch_connect_sessions_stats_time_remaining: 剩余时间：
@@ -276,7 +277,7 @@ zh-CN:
     jobs_workflow_not_found: 找不到工作流 %{workflow_id}
     jobs_workflow_show_graph: 在图形编辑器中打开工作流 %{name}
     jobs_workflow_submitted: 工作流提交成功！
-    jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
+    jobs_workflow_sync_key_help: 启用后，此工作流中的每个启动器都会接收到相同的 <code>OOD_WORKFLOW_SYNC_KEY</code> 环境变量（一个对每次工作流运行唯一的随机令牌）。这对于生成同步的文件名、锁文件或跨依赖作业的共享标识符非常有用。
     jobs_workflows: 工作流
     launch: 启动
     load_report: 负载报告 %{node}

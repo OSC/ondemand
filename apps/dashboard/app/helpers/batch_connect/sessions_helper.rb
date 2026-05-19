@@ -99,7 +99,7 @@ module BatchConnect::SessionsHelper
 
     user_context = session.user_context
     params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, nil)]}.to_h.compact
-    title = "#{t('dashboard.batch_connect_sessions_relaunch_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_relaunch_full_title', title: session.title)
     button_to(
       batch_connect_session_contexts_path(token: batch_connect_app.token),
       method: :post,
@@ -139,7 +139,7 @@ module BatchConnect::SessionsHelper
   end
 
   def delete(session)
-    title = "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_delete_full_title', title: session.title)
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
@@ -153,7 +153,7 @@ module BatchConnect::SessionsHelper
   end
 
   def cancel(session)
-    title = "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_cancel_full_title', title: session.title)
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
