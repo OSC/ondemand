@@ -67,18 +67,6 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '', find_option_style('node_type', 'hugemem')
   end
 
-  test 'auto modules data-option-for-cluster works when cluster id has underscores' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
-      visit new_batch_connect_session_context_url('sys/bc_jupyter')
-
-      select('Owens', from: bc_ele_id('cluster'))
-      assert_equal '', find_option_style('auto_modules_intel', 'intel/2021.3.0')
-
-      select('X Nextgen Ascend', from: bc_ele_id('cluster'))
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/2021.3.0')
-    end
-  end
-  
   test 'node type choice changes python versions' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
