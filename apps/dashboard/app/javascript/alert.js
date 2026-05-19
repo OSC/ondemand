@@ -16,14 +16,14 @@ export function OODAlertSuccess(message) {
 export function updateAlerts() {
   const alerts = document.querySelectorAll('[data-notice]');
   alerts.forEach((alert) => {
-      const tmpHtml = alert.innerHTML;
-      alert.innerHTML = null;
-      setTimeout(setAlert, 200, alert, tmpHtml);
+      const tmpText = alert.textContent;
+      alert.innerHTML = '';
+      setTimeout(setAlert, 200, alert, tmpText);
   });
 }
 
-function setAlert(alert, html) {
-  alert.innerHTML = html;
+function setAlert(alert, text) {
+  alert.textContent = text;
   alert.classList.remove('d-none');
 }
 
