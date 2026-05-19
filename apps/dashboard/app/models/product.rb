@@ -171,7 +171,7 @@ class Product
     add_icon_uri
 
     if self.valid?
-      write_manifest
+      return false unless write_manifest
       set_git_remote
       true
     else
@@ -219,14 +219,19 @@ class Product
 
     # Writes out a manifest to the router path unless the repository has been newly cloned.
     #
-    # @return [true] always returns true
+    # @return [true, false] true if the manifest is written successfully
     def write_manifest
-      manifest = Manifest.load( app.manifest_path )
+      manifest = Manifest.load(app.manifest_path)
+      manifest = manifest.merge({ name: title, description: description, icon: icon })
 
-      manifest = manifest.merge({ name: title, description: description, icon: icon})
-
-      manifest.save( app.manifest_path ) if (!title.blank? || !description.blank?) || !app.manifest_path.exist?
-
+      if (!title.blank? || !description.blank?) || !app.manifest_path.exist?
+        unless manifest.save(app.manifest_path)
+          message = manifest.errors[:save].first if manifest.respond_to?(:errors) && manifest.errors[:save].present?
+          errors.add(:base, message || I18n.t('dashboard.products_manifest_save_error', path: app.manifest_path.realpath))
+          return false
+        end
+      end
+      
       true
     end
 

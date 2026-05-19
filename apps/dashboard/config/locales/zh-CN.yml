@@ -83,6 +83,7 @@ zh-CN:
     batch_connect_sessions_stats_created_at: 创建于：
     batch_connect_sessions_stats_host: 主机：
     batch_connect_sessions_stats_session_id: 会话ID：
+    batch_connect_sessions_stats_session_dir_link_title: "打开 %{session_id} 的会话目录"
     batch_connect_sessions_stats_support_ticket: 此会话有问题吗？
     batch_connect_sessions_stats_support_ticket_link_text: 提交支持票
     batch_connect_sessions_stats_time_remaining: 剩余时间：

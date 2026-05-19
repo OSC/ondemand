@@ -370,7 +370,7 @@ module BatchConnect
     end
 
     def vnc?
-      script_type == "vnc" || script_type == "vnc_container"
+      script_type == "vnc" || script_type == "vnc_container" || script_type == "wayvnc"
     end
 
     # Cancel this session's job

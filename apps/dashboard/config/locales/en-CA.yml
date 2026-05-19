@@ -91,6 +91,7 @@ en-CA:
     batch_connect_sessions_stats_created_at: 'Created at:'
     batch_connect_sessions_stats_host: 'Host:'
     batch_connect_sessions_stats_session_id: 'Session ID:'
+    batch_connect_sessions_stats_session_dir_link_title: 'Open session directory for %{session_id}'
     batch_connect_sessions_stats_support_ticket: Problems with this session?
     batch_connect_sessions_stats_support_ticket_link_text: Submit support ticket
     batch_connect_sessions_stats_time_remaining: 'Time Remaining:'
