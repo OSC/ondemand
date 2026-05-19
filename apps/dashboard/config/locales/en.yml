@@ -69,11 +69,13 @@ en:
     batch_connect_no_sessions: You have no active sessions.
     batch_connect_sandbox: " [Sandbox]"
     batch_connect_sessions_cancel_confirm: Are you sure?
+    batch_connect_sessions_cancel_full_title: "Cancel %{title} Session"
     batch_connect_sessions_cancel_title: Cancel
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
+    batch_connect_sessions_delete_full_title: "Delete %{title} Session"
     batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
@@ -86,6 +88,7 @@ en:
     batch_connect_sessions_novnc_launch: Launch %{app_title}
     batch_connect_sessions_novnc_view_only: View Only (Share-able Link)
     batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.
+    batch_connect_sessions_relaunch_full_title: "Relaunch %{title} Session"
     batch_connect_sessions_relaunch_title: Relaunch
     batch_connect_sessions_staged_root: staged root directory
     batch_connect_sessions_stats_created_at: 'Created at:'
@@ -161,6 +164,7 @@ en:
     files_send_to_target_title_default: Send selected files metadata to the external application
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
+    files_title: File browsing
     files_doesnt_exist: "%{path} does not exist."
     files_not_readable: "You do not have sufficient permissions to read '%{path}'."
     home_directory: Home Directory
@@ -252,7 +256,6 @@ en:
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
     module_browser_title: Module Browser
-    files_title: File browsing
     motd_erb_render_error: 'MOTD was not parsed or rendered correctly: %{error_message}'
     motd_title: Message of the Day
     name: Name
@@ -277,6 +280,8 @@ en:
     nsf_access_events: NSF ACCESS Events
     ok: OK
     owner: Owner
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
     path_selector_default_popup_title: Select Your Working Directory
     path_selector_home: home
     path_selector_parent_directory: parent directory
@@ -286,6 +291,7 @@ en:
     products_manifest_save_error: Cannot save app manifest to %{path}
     project: Project
     project_balances: Project Balances
+    project_directory: Project Directory
     project_zip_error_message: 'Error creating ZIP file: %{error}'
     project_zip_success_message: 'Success: project.zip has been created in your project directory.'
     quota_additional_message: Consider deleting or archiving files to free up disk space.
@@ -293,6 +299,7 @@ en:
     quota_block_shared: "(%{used_exclusive} are yours)"
     quota_file: Using %{used} files of quota %{available} files
     quota_file_shared: "(%{used_exclusive} files are yours)"
+    quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: Reload page to see updated quota. Quotas are updated every 5 minutes.
     quota_warning_prefix_html: Quota limit warning for
     recently_used_apps_title: Recently Used Apps
@@ -302,6 +309,7 @@ en:
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
+    root: Root
     save: Save
     saved_settings_title: Saved Settings
     select_path: Select Path
