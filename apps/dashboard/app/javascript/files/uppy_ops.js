@@ -6,6 +6,7 @@ import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import { maxFileSize, csrfToken, uppyLocale } from '../config.js';
 import { fileOps } from './file_ops.js';
+import { confirmUploadOverwrite } from './sweet_alert.js';
 
 let uppy = null;
 
@@ -80,7 +81,6 @@ jQuery(function() {
     restrictions: {
       maxFileSize: maxFileSize(),
     },
-    onBeforeUpload: updateEndpoint,
     locale: uppyLocale(),
   });
   
@@ -105,6 +105,8 @@ jQuery(function() {
     headers: { 'X-CSRF-Token': csrfToken() },
     timeout: 128 * 1000,
   });
+
+  document.addEventListener('click', interceptUppyUploadClick, true);
 
   uppy.on('file-added', (file) => {
     uppy.setFileMeta(file.id, { parent: history.state.currentDirectory });
@@ -183,6 +185,58 @@ function getEmptyDirs(entry){
       })
     }
   });
+}
+
+async function interceptUppyUploadClick(event) {
+  if (!uppy) {
+    return;
+  }
+
+  const uploadBtn = event.target.closest('.uppy-StatusBar-actionBtn--upload');
+  if (!uploadBtn || !uploadBtn.closest('.uppy-Dashboard')) {
+    return;
+  }
+
+  if (uppy.getFiles().length === 0) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+
+  updateEndpoint();
+
+  try {
+    await confirmUploadOverwrite(conflictingUploadNames(uppy.getFiles()));
+    uppy.upload();
+  } catch (_error) {
+    // User cancelled the overwrite warning; upload was never started.
+  }
+}
+
+function conflictingUploadNames(files) {
+  const listing = history.state.currentFilenames;
+  if (!Array.isArray(listing)) {
+    return [];
+  }
+
+  return files
+    .map(uploadNameInCurrentDirectory)
+    .filter((name) => name && listing.includes(name));
+}
+
+function uploadNameInCurrentDirectory(file) {
+  const relativePath = file.meta.relativePath;
+  if (relativePath && relativePath !== 'null') {
+    if (relativePath.includes('/')) {
+      return null;
+    }
+
+    return relativePath;
+  }
+
+  return file.name;
 }
 
 function updateEndpoint() {
