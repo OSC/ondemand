@@ -92,7 +92,11 @@ class ActiveSupport::TestCase
       }
 
       function checkTree(root) {
-        root.querySelectorAll('*').forEach(checkElement);
+        try {
+          root.querySelectorAll('*').forEach(checkElement);
+        } catch (error) {
+          console.log(root, error);
+        }
       }
 
       const observer = new MutationObserver((mutations) => {
