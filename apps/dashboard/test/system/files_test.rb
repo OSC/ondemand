@@ -436,6 +436,41 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'uploading multiple duplicate files shows overwrite list' do
+    page.execute_script("localStorage.removeItem('files-upload-overwrite-warning-disabled')")
+
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      file1 = 'test/fixtures/files/upload/hello-world.c'
+      file2 = 'test/fixtures/files/upload/funny_characters.sh'
+      FileUtils.cp(file1, File.join(upload_dir, File.basename(file1)))
+      FileUtils.cp(file2, File.join(upload_dir, File.basename(file2)))
+
+      visit files_url(upload_dir)
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      attach_file 'files[]', [file1, file2], visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+
+      assert_selector '#files_input_modal', visible: true, wait: MAX_WAIT
+      assert_text 'Files already exist'
+      assert_text 'The following files already exist and will be overwritten:'
+      within '#files_input_modal' do
+        assert_selector 'li', exact_text: 'hello-world.c'
+        assert_selector 'li', exact_text: 'funny_characters.sh'
+      end
+
+      find('#files_input_modal_ok_button').click
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+      find('tbody a', exact_text: 'hello-world.c', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'funny_characters.sh', wait: MAX_WAIT)
+    end
+  end
+
   test 'upload overwrite warning can be disabled' do
     page.execute_script("localStorage.removeItem('files-upload-overwrite-warning-disabled')")
 

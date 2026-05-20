@@ -82,7 +82,7 @@ function attachOKHandler(options) {
     }
 
     input.value = '';
-    $('#files_input_modal').modal('hide');
+    $(MODAL_ID).modal('hide');
   };
 }
 
@@ -114,8 +114,14 @@ function resetUploadOverwriteModal() {
 
   const span = document.getElementById('files_input_modal_text_span');
   if (span) {
-    span.textContent = '';
+    span.replaceChildren();
   }
+}
+
+function hideUploadOverwriteModal() {
+  resetUploadOverwriteModal();
+  $(MODAL_ID).modal('hide');
+  cleanupBootstrapModalStack();
 }
 
 function setUploadOverwriteContent(modalElement, titleElement, spanElement, conflictingFilenames) {
@@ -189,19 +195,16 @@ function showUploadOverwriteModal(conflictingFilenames) {
       }
 
       cleanup();
-      resetUploadOverwriteModal();
-      $(MODAL_ID).modal('hide');
-      cleanupBootstrapModalStack();
+      hideUploadOverwriteModal();
       resolve(true);
     };
 
     uploadOverwriteHiddenHandler = () => {
       cleanup();
-      resetUploadOverwriteModal();
-      cleanupBootstrapModalStack();
+      hideUploadOverwriteModal();
 
       if (!continued) {
-        reject(new Error('Upload cancelled'));
+        reject();
       }
     };
 
@@ -220,7 +223,7 @@ export function confirmUploadOverwrite(conflictingFilenames) {
     return Promise.resolve(true);
   }
 
-  return showUploadOverwriteModal(conflictingFilenames);
+  return showUploadOverwriteModal(conflictingFilenames).then(() => true, () => false);
 }
 
 jQuery(function() {

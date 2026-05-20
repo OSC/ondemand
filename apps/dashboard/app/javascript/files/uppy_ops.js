@@ -106,6 +106,7 @@ jQuery(function() {
     timeout: 128 * 1000,
   });
 
+  // Intercept before Uppy handles Upload so we can confirm overwrites without starting an upload batch
   document.addEventListener('click', interceptUppyUploadClick, true);
 
   uppy.on('file-added', (file) => {
@@ -207,11 +208,8 @@ async function interceptUppyUploadClick(event) {
 
   updateEndpoint();
 
-  try {
-    await confirmUploadOverwrite(conflictingUploadNames(uppy.getFiles()));
+  if (await confirmUploadOverwrite(conflictingUploadNames(uppy.getFiles()))) {
     uppy.upload();
-  } catch (_error) {
-    // User cancelled the overwrite warning; upload was never started.
   }
 }
 
