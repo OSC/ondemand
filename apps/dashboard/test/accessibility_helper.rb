@@ -93,9 +93,13 @@ class ActiveSupport::TestCase
 
       function checkTree(root) {
         try {
-          root.querySelectorAll('*').forEach(checkElement);
+          if (root.nodeName == '#text') {
+            checkElement(root)
+          } else {
+            root.querySelectorAll('*').forEach(element => checkElement(element));
+          }
         } catch (error) {
-          console.log(root, error);
+          throw `Failed checkTree on element '${root}' with error ${error}`;
         }
       }
 
