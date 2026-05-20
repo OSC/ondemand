@@ -49,9 +49,9 @@ class ActiveSupport::TestCase
       }
 
       function checkElement(el) {
-        if (!isVisible(el) || !hasText(el) || el.nodeType !== Node.ELEMENT_NODE) return;
+        if (el.nodeType !== Node.ELEMENT_NODE) return;
 
-        if (el.classList.contains('sr-only') || el.classList.contains('visually-hidden')) return;
+        if (!isVisible(el) || !hasText(el) || el.classList.contains('sr-only') || el.classList.contains('visually-hidden')) return;
 
         const style = window.getComputedStyle(el);
         const fg = style.color;
