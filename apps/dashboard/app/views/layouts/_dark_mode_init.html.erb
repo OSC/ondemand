@@ -1,0 +1,13 @@
+
+<script nonce="<%= content_security_policy_nonce %>">
+  (function () {
+    try {
+      if (localStorage.getItem('ood_safe_viewing') === 'true') {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+        document.documentElement.classList.add('ood-safe-viewing');
+      }
+    } catch (e) {
+      // localStorage may be unavailable in private browsing
+    }
+  })();
+</script>

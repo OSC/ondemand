@@ -37,3 +37,22 @@ div.datatables-status, div.transfers-status {
   z-index: 999;
 }
 
+[data-bs-theme="dark"] #path-breadcrumbs.breadcrumb {
+  --bs-breadcrumb-bg: var(--bs-secondary-bg);
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] #directory-contents a.name {
+  color: var(--bs-link-color);
+  
+  &:hover {
+    color: var(--bs-link-hover-color);
+  }
+}
+
+[data-bs-theme="dark"] #directory-contents tr.selected,
+[data-bs-theme="dark"] #directory-contents tr.selected td,
+[data-bs-theme="dark"] #directory-contents tr.selected a.name {
+  color: #fff;
+}
