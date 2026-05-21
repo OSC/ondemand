@@ -58,6 +58,9 @@ class ActiveSupport::TestCase
         var bg = style.backgroundColor;
         if (!fg || !bg) return;
 
+        //if (el.id == 'copy-move-btn' && bg != 'rgba(0, 0, 0, 0)') {
+        //  throw `foreground: ${fg}, background: ${bg}`
+        //}
         // ascend tree to get first defined background
         var current = el
         while (bg === 'rgba(0, 0, 0, 0)') {
@@ -87,6 +90,7 @@ class ActiveSupport::TestCase
             required,
             path: el.closest('[id]')?.id || el.className
           };
+          window.__contrastViolations.push(contrastViolation);
           throw `Contrast check failed. Failing element: ${JSON.stringify(contrastViolation)}`;
         }
       }
@@ -107,7 +111,7 @@ class ActiveSupport::TestCase
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach(node => checkTree(node));
           if (mutation.type === 'attributes' && isVisible(mutation.target)) {
-            checkElement(mutation.target);
+            checkTree(mutation.target);
           }
         });
       });
@@ -126,6 +130,12 @@ class ActiveSupport::TestCase
 
   def inject_contrast_observer
     page.execute_script(CONTRAST_WATCH_SCRIPT)
+  end
+
+  def assert_no_contrast_violations
+    violations = page.evaluate_script('window.__contrastViolations')
+    return if violations.blank?
+    raise Selenium::WebDriver::Error::JavascriptError, "Contrast check failed: #{violations.to_json}"
   end
 end
 

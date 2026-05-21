@@ -25,6 +25,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     inject_contrast_observer
   end
 
+  def find(*args, **kwargs)
+    result = super(*args, **kwargs)
+    assert_no_contrast_violations
+    result
+  end
+
   def find_option_style(ele, opt)
     find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
   end
