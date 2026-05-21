@@ -1,7 +1,7 @@
-
 <script nonce="<%= content_security_policy_nonce %>">
   (function () {
     try {
+      <%# Must match STORAGE_KEY in app/javascript/dark_mode.js %>
       if (localStorage.getItem('ood_safe_viewing') === 'true') {
         document.documentElement.setAttribute('data-bs-theme', 'dark');
         document.documentElement.classList.add('ood-safe-viewing');

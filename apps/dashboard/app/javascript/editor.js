@@ -1,10 +1,10 @@
 'use strict';
 
 import ace from 'ace-code/esm-resolver';
+import { STORAGE_KEY } from './dark_mode.js';
 import { getBoolean } from './utils';
 
 const KEY_PREFIX = "ood_editor_store_";
-const SAFE_VIEWING_STORAGE_KEY = 'ood_safe_viewing';
 const SAFE_VIEWING_EDITOR_THEME = 'ace/theme/tomorrow_night';
 
 function isLightAceTheme(themePath) {
@@ -13,7 +13,7 @@ function isLightAceTheme(themePath) {
 
 function resolveEditorTheme() {
   const saved = getUserPreference('theme') || 'ace/theme/solarized_light';
-  if (getBoolean(SAFE_VIEWING_STORAGE_KEY) && isLightAceTheme(saved)) {
+  if (getBoolean(STORAGE_KEY) && isLightAceTheme(saved)) {
     return SAFE_VIEWING_EDITOR_THEME;
   }
   return saved;

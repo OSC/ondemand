@@ -15,10 +15,12 @@ class DarkModeTest < ApplicationSystemTestCase
 
     toggle = find('#ood_dark_mode_toggle')
     assert_equal 'false', toggle['aria-pressed']
+    assert_equal 'Light', find('.ood-theme-toggle__label', visible: :all).text
     assert page.evaluate_script("document.documentElement.getAttribute('data-bs-theme')").nil?
 
     toggle.click
     assert_equal 'true', toggle['aria-pressed']
+    assert_equal 'Dark', find('.ood-theme-toggle__label', visible: :all).text
     assert_equal 'dark', page.evaluate_script("document.documentElement.getAttribute('data-bs-theme')")
     assert page.evaluate_script("document.documentElement.classList.contains('ood-safe-viewing')")
 

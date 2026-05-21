@@ -261,8 +261,10 @@ en:
     name: Name
     nav_all_apps: All Apps
     nav_dark_mode: Safe Viewing
+    nav_dark_mode_dark: Dark
     nav_dark_mode_disable: Turn off safe viewing mode
     nav_dark_mode_enable: Turn on safe viewing mode
+    nav_dark_mode_light: Light
     nav_develop_docs: Developer Documentation
     nav_develop_my_sandbox_apps_dev: My Sandbox Apps (Development)
     nav_develop_my_sandbox_apps_prod: My Shared Apps (Production)
@@ -291,6 +293,7 @@ en:
     pinned_apps_caption_html: A featured subset of <a href="%{all_apps_url}">all available apps</a>
     pinned_apps_category: Apps
     pinned_apps_title: Pinned Apps
+    powered_by_logo_alt: Powered by Open OnDemand
     products_manifest_save_error: Cannot save app manifest to %{path}
     project: Project
     project_balances: Project Balances

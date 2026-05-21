@@ -17,6 +17,27 @@
   }
 }
 
+[data-bs-theme="dark"] .batch-connect.sessions {
+  // Completed session header: subtle step from card bg, same border as the card.
+  .alert-default {
+    --bs-alert-bg: #272727;
+    --bs-alert-color: var(--bs-body-color);
+    --bs-alert-border-color: var(--bs-card-border-color);
+    border-bottom: 1px solid var(--bs-card-border-color);
+    color: var(--bs-body-color);
+
+    a.alert-heading {
+      color: inherit;
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        color: var(--bs-emphasis-color);
+      }
+    }
+  }
+}
+
 .list-group .app-icon{
   width: 14px;
   height: 14px;

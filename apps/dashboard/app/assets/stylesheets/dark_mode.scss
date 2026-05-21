@@ -1,9 +1,13 @@
 // High-contrast "safe viewing" theme for users who need improved contrast.
 // Activated via data-bs-theme="dark" on <html> and the .ood-safe-viewing class.
+$ood-safe-viewing-body-bg: #1a1a1a;
+// OpenOnDemand_*_dark.svg st1 fill must match $ood-safe-viewing-body-bg (used as external <img>).
 
 [data-bs-theme="dark"] {
-  --bs-body-bg: #1a1a1a;
+  --bs-body-bg: #{$ood-safe-viewing-body-bg};
+  --bs-body-bg-rgb: 26, 26, 26;
   --bs-body-color: #e8e8e8;
+  --bs-body-color-rgb: 232, 232, 232;
   --bs-emphasis-color: #fff;
   --bs-secondary-color: #c8c8c8;
   --bs-tertiary-color: #a8a8a8;
@@ -28,18 +32,18 @@
   --bs-form-select-bg: var(--bs-body-bg);
   --bs-form-select-color: #e8e8e8;
   --bs-form-check-bg: var(--bs-body-bg);
-  --bs-form-check-input-checked-bg-color: rgb(0, 136, 204);
-  --bs-form-check-input-checked-border-color: rgb(0, 136, 204);
   --bs-secondary-bg: #2a2a2a;
+  --bs-secondary-bg-rgb: 42, 42, 42;
   --bs-tertiary-bg: #383838;
+  --bs-tertiary-bg-rgb: 56, 56, 56;
   --bs-breadcrumb-bg: var(--bs-secondary-bg);
   --bs-light: #333;
   --bs-light-rgb: 51, 51, 51;
+  // Mirror pinned_apps tile shadow (2px 2px 5px black @ 50%) with a soft gray glow on dark bg.
+  --ood-elevation-shadow: 2px 2px 5px rgba(180, 180, 180, 0.45);
 
   color-scheme: dark;
-}
 
-[data-bs-theme="dark"] {
   pre.motd-monospaced {
     background-color: var(--bs-body-bg);
     color: var(--bs-body-color);
@@ -47,6 +51,14 @@
 
   footer {
     border-top-color: var(--bs-border-color);
+  }
+
+  .ood-logo--light {
+    display: none !important;
+  }
+
+  .ood-logo--dark {
+    display: inline !important;
   }
 
   .bg-white {
@@ -58,7 +70,6 @@
 
   .bg-light {
     background-color: var(--bs-secondary-bg) !important;
-    color: var(--bs-body-color);
   }
 
   .text-dark {
@@ -71,6 +82,25 @@
 
   .text-muted {
     color: var(--bs-secondary-color) !important;
+  }
+
+  // Pinned and recently used app tiles (pinned_apps.scss sets .launcher-click { color: black }).
+  .app-launcher .launcher-click {
+    color: var(--bs-body-color);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-link-hover-color);
+    }
+
+    p.app-title {
+      color: inherit;
+    }
+  }
+
+  // Recently used app tiles only (pinned_apps.scss black shadow is invisible on dark bg).
+  .recently-used-apps-header .app-launcher {
+    box-shadow: var(--ood-elevation-shadow);
   }
 
   .btn-default {
@@ -95,12 +125,61 @@
     }
   }
 
-  .alert-danger a {
-    color: rgb(140, 190, 255);
+  // Alerts: darker semantic backgrounds, bright text (not light-mode pastels).
+  .alert {
+    &.alert-danger {
+      --bs-alert-color: #ffe8ea;
+      --bs-alert-bg: #56262d;
+      --bs-alert-border-color: #70353d;
+      --bs-alert-link-color: #a8d4ff;
+
+      a {
+        color: var(--bs-alert-link-color);
+      }
+    }
+
+    &.alert-warning {
+      --bs-alert-color: #fff4d6;
+      --bs-alert-bg: #564720;
+      --bs-alert-border-color: #6f5e2e;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    &.alert-success {
+      --bs-alert-color: #dff5e8;
+      --bs-alert-bg: #244333;
+      --bs-alert-border-color: #325645;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    &.alert-info {
+      --bs-alert-color: #d6f4fc;
+      --bs-alert-bg: #224550;
+      --bs-alert-border-color: #2f5863;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    &.alert-primary {
+      --bs-alert-color: #dce8ff;
+      --bs-alert-bg: #223856;
+      --bs-alert-border-color: #2f4a6a;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    .btn-close {
+      --bs-btn-close-filter: invert(1) grayscale(100%) brightness(200%);
+    }
   }
 
-  // Radio/checkbox and select fields (batch connect forms, etc.).
-  .form-check-input {
+  // Checkboxes: only unchecked background matches the dark page (checked uses default styling).
+  .form-check-input[type="checkbox"]:not(:checked),
+  input[type="checkbox"]:not(.form-check-input):not(:checked) {
+    background-color: var(--bs-body-bg);
+  }
+
+  // Radios: Bootstrap forms, batch connect, etc.
+  .form-check-input[type="radio"],
+  input[type="radio"]:not(.form-check-input) {
     background-color: var(--bs-body-bg);
     border-color: var(--bs-border-color);
 
@@ -109,17 +188,25 @@
       box-shadow: 0 0 0 0.25rem rgba(126, 184, 240, 0.25);
     }
 
-    &:checked[type="radio"] {
-      background-color: var(--bs-body-bg);
-      background-image: none;
-      border-color: var(--bs-form-check-input-checked-border-color);
-      border-width: 0.1em;
+    &:checked {
+      $radio-checked: rgb(51, 122, 183);
+      background-color: $radio-checked;
+      background-image: radial-gradient(
+        circle,
+        var(--bs-body-bg) 0 40%,
+        $radio-checked 41% 100%
+      );
+      border-color: $radio-checked;
     }
+  }
 
-    &:checked[type="checkbox"] {
-      background-color: var(--bs-form-check-input-checked-bg-color);
-      border-color: var(--bs-form-check-input-checked-border-color);
-    }
+  input[type="radio"]:not(.form-check-input) {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1em;
+    height: 1em;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 50%;
   }
 
   .form-select,
@@ -175,10 +262,18 @@
     background-color: var(--bs-body-bg);
   }
 
+  // Bootstrap compiles --bs-breadcrumb-bg: #e9ecef on .breadcrumb (sandbox apps, etc.).
+  // Match table-striped rows (#333), not page body (#1a1a1a).
+  .breadcrumb {
+    --bs-breadcrumb-bg: var(--bs-table-striped-bg);
+    background-color: var(--bs-table-striped-bg);
+    color: var(--bs-body-color);
+  }
+
   // Batch connect / interactive apps page header (compiles --breadcrumb-bg locally).
   .breadcrumb-wrapper {
-    --breadcrumb-bg: var(--bs-secondary-bg);
-    background-color: var(--bs-secondary-bg);
+    --breadcrumb-bg: var(--bs-table-striped-bg);
+    background-color: var(--bs-table-striped-bg);
     color: var(--bs-body-color);
 
     .breadcrumb {
@@ -188,10 +283,10 @@
     }
   }
 
-  // Path selector modals: breadcrumb bar uses a raised surface for contrast.
+  // Path selector modals: directory bar matches striped table rows.
   .modal .breadcrumb.breadcrumb-no-delimiter {
-    --bs-breadcrumb-bg: var(--bs-secondary-bg);
-    background-color: var(--bs-secondary-bg);
+    --bs-breadcrumb-bg: var(--bs-table-striped-bg);
+    background-color: var(--bs-table-striped-bg);
     color: var(--bs-body-color);
 
     a.icon-link.link-dark,
@@ -228,28 +323,30 @@
     border-color: var(--bs-border-color);
   }
 
-  .modal table.dataTable thead > tr > th,
-  .modal table.dataTable tbody > tr > th,
+  .modal table.dataTable thead > tr > th {
+    border-color: var(--bs-border-color) !important;
+    color: var(--bs-body-color);
+    background-color: var(--bs-table-bg);
+  }
+
   .modal table.dataTable tbody > tr > td {
     border-color: var(--bs-border-color) !important;
     color: var(--bs-body-color);
-    background-color: transparent;
+    background-color: var(--bs-table-bg);
     box-shadow: none;
   }
 
-  .modal table.dataTable tbody > tr {
-    background-color: var(--bs-table-bg);
-  }
-
-  .modal table.dataTable tbody > tr.odd,
-  .modal table.dataTable.table-striped > tbody > tr:nth-of-type(odd) > * {
+  // DataTables stripes rows via .odd/.even on <tr>; color the cells, not just the row.
+  .modal table.dataTable tbody > tr.odd > td,
+  .modal table.dataTable tbody > tr:nth-child(odd) > td {
     background-color: var(--bs-table-striped-bg);
     color: var(--bs-table-striped-color);
-    box-shadow: none;
   }
 
-  .modal table.dataTable tbody > tr.even {
+  .modal table.dataTable tbody > tr.even > td,
+  .modal table.dataTable tbody > tr:nth-child(even) > td {
     background-color: var(--bs-table-bg);
+    color: var(--bs-body-color);
   }
 
   .modal table.dataTable tbody > tr:hover > td {
@@ -301,4 +398,122 @@
       border-color: var(--bs-emphasis-color);
     }
   }
+}
+
+// Navbar theme switch (light / dark) — inherit .nav-link typography from navbar.
+$ood-toggle-track-w: 2.75rem;
+$ood-toggle-track-h: 1.5rem;
+$ood-toggle-thumb: 1.125rem;
+$ood-toggle-pad: 0.1875rem;
+
+.ood-theme-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  font: inherit;
+}
+
+// Button.nav-link does not keep navbar colors on blur like <a.nav-link>; set explicitly.
+.navbar-dark .ood-theme-toggle.nav-link,
+.navbar-dark .ood-theme-toggle.nav-link .ood-theme-toggle__label {
+  color: var(--bs-navbar-color);
+}
+
+.navbar-dark .ood-theme-toggle.nav-link:hover,
+.navbar-dark .ood-theme-toggle.nav-link:focus,
+.navbar-dark .ood-theme-toggle.nav-link:active,
+.navbar-dark .ood-theme-toggle.nav-link:focus-visible {
+  color: var(--bs-navbar-hover-color);
+}
+
+.navbar-light .ood-theme-toggle.nav-link,
+.navbar-light .ood-theme-toggle.nav-link .ood-theme-toggle__label {
+  color: var(--bs-navbar-color);
+}
+
+.navbar-light .ood-theme-toggle.nav-link:hover,
+.navbar-light .ood-theme-toggle.nav-link:focus,
+.navbar-light .ood-theme-toggle.nav-link:active,
+.navbar-light .ood-theme-toggle.nav-link:focus-visible {
+  color: var(--bs-navbar-hover-color);
+}
+
+.ood-theme-toggle__label {
+  color: inherit;
+}
+
+.ood-theme-toggle__track {
+  position: relative;
+  flex-shrink: 0;
+  width: $ood-toggle-track-w;
+  height: $ood-toggle-track-h;
+  border-radius: $ood-toggle-track-h;
+  background-color: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ood-theme-toggle__thumb {
+  position: absolute;
+  top: 50%;
+  left: $ood-toggle-pad;
+  width: $ood-toggle-thumb;
+  height: $ood-toggle-thumb;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  transition:
+    left 0.2s ease,
+    right 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+  color: rgb(51, 122, 183);
+  font-size: 0.625rem;
+  line-height: 1;
+}
+
+.ood-theme-toggle__icon--moon {
+  display: none;
+}
+
+// Safe viewing on: thumb right; track uses safe-viewing page background.
+.ood-theme-toggle--dark .ood-theme-toggle__track {
+  background-color: var(--bs-body-bg, #1a1a1a);
+  border-color: var(--bs-border-color, #555);
+}
+
+.ood-theme-toggle--dark .ood-theme-toggle__thumb {
+  left: auto;
+  right: $ood-toggle-pad;
+  background-color: #e8e8e8;
+  color: #2a2a2a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.ood-theme-toggle--dark .ood-theme-toggle__icon--sun {
+  display: none;
+}
+
+.ood-theme-toggle--dark .ood-theme-toggle__icon--moon {
+  display: block;
+  color: #f0c040;
+}
+
+.navbar-dark .ood-theme-toggle:not(.ood-theme-toggle--dark) .ood-theme-toggle__track {
+  background-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.navbar-dark .ood-theme-toggle--dark .ood-theme-toggle__track {
+  background-color: var(--bs-body-bg, #1a1a1a);
+  border-color: var(--bs-border-color, #555);
+}
+
+.navbar-light .ood-theme-toggle:focus-visible {
+  outline: 2px solid rgb(51, 122, 183);
+  outline-offset: 2px;
 }

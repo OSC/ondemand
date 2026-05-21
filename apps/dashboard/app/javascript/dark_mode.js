@@ -1,6 +1,7 @@
 import { storeBoolean, getBoolean } from './utils';
 
 export const STORAGE_KEY = 'ood_safe_viewing';
+export const SAFE_VIEWING_CHANGE_EVENT = 'ood-safe-viewing-change';
 
 export function isSafeViewingEnabled() {
   return getBoolean(STORAGE_KEY);
@@ -18,6 +19,9 @@ export function applySafeViewing(enabled) {
   }
 
   updateToggleButton(enabled);
+  document.dispatchEvent(
+    new CustomEvent(SAFE_VIEWING_CHANGE_EVENT, { detail: { enabled } })
+  );
 }
 
 function updateToggleButton(enabled) {
@@ -26,16 +30,16 @@ function updateToggleButton(enabled) {
     return;
   }
 
-  const enableLabel = button.dataset.enableLabel;
-  const disableLabel = button.dataset.disableLabel;
-  const icon = button.querySelector('i');
+  const label = button.querySelector('.ood-theme-toggle__label');
+  const lightLabel = button.dataset.lightLabel;
+  const darkLabel = button.dataset.darkLabel;
 
   button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
-  button.title = enabled ? disableLabel : enableLabel;
+  button.classList.toggle('ood-theme-toggle--dark', enabled);
+  button.title = enabled ? button.dataset.disableLabel : button.dataset.enableLabel;
 
-  if (icon) {
-    icon.classList.toggle('fa-moon', !enabled);
-    icon.classList.toggle('fa-sun', enabled);
+  if (label) {
+    label.textContent = enabled ? darkLabel : lightLabel;
   }
 }
 
