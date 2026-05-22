@@ -97,25 +97,34 @@ class ActiveSupport::TestCase
 
       function checkTree(root) {
         try {
-          if (root.nodeName == '#text') {
-            checkElement(root)
-          } else {
-            root.querySelectorAll('*').forEach(element => checkElement(element));
-          }
+          checkElement(root);
+          root.querySelectorAll('*').forEach(element => checkElement(element));
         } catch (error) {
           throw `Failed checkTree on element '${root}' with error ${error}`;
         }
       }
-
+      
+      // Inject style tag to remove transitions
+      const styleTag = document.createElement('style');
+      document.head.appendChild(styleTag);
+      
+      function withTransitionsDisabled(fn) {
+        styleTag.textContent = '* { transition: none !important; }';
+        requestAnimationFrame(() => {
+          fn();
+          styleTag.textContent = '';
+        });
+      }
+      
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach(node => checkTree(node));
           if (mutation.type === 'attributes' && isVisible(mutation.target)) {
-            checkTree(mutation.target);
+            withTransitionsDisabled(() => checkTree(mutation.target));
           }
         });
       });
-
+      
       observer.observe(document.body, {
         childList: true,
         subtree: true,

@@ -25,8 +25,14 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     inject_contrast_observer
   end
 
-  def find(*args, **kwargs)
-    result = super(*args, **kwargs)
+  def find(*args, **options, &block)
+    result = super(*args, **options, &block)
+    assert_no_contrast_violations
+    result
+  end
+
+  def assert_selector(*args, &block)
+    result = super(*args, &block)
     assert_no_contrast_violations
     result
   end
