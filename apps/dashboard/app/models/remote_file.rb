@@ -45,17 +45,23 @@ class RemoteFile
       valid_encoding = stats[:name].to_s.valid_encoding?
       Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid_encoding
       valid_encoding
-    end.sort_by { |p| [ p[:directory] ? 0 : 1, p[:name] ] }
+    end.sort_by { |p| [p[:directory] ? 0 : 1, p[:name]] }
   end
 
-  def can_download_as_zip?(timeout: Configuration.download_dir_timeout_seconds, download_directory_size_limit: Configuration.download_dir_max)
+  def can_download_as_zip?(timeout: Configuration.download_dir_timeout_seconds,
+                           download_directory_size_limit: Configuration.download_dir_max)
     [false, 'Downloading remote files as zip is currently not supported']
   end
 
   def can_download_file?
     download_file_size_limit = Configuration.file_download_max
     can_download = size <= download_file_size_limit
-    error = can_download ? nil : I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
+    error = if can_download
+              nil
+            else
+              I18n.t('dashboard.files_file_too_large',
+                     download_file_size_limit: download_file_size_limit)
+            end
     [can_download, error]
   end
 
@@ -63,7 +69,7 @@ class RemoteFile
     # Assume file is editable if it exists and isn't a directory even though it
     # might not actually be (e.g. permissions)
     !directory?
-  rescue StandardError => e
+  rescue StandardError
     false
   end
 
@@ -86,17 +92,17 @@ class RemoteFile
   def handle_upload(tempfile)
     # Start a transfer that moves the Rack tempfile to the remote.
     transfer = RemoteTransfer.build(
-      action: "mv",
-      files: { tempfile.path => path.to_s },
-      src_remote: RcloneUtil::LOCAL_FS_NAME,
+      action:      'mv',
+      files:       { tempfile.path => path.to_s },
+      src_remote:  RcloneUtil::LOCAL_FS_NAME,
       dest_remote: remote,
-      tempfile: tempfile
+      tempfile:    tempfile
     )
     transfer.tap(&:perform_later)
   end
 
   def size
-    RcloneUtil.size(remote, path)["bytes"]
+    RcloneUtil.size(remote, path)['bytes']
   end
 
   def mime_type
