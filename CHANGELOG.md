@@ -16,6 +16,21 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+lint a random file (#5482)\
+Fix double encoding of spaces in files app edit URLs (#5478)\
+Fix NoMethodError in FilesController when Accept header is missing (#5448)\
+Fix manifest error reporting (#5467)\
+Add invalid announcements error widget (#5250)\
+Use regex to ensure launcher env variable is valid (#5356)\
+Fix hardcoded string composition with internationalizations (#5312)\
+Fix module browser for modules with multiple dependency sets. (#5165)\
+Update Changelog (#5469)\
+Fix product manifest error reporting on save (#5471)\
+Update Dependencies (#5473)\
+Make session directory link text more descriptive (#5443)\
+Add wayvnc template support (#5454)\
+lint a random file (#5465)\
+Refactor custom pages and dashboard to share index layout partial (#5466)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
