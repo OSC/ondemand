@@ -27,13 +27,13 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   def find(*args, **options, &block)
     result = super(*args, **options, &block)
-    assert_no_contrast_violations
+    inject_contrast_observer
     result
   end
 
   def assert_selector(*args, &block)
     result = super(*args, &block)
-    assert_no_contrast_violations
+    inject_contrast_observer
     result
   end
 
