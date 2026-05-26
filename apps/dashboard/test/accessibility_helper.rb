@@ -56,7 +56,7 @@ class ActiveSupport::TestCase
     
       return style.backgroundColor;
     }
-    
+
     function ascendForBackground(el){
       const style = window.getComputedStyle(el);
 
@@ -148,6 +148,7 @@ class ActiveSupport::TestCase
         window.__styleTag.textContent = '* { transition: none !important; }';
         // subsequent runs only check changed elements
         window.__changedElements.forEach(node => checkTree(node))
+        window.__changedElements = [];
         window.__styleTag.textContent = '';
       }
     }
