@@ -211,3 +211,12 @@ small.form-text {
 @import "module_browser";
 @import "@uppy/core/dist/style";
 @import "@uppy/dashboard/dist/style";
+
+//Accessibility change to uppy defaults
+.uppy-Dashboard-note, a.uppy-Dashboard-poweredBy, .uppy-Dashboard-Item-status {
+  color: #6a6a6a;
+}
+
+.uppy-StatusBar.is-waiting, .uppy-StatusBar-actionBtn--upload {
+  color: rgb(66, 130, 66);
+}
