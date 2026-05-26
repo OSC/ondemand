@@ -23,6 +23,8 @@
 // the react component can make use of
 div.datatables-status, div.transfers-status {
   display: inline;
+  --bs-success-rgb: rgb(66, 130, 66);
+  --bs-info-rgb: rgb(9, 128, 151);
 }
 
 .color-gold {
