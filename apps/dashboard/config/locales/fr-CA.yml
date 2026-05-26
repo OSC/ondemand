@@ -69,11 +69,13 @@ fr-CA:
     batch_connect_no_sessions: Vous n'avez aucune session active.
     batch_connect_sandbox: " [Bac à sable]"
     batch_connect_sessions_cancel_confirm: Êtes-vous sûr ?
+    batch_connect_sessions_cancel_full_title: Annuler la session %{title}
     batch_connect_sessions_cancel_title: Annuler
     batch_connect_sessions_data_html: |
       Les données de session %{title} pour cette session sont accessibles
       sous %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Êtes-vous sûr ?
+    batch_connect_sessions_delete_full_title: Supprimer la session %{title}
     batch_connect_sessions_delete_hover: Supprimer la session
     batch_connect_sessions_delete_title: Supprimer
     batch_connect_sessions_edit_title: Modifier %{title} avec les paramètres de cette session
@@ -86,12 +88,13 @@ fr-CA:
     batch_connect_sessions_novnc_launch: Lancer %{app_title}
     batch_connect_sessions_novnc_view_only: Vue seule (Lien partageable)
     batch_connect_sessions_path_selector_forbidden_error: Vous n'avez pas la permission de sélectionner ce répertoire ou fichier.
+    batch_connect_sessions_relaunch_full_title: Relancer la session %{title}
     batch_connect_sessions_relaunch_title: Relancer
     batch_connect_sessions_staged_root: répertoire racine mis en scène
     batch_connect_sessions_stats_created_at: 'Créé le :'
     batch_connect_sessions_stats_host: 'Hôte :'
+    batch_connect_sessions_stats_session_dir_link_title: Ouvrir le répertoire de la session pour %{session_id}
     batch_connect_sessions_stats_session_id: 'ID de session :'
-    batch_connect_sessions_stats_session_dir_link_title: "Ouvrir le répertoire de la session pour %{session_id}"
     batch_connect_sessions_stats_support_ticket: Problèmes avec cette session ?
     batch_connect_sessions_stats_support_ticket_link_text: Soumettre un billet de soutien
     batch_connect_sessions_stats_time_remaining: 'Temps restant :'
@@ -277,14 +280,18 @@ fr-CA:
     nsf_access_events: Événements d'accès NSF
     ok: OK
     owner: Propriétaire
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
     path_selector_default_popup_title: Sélectionnez votre répertoire de travail
     path_selector_home: accueil
     path_selector_parent_directory: répertoire parent
     pinned_apps_caption_html: Un sous-ensemble en vedette de <a href="%{all_apps_url}">toutes les applications disponibles</a>
     pinned_apps_category: Applications
     pinned_apps_title: Applications épinglées
+    products_manifest_save_error: Impossible d'enregistrer le manifeste de l'application dans %{path}
     project: Projet
     project_balances: Soldes de projet
+    project_directory: Répertoire du projet
     project_zip_error_message: 'Erreur lors de la création du fichier ZIP : %{error}'
     project_zip_success_message: 'SUCCÈS : project.zip a été créé dans votre répertoire de projet.'
     quota_additional_message: Envisagez de supprimer ou d’archiver des fichiers pour libérer de l’espace disque.
@@ -292,6 +299,7 @@ fr-CA:
     quota_block_shared: "(%{used_exclusive} vous appartiennent)"
     quota_file: Utilisation de %{used} fichiers sur quota %{available} fichiers
     quota_file_shared: "(%{used_exclusive} fichiers sont à vous)"
+    quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: Rechargez la page pour voir la quota mise à jour. Les quotas sont mis à jour toutes les 5 minutes.
     quota_warning_prefix_html: Avertissement de limite de quota pour
     recently_used_apps_title: Applications récemment utilisées
@@ -301,6 +309,7 @@ fr-CA:
       Votre appartenance au groupe a changé, ce qui affecte votre accès aux applications. Votre tableau de bord devrait redémarrer automatiquement.
       Si ce n’est pas le cas, cliquez ici : <a href="%{restart_url}">redémarrer le serveur web</a>.
     restore: Restaurer
+    root: Racine
     save: Enregistrer
     saved_settings_title: Paramètres enregistrés
     select_path: Sélectionner le chemin
