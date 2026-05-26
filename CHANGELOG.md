@@ -16,25 +16,12 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-lint a random file (#5482)\
-Fix double encoding of spaces in files app edit URLs (#5478)\
-Fix NoMethodError in FilesController when Accept header is missing (#5448)\
-Fix manifest error reporting (#5467)\
-Add invalid announcements error widget (#5250)\
-Use regex to ensure launcher env variable is valid (#5356)\
-Fix hardcoded string composition with internationalizations (#5312)\
-Fix module browser for modules with multiple dependency sets. (#5165)\
-Update Changelog (#5469)\
-Fix product manifest error reporting on save (#5471)\
-Update Dependencies (#5473)\
-Make session directory link text more descriptive (#5443)\
-Add wayvnc template support (#5454)\
-lint a random file (#5465)\
-Refactor custom pages and dashboard to share index layout partial (#5466)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
 - This project has issue templates in [5440](https://github.com/OSC/ondemand/pull/5440) and [5441](https://github.com/OSC/ondemand/pull/5441).
+- Invalid announcements will now show an error widget in [5250](https://github.com/OSC/ondemand/pull/5250).
+- Batch connect Sessions now respond to wayvnc templates in [5454](https://github.com/OSC/ondemand/pull/5454).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -42,6 +29,10 @@ Refactor custom pages and dashboard to share index layout partial (#5466)
 - Reserved keyword names like 'format' now work in batch connect forms in [5455](https://github.com/OSC/ondemand/pull/5455).
 - File editor control panel cleanly scales to small screen widths in [5456](https://github.com/OSC/ondemand/pull/5456).
 - Hidden clusters no longer appear in the Active Jobs dropdown in [5458](https://github.com/OSC/ondemand/pull/5458).
+- Files with spaces in the name correctly open in the file editor in [5478](https://github.com/OSC/ondemand/pull/5478).
+- The FilesController does not error when the Accept header is missing [5448](https://github.com/OSC/ondemand/pull/5448).
+- The module browser correctly shows modules with multiple dependency sets in [5165](https://github.com/OSC/ondemand/pull/5165).
+- Project Manager Launchers can correctly use multiple environment variables in [5356](https://github.com/OSC/ondemand/pull/5356).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
