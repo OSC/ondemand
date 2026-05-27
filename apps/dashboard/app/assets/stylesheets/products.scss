@@ -4,11 +4,14 @@
 
 #productCliModal {
   .product-cli-body {
-    --bs-success-rgb: rgb(66, 130, 66);
     height: calc(100vh - 300px);
     overflow-y: scroll;
     overflow-x: auto;
   }
+}
+
+.product-cli-body {
+  --bs-success-rgb: 66, 130, 66;
 }
 
 .new-product-body {
