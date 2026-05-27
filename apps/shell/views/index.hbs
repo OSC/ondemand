@@ -93,23 +93,7 @@
       'cursor-color': theme.cursorColor,
       'audible-bell-sound': '',
       'font-family': '"Iosevka Web", "DejaVu Sans Mono", "Noto Sans Mono", "Everson Mono", FreeMono, Menlo, Terminal, monospace',
-      'user-css-text': '\
-        @font-face {\
-          font-family: "Iosevka Web";\
-          font-display: swap;\
-          font-weight: 400;\
-          font-stretch: expanded;\
-          font-style: normal;\
-          src: url("{{baseURI}}/fonts/Iosevka-Extended.woff2") format("woff2");\
-        }\
-        @font-face {\
-          font-family: "Iosevka Web";\
-          font-display: swap;\
-          font-weight: 700;\
-          font-stretch: expanded;\
-          font-style: normal;\
-          src: url("{{baseURI}}/fonts/Iosevka-ExtendedBold.woff2") format("woff2");\
-        }'
+      'user-css': '{{baseURI}}/stylesheets/fonts.css'
     }
   });
   themes["default"] = {
@@ -119,23 +103,7 @@
     'cursor-blink': false,
     'audible-bell-sound': '',
     'font-family': '"Iosevka Web", "DejaVu Sans Mono", "Noto Sans Mono", "Everson Mono", FreeMono, Menlo, Terminal, monospace',
-    'user-css-text': '\
-      @font-face {\
-        font-family: "Iosevka Web";\
-        font-display: swap;\
-        font-weight: 400;\
-        font-stretch: expanded;\
-        font-style: normal;\
-        src: url("{{baseURI}}/fonts/Iosevka-Extended.woff2") format("woff2");\
-      }\
-      @font-face {\
-        font-family: "Iosevka Web";\
-        font-display: swap;\
-        font-weight: 700;\
-        font-stretch: expanded;\
-        font-style: normal;\
-        src: url("{{baseURI}}/fonts/Iosevka-ExtendedBold.woff2") format("woff2");\
-      }'
+    'user-css': '{{baseURI}}/stylesheets/fonts.css'
   }
 
   // Set backing store that hterm uses to read/write preferences
