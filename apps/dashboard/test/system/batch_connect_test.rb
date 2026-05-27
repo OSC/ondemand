@@ -957,28 +957,28 @@ class BatchConnectTest < ApplicationSystemTestCase
       # defaults
       refute(find("##{bc_ele_id("checkbox_hide_cluster")}").checked?)
       refute(find("##{bc_ele_id("checkbox_hide_cluster_file_system")}").checked?)
-      check_visibility("cluster", true)
-      check_visibility("cluster_file_system", true)
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
 
       # check the checkbox, and 'cluster' is hidden
       check(bc_ele_id("checkbox_hide_cluster"))
-      check_visibility("cluster", false)
-      check_visibility("cluster_file_system", true)
-
-      # un-check the checkbox, and 'cluster' is back to being visible
-      uncheck(bc_ele_id("checkbox_hide_cluster"))
-      check_visibility("cluster", true)
-      check_visibility("cluster_file_system", true)
-
-      # check the checkbox, and 'cluster_file_system' is hidden
-      check(bc_ele_id("checkbox_hide_cluster_file_system"))
       check_visibility("cluster", true)
       check_visibility("cluster_file_system", false)
 
+      # un-check the checkbox, and 'cluster' is back to being visible
+      uncheck(bc_ele_id("checkbox_hide_cluster"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
+
+      # check the checkbox, and 'cluster_file_system' is hidden
+      check(bc_ele_id("checkbox_hide_cluster_file_system"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", true)
+
       # un-check the checkbox, and 'cluster_file_system' is back to being visible
       uncheck(bc_ele_id("checkbox_hide_cluster_file_system"))
-      check_visibility("cluster", true)
-      check_visibility("cluster_file_system", true)
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
     end
   end
 
