@@ -488,7 +488,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         cache_json.write({ cluster: 'old' }.to_json)
       end
 
-      new_cluster = OodCore::cluster.new({ id: :new, job: { some: 'job config' } })
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
 
       # Only new cluster exists
       BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
@@ -507,8 +507,8 @@ class BatchConnectTest < ApplicationSystemTestCase
         cache_json.write({ cluster: 'old' }.to_json)
       end
 
-      new_cluster = OodCore::cluster.new({ id: :new, job: { some: 'job config' } })
-      old_cluster = OodCore::cluster.new({ id: :old, job: { some: 'job config ' } })
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
+      old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config ' } })
 
       # Both clusters exist, but only new one is valid
       BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
