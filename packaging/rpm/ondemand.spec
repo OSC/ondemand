@@ -84,10 +84,6 @@ BuildRequires:   libyaml-devel
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
 Requires:        python3
-# rclone is not available for Amazon Linux 2023
-%if 0%{?rhel}
-Requires:        rclone
-%endif
 Requires:        ondemand-apache = %{runtime_version_full}
 Requires:        ondemand-nginx = 1.28.0-1.p6.1.2.ood%{runtime_version}%{?dist}
 Requires:        ondemand-passenger = 6.1.2-1.ood%{runtime_version}%{?dist}

@@ -60,11 +60,9 @@ class RequestTrackerClient
     payload = compose(field_hash)
     resp = @rt_client['ticket/new/edit'].post payload
     new_id = resp.match(/Ticket\s*(\d+)/)
-    if new_id.instance_of?(MatchData)
-      new_id[1]
-    else
-      raise StandardError, "Unable to create ticket. Server response: #{resp}"
-    end
+    raise StandardError, "Unable to create ticket. Server response: #{resp}" unless new_id.instance_of?(MatchData)
+
+    new_id[1]
   end
 
   def compose(fields)

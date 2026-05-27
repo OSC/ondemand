@@ -1,4 +1,10 @@
 <p>
   <strong><%= t('dashboard.batch_connect_sessions_stats_session_id') %></strong>
-  <%= link_to(session.id, OodAppkit.files.url(path: session.staged_root).to_s, class:'session-id-link') %> 
+  <%= link_to(
+        session.id,
+        OodAppkit.files.url(path: session.staged_root).to_s,
+        class: 'session-id-link',
+        title: t('dashboard.batch_connect_sessions_stats_session_dir_link_title', session_id: session.id),
+        aria: { label: t('dashboard.batch_connect_sessions_stats_session_dir_link_title', session_id: session.id) }
+      ) %>
 </p>

@@ -67,11 +67,13 @@ ja_JP:
     batch_connect_no_sessions: アクティブなセッションはありません。
     batch_connect_sandbox: " [サンドボックス]"
     batch_connect_sessions_cancel_confirm: 本当によろしいですか？
+    batch_connect_sessions_cancel_full_title: セッション %{title} をキャンセル
     batch_connect_sessions_cancel_title: キャンセル
     batch_connect_sessions_data_html: |
       このセッションの %{title} セッションデータは
       %{data_link_tag} の下でアクセスできます。
     batch_connect_sessions_delete_confirm: 本当によろしいですか？
+    batch_connect_sessions_delete_full_title: セッション %{title} を削除
     batch_connect_sessions_delete_hover: セッションを削除
     batch_connect_sessions_delete_title: 削除
     batch_connect_sessions_edit_title: このセッションパラメータで新しい%{title}を編集
@@ -83,10 +85,12 @@ ja_JP:
     batch_connect_sessions_novnc_launch: "%{app_title}を起動"
     batch_connect_sessions_novnc_view_only: 表示専用（共有可能なリンク）
     batch_connect_sessions_path_selector_forbidden_error: そのディレクトリまたはファイルを選択する権限がありません。
+    batch_connect_sessions_relaunch_full_title: セッション %{title} を再起動
     batch_connect_sessions_relaunch_title: 再起動
     batch_connect_sessions_staged_root: ステージングルートディレクトリ
     batch_connect_sessions_stats_created_at: 作成日時：
     batch_connect_sessions_stats_host: ホスト：
+    batch_connect_sessions_stats_session_dir_link_title: "%{session_id} のセッションディレクトリを開く"
     batch_connect_sessions_stats_session_id: セッションID：
     batch_connect_sessions_stats_support_ticket: このセッションに問題がありますか？
     batch_connect_sessions_stats_support_ticket_link_text: サポートチケットを提出する
@@ -240,6 +244,7 @@ ja_JP:
     jobs_workflow_not_found: ワークフロー %{workflow_id} が見つかりません
     jobs_workflow_show_graph: グラフエディタでワークフロー %{name} を開く
     jobs_workflow_submitted: ワークフローが正常に送信されました！
+    jobs_workflow_sync_key_help: 有効にすると、このワークフロー内のすべてのランチャーは同じ <code>OOD_WORKFLOW_SYNC_KEY</code> 環境変数（各ワークフロー実行に固有のランダムトークン）を受け取ります。これは、同期されたファイル名、ロックファイル、または依存ジョブ間で共有される識別子を生成するのに便利です。
     jobs_workflows: ワークフロー
     launch: 起動
     logo_alt_text: Open OnDemandへようこそ
@@ -272,14 +277,18 @@ ja_JP:
     nsf_access_events: NSF ACCESS イベント
     ok: OK
     owner: 所有者
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
     path_selector_default_popup_title: 作業ディレクトリを選択
     path_selector_home: ホーム
     path_selector_parent_directory: 親ディレクトリ
     pinned_apps_caption_html: <a href="%{all_apps_url}">すべての利用可能なアプリ</a>の中から特集されたサブセット
     pinned_apps_category: アプリ
     pinned_apps_title: ピン留めされたアプリ
+    products_manifest_save_error: アプリマニフェストを %{path} に保存できません
     project: プロジェクト
     project_balances: プロジェクト残高
+    project_directory: プロジェクトディレクトリ
     project_zip_error_message: 'ZIP ファイルの作成中にエラーが発生しました: %{error}'
     project_zip_success_message: '成功: project.zip がプロジェクトディレクトリに作成されました。'
     quota_additional_message: ディスクスペースを空けるためにファイルを削除またはアーカイブすることを検討してください。
@@ -287,6 +296,7 @@ ja_JP:
     quota_block_shared: "(%{used_exclusive} はあなたのものです)"
     quota_file: クォータ %{available} ファイルのうち %{used} ファイルを使用中
     quota_file_shared: "(%{used_exclusive} ファイルはあなたのものです)"
+    quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: 更新されたクォータを見るにはページを再読み込みしてください。クォータは5分ごとに更新されます。
     quota_warning_prefix_html: クォータ制限の警告
     recently_used_apps_title: 最近使用したアプリ
@@ -296,6 +306,7 @@ ja_JP:
       グループのメンバーシップが変更され、アプリへのアクセスに影響を与えています。ダッシュボードは自動的に再起動するはずです。
       再起動しない場合は、<a href="%{restart_url}">ウェブサーバーを再起動</a>してください。
     restore: 復元
+    root: ルート
     save: 保存
     saved_settings_title: 保存された設定
     select_path: パスを選択

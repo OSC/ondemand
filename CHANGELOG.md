@@ -5,8 +5,68 @@ All notable changes to this project will be documented in this file in a YYYY-MM
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+Entries summarize pull requests merged into the codebase for each release. They may not map 
+one-to-one with a GitHub issue or capture the full discussion behind the work.
+
+Changes are grouped by type:
+- `Added`: new functionality, capabilities or support.
+- `Changed`: updates to existing behavior.
+- `Fixed`: corrections to existing behavior, such as bugs, compatibility issyes, or accessibility improvements.
+- `Security`: fixes that address known vulnerabilities, CVEs, or security risks.
+
 
 ## [Unreleased]
+
+### Added
+- Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
+- This project has issue templates in [5440](https://github.com/OSC/ondemand/pull/5440) and [5441](https://github.com/OSC/ondemand/pull/5441).
+
+### Fixed 
+- File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
+- All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
+- Reserved keyword names like 'format' now work in batch connect forms in [5455](https://github.com/OSC/ondemand/pull/5455).
+- File editor control panel cleanly scales to small screen widths in [5456](https://github.com/OSC/ondemand/pull/5456).
+- Hidden clusters no longer appear in the Active Jobs dropdown in [5458](https://github.com/OSC/ondemand/pull/5458).
+
+### Changed
+- Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
+
+## [4.1.5] - 2026-04-29
+
+### Fixed
+
+- The file browser will not serve edit links when downloads are disabled in [5277](https://github.com/OSC/ondemand/pull/5277).
+- The path_selector in project forms correctly detect changes in [5398](https://github.com/OSC/ondemand/pull/5398).
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5369](https://github.com/OSC/ondemand/pull/5369).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5367](https://github.com/OSC/ondemand/pull/5367).
+
+## [4.0.11] - 2026-04-29
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5368](https://github.com/OSC/ondemand/pull/5368).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5401](https://github.com/OSC/ondemand/pull/5401).
+  
+## [4.2.2] - 2026-04-28
+
+### Fixed
+- Elements that alert with role="alert" now correctly announce themselves across OS/browser/Screen reader combinations in [5322](https://github.com/OSC/ondemand/pull/5322).
+- Datatable headers are correctly read by NVDA screen reader in [5245](https://github.com/OSC/ondemand/pull/5245).
+- Filenames with # characters correctly redirect in [5338](https://github.com/OSC/ondemand/pull/5338).
+- Dynamic batch connect options with ' characters are correctly escaped in [5345](https://github.com/OSC/ondemand/pull/5345).
+- Make project form help text is now keyboard-focusable in [5352](https://github.com/OSC/ondemand/pull/5352).
+- Project form correctly detects changes from path selector in [5355](https://github.com/OSC/ondemand/pull/5355).
+- Nav elements have aria labels in [5332](https://github.com/OSC/ondemand/pull/5332).
+  
+### Added
+- Workflows will now populate a OOD_WORKFLOW_SYNC_KEY environment variable to synchronize all launchers in a workflow in [5348](https://github.com/OSC/ondemand/pull/5348).
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5338](https://github.com/OSC/ondemand/pull/5338).
 
 ## [4.2.1] - 2026-04-16
 
@@ -1881,14 +1941,17 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.2...HEAD
+[4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
+[4.1.5]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.1.5
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
 [4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/OSC/ondemand/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/OSC/ondemand/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
+[4.0.11]: https://github.com/OSC/ondemand/compare/v4.0.10...v4.0.11
 [4.0.10]: https://github.com/OSC/ondemand/compare/v4.0.9...v4.0.10
 [4.0.9]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.0.9
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8

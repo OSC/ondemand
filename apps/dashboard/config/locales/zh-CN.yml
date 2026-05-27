@@ -66,9 +66,11 @@ zh-CN:
     batch_connect_no_sessions: 您没有可运行的会话。
     batch_connect_sandbox: " [沙盒]"
     batch_connect_sessions_cancel_confirm: 你确定吗？
+    batch_connect_sessions_cancel_full_title: 取消 %{title} 会话
     batch_connect_sessions_cancel_title: 取消
     batch_connect_sessions_data_html: 你可以通过%{data_link_tag}来获取会话数据%{title}。
     batch_connect_sessions_delete_confirm: 你确定吗？
+    batch_connect_sessions_delete_full_title: 删除 %{title} 会话
     batch_connect_sessions_delete_hover: 删除会话
     batch_connect_sessions_delete_title: 删除
     batch_connect_sessions_edit_title: 使用此会话参数编辑新的 %{title}
@@ -78,10 +80,12 @@ zh-CN:
     batch_connect_sessions_novnc_launch: 启动%{app_title}
     batch_connect_sessions_novnc_view_only: 只读 (共享链接)
     batch_connect_sessions_path_selector_forbidden_error: 您没有权限选择该目录或文件。
+    batch_connect_sessions_relaunch_full_title: 重新启动 %{title} 会话
     batch_connect_sessions_relaunch_title: 重新启动
     batch_connect_sessions_staged_root: 暂存根目录
     batch_connect_sessions_stats_created_at: 创建于：
     batch_connect_sessions_stats_host: 主机：
+    batch_connect_sessions_stats_session_dir_link_title: 打开 %{session_id} 的会话目录
     batch_connect_sessions_stats_session_id: 会话ID：
     batch_connect_sessions_stats_support_ticket: 此会话有问题吗？
     batch_connect_sessions_stats_support_ticket_link_text: 提交支持票
@@ -229,6 +233,7 @@ zh-CN:
     jobs_workflow_not_found: 找不到工作流 %{workflow_id}
     jobs_workflow_show_graph: 在图形编辑器中打开工作流 %{name}
     jobs_workflow_submitted: 工作流提交成功！
+    jobs_workflow_sync_key_help: 启用后，此工作流中的每个启动器都会接收到相同的 <code>OOD_WORKFLOW_SYNC_KEY</code> 环境变量（一个对每次工作流运行唯一的随机令牌）。这对于生成同步的文件名、锁文件或跨依赖作业的共享标识符非常有用。
     jobs_workflows: 工作流
     launch: 启动
     logo_alt_text: 欢迎使用 Open OnDemand
@@ -261,14 +266,18 @@ zh-CN:
     nsf_access_events: NSF 访问事件
     ok: 确定
     owner: 所有者
+    page_title: "%{page} - %{site}"
+    page_title_with_dir: "%{page} - %{site} - %{dir}"
     path_selector_default_popup_title: 选择您的工作目录
     path_selector_home: 主页
     path_selector_parent_directory: 父目录
     pinned_apps_caption_html: 一个精选的<a href="%{all_apps_url}">所有可用应用</a>子集
     pinned_apps_category: 应用
     pinned_apps_title: 固定应用
+    products_manifest_save_error: 无法将应用程序清单保存到 %{path}
     project: 项目
     project_balances: 项目余额
+    project_directory: 项目目录
     project_zip_error_message: 创建 ZIP 文件时出错：%{error}
     project_zip_success_message: 成功：project.zip 已在您的项目目录中创建。
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
@@ -276,6 +285,7 @@ zh-CN:
     quota_block_shared: "(您的配额%{used_exclusive} )"
     quota_file: 文件配额使用量%{used} 可用 %{available}
     quota_file_shared: "(您的文件配额%{used_exclusive})"
+    quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: 重新加载页面以查看更新的配额。 配额每5分钟更新一次。
     quota_warning_prefix_html: 配额限制警告
     recently_used_apps_title: 最近使用的应用
@@ -285,6 +295,7 @@ zh-CN:
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
     restore: 恢复
+    root: 根
     save: 保存
     saved_settings_title: 已保存的设置
     select_path: 选择路径

@@ -12,6 +12,7 @@ class WorkflowsTest < ActiveSupport::TestCase
     assert_nil workflow.description
     assert_nil workflow.created_at
     assert_equal [], workflow.launcher_ids
+    assert_equal '0', workflow.sync_key_enabled
   end
 
   test 'create workflow validation' do
@@ -81,7 +82,8 @@ class WorkflowsTest < ActiveSupport::TestCase
         name:         'test-workflow',
         id:           "test-#{Workflow.next_id}",
         project_dir:  project_dir,
-        launcher_ids: ['sample']
+        launcher_ids: ['sample'],
+        sync_key_enabled: '1'
       )
 
       assert workflow.errors.inspect
@@ -95,6 +97,7 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal "test-workflow", manifest_data["name"]
       assert_equal "description", manifest_data["description"]
       assert_equal project_dir.to_s, manifest_data["project_dir"]
+      assert_equal '1', manifest_data['sync_key_enabled']
     end
   end
 
@@ -137,7 +140,7 @@ class WorkflowsTest < ActiveSupport::TestCase
     end
   end
 
-  test 'update workflow only updates name, description, and launchers' do
+  test 'update workflow only updates name, description, launchers, and sync_key_enabled' do
     Dir.mktmpdir do |tmp|
       project_dir = Pathname.new(tmp)
       workflow = create_workflow(project_dir: project_dir, launcher_ids:['sample'])
@@ -148,7 +151,8 @@ class WorkflowsTest < ActiveSupport::TestCase
         name: 'updated',
         description: 'updated',
         project_dir: nil,
-        launcher_ids: ['sample2']
+        launcher_ids: ['sample2'],
+        sync_key_enabled: '1'
       })
       
       assert_equal 'updated',   workflow.name
@@ -156,11 +160,31 @@ class WorkflowsTest < ActiveSupport::TestCase
       assert_equal old_id,      workflow.id
       assert_equal project_dir.to_s, workflow.project_dir
       assert_equal ['sample2'], workflow.launcher_ids
+      assert_equal '1',         workflow.sync_key_enabled
     end
   end
 
-  def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [])
-    attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids}
+  test 'Check if submit_launcher_params injects ood_workflow_sync_key only when sync_key_enabled is true' do
+    fake_attr = Struct.new(:id, :opts)
+    launcher = Object.new
+    launcher.define_singleton_method(:cacheless_attributes) do
+      [
+        fake_attr.new('bc_num_hours', { value: '1' }),
+        fake_attr.new('auto_queues',  { value: 'batch' })
+      ]
+    end
+
+    workflow = Workflow.new
+    without_key = workflow.submit_launcher_params(launcher, ['1234'], nil)
+    assert_equal({'bc_num_hours' => '1', 'auto_queues' => 'batch', 'afterok' => ['1234'] }, without_key)
+    assert_not without_key.key?('ood_workflow_sync_key')
+
+    with_key = workflow.submit_launcher_params(launcher, ['1234'], 'abc123TOKEN')
+    assert_equal({'bc_num_hours' => '1', 'auto_queues' => 'batch', 'afterok' => ['1234'], 'ood_workflow_sync_key' => 'abc123TOKEN'}, with_key)
+  end
+
+  def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [], sync_key_enabled: '0')
+    attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids, sync_key_enabled: sync_key_enabled}
     workflow = Workflow.new(attrs)
     # this directory is usually created by the project
     Workflow.workflow_dir(project_dir).mkpath

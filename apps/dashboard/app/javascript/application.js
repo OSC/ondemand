@@ -36,7 +36,8 @@ import { createPopper } from '@popperjs/core';
 // Import Bootstrap 5
 import 'bootstrap/dist/js/bootstrap';
 
-import initPopovers from './popovers'
+import initPopovers from './popovers';
+import { updateAlerts } from './alert';
 
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
@@ -46,4 +47,5 @@ Rails.start();
 
 jQuery(function(){
   initPopovers();
+  updateAlerts();
 });

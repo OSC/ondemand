@@ -2,7 +2,7 @@
 <div id="editor-filename" class="text-center mb-2"><%= @path %></div>
 
 <div class="d-flex flex-row flex-grow-1">
-  <div class="editor-controls flex-column col-sm-1 card mx-2 text-center">
+  <div class="editor-controls flex-column col-1 card mx-2 text-center">
 
     <div class="card-header">
       <div class="d-grid gap-2">
@@ -242,5 +242,5 @@
     <div class="card-body border-0"></div>
 
   </div>
-  <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= OodAppkit.files.api(path: @path, fs: @filesystem) %>"><%= @content %></pre>
+  <pre class="flex-grow-1" id="editor" data-path="<%= @path %>" data-api="<%= url_encode_url_path(OodAppkit.files.api(path: @path, fs: @filesystem)) %>"><%= @content %></pre>
 </div>
