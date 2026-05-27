@@ -1,4 +1,7 @@
 # Helper for /files pages.
+
+require 'uri'
+
 module FilesHelper
   include ApplicationHelper
   
@@ -27,5 +30,14 @@ module FilesHelper
   def frame_path(path)
     path.to_s
   end
-end
 
+  def url_encode_path(path)
+    path.to_s.split('/').map { |seg| ERB::Util.url_encode(seg.to_s) }.join('/')
+  end
+
+  def url_encode_url_path(url)
+    path, query = url.to_s.split('?', 2)
+    encoded = url_encode_path(path)
+    query ? "#{encoded}?#{query}" : encoded
+  end
+end
