@@ -11,7 +11,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     stub_sys_apps
   end
 
-  def session_data(token: 'sys/bc_paraview', title: 'Paraview')
+  def fixture_session_data(token: 'sys/bc_paraview', title: 'Paraview')
     {
       'id':              fixture_bc_id,
       'cluster_id':      'owens',
@@ -34,7 +34,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
   def create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview')
     BatchConnect::Session.stubs(:db_root).returns(Pathname.new(dir))
-    File.write("#{dir}/#{fixture_bc_id}", session_data(token: token, title: title).to_json)
+    File.write("#{dir}/#{fixture_bc_id}", fixture_session_data(token: token, title: title).to_json)
   end
 
   def stub_scheduler(state, cores: 1, nodes: 1)
