@@ -488,7 +488,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         cache_json.write({ cluster: 'old' }.to_json)
       end
 
-      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
+      new_cluster = OodCore::cluster.new({ id: :new, job: { some: 'job config' } })
 
       # Only new cluster exists
       BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
@@ -507,8 +507,8 @@ class BatchConnectTest < ApplicationSystemTestCase
         cache_json.write({ cluster: 'old' }.to_json)
       end
 
-      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
-      old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config ' } })
+      new_cluster = OodCore::cluster.new({ id: :new, job: { some: 'job config' } })
+      old_cluster = OodCore::cluster.new({ id: :old, job: { some: 'job config ' } })
 
       # Both clusters exist, but only new one is valid
       BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
@@ -916,6 +916,70 @@ class BatchConnectTest < ApplicationSystemTestCase
     HEREDOC
 
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding when form element names have a shared prefix' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - cluster
+        - cluster_file_system
+        - checkbox_hide_cluster
+        - checkbox_hide_cluster_file_system
+      attributes:
+        cluster:
+          widget: 'text_area'
+        cluster_file_system:
+          widget: 'text_area'
+        checkbox_hide_cluster:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-cluster-when-checked: true
+        checkbox_hide_cluster_file_system:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-cluster-file-system-when-checked: true
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      refute(find("##{bc_ele_id("checkbox_hide_cluster")}").checked?)
+      refute(find("##{bc_ele_id("checkbox_hide_cluster_file_system")}").checked?)
+      check_visibility("cluster", true)
+      check_visibility("cluster_file_system", true)
+
+      # check the checkbox, and 'cluster' is hidden
+      check(bc_ele_id("checkbox_hide_cluster"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", true)
+
+      # un-check the checkbox, and 'cluster' is back to being visible
+      uncheck(bc_ele_id("checkbox_hide_cluster"))
+      check_visibility("cluster", true)
+      check_visibility("cluster_file_system", true)
+
+      # check the checkbox, and 'cluster_file_system' is hidden
+      check(bc_ele_id("checkbox_hide_cluster_file_system"))
+      check_visibility("cluster", true)
+      check_visibility("cluster_file_system", false)
+
+      # un-check the checkbox, and 'cluster_file_system' is back to being visible
+      uncheck(bc_ele_id("checkbox_hide_cluster_file_system"))
+      check_visibility("cluster", true)
+      check_visibility("cluster_file_system", true)
+    end
   end
 
   def basic_default_hide_check_hidden(invert = false)
