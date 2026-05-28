@@ -502,6 +502,7 @@ class FilesTest < ApplicationSystemTestCase
       accept_alert("An error occurred attempting to save this file!\nFile could not be accessed") do
         find('#save-button').click
       end
+      assert_selector '#save-button'
     end
   end
 
