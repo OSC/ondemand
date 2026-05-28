@@ -20,37 +20,38 @@
 
     <nav class="navbar navbar-inverse navbar-static-top navbar-expand" role="navigation" aria-label="Shell Menu">
       <div class="container-fluid" >
-      <ul class="navbar-nav left-padding-none">
-            <li class="nav-item custom-host">
+        <ul class="navbar-nav left-padding-none">
+          <li class="nav-item custom-host">
             <label id="host" class="label">Host: {{host}} </label>
           </li>
-      </ul>
-            <ul class="navbar-nav left-padding-some">
+        </ul>
+        <ul class="navbar-nav left-padding-some">
           <li class="nav-item hidden-xs">
             <label id="directory" class="label hidden-xs">{{#if dir}}Initial directory: {{dir}}{{/if}}</label>
           </li>
-      </ul>
-          <ul class="navbar-nav form-inline navbar-right left-padding-none">
+        </ul>
+        <ul class="navbar-nav form-inline navbar-right left-padding-none">
           <li class="nav-item">
             <div class="form-group custom-form">
-            <label class="label" for="colors">Themes:</label>
-          <select id="colors" class="form-control custom-select">
-        <option value="default">Default</option>
-        <optgroup label="Bright">
-        {{#each colorThemes.light}}
-	  <option value="{{name}}">{{name}}</option>
-        {{/each}}
-        </optgroup>
-        <optgroup label="Dark">
-        {{#each colorThemes.dark}}
-	  <option value="{{name}}">{{name}}</option>
-        {{/each}}
-        </optgroup>
-      </select>
+              <label class="label" for="colors">Themes:</label>
+              <select id="colors" class="form-control custom-select">
+                <option value="default">Default</option>
+                <optgroup label="Bright">
+                  {{#each colorThemes.light}}
+                  <option value="{{name}}">{{name}}</option>
+                  {{/each}}
+                </optgroup>
+                <optgroup label="Dark">
+                  {{#each colorThemes.dark}}
+                  <option value="{{name}}">{{name}}</option>
+                  {{/each}}
+                </optgroup>
+              </select>
             </div>
           </li>
         </ul>
-  </nav>
+      </div>
+    </nav>
   </div>
 </body>
 
