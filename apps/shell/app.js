@@ -29,6 +29,10 @@ if (fs.existsSync('.env')) {
   dotenv.config({path: '.env'});
 }
 
+hbs.registerHelper('json', function (content) {
+    return JSON.stringify(content);
+});
+
 // Load color themes
 var color_themes = {dark: [], light: []};
 glob.sync('./color_themes/light/*').forEach(f => color_themes.light.push(require(path.resolve(f))));
@@ -55,6 +59,8 @@ router.get('/ssh{*splat}', function (req, res) {
       host: theHost,
       dir: theDir,
       colorThemes: color_themes,
+      shellFonts: helpers.shellFonts(),
+      userCSS: helpers.userCSS(req.baseUrl),
       siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
     });
 });

@@ -47,6 +47,12 @@
                   {{/each}}
                 </optgroup>
               </select>
+              <label class="label" for="colors">Fonts:</label>
+              <select id="fonts" class="form-control custom-select">
+                {{#each shellFonts}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+              </select>
             </div>
           </li>
         </ul>
@@ -56,6 +62,10 @@
 </body>
 
 <script>
+  const fonts = {{{json shellFonts}}};
+  const orderedFonts = function(primaryFont) {
+    return [primaryFont, ...fonts.filter(f => f !== primaryFont)].filter(f => f)
+  }
   // the structure we should want is
   // themes {
   //   "name": {
@@ -93,8 +103,7 @@
       ),
       'cursor-color': theme.cursorColor,
       'audible-bell-sound': '',
-      'font-family': '"Iosevka Web", "DejaVu Sans Mono", "Noto Sans Mono", "Everson Mono", FreeMono, Menlo, Terminal, monospace',
-      'user-css': '{{baseURI}}/stylesheets/fonts.css'
+      'user-css': '{{userCSS}}'
     }
   });
   themes["default"] = {
@@ -103,12 +112,18 @@
     'ctrl-c-copy': true,
     'cursor-blink': false,
     'audible-bell-sound': '',
-    'font-family': '"Iosevka Web", "DejaVu Sans Mono", "Noto Sans Mono", "Everson Mono", FreeMono, Menlo, Terminal, monospace',
-    'user-css': '{{baseURI}}/stylesheets/fonts.css'
+    'user-css': '{{userCSS}}'
   }
 
   // Set backing store that hterm uses to read/write preferences
   hterm.defaultStorage = new lib.Storage.Memory();
+
+  const storage = window.localStorage;
+
+  const userFont = storage.getItem('ood_shell_font') || fonts[0];
+  const fontSelect = document.getElementById("fonts");
+  fontSelect.value = userFont;
+  const currentFonts = orderedFonts(userFont);
 
   // profile preferences look like this:
   //
@@ -125,9 +140,9 @@
     _.forIn(theme, (value, key) => {
       hterm.defaultStorage.setItem(`/hterm/profiles/${name}/${key}`, value);
     })
+    hterm.defaultStorage.setItem(`/hterm/profiles/${name}/font-family`, currentFonts);
   });
 
-  var storage = window.localStorage;
 
   themeSelect = document.getElementById("colors");
 
@@ -163,11 +178,19 @@
     return base + separator + "csrf={{csrfToken}}";
   }
 
-themeSelect.addEventListener("change", function(ev) {
-  var choice  = ev.target.value;
-  storage.setItem('ood_shell_theme', choice);
-  oodShell.changeTheme(choice);
-})
+  themeSelect.addEventListener("change", function(ev) {
+    var choice  = ev.target.value;
+    storage.setItem('ood_shell_theme', choice);
+    oodShell.changeTheme(choice);
+  })
+  fontSelect.addEventListener("change", function(ev) {
+    const choice = ev.target.value;
+    storage.setItem('ood_shell_font', choice);
+    const ff = orderedFonts(choice);
+    Object.keys(themes).forEach(name => {
+      hterm.defaultStorage.setItem(`/hterm/profiles/${name}/font-family`, ff);
+    });
+  })
 </script>
 
 </html>
