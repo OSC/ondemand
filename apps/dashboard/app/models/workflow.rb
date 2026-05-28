@@ -84,7 +84,7 @@ class Workflow
     return false unless valid?(:create)
 
     if @project_dir.empty?
-      errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
+      errors.add(:save, I18n.t('dashboard.jobs_project_directory_error'))
       return false
     end
 
