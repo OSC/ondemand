@@ -726,6 +726,47 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-option-for-cluster with underscore cluster id uses hyphenated attribute name' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - ['Ascend Nextgen', 'ascend_nextgen']
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-ascend-nextgen: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('owens', from: 'batch_connect_session_context_cluster')
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      select('Ascend Nextgen', from: 'batch_connect_session_context_cluster')
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+  
   test 'form element headers support markdown and html' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
