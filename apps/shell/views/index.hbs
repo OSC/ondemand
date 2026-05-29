@@ -8,6 +8,7 @@
   <title>Shell - {{ siteTitle }}</title>
 
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
+  <link rel="stylesheet" href="{{userCSS}}">
 
   <script src="{{baseURI}}/javascripts/lodash-4.17.21/lodash.min.js"></script>
   <script src="{{baseURI}}/javascripts/hterm_all_1.92.1.mod_1.js"></script>
@@ -188,6 +189,45 @@
       hterm.defaultStorage.setItem(`/hterm/profiles/${name}/font-family`, ff);
     });
   })
+
+  const isFontAvailable = (() => {
+    const generics = ['monospace', 'serif', 'sans-serif'];
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const sample = 'mmmmmmmmmlli';
+    const size = '72px';
+    const baselineWidths = {};
+    generics.forEach(g => {
+      ctx.font = `${size} ${g}`;
+      baselineWidths[g] = ctx.measureText(sample).width;
+    });
+    return (font) => {
+      if (generics.includes(font)) {
+        return true;
+      }
+      return generics.some(g => {
+        ctx.font = `${size} ${font}, ${g}`;
+        return ctx.measureText(sample).width !== baselineWidths[g];
+      });
+    };
+  })();
+
+  // Filter out unavailable fonts from the dropdown.
+  Promise.all(fonts.map(f => document.fonts.load(`72px ${f}`).catch(() => null))).then(() => {
+    const previousValue = fontSelect.value;
+    Array.from(fontSelect.options).forEach(opt => {
+      if (!isFontAvailable(opt.value)) {
+        opt.remove();
+      }
+    });
+    if (!fontSelect.options.length) {
+      return;
+    }
+    if (!Array.from(fontSelect.options).some(o => o.value === previousValue)) {
+      fontSelect.value = fontSelect.options[0].value;
+      fontSelect.dispatchEvent(new Event('change'));
+    }
+  });
 </script>
 
 </html>
