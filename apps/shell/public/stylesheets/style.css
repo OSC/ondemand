@@ -47,6 +47,14 @@ html, body {
   min-width: 4rem;
 }
 
+@media screen and (max-width: 350px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+  .terminal-options {
+    justify-content: flex-start;
+  }
+}
 
 .navbar-dark {
   background-image: -webkit-linear-gradient(top, #3c3c3c 0, #222 100%);
