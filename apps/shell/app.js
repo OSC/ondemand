@@ -1,6 +1,7 @@
 const fs        = require('fs');
 const http      = require('http');
 const path      = require('path');
+const crypto    = require('crypto');
 const WebSocket = require('ws');
 const express   = require('express');
 const pty       = require('node-pty');
@@ -31,6 +32,19 @@ if (fs.existsSync('.env')) {
 
 hbs.registerHelper('json', function (content) {
     return JSON.stringify(content);
+});
+
+const assetHashCache = new Map();
+hbs.registerHelper('assetHash', function (relativePath) {
+  if (assetHashCache.has(relativePath)) return assetHashCache.get(relativePath);
+  try {
+    const content = fs.readFileSync(path.join(__dirname, 'public', relativePath));
+    const hash = crypto.createHash('md5').update(content).digest('hex').slice(0, 8);
+    assetHashCache.set(relativePath, hash);
+    return hash;
+  } catch (err) {
+    return '';
+  }
 });
 
 // Load color themes
