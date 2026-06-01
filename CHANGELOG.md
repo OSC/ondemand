@@ -16,6 +16,16 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Update Changelog (#5484)\
+Normalize dynamic batch connect tokens with underscores (#5462)\
+lint a random file (#5503)\
+Add path assertions to ProductsUsrTest to fix no-assertion warnings (#5504)\
+Apply auto_groups_filter to Project Manager groups (#5420)\
+Loosen selinux-policy version requirement (#5493)\
+Save job hash for workflows in backend as fallback (#5459)\
+update localizations (#5485)\
+lint a random file (#5483)\
+update dependencies (#5486)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
