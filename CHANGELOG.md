@@ -16,22 +16,13 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Update Changelog (#5484)\
-Normalize dynamic batch connect tokens with underscores (#5462)\
-lint a random file (#5503)\
-Add path assertions to ProductsUsrTest to fix no-assertion warnings (#5504)\
-Apply auto_groups_filter to Project Manager groups (#5420)\
-Loosen selinux-policy version requirement (#5493)\
-Save job hash for workflows in backend as fallback (#5459)\
-update localizations (#5485)\
-lint a random file (#5483)\
-update dependencies (#5486)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
 - This project has issue templates in [5440](https://github.com/OSC/ondemand/pull/5440) and [5441](https://github.com/OSC/ondemand/pull/5441).
 - Invalid announcements will now show an error widget in [5250](https://github.com/OSC/ondemand/pull/5250).
 - Batch connect Sessions now respond to wayvnc templates in [5454](https://github.com/OSC/ondemand/pull/5454).
+- The auto_groups_filter now applies to the Project Manager group selection in [5420](https://github.com/OSC/ondemand/pull/5420).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -43,6 +34,7 @@ update dependencies (#5486)
 - The FilesController does not error when the Accept header is missing [5448](https://github.com/OSC/ondemand/pull/5448).
 - The module browser correctly shows modules with multiple dependency sets in [5165](https://github.com/OSC/ondemand/pull/5165).
 - Project Manager Launchers can correctly use multiple environment variables in [5356](https://github.com/OSC/ondemand/pull/5356).
+- Dynamic batch connect fields with underscores now work correctly in [5462](https://github.com/OSC/ondemand/pull/5462).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
