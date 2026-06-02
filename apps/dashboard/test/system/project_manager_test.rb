@@ -95,9 +95,26 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'creates .ondemand directory with project' do
     Dir.mktmpdir do |dir|
+      CurrentUser.stubs(:home).returns('/tmp')
       project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040700, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children, Dir.children(ondemand_dir)
+    end
+  end
 
-      assert File.directory? File.join("#{dir}/projects", project_id, '.ondemand')
+  test 'shared project creates .ondemand directory with proper permissions' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040770, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children, Dir.children(ondemand_dir)
     end
   end
 
