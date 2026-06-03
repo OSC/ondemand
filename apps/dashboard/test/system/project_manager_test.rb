@@ -103,6 +103,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 0o040700, stats.mode
       exp_children = %w(launchers workflows job_log.yml manifest.yml)
       assert_equal exp_children, Dir.children(ondemand_dir)
+      exp_children.each do |child|
+        stats = File.stat(File.join(ondemand_dir, child))
+        msg = "Path #{child} exists with incorrect permissions"
+        if %w(launchers workflows).include?(child)
+          assert_equal 0o040700, stats.mode, msg
+        elsif child == 'job_log.yml'
+          assert_equal 0o0100600, stats.mode, msg
+        end
+      end
     end
   end
 
@@ -115,6 +124,17 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal 0o040770, stats.mode
       exp_children = %w(launchers workflows job_log.yml manifest.yml)
       assert_equal exp_children, Dir.children(ondemand_dir)
+      exp_children.each do |child|
+        unless child == 'manifest.yml'
+          stats = File.stat(File.join(ondemand_dir, child))
+          msg = "Path #{child} exists with incorrect permissions"
+          if %w(launchers workflows).include?(child)
+            assert_equal 0o040770, stats.mode, msg
+          elsif child == 'job_log.yml'
+            assert_equal 0o0100660, stats.mode, msg
+          end
+        end
+      end
     end
   end
 
