@@ -9,3 +9,4 @@ pas2051|owens-default
 pas1871|owens-default
 pas1754|owens-default
 pas1604|owens-default
+foo-bar|owens-default
