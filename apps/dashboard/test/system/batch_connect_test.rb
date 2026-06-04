@@ -2227,7 +2227,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_equal 'owens', find_value('cluster')
 
         # notice that there are no duplicates. These accounts are not cluster aware
-        expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
+        expected_accounts = ['foo-bar', 'pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
                              'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
 
         id = bc_ele_id('auto_accounts')
@@ -2280,6 +2280,49 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal '', find_option_style('auto_queues', 'serial-40core')
       assert_equal '', find_option_style('auto_queues', 'serial-48core')
       assert_equal '', find_option_style('auto_queues', 'gpudebug-48core')
+    end
+  end
+
+  test 'check for account alias clashes between clusters when using auto_queues auto_accounts' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      accounts = find_all_options("auto_accounts", nil)
+      queues = find_all_options("auto_queues", nil)
+      aliases = []
+      for queue in queues
+        (0..accounts.size).each do |i|
+          if !queue["data-alias-account#{i}"].nil?
+            aliases.append([queue.value, "account#{i}", queue["data-alias-account#{i}"]])
+          end
+        end
+      end
+      err_msg_lines = []
+      aliases_groupby_acct = aliases.group_by { |x| x[2] }
+      aliases_groupby_acct.each do |acct, aliases_this_acct|
+        pseudonyms = aliases_this_acct.map { |x| x[1] }.uniq
+        if pseudonyms.size > 1
+          err_msg_lines.append("account '#{acct}' has multiple different aliases: #{pseudonyms}")
+        end
+      end
+      aliases_groupby_pseudonym = aliases.group_by { |x| x[1] }
+      aliases_groupby_pseudonym.each do |pseudonym, aliases_this_pseudonym|
+        accts = aliases_this_pseudonym.map { |x| x[2] }.uniq
+        if accts.size > 1
+          err_msg_lines.append("alias '#{pseudonym}' has multiple different accounts: #{accts}")
+        end
+      end
+      # $stderr.puts aliases.inspect
+      assert(err_msg_lines.size == 0, err_msg_lines.join("\n"))
     end
   end
 
