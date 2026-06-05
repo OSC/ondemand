@@ -102,7 +102,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       stats = File.stat ondemand_dir
       assert_equal 0o040700, stats.mode
       exp_children = %w(launchers workflows job_log.yml manifest.yml)
-      assert_equal exp_children, Dir.children(ondemand_dir)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
       exp_children.each do |child|
         msg = "Path #{child} is not writable"
         assert File.writable?(File.join(ondemand_dir, child))
@@ -118,7 +118,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       stats = File.stat ondemand_dir
       assert_equal 0o040770, stats.mode
       exp_children = %w(launchers workflows job_log.yml manifest.yml)
-      assert_equal exp_children, Dir.children(ondemand_dir)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
       assert File.writable?(File.join(ondemand_dir, 'manifest.yml'))
       exp_children.each do |child|
         unless child == 'manifest.yml'
