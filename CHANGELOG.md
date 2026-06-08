@@ -35,6 +35,7 @@ Changes are grouped by type:
 - The module browser correctly shows modules with multiple dependency sets in [5165](https://github.com/OSC/ondemand/pull/5165).
 - Project Manager Launchers can correctly use multiple environment variables in [5356](https://github.com/OSC/ondemand/pull/5356).
 - Dynamic batch connect fields with underscores now work correctly in [5462](https://github.com/OSC/ondemand/pull/5462).
+- Fixed an issue with account alias' colliding in [5135](https://github.com/OSC/ondemand/pull/5135).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
