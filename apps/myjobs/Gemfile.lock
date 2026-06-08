@@ -107,7 +107,7 @@ GEM
       railties (>= 3.2)
     drb (2.2.3)
     erubi (1.13.1)
-    excon (1.4.2)
+    excon (1.5.0)
       logger
     execjs (2.10.1)
     ffi (1.16.3)
@@ -311,7 +311,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     useragent (0.16.11)
     webrick (1.9.2)
-    websocket-driver (0.8.0)
+    websocket-driver (0.8.1)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
