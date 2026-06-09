@@ -2,6 +2,7 @@
 class ActiveSupport::TestCase
   CONTRAST_WATCH_SCRIPT = <<~HEREDOC
     function getLuminance(r, g, b) {
+      // Matches step 1 under Tests/Procedure at https://www.w3.org/WAI/WCAG22/Techniques/general/G17
       const [rs, gs, bs] = [r, g, b].map(c => {
         c /= 255;
         return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
@@ -22,6 +23,7 @@ class ActiveSupport::TestCase
       const l2 = getLuminance(r2,g2,b2);
       const lighter = Math.max(l1, l2);
       const darker  = Math.min(l1, l2);
+      // Matches step 3 under Tests/Procedure at https://www.w3.org/WAI/WCAG22/Techniques/general/G17
       return (lighter + 0.05) / (darker + 0.05);
     }
 
