@@ -2,8 +2,14 @@
 
 if Rails.application.config.session_store.nil?
   begin
-    dir = "/var/tmp/#{Etc.getpwuid.name}"
+    user = Etc.getpwuid
+    dir = "/var/tmp/#{user.name}"
     Dir.mkdir(dir, 0o0700) unless Dir.exist?(dir)
+
+    stat = File.stat(dir)
+    correctly_owned = stat.uid == user.uid && stat.gid == user.gid && stat.mode == 0o040700
+
+    raise(StandardError, "#{dir} does not have correct ownership #{user.uid}:#{user.gid} #{stat.mode}") unless correctly_owned
 
     Rails.application.config.session_store(:cache_store, cache: ActiveSupport::Cache::FileStore.new(dir))
   rescue StandardError => e
