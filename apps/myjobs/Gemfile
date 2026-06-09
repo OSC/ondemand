@@ -70,9 +70,5 @@ gem 'minitest', '< 6.0'
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
 gem 'rdoc', '6.3.4.1'
 
-# lock gems to versions that are compatible with ruby 2.7.0,
-# which Ubuntu 20.04 uses.
+# TODO: figure out if we still need to force_ruby_platform here
 gem 'nokogiri', force_ruby_platform: true
-gem 'net-imap', '~> 0.4'
-gem 'public_suffix', '~> 5.0', '< 6.0'
-gem 'zeitwerk', '2.6.18'
