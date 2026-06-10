@@ -157,6 +157,16 @@ describe OodPortalGenerator::Application do
       test_generate('input/http_redirect_host.yml', 'output/http_redirect_host.conf')
     end
 
+    it 'rasies an error with incomplete oidc configs' do
+      config = {
+        oidc_uri:                   '/oidc',
+        oidc_provider_metadata_url: 'https://idp.example.com/auth/realms/osc/.well-known/openid-configuration',
+        oidc_client_id:             'ondemand.example.com'
+      }
+      allow(described_class).to receive(:context).and_return(config)
+      expect { described_class.generate }.to raise_error(StandardError, 'oidc_crypto_passphrase must be set when using OIDC.')
+    end
+
     it 'generates full OIDC config' do
       config = {
         servername: 'ondemand.example.com',
@@ -240,6 +250,12 @@ describe OodPortalGenerator::Application do
         allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
         allow(OodPortalGenerator::Dex).to receive(:config_dir).and_return(config_dir)
         allow(described_class).to receive(:dex_output).and_return(dex_config)
+      end
+
+      it 'rasies an error with incomplete oidc configs in dex' do
+        config = { dex: true }
+        allow(described_class).to receive(:context).and_return(config)
+        expect { described_class.generate }.to raise_error(StandardError, 'oidc_crypto_passphrase must be set when using OIDC.')
       end
 
       it 'generates default dex configs' do
