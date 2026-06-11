@@ -141,6 +141,13 @@ class ConfigurationSingleton
     )
   end
 
+  # @return [Boolean, nil] configured workflow support override when set, otherwise nil to fall back to auto-detection
+  def dashboard_workflows_enabled
+    return nil unless ENV.key?('OOD_DASHBOARD_WORKFLOWS_ENABLED')
+
+    read_bool(ENV['OOD_DASHBOARD_WORKFLOWS_ENABLED'])
+  end
+
   # @return [String, nil] version string from VERSION file, or nil if no file avail
   def version_from_file(dir)
     file = Pathname.new(dir).join("VERSION")
