@@ -336,6 +336,7 @@ DEPENDENCIES
   local_time (~> 1.0.3)
   minitest (< 6.0)
   mocha (~> 2.1)
+  net-imap (= 0.6.4)
   nokogiri
   ood_appkit (~> 2.0)
   osc_machete_rails (~> 2.1.2)

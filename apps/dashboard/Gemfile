@@ -46,6 +46,9 @@ end
 # TODO: figure out if we still need to force_ruby_platform here
 gem 'nokogiri', force_ruby_platform: true
 
+# have to lock these gems for ruby 3.1 support in Debian 12.
+gem 'net-imap', '0.6.4'
+
 # These silence warnings, but can be
 # removed after upgrades include them
 gem 'ostruct'
