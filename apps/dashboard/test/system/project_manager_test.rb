@@ -597,6 +597,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - - owens
               - owens
               - data-max-auto-cores: 48
+            - - test-cluster
+              - test-cluster
+              - data-max-auto-cores: 40
             label: Cluster
             help: ''
             required: false
@@ -646,6 +649,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - - owens
               - owens
               - data-max-auto-cores: 48
+            - - test-cluster
+              - test-cluster
+              - data-max-auto-cores: 40
             label: Cluster
             help: ''
             required: false
@@ -685,14 +691,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar', 'test-account-has-no-qoses',
+                           'test-account-has-qos1', 'test-account-has-qos1-qos2', 'test-account-has-qos2'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
                    page.all('#launcher_auto_scripts option').map(&:value).to_set)
 
       # clusters are automatically added
-      assert_equal(['owens', 'oakley'].to_set, page.all('#launcher_auto_batch_clusters option').map(&:value).to_set)
+      assert_equal(['owens', 'oakley', 'test-cluster'].to_set, page.all('#launcher_auto_batch_clusters option').map(&:value).to_set)
     end
   end
 
@@ -952,6 +959,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - - owens
               - owens
               - data-max-auto-cores: 48
+            - - test-cluster
+              - test-cluster
+              - data-max-auto-cores: 40
             value: oakley
             label: Cluster
             help: ''
@@ -1039,6 +1049,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - pas1754
             - pas1604
             - foo-bar
+            - test-account-has-no-qoses
+            - test-account-has-qos1
+            - test-account-has-qos2
+            - test-account-has-qos1-qos2
             value: pzs1124
             label: Account
             help: ''
@@ -1062,6 +1076,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - - owens
               - owens
               - data-max-auto-cores: 48
+            - - test-cluster
+              - test-cluster
+              - data-max-auto-cores: 40
             value: oakley
             label: Cluster
             help: ''
