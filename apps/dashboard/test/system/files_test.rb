@@ -358,13 +358,15 @@ class FilesTest < ApplicationSystemTestCase
       FileUtils.mkpath File.join(dir, 'foo')
 
       visit files_url(dir)
-      find('#upload-btn').click
+      find('tbody a', exact_text: 'foo', wait: MAX_WAIT)
 
+      find('#upload-btn').click
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
 
       src_file = 'test/fixtures/files/upload/osc-logo.png'
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
       find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
       assert File.exist?(File.join(dir, File.basename(src_file)))
 
@@ -378,11 +380,13 @@ class FilesTest < ApplicationSystemTestCase
       src_file = 'test/fixtures/files/upload/hello-world.c'
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
       find('tbody a', exact_text: 'hello-world.c', wait: MAX_WAIT)
     end
   end
 
   test 'uploading duplicate files' do
+    page.execute_script("localStorage.removeItem('files-upload-overwrite-warning-disabled')")
     Dir.mktmpdir do |dir|
       File.stubs(:umask).returns(18) # ensure default umask is 644
       upload_dir = File.join(dir, 'upload')
@@ -393,11 +397,15 @@ class FilesTest < ApplicationSystemTestCase
       `echo 'here some initial content' > #{src_file}`
 
       visit files_url(upload_dir)
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+      assert_no_selector 'tbody a', exact_text: File.basename(src_file)
+
       find('#upload-btn').click
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
 
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
       find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
@@ -415,12 +423,84 @@ class FilesTest < ApplicationSystemTestCase
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_selector '#files_input_modal', visible: true, wait: MAX_WAIT
+      assert_text 'testfile.sh already exists. The previous file will be overwritten.'
+      find('#files_input_modal_ok_button').click
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
       find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
 
       # and it's still there, now with new content and it keeps the 755 permissions
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
       assert_equal File.stat(upload_file).mode, 33_261 # still 755
+    end
+  end
+
+  test 'uploading multiple duplicate files shows overwrite list' do
+    page.execute_script("localStorage.removeItem('files-upload-overwrite-warning-disabled')")
+
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      file1 = 'test/fixtures/files/upload/hello-world.c'
+      file2 = 'test/fixtures/files/upload/funny_characters.sh'
+      FileUtils.cp(file1, File.join(upload_dir, File.basename(file1)))
+      FileUtils.cp(file2, File.join(upload_dir, File.basename(file2)))
+
+      visit files_url(upload_dir)
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      attach_file 'files[]', [file1, file2], visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+
+      assert_selector '#files_input_modal', visible: true, wait: MAX_WAIT
+      assert_text 'Files already exist'
+      assert_text 'The following files already exist and will be overwritten:'
+      within '#files_input_modal' do
+        assert_selector 'li', exact_text: 'hello-world.c'
+        assert_selector 'li', exact_text: 'funny_characters.sh'
+      end
+
+      find('#files_input_modal_ok_button').click
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+      find('tbody a', exact_text: 'hello-world.c', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'funny_characters.sh', wait: MAX_WAIT)
+    end
+  end
+
+  test 'upload overwrite warning can be disabled' do
+    page.execute_script("localStorage.removeItem('files-upload-overwrite-warning-disabled')")
+
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_file = 'test/fixtures/files/upload/osc-logo.png'
+      FileUtils.cp(src_file, File.join(upload_dir, File.basename(src_file)))
+
+      visit files_url(upload_dir)
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_selector '#files_input_modal', visible: true, wait: MAX_WAIT
+      check 'Never show this warning again'
+      find('#files_input_modal_ok_button').click
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_no_selector '#files_input_modal', visible: true, wait: 5
+      assert_selector '#directory-contents', visible: true, wait: MAX_WAIT
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
     end
   end
 
