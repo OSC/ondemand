@@ -1,0 +1,519 @@
+// High-contrast "safe viewing" theme for users who need improved contrast.
+// Activated via data-bs-theme="dark" on <html> and the .ood-safe-viewing class.
+$ood-safe-viewing-body-bg: #1a1a1a;
+// OpenOnDemand_*_dark.svg st1 fill must match $ood-safe-viewing-body-bg (used as external <img>).
+
+[data-bs-theme="dark"] {
+  --bs-body-bg: #{$ood-safe-viewing-body-bg};
+  --bs-body-bg-rgb: 26, 26, 26;
+  --bs-body-color: #e8e8e8;
+  --bs-body-color-rgb: 232, 232, 232;
+  --bs-emphasis-color: #fff;
+  --bs-secondary-color: #c8c8c8;
+  --bs-tertiary-color: #a8a8a8;
+  --bs-border-color: #555;
+  --bs-link-color: #7eb8f0;
+  --bs-link-hover-color: #a8d4ff;
+  --bs-card-bg: #2a2a2a;
+  --bs-card-border-color: #555;
+  --bs-table-bg: #2a2a2a;
+  --bs-table-color: #e8e8e8;
+  --bs-table-striped-bg: #333;
+  --bs-table-hover-bg: #3a3a3a;
+  --bs-dropdown-bg: #2a2a2a;
+  --bs-dropdown-link-color: #e8e8e8;
+  --bs-dropdown-link-hover-bg: #3a3a3a;
+  --bs-modal-bg: #2a2a2a;
+  --bs-popover-bg: #2a2a2a;
+  --bs-list-group-bg: #2a2a2a;
+  --bs-list-group-color: #e8e8e8;
+  --bs-form-control-bg: var(--bs-body-bg);
+  --bs-form-control-color: #e8e8e8;
+  --bs-form-select-bg: var(--bs-body-bg);
+  --bs-form-select-color: #e8e8e8;
+  --bs-form-check-bg: var(--bs-body-bg);
+  --bs-secondary-bg: #2a2a2a;
+  --bs-secondary-bg-rgb: 42, 42, 42;
+  --bs-tertiary-bg: #383838;
+  --bs-tertiary-bg-rgb: 56, 56, 56;
+  --bs-breadcrumb-bg: var(--bs-secondary-bg);
+  --bs-light: #333;
+  --bs-light-rgb: 51, 51, 51;
+  // Mirror pinned_apps tile shadow (2px 2px 5px black @ 50%) with a soft gray glow on dark bg.
+  --ood-elevation-shadow: 2px 2px 5px rgba(180, 180, 180, 0.45);
+
+  color-scheme: dark;
+
+  pre.motd-monospaced {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+  }
+
+  footer {
+    border-top-color: var(--bs-border-color);
+  }
+
+  .ood-logo--light {
+    display: none !important;
+  }
+
+  .ood-logo--dark {
+    display: inline !important;
+  }
+
+  .bg-white {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color);
+    --bs-info: rgb(100, 200, 220);
+    --bs-info-rgb: 100, 200, 220;
+  }
+
+  .bg-light {
+    background-color: var(--bs-secondary-bg) !important;
+  }
+
+  .text-dark {
+    color: var(--bs-emphasis-color) !important;
+  }
+
+  .link-dark {
+    color: var(--bs-link-color) !important;
+  }
+
+  .text-muted {
+    color: var(--bs-secondary-color) !important;
+  }
+
+  // Pinned and recently used app tiles (pinned_apps.scss sets .launcher-click { color: black }).
+  .app-launcher .launcher-click {
+    color: var(--bs-body-color);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-link-hover-color);
+    }
+
+    p.app-title {
+      color: inherit;
+    }
+  }
+
+  // Recently used app tiles only (pinned_apps.scss black shadow is invisible on dark bg).
+  .recently-used-apps-header .app-launcher {
+    box-shadow: var(--ood-elevation-shadow);
+  }
+
+  .btn-default {
+    --bs-btn-color: var(--bs-body-color);
+    --bs-btn-bg: var(--bs-secondary-bg);
+    --bs-btn-border-color: var(--bs-border-color);
+    --bs-btn-hover-color: var(--bs-emphasis-color);
+    --bs-btn-hover-bg: var(--bs-tertiary-bg);
+    --bs-btn-hover-border-color: var(--bs-border-color);
+    --bs-btn-active-color: var(--bs-emphasis-color);
+    --bs-btn-active-bg: var(--bs-tertiary-bg);
+    --bs-btn-active-border-color: var(--bs-border-color);
+    color: var(--bs-btn-color);
+    background-color: var(--bs-btn-bg);
+    border-color: var(--bs-btn-border-color);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-btn-hover-color);
+      background-color: var(--bs-btn-hover-bg);
+      border-color: var(--bs-btn-hover-border-color);
+    }
+  }
+
+  // Alerts: darker semantic backgrounds, bright text (not light-mode pastels).
+  .alert {
+    &.alert-danger {
+      --bs-alert-color: #ffe8ea;
+      --bs-alert-bg: #56262d;
+      --bs-alert-border-color: #70353d;
+      --bs-alert-link-color: #a8d4ff;
+
+      a {
+        color: var(--bs-alert-link-color);
+      }
+    }
+
+    &.alert-warning {
+      --bs-alert-color: #fff4d6;
+      --bs-alert-bg: #564720;
+      --bs-alert-border-color: #6f5e2e;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    &.alert-success {
+      --bs-alert-color: #dff5e8;
+      --bs-alert-bg: #244333;
+      --bs-alert-border-color: #325645;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    &.alert-info {
+      --bs-alert-color: #d6f4fc;
+      --bs-alert-bg: #224550;
+      --bs-alert-border-color: #2f5863;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    &.alert-primary {
+      --bs-alert-color: #dce8ff;
+      --bs-alert-bg: #223856;
+      --bs-alert-border-color: #2f4a6a;
+      --bs-alert-link-color: #a8d4ff;
+    }
+
+    .btn-close {
+      --bs-btn-close-filter: invert(1) grayscale(100%) brightness(200%);
+    }
+  }
+
+  // Checkboxes: only unchecked background matches the dark page (checked uses default styling).
+  .form-check-input[type="checkbox"]:not(:checked),
+  input[type="checkbox"]:not(.form-check-input):not(:checked) {
+    background-color: var(--bs-body-bg);
+  }
+
+  // Radios: Bootstrap forms, batch connect, etc.
+  .form-check-input[type="radio"],
+  input[type="radio"]:not(.form-check-input) {
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-border-color);
+
+    &:focus {
+      border-color: var(--bs-link-color);
+      box-shadow: 0 0 0 0.25rem rgba(126, 184, 240, 0.25);
+    }
+
+    &:checked {
+      $radio-checked: rgb(51, 122, 183);
+      background-color: $radio-checked;
+      background-image: radial-gradient(
+        circle,
+        var(--bs-body-bg) 0 40%,
+        $radio-checked 41% 100%
+      );
+      border-color: $radio-checked;
+    }
+  }
+
+  input[type="radio"]:not(.form-check-input) {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1em;
+    height: 1em;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 50%;
+  }
+
+  .form-select,
+  select.form-control {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+
+    &:focus {
+      background-color: var(--bs-body-bg);
+      color: var(--bs-body-color);
+      border-color: var(--bs-link-color);
+      box-shadow: 0 0 0 0.25rem rgba(126, 184, 240, 0.25);
+    }
+  }
+
+  .form-control {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+
+    &:focus {
+      background-color: var(--bs-body-bg);
+      color: var(--bs-body-color);
+      border-color: var(--bs-link-color);
+      box-shadow: 0 0 0 0.25rem rgba(126, 184, 240, 0.25);
+    }
+  }
+
+  // btn-outline-dark keeps compile-time dark colors in dark mode (Bootstrap #37711).
+  .btn-outline-dark {
+    --bs-btn-color: var(--bs-body-color);
+    --bs-btn-border-color: var(--bs-border-color);
+    --bs-btn-hover-color: var(--bs-body-bg);
+    --bs-btn-hover-bg: var(--bs-body-color);
+    --bs-btn-hover-border-color: var(--bs-body-color);
+    --bs-btn-active-color: var(--bs-body-bg);
+    --bs-btn-active-bg: var(--bs-emphasis-color);
+    --bs-btn-active-border-color: var(--bs-emphasis-color);
+    --bs-btn-disabled-color: var(--bs-secondary-color);
+    --bs-btn-disabled-border-color: var(--bs-border-color);
+  }
+
+  .toolbar,
+  .toolbar button {
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+  }
+
+  .editor-navbar,
+  .editor-navbar .navbar {
+    background-color: var(--bs-body-bg);
+  }
+
+  // Bootstrap compiles --bs-breadcrumb-bg: #e9ecef on .breadcrumb (sandbox apps, etc.).
+  // Match table-striped rows (#333), not page body (#1a1a1a).
+  .breadcrumb {
+    --bs-breadcrumb-bg: var(--bs-table-striped-bg);
+    background-color: var(--bs-table-striped-bg);
+    color: var(--bs-body-color);
+  }
+
+  // Batch connect / interactive apps page header (compiles --breadcrumb-bg locally).
+  .breadcrumb-wrapper {
+    --breadcrumb-bg: var(--bs-table-striped-bg);
+    background-color: var(--bs-table-striped-bg);
+    color: var(--bs-body-color);
+
+    .breadcrumb {
+      --bs-breadcrumb-bg: transparent;
+      background-color: transparent;
+      color: inherit;
+    }
+  }
+
+  // Path selector modals: directory bar matches striped table rows.
+  .modal .breadcrumb.breadcrumb-no-delimiter {
+    --bs-breadcrumb-bg: var(--bs-table-striped-bg);
+    background-color: var(--bs-table-striped-bg);
+    color: var(--bs-body-color);
+
+    a.icon-link.link-dark,
+    a.link-dark.icon-link {
+      color: var(--bs-emphasis-color) !important;
+    }
+
+    a:not(.icon-link) {
+      color: var(--bs-link-color);
+    }
+  }
+
+  .modal .list-group-item-action.link-dark {
+    color: var(--bs-body-color) !important;
+    background-color: var(--bs-list-group-bg);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-emphasis-color) !important;
+      background-color: var(--bs-tertiary-bg) !important;
+    }
+  }
+
+  // Path selector tables (DataTables odd/even rows and borders stay light-themed).
+  .modal .table,
+  .modal table.dataTable {
+    --bs-table-bg: var(--bs-body-bg);
+    --bs-table-color: var(--bs-body-color);
+    --bs-table-border-color: var(--bs-border-color);
+    --bs-table-striped-bg: #242424;
+    --bs-table-striped-color: var(--bs-body-color);
+    --bs-table-hover-bg: var(--bs-tertiary-bg);
+    --bs-table-hover-color: var(--bs-emphasis-color);
+    border-color: var(--bs-border-color);
+  }
+
+  .modal table.dataTable thead > tr > th {
+    border-color: var(--bs-border-color) !important;
+    color: var(--bs-body-color);
+    background-color: var(--bs-table-bg);
+  }
+
+  .modal table.dataTable tbody > tr > td {
+    border-color: var(--bs-border-color) !important;
+    color: var(--bs-body-color);
+    background-color: var(--bs-table-bg);
+    box-shadow: none;
+  }
+
+  // DataTables stripes rows via .odd/.even on <tr>; color the cells, not just the row.
+  .modal table.dataTable tbody > tr.odd > td,
+  .modal table.dataTable tbody > tr:nth-child(odd) > td {
+    background-color: var(--bs-table-striped-bg);
+    color: var(--bs-table-striped-color);
+  }
+
+  .modal table.dataTable tbody > tr.even > td,
+  .modal table.dataTable tbody > tr:nth-child(even) > td {
+    background-color: var(--bs-table-bg);
+    color: var(--bs-body-color);
+  }
+
+  .modal table.dataTable tbody > tr:hover > td {
+    background-color: var(--bs-table-hover-bg);
+    color: var(--bs-table-hover-color);
+  }
+
+  .modal table.dataTable tbody > tr.selected,
+  .modal table.dataTable tbody > tr.selected > td {
+    background-color: rgb(0, 136, 204) !important;
+    color: #fff !important;
+    box-shadow: none;
+  }
+
+  .modal .dt-container,
+  .modal .dt-layout-row {
+    border-color: var(--bs-border-color);
+    color: var(--bs-body-color);
+  }
+
+  // Path selector type icons (.gold / .black from path_selector_data_table.js).
+  .modal table.dataTable .fa-folder.gold,
+  .modal table.dataTable .gold {
+    color: gold;
+  }
+
+  .modal table.dataTable .fa-file.black,
+  .modal table.dataTable .black {
+    color: lightgrey;
+  }
+
+  // Project manager sidebar actions (btn-link strips button chrome).
+  .btn.btn-link.bg-light.text-dark {
+    color: var(--bs-emphasis-color) !important;
+    background-color: var(--bs-body-bg) !important;
+    border: 1px solid var(--bs-border-color);
+    text-decoration: none;
+
+    strong,
+    .button-icon,
+    i {
+      color: inherit !important;
+    }
+
+    &:hover,
+    &:focus {
+      color: var(--bs-emphasis-color) !important;
+      background-color: var(--bs-body-bg) !important;
+      border-color: var(--bs-emphasis-color);
+    }
+  }
+}
+
+// Navbar theme switch (light / dark) — inherit .nav-link typography from navbar.
+$ood-toggle-track-w: 2.75rem;
+$ood-toggle-track-h: 1.5rem;
+$ood-toggle-thumb: 1.125rem;
+$ood-toggle-pad: 0.1875rem;
+
+.ood-theme-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  font: inherit;
+}
+
+// Button.nav-link does not keep navbar colors on blur like <a.nav-link>; set explicitly.
+.navbar-dark .ood-theme-toggle.nav-link,
+.navbar-dark .ood-theme-toggle.nav-link .ood-theme-toggle__label {
+  color: var(--bs-navbar-color);
+}
+
+.navbar-dark .ood-theme-toggle.nav-link:hover,
+.navbar-dark .ood-theme-toggle.nav-link:focus,
+.navbar-dark .ood-theme-toggle.nav-link:active,
+.navbar-dark .ood-theme-toggle.nav-link:focus-visible {
+  color: var(--bs-navbar-hover-color);
+}
+
+.navbar-light .ood-theme-toggle.nav-link,
+.navbar-light .ood-theme-toggle.nav-link .ood-theme-toggle__label {
+  color: var(--bs-navbar-color);
+}
+
+.navbar-light .ood-theme-toggle.nav-link:hover,
+.navbar-light .ood-theme-toggle.nav-link:focus,
+.navbar-light .ood-theme-toggle.nav-link:active,
+.navbar-light .ood-theme-toggle.nav-link:focus-visible {
+  color: var(--bs-navbar-hover-color);
+}
+
+.ood-theme-toggle__label {
+  color: inherit;
+}
+
+.ood-theme-toggle__track {
+  position: relative;
+  flex-shrink: 0;
+  width: $ood-toggle-track-w;
+  height: $ood-toggle-track-h;
+  border-radius: $ood-toggle-track-h;
+  background-color: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ood-theme-toggle__thumb {
+  position: absolute;
+  top: 50%;
+  left: $ood-toggle-pad;
+  width: $ood-toggle-thumb;
+  height: $ood-toggle-thumb;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  transition:
+    left 0.2s ease,
+    right 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+  color: rgb(51, 122, 183);
+  font-size: 0.625rem;
+  line-height: 1;
+}
+
+.ood-theme-toggle__icon--moon {
+  display: none;
+}
+
+// Safe viewing on: thumb right; track uses safe-viewing page background.
+.ood-theme-toggle--dark .ood-theme-toggle__track {
+  background-color: var(--bs-body-bg, #1a1a1a);
+  border-color: var(--bs-border-color, #555);
+}
+
+.ood-theme-toggle--dark .ood-theme-toggle__thumb {
+  left: auto;
+  right: $ood-toggle-pad;
+  background-color: #e8e8e8;
+  color: #2a2a2a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.ood-theme-toggle--dark .ood-theme-toggle__icon--sun {
+  display: none;
+}
+
+.ood-theme-toggle--dark .ood-theme-toggle__icon--moon {
+  display: block;
+  color: #f0c040;
+}
+
+.navbar-dark .ood-theme-toggle:not(.ood-theme-toggle--dark) .ood-theme-toggle__track {
+  background-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.navbar-dark .ood-theme-toggle--dark .ood-theme-toggle__track {
+  background-color: var(--bs-body-bg, #1a1a1a);
+  border-color: var(--bs-border-color, #555);
+}
+
+.navbar-light .ood-theme-toggle:focus-visible {
+  outline: 2px solid rgb(51, 122, 183);
+  outline-offset: 2px;
+}

@@ -1,8 +1,23 @@
 'use strict';
 
 import ace from 'ace-code/esm-resolver';
+import { STORAGE_KEY } from './dark_mode.js';
+import { getBoolean } from './utils';
 
 const KEY_PREFIX = "ood_editor_store_";
+const SAFE_VIEWING_EDITOR_THEME = 'ace/theme/tomorrow_night';
+
+function isLightAceTheme(themePath) {
+  return document.querySelector(`#theme optgroup[label="Bright"] option[value="${themePath}"]`) !== null;
+}
+
+function resolveEditorTheme() {
+  const saved = getUserPreference('theme') || 'ace/theme/solarized_light';
+  if (getBoolean(STORAGE_KEY) && isLightAceTheme(saved)) {
+    return SAFE_VIEWING_EDITOR_THEME;
+  }
+  return saved;
+}
 
 function normalizeKey(key) {
   return `${KEY_PREFIX}${key}`;
@@ -210,8 +225,9 @@ jQuery(function () {
       editor.setFontSize($("#fontsize option:selected").val());
       $("#mode").val(getUserPreference('mode') || "text");
       editor.session.setMode("ace/mode/" + $("#mode option:selected").val());
-      $("#theme").val(getUserPreference('theme') || "ace/theme/solarized_light");
-      editor.setTheme($("#theme option:selected").val());
+      const theme = resolveEditorTheme();
+      $("#theme").val(theme);
+      editor.setTheme(theme);
       $("#wordwrap").prop("checked", getUserPreference('wordwrap') === "true");
       editor.getSession().setUseWrapMode($("#wordwrap").is(':checked'));
 

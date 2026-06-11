@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html lang="<%= Configuration.locale %>">
 <head>
+  <%= render partial: 'layouts/dark_mode_init' if Configuration.dark_mode_enabled? %>
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{@user_configuration.dashboard_title}" %></title>
   <%= favicon %>
 
@@ -57,6 +58,8 @@
 
           <!-- add some space between nav_bar and help_menu -->
           <div class="ms-auto"></div>
+
+          <%= render partial: 'layouts/nav/dark_mode_toggle' if Configuration.dark_mode_enabled? %>
 
           <% if @help_bar.empty? %>
             <%= render partial: 'layouts/nav/develop_dropdown' %>
