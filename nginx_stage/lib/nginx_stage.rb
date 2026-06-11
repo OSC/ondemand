@@ -121,6 +121,13 @@ module NginxStage
     app_info
   end
 
+  # Expand the mTLS PKI directory for a given user
+  # @param user [User, String] the user
+  # @return [String] absolute path to the user's mTLS PKI directory
+  def self.mtls_pki_dir(user:)
+    pun_mtls_pki_dir.sub('~', Etc.getpwnam(user.to_s).dir)
+  end
+
   # Clean environment used during execution of nginx binary
   # @example Start the per-user NGINX for user Bob
   #   clean_nginx_env(user: 'bob')
@@ -128,6 +135,8 @@ module NginxStage
   # @param user [String] the owner of the nginx process
   # @return [ENV] the environment used to execute the nginx process
   def self.clean_nginx_env(user:)
+    pki_dir = mtls_pki_dir(user: user)
+
     ENV.replace({
       "USER" => user,
       "LOGNAME" => user,
@@ -148,6 +157,9 @@ module NginxStage
       "ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
       # set the duplicate to keep clean_nginx_env idempotent
       "OOD_ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
+      "ONDEMAND_MTLS_CERT" => File.join(pki_dir, 'client.crt'),
+      "ONDEMAND_MTLS_KEY"  => File.join(pki_dir, 'client.key'),
+      "ONDEMAND_MTLS_CA"   => File.join(pki_dir, 'ca.crt'),
     }.merge(pun_custom_env).merge(preserve_env_declarations.map { |k| [ k, ENV[k] ] }.to_h))
   end
 
