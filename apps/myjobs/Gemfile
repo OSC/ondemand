@@ -74,4 +74,4 @@ gem 'rdoc', '6.3.4.1'
 gem 'nokogiri', force_ruby_platform: true
 
 # have to lock these gems for ruby 3.1 support in Debian 12.
-gem 'net-imap', '0.6.4'
+gem 'net-imap', '> 0.5', '< 0.6'
