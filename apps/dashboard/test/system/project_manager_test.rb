@@ -757,9 +757,22 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
       jobs = YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"), permitted_classes: [Time])
-
+      cache = JSON.parse(File.read("#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"))
+      
       assert_equal(1, jobs.size)
       assert_equal('job-id-123', jobs[0]['id'])
+
+      assert_equal('owens', cache['auto_batch_clusters'])
+      assert_equal('pas2051', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
+
+      # next form visit prefills cached values
+
+      click_on 'Show'
+      
+      assert_equal 'owens', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pas2051', find('#launcher_auto_accounts').value
+      assert_equal "#{project_dir}/my_cooler_script.bash", find('#launcher_auto_scripts').value
     end
   end
 
