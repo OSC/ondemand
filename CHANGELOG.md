@@ -16,10 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-lint a random file (#5525)\
-Fix workflow save error showing literal I18n method call instead of translated message (#5489)\
-Update Changelog (#5520)\
-update dependencies (#5521)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -40,6 +36,7 @@ update dependencies (#5521)
 - Project Manager Launchers can correctly use multiple environment variables in [5356](https://github.com/OSC/ondemand/pull/5356).
 - Dynamic batch connect fields with underscores now work correctly in [5462](https://github.com/OSC/ondemand/pull/5462).
 - Fixed an issue with account alias' colliding in [5135](https://github.com/OSC/ondemand/pull/5135).
+- Workflow save errors correctly translate messages in [5489](https://github.com/OSC/ondemand/pull/5489).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
