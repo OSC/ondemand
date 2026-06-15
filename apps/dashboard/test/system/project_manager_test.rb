@@ -910,6 +910,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'launchers quick-launch with default values when no cache' do
+  end
+
+  test 'launchers quick-launch with cached values if available' do
+  end
+
   test 'editing launchers initializes correctly' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
