@@ -859,10 +859,211 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
-  test 'launchers quick-launch with default values when no cache' do
+  def launcher_cache_test_setup(project_id, launcher_id)
+    add_account(project_id, launcher_id)
+    add_bc_num_hours(project_id, launcher_id)
+
+    find("#edit_#{launcher_id}").click
+
+    click_on 'Add new option'
+    select('Job Name', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_job_name', with: 'my default job name')
+
+    click_on 'Add new option'
+    select('Log Location', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_log_location', with: '/my_default_logfile.out')
+
+    click_on 'Add new option'
+    select('Cores', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_cores', with: '2')
+
+    click_on 'Add new option'
+    select('Nodes', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_bc_num_nodes', with: '3')
+
+    # add auto_environment_variable
+    add_auto_environment_variable(project_id, launcher_id)
+    find('#edit_launcher_auto_environment_variable').click
+    find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
+    find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'default_value')
+    find('#edit_launcher_auto_environment_variable').click
+    click_on(I18n.t('dashboard.save'))
   end
 
-  test 'launchers quick-launch with cached values if available' do
+  test 'launchers quick-launch with default values when no cache' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "default_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my default job name',
+              '-o', '/my_default_logfile.out',
+              '-A', 'pzs1124', 
+              '-t', '01:00:00',
+              '-n', '2',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '3',
+              '--parsable', '-M', 'oakley',
+              stdin_data: "some_other_command\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+      refute File.exist?(cache_file)
+
+      click_on 'Launch'
+      assert_selector('.alert-success', text: 'job-id-123')
+
+      cache = JSON.parse(File.read(cache_file))
+      
+      assert_equal('oakley', cache['auto_batch_clusters'])
+      assert_equal('pzs1124', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cool_script.sh", cache['auto_scripts'])
+      assert_equal('my default job name', cache['auto_job_name'])
+      assert_equal('/my_default_logfile.out', cache['auto_log_location'])
+      assert_equal('1', cache['bc_num_hours'])
+      assert_equal('2', cache['auto_cores'])
+      assert_equal('3', cache['bc_num_nodes'])
+      assert_equal('default_value', cache['auto_environment_variable_SOME_VARIABLE'])
+    end
+  end
+
+  test 'launchers overwrite cache when non-default values are chosen' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+
+      # We simulate the cached values observed in the last test
+      cached_values = {
+        'auto_batch_clusters'                     => 'oakley',
+        'auto_accounts'                           => 'pzs1124',
+        'auto_scripts'                            => "#{project_dir}/my_cool_script.sh",
+        'auto_job_name'                           => 'my default job name',
+        'auto_log_location'                       => '/my_default_logfile.out',
+        'bc_num_hours'                            => '1',
+        'auto_cores'                              => '2',
+        'bc_num_nodes'                            => '3',
+        'auto_environment_variable_SOME_VARIABLE' => 'default_value'
+      }
+
+      File.open(cache_file, 'w') do |f|
+        f.write(cached_values.to_json)
+      end
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "chosen_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my chosen job name',
+              '-o', '/my_chosen_logfile.out',
+              '-A', 'pas2051', 
+              '-t', '04:00:00',
+              '-n', '5',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '6',
+              '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("#show_#{launcher_id}").click
+
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas2051', from: 'launcher_auto_accounts')
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
+      fill_in('launcher_auto_job_name', with: '')
+      fill_in('launcher_auto_job_name', with: 'my chosen job name')
+      fill_in('launcher_auto_log_location', with:'')
+      fill_in('launcher_auto_log_location', with:'/my_chosen_logfile.out')
+      fill_in('launcher_bc_num_hours', with: '4')
+      fill_in('launcher_auto_cores', with: '5')
+      fill_in('launcher_bc_num_nodes', with: '6')
+      fill_in('launcher_auto_environment_variable_SOME_VARIABLE', with: 'chosen_value')
+      
+      click_on I18n.t('dashboard.batch_connect_form_launch')
+      assert_selector('.alert-success', text: 'job-id-123')
+
+      cache = JSON.parse(File.read(cache_file))
+      
+      assert_equal('owens', cache['auto_batch_clusters'])
+      assert_equal('pas2051', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
+      assert_equal('my chosen job name', cache['auto_job_name'])
+      assert_equal('/my_chosen_logfile.out', cache['auto_log_location'])
+      assert_equal('4', cache['bc_num_hours'])
+      assert_equal('5', cache['auto_cores'])
+      assert_equal('6', cache['bc_num_nodes'])
+      assert_equal('chosen_value', cache['auto_environment_variable_SOME_VARIABLE'])
+    end
+  end
+
+  test 'launchers quick-launch with cached values when present' do
+        Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+
+      # We simulate the cached values observed in the last test
+      cached_values = {
+        'auto_batch_clusters'                     => 'owens',
+        'auto_accounts'                           => 'pas2051',
+        'auto_scripts'                            => "#{project_dir}/my_cooler_script.bash",
+        'auto_job_name'                           => 'my chosen job name',
+        'auto_log_location'                       => '/my_chosen_logfile.out',
+        'bc_num_hours'                            => '4',
+        'auto_cores'                              => '5',
+        'bc_num_nodes'                            => '6',
+        'auto_environment_variable_SOME_VARIABLE' => 'chosen_value'
+      }
+
+      File.open(cache_file, 'w') do |f|
+        f.write(cached_values.to_json)
+      end
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "chosen_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my chosen job name',
+              '-o', '/my_chosen_logfile.out',
+              '-A', 'pas2051', 
+              '-t', '04:00:00',
+              '-n', '5',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '6',
+              '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("#launch_#{launcher_id}").click
+      assert_selector('.alert-success', text: 'job-id-123')
+    end
   end
 
   test 'editing launchers initializes correctly' do
