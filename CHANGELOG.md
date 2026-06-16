@@ -36,6 +36,7 @@ Changes are grouped by type:
 - Project Manager Launchers can correctly use multiple environment variables in [5356](https://github.com/OSC/ondemand/pull/5356).
 - Dynamic batch connect fields with underscores now work correctly in [5462](https://github.com/OSC/ondemand/pull/5462).
 - Fixed an issue with account alias' colliding in [5135](https://github.com/OSC/ondemand/pull/5135).
+- Workflow save errors correctly translate messages in [5489](https://github.com/OSC/ondemand/pull/5489).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
