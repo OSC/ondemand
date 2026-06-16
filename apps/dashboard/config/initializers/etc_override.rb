@@ -1,10 +1,9 @@
 require 'etc'
 
 module Etc
-  OVERSIZED_GID_OVERRIDE = {
-    # Add any oversized GIDs you need to fake out here
-    Process.gid => "mac.user.group" if Process.gid > 60_000
-  }.freeze
+  OVERSIZED_GID_OVERRIDE = Process.gid > 60_000 ? {
+    Process.gid => "mac.user.group"
+  } : {}
 
   Group = Struct.new(:name, :passwd, :gid, :mem) unless const_defined?(:Group)
 
