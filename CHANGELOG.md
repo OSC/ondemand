@@ -16,6 +16,11 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+add javascript contrast watcher (#5347)\
+Update Changelog (#5532)\
+Add closing tag to Files dropdown button in All Apps index (#5527)\
+Bump esbuild from 0.25.12 to 0.28.1 in /apps/dashboard (#5529)\
+update dependencies (#5533)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
