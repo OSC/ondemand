@@ -16,11 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-add javascript contrast watcher (#5347)\
-Update Changelog (#5532)\
-Add closing tag to Files dropdown button in All Apps index (#5527)\
-Bump esbuild from 0.25.12 to 0.28.1 in /apps/dashboard (#5529)\
-update dependencies (#5533)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -28,6 +23,7 @@ update dependencies (#5533)
 - Invalid announcements will now show an error widget in [5250](https://github.com/OSC/ondemand/pull/5250).
 - Batch connect Sessions now respond to wayvnc templates in [5454](https://github.com/OSC/ondemand/pull/5454).
 - The auto_groups_filter now applies to the Project Manager group selection in [5420](https://github.com/OSC/ondemand/pull/5420).
+- System tests now test for color contrast in [5347](https://github.com/OSC/ondemand/pull/5347).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -42,6 +38,7 @@ update dependencies (#5533)
 - Dynamic batch connect fields with underscores now work correctly in [5462](https://github.com/OSC/ondemand/pull/5462).
 - Fixed an issue with account alias' colliding in [5135](https://github.com/OSC/ondemand/pull/5135).
 - Workflow save errors correctly translate messages in [5489](https://github.com/OSC/ondemand/pull/5489).
+- Files dropdown button works correctly on Mac in [5527](https://github.com/OSC/ondemand/pull/5527).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
