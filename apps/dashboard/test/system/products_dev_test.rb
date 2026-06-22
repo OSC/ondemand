@@ -55,7 +55,6 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Can click dev Launch Home Directory' do
-    File.write('delme.html', page.body)
     button_link?('Launch Home Directory', '/pun/sys/dashboard/apps/show/files/dev/')
   end
 
