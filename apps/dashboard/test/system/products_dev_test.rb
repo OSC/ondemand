@@ -55,7 +55,8 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Can click dev Launch Home Directory' do
-    button_link?('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
+    File.write('delme.html', page.body)
+    button_link?('Launch Home Directory', '/pun/sys/dashboard/apps/show/files/dev/')
   end
 
   test 'Can click dev Launch file-editor' do
