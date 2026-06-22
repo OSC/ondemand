@@ -12,21 +12,22 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Home Breadcrumb button works' do
-    find('ol', class: 'breadcrumb').find('li', text: 'Home')
-    click_on 'Home'
-    assert_not_equal products_path(:dev), current_path
+    assert_selector('ol.breadcrumb li', text: 'Home')
+    click_on('Home')
+    assert_not_equal(products_path(:dev), current_path)
   end
 
   test 'New App route is correct' do
-    assert_selector '.btn', text: 'New App'
+    button_link?('New App', '/pun/sys/dashboard/admin/dev/products/new')
   end
 
   test 'Launch Shell route is correct' do
-    assert_selector 'span.float-end .btn', text: 'Launch Shell'
+    assert_selector('span.float-end .btn', text: 'Launch Shell')
+    has_link?('/pun/sys/shell/ssh')
   end
 
   test 'Launch Files route is correct' do
-    assert_selector '.btn', text: 'Launch Files'
+    button_link?('Launch Files', '/pun/sys/dashboard/files/fs')
   end
 
   test 'Can click dev Launch Jupyter' do
@@ -50,20 +51,19 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Can click dev Launch Active Jobs' do
-    assert_selector '.btn', text: 'Launch Active Jobs'
+    button_link?('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
   end
 
-  # NOTE: test body previously checked for 'Launch Active Jobs' rather than a Home Directory button — likely a copy-paste error
   test 'Can click dev Launch Home Directory' do
-    assert_selector '.btn', text: 'Launch Active Jobs'
+    button_link?('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
   end
 
   test 'Can click dev Launch file-editor' do
-    assert_selector '.btn', text: 'Launch osc-editor'
+    button_link?('Launch osc-editor', '/pun/sys/dashboard/apps/show/file-editor/dev/')
   end
 
   test 'Can click dev Launch My Jobs' do
-    assert_selector '.btn', text: 'Launch My Jobs'
+    button_link?('Launch My Jobs', '/pun/sys/dashboard/apps/show/myjobs/dev/')
   end
 
   test 'HTML renders all rows for apps in Product Table' do
