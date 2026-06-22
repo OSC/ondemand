@@ -2,6 +2,9 @@
 
 # Helper for /apps pages.
 module AppHelper
+
+  include ERB::Util
+  
   # FIXME: show_errors is not used
   def manifest_markdown(text, show_errors: false)
     RenderManifestMarkdown.renderer.render(text).html_safe
