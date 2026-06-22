@@ -103,7 +103,7 @@ module SmartAttributes
     end
 
     def display?
-      !!opts[:display]
+      !!opts[:display] && widget != 'password_field'
     end
 
     # Submission hash describing how to submit this attribute

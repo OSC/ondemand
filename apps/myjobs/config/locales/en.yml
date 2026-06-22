@@ -31,6 +31,7 @@
 
 en:
   jobcomposer:
+    skip_navigation: "Skip Navigation"
     # Site specific translations
     options_account_help:  "Account is an optional field. If not set, the account may be auto-set by the submit filter."
 

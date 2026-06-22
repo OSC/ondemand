@@ -5,7 +5,7 @@ require 'socket'
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
-    attr_reader :ssl, :protocol, :proxy_server, :port, :dex_uri
+    attr_reader :ssl, :protocol, :proxy_server, :ssl_proxy, :port, :dex_uri
     attr_accessor :user_map_match, :user_map_cmd, :logout_redirect, :dex_http_port, :dex_enabled
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
 
@@ -25,6 +25,7 @@ module OodPortalGenerator
       @servername       = opts.fetch(:servername, nil)
       @server_aliases   = opts.fetch(:server_aliases, [])
       @proxy_server     = opts.fetch(:proxy_server, servername)
+      @ssl_proxy        = opts.fetch(:ssl_proxy, [])
       @allowed_hosts    = allowed_hosts
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       if OodPortalGenerator.debian?
@@ -59,6 +60,8 @@ module OodPortalGenerator
       # Security configuration
       @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@proxy_server}")
       @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
+      @strip_proxy_headers = opts.fetch(:strip_proxy_headers, default_strip_proxy_headers)
+      @strip_proxy_cookies = opts.fetch(:strip_proxy_cookies, default_strip_proxy_cookies)
 
       # Portal authentication
       @auth = opts.fetch(:auth, [])
@@ -82,6 +85,8 @@ module OodPortalGenerator
       @host_regex = opts.fetch(:host_regex, "[^/]+")
       @node_uri   = opts.fetch(:node_uri, nil)
       @rnode_uri  = opts.fetch(:rnode_uri, nil)
+      @secure_node_uri   = opts.fetch(:secure_node_uri, nil)
+      @secure_rnode_uri  = opts.fetch(:secure_rnode_uri, nil)
 
       # Per-user NGINX sub-uri
       @nginx_uri              = opts.fetch(:nginx_uri, "/nginx")
@@ -162,6 +167,20 @@ module OodPortalGenerator
       Socket.ip_address_list.select(&:ipv4?)
                             .reject(&:ipv4_loopback?)
                             .map(&:ip_address)
+    end
+
+    # Default headers stripped from proxied requests to avoid leaking user identity data.
+    def default_strip_proxy_headers
+      ["Authorization", "OIDC_CLAIM_sub", "OIDC_CLAIM_preferred_username", "OIDC_CLAIM_given_name",
+       "OIDC_CLAIM_zoneinfo", "OIDC_CLAIM_locale", "OIDC_CLAIM_email", "OIDC_CLAIM_email_verified",
+       "OIDC_CLAIM_iss", "OIDC_CLAIM_nonce", "OIDC_CLAIM_aud", "OIDC_CLAIM_acr", "OIDC_CLAIM_azp",
+       "OIDC_CLAIM_auth_time", "OIDC_CLAIM_exp", "OIDC_CLAIM_iat", "OIDC_CLAIM_jti", "OIDC_access_token",
+       "OIDC_access_token_expires"]
+    end
+
+    # Default cookies stripped from proxied requests to avoid forwarding OIDC sessions.
+    def default_strip_proxy_cookies
+      ["mod_auth_openidc_session_\\d+", "mod_auth_openidc_session"]
     end
 
     # Helper method to escape IP for maintenance rewrite condition

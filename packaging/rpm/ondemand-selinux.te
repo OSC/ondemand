@@ -149,14 +149,11 @@ tunable_policy(`ondemand_manage_vmblock',`
 gen_tunable(ondemand_use_nfs, true)
 
 tunable_policy(`ondemand_use_nfs && use_nfs_home_dirs',`
-  require {
-    type nfs_t;
-  }
   fs_list_auto_mountpoints(ood_pun_t)
 	fs_manage_nfs_dirs(ood_pun_t)
+  fs_exec_nfs_files(ood_pun_t)
 	fs_manage_nfs_files(ood_pun_t)
 	fs_manage_nfs_symlinks(ood_pun_t)
-  allow ood_pun_t nfs_t:file { map };
 ')
 optional_policy(`
     tunable_policy(`ondemand_use_nfs && use_nfs_home_dirs',`

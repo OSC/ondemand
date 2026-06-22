@@ -41,7 +41,7 @@
         <%= f.text_field :name, :id => "name_field" %>
       </div>
       <div class="field">
-        <%= f.select :host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:" }, { selected: @template.host, class: "selectpicker", id: "server picker", required: true } %>
+        <%= f.select :host, OODClusters.map { |cluster| [ "#{cluster.title}", cluster.id ] }, { label: "Cluster:" }, { selected: @template.host, class: "selectpicker", id: "server picker", required: true } %>
       </div>
       <div class="field">
         <%= f.text_area :notes, :id => "notes_field" %>

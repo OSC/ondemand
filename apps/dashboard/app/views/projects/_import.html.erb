@@ -1,0 +1,51 @@
+<%
+  path_selector_id = "project_directory_path_selector"
+
+  path_selector_locals = {
+    path_selector_id: path_selector_id,
+    show_files: false,
+    show_hidden: false,
+    file_pattern: '',
+    initial_directory: CurrentUser.home,
+    favorites: pathselector_favorites(nil),
+    popup_title: I18n.t('dashboard.jobs_project_select_directory'),
+  
+    table_id: "#{path_selector_id}_table",
+    breadcrumb_id: "#{path_selector_id}_breadcrumb",
+    button_id: "#{path_selector_id}_button",
+    input_field_id: 'project_directory'
+  }
+%>
+<div id='import-wrapper' class='justify-content-center bg-light'>
+  <%= bootstrap_form_for(@project, url: project_import_save_path, method: :post) do |form| %>
+      <br>
+      <div class='card mx-4 my-2'>
+        <div class='card-body'>
+          <div class="field">
+            <%= form.text_field(
+              :directory,
+              placeholder: I18n.t('dashboard.jobs_project_directory_placeholder'),
+              data: { 'path-selector': true })
+            %>
+
+            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#<%= path_selector_id %>">
+              <%= I18n.t('dashboard.select_path') %>
+            </button>
+
+            <%= render(partial: 'shared/path_selector_table', locals: path_selector_locals ) %>
+          </div>
+        </div>
+      </div>
+    <p>
+      <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project', data: {turbo_frame: '_top'} %>
+      <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+    </p>
+  <% end %>
+  <%= turbo_frame_tag(:possible_imports, src: project_possible_imports_path, loading: :lazy) do %>
+    <div class="text-center">
+      <div class="spinner-border">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -71,10 +71,12 @@ def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
   when 'ubuntu-24.04'
     'noble'
-  when 'ubuntu-22.04'
-    'jammy'
+  when 'ubuntu-26.04'
+    'resolute'
   when 'debian-12'
     'bookworm'
+  when 'debian-13'
+    'trixie'
   end
 end
 
@@ -106,9 +108,9 @@ end
 def ood_gems_path
   case host_inventory['platform']
   when 'redhat'
-    return '/opt/ood/ondemand/root/usr/share/gems'
+    '/opt/ood/ondemand/root/usr/share/gems'
   when 'ubuntu', 'debian'
-    return '/opt/ood/gems'
+    '/opt/ood/gems'
   end
 end
 
@@ -128,8 +130,11 @@ def bootstrap_repos
   case host_inventory['platform']
   when 'redhat'
     repos << 'epel-release'
-    on hosts, 'dnf -y module enable ruby:3.3'
-    on hosts, 'dnf -y module enable nodejs:22'
+    # Avoid DNF modules for el10 until Ruby and NodeJS use modules
+    if host_inventory['platform_version'] !~ /^10/
+      on hosts, 'dnf -y module enable ruby:3.3'
+      on hosts, 'dnf -y module enable nodejs:22'
+    end
   when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
   end
@@ -170,7 +175,7 @@ def ondemand_repo
 end
 
 def build_repo_version
-  ENV['OOD_BUILD_REPO'] || '4.1'
+  ENV['OOD_BUILD_REPO'] || '4.2'
 end
 
 def install_ondemand
@@ -239,7 +244,7 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  if host_inventory['platform'] == 'debian' || host_inventory['platform_version'] == '24.04'
+  if host_inventory['platform'] == 'debian' || host_inventory['platform'] == 'ubuntu'
     install_packages(['python3', 'python3-flask'])
   else
     install_packages(['python3', 'python3-pip'])
@@ -248,6 +253,7 @@ def bootstrap_flask
 end
 
 def dl_ctr_logs
+  on hosts, 'journalctl -xe'
   dir = File.join(proj_root, 'tmp/e2e_ctr').tap { |d| `mkdir -p #{d}` }
 
   hosts.each do |host|

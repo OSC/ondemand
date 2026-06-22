@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'accessibility_helper'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
@@ -18,7 +19,23 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
-  Capybara.server = :webrick
+
+  def visit(path)
+    super(path)
+    inject_contrast_observer
+  end
+
+  def find(*args, **options, &block)
+    result = super(*args, **options, &block)
+    inject_contrast_observer
+    result
+  end
+
+  def assert_selector(*args, &block)
+    result = super(*args, &block)
+    inject_contrast_observer
+    result
+  end
 
   def find_option_style(ele, opt)
     find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
@@ -57,5 +74,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     assert_equal header, find('div[role="alert"]').find('h4').text
     assert_equal message, find('div[role="alert"]').find('pre').text
     find('div[role="alert"]').find('button').click
+  end
+
+  def expect_no_page_reload(&block)
+    page.execute_script("window.__no_reload_marker = true")
+    block.call
+    assert page.execute_script("return window.__no_reload_marker"), "Expected no page reload, but the page was reloaded"
   end
 end

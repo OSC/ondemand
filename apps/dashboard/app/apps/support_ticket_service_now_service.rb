@@ -64,9 +64,16 @@ class SupportTicketServiceNowService
       support_ticket: support_ticket_request
     }
 
-    template = service_config.fetch(:template, 'servicenow_content.text.erb')
-    ticket_content_template = ERB.new(File.read(Rails.root.join('app/views/support_ticket/servicenow').join(template)))
-    ticket_content_template.result_with_hash({ context: ticket_template_context, helpers: TemplateHelpers.new })
+    template_path = File.join('support_ticket/servicenow', service_config.fetch(:template, 'servicenow_content'))
+    ApplicationController.render(
+      template: template_path,
+      formats: [:text], # so Rails prefers *.text.* variants
+      locals: {
+        context: ticket_template_context,
+        helpers: TemplateHelpers.new
+      }
+    )
+
   end
 
   class TemplateHelpers

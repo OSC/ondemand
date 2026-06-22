@@ -4,9 +4,16 @@
   Modify a given request to utilize mod_proxy for reverse proxying.
 --]]
 function set_reverse_proxy(r, conn)
-  -- find protocol used by parsing the request headers
-  local protocol = (r.headers_in['Upgrade'] and "ws://" or "http://")
+  -- check if request was from a secure path
+  local use_ssl = r.subprocess_env['OOD_SECURE_UPSTREAM'] == '1'
 
+  -- find protocol used by parsing the request headers and SSL flag
+  local protocol = "http://"
+  if r.headers_in['Upgrade'] then
+    protocol = use_ssl and "wss://" or "ws://"
+  else
+    protocol = use_ssl and "https://" or "http://"
+  end
 
   -- define reverse proxy destination using connection object
   if conn.socket then

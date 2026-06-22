@@ -3,27 +3,24 @@
     <%= data.error %>
   </div>
 <% else %>
-<div class="card ms-5">
+<div class="card">
   <div class="card-header">
     <%# FIXME: ul/li with css %>
     <strong>
       <%= status_label(data.status) %>
       <span class="text-break ms-3"><%= data.jobname %></span>
       <span class="ms-3"><%= data.pbsid %></span>
+      <button class="btn-close float-end" id="dismiss_details" onclick="closeExtendedDetails()" title="<%= t('dashboard.active_jobs_close_details') %>"></button>
     </strong>
   </div>
   <div class="card-body">
-    <table class="table table-sm table-striped">
-      <tbody>
+    <ul class="list-group" id="job_details_list">
       <% data.native_attribs.each do |attrib| %>
-        <tr>
-          <!-- FIXME: col-xs-2... -->
-        <td class="col-xs-2"><strong><%= attrib.name %></strong></td>
-        <td class="col-xs-10"><%= attrib.value %></td>
-      </tr>
-    <% end %>
-      </tbody>
-    </table>
+        <li class="list-group-item">
+          <strong><%= attrib.name %>:</strong> <%= attrib.value %>
+        </li>
+      <% end %>
+    </ul>
   </div>
     <% if data.submit_args %>
     <div class="card-body">
@@ -39,14 +36,15 @@
     <div class="card-body">
       <% if CurrentUser.name == data.username %>
         <% if Configuration.can_access_files? %>
-          <%= link_to("#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-dark m-1", :target => "_blank") if data.file_explorer_url %>
+          <%= link_to("#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-dark m-1") if data.file_explorer_url %>
         <% end %>
         <% if Configuration.ood_bc_ssh_to_compute_node && Configuration.can_access_shell? %>
-          <%= link_to("#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-dark m-1", :target => "_blank") if data.shell_url %>
+          <%= link_to("#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-dark m-1") if data.shell_url %>
         <% end %>
           <%= link_to("#{fa_icon("trash", classes: nil)} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-outline-danger pull-right m-1", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" }) %>
       <% end %>
     </div>
-  </div>
+
+  <%= render(partial: "extended_layout", locals: {d: data}) %>
 </div>
 <% end %>

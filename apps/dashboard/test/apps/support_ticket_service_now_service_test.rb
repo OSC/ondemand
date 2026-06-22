@@ -118,6 +118,23 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
     target.deliver_support_ticket(support_ticket)
   end
 
+  test 'deliver_support_ticket should support template override' do
+    config = {
+      servicenow_api: {
+        template: 'snow_override'
+      }
+    }
+    target = SupportTicketServiceNowService.new(config)
+    mock_client = mock('servicenow_client')
+    mock_client.expects(:create).with do |payload|
+      payload[:description] == 'ServiceNow content template override'
+    end
+               .returns(create_response('incident_number', true))
+
+    ServiceNowClient.expects(:new).returns(mock_client)
+    target.deliver_support_ticket(SupportTicket.from_config({}))
+  end
+
   test 'deliver_support_ticket should delegate to ServiceNowClient class and return success message' do
     ServiceNowClient.expects(:new).returns(stub(:create => create_response('123')))
     result = @target.deliver_support_ticket(SupportTicket.new)
@@ -133,12 +150,12 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
   end
 
   test 'deliver_support_ticket should delegate to ServiceNowClient class and return success message override when provided' do
-    rt_config = {
+    config = {
       servicenow_api: {
         success_message: 'success message override'
       }
     }
-    target = SupportTicketServiceNowService.new(rt_config)
+    target = SupportTicketServiceNowService.new(config)
     ServiceNowClient.expects(:new).returns(stub(:create => create_response('123')))
     result = target.deliver_support_ticket(SupportTicket.new)
 

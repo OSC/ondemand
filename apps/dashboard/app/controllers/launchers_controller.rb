@@ -2,9 +2,8 @@
 
 # The controller for apps pages /dashboard/projects/:project_id/launchers
 class LaunchersController < ApplicationController
-
   before_action :find_project
-  before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save]
+  before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save, :clone]
 
   SAVE_LAUNCHER_KEYS = [
     :cluster, :auto_accounts, :auto_accounts_exclude, :auto_accounts_fixed,
@@ -33,14 +32,19 @@ class LaunchersController < ApplicationController
       notice_messages << I18n.t('dashboard.jobs_launchers_default_created') if default_script_created
       redirect_to project_path(params[:project_id]), notice: notice_messages.join(' ')
     else
-      redirect_to project_path(params[:project_id]), alert: @launcher.errors[:save].last
+      redirect_to new_project_launcher_path(params[:project_id]), alert: @launcher.errors[:save].last
     end
+  end
+
+  # GET /projects/:id/launchers/:id/clone
+  def clone
+    @source_path = Launcher.launcher_form_file(Launcher.path(@launcher.project_dir, @launcher.id))
+    render :new
   end
 
   # GET   /projects/:project_id/launchers/:id/edit
   # edit
-  def edit
-  end
+  def edit; end
 
   # DELETE /projects/:project_id/launchers/:id
   def destroy
@@ -69,7 +73,8 @@ class LaunchersController < ApplicationController
     opts = submit_launcher_params[:launcher].to_h.symbolize_keys
 
     if (job_id = @launcher.submit(opts))
-      redirect_to(project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_launchers_submitted', job_id: job_id))
+      redirect_to(project_path(params[:project_id]),
+                  notice: I18n.t('dashboard.jobs_launchers_submitted', job_id: job_id))
     else
       redirect_to(project_path(params[:project_id]), alert: @launcher.errors[:submit].last)
     end
@@ -92,7 +97,7 @@ class LaunchersController < ApplicationController
   end
 
   def create_launcher_params
-    params.permit({ launcher: [:title] }, :project_id)
+    params.permit({ launcher: [:title, :source_path] }, :project_id)
   end
 
   def show_launcher_params
@@ -106,7 +111,7 @@ class LaunchersController < ApplicationController
 
   def save_launcher_params
     auto_env_params = params[:launcher].keys.select do |k|
-      k.match?('auto_environment_variable')
+      k.match?(/auto_environment_variable_\w+/)
     end
 
     allowlist = SAVE_LAUNCHER_KEYS + auto_env_params

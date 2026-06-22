@@ -19,6 +19,17 @@
 @import "workflows";
 @import "joyride";
 
+// styles for 'Skip Navigation' button to be hidden until focused
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  position: static;
+  display: block;
+}
+
 // styles to make a logo fill the navbar height if using a logo for the navbar title
 .navbar-brand.navbar-brand-logo,
 .ood-appkit.navbar ul.navbar-breadcrumbs>li>a.navbar-brand-logo{

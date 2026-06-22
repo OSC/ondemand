@@ -2,6 +2,8 @@ import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import { getGlobusLink, updateGlobusLink } from './globus.js';
 import { downloadEnabled } from '../config.js';
 export { CONTENTID, EVENTNAME };
+import { OODAlertError } from '../alert.js';
+import { toHumanSize, ariaNotify, customizeTableHeaders } from '../utils.js';
 
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
@@ -177,15 +179,6 @@ class DataTable {
         return this._table;
     }
 
-    toHumanSize(number) {
-      if(number === null) {
-        return '-';
-      } else {
-        const unitIndex = number == 0 ? 0 : Math.floor(Math.log(number) / Math.log(1000));
-        return `${((number / Math.pow(1000, unitIndex)).toFixed(2))} ${['B', 'kB', 'MB', 'GB', 'TB', 'PB'][unitIndex]}`;
-      }
-    }
-
     loadDataTable() {
         this._table = $(CONTENTID).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
@@ -197,6 +190,7 @@ class DataTable {
             autoWidth: false,
             language: {
                 search: 'Filter:',
+                infoFiltered: ""
             },
             order: [[1, "asc"], [2, "asc"]],
             rowId: 'id',
@@ -210,29 +204,36 @@ class DataTable {
                 // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
                 selector: 'td:not(:first-child)'
             },
-            // https://datatables.net/reference/option/dom
-            // dom: '', dataTables_info nowrap
-            //
-            // put breadcrmbs below filter!!!
-            dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-                "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-end'><'transfers-status'>>>>" +
-                "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
+            headerCallback: (thead, _data, _start, _end, _display) => {
+                customizeTableHeaders(thead);
+            },
+            layout: {
+                top1Start: {
+                    div: {
+                        className: 'transfers-status'
+                    }
+                },
+                topStart: 'info',
+                topEnd: 'search',
+                bottomStart: null,
+                bottomEnd: null
+            },
             columns: [
                 {
                     data: null,
                     orderable: false,
                     defaultContent: '<input type="checkbox">',
                     render: (data, type, row, meta) => {
-                        return `<input type='checkbox' data-dl-url='${row.download_url}'>`;
+                        return `<input type='checkbox' class='file-select' data-dl-url='${row.download_url}' aria-label="Select row">`;
                     }
                 },
-                { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
+                { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only">directory</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only">file</span></span>' }, // type
                 { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => this.renderNameColumn(data, type, row, meta) }, // name
                 { name: 'actions', orderable: false, searchable: false, data: null, render: (data, type, row, meta) => this.actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd', data: row }) },
                 {
                     data: 'size',
                     render: (data, type, row, meta) => {
-                        return type == "display" ? this.toHumanSize(row.size) : data;
+                        return type == "display" ? toHumanSize(row.size) : data;
                     }
                 }, // human_size
                 {
@@ -264,10 +265,23 @@ class DataTable {
             ]
         });
 
-        $('#directory-contents_filter').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
-        $('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
+        $('div.dt-search').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" class="vertical-align-middle" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
+        $('div.dt-search').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" class="vertical-align-middle" ${this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
 
         this.updateGlobus();
+    }
+
+    cleanHtml(html) {
+        const parser = new DOMParser();
+        const ele = parser.parseFromString(html, 'text/html');
+
+        const imgs = ele.querySelectorAll('img');
+        imgs.forEach(img => { img.parentElement.removeChild(img) });
+
+        const scripts = ele.querySelectorAll('script');
+        scripts.forEach(script => { script.parentElement.removeChild(script) });
+
+        return ele.body.innerHTML;
     }
 
     async reloadTable(url) {
@@ -279,7 +293,7 @@ class DataTable {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
             const data = await this.dataFromJsonResponse(response);
             history.state.currentFilenames = Array.from(data.files, x => x.name);
-            $('#shell-wrapper').replaceWith((data.shell_dropdown_html));
+            $('#shell-wrapper').replaceWith(this.cleanHtml(data.shell_dropdown_html));
 
             this._table.clear();
             this._table.rows.add(data.files);
@@ -289,7 +303,13 @@ class DataTable {
             $('#open-in-terminal-btn').removeClass('disabled');
 
             if ($('#select_all').is(':checked')) {
-                $('#select_all').click();
+                $('#select_all').trigger();
+            }
+
+            $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
+            ariaNotify(`navigated to ${data.path}`);
+            if (data.page_title) {
+                document.title = data.page_title;
             }
 
             let result = await Promise.resolve(data);
@@ -309,12 +329,7 @@ class DataTable {
 
             return result;
         } catch (e) {
-            const eventData = {
-                'title': `Error occurred when attempting to access ${request_url}`,
-                'message': e.message,
-            };
-
-            $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
+            OODAlertError(e.message);
 
             $('#open-in-terminal-btn').addClass('disabled');
 
@@ -370,6 +385,14 @@ class DataTable {
         return new Promise((resolve, reject) => {
             Promise.resolve(response)
                 .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+                .then(response => {
+                    const disposition = response.headers.get('content-disposition');
+                    if(disposition === null) {
+                        return response;
+                    } else {
+                        throw new Error("Cannot navigate to a file.");
+                    }
+                })
                 .then(response => response.json())
                 .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
                 .catch((e) => reject(e))
@@ -379,10 +402,14 @@ class DataTable {
     renderNameColumn(data, type, row, meta) {
         let element = undefined;
 
-        if(row.type == 'f' && !downloadEnabled()) {
+        if(row.type == 'f' && (!downloadEnabled() || row.url === undefined || this.isInvalidURL(row.url))) {
             element = document.createElement('span');
         } else {
             element = document.createElement('a');
+            if (row.type == 'd') {
+				// This class makes directory links stay on the same page
+                element.classList.add('d');
+            }
             element.href = row.url;
         }
 
@@ -393,6 +420,16 @@ class DataTable {
 
         return element.outerHTML;
     }
+
+    isInvalidURL(urlString) {
+        try {
+          const url = new URL(urlString, window.location.origin);
+          const protocol = url.protocol;
+          return protocol === "javascript:" || protocol === "data:" || protocol === "vbscript:";
+        } catch (error) {
+          return true;
+        }
+      }
 
     actionsBtnTemplate(options) {
         // options: { row_index: meta.row,
@@ -413,6 +450,7 @@ class DataTable {
         button.setAttribute('data-bs-toggle', 'dropdown');
         button.setAttribute('aria-haspopup', 'true');
         button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('title', 'Actions');
           
         // Create the icon inside the button
         const icon = document.createElement('span');
@@ -433,7 +471,6 @@ class DataTable {
                 const viewLink = document.createElement('a');
                 viewLink.href = data.url;
                 viewLink.classList.add('view-file', 'dropdown-item');
-                viewLink.target = '_blank';
                 viewLink.setAttribute('data-row-index', rowIndex);
                 viewLink.innerHTML = '<i class="fas fa-eye" aria-hidden="true"></i> View';
                 viewItem.appendChild(viewLink);
@@ -445,7 +482,6 @@ class DataTable {
                 const editLink = document.createElement('a');
                 editLink.href = data.edit_url;
                 editLink.classList.add('edit-file', 'dropdown-item');
-                editLink.target = '_blank';
                 editLink.setAttribute('data-row-index', rowIndex);
                 editLink.innerHTML = '<i class="fas fa-edit" aria-hidden="true"></i> Edit';
                 editItem.appendChild(editLink);
@@ -504,37 +540,39 @@ class DataTable {
             page_info = api.page.info(),
             msg = page_info.recordsTotal == page_info.recordsDisplay ? `Showing ${page_info.recordsDisplay} rows` : `Showing ${page_info.recordsDisplay} of ${page_info.recordsTotal} rows`;
 
-        $('.datatables-status').html(`${msg} - ${rows} rows selected`);
+        $('#directory-contents_info').html(`${msg} - ${rows} rows selected`);
     }
 
     goto(url, pushState = true, show_processing_indicator = true) {
         if(url == history.state.currentDirectoryUrl)
-          pushState = false;
-        this.reloadTable(url)
-          .then((data) => {
-            if(data) {
-                $('#path-breadcrumbs').html(data.breadcrumbs_html);
-                if(pushState) {
-                    // Clear search query when moving to another directory.
-                    this._table.search('').draw();
-            
-                    history.pushState({
-                        currentDirectory: data.path,
-                        currentDirectoryUrl: data.url,
-                        currentFilesPath: data.files_path,
-                        currentFilesUploadPath: data.files_upload_path,
-                        currentFilesystem: data.filesystem,
-                        currentFilenames: Array.from(data.files, x => x.name)
-                    }, data.name, data.url);
-                }
-                this.updateGlobus();
-            }
-          })
-          .finally(() => {
-            //TODO: after processing is available via ActiveJobs merge
-            // if(show_processing_indicator)
-            //   table.processing(false)
-          });
-      }    
+            pushState = false;
 
+	const shouldPushState = pushState;
+	const navigatingTo = url;
+        this.reloadTable(url)
+	    .then((data) => {
+                if(data) {
+                    $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
+                    if(shouldPushState && location.href !== navigatingTo) {
+                        // Clear search query when moving to another directory.
+                        this._table.search('').draw();
+
+                        history.pushState({
+                            currentDirectory: data.path,
+                            currentDirectoryUrl: data.url,
+                            currentFilesPath: data.files_path,
+                            currentFilesUploadPath: data.files_upload_path,
+                            currentFilesystem: data.filesystem,
+                            currentFilenames: Array.from(data.files, x => x.name)
+                        }, data.name, data.url);
+                    }
+                    this.updateGlobus();
+                }
+            })
+            .finally(() => {
+                //TODO: after processing is available via ActiveJobs merge
+                // if(show_processing_indicator)
+                //   table.processing(false)
+            });
+    } 
 }

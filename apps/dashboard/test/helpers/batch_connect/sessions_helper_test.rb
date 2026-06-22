@@ -62,7 +62,7 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
     assert_equal true, form['class'].include?('relaunch')
 
     button = html.at_css('button')
-    assert_equal  'Relaunch AppName Session', button['title']
+    assert_equal I18n.t('dashboard.batch_connect_sessions_relaunch_full_title', title: 'AppName'), button['title']
     assert_equal true, button['class'].include?('relaunch')
   end
 
@@ -80,10 +80,10 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
   end
 
   def cancel_session_title
-    "#{I18n.t('dashboard.batch_connect_sessions_cancel_title')} AppName #{I18n.t('dashboard.batch_connect_sessions_word')}"
+    I18n.t('dashboard.batch_connect_sessions_cancel_full_title', title: 'AppName')
   end
 
   def delete_session_title
-    "#{I18n.t('dashboard.batch_connect_sessions_delete_title')} AppName #{I18n.t('dashboard.batch_connect_sessions_word')}"
+    I18n.t('dashboard.batch_connect_sessions_delete_full_title', title: 'AppName')
   end
 end

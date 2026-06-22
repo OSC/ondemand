@@ -26,4 +26,16 @@ class NavTest < ActionDispatch::IntegrationTest
     assert link, 'Job Composer link not found on index page'
     refute link['target'], 'Job Composer link should be set to open in same window'
   end
+
+  test 'external app uses its URL directly in navbar' do
+    SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
+    Configuration.stubs(:open_apps_in_new_window?).returns(false)
+
+    get '/'
+
+    link = css_select('a[title="External Link App"]').first
+
+    assert link, 'External Link App not found on index page'
+    assert_equal 'https://external.example.com', link['href']
+  end
 end

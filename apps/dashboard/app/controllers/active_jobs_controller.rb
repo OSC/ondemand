@@ -29,6 +29,9 @@ class ActiveJobsController < ApplicationController
         raise ActionController::RoutingError, 'Not Found'
       end
       format.json do
+        # cache the response
+        expires_in(5.minutes, public: true)
+
         # Only allow the configured servers to respond
         if (cluster = OODClusters[params[:cluster].to_s.to_sym])
           render '/active_jobs/extended_data', :locals => { :jobstatusdata => get_job(params[:pbsid], cluster) }
@@ -55,12 +58,12 @@ class ActiveJobsController < ApplicationController
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
         sleep(2.0)
-        redirect_to activejobs_path, :notice => "Successfully deleted #{job_id}"
+        redirect_to active_jobs_path, :notice => "Successfully deleted #{job_id}"
       rescue StandardError
-        redirect_to activejobs_path, :alert => "Failed to delete #{job_id}"
+        redirect_to active_jobs_path, :alert => "Failed to delete #{job_id}"
       end
     else
-      redirect_to activejobs_path, :alert => 'Failed to delete.'
+      redirect_to active_jobs_path, :alert => 'Failed to delete.'
     end
   end
 

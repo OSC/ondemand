@@ -8,7 +8,7 @@ class FilesController < ApplicationController
   before_action :strip_sendfile_headers, only: [:fs, :directory_frame]
 
   def fs
-    request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
+    request.format = 'json' if json_request?
     parse_path(fs_params[:filepath], fs_params[:fs])
     validate_path!
 
@@ -155,7 +155,7 @@ class FilesController < ApplicationController
 
     render json: {}
   rescue StandardError => e
-    render json: { error_message: e.message }
+    render json: { error_message: e.message }, status: :internal_server_error
   end
 
   # POST
@@ -211,6 +211,17 @@ class FilesController < ApplicationController
 
   private
 
+  # Whether the incoming request explicitly accepts application/json.
+  #
+  # Coerces the Accept header to a string because some user agents
+  # (notably Chrome on `<a download>` links for files linked from
+  # Interactive App session views) omit the header entirely, which
+  # would otherwise raise NoMethodError on nil.split and leave the
+  # global rescue_action handler to redirect users to $HOME.
+  def json_request?
+    request.headers['HTTP_ACCEPT'].to_s.split(',').include?('application/json')
+  end
+
   def rescue_action(exception)
     @files = []
     flash.now[:alert] = exception.message.to_s
@@ -256,9 +267,17 @@ class FilesController < ApplicationController
     end
   end
 
+  def ensure_exists!
+    if ['fs', 'edit', 'directory_frame'].include?(action_name)
+      raise(StandardError, t('dashboard.files_doesnt_exist', path: @path.to_s)) unless @path.exist?
+      raise(StandardError, t('dashboard.files_not_readable', path: @path.to_s)) unless @path.readable?
+    end
+  end
+
   def validate_path!
     if posix_file?
       AllowlistPolicy.default.validate!(@path)
+      ensure_exists!
     elsif @path.remote_type.nil?
       raise StandardError, "Remote #{@path.remote} does not exist"
     elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == 'local' || @path.remote_type == 'alias')

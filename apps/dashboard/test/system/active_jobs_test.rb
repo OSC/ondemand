@@ -30,7 +30,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
   # Define selector statements
   MAIN_BODY_SELECT = '#job_status_table tbody'
-  PAGER_SELECT = 'div#job_status_table_paginate'
+  PAGER_SELECT = 'div#job_status_table_wrapper .dt-paging'
   
   def setup
     # Enable routes guarded by this flag
@@ -167,46 +167,46 @@ class ActiveJobsTest < ApplicationSystemTestCase
     button_select = "#{MAIN_BODY_SELECT} .details-control"
     assert_equal 2, all(button_select).length
 
-    # Click buttons
-    all(button_select).map(&:click)
+    # Click first job button
+    all(button_select)[0].click
     
 
     # Wait for load
-    details_select = "#{MAIN_BODY_SELECT} div.panel.panel-default"
-    assert_selector("#{details_select} tr")
+    details_select = "#job_details"
+    assert_selector("#{details_select}")
     
     # Confirm details
     card_header_items = all("#{details_select} div.card-header span")
     exp_header_data = ['Queued', 'Sample2', '345']
     assert_equal exp_header_data, card_header_items.map(&:text)
 
-    headers = all("#{details_select} div.card-body td.col-xs-2")
-    details = all("#{details_select} div.card-body td.col-xs-10")
-
-    exp_details = [
-      'Oakley',
-      '345',
-      '12345',
-      '1',
-      'Sample2',
-      'currentuser',
-      'account2',
-      'short',
-      'running',
-      'None',
-      '2',
-      '64',
-      '01:00:00',
-      '00:02:00',
-      '2025-08-28 14:00:00',
-      '2025-08-28 15:00:00',
-      '128GB',
-      'gpu:2'
+    expected_list_details = [
+      'Cluster: Oakley',
+      'Job Id: 345',
+      'Array Job Id: 12345',
+      'Array Task Id: 1',
+      'Job Name: Sample2',
+      'User: currentuser',
+      'Account: account2',
+      'Partition: short',
+      'State: running',
+      'Reason: None',
+      'Total Nodes: 2',
+      'Total CPUs: 64',
+      'Time Limit: 01:00:00',
+      'Time Used: 00:02:00',
+      'Start Time: 2025-08-28 14:00:00',
+      'End Time: 2025-08-28 15:00:00',
+      'Memory: 128GB',
+      'GRES: gpu:2'
     ]
 
-    assert_equal DETAILS_HEADERS, headers.map(&:text)
-    assert_equal exp_details, details.map(&:text)
+    actual_list = find_all("#job_details_list li").map(&:text)
+    actual_list.each_with_index do |actual_list_item, index|
+      assert_equal(expected_list_details[index], actual_list_item)
+    end
 
+    all(button_select)[1].click
     assert_selector('div.alert-warning')
   end
 
@@ -269,9 +269,12 @@ class ActiveJobsTest < ApplicationSystemTestCase
     # check pager object
     assert_selector(PAGER_SELECT)
 
-    # check highlight and prev button
+    # check highlight
     assert_selector("#{PAGER_SELECT} li.active", text: '1')
-    assert_selector("#{PAGER_SELECT} li.paginate_button.disabled", text: 'Previous')
+
+    # check prev buttons
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '«')
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '‹')
 
     # Show next page and repeat
     find("#{PAGER_SELECT} li", text: '2').click
@@ -280,12 +283,14 @@ class ActiveJobsTest < ApplicationSystemTestCase
     new_row = first("#{MAIN_BODY_SELECT} tr")
     new_row_text = new_row.all('td').map(&:text).drop(1)
     assert_selector("#{PAGER_SELECT} li.active", text: '2')
-    refute_selector("#{PAGER_SELECT} li.paginate_button.previous.disabled")
-    refute_selector("#{PAGER_SELECT} li.paginate_button.next.disabled")
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '«')
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '‹')
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '›')
+    refute_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '»')
     assert_text('Showing 51 to 100 of 400 entries')
 
     # click next button and repeat
-    find("#{PAGER_SELECT} li", text: 'Next').click
+    find("#{PAGER_SELECT} li", text: '›').click
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_selector("#{PAGER_SELECT} li.active", text: '3')
     assert_text('Showing 101 to 150 of 400 entries')
@@ -294,11 +299,12 @@ class ActiveJobsTest < ApplicationSystemTestCase
     find("#{PAGER_SELECT} li", text: '8').click
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_selector("#{PAGER_SELECT} li.active", text: '8')
-    assert_selector("#{PAGER_SELECT} li.paginate_button.disabled", text: 'Next') 
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '›')
+    assert_selector("#{PAGER_SELECT} li.dt-paging-button.disabled", text: '»')
     assert_text('Showing 351 to 400 of 400 entries')
 
     # Click prev button
-    find("#{PAGER_SELECT} li", text: 'Previous').click
+    find("#{PAGER_SELECT} li", text: '‹').click
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_selector("#{PAGER_SELECT} li.active", text: '7')
     assert_text('Showing 301 to 350 of 400 entries')
@@ -309,7 +315,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
 
     visit active_jobs_url(jobfilter: 'all')
 
-    res_per_page_selector = 'div#job_status_table_length select'
+    res_per_page_selector = 'div#job_status_table_wrapper .dt-length select'
     assert_selector(res_per_page_selector, text: '50')
     assert_selector("#{MAIN_BODY_SELECT} tr", count: 50)
     assert_text('Showing 1 to 50 of 600 entries')
@@ -354,7 +360,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     visit active_jobs_url(jobfilter: 'all')
 
     # Verify filter input is rendered
-    filter_selector = 'div#job_status_table_filter input'
+    filter_selector = 'div#job_status_table_wrapper .dt-search input'
     assert_selector(filter_selector)
 
     # Verify filter reads ids

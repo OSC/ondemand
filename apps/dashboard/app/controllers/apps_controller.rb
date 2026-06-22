@@ -46,13 +46,18 @@ class AppsController < ApplicationController
     set_app
     expires_in 365.days, public: true
 
-    if @app.svg_icon? 
-      send_file @app.icon_path, :type => 'image/svg+xml', :disposition => 'inline'
+    if @app.svg_icon?
+      content_type = 'image/svg+xml'
+      dispostion_header = 'inline; filename="icon.svg"; filename*=UTF-8\'\'icon.svg'
     elsif @app.png_icon?
-      send_file @app.icon_path, :type => 'image/png', :disposition => 'inline'
+      content_type = 'image/png'
+      dispostion_header = 'inline; filename="icon.png"; filename*=UTF-8\'\'icon.png'
     else
-      raise ActionController::RoutingError.new('Not Found')
+      raise(ActionController::RoutingError, 'Not Found')
     end
+
+    response.headers['content-disposition'] = dispostion_header
+    render(file: @app.icon_path, layout: false, content_type: content_type)
   end
 
   private

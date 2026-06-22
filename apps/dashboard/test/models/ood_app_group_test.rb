@@ -116,7 +116,7 @@ class OodAppGroupTest < ActiveSupport::TestCase
 
     # groups with a nil title are last
     assert_nil groups[2].title
-    assert_equal 10, groups[2].apps.count
+    assert_equal 11, groups[2].apps.count
   end
 
   test "OodAppGroup.order should sort groups based on titles array" do

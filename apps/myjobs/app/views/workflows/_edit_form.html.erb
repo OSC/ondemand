@@ -4,7 +4,7 @@
     <%= f.alert_message t('jobcomposer.options_errors') %>
 
     <%= f.text_field :name, label: t('jobcomposer.options_name_title') %>
-    <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { selected: @workflow.batch_host, label: t('jobcomposer.options_cluster_title') }, { class: "selectpicker" } %>
+    <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.title}", cluster.id ] }, { selected: @workflow.batch_host, label: t('jobcomposer.options_cluster_title') }, { class: "selectpicker" } %>
 
     <%# select in bootstrap_form?@%>
 

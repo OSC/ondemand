@@ -2,11 +2,9 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.1.6'
+gem 'rails', '7.2.3.1'
 # Use sqlite3 as the database for Active Record
-# Note that the version has been fixed due to an incompatibility
-# https://github.com/rails/rails/issues/35153
-gem 'sqlite3', '1.4.2'
+gem 'sqlite3', '1.7.3'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -65,6 +63,9 @@ gem 'ood_appkit', '~> 2.0'
 
 gem 'climate_control', '~> 0.2'
 
+# have to lock minitest until we upgrade rails
+gem 'minitest', '< 6.0'
+
 # we have to lock rdoc because 6.4 depends on psych 4.0 which breaks with
 # Psych::BadAlias: Cannot load database configuration: Unknown alias: default
 gem 'rdoc', '6.3.4.1'
@@ -72,6 +73,6 @@ gem 'rdoc', '6.3.4.1'
 # lock gems to versions that are compatible with ruby 2.7.0,
 # which Ubuntu 20.04 uses.
 gem 'nokogiri', force_ruby_platform: true
-gem 'net-imap', '~> 0.3', '< 0.4'
+gem 'net-imap', '~> 0.4'
 gem 'public_suffix', '~> 5.0', '< 6.0'
 gem 'zeitwerk', '2.6.18'

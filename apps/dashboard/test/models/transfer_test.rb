@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class TransferTest < ActiveSupport::TestCase
   test 'copy command' do
     transfer = PosixTransfer.build action: 'cp', files: {
-      '/Users/efranz/dev/ondemand/apps/dashboard/app' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/app',
-      '/Users/efranz/dev/ondemand/apps/dashboard/config' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/config',
+      '/Users/efranz/dev/ondemand/apps/dashboard/app'          => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/app',
+      '/Users/efranz/dev/ondemand/apps/dashboard/config'       => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/config',
       '/Users/efranz/dev/ondemand/apps/dashboard/manifest.yml' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/manifest.yml'
     }
 

@@ -3,6 +3,7 @@ import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import _ from 'lodash';
 import { transfersPath, csrfToken } from '../config.js';
+import { OODAlertError } from '../alert';
 
 export {EVENTNAME};
 
@@ -174,13 +175,7 @@ jQuery(function() {
 
   $(CONTENTID).on(EVENTNAME.download, function (e, options) {
     if(options.selection.length == 0) {
-      const eventData = {
-          'title': 'Select a file, files, or directory to download',
-          'message': 'You have selected none.',
-      };
-
-      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-
+      OODAlertError('Select a file, files, or directory to download. You have selected none.');
     } else {
       fileOps.download(options.selection);
     }
@@ -188,13 +183,7 @@ jQuery(function() {
 
   $(CONTENTID).on(EVENTNAME.deletePrompt, function (e, options) {
     if(options.files.length == 0) {
-      const eventData = {
-          'title': 'Select a file, files, or directory to delete.',
-          'message': 'You have selected none.',
-      };
-
-      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-
+      OODAlertError('Select a file, files, or directory to delete. You have selected none.');
     } else {
       fileOps.deletePrompt(options.files);
     }
@@ -287,9 +276,9 @@ class FileOps {
         showCancelButton: true,
       }
     };
-
-    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
-
+    if (confirm(eventData.inputOptions.text)) {
+      $(CONTENTID).trigger(eventData.action, eventData);
+    }
   }
 
   
@@ -361,13 +350,13 @@ class FileOps {
 
   newFile(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrfToken() } })
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrfToken() } })
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
       })
       .catch(function (e) {
-        myFileOp.alertError('Error occurred when attempting to create new file', e.message);
+        OODAlertError(`Error occurred when attempting to create new file: ${e.message}`);
       });
   }
 
@@ -395,13 +384,13 @@ class FileOps {
 
   newDirectory(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
       })
       .catch(function (e) {
-        myFileOp.alertError('Error occurred when attempting to create new directory', e.message);
+        OODAlertError(`Error occurred when attempting to create new directory: ${e.message}`);
       });
   }
 
@@ -417,7 +406,7 @@ class FileOps {
 
   downloadDirectory(file) {
     let filename = $($.parseHTML(file.name)).text(),
-        canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
+        canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?can_download=${Date.now().toString()}`
 
     this.showSwalLoading('preparing to download directory: ' + file.name);
   
@@ -435,12 +424,12 @@ class FileOps {
           this.downloadFile(file)
         } else {
           this.doneLoading();
-          this.alertError('Error while downloading', data.error_message);
+          OODAlertError(`Error while downloading: ${data.error_message}`);
         }
       })
       .catch(e => {
         this.doneLoading();
-        this.alertError('Error while downloading', e.message);
+        OODAlertError(`Error while downloading: ${e.message}`);
       })
   }
   
@@ -450,7 +439,7 @@ class FileOps {
     // so this just repeats the status quo
   
     let filename = $($.parseHTML(file.name)).text(),
-        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
+        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?download=${Date.now().toString()}`,
         iframe = document.createElement('iframe'),
         TIME = 30 * 1000;
   
@@ -524,7 +513,7 @@ class FileOps {
     .then(() => this.doneLoading())
     .catch(e => {
       this.doneLoading();
-      this.alertError('Error occurred when attempting to ' + summary, e.message);
+      OODAlertError(`Error occurred when attempting to ${summary}: ${e.message}`);
     })
   }
   
@@ -601,7 +590,7 @@ class FileOps {
       }
     }).fail(function() {
       if (that._failures >= 3) {
-        that.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
+        OODAlertError('Operation may not have happened. Failed to retrieve file operation status.');
       } else {
         setTimeout(function(){
           that._failures++;
@@ -624,16 +613,6 @@ class FileOps {
 
   copy(files, token, from_fs, to_fs) {
     this.transferFiles(files, 'cp', 'copy files', from_fs, to_fs);
-  }
-
-  alertError(title, message) {
-    const eventData = {
-      'title': title,
-      'message': message,
-    };
-
-    $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-
   }
 
   doneLoading() {

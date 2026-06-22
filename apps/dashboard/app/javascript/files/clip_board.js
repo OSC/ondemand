@@ -3,6 +3,7 @@ import {CONTENTID} from './data_table.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
 import { csrfToken } from '../config.js';
+import { OODAlertError } from '../alert.js';
 
 export {EVENTNAME};
 
@@ -46,13 +47,8 @@ jQuery(function () {
 
   $(CONTENTID).on(EVENTNAME.updateClipboard, function (e, options) {
     if (options.selection.length == 0) {
-      const eventData = {
-        'title': 'Select a file, files, or directory to copy or move.',
-        'message': 'You have selected none.',
-      };
-
-      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-      $(CONTENTID).trigger(EVENTNAME.clearClipboard, eventData);
+      OODAlertError('Select a file, files, or directory to copy or move. You have selected none.');
+      $(CONTENTID).trigger(EVENTNAME.clearClipboard);
 
     } else {
       clipBoard.updateClipboardFromSelection(options.selection);
@@ -137,11 +133,18 @@ class ClipBoard {
         listItem.className = 'list-group-item';
 
         const icon = document.createElement('span');
-        icon.title = file.directory ? 'directory' : 'file';
+        const typeLabel = file.directory ? 'directory' : 'file';
+        icon.title = typeLabel;
         icon.className = file.directory
           ? 'fa fa-folder color-gold'
           : 'fa fa-file color-lightgrey';
+        icon.setAttribute('aria-hidden', 'true');
         listItem.appendChild(icon);
+
+        const srOnly = document.createElement('span');
+        srOnly.className = 'sr-only';
+        srOnly.textContent = typeLabel;
+        listItem.appendChild(srOnly);
 
         const fileName = document.createTextNode(` ${file.name}`);
         listItem.appendChild(fileName);

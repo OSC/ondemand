@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.1.6'
+gem 'rails', '7.2.3.1'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -46,18 +46,23 @@ end
 # lock gems to versions that are compatible with ruby 2.7.0,
 # which Ubuntu 20.04 uses.
 gem 'nokogiri', force_ruby_platform: true
-gem 'net-imap', '~> 0.3', '< 0.4'
+gem 'net-imap', '~> 0.4'
 gem 'public_suffix', '~> 5.0', '< 6.0'
 gem 'turbo-rails', '2.0.7'
 gem 'zeitwerk', '2.6.18'
+
+# These silence warnings, but can be
+# removed after upgrades include them
+gem 'ostruct'
+gem 'abbrev'
 
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
-gem 'bootstrap_form', '5.0'
-gem 'autoprefixer-rails', '~> 10.2.5'
+gem 'bootstrap_form', '5.4'
+gem 'autoprefixer-rails', '~> 10.4.21'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'zip_kit', '~> 6.2'
@@ -67,6 +72,9 @@ gem 'rest-client', '~> 2.0'
 
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
+
+# have to lock minitest until we upgrade rails 
+gem 'minitest', '< 6.0'
 
 # should upgrade to propshaft - only have an issue with fontawesome icons
 gem 'sprockets-rails', '>= 2.0.0'
@@ -82,3 +90,5 @@ gem "sinatra-contrib", require: false
 gem "erubi", require: false
 gem "dalli", require: false
 
+
+gem "puma", "~> 7.2"

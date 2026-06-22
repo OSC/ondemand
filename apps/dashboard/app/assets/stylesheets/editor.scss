@@ -11,6 +11,10 @@
   margin-bottom: auto !important;
 }
 
+.editor-controls {
+  min-width: 7rem;
+}
+
 .glyphicon-spin {
   -webkit-animation: spin 1000ms infinite linear;
   animation: spin 1000ms infinite linear;

@@ -45,6 +45,10 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def edit_file_path(filepath:, fs: 'fs')
+    "/files/edit/#{fs}#{filepath}"
+  end
+
   test 'can download file as text/plain' do
     download_and_test('test_text.txt', 'text/plain')
   end
@@ -79,5 +83,41 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'can upload file binary files as text/plain as application/octet-stream' do
     upload_and_test('hello-world-c', content_type: 'application/octet-stream')
+  end
+
+  test 'edit redirects when file is not editable' do
+    Dir.mktmpdir do |tmpdir|
+      not_editable_file = "#{tmpdir}/readonly_file.txt"
+      FileUtils.touch(not_editable_file)
+      FileUtils.chmod(0o444, not_editable_file)
+
+      get edit_file_path(filepath: not_editable_file)
+
+      assert_redirected_to root_path
+      follow_redirect!
+      assert_equal "#{not_editable_file} is not an editable file", flash[:alert]
+    end
+  end
+
+  test 'edit respects file size limit' do
+    size_limit = 20
+    with_modified_env(OOD_FILE_EDITOR_MAX_SIZE: size_limit.to_s) do
+      Dir.mktmpdir do |tmpdir|
+        small_file = "#{tmpdir}/small_file.txt"
+        File.write(small_file, 'x' * size_limit)
+
+        get edit_file_path(filepath: small_file)
+        assert_response :success
+
+        large_file = "#{tmpdir}/large_file.txt"
+        File.write(large_file, 'x' * (size_limit + 1))
+
+        get edit_file_path(filepath: large_file)
+        assert_redirected_to root_path
+        follow_redirect!
+        assert_match(/exceeds editor limit of #{size_limit} B/, flash[:alert])
+        assert_match(/Please download the file to edit or view it locally/, flash[:alert])
+      end
+    end
   end
 end

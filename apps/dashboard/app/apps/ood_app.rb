@@ -84,7 +84,7 @@ class OodApp
       # assumes Home Directory is primary...
       [
         OodAppLink.new(
-          title: "Home Directory",
+          title: I18n.t('dashboard.home_directory'),
           description: manifest.description,
           url: OodAppkit::Urls::Files.new(base_url: url).url(path: Dir.home),
           icon_uri: "fas://home",
@@ -128,7 +128,7 @@ class OodApp
       else
         login_clusters.map do |cluster|
           OodAppLink.new(
-            title: I18n.t('dashboard.shell_app_title', cluster_title: cluster.metadata.title || cluster.id.to_s.titleize),
+            title: I18n.t('dashboard.shell_app_title', cluster_title: cluster.title),
             description: manifest.description,
             url: OodAppkit::Urls::Shell.new(base_url: url).url(host: cluster.login.host),
             icon_uri: "fas://terminal",

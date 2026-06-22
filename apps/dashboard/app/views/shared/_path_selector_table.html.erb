@@ -7,7 +7,7 @@
 -%>
 
 <div
-    class="modal fade"
+    class="modal fade text-start"
     id="<%= path_selector_id %>" tabindex="-1" role="dialog"
     aria-labelledby="modal-path-selector"
     data-show-files="<%= show_files %>"
@@ -37,15 +37,15 @@
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
                 <div id="favorites" class="list-group text-nowrap">
-                  <% homedir = FavoritePath.new(Dir.home, title:'Home Directory') %>
-                  <%= render(partial: 'favorites', collection: favorites.unshift(homedir), as: :path) %>
+                  <% homedir = FavoritePath.new(Dir.home, title:I18n.t('dashboard.home_directory')) %>
+                  <%= render(partial: 'batch_connect/session_contexts/favorites', collection: favorites.unshift(homedir), as: :path) %>
                 </div>
               </div>
             </div>
           <% end %>
 
             <div class="<%= favorites ? 'col-sm-7' : 'col-sm-12' %>">
-              <nav>
+              <nav aria-label="<%= "#{popup_title} Breadcrumb" %>">
                 <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter rounded">
                 </ol>
               </nav>

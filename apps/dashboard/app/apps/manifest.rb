@@ -4,6 +4,8 @@ require 'yaml'
 
 # Manifests provide metadata for applications (OodApps).
 class Manifest
+  include ActiveModel::Model
+
   attr_reader :exception
 
   # InvalidContentError is an error helper class to give users a nice
@@ -40,19 +42,17 @@ category: OSC
         Manifest.new(YAML.safe_load(content))
       end
     else
-      MissingManifest.new({})
+      MissingManifest.new(yaml_path)
     end
-  rescue Exception => e
-    # FIXME: if we rescue from exceptions, we should store the exception
-    # information in the manifest
-    # and be explicit about what we are handling
-    # probably a YAML formatting error?
+  rescue StandardError => e
+    Rails.logger.warn "Cannot load manifest: #{yaml_path} with error #{e.class}: #{e.message}"
     InvalidManifest.new(e)
   end
 
   def self.load_from_string(yaml)
     Manifest.new(YAML.safe_load(yaml))
-  rescue Exception => e
+  rescue StandardError => e
+    Rails.logger.warn "Cannot load manifest from string with error #{e.class}: #{e.message}"
     InvalidManifest.new(e)
   end
 
@@ -174,8 +174,10 @@ category: OSC
     Pathname.new(path).write(to_yaml)
 
     true
-  rescue StandardError
-    # TODO: Add a custom exception here to track why it erred. IO? Permissions? etc.
+  rescue StandardError => e
+    @exception = e
+    errors.add(:save, e.message)
+    Rails.logger.warn "Cannot save manifest: #{path} with error #{e.class}:#{e.message}"
     false
   end
 
@@ -209,6 +211,7 @@ category: OSC
       super({})
 
       @exception = exception
+      errors.add(:load, exception.message)
     end
 
     def valid?
@@ -221,6 +224,12 @@ category: OSC
   end
 
   class MissingManifest < Manifest
+    def initialize(yaml_path = nil)
+      super({})
+
+      errors.add(:load, "Manifest not found at #{yaml_path}") if yaml_path
+    end
+
     def valid?
       false
     end

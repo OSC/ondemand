@@ -26,7 +26,11 @@ describe 'OnDemand installed with packages' do
 
   describe file('/etc/sudoers.d/ood') do
     it { is_expected.to be_file }
-    its(:content) { is_expected.to include "Defaults:#{apache_user}" }
+    if host_inventory['platform'] == 'ubuntu' && host_inventory['platform_version'].to_i >= 26
+      its(:content) { is_expected.to include "Defaults:#{apache_user} !pwfeedback, !use_pty" }
+    else
+      its(:content) { is_expected.to include "Defaults:#{apache_user} !requiretty, !authenticate" }
+    end
   end
 
   describe file('/etc/cron.d/ood') do
@@ -40,6 +44,11 @@ describe 'OnDemand installed with packages' do
 
   describe file("/etc/systemd/system/#{apache_service}.service.d/ood.conf") do
     it { is_expected.to be_file }
+    if host_inventory['platform'] == 'ubuntu' && host_inventory['platform_version'].to_i >= 26
+      its(:content) { is_expected.to match %r{InaccessiblePaths=} }
+    else
+      its(:content) { is_expected.not_to match %r{InaccessiblePaths=} }
+    end
   end
 
   describe file("/etc/systemd/system/#{apache_service}.service.d/ood-portal.conf") do
@@ -93,10 +102,9 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_grouped_into('ondemand-nginx') }
   end
 
-  # tests for beta project manager. remove when it's no longer in beta.
   describe file('/var/www/ood/apps/sys/projects') do
     it { is_expected.to be_directory }
-    it { is_expected.to be_mode(700) }
+    it { is_expected.to be_mode(755) }
     it { is_expected.to be_owned_by('root') }
     it { is_expected.to be_grouped_into('root') }
   end

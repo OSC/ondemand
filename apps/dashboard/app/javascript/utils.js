@@ -21,6 +21,15 @@ export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function toHumanSize(number, precision = 2) {
+  if(number === null) {
+    return '-';
+  } else {
+    const unitIndex = number == 0 ? 0 : Math.floor(Math.log(number) / Math.log(1000));
+    return `${((number / Math.pow(1000, unitIndex)).toFixed(precision))} ${['B', 'kB', 'MB', 'GB', 'TB', 'PB'][unitIndex]}`;
+  }
+}
+
 export function startOfYear() {
   const now = new Date();
   const past = new Date();
@@ -139,6 +148,19 @@ export function pushNotify(message, options = {}) {
       }
     });
   }
+}
+
+// rearrange table header labels so button labels are not part of header
+export function customizeTableHeaders(thead) {
+  $(thead).find('th.dt-orderable-asc').each(function(_index, el) {
+    const sortButton = $(el).find('span.dt-column-order');
+    const ariaLabel = sortButton.attr('aria-label');
+    $(el).attr('aria-label', ariaLabel).attr('tabindex', '0');
+    sortButton.removeAttr('aria-label')
+              .removeAttr('tabindex')
+              .removeAttr('role')
+              .attr('aria-hidden', 'true');
+  });
 }
 
 // Store a boolean value in localStorage

@@ -4,7 +4,7 @@ class PosixFile
   attr_reader :path, :stat
 
   delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
-  delegate :directory?, :realpath, :readable?, :file?, to: :path
+  delegate :directory?, :realpath, :readable?, :file?, :exist?, to: :path
   delegate :size, to: :stat
 
   # include to give us number_to_human_size
@@ -105,7 +105,7 @@ class PosixFile
       PosixFile.new(child_path)
     end.select(&:valid?)
         .map(&:to_h)
-        .sort_by { |p| p[:directory] ? 0 : 1 }
+        .sort_by { |p| [ p[:directory] ? 0 : 1, p[:name] ] }
   end
 
   def valid?
@@ -164,7 +164,7 @@ class PosixFile
     nil
   end
 
-  def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
+  def can_download_as_zip?(timeout: Configuration.download_dir_timeout_seconds, download_directory_size_limit: Configuration.download_dir_max)
     can_download = false
     error = nil
 

@@ -92,7 +92,7 @@ class FilesTest < ActiveSupport::TestCase
   end
 
   test "can_download_as_zip handles directory size exceeding limit" do
-    download_directory_size_limit = Configuration.file_download_dir_max
+    download_directory_size_limit = Configuration.download_dir_max
     Dir.mktmpdir do |dir|
       dir_size = download_directory_size_limit + 1
       PosixFile.any_instance.stubs(:calculate_directory_size)

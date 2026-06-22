@@ -9,10 +9,10 @@ module AccountCache
   # @return [Array<AccountInfo>] - the account info objects
   def accounts
     Rails.cache.fetch('account_info', expires_in: 4.hours) do
-      # only Slurm support in ood_core
+      # only Slurm & HTCondor support in ood_core
       # job_clusters: not to be confused with clusters
-      slurm_job_clusters = Configuration.job_clusters.select(&:slurm?)
-      slurm_job_clusters.empty? ? [] : slurm_job_clusters.map(&:job_adapter).flat_map(&:accounts).uniq
+      job_clusters = Configuration.job_clusters.select { |c| c.slurm? || c.htcondor? }
+      job_clusters.empty? ? [] : job_clusters.map(&:job_adapter).flat_map(&:accounts).uniq
     rescue StandardError => e
       Rails.logger.warn("Did not get accounts from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
@@ -45,7 +45,7 @@ module AccountCache
         invalid_clusters = job_cluster_names - valid_clusters
 
         data = invalid_clusters.map do |invalid_cluster|
-          ["data-option-for-cluster-#{invalid_cluster}", false]
+          ["data-option-for-cluster-#{invalid_cluster.tr('_', '-')}", false]
         end.compact.to_h
 
         [account_name, account_name, data]
@@ -67,9 +67,10 @@ module AccountCache
         end
 
         cluster_data = other_clusters.map do |other_cluster|
+          cluster_token = other_cluster.tr('_', '-')
           [
-            ["data-option-for-cluster-#{other_cluster}", false],
-            ["data-option-for-auto-batch-clusters-#{other_cluster}", false]
+            ["data-option-for-cluster-#{cluster_token}", false],
+            ["data-option-for-auto-batch-clusters-#{cluster_token}", false]
           ]
         end.flatten(1).to_h
 
@@ -108,7 +109,7 @@ module AccountCache
         unavailable_clusters = clusters.reject { |c| available_clusters.include?(c) }
 
         unavailable_clusters.each do |cluster|
-          data["data-option-for-cluster-#{cluster}"] = false
+          data["data-option-for-cluster-#{cluster.tr('_', '-')}"] = false
         end
 
         available_accounts = account_tuples.map { |tuple| tuple[0] }.uniq
@@ -168,15 +169,23 @@ module AccountCache
     end
   end
 
+  def get_or_create_account_alias(account)
+    @account_aliases ||= {}
+    if @account_aliases.key?(account)
+      return @account_aliases[account]
+    end
+    new_alias = "account#{@account_aliases.length()}"
+    @account_aliases[account] = new_alias
+    return new_alias
+  end
+
   def disabled_account_data(disabled_accounts)
-    counter = 0
     disabled_accounts.map do |account|
-      counter += 1
       # check if account contains anything other than digits and lowercase letters
       if /\A[a-z0-9]+\z/.match?(account)
         [["data-option-for-auto-accounts-#{account}", false]] 
       else
-        acct_alias = "account#{counter}"
+        acct_alias = get_or_create_account_alias(account)
         [
           ["data-alias-#{acct_alias}", account],
           ["data-option-for-auto-accounts-#{acct_alias}", false]

@@ -18,7 +18,7 @@
                     locals: {
                       host: cluster.login.host,
                       path: @path.to_s,
-                      label: "#{cluster.metadata.title || cluster.id.to_s.titleize}",
+                      label: cluster.title,
                       classes: 'dropdown-item',
                     })
           %>

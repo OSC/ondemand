@@ -40,14 +40,29 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # select oakley and 2 node types should be hidden
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
 
     # FIXME: no idea why .visible? doesn't work here. Selenium/chrome native still shows element as visible?
     assert_equal 'display: none;', find_option_style('node_type', 'advanced')
     assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
 
     # select owens and now they're available
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
+    assert_equal '', find_option_style('node_type', 'advanced')
+    assert_equal '', find_option_style('node_type', 'hugemem')
+  end
+
+  test 'cluster names with dashes and underscores work with data-option-for attributes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # select Next Gen Ascend and hugemem/advanced node types should be hidden
+    select('X Nextgen Ascend', from: bc_ele_id('cluster'))
+
+    assert_equal 'display: none;', find_option_style('node_type', 'advanced')
+    assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
+
+    # select owens and now they're available
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal '', find_option_style('node_type', 'advanced')
     assert_equal '', find_option_style('node_type', 'hugemem')
   end
@@ -56,7 +71,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # select python 2.7 to initialize things
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('any', from: bc_ele_id('node_type'))
     select('2.7', from: bc_ele_id('python_version'))
     assert_equal '', find_option_style('python_version', '2.7')
@@ -74,7 +89,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
 
     # change the node type and we should have some new min/max & value
     select('gpu', from: bc_ele_id('node_type'))
@@ -160,14 +175,37 @@ class BatchConnectTest < ApplicationSystemTestCase
     # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 7, find_max('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
 
     select('gpu', from: bc_ele_id('node_type'))
     assert_equal 28, find_max('bc_num_slots')
 
     # changing the cluster changes the max
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 40, find_max('bc_num_slots')
+  end
+
+  test 'cluster names with dashes and underscores work with min/max attributes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # select Next Gen Ascend cluster
+    select('X Nextgen Ascend', from: bc_ele_id('cluster'))
+
+    select('any', from: bc_ele_id('node_type'))
+    assert_equal 5, find_min('bc_num_slots')
+    assert_equal 10, find_max('bc_num_slots')
+
+    # with 'gpu' node type, check min/max for Next Gen Ascend
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 4, find_min('bc_num_slots')
+    assert_equal 32, find_max('bc_num_slots')
+    assert_equal 85, find_min('bc_num_hours')
+    assert_equal 96, find_max('bc_num_hours')
+
+    # verify that switching back to a non-dashed cluster still works
+    select('Owens', from: bc_ele_id('cluster'))
+    assert_equal 2, find_min('bc_num_slots')
+    assert_equal 28, find_max('bc_num_slots')
   end
 
   test 'using same node sets min/max' do
@@ -181,13 +219,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '100', find_value('bc_num_slots')
 
     # toggle the cluster back and forth and it's still the same
-    select('oakley', from: bc_ele_id('cluster'))
-    select('owens', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
 
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
@@ -250,7 +288,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 88, find_max('bc_num_hours')
 
     # change the cluster and these change again (the for clause)
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 3, find_min('bc_num_slots')
     assert_equal 40, find_max('bc_num_slots')
     assert_equal 90, find_min('bc_num_hours')
@@ -265,12 +303,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('broken', from: bc_ele_id('node_type'))
 
     # changing clusters does nothing.
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
     assert_equal '3', find_value('bc_num_slots')
 
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
     assert_equal '3', find_value('bc_num_slots')
@@ -292,20 +330,20 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal '3', find_value('bc_num_slots')
 
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
     # value gets set to the new min
     assert_equal '2', find_value('bc_num_slots')
 
     # change clusters and it bumps up again
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal '3', find_value('bc_num_slots')
 
     # edit the values, then change the cluster to ensure
     # the change overwrites the edit
     fill_in bc_ele_id('bc_num_slots'), with: 1
     assert_equal '1', find_value('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal '2', find_value('bc_num_slots')
   end
 
@@ -316,13 +354,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     fill_in bc_ele_id('bc_num_slots'), with: 1000
     assert_equal '1000', find_value('bc_num_slots')
 
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
     # value gets set to the new max
     assert_equal '28', find_value('bc_num_slots')
 
     # change clusters and it bumps up again
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal '40', find_value('bc_num_slots')
   end
 
@@ -1669,7 +1707,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 40, find_max('bc_num_slots')
 
     # now change the cluster and the max changes
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 48, find_max('bc_num_slots')
   end
 
@@ -2064,7 +2102,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.4')
 
       # select oakley and now they're available
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
@@ -2107,7 +2145,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens', find_value('cluster')
 
       # oakley has the hidden intel module 'intel/2021.4.0'
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
 
       actual_options = find_all_options('auto_modules_intel', nil).map(&:text)
 
@@ -2141,7 +2179,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens', find_value('cluster')
 
       # these accounts are only on owens
@@ -2151,9 +2189,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       # pzs1124 exists on both, so it's available
       assert_equal '', find_option_style('auto_accounts', 'pzs1124')
 
-      # pzs0715 is available on oakely, so switching clusters should keep the same value.
-      select('oakley', from: bc_ele_id('cluster'))
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      # pzs1124 is available on oakely, so switching clusters should keep the same value.
+      select('Oakley', from: bc_ele_id('cluster'))
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
       # now these are hidden when oakley is chosen
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1754')
@@ -2185,11 +2223,11 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         visit new_batch_connect_session_context_url('sys/app')
 
-        assert_equal 'pzs0715', find_value('auto_accounts')
+        assert_equal 'pzs1124', find_value('auto_accounts')
         assert_equal 'owens', find_value('cluster')
 
         # notice that there are no duplicates. These accounts are not cluster aware
-        expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
+        expected_accounts = ['foo-bar', 'pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
                              'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
 
         id = bc_ele_id('auto_accounts')
@@ -2235,13 +2273,56 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_selector("##{bc_ele_id('auto_queues')} option[value='systems']", count: 0)
 
       # batch exists on both clusters, so switching clusters does nothing
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'batch', find_value('auto_queues')
 
       # now those oakley queues are available
       assert_equal '', find_option_style('auto_queues', 'serial-40core')
       assert_equal '', find_option_style('auto_queues', 'serial-48core')
       assert_equal '', find_option_style('auto_queues', 'gpudebug-48core')
+    end
+  end
+
+  test 'check for account alias clashes between clusters when using auto_queues auto_accounts' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      accounts = find_all_options("auto_accounts", nil)
+      queues = find_all_options("auto_queues", nil)
+      aliases = []
+      for queue in queues
+        (0..accounts.size).each do |i|
+          if !queue["data-alias-account#{i}"].nil?
+            aliases.append([queue.value, "account#{i}", queue["data-alias-account#{i}"]])
+          end
+        end
+      end
+      err_msg_lines = []
+      aliases_groupby_acct = aliases.group_by { |x| x[2] }
+      aliases_groupby_acct.each do |acct, aliases_this_acct|
+        pseudonyms = aliases_this_acct.map { |x| x[1] }.uniq
+        if pseudonyms.size > 1
+          err_msg_lines.append("account '#{acct}' has multiple different aliases: #{pseudonyms}")
+        end
+      end
+      aliases_groupby_pseudonym = aliases.group_by { |x| x[1] }
+      aliases_groupby_pseudonym.each do |pseudonym, aliases_this_pseudonym|
+        accts = aliases_this_pseudonym.map { |x| x[2] }.uniq
+        if accts.size > 1
+          err_msg_lines.append("alias '#{pseudonym}' has multiple different accounts: #{accts}")
+        end
+      end
+      # $stderr.puts aliases.inspect
+      assert(err_msg_lines.size == 0, err_msg_lines.join("\n"))
     end
   end
 
@@ -2263,9 +2344,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       # defaults
       assert_equal 'batch', find_value('auto_queues')
       assert_equal 'owens', find_value('cluster')
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
 
       # condo-osumed queues are disabled, but the backfill-serial variants are.
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
@@ -2290,8 +2371,8 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       ['p_s1.71', 'p-s1.71', 'p.s1.71'].each do |acct|
         # We start by resetting back to the starting point
-        select('owens', from: bc_ele_id('cluster'))
-        select('oakley', from: bc_ele_id('cluster'))
+        select('Owens', from: bc_ele_id('cluster'))
+        select('Oakley', from: bc_ele_id('cluster'))
         select(acct, from: bc_ele_id('auto_accounts'))
 
 
@@ -2329,7 +2410,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens-default', find_value('auto_qos')
       assert_equal 'owens', find_value('cluster')
 
@@ -2342,6 +2423,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       # qos' available on owens cluster, but not with the selected account
+      select('pzs0715', from: bc_ele_id('auto_accounts'))
       assert_equal 'display: none;', find_option_style('auto_qos', 'staff')
       assert_equal 'display: none;', find_option_style('auto_qos', 'phoenix')
       assert_equal 'display: none;', find_option_style('auto_qos', 'geophys')
@@ -2360,7 +2442,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens-default', find_value('auto_qos')
 
       # change the cluster, and qos changes but account stays the same
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'oakley-default', find_value('auto_qos')
       assert_equal 'pzs1124', find_value('auto_accounts')
     end
@@ -2403,6 +2485,8 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       find('span', text: 'test').click
       sleep 3 # make sure the table has time to refresh
+      assert_no_selector("##{base_id}_path_selector_table_spinner", visible: true)
+
       find("##{base_id}_path_selector_button").click
 
       text_field = find("##{base_id}")
@@ -2706,7 +2790,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       sleep 3
       favorites = get_favorites
       assert_equal(3, favorites.size)
-      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal(I18n.t('dashboard.home_directory'), favorites[0].text.strip)
       assert_equal('/tmp', favorites[1].text.strip)
       assert_equal('/var', favorites[2].text.strip)
     end
@@ -2743,7 +2827,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       sleep 3
       favorites = get_favorites
       assert_equal(3, favorites.size)
-      assert_equal('Home Directory', favorites[0].text.strip)
+      assert_equal(I18n.t('dashboard.home_directory'), favorites[0].text.strip)
       assert_equal('/fs/ess', favorites[1].text.strip)
       assert_equal('/fs/scratch', favorites[2].text.strip)
     end

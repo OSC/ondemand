@@ -138,7 +138,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       visit new_batch_connect_session_context_url('sys/app')
 
-      find('.alert-danger')
+      assert_selector('.alert-danger')
     end
   end
 
@@ -217,6 +217,46 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       find("##{base_id}_path_selector_button").click
 
       assert_equal(filename, find("##{base_id}").value)
+    end
+  end
+
+  test 'path_selector handles filenames with # and +' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      base_id = 'batch_connect_session_context_path'
+      Dir.mktmpdir do |tmpdir|
+        name = '#foo+bar.txt#'
+        filename = "#{tmpdir}/#{name}"
+        FileUtils.touch(filename)
+
+        form = <<~HEREDOC
+          ---
+          cluster:
+            - owens
+          form:
+            - path
+          attributes:
+            path:
+              widget: 'path_selector'
+              directory: "#{tmpdir}"
+        HEREDOC
+
+        Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+        sleep 0.5
+
+        find('span', exact_text: name).click
+        find("##{base_id}_path_selector_button").click
+
+        assert_equal(filename, find("##{base_id}").value)
+      end
     end
   end
 
@@ -634,10 +674,104 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-option-for-cluster with dashed cluster names' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - ['Next Gen Ascend', 'next-gen_ascend']
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-next-gen-ascend: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # owens is selected, standard and gpu are both visible
+      select('owens', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      # select gpu, to test that it's deselected properly when nextgen-ascend is selected
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      # Next Gen Ascend is selected, gpu is not visible
+      select('Next Gen Ascend', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+
+      # value of node_type has gone back to standard
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+
+  test 'data-option-for-cluster with underscore cluster id uses hyphenated attribute name' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - ['Ascend Nextgen', 'ascend_nextgen']
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-ascend-nextgen: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('owens', from: 'batch_connect_session_context_cluster')
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      select('Ascend Nextgen', from: 'batch_connect_session_context_cluster')
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+  
   test 'form element headers support markdown and html' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # Span exists (HTML works).
+    assert_selector(class: 'test_form_element_header', text: 'Some text in a span')
     header_span = find(class: 'test_form_element_header', text: 'Some text in a span')
     # Markdown element exists (## => h2).
     markdown_header = header_span.find(:xpath, './/../../h2', text: 'Header using Markdown')
@@ -849,6 +983,10 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             options:
               - ["None", "", data-hide-thing-to-hide-or-show: true]
               - ["Some", "some"]
+          thing_to_hide_or_show:
+            header: |
+              ## Hidden field header
+              This header should always remain visible.
       HEREDOC
 
       make_bc_app(dir, form)
@@ -856,11 +994,137 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       # None is selected by default and 'thing_to_hide_or_show' is hidden
       assert_equal('', find_value('select_that_hides'))
+      header = find('h2', text: 'Hidden field header')
+      assert header.visible?, 'Header should remain visible while the field is hidden'
       refute(find("##{bc_ele_id('thing_to_hide_or_show')}", visible: :hidden).visible?)
 
       # now choose 'some' and 'thing_to_hide_or_show' is visible
       select('Some', from: bc_ele_id('select_that_hides'))
+      assert header.visible?, 'Header should remain visible after the field is shown'
       assert(find("##{bc_ele_id('thing_to_hide_or_show')}").visible?)
+    end
+  end
+
+  test 'batch connect app list popover renders markdown formatting' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    app_link.hover
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}")
+
+    # assert markdown html
+    expected_html = <<~HEREDOC
+    <h1>Header 1</h1>
+
+    <h2>Header 2</h2>
+
+    <h3>Header 3</h3>
+
+    <p><strong>Bold text</strong> <em>Italic text</em> plain text <a href=\"www.example.com\">link text</a>
+    1. Numbered
+    2. Lists</p>
+
+    <ul>
+    <li>Bullets</li>
+    <li>Like</li>
+    <li>These</li>
+    <li>Items</li>
+    </ul>
+    
+    <p><!-- we omit images since they are not recommended in popops -->
+    <code>code-font</code></p>
+
+    <pre><code>code block
+    </code></pre>
+    HEREDOC
+    
+    assert_equal expected_html, find("div##{popover_id} div.ood-appkit.markdown")['innerHTML']
+  end
+
+  test 'interactive app popovers meet wcag guidelines' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    app_link.hover
+
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}", visible: true)
+
+    # hoverable
+    find("div##{popover_id}").hover
+    assert_selector("div##{popover_id}", visible: true)
+
+    app_link.hover
+    assert_selector("div##{popover_id}", visible: true)
+
+    #dismissable
+    app_link.send_keys(:escape)
+    refute_selector("div##{popover_id}")
+
+    # removes when hover leaves
+    find('form').hover
+    app_link.hover
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}", visible: true)
+
+    # send pointer and focus somewhere else
+    all('form select').first.hover.click
+    refute_selector("div##{popover_id}")
+  end
+
+  test 'app that needs escape sequences' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:  
+      - oakley
+      form:
+        - software
+        - node_type
+        - gpu_type
+      attributes:
+        software:
+          widget: select
+          options:
+            - ruby
+            - python
+        node_type:
+          widget: select
+          options:
+            - regular
+            - [ "broken option '", broken, data-exclusive-option-for-software-python: true ]
+        gpu_type:
+          widget: select
+          options:
+            - good
+            - [ better, better, data-exclusive-option-for-node-type-broken: true ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+
+      # select python and broken node type is available
+      select('python', from: bc_ele_id('software'))
+      assert_equal('', find_option_style('node_type', 'broken'))
+
+      # select broken node and better gpu type is available
+      select('broken option \'', from: bc_ele_id('node_type'))
+      assert_equal('', find_option_style('gpu_type', 'better'))
+
+      # flip back to ruby and get defaults back
+      select('ruby', from: bc_ele_id('software'))
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
     end
   end
 end

@@ -119,4 +119,34 @@ class AppsTest < ActionDispatch::IntegrationTest
       assert_equal data[2], meta2
     end
   end
+
+  test 'apps routes allow owner names with any valid characters' do
+    owner = 'j.doe.-01_test~v'
+    path = "/apps/show/myapp/usr/#{owner}"
+
+    %w[show icon].each do |action|
+      path = "/apps/#{action}/myapp/usr/#{owner}"
+      assert_equal(
+        {
+          controller: 'apps',
+          action: action,
+          name: 'myapp',
+          type: 'usr',
+          owner: owner
+        },
+        Rails.application.routes.recognize_path(path)
+      )
+    end
+  end
+
+  test 'apps routes reject owner names containing slashes' do
+    owner = 'john/doe'
+    assert_raises(ActionController::RoutingError) do
+      Rails.application.routes.recognize_path("/apps/show/myapp/usr/#{owner}")
+    end
+
+    assert_raises(ActionController::RoutingError) do
+      Rails.application.routes.recognize_path("/apps/icon/myapp/usr/#{owner}")
+    end
+  end
 end

@@ -6,10 +6,10 @@
 
  <div class="row">
   <div class="col-sm-6">
-   <%= f.number_field(:compression, class: 'custom-range', type: 'range', min: 1, max: 9, value: Configuration.novnc_default_compression.to_i, label: "Compression", help: "1 (low) to 9 (high)") %>
+   <%= f.number_field(:compression, class: 'custom-range', type: 'range', min: 1, max: 9, value: Configuration.novnc_default_compression, label: "Compression", help: "1 (low) to 9 (high)") %>
   </div>
   <div class="col-sm-6">
-   <%= f.number_field(:quality, class: 'custom-range', type: 'range', min: 0, max: 9, value: Configuration.novnc_default_quality.to_i, label: "Image Quality", help: "0 (low) to 9 (high)") %>
+   <%= f.number_field(:quality, class: 'custom-range', type: 'range', min: 0, max: 9, value: Configuration.novnc_default_quality, label: "Image Quality", help: "0 (low) to 9 (high)") %>
   </div>
  </div>
 
@@ -21,6 +21,8 @@
     }
   <% end -%>
 
- <%= f.submit( t('dashboard.batch_connect_sessions_novnc_launch', app_title: app_title), class: 'btn btn-primary', :formtarget => "_blank") %>
- <%= link_to t('dashboard.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-light float-end border border-dark', target: '_blank' %>
+ <%= f.submit( t('dashboard.batch_connect_sessions_novnc_launch', app_title: app_title), class: 'btn btn-primary') %>
+ <% if connect.spassword.present? %>
+ <%= link_to t('dashboard.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-light float-end border border-dark' %>
+ <% end %>
 <% end %>

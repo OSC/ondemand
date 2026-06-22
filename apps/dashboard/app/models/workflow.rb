@@ -2,6 +2,7 @@
 
 class Workflow
   include ActiveModel::Model
+  include ProjectPermissions
 
   class << self
     def workflow_dir(project_dir)
@@ -10,16 +11,16 @@ class Workflow
 
     def find(id, project_dir)
       file = "#{workflow_dir(project_dir)}/#{id}.yml"
-      Workflow.from_yaml(file, project_dir)
+      Workflow.from_yaml(file)
     end
 
     def all(project_dir)
       Dir.glob("#{workflow_dir(project_dir)}/*.yml").map do |file|
-        Workflow.from_yaml(file, project_dir)
+        Workflow.from_yaml(file)
       end.compact.sort_by { |s| s.created_at }
     end
 
-    def from_yaml(file, project_dir)
+    def from_yaml(file)
       contents = File.read(file)
       opts = YAML.safe_load(contents).deep_symbolize_keys
       new(opts)
@@ -31,21 +32,39 @@ class Workflow
     def next_id
       SecureRandom.alphanumeric(8).downcase
     end
+
+    def build_submit_params(metadata, project_dir)
+      meta = metadata[:metadata] || {}
+      {
+        launcher_ids: meta[:boxes].map { |b| b["id"] },
+        source_ids: meta[:edges].map { |e| e["from"] },
+        target_ids: meta[:edges].map { |e| e["to"] },
+        project_dir: project_dir,
+        start_launcher: meta[:start_launcher] || nil
+      }
+    end
+
+    # Generate sync key for entire workflow run, giving users a single synchronized 
+    # token per run that they can build shared filenames, lockfiles, etc. on top of.
+    def generate_sync_key
+      SecureRandom.alphanumeric(16)
+    end
   end
 
-  # TODO: Remove launcher_ids, source_ids, target_ids and use metadata only
-  attr_reader :id, :name, :description, :project_dir, :created_at, :launcher_ids, :source_ids, :target_ids, :metadata
+  attr_accessor :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata, :sync_key_enabled
+
+  validates :name, presence: true
+  validates :launcher_ids, length: {minimum: 1}
 
   def initialize(attributes = {})
     @id = attributes[:id]
     @name = attributes[:name]
     @description = attributes[:description]
-    @project_dir = attributes[:project_dir]
+    @project_dir = attributes[:project_dir].to_s
     @created_at = attributes[:created_at]
     @launcher_ids = attributes[:launcher_ids] || []
-    @source_ids = attributes[:source_ids] || []
-    @target_ids = attributes[:target_ids] || []
     @metadata = attributes[:metadata] || {}
+    @sync_key_enabled = attributes[:sync_key_enabled] || "0"
   end
 
   def to_h
@@ -56,17 +75,16 @@ class Workflow
       :created_at => created_at,
       :project_dir => project_dir,
       :launcher_ids => launcher_ids,
-      :source_ids => source_ids,
-      :target_ids => target_ids,
-      :metadata => metadata
+      :metadata => metadata,
+      :sync_key_enabled => sync_key_enabled
     }
   end
 
   def save
     return false unless valid?(:create)
 
-    if @project_dir.nil?
-      errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
+    if @project_dir.empty?
+      errors.add(:save, I18n.t('dashboard.jobs_project_directory_error'))
       return false
     end
 
@@ -77,7 +95,9 @@ class Workflow
 
   def save_manifest(operation)
     FileUtils.touch(manifest_file) unless manifest_file.exist?
-    Pathname(manifest_file).write(to_h.deep_stringify_keys.compact.to_yaml)
+    if editable?
+      Pathname(manifest_file).write(to_h.as_json.compact.to_yaml)
+    end
 
     true
   rescue StandardError => e
@@ -107,10 +127,14 @@ class Workflow
   end
 
   def update_attrs(attributes, override = false)
-    [:name, :description, :launcher_ids, :metadata].each do |attribute|
+    [:name, :description, :launcher_ids, :metadata, :sync_key_enabled].each do |attribute|
       next unless override || attributes.key?(attribute)
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
+  end
+
+  def editable?
+    manifest_file.writable? || !shared?(manifest_file)
   end
 
   def submit(attributes = {})
@@ -126,6 +150,7 @@ class Workflow
 
     all_launchers = Launcher.all(attributes[:project_dir])
     job_id_hash = {}  # launcher-job_id hash
+    sync_key = sync_key_enabled == "1" ? Workflow.generate_sync_key : nil
 
     for id in order
       launcher = all_launchers.find { |l| l.id == id }
@@ -137,8 +162,8 @@ class Workflow
 
       begin
         jobs = dependent_launchers.map { |id| job_id_hash.dig(id, :job_id) }.compact
-        opts = submit_launcher_params(launcher, jobs).to_h.symbolize_keys
-        job_id = launcher.submit(opts)
+        opts = submit_launcher_params(launcher, jobs, sync_key).to_h.symbolize_keys
+        job_id = launcher.submit(opts, write_cache: false)
         if job_id.nil?
           Rails.logger.warn("Launcher #{id} with opts #{opts} did not return a job ID.")
         else
@@ -157,11 +182,12 @@ class Workflow
     nil
   end
 
-  def submit_launcher_params(launcher, dependent_jobs)
-    launcher_data = launcher.smart_attributes.each_with_object({}) do |attr, hash|
+  def submit_launcher_params(launcher, dependent_jobs, sync_key)
+    launcher_data = launcher.cacheless_attributes.each_with_object({}) do |attr, hash|
       hash[attr.id.to_s] = attr.opts[:value]
     end
     launcher_data["afterok"] = Array(dependent_jobs)
+    launcher_data["ood_workflow_sync_key"] = sync_key if sync_key
     launcher_data
   end
 

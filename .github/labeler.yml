@@ -1,35 +1,47 @@
 component/activejobs:
-  - apps/activejobs/**/*
+  - changed-files:
+    - any-glob-to-any-file: apps/activejobs/**/*
 
 component/bc_desktop:
-  - apps/bc_desktop/**/*
+  - changed-files:
+    - any-glob-to-any-file: apps/bc_desktop/**/*
 
 component/dashboard:
-  - apps/dashboard/**/*
+  - changed-files:
+    - any-glob-to-any-file: apps/dashboard/**/*
 
 component/file_editor:
-  - apps/file-editor/**/*
+  - changed-files:
+    - any-glob-to-any-file: apps/file-editor/**/*
 
 component/file_browser:
-  - apps/files/**/*
+  - changed-files:
+    - any-glob-to-any-file: apps/files/**/*
 
 component/jobcomposer:
-  - apps/myjobs/**/*
+  - changed-files:
+    - any-glob-to-any-file: apps/myjobs/**/*
 
 component/shell:
-  - apps/shell/**/*
+  - changed-files:
+    - any-glob-to-any-file: apps/shell/**/*
 
 component/nginx_stage:
-  - nginx_stage/**/*
+  - changed-files:
+    - any-glob-to-any-file: nginx_stage/**/*
 
 component/mod_ood_proxy:
-  - mod_ood_proxy/**/*
+  - changed-files:
+    - any-glob-to-any-file: mod_ood_proxy/**/*
 
 component/ood_auth_map:
-  - ood_auth_map/**/*
+  - changed-files:
+    - any-glob-to-any-file: ood_auth_map/**/*
 
 component/ood_portal_generator:
-  - ood-portal-generator/**/*
+  - changed-files:
+    - any-glob-to-any-file: ood-portal-generator/**/*
 
 area/build:
-  - lib/tasks/**/*
+  - changed-files:
+    - any-glob-to-any-file: lib/tasks/**/*

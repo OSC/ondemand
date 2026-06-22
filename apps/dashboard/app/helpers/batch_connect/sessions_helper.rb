@@ -7,7 +7,7 @@ module BatchConnect::SessionsHelper
   def render_connection(session)
     if session.running?
       if session.view
-        views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
+        views = { partial: "custom", locals: { view: session.view, connect: session.connect, session: session } }
       else
         if session.vnc?
           views = []
@@ -38,15 +38,13 @@ module BatchConnect::SessionsHelper
     time_limit = session.info.wallclock_limit
     time_used  = session.info.wallclock_time
     if session.starting? || session.running?
-      if time_limit && time_used
+      if time_limit.to_i.positive? && time_used
         [t('dashboard.batch_connect_sessions_stats_time_remaining'), distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
       elsif time_used
         [t('dashboard.batch_connect_sessions_stats_time_used'), distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
       end
-    else
-      if time_limit
-        [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
-      end
+    elsif time_limit.to_i.positive?
+      [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
     end
   end
 
@@ -101,7 +99,7 @@ module BatchConnect::SessionsHelper
 
     user_context = session.user_context
     params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, nil)]}.to_h.compact
-    title = "#{t('dashboard.batch_connect_sessions_relaunch_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_relaunch_full_title', title: session.title)
     button_to(
       batch_connect_session_contexts_path(token: batch_connect_app.token),
       method: :post,
@@ -121,7 +119,7 @@ module BatchConnect::SessionsHelper
     button_to(
       new_batch_connect_session_context_path(token: session.token),
       method: :get,
-      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner],
+      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner edit-session],
       form_class: %w[d-inline edit-session],
       title: title,
       'aria-label': title,
@@ -141,7 +139,7 @@ module BatchConnect::SessionsHelper
   end
 
   def delete(session)
-    title = "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_delete_full_title', title: session.title)
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
@@ -155,7 +153,7 @@ module BatchConnect::SessionsHelper
   end
 
   def cancel(session)
-    title = "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_cancel_full_title', title: session.title)
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,

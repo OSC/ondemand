@@ -1,6 +1,10 @@
 #directory-contents .selected {
   color: white;
   background-color: rgb(0, 136, 204);
+
+  .dropdown-menu a {
+    color: var(--bs-dropdown-link-color);
+  }
 }
 
 #directory-contents .selected a.name {
@@ -19,6 +23,8 @@
 // the react component can make use of
 div.datatables-status, div.transfers-status {
   display: inline;
+  --bs-success-rgb: 66, 130, 66;
+  --bs-info-rgb: 9, 128, 151;
 }
 
 .color-gold {
@@ -32,3 +38,4 @@ div.datatables-status, div.transfers-status {
 .z-index-999 {
   z-index: 999;
 }
+

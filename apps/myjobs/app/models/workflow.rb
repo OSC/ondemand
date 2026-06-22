@@ -346,7 +346,7 @@ class Workflow < ApplicationRecord
     OODClusters.reject {
       |cluster| cluster.job_adapter.supports_job_arrays?
     }.map {
-      |cluster| "#{cluster.metadata.title || cluster.id.titleize} (#{cluster.job_config[:adapter].titleize})"
+      |cluster| "#{cluster.title} (#{cluster.job_config[:adapter].titleize})"
     }
   end
 
