@@ -19,7 +19,7 @@ module AppHelper
 
   def recent_settings(app)
     content = app.attributes.select(&:display?).map do |attr|
-      "<div class='row'> <dt>#{attr.label}:</dt> <dd>#{attr.value}</dd> </div>"
+      "<div class='row'> <dt>#{html_escape(attr.label)}:</dt> <dd>#{html_escape(attr.value)}</dd> </div>"
     end
     content.empty? ? nil : ['<dl class="app-settings-popup">', content.join('<hr>'), '</dl>'].join
   end
