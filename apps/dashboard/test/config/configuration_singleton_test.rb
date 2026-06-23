@@ -210,6 +210,22 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "dashboard_workflows_enabled is nil when unset" do
+    with_modified_env(OOD_DASHBOARD_WORKFLOWS_ENABLED: nil) do
+      assert_nil ConfigurationSingleton.new.dashboard_workflows_enabled
+    end
+  end
+
+  test "dashboard_workflows_enabled can force workflows on or off" do
+    with_modified_env(OOD_DASHBOARD_WORKFLOWS_ENABLED: 'true') do
+      assert ConfigurationSingleton.new.dashboard_workflows_enabled
+    end
+
+    with_modified_env(OOD_DASHBOARD_WORKFLOWS_ENABLED: 'false') do
+      refute ConfigurationSingleton.new.dashboard_workflows_enabled
+    end
+  end
+
   test "support_ticket_enabled? is false by default" do
     assert_equal false, ConfigurationSingleton.new.support_ticket_enabled?
   end
