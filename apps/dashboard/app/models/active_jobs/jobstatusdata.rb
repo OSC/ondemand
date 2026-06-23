@@ -72,6 +72,7 @@ module ActiveJobs
       attributes.push Attribute.new "Job Name", self.jobname
       attributes.push Attribute.new "User", self.username
       attributes.push Attribute.new "Account", self.account
+      append_submission_time_attribute(attributes, info)
       attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
       attributes.push Attribute.new "Walltime Used", self.walltime_used
       node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
@@ -120,6 +121,7 @@ module ActiveJobs
       attributes.push Attribute.new "Total CPUs", info.native[:cpus]
       attributes.push Attribute.new "Time Limit", info.native[:time_limit]
       attributes.push Attribute.new "Time Used", self.walltime_used
+      append_submission_time_attribute(attributes, info)
       attributes.push Attribute.new "Start Time", safe_parse_time(info.native[:start_time])
       attributes.push Attribute.new "End Time", safe_parse_time(info.native[:end_time])
       attributes.push Attribute.new "Memory", info.native[:min_memory]
@@ -152,7 +154,7 @@ module ActiveJobs
       attributes.push Attribute.new "From Host", info.native[:from_host]
       attributes.push Attribute.new "Exec Host", info.native[:exec_host]
       attributes.push Attribute.new "Job Name", self.jobname
-      attributes.push Attribute.new "Submit Time", info.native[:submit_time]
+      append_submission_time_attribute(attributes, info)
       attributes.push Attribute.new "Project Name", info.native[:project]
       attributes.push Attribute.new "CPU Used", info.native[:cpu_used]
       attributes.push Attribute.new "Mem", info.native[:mem]
@@ -183,6 +185,7 @@ module ActiveJobs
       attributes.push Attribute.new "Job Name", self.jobname
       attributes.push Attribute.new "User", self.username
       attributes.push Attribute.new "Account", self.account if info.accounting_id
+      append_submission_time_attribute(attributes, info)
       attributes.push Attribute.new "Group List", info.native[:group_list] if info.native[:group_list]
       attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
       walltime_used = info.wallclock_time || 0
@@ -276,7 +279,7 @@ module ActiveJobs
       attributes = []
       attributes.push Attribute.new "Nodes", info.native[:NODES]
       attributes.push Attribute.new "Time Limit", pretty_time(info.wallclock_limit)
-      attributes.push Attribute.new "Submission Time", info.native[:ACCEPT]
+      append_submission_time_attribute(attributes, info)
       attributes.push Attribute.new "Start Time", info.native[:START_DATE]
       self.native_attribs = attributes
 
@@ -315,6 +318,24 @@ module ActiveJobs
             ''
           end
         end
+      end
+
+      def submission_time_display(info)
+        nat = info.native if info.native.is_a?(Hash)
+
+        if (v = nat&.dig(:ACCEPT)).present?
+          return safe_parse_time(v).presence || v.to_s.strip
+        end
+
+        t = info.submission_time
+        return t.strftime('%Y-%m-%d %H:%M:%S') if t.respond_to?(:strftime)
+
+        safe_parse_time(nat&.dig(:submit_time))
+      end
+
+      def append_submission_time_attribute(attributes, info)
+        text = submission_time_display(info)
+        attributes.push(Attribute.new('Submission Time', text)) if text.present?
       end
 
       def build_file_explorer_url(path)
