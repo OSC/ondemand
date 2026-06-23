@@ -75,7 +75,7 @@ module ActiveSupport
     end
 
     def button_link?(text, link)
-      find('.btn', text: text)
+      assert_selector('.btn', text: text)
       has_link?(link)
     end
 

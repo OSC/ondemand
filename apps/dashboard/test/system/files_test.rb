@@ -500,6 +500,9 @@ class FilesTest < ApplicationSystemTestCase
       find('textarea.ace_text-input', visible: false).send_keys('foobar')
 
       accept_alert("An error occurred attempting to save this file!\nFile could not be accessed") do
+        # assert_selector is here as there are no other assertions in this test
+        # only implicit find and accept_alert that will error if they can't find or accept
+        assert_selector('#save-button')
         find('#save-button').click
       end
     end
