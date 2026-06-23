@@ -180,7 +180,6 @@ describe OodPortalGenerator::Application do
         oidc_session_max_duration: 28800,
         oidc_state_max_number_of_cookies: '10 true',
         oidc_crypto_passphrase: 'e2c5ee12c92a019f19b5e532641ac0da2f9acdac',
-        foo: 'bar',
         oidc_settings: {
           OIDCPassIDTokenAs: 'serialized',
           OIDCPassRefreshToken: 'On',
