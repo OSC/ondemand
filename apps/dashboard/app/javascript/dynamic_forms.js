@@ -775,12 +775,10 @@ function idFromToken(str) {
 
   // you matched multiple things. For example you're searching for
   // ClusterFilesystem and matched against both 'Cluster' and 'ClusterFilesystem'.
-  // The correrct element id ends with cluster_filesystem.
+  // The correrct element id is the longer one.
   } else if(elements.length > 1) {
-    const snake_case_str = snakeCaseWords(str);
-    return elements.filter((element) => {
-      return element.endsWith(snake_case_str);
-    })[0];
+    let longest = elements.reduce((a, b) => a.length > b.length ? a : b);
+    return longest;
   }
 }
 
