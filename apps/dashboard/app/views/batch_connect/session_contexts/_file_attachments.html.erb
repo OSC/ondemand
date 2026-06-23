@@ -3,7 +3,7 @@
 <div class="mb-3">
   <label class="form-label" for="<%= widget_id %>"><%= attrib.label %></label>
   <p id="<%= widget_id %>" class="<%= has_error ? 'is-invalid' : '' %>" data-bs-toggle="attachments-error">
-    Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.
+    <%= t('dashboard.batch_connect_file_attachments_add') %>
   </p>
   <% if has_error %>
     <div class="invalid-feedback">
@@ -12,5 +12,5 @@
   <% end %>
   <div id="attachments-container"></div>
 
-  <p class="attachments-add" data-bs-toggle="attachments-add"><i class="far fa-plus-square" title="Add attachment"></i> <span>Add attachment</span></p>
+  <p class="attachments-add" data-bs-toggle="attachments-add"><i class="far fa-plus-square" title="<%= t('dashboard.add_attachment') %>"></i> <span><%= t('dashboard.add_attachment') %></span></p>
 </div>

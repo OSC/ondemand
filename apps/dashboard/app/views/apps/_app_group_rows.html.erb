@@ -4,7 +4,7 @@
       <td>
       <div class="btn-group dropend">
         <%= link_to app.links.first.url, class: 'btn btn-primary' do %>
-          <span title="FontAwesome icon specified: folder" aria-hidden="true" class="fas fa-folder fa-fw"></span> Files
+          <span title=<%= t('dashboard.apps_folder_icon') %> aria-hidden="true" class="fas fa-folder fa-fw"></span> <%= t('dashboard.files') %>
         <% end %>
 
         <button type="button" class="btn dropdown-toggle dropdown-toggle-split btn-primary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
