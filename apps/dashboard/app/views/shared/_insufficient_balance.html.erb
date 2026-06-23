@@ -13,4 +13,8 @@
     <%- end -%>
     </div>
   </div>
+<%- else -%>
+  <div class="alert alert-info insufficient-balance">
+    <%= t('dashboard.balance_no_warnings_html', threshold: Configuration.balance_threshold.to_i) %>
+  </div>
 <%- end -%>
