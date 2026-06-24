@@ -275,6 +275,7 @@ en:
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
+    opens_in_new_tab: 'opens in new tab'
     owner: Owner
     path_selector_default_popup_title: Select Your Working Directory
     path_selector_home: home
