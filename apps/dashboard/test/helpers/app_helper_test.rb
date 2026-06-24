@@ -14,7 +14,7 @@ class AppHelperTest < ActionView::TestCase
     result = recent_settings(app)
 
     assert_not_nil(result)
-    assert_no_match(/<script>/, result)
+    assert_no_match(/<script>/i, result)
     assert_no_match(/<img/, result)
     assert_includes(result, '&lt;script&gt;')
     assert_includes(result, '&quot;')
