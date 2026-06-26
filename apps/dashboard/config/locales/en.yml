@@ -250,6 +250,7 @@ en:
     jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
     launch: Launch
+    locale_name: English
     logo_alt_text: Welcome to Open OnDemand
     maximum: Maximum
     minimum: Minimum
@@ -271,6 +272,7 @@ en:
     nav_help_support_ticket: Submit Support Ticket
     nav_help_title: Help
     nav_help_two_factor: Configure Two-Factor Authentication
+    nav_language: Language
     nav_limit_caption: showing %{subset_count} of %{total_count}
     nav_logout: Log Out
     nav_restart_server: Restart Web Server

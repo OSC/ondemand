@@ -250,6 +250,7 @@ fr-CA:
     jobs_workflow_sync_key_help: Lorsqu'il est activé, chaque lanceur dans ce flux de travail reçoit la même variable d'environnement <code>OOD_WORKFLOW_SYNC_KEY</code> (un jeton aléatoire unique à chaque exécution de flux de travail). Utile pour générer des noms de fichiers synchronisés, des fichiers de verrouillage ou des identifiants partagés entre les tâches dépendantes.
     jobs_workflows: Flux de travail
     launch: Lancer
+    locale_name: Français canadien
     logo_alt_text: Bienvenue dans Open OnDemand
     maximum: Maximum
     minimum: Minimum
@@ -271,6 +272,7 @@ fr-CA:
     nav_help_support_ticket: Soumettre un billet de soutien
     nav_help_title: Aide
     nav_help_two_factor: Configurer l’authentification à deux facteurs
+    nav_language: Langue
     nav_limit_caption: affichage de %{subset_count} sur %{total_count}
     nav_logout: Déconnexion
     nav_restart_server: Redémarrer le serveur web

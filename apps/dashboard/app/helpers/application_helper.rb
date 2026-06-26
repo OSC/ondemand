@@ -93,6 +93,17 @@ module ApplicationHelper
     NavBar.menu_items({ links: help_items }) unless help_items.empty?
   end
 
+  # The locales available for the user to select, as [name, code] pairs.
+  # Uses supported_locales (file-derived, not I18n.available_locales) to
+  # exclude locales contributed by gems (e.g. dotiw) that lack dashboard
+  # translations. fallback: false prevents untranslated locale_name keys from
+  # falling back to :en and showing "English" for every locale.
+  def locale_options
+    supported_locales.map do |loc|
+      [I18n.t('dashboard.locale_name', locale: loc, fallback: false, default: loc.to_s), loc.to_s]
+    end
+  end
+
   # Creates the custom CSS paths based on user configuration and the public URL
   def custom_css_paths
     @user_configuration.custom_css_files.map do |css_file|
