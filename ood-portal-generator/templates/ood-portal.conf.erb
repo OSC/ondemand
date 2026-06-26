@@ -406,6 +406,20 @@ Listen <%= addr_port %>
     LuaHookFixups pun_proxy.lua pun_proxy_handler
 
   </Location>
+  <%- if @pun_proxy_uri || @pun_rproxy_uri -%>
+
+  # Strip sensitive headers from mTLS proxy requests before they reach the PUN
+  <%- [@pun_proxy_uri, @pun_rproxy_uri].compact.each do |proxy_uri| -%>
+  <Location "<%= proxy_uri %>">
+    <%- @strip_proxy_cookies.to_a.each do |cookie| -%>
+    RequestHeader edit* Cookie "<%= cookie %>=[^;]+;" ""
+    <%- end -%>
+    <%- @strip_proxy_headers.to_a.each do |header| -%>
+    RequestHeader unset <%= header %>
+    <%- end -%>
+  </Location>
+  <%- end -%>
+  <%- end -%>
 
   # Control backend PUN for authenticated user:
   # NB: See mod_ood_proxy for more details.

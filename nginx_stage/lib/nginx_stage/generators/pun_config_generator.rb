@@ -105,6 +105,79 @@ module NginxStage
       end
     end
 
+    # Generate per-user mTLS keypair if enabled and not already present or expired.
+    # Runs file operations in a forked child that drops privileges to the target
+    # user so that root_squash NFS shares are handled correctly.
+    add_hook :create_mtls_keypair do
+      if NginxStage.pun_mtls_enabled
+        require 'openssl'
+        require 'fileutils'
+
+        pki_dir = NginxStage.mtls_pki_dir(user: user)
+        cert_path = File.join(pki_dir, 'client.crt')
+        key_path  = File.join(pki_dir, 'client.key')
+        ca_path   = File.join(pki_dir, 'ca.crt')
+
+        # Check if cert exists and is not expired
+        needs_generation = true
+        if File.file?(cert_path) && File.file?(key_path)
+          begin
+            existing_cert = OpenSSL::X509::Certificate.new(File.read(cert_path))
+            needs_generation = false if existing_cert.not_after > Time.now
+          rescue OpenSSL::X509::CertificateError
+            # Corrupt cert, regenerate
+          end
+        end
+
+        if needs_generation
+          # Generate key material in the parent (no filesystem access needed)
+          key = OpenSSL::PKey::EC.generate('prime256v1')
+
+          cert = OpenSSL::X509::Certificate.new
+          cert.version = 2
+          cert.serial = OpenSSL::BN.rand(128)
+          cert.subject = OpenSSL::X509::Name.new([['CN', "#{user}@ondemand"]])
+          cert.issuer = cert.subject
+          cert.public_key = key
+          cert.not_before = Time.now - 60
+          cert.not_after = Time.now + (NginxStage.pun_mtls_cert_days * 86400)
+
+          ef = OpenSSL::X509::ExtensionFactory.new
+          ef.subject_certificate = cert
+          ef.issuer_certificate = cert
+          cert.add_extension(ef.create_extension('basicConstraints', 'CA:TRUE', true))
+          cert.add_extension(ef.create_extension('subjectKeyIdentifier', 'hash'))
+          cert.add_extension(ef.create_extension('keyUsage', 'digitalSignature,keyCertSign', true))
+
+          cert.sign(key, OpenSSL::Digest::SHA256.new)
+
+          key_pem  = key.to_pem
+          cert_pem = cert.to_pem
+
+          # Fork a child that drops to the user's UID/GID before writing files,
+          # so NFS root_squash shares see the real user, not root/nobody.
+          pw = Etc.getpwnam(user.to_s)
+          pid = Process.fork do
+            Process::GID.change_privilege(pw.gid)
+            Process::UID.change_privilege(pw.uid)
+
+            FileUtils.mkdir_p(pki_dir, mode: 0700)
+
+            File.write(key_path, key_pem)
+            File.chmod(0600, key_path)
+
+            File.write(cert_path, cert_pem)
+            File.chmod(0644, cert_path)
+
+            FileUtils.cp(cert_path, ca_path)
+            File.chmod(0644, ca_path)
+          end
+          _, status = Process.waitpid2(pid)
+          $stderr.puts "WARNING: mTLS keypair generation failed for #{user}" unless status.success?
+        end
+      end
+    end
+
     # Run the pre hook command. This eats the output and doesn't affect
     # the overall status of the PUN startup
     # This must come before anything that cleans the process environment
