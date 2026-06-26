@@ -72,10 +72,27 @@ namespace :dev do
     end
   end
 
+  def ondemand_directory
+    pwd = FileUtils.pwd
+    target = Pathname.new(pwd).ascend do |path|
+      break path if path.basename.to_s == 'ondemand'
+    end
+
+    return target.nil? ? container_ondemand_directory : target
+  end
+
+  def linux_home
+    "/home/#{user.name}"
+  end
+
+  def container_ondemand_directory
+    "#{linux_home}/ondemand"
+  end
+
   def dev_mounts
     [
       '-v', "#{config_directory}:/etc/ood/config",
-      '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand"
+      '-v', "#{ondemand_directory}:#{ondemand_directory}"
     ].tap do |mnts|
       unless ENV['OOD_MNT_PORTAL'].nil?
         mnts.concat(['-v',
@@ -107,7 +124,18 @@ namespace :dev do
     ctr_args.concat container_rt_args
 
     ctr_args.concat ["#{dev_image_name}:latest"]
+
     sh ctr_args.join(' ')
+
+    if ondemand_directory != container_ondemand_directory
+      # Create symlink from detected ondemand directory to ~/ondemand inside the container
+      symlink_cmd = [
+        container_runtime, 'exec', dev_container_name,
+        '/bin/bash', '-c',
+        "\"rm -rf #{container_ondemand_directory} && ln -s #{ondemand_directory} #{container_ondemand_directory}\""
+      ]
+      sh symlink_cmd.join(' ')
+    end
   end
 
   desc 'Stop development container'
@@ -130,9 +158,9 @@ namespace :dev do
   task :exec do
     ctr_args = [container_runtime, 'exec', '-it']
     # home is set to /root? could be bug for me
-    ctr_args.concat ['-e', "HOME=#{user.dir}"]
+    ctr_args.concat ['-e', "HOME=#{linux_home}"]
     ctr_args.concat term_container_args
-    ctr_args.concat ['--workdir', user.dir.to_s]
+    ctr_args.concat ['--workdir', linux_home.to_s]
     ctr_args.concat [dev_container_name, '/bin/bash']
 
     sh ctr_args.join(' ')
