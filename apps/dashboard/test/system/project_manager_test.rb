@@ -611,7 +611,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   
   test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
-      CurrentUser.stubs(:home).returns('/tmp/')
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
       launcher_id = setup_launcher(project_id)
 
