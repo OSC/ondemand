@@ -95,7 +95,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'creates .ondemand directory with project' do
     Dir.mktmpdir do |dir|
-      CurrentUser.stubs(:home).returns('/tmp')
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
       ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
       assert File.directory? ondemand_dir
