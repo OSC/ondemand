@@ -968,9 +968,6 @@ class ProjectManagerTest < ApplicationSystemTestCase
         f.write(cached_values.to_json)
       end
 
-      # refresh the page so it picks up the cache.
-      visit(project_path(project_id))
-
       Open3
         .stubs(:capture3)
         .with({"SOME_VARIABLE" => "chosen_value"}, 
@@ -1046,6 +1043,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       File.open(cache_file, 'w') do |f|
         f.write(cached_values.to_json)
       end
+
+      # refresh the page so it picks up the cache.
+      visit(project_path(project_id))
 
       Open3
         .stubs(:capture3)
