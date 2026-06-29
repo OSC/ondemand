@@ -40,7 +40,7 @@ Changes are grouped by type:
 - Workflow save errors correctly translate messages in [5489](https://github.com/OSC/ondemand/pull/5489).
 - Files dropdown button works correctly on Mac in [5527](https://github.com/OSC/ondemand/pull/5527).
 - labels and values are now escaped in display settings in [5490](https://github.com/OSC/ondemand/pull/5490).
-- Multiple checkes are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
+- Multiple checks are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
   
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
