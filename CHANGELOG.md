@@ -16,6 +16,17 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Add launcher caching tests (#5534)\
+Merge pull request #5585 from osc-bot/osc-bot/random-linted-file\
+Fix no-assertion warnings in ProductsDevTest and FilesTest (#5505)\
+Revert new tab functionality  (#5562)\
+remove this default and enforce it be set (#5559)\
+add additional checks on session store (#5558)\
+Detect non-rsa ssh keys in dev apps (#5554)\
+Escape attr.label and attr.value in AppHelper#recent_settings (#5490)\
+lint a random file (#5549)\
+update dependencies (#5556)\
+Update Changelog (#5555)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
