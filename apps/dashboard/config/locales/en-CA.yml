@@ -279,6 +279,7 @@ en-CA:
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
+    opens_in_new_tab: opens in new tab
     owner: Owner
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
