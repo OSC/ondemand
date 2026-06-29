@@ -16,17 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Add launcher caching tests (#5534)\
-Merge pull request #5585 from osc-bot/osc-bot/random-linted-file\
-Fix no-assertion warnings in ProductsDevTest and FilesTest (#5505)\
-Revert new tab functionality  (#5562)\
-remove this default and enforce it be set (#5559)\
-add additional checks on session store (#5558)\
-Detect non-rsa ssh keys in dev apps (#5554)\
-Escape attr.label and attr.value in AppHelper#recent_settings (#5490)\
-lint a random file (#5549)\
-update dependencies (#5556)\
-Update Changelog (#5555)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -50,9 +39,13 @@ Update Changelog (#5555)
 - Fixed an issue with account alias' colliding in [5135](https://github.com/OSC/ondemand/pull/5135).
 - Workflow save errors correctly translate messages in [5489](https://github.com/OSC/ondemand/pull/5489).
 - Files dropdown button works correctly on Mac in [5527](https://github.com/OSC/ondemand/pull/5527).
-
+- labels and values are now escaped in display settings in [5490](https://github.com/OSC/ondemand/pull/5490).
+- Multiple checkes are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
+  
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
+- oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
+- Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
 
 ## [4.1.5] - 2026-04-29
 
