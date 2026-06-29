@@ -265,6 +265,7 @@ zh-CN:
     not_grouped: 其他应用
     nsf_access_events: NSF 访问事件
     ok: 确定
+    opens_in_new_tab: 在新标签页中打开
     owner: 所有者
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"

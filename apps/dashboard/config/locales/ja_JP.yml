@@ -276,6 +276,7 @@ ja_JP:
     not_grouped: その他のアプリ
     nsf_access_events: NSF ACCESS イベント
     ok: OK
+    opens_in_new_tab: 新しいタブで開く
     owner: 所有者
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
