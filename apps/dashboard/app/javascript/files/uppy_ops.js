@@ -242,10 +242,60 @@ function checkOverwrite(relativePath) {
 }
 
 async function investigateOverwrite(path) {
-  const targetPath = `${history.state.currentDirectory}/${relPath}`
-  const targetDir = targetPath.slice(0, targetPath.lastIndexOf('/'));
-  // fetch dir children, and see if targetPath exists
-  return true
+  const directory = path.slice(0, path.lastIndexOf('/'));
+  const targetFile = path.slice(path.lastIndexOf('/') + 1);
+
+
+  const url = `${history.state.currentDirectoryUrl}/${directory}`;
+  const data = fetch(url, { headers: { 'Accept': 'application/json' }})
+                 .then(response => response.json)
+  
+  return Array.from(data.files).includes(targetFile)
+}
+
+
+function markOverwrite(path) {
+  const file = path.slice(path.lastIndexOf('/') + 1);
+
+  waitForElement(`.uppy-Dashboard-Item-name[title="${file}"]`).then(title => {
+    const wrapper = title.closest('.uppy-Dashboard-Item');
+    wrapper.classList.add('bg-danger', 'rounded');
+  });
+}
+
+function swapButtons() {
+  const overwriteBtnId = 'upload-and-overwrite-btn';
+  if(document.getElementById(overwriteBtnId) !== null) {
+    return
+  }
+
+  var newButton = document.createElement('btn');
+  newButton.id = overwriteBtnId;
+  newButton.classList.add('btn-bg-da')
+  document.querySelector('div.uppy-StatusBar-actions')
+}
+
+function waitForElement(selector, { root = document.body, timeout = 5000 } = {}) {
+  return new Promise((resolve, reject) => {
+    const existing = root.querySelector(selector);
+    if (existing) return resolve(existing);
+
+    const observer = new MutationObserver(() => {
+      const el = root.querySelector(selector);
+      if (el) {
+        observer.disconnect();
+        clearTimeout(timer);
+        resolve(el);
+      }
+    });
+
+    observer.observe(root, { childList: true, subtree: true });
+
+    const timer = setTimeout(() => {
+      observer.disconnect();
+      reject(new Error(`Timed out waiting for "${selector}"`));
+    }, timeout);
+  });
 }
 
 function disableUploads() {
