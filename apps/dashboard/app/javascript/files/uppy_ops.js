@@ -111,6 +111,7 @@ jQuery(function() {
     if(file.meta.relativePath == null && file.data.webkitRelativePath){
       uppy.setFileMeta(file.id, { relativePath: file.data.webkitRelativePath });
     }
+    checkUpload(file.meta)
   });
 
   uppy.on('complete', (result) => {
@@ -207,3 +208,54 @@ function handleUploadSuccess(result) {
   }
 }
 
+function checkUpload(meta) {
+  const relPath = meta.relativePath || meta.name
+  console.log(`Checking path ${relPath}`);
+  if (checkOverwrite(relPath)) {
+    if (meta.relativePath == null) {
+      // then file is uploaded directly, and conflict is confirmed
+      markOverwrite(relPath)
+    } else {
+      // file was uploaded as part of a folder, and we have to check if its a true conflict
+      disableUploads()
+      investigateOverwrite(relPath).then((result) => {
+        if(result) {
+          markOverwrite(relPath);
+        }
+        enableUploads()
+      })
+    }
+    console.log('Overwrite detected for path')
+  } else {
+    console.log('No overwrite detected')
+  }
+}
+
+function checkOverwrite(relativePath) {
+  const overwritePath = relativePath.split('/')[0];
+  console.log(`overwrite path: ${overwritePath}`);
+  if(history.state.currentFilenames.includes(overwritePath)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+async function investigateOverwrite(path) {
+  const targetPath = `${history.state.currentDirectory}/${relPath}`
+  const targetDir = targetPath.slice(0, targetPath.lastIndexOf('/'));
+  // fetch dir children, and see if targetPath exists
+  return true
+}
+
+function disableUploads() {
+  uploadBtn().setAttribute('disabled');
+}
+
+function enableUploads() {
+  uploadBtn().removeAttribute('disabled');
+}
+
+function uploadBtn() {
+  return document.querySelector('button.uppy-StatusBar-actionBtn--upload');
+}
