@@ -39,9 +39,13 @@ Changes are grouped by type:
 - Fixed an issue with account alias' colliding in [5135](https://github.com/OSC/ondemand/pull/5135).
 - Workflow save errors correctly translate messages in [5489](https://github.com/OSC/ondemand/pull/5489).
 - Files dropdown button works correctly on Mac in [5527](https://github.com/OSC/ondemand/pull/5527).
-
+- labels and values are now escaped in display settings in [5490](https://github.com/OSC/ondemand/pull/5490).
+- Multiple checks are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
+  
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
+- oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
+- Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
 
 ## [4.1.5] - 2026-04-29
 
