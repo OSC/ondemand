@@ -1,6 +1,9 @@
-
-
-<div class="modal" id="files_input_modal" tabindex="-1" aria-labelledby="files_input_modal_title" aria-hidden="true">
+<div class="modal" id="files_input_modal" tabindex="-1" aria-labelledby="files_input_modal_title" aria-hidden="true"
+  data-upload-overwrite-title="<%= t('dashboard.files_upload_overwrite_title') %>"
+  data-upload-overwrite-title-multiple="<%= t('dashboard.files_upload_overwrite_title_multiple') %>"
+  data-upload-overwrite-message-single="<%= t('dashboard.files_upload_overwrite_message_single') %>"
+  data-upload-overwrite-message-multiple="<%= t('dashboard.files_upload_overwrite_message_multiple') %>"
+  data-upload-overwrite-continue="<%= t('dashboard.files_upload_overwrite_continue') %>">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form method="dialog">
@@ -14,6 +17,12 @@
           <input id="files_input_modal_input" class="form-control">
         </div>
         <span id="files_input_modal_text_span"></span>
+        <div id="files_input_modal_never_show_wrapper" class="form-check d-none">
+          <input class="form-check-input" type="checkbox" id="files_input_modal_never_show">
+          <label class="form-check-label" for="files_input_modal_never_show">
+            <%= t('dashboard.files_upload_overwrite_never_show') %>
+          </label>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('dashboard.close') %></button>

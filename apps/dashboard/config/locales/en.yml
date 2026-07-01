@@ -165,6 +165,12 @@ en:
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
     files_title: File browsing
+    files_upload_overwrite_title: File already exists
+    files_upload_overwrite_title_multiple: Files already exist
+    files_upload_overwrite_message_single: "%{filename} already exists. The previous file will be overwritten."
+    files_upload_overwrite_message_multiple: The following files already exist and will be overwritten
+    files_upload_overwrite_never_show: Never show this warning again
+    files_upload_overwrite_continue: Upload
     files_doesnt_exist: "%{path} does not exist."
     files_not_readable: "You do not have sufficient permissions to read '%{path}'."
     home_directory: Home Directory
