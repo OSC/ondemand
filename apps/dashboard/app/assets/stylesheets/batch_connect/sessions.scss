@@ -17,6 +17,27 @@
   }
 }
 
+[data-bs-theme="dark"] .batch-connect.sessions {
+  // Completed session header: subtle step from card bg, same border as the card.
+  .alert-default {
+    --bs-alert-bg: #272727;
+    --bs-alert-color: var(--bs-body-color);
+    --bs-alert-border-color: var(--bs-card-border-color);
+    border-bottom: 1px solid var(--bs-card-border-color);
+    color: var(--bs-body-color);
+
+    a.alert-heading {
+      color: inherit;
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        color: var(--bs-emphasis-color);
+      }
+    }
+  }
+}
+
 .list-group .app-icon{
   width: 14px;
   height: 14px;
@@ -69,5 +90,59 @@ nav[aria-label="Interactive Apps Menu"] {
   .list-group-flush > a.list-group-item-action:last-of-type {
     border-bottom-left-radius: var(--bs-card-border-radius);
     border-bottom-right-radius: var(--bs-card-border-radius);
+  }
+}
+
+[data-bs-theme="dark"] nav[aria-label="Interactive Apps Menu"] {
+  // Subtle surface like light mode #f5f5f5 on white (~10 RGB steps from #1a1a1a).
+  $bc-subtle-surface: #222222;
+  $bc-hover-surface: #1e1e1e;
+
+  // Keep branded category headers (blue, burgundy, etc.); only restyle the app list.
+  .system-and-shared-apps-header > .card-header {
+    background-color: $ood-blue;
+    color: $ood-white;
+    border-color: $ood-blue;
+  }
+
+  .sandbox-apps-header > .card-header {
+    background-color: $ood-burgundy;
+    color: $ood-white;
+    border-color: $ood-burgundy;
+  }
+
+  .list-group.list-group-flush {
+    // Bootstrap sets hover vars on .list-group; must override here, not on nav.
+    --bs-list-group-action-hover-bg: $bc-hover-surface;
+    --bs-list-group-action-hover-color: var(--bs-emphasis-color);
+    --bs-list-group-active-bg: rgb(0, 136, 204);
+    --bs-list-group-active-color: #fff;
+    --bs-list-group-active-border-color: rgb(0, 136, 204);
+    background-color: var(--bs-body-bg);
+  }
+
+  .list-group-item.header {
+    // Subtle band like light mode #f5f5f5 on white (~10 RGB steps).
+    background-color: $bc-subtle-surface;
+    color: var(--bs-secondary-color);
+  }
+
+  .list-group-item-action {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+
+    &:hover,
+    &:focus {
+      background-color: $bc-hover-surface !important;
+      color: var(--bs-emphasis-color) !important;
+    }
+
+    &.active,
+    &.active:hover,
+    &.active:focus {
+      background-color: rgb(0, 136, 204) !important;
+      color: #fff !important;
+      border-color: rgb(0, 136, 204) !important;
+    }
   }
 }

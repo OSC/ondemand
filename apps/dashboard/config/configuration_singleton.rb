@@ -61,6 +61,7 @@ class ConfigurationSingleton
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
+      :dark_mode_enabled             => true,
     }.freeze
   end
 
