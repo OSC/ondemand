@@ -3,58 +3,67 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.min.css?v={{assetHash 'stylesheets/bootstrap.min.css'}}">
 
   <title>Shell - {{ siteTitle }}</title>
 
-  <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
+  <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css?v={{assetHash 'stylesheets/style.css'}}">
+  <link rel="stylesheet" href="{{userCSS}}">
 
   <script src="{{baseURI}}/javascripts/lodash-4.17.21/lodash.min.js"></script>
   <script src="{{baseURI}}/javascripts/hterm_all_1.92.1.mod_1.js"></script>
-  <script src="{{baseURI}}/javascripts/ood_shell.2.js"></script>
+  <script src="{{baseURI}}/javascripts/ood_shell.2.js?v={{assetHash 'javascripts/ood_shell.2.js'}}"></script>
 </head>
 
 <body>
   <div id="terminal">
 
-    <nav class="navbar navbar-inverse navbar-static-top navbar-expand" role="navigation" aria-label="Shell Menu">
-      <div class="container-fluid" >
-      <ul class="navbar-nav left-padding-none">
-            <li class="nav-item custom-host">
-            <label id="host" class="label">Host: {{host}} </label>
-          </li>
-      </ul>
-            <ul class="navbar-nav left-padding-some">
-          <li class="nav-item hidden-xs">
-            <label id="directory" class="label hidden-xs">{{#if dir}}Initial directory: {{dir}}{{/if}}</label>
-          </li>
-      </ul>
-          <ul class="navbar-nav form-inline navbar-right left-padding-none">
+    <nav class="navbar navbar-dark navbar-expand" role="navigation" aria-label="Shell Menu">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
           <li class="nav-item">
-            <div class="form-group custom-form">
-            <label class="label" for="colors">Themes:</label>
-          <select id="colors" class="form-control custom-select">
-        <option value="default">Default</option>
-        <optgroup label="Bright">
-        {{#each colorThemes.light}}
-	  <option value="{{name}}">{{name}}</option>
-        {{/each}}
-        </optgroup>
-        <optgroup label="Dark">
-        {{#each colorThemes.dark}}
-	  <option value="{{name}}">{{name}}</option>
-        {{/each}}
-        </optgroup>
-      </select>
-            </div>
+            <label id="host" class="badge">Host: {{host}}</label>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <label id="directory" class="badge">{{#if dir}}Initial directory: {{dir}}{{/if}}</label>
           </li>
         </ul>
-  </nav>
+        <div class="terminal-options">
+          <div>
+            <label for="colors" class="badge">Themes:</label>
+            <select id="colors" class="form-select form-select-sm">
+              <option value="default">Default</option>
+              <optgroup label="Bright">
+                {{#each colorThemes.light}}
+                <option value="{{name}}">{{name}}</option>
+                {{/each}}
+              </optgroup>
+              <optgroup label="Dark">
+                {{#each colorThemes.dark}}
+                <option value="{{name}}">{{name}}</option>
+                {{/each}}
+              </optgroup>
+            </select>
+          </div>
+          <div>
+            <label for="fonts" class="badge">Fonts:</label>
+            <select id="fonts" class="form-select form-select-sm">
+              {{#each shellFonts}}
+              <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      </div>
+    </nav>
   </div>
 </body>
 
 <script>
+  const fonts = {{{json shellFonts}}};
+  const orderedFonts = function(primaryFont) {
+    return [primaryFont, ...fonts.filter(f => f !== primaryFont)].filter(f => f)
+  }
   // the structure we should want is
   // themes {
   //   "name": {
@@ -91,7 +100,8 @@
         ]
       ),
       'cursor-color': theme.cursorColor,
-      'audible-bell-sound': ''
+      'audible-bell-sound': '',
+      'user-css': '{{userCSS}}'
     }
   });
   themes["default"] = {
@@ -99,11 +109,19 @@
     'ctrl-v-paste': true,
     'ctrl-c-copy': true,
     'cursor-blink': false,
-    'audible-bell-sound': ''
+    'audible-bell-sound': '',
+    'user-css': '{{userCSS}}'
   }
 
   // Set backing store that hterm uses to read/write preferences
   hterm.defaultStorage = new lib.Storage.Memory();
+
+  const storage = window.localStorage;
+
+  const userFont = storage.getItem('ood_shell_font') || fonts[0];
+  const fontSelect = document.getElementById("fonts");
+  fontSelect.value = userFont;
+  const currentFonts = orderedFonts(userFont);
 
   // profile preferences look like this:
   //
@@ -120,9 +138,9 @@
     _.forIn(theme, (value, key) => {
       hterm.defaultStorage.setItem(`/hterm/profiles/${name}/${key}`, value);
     })
+    hterm.defaultStorage.setItem(`/hterm/profiles/${name}/font-family`, currentFonts);
   });
 
-  var storage = window.localStorage;
 
   themeSelect = document.getElementById("colors");
 
@@ -158,11 +176,58 @@
     return base + separator + "csrf={{csrfToken}}";
   }
 
-themeSelect.addEventListener("change", function(ev) {
-  var choice  = ev.target.value;
-  storage.setItem('ood_shell_theme', choice);
-  oodShell.changeTheme(choice);
-})
+  themeSelect.addEventListener("change", function(ev) {
+    var choice  = ev.target.value;
+    storage.setItem('ood_shell_theme', choice);
+    oodShell.changeTheme(choice);
+  })
+  fontSelect.addEventListener("change", function(ev) {
+    const choice = ev.target.value;
+    storage.setItem('ood_shell_font', choice);
+    const ff = orderedFonts(choice);
+    Object.keys(themes).forEach(name => {
+      hterm.defaultStorage.setItem(`/hterm/profiles/${name}/font-family`, ff);
+    });
+  })
+
+  const isFontAvailable = (() => {
+    const generics = ['monospace', 'serif', 'sans-serif'];
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const sample = 'mmmmmmmmmlli';
+    const size = '72px';
+    const baselineWidths = {};
+    generics.forEach(g => {
+      ctx.font = `${size} ${g}`;
+      baselineWidths[g] = ctx.measureText(sample).width;
+    });
+    return (font) => {
+      if (generics.includes(font)) {
+        return true;
+      }
+      return generics.some(g => {
+        ctx.font = `${size} ${font}, ${g}`;
+        return ctx.measureText(sample).width !== baselineWidths[g];
+      });
+    };
+  })();
+
+  // Filter out unavailable fonts from the dropdown.
+  Promise.all(fonts.map(f => document.fonts.load(`72px ${f}`).catch(() => null))).then(() => {
+    const previousValue = fontSelect.value;
+    Array.from(fontSelect.options).forEach(opt => {
+      if (!isFontAvailable(opt.value)) {
+        opt.remove();
+      }
+    });
+    if (!fontSelect.options.length) {
+      return;
+    }
+    if (!Array.from(fontSelect.options).some(o => o.value === previousValue)) {
+      fontSelect.value = fontSelect.options[0].value;
+      fontSelect.dispatchEvent(new Event('change'));
+    }
+  });
 </script>
 
 </html>

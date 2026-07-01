@@ -1,6 +1,7 @@
 const fs        = require('fs');
 const http      = require('http');
 const path      = require('path');
+const crypto    = require('crypto');
 const WebSocket = require('ws');
 const express   = require('express');
 const pty       = require('node-pty');
@@ -29,6 +30,23 @@ if (fs.existsSync('.env')) {
   dotenv.config({path: '.env'});
 }
 
+hbs.registerHelper('json', function (content) {
+    return JSON.stringify(content);
+});
+
+const assetHashCache = new Map();
+hbs.registerHelper('assetHash', function (relativePath) {
+  if (assetHashCache.has(relativePath)) return assetHashCache.get(relativePath);
+  try {
+    const content = fs.readFileSync(path.join(__dirname, 'public', relativePath));
+    const hash = crypto.createHash('md5').update(content).digest('hex').slice(0, 8);
+    assetHashCache.set(relativePath, hash);
+    return hash;
+  } catch (err) {
+    return '';
+  }
+});
+
 // Load color themes
 var color_themes = {dark: [], light: []};
 glob.sync('./color_themes/light/*').forEach(f => color_themes.light.push(require(path.resolve(f))));
@@ -55,6 +73,8 @@ router.get('/ssh{*splat}', function (req, res) {
       host: theHost,
       dir: theDir,
       colorThemes: color_themes,
+      shellFonts: helpers.shellFonts(),
+      userCSS: helpers.userCSS(req.baseUrl),
       siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
     });
 });
