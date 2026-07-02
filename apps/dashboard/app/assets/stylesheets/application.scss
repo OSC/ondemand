@@ -216,7 +216,20 @@ small.form-text {
 .uppy-Dashboard-note, a.uppy-Dashboard-poweredBy, .uppy-Dashboard-Item-status {
   color: #6a6a6a;
 }
+
+.bg-danger .uppy-Dashboard-Item-statusSize {
+  color: white;
+}
  
 .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload {
   background-color: rgb(66, 130, 66);
+}
+
+.uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload-danger {
+  background-color: red;
+  color: white;
+
+  :hover {
+    background-color: red;
+  }
 }
