@@ -83,6 +83,9 @@ jQuery(function() {
     onBeforeUpload: updateEndpoint,
     locale: uppyLocale(),
   });
+
+  //DEBUG
+  window.uppy = uppy;
   
   uppy.use(EmptyDirCreator);
 
@@ -111,7 +114,7 @@ jQuery(function() {
     if(file.meta.relativePath == null && file.data.webkitRelativePath){
       uppy.setFileMeta(file.id, { relativePath: file.data.webkitRelativePath });
     }
-    checkUpload(file)
+    checkUpload(file);
   });
 
   uppy.on('complete', (result) => {
@@ -209,86 +212,66 @@ function handleUploadSuccess(result) {
   }
 }
 
-function checkUpload(file) {
-  const meta = file.meta
-  const relPath = meta.relativePath || meta.name
-  console.log(`Checking path ${relPath}`);
+async function checkUpload(file) {
+  const meta = file.meta;
+  const relPath = meta.relativePath || meta.name;
   if (checkOverwrite(relPath)) {
     if (meta.relativePath == null) {
-      // then file is uploaded directly, and conflict is confirmed
-      markOverwrite(file)
+      // then file was uploaded directly, and conflict is confirmed
+      markOverwrite(file);
     } else {
       // file was uploaded as part of a folder, and we have to check if its a true conflict
-      disableUploads()
-      investigateOverwrite(relPath).then((result) => {
-        if(result) {
-          markOverwrite(file);
-        }
-        enableUploads()
-      })
+      const isOverwrite = await investigateOverwrite(relPath);
+      if(isOverwrite){
+        markOverwrite(file);
+      }
     }
-    console.log('Overwrite detected for path')
-  } else {
-    console.log('No overwrite detected')
   }
   // After new file appears, ensure earlier ones are marked
   waitForElement(`.uppy-Dashboard-Item-name[title="${file.meta.name}"]`).then(title => {
-    window.filtered.forEach(id => {
-      markOverwrite(uppy.getFile(id))
-    })
+    window.filtered.forEach(id => { markOverwrite(uppy.getFile(id)) });
   })
 }
 
 function safeUpload() {
-  window.filtered.forEach(id => {
-    uppy.removeFile(id);
-  })
+  window.filtered.forEach(id => { uppy.removeFile(id); })
   window.filtered = [];
   uppy.upload();
 }
 
 function checkOverwrite(relativePath) {
   const overwritePath = relativePath.split('/')[0];
-  console.log(`overwrite path: ${overwritePath}`);
-  if(history.state.currentFilenames.includes(overwritePath)) {
-    return true
-  } else {
-    return false
-  }
+  return history.state.currentFilenames.includes(overwritePath);
 }
 
 async function investigateOverwrite(path) {
   const directory = path.slice(0, path.lastIndexOf('/'));
-  const targetFile = path.slice(path.lastIndexOf('/') + 1);
-
-
   const url = `${history.state.currentDirectoryUrl}/${directory}`;
-  const data = fetch(url, { headers: { 'Accept': 'application/json' }})
-                 .then(response => response.json)
-  
-  return Array.from(data.files).includes(targetFile)
+  const response = await fetch(url, { headers: { 'Accept': 'application/json' }});
+  const data = await response.json();
+
+  const targetFile = path.slice(path.lastIndexOf('/') + 1);
+  return Array.from(data.files).map(file => file.name).includes(targetFile);
 }
 
 
 function markOverwrite(file) {
-  console.log(file)
   window.filtered.push(file.id);
-  console.log('pushed to filtered list')
   const name = file.meta.name;
   waitForElement(`.uppy-Dashboard-Item-name[title="${name}"]`).then(title => {
     const wrapper = title.closest('.uppy-Dashboard-Item');
     wrapper.classList.add('bg-danger', 'rounded', 'p-2');
-    swapButtons();
+    addOverwriteButton();
   });
 }
 
-function swapButtons() {
+function addOverwriteButton() {
   const safeBtnId = 'safe-upload-btn';
   if(document.getElementById(safeBtnId) !== null) {
     return
   }
 
-  const uploadBtn = document.querySelector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload')
+  const uploadBtn = document.querySelector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload');
   const safeBtn = uploadBtn.cloneNode();
   safeBtn.id = safeBtnId;
   safeBtn.textContent = 'Upload New Files';
@@ -326,16 +309,4 @@ function waitForElement(selector, { root = document.body, timeout = 5000 } = {})
       reject(new Error(`Timed out waiting for "${selector}"`));
     }, timeout);
   });
-}
-
-function disableUploads() {
-  uploadBtn().setAttribute('disabled');
-}
-
-function enableUploads() {
-  uploadBtn().removeAttribute('disabled');
-}
-
-function uploadBtn() {
-  return document.querySelector('button.uppy-StatusBar-actionBtn--upload');
 }
