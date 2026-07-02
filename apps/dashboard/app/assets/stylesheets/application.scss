@@ -217,8 +217,10 @@ small.form-text {
   color: #6a6a6a;
 }
 
-.bg-danger .uppy-Dashboard-Item-statusSize {
-  color: white;
+.bg-danger {
+  .uppy-Dashboard-Item-statusSize, .uppy-Dashboard-Item-name {
+    color: white;
+  }
 }
  
 .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload {
@@ -226,10 +228,10 @@ small.form-text {
 }
 
 .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload-danger {
-  background-color: red;
+  background-color: rgba(var(--bs-danger-rgb), 1) !important;
   color: white;
 
   :hover {
-    background-color: red;
+    background-color: rgba(var(--bs-danger-rgb), 0.85) !important;
   }
 }

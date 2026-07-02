@@ -295,7 +295,14 @@ function swapButtons() {
   safeBtn.addEventListener('click', safeUpload);
   uploadBtn.classList.add('mx-3', 'uppy-StatusBar-actionBtn--upload-danger');
   uploadBtn.textContent = 'Upload and Overwrite';
-  document.querySelector('div.uppy-StatusBar-actions').prepend(safeBtn);
+
+  const warning = document.createElement('span');
+  warning.classList.add('text-danger', 'lh-base')
+  warning.textContent = 'Duplicate files identified. Uploading these files will overwrite existing content.'
+  
+  const actionsWrapper = document.querySelector('div.uppy-StatusBar-actions');
+  actionsWrapper.prepend(safeBtn);
+  actionsWrapper.append(warning);
 }
 
 function waitForElement(selector, { root = document.body, timeout = 5000 } = {}) {
