@@ -83,9 +83,6 @@ jQuery(function() {
     onBeforeUpload: updateEndpoint,
     locale: uppyLocale(),
   });
-
-  //DEBUG
-  window.uppy = uppy;
   
   uppy.use(EmptyDirCreator);
 
@@ -116,6 +113,14 @@ jQuery(function() {
     }
     checkUpload(file);
   });
+
+  uppy.on('file-removed', (file) => {
+    window.filtered = window.filtered.filter(id => id !== file.id);
+    if(window.filtered.length === 0) {
+      removeOverwriteButton();
+      updateUppyCount();
+    }
+  })
 
   uppy.on('complete', (result) => {
     if(result.successful.length > 0){
@@ -230,6 +235,7 @@ async function checkUpload(file) {
   // After new file appears, ensure earlier ones are marked
   waitForElement(`.uppy-Dashboard-Item-name[title="${file.meta.name}"]`).then(title => {
     window.filtered.forEach(id => { markOverwrite(uppy.getFile(id)) });
+    updateUppyCount();
   })
 }
 
@@ -265,13 +271,15 @@ function markOverwrite(file) {
   });
 }
 
+const safeBtnId = 'safe-upload-btn';
+const uploadBtnSelector = '.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload';
+
 function addOverwriteButton() {
-  const safeBtnId = 'safe-upload-btn';
   if(document.getElementById(safeBtnId) !== null) {
     return
   }
 
-  const uploadBtn = document.querySelector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload');
+  const uploadBtn = document.querySelector(uploadBtnSelector);
   const safeBtn = uploadBtn.cloneNode();
   safeBtn.id = safeBtnId;
   safeBtn.textContent = 'Upload New Files';
@@ -286,6 +294,22 @@ function addOverwriteButton() {
   const actionsWrapper = document.querySelector('div.uppy-StatusBar-actions');
   actionsWrapper.prepend(safeBtn);
   actionsWrapper.append(warning);
+}
+
+function removeOverwriteButton() {
+  if(document.getElementById(safeBtnId) !== null) {
+    document.getElementById(safeBtnId).remove();
+    document.querySelector('div.uppy-StatusBar-actions span').remove();
+    const uploadBtn = document.querySelector(uploadBtnSelector);
+    uploadBtn.classList.remove('mx-3', 'uppy-StatusBar-actionBtn--upload-danger');
+  }
+}
+
+function updateUppyCount() {
+  if(document.getElementById(safeBtnId) === null) {
+    const uploadBtn = document.querySelector(uploadBtnSelector);
+    uploadBtn.textContent = `Upload ${uppy.getFiles().length} files`; 
+  }
 }
 
 function waitForElement(selector, { root = document.body, timeout = 5000 } = {}) {
