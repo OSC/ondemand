@@ -420,7 +420,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#upload-btn').click
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
       attach_file 'files[]', src_file, visible: false, match: :first
-      assert_selector(".uppy-Dashboard-Item-name[title='testfile.sh']")
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2")
       assert_overwrite_buttons
 
@@ -434,51 +434,66 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
-  # test 'uploading duplicate files without overwriting' do
-  #   Dir.mktmpdir do |dir|
-  #     File.stubs(:umask).returns(18) # ensure default umask is 644
-  #     upload_dir = File.join(dir, 'upload')
-  #     FileUtils.mkpath(upload_dir)
+  test 'uploading duplicate files without overwriting' do
+    Dir.mktmpdir do |dir|
+      File.stubs(:umask).returns(18) # ensure default umask is 644
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
 
-  #     src_file = "#{dir}/testfile.sh"
-  #     upload_file = "#{upload_dir}/testfile.sh"
-  #     `echo 'here some initial content' > #{src_file}`
+      src_file = "#{dir}/testfile.sh"
+      new_file = "#{dir}/newfile.sh"
+      upload_file = "#{upload_dir}/testfile.sh"
+      new_upload_file = "#{upload_dir}/newfile.sh"
 
-  #     visit files_url(upload_dir)
-  #     find('#upload-btn').click
-  #     find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      `echo 'here some initial content' > #{src_file}`
+      `echo 'here some new content' > #{new_file}`
 
-  #     attach_file 'files[]', src_file, visible: false, match: :first
-  #     find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-  #     find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
-  #     assert File.exist?(upload_file)
-  #     assert_equal File.read(src_file), File.read(upload_file)
-  #     assert_equal(33_188, File.stat(upload_file).mode) # default 644
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
 
-  #     # now change the permissions and verify
-  #     `chmod 755 #{upload_file}`
-  #     assert_equal(33_261, File.stat(upload_file).mode) # now 755
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert File.exist?(upload_file)
+      assert_equal File.read(src_file), File.read(upload_file)
+      assert_equal(33_188, File.stat(upload_file).mode) # default 644
 
-  #     # add something more to the original file
-  #     `echo 'and some more content' >> #{src_file}`
+      # now change the permissions and verify
+      `chmod 755 #{upload_file}`
+      assert_equal(33_261, File.stat(upload_file).mode) # now 755
 
-  #     # upload the file again
-  #     find('#upload-btn').click
-  #     find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
-  #     attach_file 'files[]', src_file, visible: false, match: :first
-  #     assert_selector(".uppy-Dashboard-Item-name[title='testfile.sh']")
-  #     assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2")
-  #     assert_overwrite_buttons
+      # add something more to the original file
+      `echo 'and some more content' >> #{src_file}`
 
-  #     click_on('Upload and Overwrite')
-  #     find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      # save original file content
+      original_content = File.read(upload_file)
 
-  #     # and it's still there, now with new content and it keeps the 755 permissions
-  #     assert File.exist?(upload_file)
-  #     assert_equal File.read(src_file), File.read(upload_file)
-  #     assert_equal File.stat(upload_file).mode, 33_261 # still 755
-  #   end
-  # end
+      # upload the file again
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      attach_file 'files[]', src_file, visible: false, match: :first
+      click_on('Add more')
+      attach_file 'files[]', new_file, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(new_file)}']")
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 1)
+      assert_overwrite_buttons
+
+      click_on('Upload New Files')
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      find('tbody a', exact_text: File.basename(new_file), wait: MAX_WAIT)
+
+      # and it's still there, with content and mode unchanged
+      assert File.exist?(upload_file)
+      assert_equal original_content, File.read(upload_file)
+      assert_equal File.stat(upload_file).mode, 33_261 # still 755
+
+      # and the new file now exists
+      assert File.exist?(new_upload_file)
+      assert_equal File.read(new_file), File.read(new_upload_file)
+    end
+  end
 
   test 'changing directory' do
     visit files_url(Rails.root.to_s)
