@@ -322,7 +322,7 @@ function waitForElement(selector, deleted = false, { root = document.body, timeo
 
     const observer = new MutationObserver(() => {
       const el = root.querySelector(selector);
-      finished = deleted ? !el : el;
+      const finished = deleted ? !el : el;
       if (finished) {
         observer.disconnect();
         clearTimeout(timer);
