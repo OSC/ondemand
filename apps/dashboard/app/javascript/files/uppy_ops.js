@@ -115,11 +115,13 @@ jQuery(function() {
   });
 
   uppy.on('file-removed', (file) => {
-    window.filtered = window.filtered.filter(id => id !== file.id);
-    if(window.filtered.length === 0) {
+    if(window.overwriteFiles.delete(file.id) && window.overwriteFiles.size === 0) {
       removeOverwriteButton();
-      updateUppyCount();
     }
+    waitForElement(`.uppy-Dashboard-Item-name[title="${file.meta.name}"]`, true).then(_title => {
+      window.overwriteFiles.forEach(id => { markOverwrite(uppy.getFile(id)) });
+      updateUppyCount();
+    })
   })
 
   uppy.on('complete', (result) => {
@@ -163,7 +165,7 @@ jQuery(function() {
     this.classList.remove('dragover');
   });
 
-  window.filtered = [];
+  window.overwriteFiles = new Set;
 });
 
 function closeAndResetUppyModal(uppy){
@@ -234,14 +236,14 @@ async function checkUpload(file) {
   }
   // After new file appears, ensure earlier ones are marked
   waitForElement(`.uppy-Dashboard-Item-name[title="${file.meta.name}"]`).then(title => {
-    window.filtered.forEach(id => { markOverwrite(uppy.getFile(id)) });
+    window.overwriteFiles.forEach(id => { markOverwrite(uppy.getFile(id)) });
     updateUppyCount();
   })
 }
 
 function safeUpload() {
-  window.filtered.forEach(id => { uppy.removeFile(id); })
-  window.filtered = [];
+  window.overwriteFiles.forEach(id => { uppy.removeFile(id); })
+  window.overwriteFiles.clear();
   uppy.upload();
 }
 
@@ -262,7 +264,7 @@ async function investigateOverwrite(path) {
 
 
 function markOverwrite(file) {
-  window.filtered.push(file.id);
+  window.overwriteFiles.add(file.id);
   const name = file.meta.name;
   waitForElement(`.uppy-Dashboard-Item-name[title="${name}"]`).then(title => {
     const wrapper = title.closest('.uppy-Dashboard-Item');
@@ -306,20 +308,22 @@ function removeOverwriteButton() {
 }
 
 function updateUppyCount() {
-  if(document.getElementById(safeBtnId) === null) {
-    const uploadBtn = document.querySelector(uploadBtnSelector);
-    uploadBtn.textContent = `Upload ${uppy.getFiles().length} files`; 
+  const uploadBtn = document.querySelector(uploadBtnSelector);
+  if(document.getElementById(safeBtnId) === null && uploadBtn !== null) {
+    const count = uppy.getFiles().length;
+    uploadBtn.textContent = `Upload ${count} file${(count == 1) ? '': 's'}`; 
   }
 }
 
-function waitForElement(selector, { root = document.body, timeout = 5000 } = {}) {
+function waitForElement(selector, deleted = false, { root = document.body, timeout = 5000 } = {}) {
   return new Promise((resolve, reject) => {
     const existing = root.querySelector(selector);
     if (existing) return resolve(existing);
 
     const observer = new MutationObserver(() => {
       const el = root.querySelector(selector);
-      if (el) {
+      finished = deleted ? !el : el;
+      if (finished) {
         observer.disconnect();
         clearTimeout(timer);
         resolve(el);
