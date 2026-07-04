@@ -383,7 +383,7 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   def assert_overwrite_buttons
-    assert_selector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload', text: 'Upload New Files')
+    assert_selector('.uppy-StatusBar-actions #safe-upload-btn.uppy-StatusBar-actionBtn--upload', text: 'Upload New Files')
     assert_selector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload-danger', text: 'Upload and Overwrite')
     assert_selector('.uppy-StatusBar-actions span', text: 'Duplicate files identified. Uploading these files will overwrite existing content.')
   end
@@ -488,6 +488,69 @@ class FilesTest < ApplicationSystemTestCase
       assert File.exist?(upload_file)
       assert_equal original_content, File.read(upload_file)
       assert_equal File.stat(upload_file).mode, 33_261 # still 755
+
+      # and the new file now exists
+      assert File.exist?(new_upload_file)
+      assert_equal File.read(new_file), File.read(new_upload_file)
+    end
+  end
+
+  test 'uploading duplicate files and removing overwrites manually' do
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_file = "#{dir}/testfile.sh"
+      new_file = "#{dir}/newfile.sh"
+      upload_file = "#{upload_dir}/testfile.sh"
+      new_upload_file = "#{upload_dir}/newfile.sh"
+
+      `echo 'here some initial content' > #{src_file}`
+      `echo 'here some new content' > #{new_file}`
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert File.exist?(upload_file)
+      assert_equal File.read(src_file), File.read(upload_file)
+
+      # add something more to the original file
+      `echo 'and some more content' >> #{src_file}`
+
+      # save original file content
+      original_content = File.read(upload_file)
+
+      # upload the file again
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      attach_file 'files[]', src_file, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
+      click_on('Add more')
+      attach_file 'files[]', new_file, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(new_file)}']")
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 1)
+      assert_overwrite_buttons
+      find('.uppy-Dashboard-Item.bg-danger .uppy-Dashboard-Item-action--remove').click
+
+      # after the duplicate file is removed, things return to normal
+      refute_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
+      refute_selector('.uppy-Dashboard-Item.bg-danger')
+      refute_selector('#safe-upload-btn')
+      refute_selector('.uppy-StatusBar-actionBtn--upload-danger')
+      refute_selector('.uppy-StatusBar-actions span')
+
+      click_on('Upload 1 file')
+
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      find('tbody a', exact_text: File.basename(new_file), wait: MAX_WAIT)
+
+      # and it's still there, with content and mode unchanged
+      assert File.exist?(upload_file)
+      assert_equal original_content, File.read(upload_file)
 
       # and the new file now exists
       assert File.exist?(new_upload_file)
