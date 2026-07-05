@@ -558,6 +558,113 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'uploading duplicate files within directories' do
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_dir = "#{dir}/testdir"
+
+      target_dir = "#{upload_dir}/testdir"
+
+      Dir.mkdir(src_dir)
+      src_file_1 = "#{src_dir}/test1.sh"
+      src_file_2 = "#{src_dir}/test2.sh"
+      src_file_3 = "#{src_dir}/test3.sh"
+      src_file_4 = "#{src_dir}/test4.sh"
+      src_file_5 = "#{src_dir}/test5.sh"
+
+      src_files = [src_file_1, src_file_2, src_file_3, src_file_4, src_file_5]
+      src_files.each_with_index do |file, index|
+        `echo 'some content in file #{index + 1}' > #{file}`
+      end
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      # in order to find the directory input, we have to swap so that it is first in the DOM
+      SWAP_FILE_INPUT_SCRIPT = <<~HEREDOC
+        inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+        fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+        dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+        inputsWrapper.insertBefore(dirInput, fileInput);
+      HEREDOC
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
+      click_on('Upload 5 files')
+
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      click_on(File.basename(src_dir))
+      src_files.each do |file|
+        assert_selector('tbody a', exact_text: File.basename(file))
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        assert_equal File.read(file), File.read(target_path)
+      end
+
+      # Delete one file so we can re-upload it later
+      deleted_file = src_file_3
+      find('tbody a', exact_text: File.basename(deleted_file)).ancestor('tr').check
+      accept_alert do
+        find('#delete-btn').click
+      end
+      refute_selector('tbody a', exact_text: File.basename(deleted_file))
+
+      click_on(File.basename(upload_dir))
+      assert_selector('tbody a', exact_text: File.basename(target_dir))
+
+      # add new content to each file
+      src_files.each do |file|
+        `echo ' and some new content too!' >> #{file}`
+      end
+
+      # upload the directory again
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 4)
+      assert_selector(".uppy-Dashboard-Item:not(.bg-danger)", count: 1)
+      assert_overwrite_buttons
+
+      click_on('Upload New Files')
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      # only the file we deleted has updated content
+      src_files.each do |file|
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        if file == deleted_file
+          assert_equal File.read(file), File.read(target_path)
+        else
+          assert File.read(file) != File.read(target_path), message: "expected #{File.read(file)} to have more content than #{File.read(target_path)}"
+        end
+      end
+
+      # repeat the process but overwrite this time
+      src_files.each do |file|
+        `echo ' and some even newer content!' >> #{file}`
+      end
+
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 5)
+      assert_overwrite_buttons
+
+      click_on('Upload and Overwrite')
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      src_files.each do |file|
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        assert_equal File.read(file), File.read(target_path)
+      end
+    end
+  end
+
   test 'changing directory' do
     visit files_url(Rails.root.to_s)
     assert_selector('tbody a', exact_text: 'app')
