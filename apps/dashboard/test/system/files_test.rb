@@ -474,6 +474,7 @@ class FilesTest < ApplicationSystemTestCase
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
       attach_file 'files[]', src_file, visible: false, match: :first
       click_on('Add more')
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
       attach_file 'files[]', new_file, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(new_file)}']")
@@ -585,9 +586,9 @@ class FilesTest < ApplicationSystemTestCase
 
       # in order to find the directory input, we have to swap so that it is first in the DOM
       SWAP_FILE_INPUT_SCRIPT = <<~HEREDOC
-        inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
-        fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
-        dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+        const inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+        const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+        const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
         inputsWrapper.insertBefore(dirInput, fileInput);
       HEREDOC
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
@@ -662,6 +663,140 @@ class FilesTest < ApplicationSystemTestCase
         assert File.exist?(target_path)
         assert_equal File.read(file), File.read(target_path)
       end
+    end
+  end
+
+  test 'uppy count remains accurate after overwrite warning' do
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_dir = "#{dir}/testdir"
+
+      target_dir = "#{upload_dir}/testdir"
+
+      Dir.mkdir(src_dir)
+      src_file_1 = "#{src_dir}/test1.sh"
+      src_file_2 = "#{src_dir}/test2.sh"
+      src_file_3 = "#{src_dir}/test3.sh"
+      src_file_4 = "#{src_dir}/test4.sh"
+      src_file_5 = "#{src_dir}/test5.sh"
+
+      src_files = [src_file_1, src_file_2, src_file_3, src_file_4, src_file_5]
+      src_files.each_with_index do |file, index|
+        `echo 'some content in file #{index + 1}' > #{file}`
+      end
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      # in order to find the directory input, we have to swap so that it is first in the DOM
+      SWAP_FILE_INPUT_SCRIPT = <<~HEREDOC
+        inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+        const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+        const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+        inputsWrapper.insertBefore(dirInput, fileInput);
+      HEREDOC
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
+      click_on('Upload 5 files')
+
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      click_on(File.basename(src_dir))
+      src_files.each do |file|
+        assert_selector('tbody a', exact_text: File.basename(file))
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        assert_equal File.read(file), File.read(target_path)
+      end
+      
+      # delete all but one file
+      saved_file = src_file_3
+      src_files.each do |file|
+        if file != saved_file
+          find('tbody a', exact_text: File.basename(file)).ancestor('tr').check
+        end
+      end
+      accept_alert do
+        find('#delete-btn').click
+      end
+
+      src_files.each do |file|
+        if file != saved_file
+          refute_selector('tbody a', exact_text: File.basename(file))
+        else
+          assert_selector('tbody a', exact_text: File.basename(file))
+        end
+      end
+
+      # reupload and check overwrite warning
+      click_on(File.basename(upload_dir))
+      assert_selector('tbody a', exact_text: File.basename(target_dir))
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 1)
+      assert_selector(".uppy-Dashboard-Item:not(.bg-danger)", count: 4)
+      assert_overwrite_buttons
+
+      # remove overwrite file and check buttons again
+      find('.uppy-Dashboard-Item.bg-danger .uppy-Dashboard-Item-action--remove').click
+      refute_selector(".uppy-Dashboard-Item-name[title='#{File.basename(saved_file)}']")
+      refute_selector('.uppy-Dashboard-Item.bg-danger')
+      refute_selector('#safe-upload-btn')
+      refute_selector('.uppy-StatusBar-actionBtn--upload-danger')
+      refute_selector('.uppy-StatusBar-actions span')
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 4 files')
+
+      # count remains accurate when removing files
+      find('.uppy-Dashboard-Item .uppy-Dashboard-Item-action--remove', match: :first).click
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 3 files')     
+      find('.uppy-Dashboard-Item .uppy-Dashboard-Item-action--remove', match: :first).click
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 2 files')
+
+      # count remains accurate when adding files
+      new_file = "#{dir}/newfile.sh"
+      `echo 'some content in this file' > #{new_file}`
+      click_on('Add more')
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      # have to swap back to add a file
+      RESET_FILE_INPUT_SCRIPT = <<~HEREDOC
+        inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+        const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+        const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+        inputsWrapper.insertBefore(fileInput, dirInput);
+      HEREDOC
+      page.execute_script(RESET_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', new_file, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 3 files')
+
+      # count remains accurate when adding directories
+      new_dir = "#{dir}/testdir/subdir"
+      Dir.mkdir(new_dir)
+      new_file_1 = "#{new_dir}/file1"
+      new_file_2 = "#{new_dir}/file2"
+      new_file_3 = "#{new_dir}/file3"
+      `echo 'new content in subdir file 1' > #{new_file_1}`
+      `echo 'new content in subdir file 2' > #{new_file_2}`
+      `echo 'new content in subdir file 3' > #{new_file_3}`
+      click_on('Add more')
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', new_dir, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 6 files')
+
+      # verify upload since we're here
+      click_on('Upload 6 files')
+      assert_selector('tbody a', exact_text: File.basename(new_file))
+      click_on(File.basename(src_dir))
+      assert_selector('tbody a', count: 3)
+      click_on(File.basename(upload_dir))
+      click_on(File.basename(new_dir))
+      assert_selector('tbody a', count: 3)
     end
   end
 
