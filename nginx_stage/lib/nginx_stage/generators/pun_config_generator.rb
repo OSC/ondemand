@@ -51,7 +51,7 @@ module NginxStage
           path = "#{path}?#{parsed.query}" unless parsed.query.nil?
           path = "#{path}##{parsed.fragment}" unless parsed.fragment.nil?
 
-          path.empty? nil : path
+          path.empty? ? nil : path
         end
       }
     end
