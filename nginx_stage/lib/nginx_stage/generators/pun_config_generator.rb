@@ -1,5 +1,6 @@
 require 'securerandom'
 require 'syslog/logger'
+require 'uri'
 
 module NginxStage
   # This generator stages and generates the per-user NGINX environment.
@@ -38,14 +39,19 @@ module NginxStage
     # @!method app_init_url
     #   The app initialization URL the user is redirected to if can't find the
     #   app in the per-user NGINX config
-    #   @return [String] app init redirect url
+    #   @return [String] app init redirect path. Historically has been a URL, but is now just the path.
     add_option :app_init_url do
       {
         opt_args: ["-a", "--app-init-url=APP_INIT_URL", "# The user is redirected to the APP_INIT_URL if app doesn't exist"],
         default: nil,
         before_init: -> (uri) do
-          raise InvalidAppInitUri, "invalid app-init-url syntax: #{uri}" if uri =~ /[^-\w\/?$=&.:]/
-          uri
+          # can throw an error here for malformed URIs
+          parsed = URI(uri)
+          path = parsed.path
+          path = "#{path}?#{parsed.query}" unless parsed.query.nil?
+          path = "#{path}##{parsed.fragment}" unless parsed.fragment.nil?
+
+          path
         end
       }
     end
