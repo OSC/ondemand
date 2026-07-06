@@ -46,12 +46,12 @@ module NginxStage
         default: nil,
         before_init: -> (uri) do
           # can throw an error here for malformed URIs
-          parsed = URI(uri)
+          parsed = URI(uri.to_s)
           path = parsed.path
           path = "#{path}?#{parsed.query}" unless parsed.query.nil?
           path = "#{path}##{parsed.fragment}" unless parsed.fragment.nil?
 
-          path
+          path.empty? nil : path
         end
       }
     end
