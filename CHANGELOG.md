@@ -17,6 +17,10 @@ Changes are grouped by type:
 
 ## [Unreleased]
 
+## [4.2.3] - 2026-06-24
+
+## [4.1.6] - 2026-06-24
+
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
 - This project has issue templates in [5440](https://github.com/OSC/ondemand/pull/5440) and [5441](https://github.com/OSC/ondemand/pull/5441).
