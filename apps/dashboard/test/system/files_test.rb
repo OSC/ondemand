@@ -485,8 +485,8 @@ class FilesTest < ApplicationSystemTestCase
       assert_overwrite_buttons
 
       click_on('Upload New Files')
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
-      find('tbody a', exact_text: File.basename(new_file), wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: File.basename(src_file))
+      assert_selector('tbody a', exact_text: File.basename(new_file))
 
       # and it's still there, with content and mode unchanged
       assert File.exist?(upload_file)
@@ -514,11 +514,11 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(upload_dir)
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
 
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: File.basename(src_file))
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
 
@@ -530,7 +530,7 @@ class FilesTest < ApplicationSystemTestCase
 
       # upload the file again
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       attach_file 'files[]', src_file, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
       click_on('Add more')
@@ -551,8 +551,8 @@ class FilesTest < ApplicationSystemTestCase
 
       click_on('Upload 1 file')
 
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
-      find('tbody a', exact_text: File.basename(new_file), wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: File.basename(src_file))
+      assert_selector('tbody a', exact_text: File.basename(new_file))
 
       # and it's still there, with content and mode unchanged
       assert File.exist?(upload_file)
@@ -602,7 +602,7 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(upload_dir)
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
 
       # in order to find the directory input, we have to swap so that it is first in the DOM
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
@@ -637,7 +637,7 @@ class FilesTest < ApplicationSystemTestCase
 
       # upload the directory again
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
 
@@ -664,7 +664,7 @@ class FilesTest < ApplicationSystemTestCase
       end
 
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 5)
@@ -705,7 +705,7 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(upload_dir)
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
 
       # in order to find the directory input, we have to swap so that it is first in the DOM
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
@@ -745,7 +745,7 @@ class FilesTest < ApplicationSystemTestCase
       click_on(File.basename(upload_dir))
       assert_selector('tbody a', exact_text: File.basename(target_dir))
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
 
@@ -774,7 +774,7 @@ class FilesTest < ApplicationSystemTestCase
       click_on('Add more')
       # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
       click_on('browse files')
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       # have to swap back to add a file
       page.execute_script(RESET_FILE_INPUT_SCRIPT)
       attach_file 'files[]', new_file, visible: false, match: :first
@@ -792,7 +792,7 @@ class FilesTest < ApplicationSystemTestCase
       click_on('Add more')
       # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
       click_on('browse files')
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', new_dir, visible: false, match: :first
       assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 6 files')
