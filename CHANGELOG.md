@@ -77,6 +77,8 @@ Changes are grouped by type:
   in [5506](https://github.com/OSC/ondemand/pull/5506).
 - Display settings in recent applications now escape HTML in
   [5580](github.com/OSC/ondemand/pull/5580).
+- Navigation bar menus work correclty on MacOS/Safari
+  in [5536](https://github.com/OSC/ondemand/pull/5536).
 
 ### Added
 
@@ -110,8 +112,6 @@ Changes are grouped by type:
   in [5498](https://github.com/OSC/ondemand/pull/5498).
 - Batch connect fields with underscores work correctly
   in [5509](https://github.com/OSC/ondemand/pull/5509).
-- Navigation bar menus work correclty on MacOS/Safari
-  in [5536](https://github.com/OSC/ondemand/pull/5536).
 - Display settings in recent applications now escape HTML in
   [5581](github.com/OSC/ondemand/pull/5581).
 
