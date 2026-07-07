@@ -78,7 +78,7 @@ Changes are grouped by type:
   in [5506](https://github.com/OSC/ondemand/pull/5506).
 - Display settings in recent applications now escape HTML in
   [5580](github.com/OSC/ondemand/pull/5580).
-- Navigation bar menus work correclty on MacOS/Safari
+- Navigation bar menus work correctly on MacOS/Safari
   in [5536](https://github.com/OSC/ondemand/pull/5536).
 
 ### Added
