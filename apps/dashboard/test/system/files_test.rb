@@ -400,11 +400,11 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(upload_dir)
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
 
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: File.basename(src_file))
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
       assert_equal(33_188, File.stat(upload_file).mode) # default 644
@@ -418,14 +418,15 @@ class FilesTest < ApplicationSystemTestCase
 
       # upload the file again
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       attach_file 'files[]', src_file, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2")
       assert_overwrite_buttons
 
       click_on('Upload and Overwrite')
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      refute_selector('.uppy-Dashboard-AddFiles')
+      assert_selector('tbody a', exact_text: File.basename(src_file))
 
       # and it's still there, now with new content and it keeps the 755 permissions
       assert File.exist?(upload_file)
@@ -450,11 +451,11 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(upload_dir)
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
 
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: File.basename(src_file))
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
       assert_equal(33_188, File.stat(upload_file).mode) # default 644
@@ -471,10 +472,12 @@ class FilesTest < ApplicationSystemTestCase
 
       # upload the file again
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       attach_file 'files[]', src_file, visible: false, match: :first
       click_on('Add more')
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
+      assert_selector('.uppy-Dashboard-AddFiles')
       attach_file 'files[]', new_file, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(new_file)}']")
@@ -531,6 +534,8 @@ class FilesTest < ApplicationSystemTestCase
       attach_file 'files[]', src_file, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
       click_on('Add more')
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
       attach_file 'files[]', new_file, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(new_file)}']")
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 1)
@@ -558,6 +563,21 @@ class FilesTest < ApplicationSystemTestCase
       assert_equal File.read(new_file), File.read(new_upload_file)
     end
   end
+  
+  # The following scripts are required when uploading directories
+  SWAP_FILE_INPUT_SCRIPT = <<~HEREDOC
+    const inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+    const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+    const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+    inputsWrapper.insertBefore(dirInput, fileInput);
+  HEREDOC
+
+  RESET_FILE_INPUT_SCRIPT = <<~HEREDOC
+    const inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+    const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+    const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+    inputsWrapper.insertBefore(fileInput, dirInput);
+  HEREDOC
 
   test 'uploading duplicate files within directories' do
     Dir.mktmpdir do |dir|
@@ -585,12 +605,6 @@ class FilesTest < ApplicationSystemTestCase
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
 
       # in order to find the directory input, we have to swap so that it is first in the DOM
-      SWAP_FILE_INPUT_SCRIPT = <<~HEREDOC
-        const inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
-        const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
-        const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
-        inputsWrapper.insertBefore(dirInput, fileInput);
-      HEREDOC
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
       assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
@@ -658,7 +672,9 @@ class FilesTest < ApplicationSystemTestCase
 
       click_on('Upload and Overwrite')
       assert_selector('tbody a', exact_text: File.basename(src_dir))
+      click_on(File.basename(src_dir))
       src_files.each do |file|
+        assert_selector('tbody a', exact_text: File.basename(file))
         target_path = File.join(target_dir, File.basename(file))
         assert File.exist?(target_path)
         assert_equal File.read(file), File.read(target_path)
@@ -692,12 +708,6 @@ class FilesTest < ApplicationSystemTestCase
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
 
       # in order to find the directory input, we have to swap so that it is first in the DOM
-      SWAP_FILE_INPUT_SCRIPT = <<~HEREDOC
-        inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
-        const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
-        const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
-        inputsWrapper.insertBefore(dirInput, fileInput);
-      HEREDOC
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
       assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
@@ -762,14 +772,10 @@ class FilesTest < ApplicationSystemTestCase
       new_file = "#{dir}/newfile.sh"
       `echo 'some content in this file' > #{new_file}`
       click_on('Add more')
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
       # have to swap back to add a file
-      RESET_FILE_INPUT_SCRIPT = <<~HEREDOC
-        inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
-        const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
-        const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
-        inputsWrapper.insertBefore(fileInput, dirInput);
-      HEREDOC
       page.execute_script(RESET_FILE_INPUT_SCRIPT)
       attach_file 'files[]', new_file, visible: false, match: :first
       assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 3 files')
@@ -784,6 +790,8 @@ class FilesTest < ApplicationSystemTestCase
       `echo 'new content in subdir file 2' > #{new_file_2}`
       `echo 'new content in subdir file 3' > #{new_file_3}`
       click_on('Add more')
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
       find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', new_dir, visible: false, match: :first
