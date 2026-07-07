@@ -274,7 +274,7 @@ function markOverwrite(file) {
 }
 
 const safeBtnId = 'safe-upload-btn';
-const uploadBtnSelector = '.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload';
+const uploadBtnSelector = '.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload:not(#safe-upload-btn)';
 
 function addOverwriteButton() {
   if(document.getElementById(safeBtnId) !== null) {
@@ -299,10 +299,11 @@ function addOverwriteButton() {
 }
 
 function removeOverwriteButton() {
-  if(document.getElementById(safeBtnId) !== null) {
+  const uploadBtn = document.querySelector(uploadBtnSelector);
+  const safeBtn = document.getElementById(safeBtnId)
+  if(safeBtn !== null && uploadBtn !== null) {
     document.getElementById(safeBtnId).remove();
     document.querySelector('div.uppy-StatusBar-actions span').remove();
-    const uploadBtn = document.querySelector(uploadBtnSelector);
     uploadBtn.classList.remove('mx-3', 'uppy-StatusBar-actionBtn--upload-danger');
   }
 }
