@@ -47,6 +47,75 @@ Changes are grouped by type:
 - oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
 - Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
 
+## [4.2.3] - 2026-06-24
+
+### Security
+
+- Resolved CVE-2026-55171. The default `oidc_crypto_passphrase` is predictable and unsafe to use.
+  `update_ood_portal` will now fail if it isn't set in [5563](https://github.com/OSC/ondemand/pull/5563).
+- Resolved CVE-2026-55172.  The session storage directory now has multiple checks to ensure it
+  is created by the user and owned by the user, falling back to cookies if these checks fail
+  in [5560](https://github.com/OSC/ondemand/pull/5560).
+- Resolved CVE-2026-55169.  Previous versions allowed VNC passwords to be logged in access logs.
+  This release resolves that issue on all systems in [5582](https://github.com/OSC/ondemand/pull/5582)
+  and hardens that directory on RHEL systems by changing its ownership of
+  `/var/log/ondemand-nginx` in [5530](https://github.com/OSC/ondemand/pull/5530).
+
+### Changed
+
+- Reverted VNC same tab behaviour. VNC applications will now always open in a new
+  tab in [5582](https://github.com/OSC/ondemand/pull/5582).
+
+### Fixed
+
+- Project Manager workflows now save after submission to restore
+  themselves in [5507](https://github.com/OSC/ondemand/pull/5507).
+- Packages do not rely on a specific version of `selinux-policy`
+  in [5497](https://github.com/OSC/ondemand/pull/5497).
+- Batch connect fields with underscores work correctly
+  in [5510](https://github.com/OSC/ondemand/pull/5510).
+- Filenames with spaces now correctly link to the file editor
+  in [5506](https://github.com/OSC/ondemand/pull/5506).
+- Display settings in recent applications now escape HTML in
+  [5580](github.com/OSC/ondemand/pull/5580).
+- Navigation bar menus work correctly on MacOS/Safari
+  in [5536](https://github.com/OSC/ondemand/pull/5536).
+
+### Added
+
+- The CI will test color contrast to meet WCAG standards
+  in [5548](https://github.com/OSC/ondemand/pull/5548).
+
+## [4.1.6] - 2026-06-24
+
+### Security
+
+- Resolved CVE-2026-55171. The default `oidc_crypto_passphrase` is predictable and unsafe to use.
+  `update_ood_portal` will now fail if it isn't set in [5561](https://github.com/OSC/ondemand/pull/5563).
+- Resolved CVE-2026-55172.  The session storage directory now has multiple checks to ensure it
+  is created by the user and owned by the user, falling back to cookies if these checks fail
+  in [5560](https://github.com/OSC/ondemand/pull/5560).
+- Resolved CVE-2026-55169.  Previous versions allowed VNC passwords to be logged in access logs.
+  This release resolves that issue on all systems in [5583](https://github.com/OSC/ondemand/pull/5583)
+  and hardens that directory on RHEL systems by changing its ownership of
+  `/var/log/ondemand-nginx` in [5531](https://github.com/OSC/ondemand/pull/5531).
+
+### Changed
+
+- Reverted VNC same tab behaviour. VNC applications will now always open in a new
+  tab in [5582](https://github.com/OSC/ondemand/pull/5582).
+
+### Fixed
+
+- Project Manager workflows now save after submission to restore
+  themselves in [5508](https://github.com/OSC/ondemand/pull/5508).
+- Packages do not rely on a specific version of `selinux-policy`
+  in [5498](https://github.com/OSC/ondemand/pull/5498).
+- Batch connect fields with underscores work correctly
+  in [5509](https://github.com/OSC/ondemand/pull/5509).
+- Display settings in recent applications now escape HTML in
+  [5581](github.com/OSC/ondemand/pull/5581).
+
 ## [4.1.5] - 2026-04-29
 
 ### Fixed
@@ -1957,10 +2026,12 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.2...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.3...HEAD
+[4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
+[4.1.6]: https://github.com/OSC/ondemand/compare/v4.1.5...v4.1.6
 [4.1.5]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.1.5
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
 [4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
