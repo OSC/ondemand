@@ -14,6 +14,7 @@ Changes are grouped by type:
 - `Fixed`: corrections to existing behavior, such as bugs, compatibility issyes, or accessibility improvements.
 - `Security`: fixes that address known vulnerabilities, CVEs, or security risks.
 
+
 ## [Unreleased]
 
 ### Added
