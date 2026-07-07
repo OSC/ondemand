@@ -43,7 +43,7 @@ class FilesTest < ApplicationSystemTestCase
       assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('bar.txt')
       find('#files_input_modal_ok_button').click
-      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'bar.txt')
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
@@ -55,7 +55,7 @@ class FilesTest < ApplicationSystemTestCase
       assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('bar')
       find('#files_input_modal_ok_button').click
-      find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
+      assert_selector('tbody a[data-type="d"]', exact_text: 'bar')
       assert File.directory? File.join(dir, 'bar')
     end
   end
@@ -294,7 +294,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#files_input_modal_input').set('bar.txt')
       find('#files_input_modal_ok_button').click
 
-      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'bar.txt')
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
