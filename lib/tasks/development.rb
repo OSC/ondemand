@@ -33,6 +33,7 @@ namespace :dev do
         'port'                   => 8080,
         'listen_addr_port'       => 8080,
         'oidc_remote_user_claim' => 'email',
+        'oidc_crypto_passphrase' => SecureRandom.uuid,
         'dex'                    => {
           'static_passwords' => [{
             'email'    => "#{user.name}@localhost",
@@ -92,7 +93,7 @@ namespace :dev do
   def dev_mounts
     [
       '-v', "#{config_directory}:/etc/ood/config",
-      '-v', "#{ondemand_directory}:#{ondemand_directory}"
+      '-v', "#{ondemand_directory}:#{container_ondemand_directory}"
     ].tap do |mnts|
       unless ENV['OOD_MNT_PORTAL'].nil?
         mnts.concat(['-v',
@@ -124,18 +125,7 @@ namespace :dev do
     ctr_args.concat container_rt_args
 
     ctr_args.concat ["#{dev_image_name}:latest"]
-
     sh ctr_args.join(' ')
-
-    if ondemand_directory.to_s != container_ondemand_directory
-      # Create symlink from detected ondemand directory to ~/ondemand inside the container
-      symlink_cmd = [
-        container_runtime, 'exec', dev_container_name,
-        '/bin/bash', '-c',
-        "\"mkdir -p /tmp#{container_ondemand_directory} && mv #{container_ondemand_directory} /tmp#{container_ondemand_directory} && ln -s #{ondemand_directory} #{container_ondemand_directory}\""
-      ]
-      sh symlink_cmd.join(' ')
-    end
   end
 
   desc 'Stop development container'
