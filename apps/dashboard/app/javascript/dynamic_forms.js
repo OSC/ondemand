@@ -100,7 +100,7 @@ function mountainCaseWords(str) {
 function snakeCaseWords(str) {
   if(str === undefined) {
     return undefined;
-  }else if(str === "") {
+  } else if(str === "") {
     return "";
   }
 
