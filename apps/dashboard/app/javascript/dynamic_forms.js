@@ -98,7 +98,11 @@ function mountainCaseWords(str) {
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
 function snakeCaseWords(str) {
-  if(str === undefined || str === "") return "";
+  if(str === undefined) {
+    return undefined;
+  }else if(str === "") {
+    return "";
+  }
 
   // find all the capital case words and if none are found, we'll just basically
   // return the same string.
