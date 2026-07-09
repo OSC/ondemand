@@ -6,6 +6,7 @@ import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import { maxFileSize, csrfToken, uppyLocale } from '../config.js';
 import { fileOps } from './file_ops.js';
+import { isSafeViewingEnabled, SAFE_VIEWING_CHANGE_EVENT } from '../dark_mode.js';
 
 let uppy = null;
 
@@ -87,6 +88,7 @@ jQuery(function() {
   uppy.use(EmptyDirCreator);
 
   uppy.use(Dashboard, {
+    theme: isSafeViewingEnabled() ? 'dark' : 'light',
     trigger: '#upload-btn',
     fileManagerSelectionType: 'both',
     disableThumbnailGenerator: true,
@@ -154,6 +156,13 @@ jQuery(function() {
     this.classList.remove('dragover');
   });
 
+  document.addEventListener(SAFE_VIEWING_CHANGE_EVENT, (event) => {
+    const dashboard = uppy.getPlugin('Dashboard');
+    if (dashboard) {
+      dashboard.setOptions({ theme: event.detail.enabled ? 'dark' : 'light' });
+    }
+  });
+  
 });
 
 function closeAndResetUppyModal(uppy){
