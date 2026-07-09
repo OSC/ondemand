@@ -127,12 +127,12 @@ namespace :dev do
 
     sh ctr_args.join(' ')
 
-    if ondemand_directory != container_ondemand_directory
+    if ondemand_directory.to_s != container_ondemand_directory
       # Create symlink from detected ondemand directory to ~/ondemand inside the container
       symlink_cmd = [
         container_runtime, 'exec', dev_container_name,
         '/bin/bash', '-c',
-        "\"rm -rf #{container_ondemand_directory} && ln -s #{ondemand_directory} #{container_ondemand_directory}\""
+        "\"mkdir -p /tmp#{container_ondemand_directory} && mv #{container_ondemand_directory} /tmp#{container_ondemand_directory} && ln -s #{ondemand_directory} #{container_ondemand_directory}\""
       ]
       sh symlink_cmd.join(' ')
     end
