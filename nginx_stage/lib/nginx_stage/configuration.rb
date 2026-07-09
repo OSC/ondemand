@@ -412,6 +412,27 @@ module NginxStage
     # @return [String] path to the custom html root
     attr_accessor :pun_custom_html_root
 
+    # Whether mTLS proxying from the PUN to compute nodes is enabled
+    # @return [Boolean] mTLS proxy enabled
+    attr_accessor :pun_mtls_enabled
+
+    # Directory under the user's home for storing mTLS PKI material
+    # @return [String] path pattern for mTLS PKI directory
+    attr_accessor :pun_mtls_pki_dir
+
+    # Validity period in days for the generated mTLS certificate
+    # @return [Integer] certificate validity in days
+    attr_accessor :pun_mtls_cert_days
+
+    # Regex used to validate target hosts for mTLS proxying (SSRF protection)
+    # @return [String] host regex pattern
+    attr_accessor :pun_mtls_host_regex
+
+    # DNS resolver address(es) for nginx to use with variable-based proxy_pass.
+    # Auto-detected from /etc/resolv.conf if not set.
+    # @return [String] resolver address(es)
+    attr_accessor :pun_mtls_resolver
+
     #
     # Configuration module
     #
@@ -527,6 +548,19 @@ module NginxStage
 
       self.disable_bundle_user_config = true
       self.nginx_file_upload_max = '10737420000'
+
+      self.pun_mtls_enabled    = false
+      self.pun_mtls_pki_dir    = '~/ondemand/pki'
+      self.pun_mtls_cert_days  = 3650
+      self.pun_mtls_host_regex = '[\w.-]+'
+      self.pun_mtls_resolver   = begin
+        nameserver = File.readlines('/etc/resolv.conf')
+                         .grep(/^\s*nameserver\s+/)
+                         .first&.split&.last
+        nameserver || '127.0.0.1'
+      rescue
+        '127.0.0.1'
+      end
 
       read_configuration(default_config_path) if File.file?(default_config_path)
     end
