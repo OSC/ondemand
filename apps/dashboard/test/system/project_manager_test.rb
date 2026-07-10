@@ -41,13 +41,13 @@ class ProjectManagerTest < ApplicationSystemTestCase
     project_id
   end
 
-  def setup_launcher(project_id)
+  def setup_launcher(project_id, title = 'the launcher title')
     visit project_path(project_id)
     click_on 'New Launcher'
-    find('#launcher_title').set('the launcher title')
+    find('#launcher_title').set(title)
     click_on 'Save'
 
-    launcher_element = all('#launcher_list div.list-group-item').first
+    launcher_element = all('#launcher_list div.list-group-item').last
     launcher_element[:id].gsub('launcher_', '')
   end
 
@@ -1598,6 +1598,65 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_current_path(projects_root_path)
       assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
       assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
+    end
+  end
+
+  def setup_workflow(project_id, launcher_ids:'all', name: 'Workflow name', desc: 'Sample description', sync_key: false)
+    visit project_path(project_id)
+    click_on('New Workflow')
+    find('#workflow_name').set(name)
+    find('#workflow_description').set(desc)
+    if launcher_ids == 'all'
+      find('#select_all_launchers').check
+    else 
+      launcher_ids.each do |id|
+        find("#launcher_#{id}").check
+      end
+    end
+    find('#workflow_sync_key_enabled').click if sync_key
+    click_on('Save')
+
+    workflow_element = all('#workflow_list div.list-group-item').last
+    workflow_element[:id].gsub('workflow_', '')
+  end
+
+  test 'creating a basic workflow' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_1 = setup_launcher(project_id, 'First launcher')
+      Time.stubs(:now).returns(Time.at(@expected_now + 1))
+      launcher_2 = setup_launcher(project_id, 'Second launcher')
+      assert launcher_1 != launcher_2
+      project_dir = "#{dir}/projects/#{project_id}"
+      l1_details = Launcher.find(launcher_1, project_dir)
+      l2_details = Launcher.find(launcher_2, project_dir)
+      basic_workflow_1 = setup_workflow(project_id)
+      Time.stubs(:now).returns(Time.at(@expected_now + 2))
+      basic_workflow_2 = setup_workflow(project_id, name: 'Second workflow')
+      assert basic_workflow_1 != basic_workflow_2
+
+      find("#workflow_#{basic_workflow_1}").click_on('Show')
+      click_on('Add Launcher')
+      assert_selector('#btn-add:not([disabled])')
+      assert_selector("#launcher_#{launcher_1}")
+
+      find("#select_launcher option[value='#{launcher_2}']").click
+      sleep 0.5 # not sure why but this select holds focus for a moment and blocks clicks
+      # immediately after. May need to insert an artifact to wait for
+      click_on('Add Launcher')
+      assert_selector('#btn-add:not([disabled])')
+      assert_selector("#launcher_#{launcher_2}")
+
+      click_on('Connect Launchers')
+      assert_selector('#btn-connect.active')
+      find("#launcher_#{launcher_1}").click
+      find("#launcher_#{launcher_2}").click
+      click_on('Connect Launchers')
+      refute_selector('#btn-connect.active')
+
+      accept_alert('Workflow successfully submitted!') do
+        click_on('Submit')
+      end
     end
   end
 end
