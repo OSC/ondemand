@@ -95,9 +95,42 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'creates .ondemand directory with project' do
     Dir.mktmpdir do |dir|
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040700, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
+      exp_children.each do |child|
+        msg = "Path #{child} is not writable"
+        assert File.writable?(File.join(ondemand_dir, child))
+      end
+    end
+  end
 
-      assert File.directory? File.join("#{dir}/projects", project_id, '.ondemand')
+  test 'shared project creates .ondemand directory with proper permissions' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040770, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
+      assert File.writable?(File.join(ondemand_dir, 'manifest.yml'))
+      exp_children.each do |child|
+        unless child == 'manifest.yml'
+          stats = File.stat(File.join(ondemand_dir, child))
+          msg = "Path #{child} exists with incorrect permissions"
+          if %w(launchers workflows).include?(child)
+            assert_equal 0o040770, stats.mode, msg
+          elsif child == 'job_log.yml'
+            assert_equal 0o0100660, stats.mode, msg
+          end
+        end
+      end
     end
   end
 
@@ -578,6 +611,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   
   test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
       launcher_id = setup_launcher(project_id)
 
@@ -614,14 +648,31 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       success_message = I18n.t('dashboard.jobs_launchers_created')
       assert_selector('.alert-success', text: "#{success_message}")
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{launcher_id}/form.yml"))
+      launcher_dir = File.join(dir, 'projects', project_id, '.ondemand', 'launchers', launcher_id)
+      assert_equal(expected_yml, File.read("#{launcher_dir}/form.yml"))
 
+      Pathname.new(launcher_dir).children do |child|
+        msg = "#{child} is not writable"
+        assert child.writable?, msg
+      end
+      
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the launcher title', count: 1)
     end
   end
 
+  test 'launcher files in shared projects have proper permissions' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      launcher_dir = File.join(dir, 'projects', project_id, '.ondemand', 'launchers', launcher_id)
+      assert_equal 0o040770, File.stat(launcher_dir).mode
+      assert_equal ['form.yml'], Dir.children(launcher_dir)
+      assert_equal 0o0100644, File.stat(File.join(launcher_dir, 'form.yml')).mode
+    end
+  end
+    
   test 'creates new launcher with default items' do
     Dir.mktmpdir do |dir|
       Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
@@ -1043,6 +1094,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       File.open(cache_file, 'w') do |f|
         f.write(cached_values.to_json)
       end
+
+      # refresh the page so it picks up the cache.
+      visit(project_path(project_id))
 
       Open3
         .stubs(:capture3)

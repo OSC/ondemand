@@ -40,9 +40,10 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-file-btn').click
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('bar.txt')
       find('#files_input_modal_ok_button').click
-      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'bar.txt')
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
@@ -51,9 +52,10 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-dir-btn').click
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('bar')
       find('#files_input_modal_ok_button').click
-      find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
+      assert_selector('tbody a[data-type="d"]', exact_text: 'bar')
       assert File.directory? File.join(dir, 'bar')
     end
   end
@@ -286,12 +288,13 @@ class FilesTest < ApplicationSystemTestCase
       tr = find('a', exact_text: 'foo.txt').ancestor('tr')
       tr.find('button.dropdown-toggle').click
       tr.find('.rename-file').click
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
 
       # rename dialog input
       find('#files_input_modal_input').set('bar.txt')
       find('#files_input_modal_ok_button').click
 
-      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'bar.txt')
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
@@ -430,6 +433,7 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector('tbody a', exact_text: 'config')
 
     find('#goto-btn').click
+    assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
     find('#files_input_modal_input').set(Rails.root.join('app'))
     find('#files_input_modal_ok_button').click
     assert_selector('tbody a', exact_text: 'helpers')
@@ -1069,7 +1073,7 @@ class FilesTest < ApplicationSystemTestCase
       tr = find('a', exact_text: 'foo').ancestor('tr')
       tr.find('button.dropdown-toggle').click
       tr.find('.rename-file').click
-
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('foo')
       find('#files_input_modal_ok_button').click
 
