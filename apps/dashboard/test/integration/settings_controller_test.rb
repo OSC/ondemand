@@ -198,7 +198,7 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
   test 'should render locale switcher in help dropdown when multiple locales available' do
     get root_path
     assert_response :success
-    assert_match(/settings\[locale\]/, @response.body)
+    assert_match(/settings%5Blocale%5D/, @response.body)
     assert_match(/#{Regexp.escape(I18n.t('dashboard.nav_language'))}/, @response.body)
   end
 
@@ -208,11 +208,12 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     # supported_locales should be the 5 app locale files, not the extra
     # locales contributed by gems (e.g. dotiw adds de, fr, ja, ...).
     assert_equal 5, @controller.supported_locales.size
-    # Each locale link should carry settings[locale]=<code>
-    locale_links = @response.body.scan(/settings\[locale\]=([a-zA-Z_\-]+)&/).flatten
+    # Each locale link carries settings[locale]=<code> (URL-encoded as
+    # settings%5Blocale%5D=<code> in the href).
+    locale_links = @response.body.scan(/settings%5Blocale%5D=([a-zA-Z_\-]+)/).flatten
     assert_equal %w[en en-CA fr-CA ja_JP zh-CN], locale_links.sort
     # Gem locales like 'de' must not appear
-    assert_no_match(/settings\[locale\]=de&/, @response.body)
+    refute_includes locale_links, 'de'
   end
 
   teardown do
