@@ -11,7 +11,7 @@ module ApplicationHelper
   end
 
   def restart_url
-    "/nginx/stop?redir=#{root_path}"
+    "/nginx/stop?redir=#{Rails.application.routes.url_helpers.root_path}"
   end
 
   # Render a bootstrap nav link if the url is specified.

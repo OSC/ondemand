@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
+  before_action :check_group_changed, :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group, :set_custom_navigation
   before_action :check_required_announcements
@@ -31,6 +31,13 @@ class ApplicationController < ActionController::Base
   def set_nav_groups
     #TODO: for AweSim, what if we added the shared apps here?
     @nav_groups = filter_groups(sys_app_groups)
+  end
+
+  def check_group_changed
+    if OodSupport::Process.groups_changed?
+      redirect_to helpers.restart_url
+      logger.warn "Restarted PUN after group change detected"
+    end
   end
 
   def set_featured_group
