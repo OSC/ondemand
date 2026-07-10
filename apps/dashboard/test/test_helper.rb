@@ -48,6 +48,7 @@ module ActiveSupport
 
     def stub_user
       OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me']))
+      OodSupport::Process.stubs(:groups).returns(['me'])
       OodSupport::User.stubs(:new).returns(UserDouble.new('me', ['me']))
       Etc.stubs(:getlogin).returns('me')
     end
