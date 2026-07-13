@@ -16,6 +16,15 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+enforce relative init urls in nginx_stage (#5598)\
+lint a random file (#5607)\
+generate cyrpto_passphrase for dev container (#5595)\
+fix #5518 by preserving undefined in snakeCaseWords (#5606)\
+Send focus to file modal input (#5605)\
+Test project file structure and permissions (#5519)\
+update dependencies (#5594)\
+lint a random file (#5600)\
+Release changelog (#5601)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
