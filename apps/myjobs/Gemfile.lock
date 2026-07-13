@@ -151,11 +151,11 @@ GEM
     js-routes (1.2.9)
       railties (>= 3.2)
       sprockets-rails
-    json (2.20.0)
+    json (2.21.0)
     local_time (1.0.3)
       coffee-rails
     logger (1.7.0)
-    lograge (0.14.0)
+    lograge (0.15.0)
       actionpack (>= 4)
       activesupport (>= 4)
       railties (>= 4)
@@ -301,7 +301,7 @@ GEM
     sqlite3 (1.7.3)
       mini_portile2 (~> 2.8.0)
     thor (1.5.0)
-    tilt (2.7.0)
+    tilt (2.8.0)
     timecop (0.9.11)
     timeout (0.6.1)
     tsort (0.2.0)
