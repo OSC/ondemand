@@ -24,7 +24,7 @@ module BatchConnect::SessionsHelper
     elsif session.completed?
       views = { partial: "completed", locals: { session: session } }
     else
-      views = { partial: "bad" }
+      views = { partial: "bad", locals: { session: session } } }
     end
 
     connection_tabs(session.id, views)
