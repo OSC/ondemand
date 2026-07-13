@@ -16,15 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-enforce relative init urls in nginx_stage (#5598)\
-lint a random file (#5607)\
-generate cyrpto_passphrase for dev container (#5595)\
-fix #5518 by preserving undefined in snakeCaseWords (#5606)\
-Send focus to file modal input (#5605)\
-Test project file structure and permissions (#5519)\
-update dependencies (#5594)\
-lint a random file (#5600)\
-Release changelog (#5601)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -50,7 +41,9 @@ Release changelog (#5601)
 - Files dropdown button works correctly on Mac in [5527](https://github.com/OSC/ondemand/pull/5527).
 - labels and values are now escaped in display settings in [5490](https://github.com/OSC/ondemand/pull/5490).
 - Multiple checks are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
-  
+- app_init_url is now relative in nginx_stage to better support proxies in [5598](https://github.com/OSC/ondemand/pull/5598).
+- File modals now focus input in [5605](https://github.com/OSC/ondemand/pull/5605).
+
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 - oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
