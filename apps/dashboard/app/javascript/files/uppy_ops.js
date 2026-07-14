@@ -111,7 +111,18 @@ jQuery(function() {
     if(file.meta.relativePath == null && file.data.webkitRelativePath){
       uppy.setFileMeta(file.id, { relativePath: file.data.webkitRelativePath });
     }
+    checkUpload(file);
   });
+
+  uppy.on('file-removed', (file) => {
+    if(window.overwriteFiles.delete(file.id) && window.overwriteFiles.size === 0) {
+      removeOverwriteButton();
+    }
+    waitForElement(`.uppy-Dashboard-Item-name[title="${file.meta.name}"]`, true).then(_title => {
+      window.overwriteFiles.forEach(id => { markOverwrite(uppy.getFile(id)) });
+      updateUppyCount();
+    })
+  })
 
   uppy.on('complete', (result) => {
     if(result.successful.length > 0){
@@ -154,6 +165,7 @@ jQuery(function() {
     this.classList.remove('dragover');
   });
 
+  window.overwriteFiles = new Set;
 });
 
 function closeAndResetUppyModal(uppy){
@@ -207,3 +219,123 @@ function handleUploadSuccess(result) {
   }
 }
 
+async function checkUpload(file) {
+  const meta = file.meta;
+  const relPath = meta.relativePath || meta.name;
+  if (checkOverwrite(relPath)) {
+    if (meta.relativePath == null) {
+      // then file was uploaded directly, and conflict is confirmed
+      markOverwrite(file);
+    } else {
+      // file was uploaded as part of a folder, and we have to check if its a true conflict
+      const isOverwrite = await investigateOverwrite(relPath);
+      if(isOverwrite){
+        markOverwrite(file);
+      }
+    }
+  }
+  // After new file appears, ensure earlier ones are marked
+  waitForElement(`.uppy-Dashboard-Item-name[title="${file.meta.name}"]`).then(title => {
+    window.overwriteFiles.forEach(id => { markOverwrite(uppy.getFile(id)) });
+    updateUppyCount();
+  })
+}
+
+function safeUpload() {
+  window.overwriteFiles.forEach(id => { uppy.removeFile(id); })
+  window.overwriteFiles.clear();
+  uppy.upload();
+}
+
+function checkOverwrite(relativePath) {
+  const overwritePath = relativePath.split('/')[0];
+  return history.state.currentFilenames.includes(overwritePath);
+}
+
+async function investigateOverwrite(path) {
+  const directory = path.slice(0, path.lastIndexOf('/'));
+  const url = `${history.state.currentDirectoryUrl}/${directory}`;
+  const response = await fetch(url, { headers: { 'Accept': 'application/json' }});
+  const data = await response.json();
+
+  const targetFile = path.slice(path.lastIndexOf('/') + 1);
+  return Array.from(data.files).map(file => file.name).includes(targetFile);
+}
+
+
+function markOverwrite(file) {
+  window.overwriteFiles.add(file.id);
+  const name = file.meta.name;
+  waitForElement(`.uppy-Dashboard-Item-name[title="${name}"]`).then(title => {
+    const wrapper = title.closest('.uppy-Dashboard-Item');
+    wrapper.classList.add('bg-danger', 'rounded', 'p-2');
+    addOverwriteButton();
+  });
+}
+
+const safeBtnId = 'safe-upload-btn';
+const uploadBtnSelector = '.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload:not(#safe-upload-btn)';
+
+function addOverwriteButton() {
+  if(document.getElementById(safeBtnId) !== null) {
+    return
+  }
+
+  const uploadBtn = document.querySelector(uploadBtnSelector);
+  const safeBtn = uploadBtn.cloneNode();
+  safeBtn.id = safeBtnId;
+  safeBtn.textContent = 'Upload New Files';
+  safeBtn.addEventListener('click', safeUpload);
+  uploadBtn.classList.add('mx-3', 'uppy-StatusBar-actionBtn--upload-danger');
+  uploadBtn.textContent = 'Upload and Overwrite';
+
+  const warning = document.createElement('span');
+  warning.classList.add('text-danger', 'lh-base')
+  warning.textContent = 'Duplicate files identified. Uploading these files will overwrite existing content.'
+  
+  const actionsWrapper = document.querySelector('div.uppy-StatusBar-actions');
+  actionsWrapper.prepend(safeBtn);
+  actionsWrapper.append(warning);
+}
+
+function removeOverwriteButton() {
+  const uploadBtn = document.querySelector(uploadBtnSelector);
+  const safeBtn = document.getElementById(safeBtnId)
+  if(safeBtn !== null && uploadBtn !== null) {
+    document.getElementById(safeBtnId).remove();
+    document.querySelector('div.uppy-StatusBar-actions span').remove();
+    uploadBtn.classList.remove('mx-3', 'uppy-StatusBar-actionBtn--upload-danger');
+  }
+}
+
+function updateUppyCount() {
+  const uploadBtn = document.querySelector(uploadBtnSelector);
+  if(document.getElementById(safeBtnId) === null && uploadBtn !== null) {
+    const count = uppy.getFiles().length;
+    uploadBtn.textContent = `Upload ${count} file${(count == 1) ? '': 's'}`; 
+  }
+}
+
+function waitForElement(selector, deleted = false, { root = document.body, timeout = 5000 } = {}) {
+  return new Promise((resolve, reject) => {
+    const existing = root.querySelector(selector);
+    if (existing) return resolve(existing);
+
+    const observer = new MutationObserver(() => {
+      const el = root.querySelector(selector);
+      const finished = deleted ? !el : el;
+      if (finished) {
+        observer.disconnect();
+        clearTimeout(timer);
+        resolve(el);
+      }
+    });
+
+    observer.observe(root, { childList: true, subtree: true });
+
+    const timer = setTimeout(() => {
+      observer.disconnect();
+      reject(new Error(`Timed out waiting for "${selector}"`));
+    }, timeout);
+  });
+}

@@ -216,7 +216,26 @@ small.form-text {
 .uppy-Dashboard-note, a.uppy-Dashboard-poweredBy, .uppy-Dashboard-Item-status {
   color: #6a6a6a;
 }
+
+.text-danger {
+  color: rgb(216 49 65) !important
+}
+
+.bg-danger {
+  .uppy-Dashboard-Item-statusSize, .uppy-Dashboard-Item-name {
+    color: white;
+  }
+}
  
 .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload {
   background-color: rgb(66, 130, 66);
+}
+
+.uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload-danger {
+  background-color: rgba(var(--bs-danger-rgb), 1) !important;
+  color: white;
+
+  :hover {
+    background-color: rgba(var(--bs-danger-rgb), 0.85) !important;
+  }
 }
