@@ -109,3 +109,74 @@ describe('Helper function definedHosts()', () => {
   })
 });
 
+describe('Helper function shellFonts()', () => {
+  const OLD_ENV = process.env;
+
+  beforeEach(() => {
+    jest.resetModules();
+    process.env = { ...OLD_ENV };
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  test('returns the default font list when OOD_SHELL_FONTS is unset', () => {
+    expect(helpers.shellFonts()).toEqual([
+      '"Iosevka Web"',
+      '"DejaVu Sans Mono"',
+      '"Noto Sans Mono"',
+      '"Everson Mono"',
+      'FreeMono',
+      'Menlo',
+      'Terminal',
+      'monospace',
+    ]);
+  });
+
+  test('respects OOD_SHELL_FONTS', () => {
+    process.env.OOD_SHELL_FONTS = '"Fira Code", Menlo, monospace';
+
+    expect(helpers.shellFonts()).toEqual(['"Fira Code"', 'Menlo', 'monospace']);
+  });
+
+  test('trims whitespace around each font', () => {
+    process.env.OOD_SHELL_FONTS = '  "Fira Code"  ,\tMenlo ,monospace';
+
+    expect(helpers.shellFonts()).toEqual(['"Fira Code"', 'Menlo', 'monospace']);
+  });
+
+  test('returns a single-element list when there are no commas', () => {
+    process.env.OOD_SHELL_FONTS = 'monospace';
+
+    expect(helpers.shellFonts()).toEqual(['monospace']);
+  });
+});
+
+describe('Helper function userCSS()', () => {
+  const OLD_ENV = process.env;
+
+  beforeEach(() => {
+    jest.resetModules();
+    process.env = { ...OLD_ENV };
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  test('returns the default relative stylesheet joined to baseURI', () => {
+    expect(helpers.userCSS('/pun/sys/shell')).toEqual('/pun/sys/shell/stylesheets/fonts.css');
+  });
+
+  test('returns a relative OOD_SHELL_USER_CSS_URL joined to baseURI', () => {
+    process.env.OOD_SHELL_USER_CSS_URL = 'stylesheets/custom.css';
+    expect(helpers.userCSS('/pun/sys/shell')).toEqual('/pun/sys/shell/stylesheets/custom.css');
+  });
+
+  test('ignores baseURI when OOD_SHELL_USER_CSS_URL is absolute', () => {
+    process.env.OOD_SHELL_USER_CSS_URL = '/public/custom.css';
+    expect(helpers.userCSS('/something/else')).toEqual('/public/custom.css');
+  });
+});
+

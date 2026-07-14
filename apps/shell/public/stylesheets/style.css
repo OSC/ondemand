@@ -24,44 +24,46 @@ html, body {
 }
 
 .navbar {
-  margin-bottom: 0px;
-  min-height: 5px;
-  padding: 1px 3px 1px 3px;
-  max-height: 27px;
-  overflow: hidden;
+  padding: 3px;
 }
 
-@media only screen and (max-width: 768px) {
-  .custom-form {
-    position: absolute;
-    top: 0;
-    right: 0;
+.terminal-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px 8px;
+  width: max-content;
+}
+
+.terminal-options > div {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.terminal-options label {
+  min-width: 4rem;
+}
+
+@media screen and (max-width: 350px) {
+  .navbar {
+    flex-wrap: wrap;
   }
-  .custom-select {
-    width: 60%;
-    display: inline;
+  .terminal-options {
+    justify-content: flex-start;
   }
-
-  .custom-host {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding-left: 20px;
-  }
-
-
 }
 
-.left-padding-none {
-padding-left: 0;
+.navbar-dark {
+  background-image: -webkit-linear-gradient(top, #3c3c3c 0, #222 100%);
+  background-image: -o-linear-gradient(top, #3c3c3c 0, #222 100%);
+  background-image: linear-gradient(to bottom, #3c3c3c 0, #222 100%);
+  background-repeat: repeat-x;
 }
 
-.left-padding-some {
-  padding-left: 20px;
-}
-
-#colors {
-  margin-right: 20px;
+#colors, #fonts {
   font-size: 10px;
   height: 20px;
   padding: 0px;
