@@ -94,10 +94,11 @@ module ApplicationHelper
   end
 
   # The locales available for the user to select, as [name, code] pairs.
-  # Uses supported_locales (file-derived, not I18n.available_locales) to
-  # exclude locales contributed by gems (e.g. dotiw) that lack dashboard
-  # translations. fallback: false prevents untranslated locale_name keys from
-  # falling back to :en and showing "English" for every locale.
+  # Uses supported_locales (admin-configured via OOD_SUPPORTED_LOCALES, not
+  # I18n.available_locales) to exclude locales contributed by gems (e.g.
+  # dotiw) that lack dashboard translations. fallback: false prevents
+  # untranslated locale_name keys from falling back to :en and showing
+  # "English" for every locale.
   def locale_options
     supported_locales.map do |loc|
       [I18n.t('dashboard.locale_name', locale: loc, fallback: false, default: loc.to_s), loc.to_s]

@@ -33,14 +33,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # The locales that have translations, derived from the locale files on disk
-  # (config/locales + OOD_LOCALES_ROOT). This filters out locales
-  # contributed by gems (e.g. dotiw) that only provide date/time formatting.
+  # The locales that users are allowed to choose from, derived from the
+  # admin-configured OOD_SUPPORTED_LOCALES (colon-separated paths to locale
+  # files, defaulting to just the default locale). Mirrors the dashboard's
+  # ApplicationController#supported_locales.
   def supported_locales
-    @supported_locales ||= begin
-      base = Rails.root.join('config', 'locales', '*.{yml,rb}')
-      extra = ::Configuration.locales_root.join('*.{yml,rb}')
-      Dir[base, extra].map { |f| File.basename(f, '.*').to_sym }.uniq.sort
-    end
+    @supported_locales ||=
+      ::Configuration.supported_locales.to_s.split(':')
+      .map { |p| File.basename(p, '.*').to_sym }
+      .uniq.sort
   end
 end

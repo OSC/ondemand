@@ -150,17 +150,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # The locales that have dashboard translations, derived from the locale files
-  # on disk (config/locales + OOD_LOCALES_ROOT). This filters out locales
-  # contributed by gems (e.g. dotiw) that only provide date/time formatting
-  # and have no dashboard translations, which would otherwise leak into
-  # I18n.available_locales and pollute the language switcher.
+  # The locales that users are allowed to choose from in the language
+  # switcher. Derived from the admin-configured OOD_SUPPORTED_LOCALES
+  # (a colon-separated list of paths to locale files, defaulting to just
+  # the default locale). Only locales listed here appear in the switcher
+  # and are accepted when saving the user's preference.
   def supported_locales
-    @supported_locales ||= begin
-      base = Rails.root.join('config', 'locales', '*.{yml,rb}')
-      extra = ::Configuration.locales_root.join('*.{yml,rb}')
-      Dir[base, extra].map { |f| File.basename(f, '.*').to_sym }.uniq.sort
-    end
+    @supported_locales ||=
+      ::Configuration.supported_locales.to_s.split(':')
+      .map { |p| File.basename(p, '.*').to_sym }
+      .uniq.sort
   end
   helper_method :supported_locales
 

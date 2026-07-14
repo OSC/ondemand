@@ -118,6 +118,13 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
+  # Colon-separated list of paths to locale files that users are allowed to
+  # choose from. Defaults to just the default locale's path so the feature
+  # is opt-in. Mirrors the dashboard's Configuration#supported_locales.
+  def supported_locales
+    ENV['OOD_SUPPORTED_LOCALES'] || File.join(locales_root, locale.to_s)
+  end
+
   # The portal name, used to derive the per-user settings file path.
   # Mirrors the dashboard's Configuration#ood_portal so both apps read the
   # same user settings file.
