@@ -1127,4 +1127,57 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal('display: none;', find_option_style('gpu_type', 'better'))
     end
   end
+
+  test 'enumerable overrides display corrrectly as text fields' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # previosly these would be something like '#<Enumerator:0x00007f0ea4430788>'
+      assert_equal('', find_value('partition'))
+      assert_equal('', find_value('filter'))
+    end
+  end
+
+  test 'enumerable overrides can be checkboxes and select' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      attributes:
+        partition:
+          widget: select
+          options:
+            - 'a'
+            - 'b'
+        filter:
+          widget: check_box
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      filter = find("##{bc_ele_id('filter')}")
+      partition = find("##{bc_ele_id('partition')}")
+
+      assert_equal('1', filter.value)
+      assert_equal('input', filter.tag_name)
+      assert_equal('checkbox', filter[:type])
+      assert_equal('a', partition.value)
+      assert_equal('select', partition.tag_name)
+    end
+  end
 end

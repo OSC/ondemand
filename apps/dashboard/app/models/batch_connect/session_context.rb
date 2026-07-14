@@ -91,6 +91,26 @@ module BatchConnect
       OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
     end
 
+    # Redefine 'partition' from Enumerable so that sites can use it in a form.
+    def partition(&block)
+      if block_given?
+        @attributes.partition(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['partition'].value
+      end
+    end
+
+    # Redefine 'filter' from Enumerable so that sites can use it in a form.
+    def filter(&block)
+      if block_given?
+        @attributes.filter(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['filter'].value
+      end
+    end
+
     private
 
     # @return [Boolean]
