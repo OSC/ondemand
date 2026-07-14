@@ -115,4 +115,36 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       refute ConfigurationSingleton.new.show_job_options_account_field?
     end
   end
+
+  test 'ood_portal defaults to ondemand' do
+    with_modified_env(OOD_PORTAL: nil) do
+      assert_equal 'ondemand', ConfigurationSingleton.new.ood_portal
+    end
+  end
+
+  test 'ood_portal uses OOD_PORTAL env var' do
+    with_modified_env(OOD_PORTAL: 'my_portal') do
+      assert_equal 'my_portal', ConfigurationSingleton.new.ood_portal
+    end
+  end
+
+  test 'user_settings_file defaults to ~/.config/ondemand/settings.yml' do
+    with_modified_env(OOD_PORTAL: nil, OOD_USER_SETTINGS_FILE: nil) do
+      assert_equal File.expand_path('~/.config/ondemand/settings.yml'),
+                   ConfigurationSingleton.new.user_settings_file
+    end
+  end
+
+  test 'user_settings_file uses OOD_PORTAL' do
+    with_modified_env(OOD_PORTAL: 'my_portal', OOD_USER_SETTINGS_FILE: nil) do
+      assert_equal File.expand_path('~/.config/my_portal/settings.yml'),
+                   ConfigurationSingleton.new.user_settings_file
+    end
+  end
+
+  test 'user_settings_file uses OOD_USER_SETTINGS_FILE when set' do
+    with_modified_env(OOD_USER_SETTINGS_FILE: '/tmp/custom/settings.yml') do
+      assert_equal '/tmp/custom/settings.yml', ConfigurationSingleton.new.user_settings_file
+    end
+  end
 end

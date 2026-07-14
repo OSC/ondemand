@@ -236,6 +236,7 @@ zh-CN:
     jobs_workflow_sync_key_help: 启用后，此工作流中的每个启动器都会接收到相同的 <code>OOD_WORKFLOW_SYNC_KEY</code> 环境变量（一个对每次工作流运行唯一的随机令牌）。这对于生成同步的文件名、锁文件或跨依赖作业的共享标识符非常有用。
     jobs_workflows: 工作流
     launch: 启动
+    locale_name: 简体中文
     logo_alt_text: 欢迎使用 Open OnDemand
     maximum: 最大值
     minimum: 最小值
@@ -257,6 +258,7 @@ zh-CN:
     nav_help_support_ticket: 提交支持票
     nav_help_title: 帮助
     nav_help_two_factor: 配置双重身份验证
+    nav_language: 语言
     nav_limit_caption: 显示 %{subset_count} 的 %{total_count}
     nav_logout: 登出
     nav_restart_server: 重启网页服务器

@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
+  before_action :set_user, :set_user_configuration, :set_locale, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group, :set_custom_navigation
   before_action :check_required_announcements
@@ -129,6 +129,39 @@ class ApplicationController < ActionController::Base
     ::Configuration.balance_paths.each { |path| @my_balances += Balance.find(path, OodSupport::User.new.name) }
     @my_balances
   end
+
+  # Set the request locale from the user's saved preference, falling back to
+  # the admin-configured default (OOD_LOCALE) and then to the I18n default.
+  def set_locale
+    I18n.locale = current_user_locale
+  rescue I18n::InvalidLocale => e
+    logger.warn "I18n::InvalidLocale #{current_user_locale}: #{e.message}"
+    I18n.locale = I18n.default_locale
+  end
+
+  # Resolve the locale for the current request.
+  # Precedence: the user's saved preference (if it is a supported locale) >
+  # the admin default (::Configuration.locale) > the I18n default.
+  def current_user_locale
+    @current_user_locale ||= begin
+      candidate = @user_configuration.user_settings[:locale].presence
+      candidate = nil unless candidate && supported_locales.include?(candidate.to_sym)
+      (candidate || ::Configuration.locale).to_sym
+    end
+  end
+
+  # The locales that users are allowed to choose from in the language
+  # switcher. Derived from the admin-configured OOD_SUPPORTED_LOCALES
+  # (a colon-separated list of paths to locale files, defaulting to just
+  # the default locale). Only locales listed here appear in the switcher
+  # and are accepted when saving the user's preference.
+  def supported_locales
+    @supported_locales ||=
+      ::Configuration.supported_locales.to_s.split(':')
+      .map { |p| File.basename(p, '.*').to_sym }
+      .uniq.sort
+  end
+  helper_method :supported_locales
 
   private
 
