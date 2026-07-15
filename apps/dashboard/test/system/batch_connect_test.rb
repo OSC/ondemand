@@ -2228,7 +2228,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
+                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'p_s1345'].sort
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).sort
