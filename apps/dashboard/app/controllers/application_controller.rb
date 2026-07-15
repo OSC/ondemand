@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_group_changed
-    if OodSupport::Process.groups_changed?
+    if Rails.cache.fetch('groups_changed', expires_in: 5.minutes) {OodSupport::Process.groups_changed?}
       redirect_to helpers.restart_url
       logger.warn "Restarted PUN after group change detected"
     end
