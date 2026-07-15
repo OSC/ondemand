@@ -1128,7 +1128,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'enumerable overrides display corrrectly as text fields' do
+  test 'enumerable overrides display correctly as text fields' do
     Dir.mktmpdir do |dir|
       form = <<~HEREDOC
       ---
@@ -1142,7 +1142,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       make_bc_app(dir, form)
       visit new_batch_connect_session_context_url('sys/app')
 
-      # previosly these would be something like '#<Enumerator:0x00007f0ea4430788>'
+      # previously these would be something like '#<Enumerator:0x00007f0ea4430788>'
       assert_equal('', find_value('partition'))
       assert_equal('', find_value('filter'))
     end
