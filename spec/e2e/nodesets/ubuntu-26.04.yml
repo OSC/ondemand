@@ -33,4 +33,4 @@ CONFIG:
 ssh:
   password: root
   auth_methods: ["password"]
-  verbose: debug
+  verbose: ':debug'
