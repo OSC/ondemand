@@ -35,4 +35,6 @@ CONFIG:
   log_level: debug
   type: foss
 ssh:
-  auth_method: 'publickey'
+  auth_methods:
+    - publickey
+  number_of_password_prompts: 0
