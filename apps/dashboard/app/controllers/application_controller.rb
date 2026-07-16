@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
+  before_action :set_user, :set_user_configuration, :set_user_customization, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group, :set_custom_navigation
   before_action :check_required_announcements
@@ -21,6 +21,10 @@ class ApplicationController < ActionController::Base
 
   def set_user_configuration
     @user_configuration ||= UserConfiguration.new(request_hostname: request.hostname)
+  end
+
+  def set_user_customization
+    @user_customization ||= UserCustomization.new
   end
 
   def set_custom_navigation

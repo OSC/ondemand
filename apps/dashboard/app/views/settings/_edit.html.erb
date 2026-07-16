@@ -1,0 +1,9 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="settings_panel" aria-labelledby="settings_panel_label">
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title" id="settings_panel_label"><%= t('dashboard.customizations') %></h4>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <%= render partial: 'settings/files_favorites' %>
+  </div>
+</div>

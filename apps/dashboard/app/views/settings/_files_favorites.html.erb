@@ -1,0 +1,28 @@
+<h5 class="offcanvas-title"><%= t('dashboard.favorite_paths') %></h4>
+
+<ul id="current_favorites" class="nav nav-pills flex-column">
+<% #@user_customization.files_favorites %>
+  <% [{title: 'Home', path: '/path/to/home'}, {path: '/other/path/somewhere'}].each do |favorite| %>
+    <li class="nav-item mt-1">
+      <a href="#" class="nav-link bg-light" tabindex="-1">
+        <div>
+          <% if favorite[:title] %>
+            <%= favorite[:title] %> (<%= favorite[:path] %>)
+          <% else %>
+            <%= favorite[:path] %>
+          <% end %>
+        </div>
+      </a>
+    </li>
+  <% end %>
+  <li class="nav-item mt-1" >
+    <a href="#" class="nav-link bg-light text-dark collapsed" data-bs-toggle="collapse" data-bs-target="#new_favorite_path">
+      <%= t('dashboard.add_favorite_path') %>
+    </a>
+  </li>
+  <li id="new_favorite_path" class="collapse">
+  Form goes here
+  </li>
+</ul>
+
+        
