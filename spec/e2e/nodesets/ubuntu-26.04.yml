@@ -13,6 +13,8 @@ HOSTS:
       - 'locale-gen en_US.UTF-8'
     dockeropts:
       Tty: true
+      Binds:
+      - "~/.ssh/id_rsa:/root/.ssh/id_rsa:ro"
     docker_env:
       - LANG=en_US.UTF-8
       - LANGUAGE=en_US.UTF-8
@@ -34,4 +36,6 @@ CONFIG:
   type: foss
 ssh:
   password: root
-  auth_methods: ["password"]
+  auth_methods:
+    - 'password'
+    - 'publickey'
