@@ -4,6 +4,10 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
-    <%= render partial: 'settings/files_favorites' %>
+    <%= bootstrap_form_for(@user_customization, url: update_settings_path, html: { autocomplete: "off" }) do |f| %>
+      <%= render(partial: 'settings/files_favorites', locals: {form: f}) %>
+      
+      <%= f.submit t('dashboard.save_changes'), class: 'btn btn-primary' %>
+    <% end %>
   </div>
 </div>

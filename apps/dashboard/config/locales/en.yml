@@ -316,6 +316,7 @@ en:
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     root: Root
     save: Save
+    save_changes: Save Changes
     saved_settings_title: Saved Settings
     select_path: Select Path
     select_path_for: "%{element} select path\n"
@@ -361,6 +362,7 @@ en:
           attachments_js: Max attachment size is %{max}. Selected file size is %{size}
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
+    title: Title
     type: Type
     unknown: Unknown
     uppy: Uppy

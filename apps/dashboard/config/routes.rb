@@ -123,7 +123,7 @@ Rails.application.routes.draw do
 
   get '/system-status', to: 'system_status#index', as: 'system_status' if Configuration.can_access_system_status?
 
-  post 'settings', :to => 'settings#update'
+  post 'settings', :to => 'settings#update', as: 'update_settings'
 
   # Experimental Feature
   # Allows widget partials to be rendered without any page furniture.

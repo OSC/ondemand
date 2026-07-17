@@ -2,8 +2,8 @@
 
 import { PathSelectorTable } from "./path_selector_data_table";
 
-export function attachPathSelectors() {
-  $("[data-path-selector='true']").each((_idx, element) => {
+export function attachPathSelectors(container='') {
+  $(`${container} [data-path-selector='true']`).each((_idx, element) => {
     const query = `#${pathSelectorId(element.id)}`;
     const modal = $(query).get(0);
 

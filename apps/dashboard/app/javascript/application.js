@@ -38,6 +38,7 @@ import 'bootstrap/dist/js/bootstrap';
 
 import initPopovers from './popovers';
 import { updateAlerts } from './alert';
+import attachUserCustomizations from './user_customization';
 
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
@@ -48,4 +49,5 @@ Rails.start();
 jQuery(function(){
   initPopovers();
   updateAlerts();
+  attachUserCustomizations();
 });

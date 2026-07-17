@@ -2,26 +2,38 @@
 
 <ul id="current_favorites" class="nav nav-pills flex-column">
 <% #@user_customization.files_favorites %>
-  <% [{title: 'Home', path: '/path/to/home'}, {path: '/other/path/somewhere'}].each do |favorite| %>
+  <% form.object.custom_files_favorites.each do |favorite| %>
     <li class="nav-item mt-1">
-      <a href="#" class="nav-link bg-light" tabindex="-1">
-        <div>
-          <% if favorite[:title] %>
-            <%= favorite[:title] %> (<%= favorite[:path] %>)
-          <% else %>
-            <%= favorite[:path] %>
-          <% end %>
-        </div>
-      </a>
+      <div>
+        <% if favorite.title %>
+        <%= favorite.title %> (<%= favorite.path %>)
+        <% else %>
+        <%= favorite.path %>
+        <% end %>
+        <button class="btn bg-danger" title="<%=t('dashboard.delete_favorite_title', favorite: favorite.title || favorite.path) %>">
+          <i class="fas fa-trash" aria-hidden="true"></i>
+        </button>
+      </div>
     </li>
   <% end %>
   <li class="nav-item mt-1" >
-    <a href="#" class="nav-link bg-light text-dark collapsed" data-bs-toggle="collapse" data-bs-target="#new_favorite_path">
+    <a href="#" class="nav-link bg-light collapsed" data-bs-toggle="collapse" data-bs-target="#new_favorite_path">
       <%= t('dashboard.add_favorite_path') %>
     </a>
-  </li>
-  <li id="new_favorite_path" class="collapse">
-  Form goes here
+    <div id="new_favorite_path" class="nav-link text-dark collapse">
+      <%= bootstrap_form_for(FavoritePath.new(''), url:'/') do |f| %>
+        <%= f.text_field(:title) %>
+        <%= render partial:'batch_connect/session_contexts/path_selector', 
+              locals: {
+                form: f,
+                attrib: OpenStruct.new({id:'path'}),
+                field_options: {
+                  show_files: false,
+                  popup_title: t('dashboard.select_path')
+                }
+              } 
+        %>
+      <% end %>
   </li>
 </ul>
 
