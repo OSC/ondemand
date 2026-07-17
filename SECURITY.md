@@ -26,6 +26,10 @@ involving the following steps:
   * Audit code to find any potential similar problems (1-2 days).
   * Prepare fixes for all releases still under maintenance. These fixes will be
     released as fast as possible (2-7 days).
+  * Redact the information provided by the reporter and publish the vulnerabilty.
+  * 90 days after publishing the vulnerability the original unredacted may be published
+    if the reporter wishes. During investigation the team will ask if the reporter
+    wishes the original report to be published in full 90 days after publishing.
 
 ## Comments on this Policy
 
