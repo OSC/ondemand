@@ -11,10 +11,7 @@ HOSTS:
       - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
       - 'apt-get install -y wget net-tools locales apt-transport-https ca-certificates iproute2'
       - 'locale-gen en_US.UTF-8'
-    dockeropts:
-      Tty: true
-      Binds:
-      - "~/.ssh/id_rsa:/root/.ssh/id_rsa:ro"
+      - sed -i 's/^#?UsePAM .*/UsePAM yes/' /etc/ssh/sshd_config 
     docker_env:
       - LANG=en_US.UTF-8
       - LANGUAGE=en_US.UTF-8
@@ -35,6 +32,6 @@ CONFIG:
   log_level: debug
   type: foss
 ssh:
-  auth_methods:
-    - publickey
-  number_of_password_prompts: 0
+  password: root
+  auth_methods: ["password"]
+
