@@ -16,6 +16,9 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+update dependencies (#5614)\
+Update Changelog (#5613)\
+Bump excon from 1.4.2 to 1.5.0 (#5612)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
