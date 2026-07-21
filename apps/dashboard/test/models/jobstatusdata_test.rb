@@ -44,6 +44,7 @@ class JobstatusdataTest < ActiveSupport::TestCase
     job.send(:cluster_title=, 'Oakley')
     job.send(:nodes=, [])
     job.send(:queue=, 'normal')
+    job.send(:output_path=, '/tmp')
     job
   end
 
@@ -53,7 +54,8 @@ class JobstatusdataTest < ActiveSupport::TestCase
       native: {
         Resource_List: { walltime: '01:00:00', nodect: 2, nodes: 'nodes=2:ppn=8' },
         resources_used: { cput: '00:10:00', mem: '1 gb', vmem: '2 gb' },
-        comment: 'comment'
+        comment: 'comment',
+        Output_Path: '/tmp'
       }
     )
 
