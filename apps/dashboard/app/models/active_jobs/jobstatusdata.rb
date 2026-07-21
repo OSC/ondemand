@@ -7,7 +7,7 @@ module ActiveJobs
   # @author Brian L. McMichael
   # @version 0.0.1
   class Jobstatusdata
-    attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :gpus, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
+    attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :extended_available, :native_attribs, :file_explorer_url, :shell_url
 
     Attribute = Struct.new(:name, :value)
 
@@ -87,7 +87,7 @@ module ActiveJobs
       self.native_attribs = attributes
 
       self.submit_args = info.native[:submit_args].presence || "None"
-      self.output_path = info.native[:Output_Path].to_s.split(":").second.presence || info.native[:Output_Path].presence || ENV["HOME"]
+      self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
       output_pathname = Pathname.new(self.output_path).dirname
       self.file_explorer_url = build_file_explorer_url(output_pathname)
@@ -127,9 +127,9 @@ module ActiveJobs
       self.native_attribs = attributes
 
       self.submit_args = nil
-      self.output_path = info.native[:work_dir].presence || ENV["HOME"]
+      self.output_path = info.native[:work_dir]
 
-      output_pathname = Pathname.new(self.output_path)
+      output_pathname = Pathname.new(info.native[:work_dir])
       self.file_explorer_url = build_file_explorer_url(output_pathname)
       self.shell_url = build_shell_url(output_pathname, self.cluster)
 
@@ -202,7 +202,7 @@ module ActiveJobs
       attributes.push Attribute.new "Comment", info.native[:comment] || ''
       self.native_attribs = attributes
       self.submit_args = info.native[:Submit_arguments].presence || "None"
-      self.output_path = info.native[:Output_Path].to_s.split(":").second.presence || info.native[:Output_Path].presence || ENV["HOME"]
+      self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
       output_pathname = Pathname.new(self.output_path).dirname
       self.file_explorer_url = build_file_explorer_url(output_pathname)
@@ -357,7 +357,7 @@ module ActiveJobs
         node_info_array.map { |n| n.name }
       end
 
-      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
+      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :extended_available, :native_attribs, :file_explorer_url, :shell_url
 
   end
 end
