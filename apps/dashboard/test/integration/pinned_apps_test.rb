@@ -2,6 +2,8 @@
 
 require 'html_helper'
 require 'test_helper'
+require 'fileutils'
+require 'tmpdir'
 
 class PinnedAppsTest < ActionDispatch::IntegrationTest
   def setup
@@ -10,11 +12,18 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     stub_usr_router
     setup_usr_fixtures
     Router.instance_variable_set('@pinned_apps', nil)
+    @settings_tmpdir = Dir.mktmpdir
+    Configuration.stubs(:user_settings_file).returns("#{@settings_tmpdir}/settings.yml")
+    @original_forgery_protection = ActionController::Base.allow_forgery_protection
+    ActionController::Base.allow_forgery_protection = false
+
   end
 
   def teardown
     teardown_usr_fixtures
     Router.instance_variable_set('@pinned_apps', nil)
+    FileUtils.remove_entry(@settings_tmpdir) if @settings_tmpdir
+    ActionController::Base.allow_forgery_protection = @original_forgery_protection
   end
 
   test 'should create Apps dropdown when pinned apps are available' do
@@ -467,6 +476,77 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "div[class='xdmod']", 0
   end
 
+  test 'saving custom pinned apps persists and renders selected apps' do
+    stub_user_configuration({ pinned_apps: ['sys/bc_paraview', 'sys/pseudofun'] })
+
+    Dir.mktmpdir do |dir|
+      settings_file = "#{dir}/settings.yml"
+      Configuration.stubs(:user_settings_file).returns(settings_file)
+
+      patch pinned_apps_path, params: { pinned_app_tokens: ['sys/bc_jupyter'] }
+      assert_redirected_to root_url
+      assert_equal ['sys/bc_jupyter'], YAML.safe_load(File.read(settings_file)).fetch('custom_pinned_apps')
+
+      get '/'
+      assert_select pinned_app_links, 1
+      assert_select pinned_app_link('/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
+    end
+  end
+
+  test 'resetting custom pinned apps restores admin defaults' do
+    stub_user_configuration({ pinned_apps: ['sys/bc_paraview', 'sys/pseudofun'] })
+
+    Dir.mktmpdir do |dir|
+      settings_file = "#{dir}/settings.yml"
+      Configuration.stubs(:user_settings_file).returns(settings_file)
+
+      patch pinned_apps_path, params: { pinned_app_tokens: ['sys/bc_jupyter'] }
+      assert_redirected_to root_url
+
+      delete pinned_apps_path
+      assert_redirected_to root_url
+
+      get '/'
+      assert_select pinned_app_links, 2
+      assert_select pinned_app_link('/batch_connect/sys/bc_paraview/session_contexts/new'), 1
+      assert_select pinned_app_link('/apps/show/pseudofun'), 1
+    end
+  end
+
+  test 'empty custom pinned apps keeps widget visible for editing' do
+    stub_user_configuration({ pinned_apps: ['sys/bc_paraview'] })
+
+    Dir.mktmpdir do |dir|
+      settings_file = "#{dir}/settings.yml"
+      Configuration.stubs(:user_settings_file).returns(settings_file)
+
+      patch pinned_apps_path, params: { pinned_app_tokens: [] }
+      assert_redirected_to root_url
+
+      get '/'
+      assert_select pinned_app_links, 0
+      assert_select 'p.text-muted', text: I18n.t('dashboard.pinned_apps_none_yet'), count: 1
+      assert_select "button[aria-label='#{I18n.t('dashboard.pinned_apps_customize')}']", count: 1
+    end
+  end
+
+  test 'invalid pinned app tokens are ignored' do
+    stub_user_configuration({ pinned_apps: ['sys/bc_paraview'] })
+
+    Dir.mktmpdir do |dir|
+      settings_file = "#{dir}/settings.yml"
+      Configuration.stubs(:user_settings_file).returns(settings_file)
+
+      patch pinned_apps_path, params: { pinned_app_tokens: ['not/real', 'sys/pseudofun'] }
+      assert_redirected_to root_url
+      assert_equal ['sys/pseudofun'], YAML.safe_load(File.read(settings_file)).fetch('custom_pinned_apps')
+
+      get '/'
+      assert_select pinned_app_links, 1
+      assert_select pinned_app_link('/apps/show/pseudofun'), 1
+    end
+  end
+
   def pinned_app_links
     'div.col-sm-3.col-md-3.app-launcher-container > div > a'
   end
@@ -474,4 +554,5 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   def pinned_app_link(ref)
     "div.col-sm-3.col-md-3.app-launcher-container > div > a[href='#{ref}']"
   end
+
 end
