@@ -1,40 +1,48 @@
-<h5 class="offcanvas-title"><%= t('dashboard.favorite_paths') %></h4>
+<h5 class="offcanvas-title"><%= t('dashboard.favorite_paths') %></h5>
+
+<li class="nav-item bg-light text-dark mt-1" data-favorite-demo style="display:none">
+  <div class="nav-link text-dark bg-light">
+    <a class="btn bg-danger" href="#" role="button" data-delete-favorite>
+      <i class="fas fa-trash" aria-hidden="true"></i>
+    </a>
+  </div>
+</li>
 
 <ul id="current_favorites" class="nav nav-pills flex-column">
-<% #@user_customization.files_favorites %>
-  <% form.object.custom_files_favorites.each do |favorite| %>
-    <li class="nav-item mt-1">
-      <div>
-        <% if favorite.title %>
-        <%= favorite.title %> (<%= favorite.path %>)
+  <% @user_customization.custom_files_favorites.each do |favorite| %>
+    <li class="nav-item bg-light text-dark mt-1" data-favorite-title="<%= favorite[:title] %>" data-favorite-path="<%= favorite[:path] %>">
+      <div class="nav-link text-dark bg-light">
+        <% if favorite[:title].to_s.length > 0 %>
+        <%= favorite[:title] %> (<%= favorite[:path] %>)
         <% else %>
-        <%= favorite.path %>
+        <%= favorite[:path] %>
         <% end %>
-        <button class="btn bg-danger" title="<%=t('dashboard.delete_favorite_title', favorite: favorite.title || favorite.path) %>">
+        <a class="btn bg-danger" href="#" role="button" data-delete-favorite title="<%=t('dashboard.delete_favorite_title', favorite: favorite[:title] || favorite[:path]) %>">
           <i class="fas fa-trash" aria-hidden="true"></i>
-        </button>
+        </a>
       </div>
     </li>
   <% end %>
-  <li class="nav-item mt-1" >
+  <li id="new_favorite_item" class="nav-item mt-1">
     <a href="#" class="nav-link bg-light collapsed" data-bs-toggle="collapse" data-bs-target="#new_favorite_path">
       <%= t('dashboard.add_favorite_path') %>
     </a>
-    <div id="new_favorite_path" class="nav-link text-dark collapse">
-      <%= bootstrap_form_for(FavoritePath.new(''), url:'/') do |f| %>
-        <%= f.text_field(:title) %>
+    <div id="new_favorite_path" class="nav-link text-dark bg-light collapse">
+    <!-- The following form never gets submitted, but path_selector requires a valid form.object -->
+      <%= fields_for :favorite_path, FavoritePath.new(''), builder: BootstrapForm::FormBuilder do |dummy_form| %>
+        <%= dummy_form.text_field(:title) %>
         <%= render partial:'batch_connect/session_contexts/path_selector', 
               locals: {
-                form: f,
+                form: dummy_form,
                 attrib: OpenStruct.new({id:'path'}),
                 field_options: {
                   show_files: false,
                   popup_title: t('dashboard.select_path')
                 }
-              } 
+              }
         %>
+        <a id="new_favorite_button" class="btn btn-secondary ms-5" role="button"> <%= t('dashboard.add_favorite') %> </A>
       <% end %>
+    </div>
   </li>
 </ul>
-
-        

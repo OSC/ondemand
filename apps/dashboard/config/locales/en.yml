@@ -12,6 +12,7 @@ en:
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
+    add_favorite: Add Favorite
     add_favorite_path: Add Favorite Path
     all_apps_table_app_column: Name
     all_apps_table_category_column: Category
@@ -146,6 +147,7 @@ en:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date
     delete: Delete
+    delete_favorite_title: Remove custom favorite %{favorite}
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit

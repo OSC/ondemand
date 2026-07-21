@@ -4,9 +4,11 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
-    <%= bootstrap_form_for(@user_customization, url: update_settings_path, html: { autocomplete: "off" }) do |f| %>
-      <%= render(partial: 'settings/files_favorites', locals: {form: f}) %>
-      
+    <%= bootstrap_form_for(@user_customization, url: update_customization_path, html: { autocomplete: "off" }) do |f| %>
+      <%= render(partial: 'settings/files_favorites') %>
+      <%= f.object.inspect %>
+      <%= f.hidden_field(:custom_files_favorites, value: JSON.generate(f.object.custom_files_favorites)) %>
+
       <%= f.submit t('dashboard.save_changes'), class: 'btn btn-primary' %>
     <% end %>
   </div>

@@ -123,8 +123,9 @@ Rails.application.routes.draw do
 
   get '/system-status', to: 'system_status#index', as: 'system_status' if Configuration.can_access_system_status?
 
-  post 'settings', :to => 'settings#update', as: 'update_settings'
-
+  post 'settings', :to => 'settings#update'
+  post 'customizations', :to => 'settings#update_user_customization', as: 'update_customization'
+  
   # Experimental Feature
   # Allows widget partials to be rendered without any page furniture.
   # It can be use to extend OOD functionality.
