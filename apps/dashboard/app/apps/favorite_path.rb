@@ -6,8 +6,6 @@
 # Sites use initializers to create FavoritePaths and add them to
 # OodFilesApp.candidate_favorite_paths.
 class FavoritePath
-  include ActiveModel::Model
-
   def initialize(path, title: nil, filesystem: nil)
     @title = title || path.try(:title)
     @path = Pathname.new(path.to_s)
