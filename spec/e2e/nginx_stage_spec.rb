@@ -19,6 +19,11 @@ describe 'Nginx stage' do
       on hosts, 'echo -n 11111111 > /var/run/ondemand-nginx/deleted_user/passenger.pid'
       on hosts, 'echo -n 11111111 > /var/lib/ondemand-nginx/config/puns/deleted_user.conf'
       on hosts, 'echo -n 11111111 > /var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'
+      
+      # Create the pre-hook directory and file to prevent the hook from failing
+      on hosts, 'mkdir -p /opt/hooks'
+      on hosts, 'touch /opt/hooks/pun_pre_hook'
+      on hosts, 'chmod +x /opt/hooks/pun_pre_hook'
     end
 
     after(:all) do
