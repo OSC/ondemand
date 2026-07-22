@@ -72,7 +72,7 @@ module ActiveJobs
       attributes.push Attribute.new "Job Name", self.jobname
       attributes.push Attribute.new "User", self.username
       attributes.push Attribute.new "Account", self.account
-      attributes.push Attribute.new "Walltime", (info.wallclock_limit || "00:00:00")
+      attributes.push Attribute.new "Walltime", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       attributes.push Attribute.new "Walltime Used", self.walltime_used
       node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
       attributes.push Attribute.new "Node Count", node_count
@@ -87,7 +87,7 @@ module ActiveJobs
       self.native_attribs = attributes
 
       self.submit_args = info.native[:submit_args].presence || "None"
-      self.output_path = info.native[:Output_Path].to_s.split(":").second.presence || info.native[:Output_Path].presence || ENV["HOME"]
+      self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
       output_pathname = Pathname.new(self.output_path).dirname
       self.file_explorer_url = build_file_explorer_url(output_pathname)
@@ -118,7 +118,7 @@ module ActiveJobs
       attributes.push Attribute.new "Total Nodes", info.native[:nodes]
       attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
       attributes.push Attribute.new "Total CPUs", info.native[:cpus]
-      attributes.push Attribute.new "Time Limit", (info.wallclock_limit || "00:00:00")
+      attributes.push Attribute.new "Time Limit", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       attributes.push Attribute.new "Time Used", self.walltime_used
       attributes.push Attribute.new "Start Time", safe_parse_time(info.native[:start_time])
       attributes.push Attribute.new "End Time", safe_parse_time(info.native[:end_time])
@@ -127,9 +127,9 @@ module ActiveJobs
       self.native_attribs = attributes
 
       self.submit_args = nil
-      self.output_path = info.native[:work_dir].presence || ENV["HOME"]
+      self.output_path = info.native[:work_dir]
 
-      output_pathname = Pathname.new(self.output_path)
+      output_pathname = Pathname.new(info.native[:work_dir])
       self.file_explorer_url = build_file_explorer_url(output_pathname)
       self.shell_url = build_shell_url(output_pathname, self.cluster)
 
@@ -154,7 +154,7 @@ module ActiveJobs
       attributes.push Attribute.new "Job Name", self.jobname
       attributes.push Attribute.new "Submit Time", info.native[:submit_time]
       attributes.push Attribute.new "Project Name", info.native[:project]
-      attributes.push Attribute.new "Walltime", (info.wallclock_limit || "00:00:00")
+      attributes.push Attribute.new "Walltime", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       attributes.push Attribute.new "CPU Used", info.native[:cpu_used]
       attributes.push Attribute.new "Mem", info.native[:mem]
       attributes.push Attribute.new "Swap", info.native[:swap]
@@ -185,7 +185,7 @@ module ActiveJobs
       attributes.push Attribute.new "User", self.username
       attributes.push Attribute.new "Account", self.account if info.accounting_id
       attributes.push Attribute.new "Group List", info.native[:group_list] if info.native[:group_list]
-      attributes.push Attribute.new "Walltime", (info.wallclock_limit || "00:00:00")
+      attributes.push Attribute.new "Walltime", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       walltime_used = info.wallclock_time || 0
       attributes.push Attribute.new "Walltime Used", self.walltime_used
       node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
@@ -202,7 +202,7 @@ module ActiveJobs
       attributes.push Attribute.new "Comment", info.native[:comment] || ''
       self.native_attribs = attributes
       self.submit_args = info.native[:Submit_arguments].presence || "None"
-      self.output_path = info.native[:Output_Path].to_s.split(":").second.presence || info.native[:Output_Path].presence || ENV["HOME"]
+      self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
       output_pathname = Pathname.new(self.output_path).dirname
       self.file_explorer_url = build_file_explorer_url(output_pathname)
@@ -357,7 +357,7 @@ module ActiveJobs
         node_info_array.map { |n| n.name }
       end
 
-      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
+      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :extended_available, :native_attribs, :file_explorer_url, :shell_url
 
   end
 end
