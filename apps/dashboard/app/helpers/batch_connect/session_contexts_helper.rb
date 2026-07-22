@@ -45,7 +45,7 @@ module BatchConnect::SessionContextsHelper
     wrapped = content_tag(
       :div, 
       id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
-      class: attrib.hide_by_default? ? 'd-none' : '',
+      class: attrib.hide_by_default? ? 'd-none' : nil,
       data: {
         widget_type: widget,
         hide_by_default: attrib.hide_by_default?
