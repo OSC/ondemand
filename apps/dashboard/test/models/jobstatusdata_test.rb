@@ -15,38 +15,34 @@ class JobstatusdataTest < ActiveSupport::TestCase
   # Jobstatusdata#initialize (see cluster.id.to_s, cluster.title,
   # cluster.job_config[:adapter]), so a real OodCore::Cluster isn't required —
   # this only needs to satisfy that same interface.
-  ClusterDouble = Struct.new(:id, :title, :job_config) do
-    def login_allow?
-      false
-    end
-  end
-
   def cluster_double(adapter)
-    ClusterDouble.new(adapter, adapter.capitalize, { adapter: adapter })
+    OodCore::Cluster.new(id: adapter, job: { adapter: adapter })
   end
 
   def stub_cluster(adapter)
     cluster = cluster_double(adapter)
-    OODClusters.stubs(:[]).with(adapter).returns(cluster)
+    OODClusters.stubs(:[]).with(adapter.to_s).returns(cluster)
+    OODClusters.stubs(:[]).with(adapter.to_sym).returns(cluster)
     cluster
   end
-
-  def build_info(wallclock_limit:, native: {})
-    OodCore::Job::Info.new(
-      id: '123',
-      job_name: 'Test Job',
-      job_owner: 'user',
-      accounting_id: 'acct',
-      status: :queued,
-      queue_name: 'normal',
-      gpus: 0,
-      wallclock_time: 3600,
-      dispatch_time: 1_700_000_000,
-      allocated_nodes: [],
-      wallclock_limit: wallclock_limit,
-      native: native
-    )
-  end
+  
+  def build_info(info = {})
+  default = {
+    id: '123',
+    job_name: 'Test Job',
+    job_owner: 'user',
+    accounting_id: 'acct',
+    status: :queued,
+    queue_name: 'normal',
+    gpus: 0,
+    wallclock_time: 3600,
+    dispatch_time: 1_700_000_000,
+    allocated_nodes: [],
+    wallclock_limit: nil,
+    native: {}
+  }
+  OodCore::Job::Info.new(**default.merge(info))
+end
 
   # Goes through the real constructor, letting `initialize` do its own
   # adapter dispatch (extended_data_torque/slurm/lsf/pbspro) rather than

@@ -357,7 +357,7 @@ module ActiveJobs
         node_info_array.map { |n| n.name }
       end
 
-      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :extended_available, :native_attribs, :file_explorer_url, :shell_url
+      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :gpus, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
 
   end
 end
