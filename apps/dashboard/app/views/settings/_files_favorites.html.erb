@@ -1,6 +1,6 @@
 <h5 class="offcanvas-title"><%= t('dashboard.favorite_paths') %></h5>
 
-<li class="nav-item bg-light text-dark mt-1" data-favorite-demo style="display:none">
+<li class="nav-item mt-1" data-favorite-demo style="display:none">
   <div class="nav-link text-dark bg-light">
     <a class="btn bg-danger" href="#" role="button" data-delete-favorite>
       <i class="fas fa-trash" aria-hidden="true"></i>
@@ -10,7 +10,7 @@
 
 <ul id="current_favorites" class="nav nav-pills flex-column">
   <% @user_customization.custom_files_favorites.each do |favorite| %>
-    <li class="nav-item bg-light text-dark mt-1" data-favorite-title="<%= favorite[:title] %>" data-favorite-path="<%= favorite[:path] %>">
+    <li class="nav-item mt-1" data-favorite-title="<%= favorite[:title] %>" data-favorite-path="<%= favorite[:path] %>">
       <div class="nav-link text-dark bg-light">
         <% if favorite[:title].to_s.length > 0 %>
         <%= favorite[:title] %> (<%= favorite[:path] %>)
