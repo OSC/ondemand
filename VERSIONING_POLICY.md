@@ -19,7 +19,10 @@ that may be removed in the next major version.
 
 ## Patch Versions
 Patch versions primarily contain security fixes and bug fixes and are not intended to 
-introduce new functionality.
+introduce new functionality or break existing functionality.
+
+Though security patches may in fact break existing functionality if that functionality
+is insecure and leaves sites vulnerable.
 
 ## Nightly Versions
 Nightly packages (.rpm and .deb) are built every night from the current commit in
