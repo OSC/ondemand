@@ -1,6 +1,6 @@
 # Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
-  def create_widget(form, attrib, format: nil, hide_excludable: true, hide_fixed: true)
+  def create_widget(form, attrib, format: nil, hide_excludable: true, hide_fixed: true, grouped: false)
     return '' if hide_fixed && attrib.fixed?
     return '' if attrib.hide_when_empty? && attrib.value.blank?
 
@@ -45,7 +45,7 @@ module BatchConnect::SessionContextsHelper
     wrapped = content_tag(
       :div, 
       id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
-      class: attrib.hide_by_default? ? 'd-none' : '',
+      class: wrapper_class(attrib.hide_by_default?, grouped),
       data: {
         widget_type: widget,
         hide_by_default: attrib.hide_by_default?
@@ -56,6 +56,14 @@ module BatchConnect::SessionContextsHelper
 
     header = sanitize(OodAppkit.markdown.render(attrib.header))
     safe_join([header, wrapped])
+  end
+
+  def wrapper_class(hidden, grouped)
+    css = ''
+    css += 'd-none' if hidden
+    css += ' col' if grouped
+
+    css.empty? ? nil : css
   end
 
   def resolution_field(form, id, opts = {})
