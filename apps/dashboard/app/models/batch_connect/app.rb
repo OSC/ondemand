@@ -244,12 +244,16 @@ module BatchConnect
       end
     end
 
+    def form_layout
+      @form_layout ||= form_config.fetch(:form, [])
+    end
+
     def attributes
       @attributes ||= begin
         return [] unless valid?
 
         local_attribs = form_config.fetch(:attributes, {})
-        attrib_list   = form_config.fetch(:form, [])
+        attrib_list   = form_layout.flatten
         add_cluster_widget(local_attribs, attrib_list)
 
         attrib_list.map do |attribute_id|

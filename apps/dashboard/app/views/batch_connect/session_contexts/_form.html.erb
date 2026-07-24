@@ -7,9 +7,19 @@
   <span class='sr-only' tabindex='0'><%= t('dashboard.batch_connect_form_dynamic_disclaimer') %></span>
 <% end %>
 <%= bootstrap_form_for(@session_context, html: { autocomplete: "off", }) do |f| %>
-  <% f.object.each do |attrib| %>
-    <%= create_widget(f, attrib, format: @render_format) %>
-  <% end %>
+  <%- @app.form_layout.each do |form_item| -%>
+    <%- if form_item.is_a?(Array) -%>
+    <div class="row">
+      <%- form_item.each do |grouped_item| -%>
+        <%- attrib = @session_context[format_bc_id(grouped_item)] %>
+        <%= create_widget(f, attrib, format: @render_format, grouped: true) %>
+      <%- end -%>
+    </div>
+    <%- else -%>
+      <%- attrib = @session_context[format_bc_id(form_item)] %>
+      <%= create_widget(f, attrib, format: @render_format) %>
+    <%-  end -%>
+  <%- end -%>
 
   <%- if Configuration.bc_saved_settings? -%>
   <div class="mb-3 form-check">
