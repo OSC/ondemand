@@ -14,6 +14,9 @@ class UserCustomization
     if validate_files_favorites(new_favorites)
       @custom_files_favorites = new_favorites
       update_user_settings({ files_favorites: new_favorites })
+      true
+    else
+      false
     end
   end
 

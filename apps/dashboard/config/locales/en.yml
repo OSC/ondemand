@@ -152,6 +152,7 @@ en:
     directory: Directory
     edit: Edit
     favorite_paths: Favorite Paths
+    favorites_not_updated: Some favorite paths do not exist. Custom favorites have not been updated
     file: File
     file_quotas: File Quotas
     files_directory_download_error_modal_title: Directory too large to download

@@ -25,12 +25,21 @@ class SettingsController < ApplicationController
 
   def update_user_customization
     new_settings = read_settings(user_customization_param)
+    alert = nil
+    updated = false
     if new_settings.include?(:custom_files_favorites)
       parsed = JSON.parse(new_settings[:custom_files_favorites])
-      @user_customization.update_files_favorites(parsed)
+      if @user_customization.update_files_favorites(parsed)
+        updated = true
+      else
+        alert = I18n.t('dashboard.favorites_not_updated')
+      end
     end
 
-    redirect_back allow_other_host: false, fallback_location: root_url, notice: I18n.t('dashboard.settings_updated')
+    announcements = Hash.new
+    announcements[:notice] = I18n.t('dashboard.settings_updated') if updated
+    announcements[:alert] = alert if alert
+    redirect_back allow_other_host: false, fallback_location: root_url, **announcements
   end
 
   private

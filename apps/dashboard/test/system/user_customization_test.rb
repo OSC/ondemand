@@ -96,9 +96,6 @@ class UserCustomizationTest < ApplicationSystemTestCase
 
       # since we're here, lets replace this favorite with a titled one
       find('#favorite_path_path_path_selector_button').click
-      find('#favorite_path_path_path_selector .btn-close').click
-
-      sleep 10
       refute_selector('#favorite_path_path_path_selector')
       assert_equal(first_path, find('#favorite_path_path').value)
       find('#favorite_path_title').set('Dashboard')
@@ -116,7 +113,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
 
       click_on(I18n.t('dashboard.save_changes'))
       assert_selector('ul#favorites li', count: 2)
-      assert_selector("ul#favorites a.nav-link[href='#{files_path(first_path)}']", text: first_path)
+      assert_selector("ul#favorites a.nav-link[href='#{files_path(first_path)}']", text: 'Dashboard')
 
       open_customization_panel
       click_on(I18n.t('dashboard.add_favorite_path'))
@@ -124,11 +121,42 @@ class UserCustomizationTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.select_path'))
       assert_selector('#favorite_path_path_path_selector.show')
       assert_selector('div#favorites a', count: 2)
-      click_on(first_path)
+      click_on('Dashboard')
       assert_selector('li.breadcrumb-item', text: File.basename(first_path))
     end
   end
 
   test 'adding a path that does not exist' do
+    Dir.mktmpdir do |dir|
+      stub_user_settings_store(dir)
+      visit('/')
+      open_customization_panel
+
+      click_on(I18n.t('dashboard.add_favorite_path'))
+      assert_selector('#new_favorite_path.show')
+
+      # Add favorite without title
+      nonexistent_path = File.join(dir, 'fake_dir')
+      find('#favorite_path_path').set(nonexistent_path)
+      find('#new_favorite_button').click
+      assert_selector('#current_favorites li', count: 2)
+      click_on(I18n.t('dashboard.save_changes'))
+      assert_selector('.alert-danger.alert-dismissible', text: I18n.t('dashboard.favorites_not_updated'))
+      refute_selector('.alert-success')
+      find('.alert-danger .btn-close').click
+      refute_selector('.alert-danger')
+
+      # add favorite with title
+      open_customization_panel
+      click_on(I18n.t('dashboard.add_favorite_path'))
+      assert_selector('#new_favorite_path.show')
+      find('#favorite_path_title').set('Fake Path')
+      find('#favorite_path_path').set(nonexistent_path)
+      find('#new_favorite_button').click
+      assert_selector('#current_favorites li', count: 2)
+      click_on(I18n.t('dashboard.save_changes'))
+      assert_selector('.alert-danger.alert-dismissible', text: I18n.t('dashboard.favorites_not_updated'))
+      refute_selector('.alert-success')
+    end
   end
 end

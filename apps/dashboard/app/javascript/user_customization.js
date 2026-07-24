@@ -18,7 +18,6 @@ function addFavorite() {
   const title = titleInput.value;
   const path = pathInput.value;
   if(path.trim().length == 0) {
-    markInvalidPath();
     return;
   }
 
@@ -63,8 +62,4 @@ function removeFavorite(e) {
   const new_values = values.filter(value => (value.title !== title) || (value.path !== path))
   hiddenInput.value = JSON.stringify(new_values);
   item.remove();
-}
-
-function markInvalidPath() {
-  const pathInput = document.getElementById('favorite_path_path');
 }
