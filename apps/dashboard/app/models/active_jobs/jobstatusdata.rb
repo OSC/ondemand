@@ -357,7 +357,8 @@ module ActiveJobs
         node_info_array.map { |n| n.name }
       end
 
-      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :gpus, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
+      # Change this line back to the original order (:gpus before :cput, :mem):
+attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
 
   end
 end
