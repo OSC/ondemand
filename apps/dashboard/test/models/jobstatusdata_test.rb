@@ -4,17 +4,7 @@ require 'test_helper'
 require 'active_jobs/jobstatusdata'
 
 class JobstatusdataTest < ActiveSupport::TestCase
-  # Minimal duck-typed status. OodCore::Job::Info#initialize doesn't appear to
-  # validate the type of `status` beyond calling .state on it (see
-  # jobstatusdata.rb: `self.status = info.status.state.to_s`), so this is kept
-  # rather than swapping to OodCore::Job::Status — confirm this still holds if
-  # ood_core's Info validation changes.
-  
-
-  # Minimal cluster double. Only .id, .title, and .job_config are read by
-  # Jobstatusdata#initialize (see cluster.id.to_s, cluster.title,
-  # cluster.job_config[:adapter]), so a real OodCore::Cluster isn't required —
-  # this only needs to satisfy that same interface.
+    
   def cluster_double(adapter)
     OodCore::Cluster.new(id: adapter, job: { adapter: adapter })
   end
@@ -89,12 +79,6 @@ end
 
     job = build_jobstatusdata(info, 'slurm')
 
-    # TODO confirm attribute name + source before merging:
-    #   grep -n "Time Limit\|Walltime" apps/dashboard/app/models/active_jobs/jobstatusdata.rb
-    # around extended_data_slurm. If it currently reads info.native[:time_limit]
-    # instead of info.wallclock_limit, the Slurm branch still has the original
-    # bug this PR is supposed to fix, and needs the same one-line change as
-    # Torque/LSF/PBSPro before this assertion is valid.
     assert_equal '03:00:00', job.native_attribs.find { |a| a.name == 'Time Limit' }.value
   end
 
