@@ -40,7 +40,7 @@ module BatchConnect
     # @param id [Object] id of attribute object
     # @return [SmartAttribute::Attribute, nil] attribute object if found
     def [](id)
-      @attributes.detect { |attribute| attribute == id }
+      @attributes.detect { |attribute| attribute == id.to_s.gsub(/[-\/]/, '_').downcase }
     end
 
     # For a block {|attribute| ...}

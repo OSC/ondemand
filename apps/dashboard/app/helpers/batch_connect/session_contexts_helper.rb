@@ -61,9 +61,19 @@ module BatchConnect::SessionContextsHelper
   def wrapper_class(hidden, grouped)
     css = ''
     css += 'd-none' if hidden
-    css += ' col' if grouped
+    css += "#{hidden ? ' ' : nil}col" if grouped
 
     css.empty? ? nil : css
+  end
+
+  def format_bc_id(id)
+    # global bc_ options strip global_ prefix from their id.
+    ga_bc_rex = /\Aglobal_bc_([\w-]+)\z/.freeze
+    if id.match?(ga_bc_rex)
+      "bc_#{id.match(ga_bc_rex)[1]}"
+    else
+      id
+    end
   end
 
   def resolution_field(form, id, opts = {})
