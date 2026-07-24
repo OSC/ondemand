@@ -4,15 +4,13 @@ export default function attachUserCustomizations() {
   attachPathSelectors('#new_favorite_path');
   // To get the path selector modal to render properly, we move it outside the offcanvas
   $('#new_favorite_path .modal').appendTo('body');
-
   document.getElementById('new_favorite_button').addEventListener('click', addFavorite);
   document.querySelectorAll('[data-delete-favorite]').forEach(el => {
     el.addEventListener('click', (e) => removeFavorite(e));
-  })
+  });
 }
 
 function addFavorite() {
-  console.log('adding favorite');
   const titleInput = document.getElementById('favorite_path_title');
   const pathInput =  document.getElementById('favorite_path_path');
   const title = titleInput.value;
@@ -24,7 +22,6 @@ function addFavorite() {
   const demoItem = document.querySelector('[data-favorite-demo]');
   const newItem = demoItem.cloneNode(true);
   newItem.removeAttribute('data-favorite-demo');
-  newItem.style = '';
   newItem.setAttribute('data-favorite-title', title);
   newItem.setAttribute('data-favorite-path', path);
   const textDiv = newItem.querySelector('div');
@@ -38,14 +35,9 @@ function addFavorite() {
   newItem.append(textDiv);
   document.getElementById('current_favorites').insertBefore(newItem, document.getElementById('new_favorite_item'));
 
-  const newValue = {"title": title, "path": path};
   const hiddenInput = document.getElementById('user_customization_custom_files_favorites')
-  const currentValue = hiddenInput.value;
-  const parsed = JSON.parse(currentValue);
-  parsed.push(newValue);
-  const stringVal = JSON.stringify(parsed);
-  hiddenInput.value = stringVal;
-  console.log(hiddenInput.value);
+  const newValue = JSON.parse(hiddenInput.value).concat({"title": title, "path": path});
+  hiddenInput.value = JSON.stringify(newValue);
   titleInput.value = '';
   pathInput.value = '';
   document.querySelector('[data-bs-target="#new_favorite_path"]').click();
