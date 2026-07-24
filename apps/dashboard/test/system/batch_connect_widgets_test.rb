@@ -1127,4 +1127,74 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal('display: none;', find_option_style('gpu_type', 'better'))
     end
   end
+
+  test 'grouped form items work' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - [
+              first_group_item,
+              second_group_item
+            ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # wrappers are columns in a row.
+      ['first_group_item', 'second_group_item'].each do |item|
+        wrapper = find("##{bc_ele_id(item)}_wrapper")
+        parent = wrapper.find(:xpath, '..')
+
+        assert_equal('col', wrapper[:class])
+        assert_equal('row', parent[:class])
+      end
+    end
+  end
+
+  test 'grouped form items can be hidden' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - hide_items
+          - [
+              first_group_item,
+              second_group_item
+            ]
+        attributes:
+          hide_items:
+            widget: check_box
+            html_options:
+              data-hide-first-group-item-when-checked: true
+              data-hide-second-group-item-when-un-checked: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_unchecked_field('Hide Items')
+      refute(find("##{bc_ele_id('second_group_item')}", visible: :hidden).visible?)
+      assert(find("##{bc_ele_id('first_group_item')}").visible?)
+
+      # check to hide and they flip
+      check('Hide Items')
+      assert(find("##{bc_ele_id('second_group_item')}").visible?)
+      refute(find("##{bc_ele_id('first_group_item')}", visible: :hidden).visible?)
+    end
+  end
 end
