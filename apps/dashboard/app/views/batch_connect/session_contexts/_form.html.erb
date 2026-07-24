@@ -11,12 +11,12 @@
     <%- if form_item.is_a?(Array) -%>
     <div class="row">
       <%- form_item.each do |grouped_item| -%>
-        <%- attrib = @session_context[grouped_item] %>
+        <%- attrib = @session_context[format_bc_id(grouped_item)] %>
         <%= create_widget(f, attrib, format: @render_format, grouped: true) %>
       <%- end -%>
     </div>
     <%- else -%>
-      <%- attrib = @session_context[form_item] %>
+      <%- attrib = @session_context[format_bc_id(form_item)] %>
       <%= create_widget(f, attrib, format: @render_format) %>
     <%-  end -%>
   <%- end -%>
