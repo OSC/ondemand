@@ -102,6 +102,38 @@ class TransferLocalJobTest < ActiveJob::TestCase
     Transfer.transfers.clear
   end
 
+
+  def worst_case_update_calls(src_paths)
+    # This method computes the maximum number of update calls from the copy
+    # in the next test. There is guaranteed to be a call for each file and
+    # empty directory, but depending on filesystem order the number of mkdir_p
+    # calls can vary. This method assumes that every directory with a file child
+    # gets mkdir_p called on the file child before it gets called on a subdirectory,
+    # giving us an upper bound on how many calls we should expect.
+
+    files = 0
+    empty_dirs = 0
+    dirs_with_direct_children = Set.new
+
+    walk = ->(path) {
+      path = Pathname.new(path)
+      if path.file? || path.symlink?
+        files += 1
+      elsif path.directory?
+        if path.children.empty?
+          empty_dirs += 1
+        else
+          dirs_with_direct_children.push(path) if path.children.any? { |c| c.file? || c.symlink? }
+          path.children.each { |c| walk.call(c) }
+        end
+      end
+    }
+
+    src_paths.each { |sp| walk.call(sp) }
+    files + empty_dirs + dirs_with_direct_children.size
+  end
+
+
   # FIXME: need to change this interface to something simpler
   # and then use validations to limit the scope
   test "copy updates progress once per item copied" do
@@ -117,12 +149,12 @@ class TransferLocalJobTest < ActiveJob::TestCase
       num_paths = src_paths.map do |path|
         Dir["#{path}/**/*"].length
       end.sum
+
       transfer = PosixTransfer.build(action: 'cp', files: input)
       assert_equal(num_paths, transfer.steps)
-      # FIXME: This is a littly buggy - it's updating percent for all the parent
-      # directories + 1 more time. The difference depends on the file traversal
-      # order, since some mkdir_p calls create more paths than others.
-      transfer.expects(:percent=).times(num_paths..num_paths + src_paths.length + 2)
+      # The difference here depends on the file traversal order, since some mkdir_p 
+      # calls create more paths than others. See worst_case_update_calls for more info
+      transfer.expects(:percent=).times(num_paths..worst_case_update_calls(src_paths))
 
       transfer.perform
 
