@@ -42,10 +42,12 @@ import { updateAlerts } from './alert';
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
 window.$ = jQuery;
+import { initDarkMode } from './dark_mode';
 
 Rails.start();
 
 jQuery(function(){
   initPopovers();
   updateAlerts();
+  initDarkMode();
 });

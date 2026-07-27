@@ -1,0 +1,21 @@
+<li class="nav-item" role="none">
+  <button
+    type="button"
+    id="ood_dark_mode_toggle"
+    class="ood-theme-toggle nav-link border-0 bg-transparent"
+    role="switch"
+    aria-pressed="false"
+    title="<%= t('dashboard.nav_dark_mode_enable') %>"
+    data-enable-label="<%= t('dashboard.nav_dark_mode_enable') %>"
+    data-disable-label="<%= t('dashboard.nav_dark_mode_disable') %>"
+    data-light-label="<%= t('dashboard.nav_dark_mode_light') %>"
+    data-dark-label="<%= t('dashboard.nav_dark_mode_dark') %>">
+    <span class="ood-theme-toggle__label d-md-none d-xxl-inline"><%= t('dashboard.nav_dark_mode_light') %></span>
+    <span class="ood-theme-toggle__track ms-1" aria-hidden="true">
+      <span class="ood-theme-toggle__thumb">
+        <i class="fas fa-sun ood-theme-toggle__icon ood-theme-toggle__icon--sun" aria-hidden="true"></i>
+        <i class="fas fa-moon ood-theme-toggle__icon ood-theme-toggle__icon--moon" aria-hidden="true"></i>
+      </span>
+    </span>
+  </button>
+</li>

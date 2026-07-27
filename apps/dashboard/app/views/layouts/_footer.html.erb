@@ -2,11 +2,12 @@
   <div class="d-flex flex-column align-items-start">
     <%= link_to "https://openondemand.org" do %>
       <%=
-        image_tag(
-          "OpenOnDemand_powered_by_RGB.svg",
-          class: "footer-logo",
-          alt: "Powered by Open OnDemand",
-          height: "40px",
+        safe_viewing_logo_tags(
+          light: 'OpenOnDemand_powered_by_RGB.svg',
+          dark: 'OpenOnDemand_powered_by_dark.svg',
+          alt: t('dashboard.powered_by_logo_alt'),
+          height: '40px',
+          classes: 'footer-logo'
         )
       %>
     <% end %>
