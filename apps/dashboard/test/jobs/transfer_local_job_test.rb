@@ -123,7 +123,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
         if path.children.empty?
           empty_dirs += 1
         else
-          dirs_with_direct_children.push(path) if path.children.any? { |c| c.file? || c.symlink? }
+          dirs_with_direct_children.add(path) if path.children.any? { |c| c.file? || c.symlink? }
           path.children.each { |c| walk.call(c) }
         end
       end
