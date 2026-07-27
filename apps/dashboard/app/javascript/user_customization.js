@@ -24,15 +24,13 @@ function addFavorite() {
   newItem.removeAttribute('data-favorite-demo');
   newItem.setAttribute('data-favorite-title', title);
   newItem.setAttribute('data-favorite-path', path);
-  const textDiv = newItem.querySelector('div');
+  const textDiv = newItem.querySelector('div.input-group-text');
   const deleteButton = newItem.querySelector('[data-delete-favorite]');
   const hasTitle = (title.trim().length == 0);
   textDiv.textContent = hasTitle ? `${path}` : `${title} (${path})`;
   deleteButton.title = `Remove custom favorite ${hasTitle ? title : path}`;
   deleteButton.addEventListener('click', (e) => removeFavorite(e));
   newItem.style = '';
-  textDiv.append(deleteButton);
-  newItem.append(textDiv);
   document.getElementById('current_favorites').insertBefore(newItem, document.getElementById('new_favorite_item'));
 
   const hiddenInput = document.getElementById('user_customization_custom_files_favorites')

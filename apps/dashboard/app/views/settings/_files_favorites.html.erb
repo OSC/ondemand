@@ -1,7 +1,9 @@
 <h5 class="offcanvas-title"><%= t('dashboard.favorite_paths') %></h5>
 
 <li class="nav-item mt-1" data-favorite-demo style="display:none">
-  <div class="nav-link text-dark bg-light">
+  <div class="input-group ">
+    <div class="input-group-text px-3 py-2 bg-light text-dark">
+    </div>
     <a class="btn bg-danger" href="#" role="button" data-delete-favorite>
       <i class="fas fa-trash" aria-hidden="true"></i>
     </a>
@@ -11,12 +13,14 @@
 <ul id="current_favorites" class="nav nav-pills flex-column">
   <% @user_customization.custom_files_favorites.each do |favorite| %>
     <li class="nav-item mt-1" data-favorite-title="<%= favorite[:title] %>" data-favorite-path="<%= favorite[:path] %>">
-      <div class="nav-link text-dark bg-light">
-        <% if favorite[:title].to_s.length > 0 %>
-        <%= favorite[:title] %> (<%= favorite[:path] %>)
-        <% else %>
-        <%= favorite[:path] %>
-        <% end %>
+      <div class="input-group ">
+        <div class="input-group-text px-3 py-2 bg-light text-dark">
+          <% if favorite[:title].to_s.length > 0 %>
+            <%= favorite[:title] %> (<%= favorite[:path] %>)
+          <% else %>
+            <%= favorite[:path] %>
+          <% end %>
+        </div>
         <a class="btn bg-danger" href="#" role="button" data-delete-favorite title="<%=t('dashboard.delete_favorite_title', favorite: favorite[:title] || favorite[:path]) %>">
           <i class="fas fa-trash" aria-hidden="true"></i>
         </a>
