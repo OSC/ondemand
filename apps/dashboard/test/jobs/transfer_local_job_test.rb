@@ -120,8 +120,9 @@ class TransferLocalJobTest < ActiveJob::TestCase
       transfer = PosixTransfer.build(action: 'cp', files: input)
       assert_equal(num_paths, transfer.steps)
       # FIXME: This is a littly buggy - it's updating percent for all the parent
-      # directories + 1 more time.
-      transfer.expects(:percent=).times(num_paths..num_paths + src_paths.length + 1)
+      # directories + 1 more time. The difference depends on the file traversal
+      # order, since some mkdir_p calls create more paths than others.
+      transfer.expects(:percent=).times(num_paths..num_paths + src_paths.length + 2)
 
       transfer.perform
 
