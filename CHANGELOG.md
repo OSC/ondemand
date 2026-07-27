@@ -16,6 +16,10 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Pass the session information through to the "bad" session state partial, (#5616)\
+update dependencies (#5626)\
+remove demo from this project (#5620)\
+debug e2e spec tests (#5622)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
