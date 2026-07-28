@@ -316,6 +316,15 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
+  # Colon-separated list of paths to locale files that users are allowed to
+  # choose from in the language switcher. The locale code is derived from
+  # each path's basename (without extension). Defaults to just the default
+  # locale's path, making the switcher opt-in (hidden unless admins
+  # explicitly enable additional locales via OOD_SUPPORTED_LOCALES).
+  def supported_locales
+    ENV['OOD_SUPPORTED_LOCALES'] || File.join(locales_root, locale.to_s)
+  end
+
   # Set the login host in the Native Instructions VNC session partial
   def native_vnc_login_host
     ENV['OOD_NATIVE_VNC_LOGIN_HOST']

@@ -121,6 +121,105 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
+  test 'should save locale settings when posting a valid locale' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: { locale: 'zh-CN' } }
+
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_equal 'zh-CN', TestUserSettings.new.user_settings[:locale]
+    end
+  end
+
+  test 'should override previously saved locale when posting a new locale' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: { locale: 'zh-CN' } }
+
+      post settings_path, params: data, headers: @headers
+      assert_equal 'zh-CN', TestUserSettings.new.user_settings[:locale]
+
+      data[:settings][:locale] = 'ja_JP'
+      post settings_path, params: data, headers: @headers
+      assert_equal 'ja_JP', TestUserSettings.new.user_settings[:locale]
+    end
+  end
+
+  test 'should not save locale when posting an invalid locale' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: { locale: 'klingon' } }
+
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_nil TestUserSettings.new.user_settings[:locale]
+    end
+  end
+
+  test 'should not save a locale from a gem that has no dashboard translations' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      # 'de' is contributed by the dotiw gem and appears in I18n.available_locales
+      # but has no dashboard translations, so it must be rejected.
+      data = { settings: { locale: 'de' } }
+
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_nil TestUserSettings.new.user_settings[:locale]
+    end
+  end
+
+  test 'should apply the saved locale on subsequent requests' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      TestUserSettings.new.update_user_settings(locale: 'zh-CN')
+
+      get root_path
+      assert_response :success
+      assert_equal :"zh-CN", I18n.locale
+      assert_match(/<html lang="zh-CN">/, @response.body)
+    end
+  end
+
+  test 'should fall back to default locale when no locale is saved' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+
+      get root_path
+      assert_response :success
+      assert_equal ::Configuration.locale, I18n.locale
+    end
+  end
+
+  test 'should render locale switcher in help dropdown when multiple locales available' do
+    get root_path
+    assert_response :success
+    assert_match(/settings%5Blocale%5D/, @response.body)
+    assert_match(/#{Regexp.escape(I18n.t('dashboard.nav_language'))}/, @response.body)
+  end
+
+  test 'locale switcher shows only locales with dashboard translations, not gem locales' do
+    get root_path
+    assert_response :success
+    # supported_locales should be the 5 app locale files, not the extra
+    # locales contributed by gems (e.g. dotiw adds de, fr, ja, ...).
+    assert_equal 5, @controller.supported_locales.size
+    # Each locale link carries settings[locale]=<code> (URL-encoded as
+    # settings%5Blocale%5D=<code> in the href).
+    locale_links = @response.body.scan(/settings%5Blocale%5D=([a-zA-Z_\-]+)/).flatten
+    assert_equal %w[en en-CA fr-CA ja_JP zh-CN], locale_links.sort
+    # Gem locales like 'de' must not appear
+    refute_includes locale_links, 'de'
+  end
+
+  teardown do
+    I18n.locale = I18n.default_locale
+  end
+
   class TestUserSettings
     include UserSettingStore
   end

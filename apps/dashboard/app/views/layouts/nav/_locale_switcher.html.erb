@@ -1,0 +1,24 @@
+<%#
+  Language switcher rendered inside the Help dropdown.
+  Each option POSTs to settings_path so the chosen locale is persisted
+  to the user's settings file (settings[locale]=<code>), mirroring the
+  profile-switching links. jquery-ujs turns data: { method: :post } into
+  a POST request.
+%>
+<li class="dropdown-divider" role="separator"></li>
+<li class="dropdown-header"><%= t('dashboard.nav_language') %></li>
+<% locale_options.each do |name, loc| %>
+  <li role="none">
+    <%= link_to settings_path('settings[locale]' => loc),
+                class: 'dropdown-item d-flex align-items-center',
+                title: name, role: 'menuitem',
+                data: { method: :post } do %>
+      <% if loc.to_sym == I18n.locale %>
+        <i class="fas fa-check fa-fw me-1" aria-hidden="true"></i>
+      <% else %>
+        <i class="fa-fw me-1" aria-hidden="true"></i>
+      <% end %>
+      <%= name %>
+    <% end %>
+  </li>
+<% end %>
