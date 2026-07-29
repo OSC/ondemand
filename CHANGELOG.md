@@ -24,6 +24,8 @@ Changes are grouped by type:
 - Batch connect Sessions now respond to wayvnc templates in [5454](https://github.com/OSC/ondemand/pull/5454).
 - The auto_groups_filter now applies to the Project Manager group selection in [5420](https://github.com/OSC/ondemand/pull/5420).
 - System tests now test for color contrast in [5347](https://github.com/OSC/ondemand/pull/5347).
+- Session state information is present in "bad" state partials in [5616](https://github.com/OSC/ondemand/pull/5616).
+
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
