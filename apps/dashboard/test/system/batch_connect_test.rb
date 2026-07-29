@@ -2483,8 +2483,44 @@ class BatchConnectTest < ApplicationSystemTestCase
       # and auto_queues would be 'batch'.
       assert_equal('pzs1118', find_value('auto_accounts'))
       assert_equal('geophys', find_value('auto_qos'))
-      assert_equal('owens', find_value('cluster'))
       assert_equal('quick', find_value('auto_queues'))
+    end
+  end
+
+  test 'auto fields with incorrect values fallback to correct defaults' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: wontexist
+          auto_accounts:
+            value: wontexist
+          auto_queues:
+            value: wontexist
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # regular defaults
+      assert_equal('pzs1124', find_value('auto_accounts'))
+      assert_equal('owens-default', find_value('auto_qos'))
+      assert_equal('batch', find_value('auto_queues'))
     end
   end
 
