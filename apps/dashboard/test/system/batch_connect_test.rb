@@ -2448,6 +2448,46 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'auto fields respond to default values' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: geophys
+          auto_accounts:
+            value: pzs1118
+          auto_queues:
+            value: quick
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults that are different than regular defaults.
+      # account would be 'pzs1124', qos would be 'owens-default'
+      # and auto_queues would be 'batch'.
+      assert_equal('pzs1118', find_value('auto_accounts'))
+      assert_equal('geophys', find_value('auto_qos'))
+      assert_equal('owens', find_value('cluster'))
+      assert_equal('quick', find_value('auto_queues'))
+    end
+  end
+
   test 'path_selector works' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
