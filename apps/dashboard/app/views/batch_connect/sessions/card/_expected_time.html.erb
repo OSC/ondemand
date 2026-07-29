@@ -1,0 +1,6 @@
+<% unless session.running? || !session.info.dispatch_time %>
+<p>
+  <strong><%= t('dashboard.batch_connect_sessions_stats_expected_time') %></strong>
+  <%= Time.at(session.info.dispatch_time).localtime.strftime("%Y-%m-%d %H:%M:%S %Z") %>
+</p>
+<% end %>
