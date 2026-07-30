@@ -3,7 +3,7 @@
     <h5 class="offcanvas-title"><%= t('dashboard.favorite_paths') %></h5>
 
     <li class="nav-item mt-1" data-favorite-demo style="display:none">
-      <div class="input-group flex-nowrap">
+      <div class="input-group">
         <div class="input-group-text px-3 py-2 bg-light text-dark">
         </div>
         <a class="btn bg-danger" href="#" role="button" data-delete-favorite>
@@ -12,10 +12,10 @@
       </div>
     </li>
 
-    <ul id="current_favorites" class="nav nav-pills flex-column">
+    <ul id="current_favorites" class="nav nav-pills flex-column flex-nowrap">
     <% @user_customization.custom_files_favorites.each do |favorite| %>
       <li class="nav-item mt-1" data-favorite-title="<%= favorite[:title] %>" data-favorite-path="<%= favorite[:path] %>">
-        <div class="input-group flex-nowrap">
+        <div class="input-group">
           <div class="input-group-text px-3 py-2 bg-light text-dark">
           <% if favorite[:title].to_s.length > 0 %>
             <%= favorite[:title] %> (<%= favorite[:path] %>)
