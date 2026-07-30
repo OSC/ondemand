@@ -36,14 +36,6 @@ class BatchConnectTest < ApplicationSystemTestCase
                                  .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
   end
 
-  # note: some queues have display: none, but others may be completely absent
-  def assert_auto_queues_queue_displayed(queue, displayed)
-    account = find_value('auto_accounts')
-    expected = displayed ? "" : "display: none;"
-    msg = "#{queue} #{displayed ? "should" : "should not"} be displayed for account #{account}"
-    assert_equal(expected, find_option_style('auto_queues', queue), msg)
-  end
-
   test 'cluster choice changes node types' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -2421,28 +2413,28 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('owens', find_value('cluster'))
 
       select('no-qos', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
-      assert_auto_queues_queue_displayed('allow-qos1', false)
-      assert_auto_queues_queue_displayed('deny-qos2', true)
-      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', false)
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
 
       select('has-qos1', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
-      assert_auto_queues_queue_displayed('allow-qos1', true)
-      assert_auto_queues_queue_displayed('deny-qos2', true)
-      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', true)
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
 
       select('has-qos2', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
-      assert_auto_queues_queue_displayed('allow-qos1', false)
-      assert_auto_queues_queue_displayed('deny-qos2', false)
-      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', false)
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
 
       select('has-qos12', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
-      assert_auto_queues_queue_displayed('allow-qos1', true)
-      assert_auto_queues_queue_displayed('deny-qos2', true)
-      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', true)
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
     end
   end
 
