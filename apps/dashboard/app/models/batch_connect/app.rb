@@ -214,7 +214,9 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      if form_config.empty?
+      return @valid if defined?(@valid)
+
+      @valid = if form_config.empty?
         false
       elsif !form_config.fetch(:form, []).is_a?(Array)
         @validation_reason = I18n.t('dashboard.batch_connect_invalid_form_array')
@@ -434,7 +436,7 @@ module BatchConnect
 
     # Hash describing the full form object
     def form_config(binding: nil)
-      return @form_config if @form_config
+      return @form_config if defined?(@form_config)
 
       raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
 
@@ -454,10 +456,10 @@ module BatchConnect
       @form_config = hsh
     rescue AppNotFound => e
       @validation_reason = e.message
-      {}
+      @form_config = {}
     rescue StandardError, Exception => e
       @validation_reason = "#{e.class.name}: #{e.message}"
-      {}
+      @form_config = {}
     end
 
     # Hash describing the full submission properties
