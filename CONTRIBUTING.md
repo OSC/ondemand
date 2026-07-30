@@ -1,10 +1,11 @@
 # Table of Contents
 
 1. [Contributing](#contributing) 
-    1. [Issues](#issues)
-    2. [Other repositories](#other-repositories)
-    3. [Branches and Tags](#branches-and-tags)
-    4. [Pull Request Process](#pull-request-process)
+    1. [AI Agent Generated Content](#ai-agent-generated-content)
+    2. [Issues](#issues)
+    3. [Other repositories](#other-repositories)
+    4. [Branches and Tags](#branches-and-tags)
+    5. [Pull Request Process](#pull-request-process)
 2. [Branch Naming and Issue Tagging](#branch-naming-and-issue-tagging)
     1. [Adding a Feature](#adding-a-feature)
     2. [Fixing a Bug](#fixing-a-bug)
@@ -38,6 +39,15 @@ take a look at our list of [good first issues].
 
 Please note we have a [code of conduct]. We ask that you please follow it in all your
 interactions with the project.
+
+## AI Agent Generated Content
+
+Content generated purely by AI agents will be rejected outright. All content, in either
+code or issues, must be submitted by a human who understands it and is prepared
+to answer questions about it.
+
+Whether an AI has assisted in the content is not the issue, the maintainers
+will only interact with humans, not agents or bots.
 
 ## Issues
 

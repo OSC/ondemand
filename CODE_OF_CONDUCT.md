@@ -1,4 +1,4 @@
-# Code of Conduct
+.l# Code of Conduct
 
 ## Our Pledge
 
@@ -64,6 +64,15 @@ specific enforcement policies may be posted separately.
 Project maintainers who do not follow or enforce the Code of Conduct in good
 faith may face temporary or permanent repercussions as determined by other
 members of the project's leadership.
+
+## AI Agent Generated Content
+
+Project mainatainers will not interact with AI Agents. Content generated
+purely by AI agents will be rejected outright.  Users that continually
+generate purely AI generated content may be blocked or reported.
+
+Whether an AI has assisted in the content is not the issue, the maintainers
+will only interact with humans, not agents or bots.
 
 ## Attribution
 
