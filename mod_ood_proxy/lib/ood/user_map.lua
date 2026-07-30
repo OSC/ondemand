@@ -8,28 +8,30 @@
   and numeric values that are in fact UIDs.
 --]]
 function actual_username(username)
+  if not username or username == "" then
+    return nil
+  end
 
+  local pwd = require "posix.pwd"
+
+  -- Check if the string AS-IS (preserving leading zeros) is a valid username
+  local data = pwd.getpwnam(username)
+  if data then
+    return data.pw_name
+  end
+
+  -- If it wasn't a valid username, check if it's a numeric string evaluating to a valid UID
   local num = tonumber(username)
   if num then
-    local pwd = require "posix.pwd"
-    local data = pwd.getpwnam(num)
-
-    -- it's a numeric username.
+    data = pwd.getpwuid(num)
     if data then
       return data.pw_name
-
-    -- not a numeric username, so must be a UID.
-    else
-      data = pwd.getpwuid(num)
-      return data.pw_name
     end
-
-  -- it's not numeric, so just return the string.
-  else
-    return username
   end
-end
 
+  -- Fallback: Return the raw string if POSIX resolution relies on lower levels or non-standard lookups
+  return username
+end
 --[[
   map
 

@@ -141,4 +141,12 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     assert_equal 'a link', header_link.text
     assert_equal 'https://openondemand.org', header_link['href']
   end
+
+  test 'PUN restarts if user groups change' do
+    stub_usr_router
+    OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me', 'us']))
+    
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :redirect
+  end
 end

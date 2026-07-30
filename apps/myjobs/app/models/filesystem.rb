@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'open3'
 require 'shellwords'
 
 class Filesystem
-
   class << self
     attr_accessor :max_copy_safe_dir_size, :max_copy_safe_du_timeout_seconds
 
-    def max_copy_safe_dir_size 
-      @max_copy_safe_dir_size ||= 1024*1024*1024
+    def max_copy_safe_dir_size
+      @max_copy_safe_dir_size ||= 1024 * 1024 * 1024
     end
 
     def max_copy_safe_du_timeout_seconds
@@ -15,10 +17,9 @@ class Filesystem
     end
   end
 
-
-  MAX_COPY_TIMEOUT_MESSAGE = "Timeout occurred when trying to determine directory size. " \
+  MAX_COPY_TIMEOUT_MESSAGE = 'Timeout occurred when trying to determine directory size. ' \
     "Size must be computable in less than #{max_copy_safe_du_timeout_seconds} seconds. " \
-    "Either directory has too many files or the file system is currently slow (if so, please try again later)."
+    'Either directory has too many files or the file system is currently slow (if so, please try again later).'
 
   # Returns a http URI path to the cloudcmd filesystem link
   def fs(path)
@@ -46,7 +47,7 @@ class Filesystem
     # and do proper testing
     begin
       unless WhitelistPolicy.new(Configuration.whitelist_paths).permitted?(path)
-        return false, "No permission to use the path due to the whitelist policy."
+        return false, 'No permission to use the path due to the whitelist policy.'
       end
     rescue ArgumentError => e
       return false, "#{e.class} when testing path #{path} against whitelist: #{e.message}"
@@ -55,22 +56,27 @@ class Filesystem
     # FIXME: consider using http://ruby-doc.org/stdlib-2.2.0/libdoc/timeout/rdoc/Timeout.html
     stdout, stderr, status = du(path, self.class.max_copy_safe_du_timeout_seconds)
     return false, MAX_COPY_TIMEOUT_MESSAGE if status.exitstatus == 124
-    return false, "Error with status #{status} occurred when trying to determine directory size: #{stderr}" unless status.success?
+    unless status.success?
+      return false, "Error with status #{status} occurred when trying to determine directory size: #{stderr}"
+    end
 
-    safe, error = true, nil
+    safe = true
+    error = nil
     size = stdout.split.first
 
     if size.blank?
-      safe, error = false, "Failed to properly parse the output of the du command."
+      safe = false
+      error = 'Failed to properly parse the output of the du command.'
     elsif size.to_i > self.class.max_copy_safe_dir_size
-      safe, error = false, "The directory is too large to copy. The directory should be less than #{self.class.max_copy_safe_dir_size} bytes."
+      safe = false
+      error = "The directory is too large to copy. The directory should be less than #{self.class.max_copy_safe_dir_size} bytes."
     end
 
-    return safe, error
+    [safe, error]
   end
 
   def du(path, timeout)
-    Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path)
+    Open3.capture3('timeout', "#{timeout}s", 'du', '-cbs', path)
   end
 
   # Copies the data in a source to a destination path using rsync.
@@ -80,17 +86,17 @@ class Filesystem
   # @return array of the [output, status] of the command
   def copy_dir(src, dest)
     output = `rsync -r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore' 2>&1 #{Shellwords.escape(src.to_s)}/ #{Shellwords.escape(dest.to_s)}`
-    [output, $?]
+    [output, $CHILD_STATUS]
   end
 
   # FIXME: some duplication here between du command above and this; we probably
   # want to use the above
   #
   # Get the disk usage of a path in bytes, nil if path does not exist
-  def path_size (path)
-    if Dir.exist? path
-      o, e, s = Open3.capture3('du', '-s', '-b', path)
-      o.split('/')[0].to_i
-    end
+  def path_size(path)
+    return unless Dir.exist? path
+
+    o, = Open3.capture3('du', '-s', '-b', path)
+    o.split('/')[0].to_i
   end
 end

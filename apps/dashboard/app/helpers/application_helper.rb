@@ -10,8 +10,8 @@ module ApplicationHelper
     OodCore::Clusters.new(clusters.select(&:login_allow?))
   end
 
-  def restart_url
-    "/nginx/stop?redir=#{root_path}"
+  def restart_url(path = root_path)
+    "/nginx/stop?redir=#{path}"
   end
 
   # Render a bootstrap nav link if the url is specified.

@@ -2,7 +2,6 @@
 
 # The controller for apps pages /dashboard/projects/:project_id/launchers
 class LaunchersController < ApplicationController
-
   before_action :find_project
   before_action :find_launcher, only: [:show, :edit, :destroy, :submit, :save, :clone]
 
@@ -45,8 +44,7 @@ class LaunchersController < ApplicationController
 
   # GET   /projects/:project_id/launchers/:id/edit
   # edit
-  def edit
-  end
+  def edit; end
 
   # DELETE /projects/:project_id/launchers/:id
   def destroy
@@ -75,7 +73,8 @@ class LaunchersController < ApplicationController
     opts = submit_launcher_params[:launcher].to_h.symbolize_keys
 
     if (job_id = @launcher.submit(opts))
-      redirect_to(project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_launchers_submitted', job_id: job_id))
+      redirect_to(project_path(params[:project_id]),
+                  notice: I18n.t('dashboard.jobs_launchers_submitted', job_id: job_id))
     else
       redirect_to(project_path(params[:project_id]), alert: @launcher.errors[:submit].last)
     end

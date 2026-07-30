@@ -24,7 +24,7 @@ module BatchConnect::SessionsHelper
     elsif session.completed?
       views = { partial: "completed", locals: { session: session } }
     else
-      views = { partial: "bad" }
+      views = { partial: "bad", locals: { session: session } }
     end
 
     connection_tabs(session.id, views)
@@ -170,7 +170,11 @@ module BatchConnect::SessionsHelper
     version  = "1.3.0"
     password = view_only ? connect.spassword : connect.password
     resize   = view_only ? "downscale" : "remote"
-    asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
+    base = asset_path(
+      "noVNC-#{version}/vnc.html?autoconnect=true&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}",
+      skip_pipeline: true
+    )
+    "#{base}#password=#{ERB::Util.url_encode(password)}"
   end
 
   def connection_tabs(id, tabs)
