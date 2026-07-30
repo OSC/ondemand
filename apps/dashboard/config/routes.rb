@@ -124,6 +124,7 @@ Rails.application.routes.draw do
   get '/system-status', to: 'system_status#index', as: 'system_status' if Configuration.can_access_system_status?
 
   post 'settings', :to => 'settings#update'
+  get 'customizations', :to => 'settings#edit', as: 'edit_customization'
   post 'customizations', :to => 'settings#update_user_customization', as: 'update_customization'
   
   # Experimental Feature

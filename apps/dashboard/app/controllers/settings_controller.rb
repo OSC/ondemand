@@ -42,6 +42,10 @@ class SettingsController < ApplicationController
     redirect_back allow_other_host: false, fallback_location: root_url, **announcements
   end
 
+  def edit
+    render(partial: 'settings/form', layout: false)
+  end
+
   private
 
   def settings_param

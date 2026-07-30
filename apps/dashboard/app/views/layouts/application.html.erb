@@ -76,6 +76,8 @@
     <div class="spinner-border" role="status"></div>
   </div>
 
+  <%= render partial: "settings/edit" %>
+
   <div id="main_container" class="<%= local_assigns[:layout_container_class] || 'container-md' %> content mt-4" role="main">
 
     <%= render "layouts/announcements" %>
@@ -117,8 +119,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" title="<%= t('dashboard.close_notice') %>"></button>
       </div>
     <% end %>
-
-    <%= render partial: "settings/edit" %>
 
     <%= yield %>
 

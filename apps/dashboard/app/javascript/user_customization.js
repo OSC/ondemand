@@ -1,13 +1,18 @@
 import { attachPathSelectors } from './path_selector/path_selector';
 
 export default function attachUserCustomizations() {
-  attachPathSelectors('#new_favorite_path');
-  // To get the path selector modal to render properly, we move it outside the offcanvas
-  $('#new_favorite_path .modal').appendTo('body');
-  document.getElementById('new_favorite_button').addEventListener('click', addFavorite);
-  document.querySelectorAll('[data-delete-favorite]').forEach(el => {
-    el.addEventListener('click', (e) => removeFavorite(e));
-  });
+  // Wait for turbo frame to load before attaching
+  document.addEventListener('turbo:frame-load', (event) => {
+    if (event.target.id === 'customization_form') {
+      attachPathSelectors('#new_favorite_path');
+      // To get the path selector modal to render properly, we move it outside the offcanvas
+      $('#new_favorite_path .modal').appendTo('body');
+      document.getElementById('new_favorite_button').addEventListener('click', addFavorite);
+      document.querySelectorAll('[data-delete-favorite]').forEach(el => {
+        el.addEventListener('click', (e) => removeFavorite(e));
+      });
+    }
+  })
 }
 
 function addFavorite() {
