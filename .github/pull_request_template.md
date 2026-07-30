@@ -4,7 +4,7 @@
 A brief description of the change and why it's being made.
 
 ## Related issue
-Closes #___  *(if applicable)*
+Fixes #___  *(if applicable)*
 
 ## Testing
 - [ ] Tests included
