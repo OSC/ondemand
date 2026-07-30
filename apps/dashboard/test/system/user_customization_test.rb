@@ -121,7 +121,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.select_path'))
       assert_selector('#favorite_path_path_path_selector.show')
       assert_selector('div#favorites a', count: 2)
-      click_on('Dashboard')
+      find('div#favorites a', text: 'Dashboard').click
       assert_selector('li.breadcrumb-item', text: File.basename(first_path))
     end
   end
