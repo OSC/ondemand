@@ -17,11 +17,11 @@ class BatchConnectTest < ApplicationSystemTestCase
          .returns(['1.2.3', '', exit_success])
   end
 
-  def make_bc_app(dir, form)
+  def make_bc_app(dir, form, scontrol: true, sacctmgr: true)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-    stub_scontrol
-    stub_sacctmgr
+    stub_scontrol if scontrol
+    stub_sacctmgr if sacctmgr
     stub_git(app_dir)
     Pathname.new(app_dir).join('form.yml').write(form)
   end
@@ -2236,8 +2236,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['foo-bar', 'pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'test-account-has-no-qoses',
-                             'test-account-has-qos1', 'test-account-has-qos1-qos2', 'test-account-has-qos2'].sort
+                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).sort
@@ -2401,41 +2400,49 @@ class BatchConnectTest < ApplicationSystemTestCase
       form = <<~HEREDOC
         ---
         cluster:
-          - test-cluster
+          - owens
         form:
           - auto_accounts
           - auto_queues
       HEREDOC
 
-      make_bc_app(dir, form)
+      make_bc_app(dir, form, sacctmgr: false, scontrol: false)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:accounts)
+                                   .returns(accounts)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:queues)
+                                   .returns(queues)
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([owens_cluster]))
+
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'test-cluster', find_value('cluster')
+      assert_equal('owens', find_value('cluster'))
 
-      select('test-account-has-no-qoses', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1', false)
-      assert_auto_queues_queue_displayed('test-partition-deny-qos2', true)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', false)
+      select('no-qos', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
+      assert_auto_queues_queue_displayed('allow-qos1', false)
+      assert_auto_queues_queue_displayed('deny-qos2', true)
+      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', false)
 
-      select('test-account-has-qos1', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1', true)
-      assert_auto_queues_queue_displayed('test-partition-deny-qos2', true)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', true)
+      select('has-qos1', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
+      assert_auto_queues_queue_displayed('allow-qos1', true)
+      assert_auto_queues_queue_displayed('deny-qos2', true)
+      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', true)
 
-      select('test-account-has-qos2', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1', false)
-      assert_auto_queues_queue_displayed('test-partition-deny-qos2', false)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', false)
+      select('has-qos2', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
+      assert_auto_queues_queue_displayed('allow-qos1', false)
+      assert_auto_queues_queue_displayed('deny-qos2', false)
+      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', false)
 
-      select('test-account-has-qos1-qos2', from: bc_ele_id('auto_accounts'))
-      assert_auto_queues_queue_displayed('test-partition-allow-qos-all-deny-none', true)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1', true)
-      assert_auto_queues_queue_displayed('test-partition-deny-qos2', true)
-      assert_auto_queues_queue_displayed('test-partition-allow-qos1-deny-qos2', true)
+      select('has-qos12', from: bc_ele_id('auto_accounts'))
+      assert_auto_queues_queue_displayed('allow-all-deny-none', true)
+      assert_auto_queues_queue_displayed('allow-qos1', true)
+      assert_auto_queues_queue_displayed('deny-qos2', true)
+      assert_auto_queues_queue_displayed('allow-qos1-deny-qos2', true)
     end
   end
 

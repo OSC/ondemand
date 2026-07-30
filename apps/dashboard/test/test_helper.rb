@@ -4,6 +4,7 @@ require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
 require 'climate_control'
 require 'timecop'
+require_relative 'test_data'
 
 ENV['RAILS_ENV'] ||= 'test'
 ENV['OOD_LOCALES_ROOT'] = Rails.root.join('config/locales').to_s
@@ -11,6 +12,9 @@ ENV['OOD_LOCALES_ROOT'] = Rails.root.join('config/locales').to_s
 
 module ActiveSupport
   class TestCase
+
+    include TestData
+
     # Add more helper methods to be used by all tests here...
 
     UserDouble = Struct.new(:name, :groups)
