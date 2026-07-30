@@ -14,7 +14,7 @@ module ActiveSupport
     # Add more helper methods to be used by all tests here...
 
     UserDouble = Struct.new(:name, :groups)
-    DEFAULT_CLUSTERS = ['owens', 'oakley', 'x-nextgen_ascend', 'test-cluster'].freeze
+    DEFAULT_CLUSTERS = ['owens', 'oakley', 'x-nextgen_ascend'].freeze
 
     class BrokenAdapter < OodCore::Job::Adapter
       SUBMIT_ERR_MSG = 'this adapter cannot submit jobs'
@@ -48,6 +48,7 @@ module ActiveSupport
 
     def stub_user
       OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me']))
+      OodSupport::Process.stubs(:groups).returns(['me'])
       OodSupport::User.stubs(:new).returns(UserDouble.new('me', ['me']))
       Etc.stubs(:getlogin).returns('me')
     end
@@ -75,7 +76,7 @@ module ActiveSupport
     end
 
     def button_link?(text, link)
-      find('.btn', text: text)
+      assert_selector('.btn', text: text)
       has_link?(link)
     end
 
