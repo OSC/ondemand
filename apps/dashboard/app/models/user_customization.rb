@@ -34,9 +34,9 @@ class UserCustomization
   end
 
   def validate_files_favorites(new_favorites)
-    new_favorites.class == Array && new_favorites.all? do |favorite|
+    new_favorites.is_a?(Array) && new_favorites.all? do |favorite|
       path = favorite['path']
-      File.directory?(path) && File.readable?(path)
+      File.absolute_path?(path) && File.directory?(path) && File.readable?(path)
     end
   end
 end
