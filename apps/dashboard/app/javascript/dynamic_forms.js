@@ -384,27 +384,31 @@ function setValue(event, changeId) {
   const table = setValueLookup[cacheKey];
   if (table === undefined) return;
 
-  const changeVal = table.get(chosenVal, undefined);
+  var changeVal = table.get(chosenVal, undefined);
+  if (changeVal === undefined) return;
 
-  if(changeVal !== undefined) {
-    const element = document.getElementById(changeId);
-    const elementInfo = getWidgetInfo(changeId);
-    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+  const element = document.getElementById(changeId);
+  const isCheckbox = element.type === "checkbox";
 
-    if(element['type'] == 'checkbox') {
-      setCheckboxValue(element, changeVal);
+  // checkboxes needs to cast number values from the table
+  // to strings because element.value will be a string type.
+  if(isCheckbox) {
+    changeVal = String(changeVal);
+  }
+
+  const matches = element.value === changeVal;
+  const needUpdate = isCheckbox ? element.checked !== matches : !matches;
+
+  if (needUpdate) {
+    if (isCheckbox) {
+      element.checked = matches;
     } else {
       element.value = changeVal;
     }
-  }
-}
 
-function setCheckboxValue(checkbox, value) {
-  const positiveValue = checkbox.value;
-  if(value == positiveValue) {
-    checkbox.checked = true;
-  } else {
-    checkbox.checked = false;
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+    element.dispatchEvent(new Event('change', { bubbles: true }));
   }
 }
 
