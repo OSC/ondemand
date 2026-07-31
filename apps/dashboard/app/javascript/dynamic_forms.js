@@ -384,12 +384,19 @@ function setValue(event, changeId) {
   const table = setValueLookup[cacheKey];
   if (table === undefined) return;
 
-  const changeVal = table.get(chosenVal, undefined);
+  var changeVal = table.get(chosenVal, undefined);
   if (changeVal === undefined) return;
 
   const element = document.getElementById(changeId);
-  const matches = element.value === changeVal;
   const isCheckbox = element.type === "checkbox";
+
+  // checkboxes needs to cast string values from the table
+  // to numbers because element.value will be a number type.
+  if(isCheckbox) {
+    changeVal = Number(changeVal);
+  }
+
+  const matches = element.value === changeVal;
   const needUpdate = isCheckbox ? element.checked !== matches : !matches;
 
   if (needUpdate) {
