@@ -390,10 +390,10 @@ function setValue(event, changeId) {
   const element = document.getElementById(changeId);
   const isCheckbox = element.type === "checkbox";
 
-  // checkboxes needs to cast string values from the table
-  // to numbers because element.value will be a number type.
+  // checkboxes needs to cast number values from the table
+  // to strings because element.value will be a string type.
   if(isCheckbox) {
-    changeVal = Number(changeVal);
+    changeVal = String(changeVal);
   }
 
   const matches = element.value === changeVal;
