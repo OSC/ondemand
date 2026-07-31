@@ -248,7 +248,7 @@ module BatchConnect
       @form_layout ||= begin
         # FIXME: duplicate logic in add_cluster_widget
         form = form_config.fetch(:form, [])
-        form.include?('cluster') ? form : form.prepend('cluster')
+        form.exclude?('cluster') && clusters.any? ? form.prepend('cluster') : form
       end
     end
 
