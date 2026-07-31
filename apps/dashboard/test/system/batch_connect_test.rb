@@ -17,11 +17,11 @@ class BatchConnectTest < ApplicationSystemTestCase
          .returns(['1.2.3', '', exit_success])
   end
 
-  def make_bc_app(dir, form)
+  def make_bc_app(dir, form, scontrol: true, sacctmgr: true)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-    stub_scontrol
-    stub_sacctmgr
+    stub_scontrol if scontrol
+    stub_sacctmgr if sacctmgr
     stub_git(app_dir)
     Pathname.new(app_dir).join('form.yml').write(form)
   end
@@ -2384,6 +2384,57 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
         assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
       end
+    end
+  end
+
+  test 'auto queues qos aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+
+      make_bc_app(dir, form, sacctmgr: false, scontrol: false)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:accounts)
+                                   .returns(accounts)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:queues)
+                                   .returns(queues)
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([owens_cluster]))
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('owens', find_value('cluster'))
+
+      select('no-qos', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos1', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos2', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos12', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
     end
   end
 
