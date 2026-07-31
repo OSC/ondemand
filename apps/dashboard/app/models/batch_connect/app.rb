@@ -245,7 +245,11 @@ module BatchConnect
     end
 
     def form_layout
-      @form_layout ||= form_config.fetch(:form, [])
+      @form_layout ||= begin
+        # FIXME: duplicate logic in add_cluster_widget
+        form = form_config.fetch(:form, [])
+        form.include?('cluster') ? form : form.prepend('cluster')
+      end
     end
 
     def attributes
