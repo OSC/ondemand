@@ -4,6 +4,7 @@ require 'application_system_test_case'
 
 class UserCustomizationTest < ApplicationSystemTestCase
   def stub_user_settings_store(dir)
+    OodSupport::Process.stubs(:groups_changed?).returns(false)
     Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
   end
 
@@ -95,6 +96,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
       assert_selector('li.breadcrumb-item', text: File.basename(first_path))
 
       # since we're here, lets replace this favorite with a titled one
+      sleep 0.5 # $(${modal_id}).modal('hide') silently fails if we don't wait here
       find('#favorite_path_path_path_selector_button').click
       refute_selector('#favorite_path_path_path_selector')
       assert_equal(first_path, find('#favorite_path_path').value)
