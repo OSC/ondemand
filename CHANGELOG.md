@@ -5,8 +5,174 @@ All notable changes to this project will be documented in this file in a YYYY-MM
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+Entries summarize pull requests merged into the codebase for each release. They may not map 
+one-to-one with a GitHub issue or capture the full discussion behind the work.
+
+Changes are grouped by type:
+- `Added`: new functionality, capabilities or support.
+- `Changed`: updates to existing behavior.
+- `Fixed`: corrections to existing behavior, such as bugs, compatibility issyes, or accessibility improvements.
+- `Security`: fixes that address known vulnerabilities, CVEs, or security risks.
+
 
 ## [Unreleased]
+
+### Added
+- Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
+- This project has issue templates in [5440](https://github.com/OSC/ondemand/pull/5440) and [5441](https://github.com/OSC/ondemand/pull/5441).
+- Invalid announcements will now show an error widget in [5250](https://github.com/OSC/ondemand/pull/5250).
+- Batch connect Sessions now respond to wayvnc templates in [5454](https://github.com/OSC/ondemand/pull/5454).
+- The auto_groups_filter now applies to the Project Manager group selection in [5420](https://github.com/OSC/ondemand/pull/5420).
+- System tests now test for color contrast in [5347](https://github.com/OSC/ondemand/pull/5347).
+- Session state information is present in "bad" state partials in [5616](https://github.com/OSC/ondemand/pull/5616).
+
+
+### Fixed 
+- File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
+- All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
+- Reserved keyword names like 'format' now work in batch connect forms in [5455](https://github.com/OSC/ondemand/pull/5455).
+- File editor control panel cleanly scales to small screen widths in [5456](https://github.com/OSC/ondemand/pull/5456).
+- Hidden clusters no longer appear in the Active Jobs dropdown in [5458](https://github.com/OSC/ondemand/pull/5458).
+- Files with spaces in the name correctly open in the file editor in [5478](https://github.com/OSC/ondemand/pull/5478).
+- The FilesController does not error when the Accept header is missing [5448](https://github.com/OSC/ondemand/pull/5448).
+- The module browser correctly shows modules with multiple dependency sets in [5165](https://github.com/OSC/ondemand/pull/5165).
+- Project Manager Launchers can correctly use multiple environment variables in [5356](https://github.com/OSC/ondemand/pull/5356).
+- Dynamic batch connect fields with underscores now work correctly in [5462](https://github.com/OSC/ondemand/pull/5462).
+- Fixed an issue with account alias' colliding in [5135](https://github.com/OSC/ondemand/pull/5135).
+- Workflow save errors correctly translate messages in [5489](https://github.com/OSC/ondemand/pull/5489).
+- Files dropdown button works correctly on Mac in [5527](https://github.com/OSC/ondemand/pull/5527).
+- labels and values are now escaped in display settings in [5490](https://github.com/OSC/ondemand/pull/5490).
+- Multiple checks are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
+- app_init_url is now relative in nginx_stage to better support proxies in [5598](https://github.com/OSC/ondemand/pull/5598).
+- File modals now focus input in [5605](https://github.com/OSC/ondemand/pull/5605).
+
+### Changed
+- Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
+- oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
+- Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
+
+## [4.2.3] - 2026-06-24
+
+### Security
+
+- Resolved CVE-2026-55171. The default `oidc_crypto_passphrase` is predictable and unsafe to use.
+  `update_ood_portal` will now fail if it isn't set in [5563](https://github.com/OSC/ondemand/pull/5563).
+- Resolved CVE-2026-55172.  The session storage directory now has multiple checks to ensure it
+  is created by the user and owned by the user, falling back to cookies if these checks fail
+  in [5560](https://github.com/OSC/ondemand/pull/5560).
+- Resolved CVE-2026-55169.  Previous versions allowed VNC passwords to be logged in access logs.
+  This release resolves that issue on all systems in [5582](https://github.com/OSC/ondemand/pull/5582)
+  and hardens that directory on RHEL systems by changing its ownership of
+  `/var/log/ondemand-nginx` in [5530](https://github.com/OSC/ondemand/pull/5530).
+
+### Changed
+
+- Reverted VNC same tab behaviour. VNC applications will now always open in a new
+  tab in [5582](https://github.com/OSC/ondemand/pull/5582).
+
+### Fixed
+
+- Project Manager workflows now save after submission to restore
+  themselves in [5507](https://github.com/OSC/ondemand/pull/5507).
+- Packages do not rely on a specific version of `selinux-policy`
+  in [5497](https://github.com/OSC/ondemand/pull/5497).
+- Batch connect fields with underscores work correctly
+  in [5510](https://github.com/OSC/ondemand/pull/5510).
+- Filenames with spaces now correctly link to the file editor
+  in [5506](https://github.com/OSC/ondemand/pull/5506).
+- Display settings in recent applications now escape HTML in
+  [5580](github.com/OSC/ondemand/pull/5580).
+- Navigation bar menus work correctly on MacOS/Safari
+  in [5536](https://github.com/OSC/ondemand/pull/5536).
+
+### Added
+
+- The CI will test color contrast to meet WCAG standards
+  in [5548](https://github.com/OSC/ondemand/pull/5548).
+
+## [4.1.6] - 2026-06-24
+
+### Security
+
+- Resolved CVE-2026-55171. The default `oidc_crypto_passphrase` is predictable and unsafe to use.
+  `update_ood_portal` will now fail if it isn't set in [5561](https://github.com/OSC/ondemand/pull/5563).
+- Resolved CVE-2026-55172.  The session storage directory now has multiple checks to ensure it
+  is created by the user and owned by the user, falling back to cookies if these checks fail
+  in [5560](https://github.com/OSC/ondemand/pull/5560).
+- Resolved CVE-2026-55169.  Previous versions allowed VNC passwords to be logged in access logs.
+  This release resolves that issue on all systems in [5583](https://github.com/OSC/ondemand/pull/5583)
+  and hardens that directory on RHEL systems by changing its ownership of
+  `/var/log/ondemand-nginx` in [5531](https://github.com/OSC/ondemand/pull/5531).
+
+### Changed
+
+- Reverted VNC same tab behaviour. VNC applications will now always open in a new
+  tab in [5582](https://github.com/OSC/ondemand/pull/5582).
+
+### Fixed
+
+- Project Manager workflows now save after submission to restore
+  themselves in [5508](https://github.com/OSC/ondemand/pull/5508).
+- Packages do not rely on a specific version of `selinux-policy`
+  in [5498](https://github.com/OSC/ondemand/pull/5498).
+- Batch connect fields with underscores work correctly
+  in [5509](https://github.com/OSC/ondemand/pull/5509).
+- Display settings in recent applications now escape HTML in
+  [5581](github.com/OSC/ondemand/pull/5581).
+
+## [4.1.5] - 2026-04-29
+
+### Fixed
+
+- The file browser will not serve edit links when downloads are disabled in [5277](https://github.com/OSC/ondemand/pull/5277).
+- The path_selector in project forms correctly detect changes in [5398](https://github.com/OSC/ondemand/pull/5398).
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5369](https://github.com/OSC/ondemand/pull/5369).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5367](https://github.com/OSC/ondemand/pull/5367).
+
+## [4.0.11] - 2026-04-29
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5368](https://github.com/OSC/ondemand/pull/5368).
+- /nginx URIs will now always set the Strict-Transport-Security header in [5401](https://github.com/OSC/ondemand/pull/5401).
+  
+## [4.2.2] - 2026-04-28
+
+### Fixed
+- Elements that alert with role="alert" now correctly announce themselves across OS/browser/Screen reader combinations in [5322](https://github.com/OSC/ondemand/pull/5322).
+- Datatable headers are correctly read by NVDA screen reader in [5245](https://github.com/OSC/ondemand/pull/5245).
+- Filenames with # characters correctly redirect in [5338](https://github.com/OSC/ondemand/pull/5338).
+- Dynamic batch connect options with ' characters are correctly escaped in [5345](https://github.com/OSC/ondemand/pull/5345).
+- Make project form help text is now keyboard-focusable in [5352](https://github.com/OSC/ondemand/pull/5352).
+- Project form correctly detects changes from path selector in [5355](https://github.com/OSC/ondemand/pull/5355).
+- Nav elements have aria labels in [5332](https://github.com/OSC/ondemand/pull/5332).
+  
+### Added
+- Workflows will now populate a OOD_WORKFLOW_SYNC_KEY environment variable to synchronize all launchers in a workflow in [5348](https://github.com/OSC/ondemand/pull/5348).
+
+### Security
+- Resolved GHSA-xcv4-m435-m33h (no CVE allocated at the time of writing) to prevent specially crafted filenames in the file
+  browser that can execute javascript in [5338](https://github.com/OSC/ondemand/pull/5338).
+
+## [4.2.1] - 2026-04-16
+
+### Added
+- Support for Ubuntu 26.04 in [5326](https://github.com/OSC/ondemand/pull/5326).
+
+### Fixed
+- Fixed some scss variables for contrast in [5334](https://github.com/OSC/ondemand/pull/5334).
+- ood_core and other dependency updates in [5333](https://github.com/OSC/ondemand/pull/5333).
+
+## [4.2.0] - 2026-04-15
+
+### Added
+- "Home Directory" now responds to internationalization in [5246](https://github.com/OSC/ondemand/pull/5246).
+- view.html.erb now has access to the session object in [5294](https://github.com/OSC/ondemand/pull/5294).
+- ood_portal_generator will now display a message when 'auth' has not been set in [5275](https://github.com/OSC/ondemand/pull/5275).
+- BatchConnect::App.from_token now caches apps in [5299](https://github.com/OSC/ondemand/pull/5299).
 
 ### Fixed
 - Quota bars no longer extend over 100% in [5103](https://github.com/OSC/ondemand/pull/5103).
@@ -21,10 +187,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - System status progress bars are more accessible in [5153](https://github.com/OSC/ondemand/pull/5153).
 - Files actions button now have a title in [5158](https://github.com/OSC/ondemand/pull/5158).
 - File editor correctly reports errors in [5179](https://github.com/OSC/ondemand/pull/5179).
+- The file browser correctly updates the table instead of navigating to a new page in [5182](https://github.com/OSC/ondemand/pull/5182).
+- Links to Ganglia images now have alt text [5193](https://github.com/OSC/ondemand/pull/5193).
+- The files table now has a caption and aria notification when it updates in [5201](https://github.com/OSC/ondemand/pull/5201).
+- Deleting files is more accessible in [5188](https://github.com/OSC/ondemand/pull/5188).
+- Select row checkboxes in the files table have the correct aria-label attribute in [5187](https://github.com/OSC/ondemand/pull/5187).
+- Popovers are now accessible in [5195](https://github.com/OSC/ondemand/pull/5195).
+- Several components will now not serve edit links when downloads disabled in [5253](https://github.com/OSC/ondemand/pull/5253) and [5112](https://github.com/OSC/ondemand/pull/5112).
+- The job composer has a bypass block in [5282](https://github.com/OSC/ondemand/pull/5282).
+- resolution_fields now correctly have aria-labels in [5289](https://github.com/OSC/ondemand/pull/5289).
+- Certain job composer errors now correctly redirect in [4835](https://github.com/OSC/ondemand/pull/4835).
+- The files app correctly shows the title to include directory in [5252](https://github.com/OSC/ondemand/pull/5252).
+- My interactive sessions page has better landmark navigation in [5279](https://github.com/OSC/ondemand/pull/5279).
+- Project Manager index is more accessible in [5263](https://github.com/OSC/ondemand/pull/5263).
+- Radio buttons now correctly read their label in [5272](https://github.com/OSC/ondemand/pull/5272).
+- Project Manager job pills now have better focus and titles in [5298](https://github.com/OSC/ondemand/pull/5298).
+- Project Manager workflow editor is more accessible in [5273](https://github.com/OSC/ondemand/pull/5273).
+- My interactive sessions page has better landmarks in [5279](https://github.com/OSC/ondemand/pull/5279).
+- Content with role=alert has been corrected for NVDA and Firefox in [5303](https://github.com/OSC/ondemand/pull/5303).
+- My interactive sessions page holds focus better when the page updates in [5310](https://github.com/OSC/ondemand/pull/5310).
+- mod_ood_proxy sets the HSTS header in [5323](https://github.com/OSC/ondemand/pull/5323).
+- The files application has better region navigation in [5248](https://github.com/OSC/ondemand/pull/5248).
+- The icon picker is much more screen reader friendly in [5186](https://github.com/OSC/ondemand/pull/5186).
+- Project Manager's launcher form builder has better accessibility in [5302](https://github.com/OSC/ondemand/pull/5302).
+- Project Manager's launcher/workflow lists has better accessibility in [5296](https://github.com/OSC/ondemand/pull/5296).
+- Updated some color contrasts to be 4.5+ in [5329](https://github.com/OSC/ondemand/pull/5329).
 
 ### Changed
 - Links now open in current tab when previously they opened in a new tab in [5114](https://github.com/OSC/ondemand/pull/5114).
 - Container tasks now default to podman in [4955](https://github.com/OSC/ondemand/pull/4955).
+- ActiveJobs extended data is being changed for improved accessibility in [5181](https://github.com/OSC/ondemand/pull/5181).
+- Passenger has been upgraded to 6.1.2 and Nginx has been upgraded to 1.28.0 in [5237](https://github.com/OSC/ondemand/pull/5237).
+- Support for Debian 13 has been added while support for Ubuntu 22.04 has been dropped in [5243](https://github.com/OSC/ondemand/pull/5243).
 
 ## [4.1.4] - 2026-03-03
 
@@ -1836,12 +2030,19 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.1.4...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.3...HEAD
+[4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
+[4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
+[4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
+[4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
+[4.1.6]: https://github.com/OSC/ondemand/compare/v4.1.5...v4.1.6
+[4.1.5]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.1.5
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
 [4.1.3]: https://github.com/OSC/ondemand/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/OSC/ondemand/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/OSC/ondemand/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.1.0
+[4.0.11]: https://github.com/OSC/ondemand/compare/v4.0.10...v4.0.11
 [4.0.10]: https://github.com/OSC/ondemand/compare/v4.0.9...v4.0.10
 [4.0.9]: https://github.com/OSC/ondemand/compare/v4.0.8...v4.0.9
 [4.0.8]: https://github.com/OSC/ondemand/compare/v4.0.7...v4.0.8

@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup os dependencies
         run: |
@@ -44,7 +44,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
           commit-message: update localizations

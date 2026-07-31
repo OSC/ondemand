@@ -80,6 +80,23 @@ editing any css, javascript or images during development, you may find the
 helper script `bin/recompile_js` useful to run the asset pipeline for your changes
 to become available to the app.
 
+### Testing the Dashboard
+All dashboard tests are located in the `dashboard/test/` directory. The tests are divided into several types: 
+- **integration tests**, which test specific interactions between classes or modules, located in the `integration` subdirectory
+- **system tests**, which open a web server with Selenium and analyze the page using Capybara, located in the `system` subdirectory
+- **unit tests**, which test the behavior of an individual class or module, and are located in all other subdirectories not mentioned above.
+
+To run the tests, open a terminal in the `dashboard/` directory. From there, you can run
+- `rake test` to run all tests except system tests
+- `rake test:system` to run all system tests
+
+You can also run individual files or tests using the Rails test runner.
+Note that before system tests can be run this way, **you must compile the testing assets using `bin/recompile_js test`.** The most common commands to know are:
+- `bin/rails test path/to/file` to test an individual file
+- `bin/rails test path/to/file -n 'test name'` to run an individual test
+
+Additional options and syntax for the Rails test runner can be found in the [Rails test runner guide](https://guides.rubyonrails.org/v7.2/testing.html#the-rails-test-runner).
+
 ### Developing ood_core
 
 If you're making updates to the `ood_core` gem (or indeed any other gem that you have

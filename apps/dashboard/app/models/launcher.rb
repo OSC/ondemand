@@ -357,7 +357,11 @@ class Launcher
       {
         workdir: project_dir.to_s
       }
-    )
+    ).tap do |opts|
+      if options[:ood_workflow_sync_key]
+        opts[:job_environment] = (opts[:job_environment] || {}).merge('OOD_WORKFLOW_SYNC_KEY' => options[:ood_workflow_sync_key])
+      end
+    end
   end
 
   def adapter(cluster_id)

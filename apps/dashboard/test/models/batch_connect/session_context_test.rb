@@ -130,6 +130,19 @@ cacheable: true } }, form: ['bc_account', 'num_cores']
       assert_equal ['PZS0714', '28'], [context['bc_account'].value, context['num_cores'].value]
     end
 
+    test 'as_json includes attributes whose ids match Kernel method names' do
+      app = BatchConnect::App.new(router: nil)
+      app.stubs(:form_config).returns(
+        attributes: { format: { widget: 'text_field', value: 'pdf' } },
+        form:       ['bc_account', 'format']
+      )
+      context = app.build_session_context
+
+      expected = { 'bc_account' => '', 'format' => 'pdf' }
+      assert_equal expected, context.serializable_hash
+      assert_equal expected, context.as_json
+    end
+
     test 'to_openstruct throws error when using OpenStruct methods' do
       app = BatchConnect::App.new(router: nil)
       app.stubs(:form_config).returns(attributes: { table: { value: 'the_table' } }, form: ['bc_account', 'table'])

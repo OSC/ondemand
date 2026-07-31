@@ -40,9 +40,10 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-file-btn').click
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('bar.txt')
       find('#files_input_modal_ok_button').click
-      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'bar.txt')
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
@@ -51,9 +52,10 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       visit files_url(dir)
       find('#new-dir-btn').click
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('bar')
       find('#files_input_modal_ok_button').click
-      find('tbody a[data-type="d"]', exact_text: 'bar', wait: MAX_WAIT)
+      assert_selector('tbody a[data-type="d"]', exact_text: 'bar')
       assert File.directory? File.join(dir, 'bar')
     end
   end
@@ -286,12 +288,13 @@ class FilesTest < ApplicationSystemTestCase
       tr = find('a', exact_text: 'foo.txt').ancestor('tr')
       tr.find('button.dropdown-toggle').click
       tr.find('.rename-file').click
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
 
       # rename dialog input
       find('#files_input_modal_input').set('bar.txt')
       find('#files_input_modal_ok_button').click
 
-      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'bar.txt')
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
@@ -426,38 +429,39 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'changing directory' do
     visit files_url(Rails.root.to_s)
-    find('tbody a', exact_text: 'app')
-    find('tbody a', exact_text: 'config')
+    assert_selector('tbody a', exact_text: 'app')
+    assert_selector('tbody a', exact_text: 'config')
 
     find('#goto-btn').click
+    assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
     find('#files_input_modal_input').set(Rails.root.join('app'))
     find('#files_input_modal_ok_button').click
-    find('tbody a', exact_text: 'helpers')
-    find('tbody a', exact_text: 'controllers')
+    assert_selector('tbody a', exact_text: 'helpers')
+    assert_selector('tbody a', exact_text: 'controllers')
 
     find('#goto-btn').click
     find('#files_input_modal_input').set(Rails.root.to_s)
     find('#files_input_modal_ok_button').click
-    find('tbody a', exact_text: 'app')
-    find('tbody a', exact_text: 'config')
+    assert_selector('tbody a', exact_text: 'app')
+    assert_selector('tbody a', exact_text: 'config')
   end
 
   test 'window.onpopstate does not overwrite browser state' do
     visit files_url(Rails.root.to_s)
     find('tbody a', exact_text: 'app').click
     find('tbody a', exact_text: 'apps').click
-    find('tbody a', exact_text: 'ood_app.rb')
+    assert_selector('tbody a', exact_text: 'ood_app.rb')
 
     page.driver.go_back
-    find('tbody a', exact_text: 'assets')
+    assert_selector('tbody a', exact_text: 'assets')
 
     page.driver.go_back
-    find('tbody a', exact_text: 'app')
-    find('tbody a', exact_text: 'config')
+    assert_selector('tbody a', exact_text: 'app')
+    assert_selector('tbody a', exact_text: 'config')
 
     page.driver.go_forward
-    find('tbody a', exact_text: 'apps')
-    find('tbody a', exact_text: 'assets')
+    assert_selector('tbody a', exact_text: 'apps')
+    assert_selector('tbody a', exact_text: 'assets')
   end
 
   test 'edit file' do
@@ -478,7 +482,7 @@ class FilesTest < ApplicationSystemTestCase
 
       find('#save-button').click
 
-      sleep 1 # FIXME: should avoid using sleep here
+      assert_selector('#save-button.file-saved')
       assert_equal 'foobar', File.read(file)
     end
   end
@@ -500,6 +504,9 @@ class FilesTest < ApplicationSystemTestCase
       find('textarea.ace_text-input', visible: false).send_keys('foobar')
 
       accept_alert("An error occurred attempting to save this file!\nFile could not be accessed") do
+        # assert_selector is here as there are no other assertions in this test
+        # only implicit find and accept_alert that will error if they can't find or accept
+        assert_selector('#save-button')
         find('#save-button').click
       end
     end
@@ -511,12 +518,12 @@ class FilesTest < ApplicationSystemTestCase
         # No localization (default)
         visit files_url(dir)
         find('#upload-btn').click
-        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+        assert_selector('.uppy-Dashboard-AddFiles')
 
         src_file = 'test/fixtures/files/upload/osc-logo.png'
         attach_file 'files[]', src_file, visible: false, match: :first
 
-        find('.uppy.uppy-Informer', text: /osc-logo.png exceeds [\w ]+ size of 10 B/, wait: MAX_WAIT)
+        assert_selector('.uppy.uppy-Informer', text: /osc-logo.png exceeds [\w ]+ size of 10 B/)
 
         # Temporarily add localization for max upload size error
         en = { :dashboard => { :uppy => { :strings => { :exceedsSize => 'custom error, %{file}, %{size}' } } } }
@@ -524,12 +531,12 @@ class FilesTest < ApplicationSystemTestCase
 
         visit files_url(dir)
         find('#upload-btn').click
-        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+        assert_selector('.uppy-Dashboard-AddFiles')
 
         src_file = 'test/fixtures/files/upload/osc-logo.png'
         attach_file 'files[]', src_file, visible: false, match: :first
 
-        find('.uppy.uppy-Informer', text: 'custom error, osc-logo.png, 10 B', wait: MAX_WAIT)
+        assert_selector('.uppy.uppy-Informer', text: 'custom error, osc-logo.png, 10 B')
 
         I18n.backend.reload!
         # Clear browser logs
@@ -715,8 +722,8 @@ class FilesTest < ApplicationSystemTestCase
       cant_read_row.find('button.dropdown-toggle').click
       cant_read_links = cant_read_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-      # NOTE: download and view are not an expected links.
-      expected_links = ['Edit', 'Rename', 'Delete']
+      # NOTE: download, view, and edit are not an expected links.
+      expected_links = ['Rename', 'Delete']
 
       assert_equal(expected_links, fifo_links)
       assert_equal(expected_links, cant_read_links)
@@ -730,8 +737,8 @@ class FilesTest < ApplicationSystemTestCase
     null_row.find('button.dropdown-toggle').click
     null_links = null_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
-    # NOTE: download and view are not an expected links.
-    expected_links = ['Edit', 'Rename', 'Delete']
+    # NOTE: download, view, and edit are not an expected links.
+    expected_links = ['Rename', 'Delete']
 
     assert_equal(expected_links, null_links)
   end
@@ -854,6 +861,12 @@ class FilesTest < ApplicationSystemTestCase
 
       # none of the HTML elements have hrefs.
       assert(file_elements.all? { |e| e[:href].nil? })
+
+      assert_selector('tr a.dropdown-item', visible: false) # rename links still exist
+      # delete and rename links don't point anywhere
+      all('tr .dropdown-menu a', visible: false).each do |link|
+        assert(link[:href].end_with?('#'), "#{link.text(:all)} link was served with downloads disabled")
+      end
     end
   end
 
@@ -868,6 +881,48 @@ class FilesTest < ApplicationSystemTestCase
     assert_equal('&lt;img src=1 onerror=alert("hello")&gt;', actual_text)
   end
 
+  test 'filenames with # are url-escaped' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      name = '#foo.txt#'
+      FileUtils.touch(File.join(dir, name))
+
+      visit files_url(dir)
+
+      row = find('tbody a', exact_text: name).ancestor('tr')
+
+      row.find('button.dropdown-toggle').click
+      href = row.find('a.edit-file')[:href]
+
+      assert_includes href, '%23'
+      refute_includes href, '#'
+    end
+  end
+
+  test 'filenames with spaces in path are url-escaped once for edit' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      spaced_dir = File.join(dir, 'A B')
+      FileUtils.mkdir_p(spaced_dir)
+      name = 'test'
+      FileUtils.touch(File.join(spaced_dir, name))
+
+      visit files_url(spaced_dir)
+
+      row = find('tbody a', exact_text: name).ancestor('tr')
+
+      row.find('button.dropdown-toggle').click
+      href = row.find('a.edit-file')[:href]
+
+      assert_includes href, '%20'
+      refute_includes href, '%2520'
+    end
+  end
+  
   test 'will not render HTML files by default' do
     data = <<-HEREDOC
     <html>
@@ -1018,7 +1073,7 @@ class FilesTest < ApplicationSystemTestCase
       tr = find('a', exact_text: 'foo').ancestor('tr')
       tr.find('button.dropdown-toggle').click
       tr.find('.rename-file').click
-
+      assert page.evaluate_script('document.activeElement === document.getElementById("files_input_modal_input")')
       find('#files_input_modal_input').set('foo')
       find('#files_input_modal_ok_button').click
 

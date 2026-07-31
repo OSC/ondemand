@@ -6,7 +6,7 @@
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
 %define runtime_version %{major_version}.%{minor_version}.0
-%define runtime_release 3
+%define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 # Use hardcoded RHEL 9.5 for a short period while downstream RHEL clones get RHEL 9.6 release
 %if 0%{?rhel} == 9
@@ -84,13 +84,9 @@ BuildRequires:   libyaml-devel
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
 Requires:        python3
-# rclone is not available for Amazon Linux 2023
-%if 0%{?rhel}
-Requires:        rclone
-%endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.26.3-2.p6.1.0.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.1.0-2.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.28.0-1.p6.1.2.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.1.2-1.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}
@@ -108,7 +104,7 @@ access, job submission and interactive work on compute nodes.
 Summary: SELinux policy for OnDemand
 BuildRequires:      selinux-policy, selinux-policy-devel, checkpolicy, policycoreutils
 Requires:           %{name} = %{version}-%{release}
-Requires:           selinux-policy >= %{selinux_policy_ver}
+Requires:           selinux-policy
 Requires(post):     /usr/sbin/semodule, /sbin/restorecon, /usr/sbin/setsebool, /usr/sbin/selinuxenabled, /usr/sbin/semanage
 Requires(post):     selinux-policy-targeted
 Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
@@ -157,7 +153,7 @@ export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
 bundle config set --global force_ruby_platform true
 bundle config --global build.nokogiri --use-system-libraries
 bundle config --global build.sqlite3 --enable-system-libraries
-BUNDLE_WITHOUT='doc test package development' bundle install
+BUNDLE_WITHOUT='doc test package development e2e' bundle install
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache
 rm -rf apps/*/node_modules/.cache

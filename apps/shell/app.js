@@ -45,7 +45,7 @@ router.get(['/', '/ssh'], function (req, res) {
   res.redirect(req.baseUrl + '/ssh/default');
 });
 
-router.get('/ssh*', function (req, res) {
+router.get('/ssh{*splat}', function (req, res) {
   var theHost, theDir;
   [theHost, theDir] = host_and_dir_from_url(req.url);
   res.render('index',

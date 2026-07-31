@@ -4,7 +4,7 @@
 <%= render "prefill_templates" if Configuration.bc_saved_settings? %>
 
 <% if Configuration.bc_dynamic_js? %>
-  <span class='sr-only' tabindex='0'> The following form may change dynamically as options are selected. All changes will be announced and are reversible </span>
+  <span class='sr-only' tabindex='0'><%= t('dashboard.batch_connect_form_dynamic_disclaimer') %></span>
 <% end %>
 <%= bootstrap_form_for(@session_context, html: { autocomplete: "off", }) do |f| %>
   <% f.object.each do |attrib| %>

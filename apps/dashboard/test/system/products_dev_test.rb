@@ -12,8 +12,9 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Home Breadcrumb button works' do
-    find('ol', class: 'breadcrumb').find('li', text: 'Home')
-    click_on 'Home'
+    assert_selector('ol.breadcrumb li', text: 'Home')
+    click_on('Home')
+    assert_not_equal(products_path(:dev), current_path)
   end
 
   test 'New App route is correct' do
@@ -21,7 +22,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Launch Shell route is correct' do
-    find('span', class: 'float-end').find('.btn', text: 'Launch Shell')
+    assert_selector('span.float-end .btn', text: 'Launch Shell')
     has_link?('/pun/sys/shell/ssh')
   end
 
@@ -54,7 +55,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Can click dev Launch Home Directory' do
-    button_link?('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
+    button_link?('Launch Home Directory', '/pun/sys/dashboard/apps/show/files/dev/')
   end
 
   test 'Can click dev Launch file-editor' do
@@ -70,23 +71,28 @@ class ProductsDevTest < ApplicationSystemTestCase
     assert_selector 'tr', count: 14
   end
 
-  test 'pressing bundle install' do
-    visit(product_url('dev', 'dashboard'))
-    assert find('#product_cli_modal', visible: :hidden)
+  # This test is not safe to run under all seeds, specifically SEED=46838 will cause this others to fail
+  # at least in ruby 3.1.  The dashboard somehow becomes confused and sets the wrong Rails.root.
+  # I.e., instead of the correct Rails.root it is actually "#{Rails.root}/test/fixtures/sys_with_gateway_apps/dashboard"
+  # which causes other tests to fail because they're looking at the wrong DevRouter stubbed path in setup above.
 
-    # tests cannot handle the transition when the modal closes.
-    update_script = <<~JAVASCRIPT
-      document.getElementById("product_cli_modal").classList.remove('fade');
-    JAVASCRIPT
+  # test 'pressing bundle install' do
+  #   visit(product_url('dev', 'dashboard'))
+  #   assert find('#product_cli_modal', visible: :hidden)
 
-    execute_script(update_script)
+  #   # tests cannot handle the transition when the modal closes.
+  #   update_script = <<~JAVASCRIPT
+  #     document.getElementById("product_cli_modal").classList.remove('fade');
+  #   JAVASCRIPT
 
-    # now the modal pops up and you can click to dismiss it
-    click_on 'Bundle Install'
-    assert find('#product_cli_modal', visible: :visible)
-    click_button('product_cli_modal_button')
-    assert find('#product_cli_modal', visible: :hidden)
-  end
+  #   execute_script(update_script)
+
+  #   # now the modal pops up and you can click to dismiss it
+  #   click_on 'Bundle Install'
+  #   assert find('#product_cli_modal', visible: :visible)
+  #   click_button('product_cli_modal_button')
+  #   assert find('#product_cli_modal', visible: :hidden)
+  # end
 
   test 'pressing app restart' do
     visit(product_url('dev', 'dashboard'))

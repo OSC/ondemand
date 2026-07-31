@@ -53,6 +53,6 @@ module ProjectsHelper
   end
 
   def form_label_tooltip(content)
-    "<i class='fa fa-question-circle vertical-align-middle' data-bs-toggle='tooltip' data-bs-placement='right' title='#{content}'></i>"
+    "<i class='fa fa-question-circle vertical-align-middle' data-bs-toggle='tooltip' data-bs-placement='right' data-bs-html='true' title='#{content}' tabindex='0'></i>"
   end
 end

@@ -17,7 +17,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     Router.instance_variable_set('@pinned_apps', nil)
   end
 
-  def test_env
+  def get_test_env
     {
       MOTD_FORMAT:    'osc',
       MOTD_PATH:      Rails.root.join('test/fixtures/files/motd_valid').to_s,
@@ -88,7 +88,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -121,7 +121,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -215,7 +215,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -265,7 +265,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -275,7 +275,8 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     error_widgets = css_select('div.row > div.col-md-4 > div.alert.alert-danger.card > div.card-body')
     assert_equal 3, error_widgets.size
     assert_equal true, %r{Missing partial widgets/_this_widget_doesnt_exist}.match?(error_widgets[0].text)
-    assert_equal true, /undefined method `woops!'/.match?(error_widgets[1].text)
+    puts error_widgets[1].text
+    assert_equal true, /undefined method [`']woops!'/.match?(error_widgets[1].text)
     assert_equal true, /cannot load such file -- the_missing_gem/.match?(error_widgets[2].text)
   end
 
@@ -299,7 +300,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 

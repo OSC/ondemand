@@ -45,7 +45,7 @@ module AccountCache
         invalid_clusters = job_cluster_names - valid_clusters
 
         data = invalid_clusters.map do |invalid_cluster|
-          ["data-option-for-cluster-#{invalid_cluster}", false]
+          ["data-option-for-cluster-#{invalid_cluster.tr('_', '-')}", false]
         end.compact.to_h
 
         [account_name, account_name, data]
@@ -67,9 +67,10 @@ module AccountCache
         end
 
         cluster_data = other_clusters.map do |other_cluster|
+          cluster_token = other_cluster.tr('_', '-')
           [
-            ["data-option-for-cluster-#{other_cluster}", false],
-            ["data-option-for-auto-batch-clusters-#{other_cluster}", false]
+            ["data-option-for-cluster-#{cluster_token}", false],
+            ["data-option-for-auto-batch-clusters-#{cluster_token}", false]
           ]
         end.flatten(1).to_h
 
@@ -108,7 +109,7 @@ module AccountCache
         unavailable_clusters = clusters.reject { |c| available_clusters.include?(c) }
 
         unavailable_clusters.each do |cluster|
-          data["data-option-for-cluster-#{cluster}"] = false
+          data["data-option-for-cluster-#{cluster.tr('_', '-')}"] = false
         end
 
         available_accounts = account_tuples.map { |tuple| tuple[0] }.uniq
@@ -168,15 +169,23 @@ module AccountCache
     end
   end
 
+  def get_or_create_account_alias(account)
+    @account_aliases ||= {}
+    if @account_aliases.key?(account)
+      return @account_aliases[account]
+    end
+    new_alias = "account#{@account_aliases.length()}"
+    @account_aliases[account] = new_alias
+    return new_alias
+  end
+
   def disabled_account_data(disabled_accounts)
-    counter = 0
     disabled_accounts.map do |account|
-      counter += 1
       # check if account contains anything other than digits and lowercase letters
       if /\A[a-z0-9]+\z/.match?(account)
         [["data-option-for-auto-accounts-#{account}", false]] 
       else
-        acct_alias = "account#{counter}"
+        acct_alias = get_or_create_account_alias(account)
         [
           ["data-alias-#{acct_alias}", account],
           ["data-option-for-auto-accounts-#{acct_alias}", false]

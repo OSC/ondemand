@@ -24,6 +24,26 @@
 // get in the way
 // $navbar-height: 20px;
 
+
+
+// Contrast fixes. Do not edit without re-checking accessibility
+
+.alert-danger a {
+  color: rgb(43, 102, 153);;
+}
+
+.bg-white {
+  --bs-info: rgb(9, 128, 151);
+  --bs-info-rgb: 9, 128, 151;
+}
+
+.badge {
+  --bs-success: rgb(66, 130, 66);
+  --bs-success-rgb: 66, 130, 66;
+  --bs-info: rgb(9, 128, 151);
+  --bs-info-rgb: 9, 128, 151;
+}
+
 nav.navbar {
   padding: 0.5rem 1rem;
 }
@@ -164,6 +184,7 @@ small.form-text {
 
 // Your custom css styles below (must be manually added)
 
+@import "active_jobs";
 @import "dashboard";
 @import "navbar";
 @import "apps";
@@ -190,3 +211,12 @@ small.form-text {
 @import "module_browser";
 @import "@uppy/core/dist/style";
 @import "@uppy/dashboard/dist/style";
+
+//Accessibility change to uppy defaults
+.uppy-Dashboard-note, a.uppy-Dashboard-poweredBy, .uppy-Dashboard-Item-status {
+  color: #6a6a6a;
+}
+ 
+.uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload {
+  background-color: rgb(66, 130, 66);
+}

@@ -95,9 +95,42 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'creates .ondemand directory with project' do
     Dir.mktmpdir do |dir|
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040700, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
+      exp_children.each do |child|
+        msg = "Path #{child} is not writable"
+        assert File.writable?(File.join(ondemand_dir, child))
+      end
+    end
+  end
 
-      assert File.directory? File.join("#{dir}/projects", project_id, '.ondemand')
+  test 'shared project creates .ondemand directory with proper permissions' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040770, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
+      assert File.writable?(File.join(ondemand_dir, 'manifest.yml'))
+      exp_children.each do |child|
+        unless child == 'manifest.yml'
+          stats = File.stat(File.join(ondemand_dir, child))
+          msg = "Path #{child} exists with incorrect permissions"
+          if %w(launchers workflows).include?(child)
+            assert_equal 0o040770, stats.mode, msg
+          elsif child == 'job_log.yml'
+            assert_equal 0o0100660, stats.mode, msg
+          end
+        end
+      end
     end
   end
 
@@ -115,6 +148,35 @@ class ProjectManagerTest < ApplicationSystemTestCase
         click_on 'Delete'
       end
       assert_selector '.alert-success', text: 'Project successfully deleted!'
+    end
+  end
+
+  test 'project group toggles when path selector sets directory' do
+    Dir.mktmpdir do |home_dir|
+      Dir.mktmpdir do |other_dir|
+        CurrentUser.stubs(:home).returns(home_dir)
+  
+        visit new_project_path
+  
+        owner = find('#project_group_owner', visible: :all)
+        setgid = find('#project_setgid', visible: :all)
+  
+        find('#project_directory').set(other_dir)
+        refute owner.disabled?
+        refute setgid.disabled?
+  
+        home_path = File.join(home_dir, 'projects')
+        execute_script <<~JS
+          const tableId = 'project_directory_path_selector_table';
+          const key = `${tableId}${window.location.pathname.replaceAll('/', '_')}_last_visited`;
+          localStorage.setItem(key, JSON.stringify({ path: #{home_path.to_json}, type: 'd' }));
+          document.getElementById('project_directory_path_selector_button').click();
+        JS
+  
+        assert_equal home_path, find('#project_directory').value
+        assert_selector('#project_group_owner[disabled]', visible: :all)
+        assert_selector('#project_setgid[disabled]', visible: :all)
+      end
     end
   end
 
@@ -219,6 +281,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(4, icons.size)
   end
 
+  test 'project group dropdown respects auto_groups_filter' do
+    CurrentUser.instance.stubs(:group_names).returns(%w[domain_users project-a project-b other])
+    Configuration.stubs(:auto_groups_filter).returns('^project-')
+
+    visit(new_project_path)
+    options = page.all('#project_group_owner option').map(&:value)
+    assert_equal(%w[project-a project-b], options)
+  end
+
   test 'all icons show after clearing input field' do
     visit(new_project_path)
     find('#product_icon_select').set('')
@@ -226,8 +297,321 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(990, icons.size)
   end
 
+  def check_icon(cell, type)
+    iclass = type == :file ? 'fa-file' : 'fa-folder'
+    icon = cell.find('i')
+    assert_equal "fa #{iclass}",       icon[:class]
+    assert_equal type.to_s.capitalize, cell.find('.sr-only').text
+  end
+
+  def check_link(link, text, path)
+    assert_equal text, link.text
+    href = link[:href].split('/')[3..].join('/')
+    assert_equal path, "/#{href}"
+  end
+
+  def check_top_directory_row(row_data, tmpdir)
+    check_icon(row_data[0], :directory)
+    link = row_data[1].find('a')
+    check_link(link, '..', directory_frame_path(path: "#{tmpdir}/projects"))
+    assert_equal 0, row_data[2].all('*').length
+    assert_equal '', row_data[3].text
+    assert_equal '', row_data[4].text
+  end
+
+  def check_files(name, size, project_dir, row_data)
+    check_icon(row_data[0], :file)
+    link = row_data[1].find('a')
+    check_link(link, name, files_path("#{project_dir}/#{name}"))
+
+    actions_cell = row_data[2]
+    actions_cell.find('button[data-bs-toggle="dropdown"]').click
+    actions_cell.assert_selector('ul.show')
+    actions_btns = actions_cell.all('ul.show li a[target="_top"]')
+    assert_equal 3, actions_btns.length
+
+    check_link(actions_btns[0], 'View',     files_path("#{project_dir}/#{name}"))
+    check_link(actions_btns[1], 'Edit',     OodAppkit.editor.edit(path: "#{project_dir}/#{name}").to_s)
+    check_link(actions_btns[2], 'Download', files_path("#{project_dir}/#{name}", download: '1'))
+    
+    assert_equal 'fas fa-eye',      actions_btns[0].find('i[aria-hidden="true"]')[:class]
+    assert_equal 'fas fa-edit',     actions_btns[1].find('i[aria-hidden="true"]')[:class]
+    assert_equal 'fas fa-download', actions_btns[2].find('i[aria-hidden="true"]')[:class]
+
+    actions_cell.find('button[data-bs-toggle="dropdown"].show').click
+
+    unless size.nil?
+      assert_equal "#{size} B", row_data[3].text
+      assert 0 < row_data[4].text.length
+    end
+  end
+
+  def check_directory_breakpoints
+    original_size = page.current_window.size
+    frame_selector = '#directory_browser'
+    [1027, 576, 500, 350].each do |width|
+      page.current_window.resize_to(width, original_size[1])
+      max_width = find(frame_selector).rect.width
+      selectors = ['h2.justify-content-center', 'div.justify-content-center strong', 'table']
+      selectors.each do |selector|
+        ele_width = find("#{frame_selector} #{selector}").rect.width
+        assert max_width > ele_width, "#{selector} (#{ele_width}px) is wider than container (#{max_width}px) at #{width}px screen width"
+      end
+    end
+    page.current_window.resize_to(*original_size)
+  end
+
+  test 'private project directory shows all files' do 
+    Dir.mktmpdir do |dir|
+      # simulate private project
+      CurrentUser.stubs(:home).returns(dir)
+      # setup directory
+      project_id = setup_project(dir)
+      project_dir = "#{dir}/projects/#{project_id}"
+      `echo 'sample' > #{project_dir}/data.json`
+      `echo '#Title' > #{project_dir}/README.md` 
+
+      visit project_path(project_id)
+
+      # check non-table display elements
+      assert_selector('#directory_browser', visible: true)
+      assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+      tframe_selector = 'turbo-frame#project_directory'
+      assert_selector(tframe_selector, visible: true)
+      assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+      # check table
+      headers = all("#{tframe_selector} th")
+      assert_equal 5,         headers.length
+      assert_equal 'Type',    headers[0].find('.sr-only').text
+      assert_equal 'Name',    headers[1].text
+      assert_equal 'Actions', headers[2].find('.sr-only').text
+      assert_equal 'Size',    headers[3].text
+      assert_equal 'Date',    headers[4].text
+
+      rows = all("#{tframe_selector} tbody tr")
+      assert_equal 6, rows.length
+      check_top_directory_row(rows[0].all('td'), dir)
+
+      row_2_data = rows[1].all('td')
+      check_icon(row_2_data[0], :directory)
+      row_2_link = row_2_data[1].find('a')
+      check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
+      assert_equal 0,  row_2_data[2].all('*').length
+      assert_equal '', row_2_data[3].text
+      # this is the real date, so we can only test presence
+      assert 0 < row_2_data[4].text.length
+
+      # only variables between files are title and size
+      files = {'README.md' => 7, 'data.json' => 7, 'my_cool_script.sh' => 19, 'my_cooler_script.bash' => 9}
+      files.each_with_index do |(name, size), index|
+        row_data = rows[2 + index].all('td')
+        check_files(name, size, project_dir, row_data)
+      end
+
+      files_app_btn = find("#{tframe_selector} a[target='_top'].files-button")
+      check_link(files_app_btn, 'Open in files app', files_path(project_dir))
+
+      check_directory_breakpoints
+    end
+  end
+
+  test 'shared project directory displays owner mode' do
+    Dir.mktmpdir do |dir|                                                                       
+      # setup directory                                                                                                 
+      project_id = setup_project(dir)
+      project_dir = "#{dir}/projects/#{project_id}"
+      `echo 'sample' > #{project_dir}/data.json`
+      `echo '#Title' > #{project_dir}/README.md`
+      
+      File.chmod(0o650, "#{project_dir}/data.json", "#{project_dir}/README.md")
+
+      visit project_path(project_id)
+      
+      # check non-table display elements                                                                          
+      assert_selector('#directory_browser', visible: true)
+      assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+      tframe_selector = 'turbo-frame#project_directory'
+      assert_selector(tframe_selector, visible: true)
+      assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+      # check table
+      headers = all("#{tframe_selector} th")
+      assert_equal 7,         headers.length
+      assert_equal 'Type',    headers[0].find('.sr-only').text
+      assert_equal 'Name',    headers[1].text
+      assert_equal 'Actions', headers[2].find('.sr-only').text
+      assert_equal 'Size',    headers[3].text
+      assert_equal 'Date',    headers[4].text
+      assert_equal 'Owner',   headers[5].text
+      assert_equal 'Mode',    headers[6].text
+      
+      rows = all("#{tframe_selector} tbody tr")
+      assert_equal 6, rows.length
+      check_top_directory_row(rows[0].all('td'), dir)
+
+      row_2_data = rows[1].all('td')
+      check_icon(row_2_data[0], :directory)
+      row_2_link = row_2_data[1].find('a')
+      check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
+      assert_equal 0,  row_2_data[2].all('*').length
+      assert_equal '', row_2_data[3].text
+      # this is the real date, so we can only test presence
+      assert 0 < row_2_data[4].text.length
+
+      # This time files also vary mode
+      files = {'README.md' => [7, 650], 'data.json' => [7, 650], 'my_cool_script.sh' => [19, 644], 'my_cooler_script.bash' => [9, 644]}
+      files.each_with_index do |(name, (size, mode)), index|
+        row_data = rows[2 + index].all('td')
+        check_files(name, size, project_dir, row_data)
+
+        assert_equal CurrentUser.name, row_data[5].text
+        assert_equal mode.to_s,        row_data[6].text
+      end
+
+      # When screen width decreases, size and date disappear
+      original_size = page.current_window.size
+      page.current_window.resize_to(1199, original_size[1])
+
+      new_headers = all("#{tframe_selector} th")
+      assert_equal 5,         new_headers.length
+      assert_equal 'Type',    new_headers[0].find('.sr-only').text
+      assert_equal 'Name',    new_headers[1].text
+      assert_equal 'Actions', new_headers[2].find('.sr-only').text
+      assert_equal 'Owner',    new_headers[3].text
+      assert_equal 'Mode',    new_headers[4].text
+
+      files.each_with_index do |(name, (size, mode)), index|
+        row_data = rows[2 + index].all('td')
+        check_files(name, nil, project_dir, row_data)
+
+        assert_equal CurrentUser.name, row_data[3].text
+        assert_equal mode.to_s,        row_data[4].text
+      end
+      page.current_window.resize_to(*original_size)
+      check_directory_breakpoints
+    end
+  end
+
+  test 'project directory responds to file permissions' do
+    Dir.mktmpdir do |dir|                                                                       
+      # setup directory                                                                                                 
+      project_id = setup_project(dir)
+      project_dir = "#{dir}/projects/#{project_id}"   
+      `mkdir #{project_dir}/unreadable`
+      `mkdir #{project_dir}/unwritable`
+      `echo 'sample' > #{project_dir}/data.json`
+      `echo '#Title' > #{project_dir}/README.md`
+
+      File.chmod(0o100, "#{project_dir}/unreadable", "#{project_dir}/data.json")
+      File.chmod(0o500, "#{project_dir}/unwritable", "#{project_dir}/README.md")
+
+      visit project_path(project_id)
+
+      # check non-table display elements                                                                          
+      assert_selector('#directory_browser', visible: true)
+      assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+      tframe_selector = 'turbo-frame#project_directory'
+      assert_selector(tframe_selector, visible: true)
+      assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+      # just check count since the previous test checks the same header text
+      assert_equal 7, all("#{tframe_selector} th").length
+
+      rows = all("#{tframe_selector} tbody tr")
+      assert_equal 8, rows.length
+    
+      # set baseline for readable and writable files
+      writable_data = rows[6].all('td')
+      check_link(writable_data[1].find('a'), 'my_cool_script.sh', files_path("#{project_dir}/my_cool_script.sh"))
+
+      actions_cell = writable_data[2]
+      actions_cell.find('button[data-bs-toggle="dropdown"]').click
+      actions_cell.assert_selector('ul.show')
+      actions_btns = actions_cell.all('ul.show li a[target="_top"]')
+      assert_equal 3, actions_btns.length
+  
+      check_link(actions_btns[0], 'View',     files_path("#{project_dir}/my_cool_script.sh"))
+      check_link(actions_btns[1], 'Edit',     OodAppkit.editor.edit(path: "#{project_dir}/my_cool_script.sh").to_s)
+      check_link(actions_btns[2], 'Download', files_path("#{project_dir}/my_cool_script.sh", download: '1'))
+      
+      assert_equal 'fas fa-eye',      actions_btns[0].find('i[aria-hidden="true"]')[:class]
+      assert_equal 'fas fa-edit',     actions_btns[1].find('i[aria-hidden="true"]')[:class]
+      assert_equal 'fas fa-download', actions_btns[2].find('i[aria-hidden="true"]')[:class]
+  
+      actions_cell.find('button[data-bs-toggle="dropdown"].show').click
+
+      # unwritable files don't show edit links
+      unwritable_data = rows[4].all('td')
+      check_link(unwritable_data[1].find('a'), 'README.md', files_path("#{project_dir}/README.md"))
+
+      unwritable_actions_cell = unwritable_data[2]
+      unwritable_actions_cell.find('button[data-bs-toggle="dropdown"]').click
+      unwritable_actions_cell.assert_selector('ul.show')
+      unwritable_actions_btns = unwritable_actions_cell.all('ul.show li a[target="_top"]')
+      assert_equal 2, unwritable_actions_btns.length
+  
+      check_link(unwritable_actions_btns[0], 'View',     files_path("#{project_dir}/README.md"))
+      check_link(unwritable_actions_btns[1], 'Download', files_path("#{project_dir}/README.md", download: '1'))
+      
+      assert_equal 'fas fa-eye',      unwritable_actions_btns[0].find('i[aria-hidden="true"]')[:class]
+      assert_equal 'fas fa-download', unwritable_actions_btns[1].find('i[aria-hidden="true"]')[:class]
+  
+      unwritable_actions_cell.find('button[data-bs-toggle="dropdown"].show').click
+
+      # unwritable directories still show navigational links
+      unwritable_dir_link = rows[3].find('a')
+      check_link(unwritable_dir_link, 'unwritable', directory_frame_path(path: "#{project_dir}/unwritable"))
+
+      # unreadable files and directories should not show any links
+      {'unreadable' => rows[2], 'data.json' => rows[5]}.each do |name, row| 
+        unreadable_data = row.all('td')
+        assert_equal 0, unreadable_data[1].all('a').length
+        unreadable_data[1].assert_selector('span', text: name)
+        unreadable_actions_cell = unreadable_data[2]
+        assert_equal 0, unreadable_actions_cell.all('*').length
+      end
+      # reverse file mode changes for easy deletion
+      File.chmod(0o700, "#{project_dir}/unreadable", "#{project_dir}/data.json", "#{project_dir}/unwritable", "#{project_dir}/README.md")
+    end
+  end
+
+  test 'project directory hides non-navigational links for users with downloads disabled' do 
+    with_modified_env({OOD_DOWNLOAD_ENABLED: 'false'}) do
+      Dir.mktmpdir do |dir|
+        # setup directory                                                                                                 
+        project_id = setup_project(dir)
+        project_dir = "#{dir}/projects/#{project_id}"
+        `mkdir #{project_dir}/samples`
+        `echo 'sample' > #{project_dir}/data.json`
+
+        visit project_path(project_id)
+
+        # check non-table display elements                                                                          
+        assert_selector('#directory_browser', visible: true)
+        assert_selector('h2.justify-content-center', text: "Project Directory:  \n#{project_id}")
+        tframe_selector = 'turbo-frame#project_directory'
+        assert_selector(tframe_selector, visible: true)
+        assert_selector("#{tframe_selector} strong", text: "#{project_dir}")
+
+        rows = all("#{tframe_selector} tbody tr")
+        assert_equal 6, rows.length
+
+        # directories only show directory frame link
+        dir_link = rows[2].find('a')
+        check_link(dir_link, 'samples', directory_frame_path(path: "#{project_dir}/samples"))
+
+        # files do not show any links
+        file_row = rows[3]
+        assert_equal 'data.json', file_row.all('td')[1].text
+        assert_equal 0, file_row.all('a').length
+      end
+    end
+  end
+  
   test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
       launcher_id = setup_launcher(project_id)
 
@@ -263,15 +647,32 @@ class ProjectManagerTest < ApplicationSystemTestCase
       HEREDOC
 
       success_message = I18n.t('dashboard.jobs_launchers_created')
-      assert_selector('.alert-success', text: "Close\n#{success_message}")
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{launcher_id}/form.yml"))
+      assert_selector('.alert-success', text: "#{success_message}")
+      launcher_dir = File.join(dir, 'projects', project_id, '.ondemand', 'launchers', launcher_id)
+      assert_equal(expected_yml, File.read("#{launcher_dir}/form.yml"))
 
+      Pathname.new(launcher_dir).children do |child|
+        msg = "#{child} is not writable"
+        assert child.writable?, msg
+      end
+      
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the launcher title', count: 1)
     end
   end
 
+  test 'launcher files in shared projects have proper permissions' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      launcher_dir = File.join(dir, 'projects', project_id, '.ondemand', 'launchers', launcher_id)
+      assert_equal 0o040770, File.stat(launcher_dir).mode
+      assert_equal ['form.yml'], Dir.children(launcher_dir)
+      assert_equal 0o0100644, File.stat(File.join(launcher_dir, 'form.yml')).mode
+    end
+  end
+    
   test 'creates new launcher with default items' do
     Dir.mktmpdir do |dir|
       Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
@@ -318,7 +719,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       HEREDOC
 
       success_message = I18n.t('dashboard.jobs_launchers_created')
-      assert_selector('.alert-success', text: "Close\n#{success_message}")
+      assert_selector('.alert-success', text: "#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{launcher_id}/form.yml"))
     end
   end
@@ -335,7 +736,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
@@ -407,9 +808,22 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
       jobs = YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"), permitted_classes: [Time])
-
+      cache = JSON.parse(File.read("#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"))
+      
       assert_equal(1, jobs.size)
       assert_equal('job-id-123', jobs[0]['id'])
+
+      assert_equal('owens', cache['auto_batch_clusters'])
+      assert_equal('pas2051', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
+
+      # next form visit prefills cached values
+
+      click_on 'Show'
+      
+      assert_equal 'owens', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pas2051', find('#launcher_auto_accounts').value
+      assert_equal "#{project_dir}/my_cooler_script.bash", find('#launcher_auto_scripts').value
     end
   end
 
@@ -491,8 +905,218 @@ class ProjectManagerTest < ApplicationSystemTestCase
         .returns(['', 'some error message', exit_failure])
 
       click_on 'Launch'
-      assert_selector('.alert-danger', text: "Close\nsome error message")
+      assert_selector('.alert-danger', text: "some error message")
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
+    end
+  end
+
+  def launcher_cache_test_setup(project_id, launcher_id)
+    add_account(project_id, launcher_id)
+    add_bc_num_hours(project_id, launcher_id)
+
+    find("#edit_#{launcher_id}").click
+
+    click_on 'Add new option'
+    select('Job Name', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_job_name', with: 'my default job name')
+
+    click_on 'Add new option'
+    select('Log Location', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_log_location', with: '/my_default_logfile.out')
+
+    click_on 'Add new option'
+    select('Cores', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_cores', with: '2')
+
+    click_on 'Add new option'
+    select('Nodes', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_bc_num_nodes', with: '3')
+
+    # add auto_environment_variable
+    add_auto_environment_variable(project_id, launcher_id)
+    find('#edit_launcher_auto_environment_variable').click
+    find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
+    find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'default_value')
+    find('#edit_launcher_auto_environment_variable').click
+    click_on(I18n.t('dashboard.save'))
+  end
+
+  test 'launchers quick-launch with default values when no cache' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "default_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my default job name',
+              '-o', '/my_default_logfile.out',
+              '-A', 'pzs1124', 
+              '-t', '01:00:00',
+              '-n', '2',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '3',
+              '--parsable', '-M', 'oakley',
+              stdin_data: "some_other_command\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+      refute File.exist?(cache_file)
+
+      click_on 'Launch'
+      assert_selector('.alert-success', text: 'job-id-123')
+
+      cache = JSON.parse(File.read(cache_file))
+      
+      assert_equal('oakley', cache['auto_batch_clusters'])
+      assert_equal('pzs1124', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cool_script.sh", cache['auto_scripts'])
+      assert_equal('my default job name', cache['auto_job_name'])
+      assert_equal('/my_default_logfile.out', cache['auto_log_location'])
+      assert_equal('1', cache['bc_num_hours'])
+      assert_equal('2', cache['auto_cores'])
+      assert_equal('3', cache['bc_num_nodes'])
+      assert_equal('default_value', cache['auto_environment_variable_SOME_VARIABLE'])
+    end
+  end
+
+  test 'launchers overwrite cache when non-default values are chosen' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+
+      # We simulate the cached values observed in the last test
+      cached_values = {
+        'auto_batch_clusters'                     => 'oakley',
+        'auto_accounts'                           => 'pzs1124',
+        'auto_scripts'                            => "#{project_dir}/my_cool_script.sh",
+        'auto_job_name'                           => 'my default job name',
+        'auto_log_location'                       => '/my_default_logfile.out',
+        'bc_num_hours'                            => '1',
+        'auto_cores'                              => '2',
+        'bc_num_nodes'                            => '3',
+        'auto_environment_variable_SOME_VARIABLE' => 'default_value'
+      }
+
+      File.open(cache_file, 'w') do |f|
+        f.write(cached_values.to_json)
+      end
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "chosen_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my chosen job name',
+              '-o', '/my_chosen_logfile.out',
+              '-A', 'pas2051', 
+              '-t', '04:00:00',
+              '-n', '5',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '6',
+              '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("#show_#{launcher_id}").click
+
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas2051', from: 'launcher_auto_accounts')
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
+      fill_in('launcher_auto_job_name', with: '')
+      fill_in('launcher_auto_job_name', with: 'my chosen job name')
+      fill_in('launcher_auto_log_location', with:'')
+      fill_in('launcher_auto_log_location', with:'/my_chosen_logfile.out')
+      fill_in('launcher_bc_num_hours', with: '4')
+      fill_in('launcher_auto_cores', with: '5')
+      fill_in('launcher_bc_num_nodes', with: '6')
+      fill_in('launcher_auto_environment_variable_SOME_VARIABLE', with: 'chosen_value')
+      
+      click_on I18n.t('dashboard.batch_connect_form_launch')
+      assert_selector('.alert-success', text: 'job-id-123')
+
+      cache = JSON.parse(File.read(cache_file))
+      
+      assert_equal('owens', cache['auto_batch_clusters'])
+      assert_equal('pas2051', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
+      assert_equal('my chosen job name', cache['auto_job_name'])
+      assert_equal('/my_chosen_logfile.out', cache['auto_log_location'])
+      assert_equal('4', cache['bc_num_hours'])
+      assert_equal('5', cache['auto_cores'])
+      assert_equal('6', cache['bc_num_nodes'])
+      assert_equal('chosen_value', cache['auto_environment_variable_SOME_VARIABLE'])
+    end
+  end
+
+  test 'launchers quick-launch with cached values when present' do
+        Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+
+      # We simulate the cached values observed in the last test
+      cached_values = {
+        'auto_batch_clusters'                     => 'owens',
+        'auto_accounts'                           => 'pas2051',
+        'auto_scripts'                            => "#{project_dir}/my_cooler_script.bash",
+        'auto_job_name'                           => 'my chosen job name',
+        'auto_log_location'                       => '/my_chosen_logfile.out',
+        'bc_num_hours'                            => '4',
+        'auto_cores'                              => '5',
+        'bc_num_nodes'                            => '6',
+        'auto_environment_variable_SOME_VARIABLE' => 'chosen_value'
+      }
+
+      File.open(cache_file, 'w') do |f|
+        f.write(cached_values.to_json)
+      end
+
+      # refresh the page so it picks up the cache.
+      visit(project_path(project_id))
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "chosen_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my chosen job name',
+              '-o', '/my_chosen_logfile.out',
+              '-A', 'pas2051', 
+              '-t', '04:00:00',
+              '-n', '5',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '6',
+              '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("#launch_#{launcher_id}").click
+      assert_selector('.alert-success', text: 'job-id-123')
     end
   end
 
@@ -555,7 +1179,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       fill_in('launcher_bc_num_hours_min', with: 20)
       fill_in('launcher_bc_num_hours_max', with: 101)
       find('#launcher_bc_num_hours_fixed').click
-      find('#save_launcher_bc_num_hours').click
+      find('#edit_launcher_bc_num_hours').click
 
       # add auto_environment_variable
       add_auto_environment_variable(project_id, launcher_id)
@@ -564,12 +1188,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
       find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'some_value')
 
-      find('#save_launcher_auto_environment_variable').click
+      find('#edit_launcher_auto_environment_variable').click
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_launchers_updated')
-      assert_selector('.alert-success', text: "Close\n#{success_message}")
+      assert_selector('.alert-success', text: "#{success_message}")
       assert_current_path project_path(project_id)
 
       # NOTE: that bc_num_hours has default, min & max
@@ -660,7 +1284,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_launchers_updated')
-      assert_selector('.alert-success', text: "Close\n#{success_message}")
+      assert_selector('.alert-success', text: "#{success_message}")
       assert_current_path project_path(project_id)
 
       expected_yml = <<~HEREDOC
@@ -688,6 +1312,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - p.s1.71
             - pas1754
             - pas1604
+            - foo-bar
             value: pzs1124
             label: Account
             help: ''
@@ -736,19 +1361,19 @@ class ProjectManagerTest < ApplicationSystemTestCase
   test 'cant create launcher when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Cannot find project: 1")
   end
 
   test 'cant show launcher when project is invalid' do
     visit project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Cannot find project: 1")
   end
 
   test 'cant edit launcher when project is invalid' do
     visit edit_project_launcher_path('1', '1')
     assert_current_path('/projects')
-    assert_selector('.alert-danger', text: "Close\nCannot find project: 1")
+    assert_selector('.alert-danger', text: "Cannot find project: 1")
   end
 
   test 'cant show invalid launcher' do
@@ -756,7 +1381,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit project_launcher_path(project_id, '12345678')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "Close\nCannot find launcher 12345678")
+      assert_selector('.alert-danger', text: "Cannot find launcher 12345678")
     end
   end
 
@@ -765,7 +1390,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
       visit edit_project_launcher_path(project_id, '12345678')
       assert_current_path("/projects/#{project_id}")
-      assert_selector('.alert-danger', text: "Close\nCannot find launcher 12345678")
+      assert_selector('.alert-danger', text: "Cannot find launcher 12345678")
     end
   end
 

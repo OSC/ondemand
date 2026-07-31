@@ -33,6 +33,7 @@ namespace :dev do
         'port'                   => 8080,
         'listen_addr_port'       => 8080,
         'oidc_remote_user_claim' => 'email',
+        'oidc_crypto_passphrase' => SecureRandom.uuid,
         'dex'                    => {
           'static_passwords' => [{
             'email'    => "#{user.name}@localhost",

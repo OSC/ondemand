@@ -4,7 +4,6 @@ require 'test_helper'
 
 module BatchConnect
   class SettingsTest < ActionView::TestCase
-
     test 'can set values' do
       target = BatchConnect::Settings.new('app/token', 'settings name', { name: 'value' })
 

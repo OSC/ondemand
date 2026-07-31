@@ -181,6 +181,11 @@ svg.edges {
   filter: drop-shadow(0 0 4px var(--danger-weak));
 }
 
+.edge:focus {
+  outline: none;
+  stroke-width: 4;
+}
+
 .launcher-box {
   position: absolute;
   background: #fff;

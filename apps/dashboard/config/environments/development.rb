@@ -16,7 +16,7 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
-  # Enable server timing
+  # Enable server timing.
   config.server_timing = true
 
   # Enable/disable caching. By default caching is disabled.
@@ -37,7 +37,11 @@ Rails.application.configure do
 
   config.action_mailer.raise_delivery_errors = true
 
+  # Disable caching for Action Mailer templates even if Action Controller
+  # caching is enabled.
   config.action_mailer.perform_caching = false
+
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -63,4 +67,7 @@ Rails.application.configure do
   config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new(min_threads: 1, max_threads: 1)
 
   config.hosts = nil
+
+  # Don't raise error when a before_action's only/except options reference missing actions.
+  config.action_controller.raise_on_missing_callback_actions = false
 end

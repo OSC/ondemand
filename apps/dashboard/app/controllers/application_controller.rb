@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
+  before_action :check_group_changed, :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group, :set_custom_navigation
   before_action :check_required_announcements
@@ -31,6 +31,13 @@ class ApplicationController < ActionController::Base
   def set_nav_groups
     #TODO: for AweSim, what if we added the shared apps here?
     @nav_groups = filter_groups(sys_app_groups)
+  end
+
+  def check_group_changed
+    if Rails.cache.fetch('groups_changed', expires_in: 5.minutes) {OodSupport::Process.groups_changed?}
+      redirect_to helpers.restart_url(request.fullpath)
+      logger.warn("Restarted PUN after group change detected")
+    end
   end
 
   def set_featured_group
@@ -77,7 +84,38 @@ class ApplicationController < ActionController::Base
   end
 
   def set_announcements
-    @announcements ||= Announcements.all(@user_configuration.announcement_path)
+    all_announcements = Announcements.all(@user_configuration.announcement_path)
+
+    parse_errors, announcements = all_announcements.partition(&:parse_error?)
+    if parse_errors.any?
+      flash.now[:announcement_parse_errors] = helpers.safe_join(
+        parse_errors.map do |a|
+          source = a.source.presence || a.id.presence || 'unknown'
+          short_name =
+            begin
+              Pathname.new(source.to_s).basename.sub_ext('').to_s
+            rescue StandardError
+              source.to_s
+            end
+
+          headline = "Could not render announcement '#{short_name}' because of error"
+          details = [a.error_class.presence, a.error_message.presence].compact.join(': ')
+          details = a.message.presence || a.msg.presence || 'Error parsing announcement.' if details.blank?
+
+          helpers.content_tag(:div) do
+            helpers.safe_join(
+              [
+                helpers.content_tag(:div, headline, class: 'card-header bg-transparent'),
+                helpers.content_tag(:div, details.to_s, class: 'card-body py-2'),
+              ]
+            )
+          end
+        end,
+        helpers.safe_join([helpers.tag.br, helpers.tag.br])
+      )
+    end
+
+    @announcements ||= announcements
   rescue => e
     logger.warn "Error parsing announcements: #{e.message}"
     @announcements ||= []

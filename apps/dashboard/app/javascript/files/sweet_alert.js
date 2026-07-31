@@ -77,6 +77,7 @@ jQuery(function() {
   $(CONTENTID).on(EVENTNAME.showInput, function(e, options) {
     modifyInput(options);
     $('#files_input_modal').modal('show');
+    $('#files_input_modal_input').focus();
   });
 
   $(CONTENTID).on(EVENTNAME.showLoading, function(e,options) {
