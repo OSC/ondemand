@@ -16,6 +16,19 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Solve batch connect alert test flakes (#5651)\
+Enforce queue AllowQos and DenyQos (#5647)\
+Emit change event on data-set (fixes #5234) (#5235)\
+lint a random file (#5648)\
+add motd class to motd content (#5649)\
+add expected start time to queued session cards (#5642)\
+Implement pun restarts after group changes (#5610)\
+Bump json from 2.19.3 to 2.19.9 (#5633)\
+lint a random file (#5640)\
+check for username first in user_map.lua (#5636)\
+Update Changelog (#5634)\
+update dependencies (#5635)\
+Fix range in transfer_local_job_test (#5639)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
