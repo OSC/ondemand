@@ -16,19 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Solve batch connect alert test flakes (#5651)\
-Enforce queue AllowQos and DenyQos (#5647)\
-Emit change event on data-set (fixes #5234) (#5235)\
-lint a random file (#5648)\
-add motd class to motd content (#5649)\
-add expected start time to queued session cards (#5642)\
-Implement pun restarts after group changes (#5610)\
-Bump json from 2.19.3 to 2.19.9 (#5633)\
-lint a random file (#5640)\
-check for username first in user_map.lua (#5636)\
-Update Changelog (#5634)\
-update dependencies (#5635)\
-Fix range in transfer_local_job_test (#5639)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -38,7 +25,8 @@ Fix range in transfer_local_job_test (#5639)
 - The auto_groups_filter now applies to the Project Manager group selection in [5420](https://github.com/OSC/ondemand/pull/5420).
 - System tests now test for color contrast in [5347](https://github.com/OSC/ondemand/pull/5347).
 - Session state information is present in "bad" state partials in [5616](https://github.com/OSC/ondemand/pull/5616).
-
+- PUNs now restart after group changes in [5610](https://github.com/OSC/ondemand/pull/5610).
+- Expected start time is now in queued session cards in [5642](https://github.com/OSC/ondemand/pull/5642).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -58,6 +46,9 @@ Fix range in transfer_local_job_test (#5639)
 - Multiple checks are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
 - app_init_url is now relative in nginx_stage to better support proxies in [5598](https://github.com/OSC/ondemand/pull/5598).
 - File modals now focus input in [5605](https://github.com/OSC/ondemand/pull/5605).
+- auto_qos now enforce queue AllowQos and DenyQos in [5647](https://github.com/OSC/ondemand/pull/5647).
+- Check for username first in user_map.lua to allow for numeric usernames in [5636](https://github.com/OSC/ondemand/pull/5636).
+- Changes on data-set now propagate in [5235](https://github.com/OSC/ondemand/pull/5235).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
