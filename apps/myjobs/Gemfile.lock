@@ -151,7 +151,7 @@ GEM
     js-routes (1.2.9)
       railties (>= 3.2)
       sprockets-rails
-    json (2.21.1)
+    json (2.21.2)
     local_time (1.0.3)
       coffee-rails
     logger (1.7.0)
