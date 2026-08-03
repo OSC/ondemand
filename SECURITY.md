@@ -23,8 +23,8 @@ involving the following steps:
 
   * Confirm the problem and determine the affected versions.
   * Audit code to find any potential similar problems.
-  * Prepare fixes for all releases still under maintenance. Vulnerabilites rated
-    moderate or below may be released in the regular 8 week patch cycle. Vulnerabilites
+  * Prepare fixes for all releases still under maintenance. Vulnerabilities rated
+    moderate or below may be released in the regular 8 week patch cycle. Vulnerabilities
     higher than moderate may be released sooner, outside the regular patch cycle.
   * Redact the information provided by the reporter and publish the vulnerability.
   * 90 days after publishing the vulnerability the original unredacted may be published
