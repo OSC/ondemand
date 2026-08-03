@@ -2,10 +2,11 @@
 
 require 'rest_client'
 
-# HTTP client to create a ServiceNow incident using the API
+# HTTP client to create a ServiceNow incident or case using the API
 # Credentials are not compulsory to support authentication through Apache proxy settings
 # Configuration parameters:
 # - `server`: URL for the ServiceNow server (required)
+# - `table`: Target ServiceNow table. Defaults to 'incident'. (e.g., 'sn_customerservice_case')
 # - `user`: ServiceNow API username
 # - `pass`: ServiceNow API password
 # - `pass_env`: Environment variable to use for the ServiceNow API password
@@ -17,9 +18,8 @@ require 'rest_client'
 # - `proxy`: Proxy server URL. Defaults to no proxy.
 #
 class ServiceNowClient
-
   UA = 'Open OnDemand ruby ServiceNow Client'
-  attr_reader :server, :auth_header, :client, :timeout, :verify_ssl
+  attr_reader :server, :auth_header, :client, :timeout, :verify_ssl, :table
 
   def initialize(config)
     # FROM CONFIGURATION
@@ -30,6 +30,7 @@ class ServiceNowClient
     @timeout = config[:timeout] || 30
     @verify_ssl = config[:verify_ssl] || false
     @server = config[:server] if config[:server]
+    @table = config[:table] || 'incident'
 
     raise ArgumentError, 'server is a required parameter for ServiceNow client' unless @server
 
@@ -56,30 +57,30 @@ class ServiceNowClient
   end
 
   def create(payload, attachments)
-    incident = @client['/api/now/table/incident'].post(payload.to_json, content_type: :json)
-    response_hash = JSON.parse(incident.body)['result'].symbolize_keys
-    incident_number = response_hash[:number]
-    incident_id = response_hash[:sys_id]
+    ticket = @client["/api/now/table/#{@table}"].post(payload.to_json, content_type: :json)
+    response_hash = JSON.parse(ticket.body)['result'].symbolize_keys
+    ticket_number = response_hash[:number]
+    ticket_id = response_hash[:sys_id]
 
-    raise StandardError, "Unable to create ticket. Server response: #{incident}" unless incident_id
+    raise StandardError, "Unable to create ticket. Server response: #{ticket}" unless ticket_id
 
     begin
       attachments.to_a.each do |request_file|
-        add_attachment(incident_id, request_file)
+        add_attachment(ticket_id, request_file)
       end
       attachments_success = true
     rescue StandardError => e
-      Rails.logger.info "Could not add attachments to incident: #{incident_number}. Error=#{e}"
+      Rails.logger.info "Could not add attachments to ticket: #{ticket_number}. Error=#{e}"
       attachments_success = false
     end
 
-    create_response(incident_number, attachments.to_a.size, attachments_success)
+    create_response(ticket_number, attachments.to_a.size, attachments_success)
   end
 
-  def add_attachment(incident_id, request_file)
+  def add_attachment(ticket_id, request_file)
     params = {
-      table_name:   'incident',
-      table_sys_id: incident_id,
+      table_name:   @table,
+      table_sys_id: ticket_id,
       file_name:    request_file.original_filename,
     }
     file = File.new(request_file.tempfile, 'rb')
@@ -88,12 +89,11 @@ class ServiceNowClient
 
   private
 
-  def create_response(incident_number, attachments, attachments_success)
+  def create_response(ticket_number, attachments, attachments_success)
     OpenStruct.new({
-      number:              incident_number,
+      number:              ticket_number,
       attachments:         attachments,
       attachments_success: attachments_success
     })
   end
-
 end
