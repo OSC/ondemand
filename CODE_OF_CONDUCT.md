@@ -67,12 +67,10 @@ members of the project's leadership.
 
 ## AI Agent Generated Content
 
-Project mainatainers will not interact with AI Agents. Content generated
-purely by AI agents will be rejected outright.  Users that continually
-generate purely AI generated content may be blocked or reported.
-
-Whether an AI has assisted in the content is not the issue, the maintainers
-will only interact with humans, not agents or bots.
+AI agents or bots may not submit contributions or interact with the community on
+someone's behalf. Content submitted without meaningful human involvement will be
+rejected and closed. Additionally, accounts that repeatedly do this may be blocked
+or reported.
 
 ## Attribution
 

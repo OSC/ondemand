@@ -42,12 +42,14 @@ interactions with the project.
 
 ## AI Agent Generated Content
 
-Content generated purely by AI agents will be rejected outright. All content, in either
-code or issues, must be submitted by a human who understands it and is prepared
-to answer questions about it.
+AI tools can be used to help with code, documentation, review or other contributions,
+but a person must understand, review, answer questions and take responsibility for
+anything they submit to this repository. 
 
-Whether an AI has assisted in the content is not the issue, the maintainers
-will only interact with humans, not agents or bots.
+AI agents or bots may not submit contributions or interact with the community on
+someone's behalf. Content submitted without meaningful human involvement will be
+rejected and closed. Additionally, accounts that repeatedly do this may be blocked
+or reported.
 
 ## Issues
 
