@@ -112,7 +112,7 @@ class Quota
   # Limit is the string 'unlimited'
   def limit_invalid?(limit)
     if [
-      limit.to_i.zero?, # Limit is an integer and equals 0
+      limit == 0, # Limit is an integer and equals 0
       limit.to_i.positive?, # Limit cast to an integer is greater than zero
       limit.nil?, # No limit is set
       limit.to_s.downcase == 'unlimited' # Limit is the string 'unlimited'
