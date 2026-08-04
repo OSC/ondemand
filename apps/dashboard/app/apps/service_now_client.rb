@@ -57,7 +57,7 @@ class ServiceNowClient
   end
 
   def create(payload, attachments)
-    ticket = @client["/api/now/table/#{@table}"].post(payload.to_json, content_type: :json)
+    ticket = @client["/api/sn_customerservice/case"].post(payload.to_json, content_type: :json)
     response_hash = JSON.parse(ticket.body)['result'].symbolize_keys
     ticket_number = response_hash[:number]
     ticket_id = response_hash[:sys_id]
