@@ -6,6 +6,8 @@ module BatchConnect
     include ActiveModel::Serializers::JSON
     include SanitizedEnv
 
+    class InvalidDbRoot < StandardError; end
+
     # This class describes the object that is bound to the ERB template file
     # when it is rendered
     TemplateBinding = Struct.new(:session, :context) do
@@ -128,8 +130,29 @@ module BatchConnect
 
       # Root directory for file system database
       # @return [Pathname] root directory of file system database
+      # @raise [InvalidDbRoot] if directory is invalid or lacks required permissions
       def db_root
-        dataroot.join("db").tap { |p| p.mkpath unless p.exist? }
+        p = dataroot.join("db")
+
+        begin
+          p.mkpath unless p.exist?
+        rescue StandardError => e
+          raise InvalidDbRoot, "Failed to create Batch Connect database directory '#{p}': #{e.message}"
+        end
+
+        unless p.directory?
+          raise InvalidDbRoot, "Batch Connect database root '#{p}' exists but is not a directory."
+        end
+
+        unless p.readable? && p.executable?
+          raise InvalidDbRoot, "Batch Connect database root '#{p}' lacks read or execute permissions."
+        end
+
+        unless p.writable?
+          raise InvalidDbRoot, "Batch Connect database root '#{p}' is not writable."
+        end
+
+        p
       end
 
       # Root directory for file system database
