@@ -144,12 +144,8 @@ module BatchConnect
           raise InvalidDbRoot, "Batch Connect database root '#{p}' exists but is not a directory."
         end
 
-        unless p.readable? && p.executable?
-          raise InvalidDbRoot, "Batch Connect database root '#{p}' lacks read or execute permissions."
-        end
-
-        unless p.writable?
-          raise InvalidDbRoot, "Batch Connect database root '#{p}' is not writable."
+        unless p.readable? && p.writable? && p.executable?
+          raise InvalidDbRoot, "Batch Connect database root '#{p}' lacks required read, write, or execute permissions."
         end
 
         p
