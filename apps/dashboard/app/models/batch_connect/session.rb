@@ -132,20 +132,20 @@ module BatchConnect
       # @return [Pathname] root directory of file system database
       # @raise [InvalidDbRoot] if directory is invalid or lacks required permissions
       def db_root
-        p = dataroot.join("db")
+        path = dataroot.join("db")
 
         begin
-          p.mkpath unless p.exist?
+          path.mkpath unless path.exist?
         rescue StandardError => e
-          raise InvalidDbRoot, "Failed to create Batch Connect database directory '#{p}': #{e.message}"
+          raise InvalidDbRoot, "Failed to create Batch Connect database directory '#{path}': #{e.message}"
         end
 
-        unless p.directory?
-          raise InvalidDbRoot, "Batch Connect database root '#{p}' exists but is not a directory."
+        unless path.directory?
+          raise InvalidDbRoot, "Batch Connect database root '#{path}' exists but is not a directory."
         end
 
-        unless p.readable? && p.writable? && p.executable?
-          raise InvalidDbRoot, "Batch Connect database root '#{p}' lacks required read, write, or execute permissions."
+        unless path.readable? && path.writable? && path.executable?
+          raise InvalidDbRoot, "Batch Connect database root '#{path}' lacks required read, write, or execute permissions."
         end
 
         p
