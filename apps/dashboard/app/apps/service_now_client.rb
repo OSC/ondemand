@@ -6,7 +6,7 @@ require 'rest_client'
 # Credentials are not compulsory to support authentication through Apache proxy settings
 # Configuration parameters:
 # - `server`: URL for the ServiceNow server (required)
-# - `table`: Target ServiceNow table. Defaults to 'incident'. (e.g., 'sn_customerservice_case')
+# - `record_type`: Target ServiceNow record/table type. Defaults to 'incident'. (e.g., 'case')
 # - `user`: ServiceNow API username
 # - `pass`: ServiceNow API password
 # - `pass_env`: Environment variable to use for the ServiceNow API password
@@ -19,7 +19,7 @@ require 'rest_client'
 #
 class ServiceNowClient
   UA = 'Open OnDemand ruby ServiceNow Client'
-  attr_reader :server, :auth_header, :client, :timeout, :verify_ssl, :table
+  attr_reader :server, :auth_header, :client, :timeout, :verify_ssl, :record_type
 
   def initialize(config)
     # FROM CONFIGURATION
@@ -30,7 +30,9 @@ class ServiceNowClient
     @timeout = config[:timeout] || 30
     @verify_ssl = config[:verify_ssl] || false
     @server = config[:server] if config[:server]
-    @table = config[:table] || 'incident'
+
+    requested_type = config[:record_type] || 'incident'
+    @record_type = ['case', 'incident', 'sn_customerservice_case'].include?(requested_type) ? requested_type : 'incident'
 
     raise ArgumentError, 'server is a required parameter for ServiceNow client' unless @server
 
@@ -57,7 +59,7 @@ class ServiceNowClient
   end
 
   def create(payload, attachments)
-    endpoint = case_type? ? '/api/sn_customerservice/case' : "/api/now/table/#{@table}"
+    endpoint = case_type? ? '/api/sn_customerservice/case' : "/api/now/table/#{@record_type}"
 
     ticket = @client[endpoint].post(payload.to_json, content_type: :json)
     response_hash = JSON.parse(ticket.body)['result'].symbolize_keys
@@ -92,11 +94,11 @@ class ServiceNowClient
   private
 
   def case_type?
-    @table == 'sn_customerservice_case' || @table == 'case'
+    @record_type == 'sn_customerservice_case' || @record_type == 'case'
   end
 
   def attachment_table_name
-    case_type? ? 'sn_customerservice_case' : @table
+    case_type? ? 'sn_customerservice_case' : @record_type
   end
 
   def create_response(ticket_number, attachments, attachments_success)

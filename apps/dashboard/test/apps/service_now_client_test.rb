@@ -28,17 +28,17 @@ class ServiceNowClientTest < ActiveSupport::TestCase
     assert_equal('x-sn-apikey', target.auth_header)
     assert_equal(30, target.timeout)
     assert_equal(false, target.verify_ssl)
-    assert_equal('incident', target.table)
+    assert_equal('incident', target.record_type)
   end
 
   test 'should set custom table when provided' do
     config = {
       server: 'http://server.com',
-      table:  'sn_customerservice_case'
+      record_type:  'sn_customerservice_case'
     }
 
     target = ServiceNowClient.new(config)
-    assert_equal('sn_customerservice_case', target.table)
+    assert_equal('sn_customerservice_case', target.record_type)
   end
 
   test 'should set RestClient options when provided' do
