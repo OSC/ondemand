@@ -57,7 +57,9 @@ class ServiceNowClient
   end
 
   def create(payload, attachments)
-    ticket = @client["/api/sn_customerservice/case"].post(payload.to_json, content_type: :json)
+    endpoint = case_type? ? '/api/sn_customerservice/case' : "/api/now/table/#{@table}"
+
+    ticket = @client[endpoint].post(payload.to_json, content_type: :json)
     response_hash = JSON.parse(ticket.body)['result'].symbolize_keys
     ticket_number = response_hash[:number]
     ticket_id = response_hash[:sys_id]
@@ -79,7 +81,7 @@ class ServiceNowClient
 
   def add_attachment(ticket_id, request_file)
     params = {
-      table_name:   @table,
+      table_name:   attachment_table_name,
       table_sys_id: ticket_id,
       file_name:    request_file.original_filename,
     }
@@ -88,6 +90,14 @@ class ServiceNowClient
   end
 
   private
+
+  def case_type?
+    @table == 'sn_customerservice_case' || @table == 'case'
+  end
+
+  def attachment_table_name
+    case_type? ? 'sn_customerservice_case' : @table
+  end
 
   def create_response(ticket_number, attachments, attachments_success)
     OpenStruct.new({
