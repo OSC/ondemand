@@ -736,7 +736,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar', 'p_s1345'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
@@ -1301,6 +1301,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - pzs1124
             - pzs1118
             - pzs1117
+            - p_s1345
             - pzs1010
             - pzs0715
             - pzs0714
@@ -1412,7 +1413,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_accounts').click
 
       # There are 7 allowed accounts before the 4 excluded ones
-      counter = 7
+      counter = 8
       exclude_accounts = ['pas2051', 'pas1871', 'p_s1.71', 'p-s1.71']
       exclude_accounts.each do |_acct|
         counter += 1
@@ -1444,7 +1445,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
       find('#edit_launcher_auto_accounts').click
 
-      counter = 7
+      counter = 8
       exclude_accounts.each do |acct|
         counter += 1
         html_acct = "option#{counter}"
