@@ -201,6 +201,7 @@ function updateEndpoint() {
   uppy.getPlugin('XHRUpload').setOptions({
     endpoint: history.state.currentFilesUploadPath,
   });
+  removeOverwriteButton();
 }
 
 function reloadTable() {
