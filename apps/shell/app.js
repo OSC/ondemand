@@ -73,7 +73,6 @@ router.get('/ssh{*splat}', function (req, res) {
       host: theHost,
       dir: theDir,
       colorThemes: color_themes,
-      shellFonts: helpers.shellFonts(),
       userCSS: helpers.userCSS(req.baseUrl),
       siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
     });

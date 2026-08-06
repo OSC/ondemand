@@ -46,11 +46,6 @@ function definedHosts() {
   return hosts;
 }
 
-function shellFonts() {
-  const defaultFonts = '"Iosevka Web", "DejaVu Sans Mono", "Noto Sans Mono", "Everson Mono", FreeMono, Menlo, Terminal, monospace';
-  return (process.env.OOD_SHELL_FONTS || defaultFonts).split(",").map(s => s.trim());
-}
-
 function userCSS(baseURI) {
   // Support providing both absolute and relative (to shell app) stylesheets
   const css = process.env.OOD_SHELL_USER_CSS_URL || "stylesheets/fonts.css";
@@ -63,6 +58,5 @@ function userCSS(baseURI) {
 module.exports = {
   hostInAllowList,
   definedHosts,
-  shellFonts,
   userCSS,
 }

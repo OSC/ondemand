@@ -47,11 +47,7 @@
           </div>
           <div>
             <label for="fonts" class="badge">Fonts:</label>
-            <select id="fonts" class="form-select form-select-sm">
-              {{#each shellFonts}}
-              <option value="{{this}}">{{this}}</option>
-              {{/each}}
-            </select>
+            <select id="fonts" class="form-select form-select-sm"></select>
           </div>
         </div>
       </div>
@@ -60,9 +56,29 @@
 </body>
 
 <script>
-  const fonts = {{{json shellFonts}}};
+  const defaultFonts = [
+    'DejaVu Sans Mono',
+    'Noto Sans Mono',
+    'Everson Mono',
+    'FreeMono',
+    'Menlo',
+    'Terminal',
+    'monospace',
+  ];
+  // FontFace.family serialization differs across browsers. Strip quotes on
+  // user-visible values, but pass quoted values to hterm.
+  const bareFontFamily = (name) => name.replace(/^["']|["']$/g, '');
+  const cssFontFamily = (name) => /\s/.test(name) ? `"${name}"` : name;
+
+  // This assumes that @font-face stylesheets are loaded synchronously (which is currently the case).
+  const fonts = Array.from(new Set([
+    ...Array.from(document.fonts).map(f => bareFontFamily(f.family)),
+    ...defaultFonts,
+  ]));
   const orderedFonts = function(primaryFont) {
-    return [primaryFont, ...fonts.filter(f => f !== primaryFont)].filter(f => f)
+    return [primaryFont, ...fonts.filter(f => f !== primaryFont)]
+      .filter(f => f)
+      .map(cssFontFamily);
   }
   // the structure we should want is
   // themes {
@@ -120,6 +136,12 @@
 
   const userFont = storage.getItem('ood_shell_font') || fonts[0];
   const fontSelect = document.getElementById("fonts");
+  fonts.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f;
+    opt.textContent = f;
+    fontSelect.appendChild(opt);
+  });
   fontSelect.value = userFont;
   const currentFonts = orderedFonts(userFont);
 
@@ -206,14 +228,14 @@
         return true;
       }
       return generics.some(g => {
-        ctx.font = `${size} ${font}, ${g}`;
+        ctx.font = `${size} ${cssFontFamily(font)}, ${g}`;
         return ctx.measureText(sample).width !== baselineWidths[g];
       });
     };
   })();
 
   // Filter out unavailable fonts from the dropdown.
-  Promise.all(fonts.map(f => document.fonts.load(`72px ${f}`).catch(() => null))).then(() => {
+  Promise.all(fonts.map(f => document.fonts.load(`72px ${cssFontFamily(f)}`).catch(() => null))).then(() => {
     const previousValue = fontSelect.value;
     Array.from(fontSelect.options).forEach(opt => {
       if (!isFontAvailable(opt.value)) {
