@@ -65,6 +65,13 @@ Project maintainers who do not follow or enforce the Code of Conduct in good
 faith may face temporary or permanent repercussions as determined by other
 members of the project's leadership.
 
+## AI Agent Generated Content
+
+AI agents or bots may not submit contributions or interact with the community on
+someone's behalf. Content submitted without meaningful human involvement will be
+rejected and closed. Additionally, accounts that repeatedly do this may be blocked
+or reported.
+
 ## Attribution
 
 This Code of Conduct is adapted from the [Contributor Covenant], version 1.4,

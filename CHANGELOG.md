@@ -49,6 +49,7 @@ Changes are grouped by type:
 - auto_qos now enforce queue AllowQos and DenyQos in [5647](https://github.com/OSC/ondemand/pull/5647).
 - Check for username first in user_map.lua to allow for numeric usernames in [5636](https://github.com/OSC/ondemand/pull/5636).
 - Changes on data-set now propagate in [5235](https://github.com/OSC/ondemand/pull/5235).
+- ActiveJobs extended data now uses info#walltime instead of native attributes in [5630](https://github.com/OSC/ondemand/pull/5630).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
