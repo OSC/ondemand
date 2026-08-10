@@ -59,6 +59,7 @@ function loadingBody() {
 
 function successBody(context, helpers) {
   const div = simpleCardBody();
+  div.append(detailsPanel());
   div.append(table(context, helpers));
 
   return div;
@@ -67,6 +68,18 @@ function successBody(context, helpers) {
 function simpleCardBody() {
   const div = document.createElement('div');
   div.classList.add('card-body');
+
+  return div;
+}
+
+function detailsPanelId(){
+  return 'xdmod_job_details';
+}
+
+function detailsPanel() {
+  const div = document.createElement('div');
+  div.classList.add('job-analytics', 'collapse');
+  div.id = detailsPanelId();
 
   return div;
 }
@@ -86,7 +99,6 @@ function table(context, helpers) {
                       <th class="id">ID</th> \
                       <th class="name">Name</th> \
                       <th class="date">Date</th> \
-                      <th class="sr-only">Analytics</th> \
                     </tr>';
 
   const tbody = document.createElement('tbody');
@@ -119,17 +131,20 @@ function tableRows(context, helpers) {
     tr.title = `${job.job_name} - ${job.local_job_id}`;
     // Job Analytics metadata => Required for the AJAX request and collapse behaviour
     tr.setAttribute('data-xdmod-jobid', job.jobid);
-    tr.setAttribute('data-bs-toggle', 'collapse');
-    tr.setAttribute('data-bs-target', `#details_${job.jobid}`);
-    tr.setAttribute('aria-expanded', 'false');
 
     // Job analytics collapse icons
     const td0 = document.createElement('td');
-    td0.innerHTML = `
-      <button class="btn btn-default btn-xs">
-        <i class="fa fa-plus fa-fw app-icon closed" aria-hidden="true"></i>
-        <i class="fa fa-minus fa-fw app-icon open" aria-hidden="true"></i>
-      </button>`
+    const button = document.createElement('button');
+    button.title = `Click to expand analytics information on job ${job.local_job_id} above this table.`;
+    button.setAttribute('data-bs-toggle', 'collapse');
+    button.setAttribute('data-bs-target', `#${detailsPanelId()}`);
+    button.setAttribute('aria-expanded', 'false');
+    button.classList.add('btn', 'btn-default', 'btn-xs');
+    button.innerHTML = `<i class="fa fa-plus fa-fw app-icon closed" aria-hidden="true"></i>
+                        <i class="fa fa-minus fa-fw app-icon open" aria-hidden="true"></i>`;
+    // OK to call this on open or close because the response is cached.
+    button.onclick = (event) => handleButtonClick(event, job, helpers);
+    td0.appendChild(button);
     
     //  <td class="text-nowrap">
     //    <a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span>
@@ -148,22 +163,7 @@ function tableRows(context, helpers) {
     const td3 = document.createElement('td');
     td3.innerText = helpers.date(job);
 
-    // <td>{{cpu_label cpu_user}}</td>
-    // Not used with new analytics data
-    // const td4 = document.createElement('td');
-    // td4.innerHTML = helpers.efficiency_label(job.cpu_user);
-
-    // Add job analytics placeholder
-    const td4 = document.createElement('td');
-    td4.id = `details_${job.jobid}`;
-    td4.classList.add('job-analytics', 'collapse');
-    td4.innerHTML = '<div class="job-analytics-content"><span>LOADING...</span></div>';
-    // Call JobAnalytics API after the collapse is fully open to avoid awkward animation.
-    td4.addEventListener('shown.bs.collapse', function(event) {
-      getJobAnalytics(job, helpers);
-    }, { once: true });
-
-    tr.append(td0, td1, td2, td3, td4);
+    tr.append(td0, td1, td2, td3);
 
     rows.push(tr);
   });
@@ -232,16 +232,51 @@ function jobAnalyticsUrl(jobId, helpers){
   return url;
 }
 
+function jobDataCacheKey(jobid) {
+  return `xdmod_extended_data_${jobid}`;
+}
+
+function cacheJobData(responseData, requestData) {
+  localStorage.setItem(jobDataCacheKey(requestData.jobid), JSON.stringify(responseData));
+}
+
+function getCachedJobData(jobid) {
+  return localStorage.getItem(jobDataCacheKey(jobid));
+}
+
+function handleButtonClick(event, jobData, helpers) {
+  // FIXME: have to reset all the buttons because Boostrap aria-expands all these
+  // buttons because they have the same target. Should be a better way to do this.
+  const button = event.target.closest('button');
+  const expanded = button.ariaExpanded;
+
+  if(expanded) {
+    const allButtons = document.querySelectorAll(`tr button[data-bs-target="#${detailsPanelId()}"]`);
+    others = Array.from(allButtons).filter(b => b !== button);
+    others.forEach(b => b.ariaExpanded = false);
+  }
+
+  getJobAnalytics(jobData, helpers);
+}
+
 function getJobAnalytics(jobData, helpers) {
-  const analyticsContainer = `details_${jobData.jobid}`;
-  fetch(jobAnalyticsUrl(jobData.jobid, helpers), { credentials: 'include' })
+  const analyticsContainer = detailsPanelId();
+
+  const cache = JSON.parse(getCachedJobData(jobData.jobid));
+  if(cache !== null) {
+    renderJobAnalytics(cache, jobData, analyticsContainer, helpers);
+  } else {
+    fetch(jobAnalyticsUrl(jobData.jobid, helpers), { credentials: 'include', cache: 'force-cache' })
       .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
       .then(response => response.json())
-      .then((data) => renderJobAnalytics(data, jobData, analyticsContainer, helpers))
+      .then((data) => {
+        cacheJobData(data, jobData);
+        renderJobAnalytics(data, jobData, analyticsContainer, helpers);
+      })
       .catch((error) => {
         console.error(error);
         renderJobAnalytics({error: error}, jobData, analyticsContainer, helpers);
-
         reportErrorForAnalytics('xdmod_jobs_analytics_widget_error', error);
       });
+  }
 }
