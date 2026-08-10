@@ -16,17 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-lint a random file (#5665)\
-Detect ondemand dir instead of hardcoding (#5464)\
-add new account fixture in overlapping position (#5618)\
-Lint a random file (#5657)\
-add some policy language for AI agents (#5646)\
-fix last test with missing assertions (#5655)\
-activejobs jobstatus data to use info#walltime (#5630)\
-add tests for auto_ field defaults (#5644)\
-lint a random file (#5652)\
-Update Changelog (#5653)\
-update dependencies (#5654)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -60,6 +49,7 @@ update dependencies (#5654)
 - auto_qos now enforce queue AllowQos and DenyQos in [5647](https://github.com/OSC/ondemand/pull/5647).
 - Check for username first in user_map.lua to allow for numeric usernames in [5636](https://github.com/OSC/ondemand/pull/5636).
 - Changes on data-set now propagate in [5235](https://github.com/OSC/ondemand/pull/5235).
+- ActiveJobs extended data now uses info#walltime instead of native attributes in [5630](https://github.com/OSC/ondemand/pull/5630).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
