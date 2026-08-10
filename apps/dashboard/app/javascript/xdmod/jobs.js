@@ -245,7 +245,7 @@ function getCachedJobData(jobid) {
 }
 
 function handleButtonClick(event, jobData, helpers) {
-  // FIXME: have to reset all the buttons because Boostrap aria-expands all these
+  // FIXME: have to reset all the buttons because Bootstrap aria-expands all these
   // buttons because they have the same target. Should be a better way to do this.
   const button = event.target.closest('button');
   const expanded = button.ariaExpanded;
