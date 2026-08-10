@@ -59,11 +59,11 @@ module BatchConnect::SessionContextsHelper
   end
 
   def wrapper_class(hidden, grouped)
-    css = ''
-    css += 'd-none' if hidden
-    css += "#{hidden ? ' ' : nil}col" if grouped
+    classes = []
+    classes.push('d-none') if hidden
+    classes.push('col') if grouped
 
-    css.empty? ? nil : css
+    classes.empty? ? nil : classes.join(' ')
   end
 
   def format_bc_id(id)
