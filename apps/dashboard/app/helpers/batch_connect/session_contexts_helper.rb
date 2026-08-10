@@ -73,7 +73,7 @@ module BatchConnect::SessionContextsHelper
       "bc_#{id.match(ga_bc_rex)[1]}"
     else
       # auto_modules cast - and / to _
-      id.to_s.gsub(/[-\/]/, '_')
+      id.to_s.downcase.gsub(/[-\/]/, '_')
     end
   end
 
