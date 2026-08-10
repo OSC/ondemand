@@ -337,6 +337,21 @@
 # Default: null (pass nothing)
 #pun_pre_hook_exports: null
 
+# Sub-uri for mTLS proxy requests. When set, Apache strips sensitive headers
+# (Authorization, OIDC claims, session cookies) from requests to this path
+# before they reach the PUN.
+# Example:
+#     pun_proxy_uri: '/pun/proxy'
+# Default: null (disabled)
+#pun_proxy_uri: null
+
+# Sub-uri for mTLS relative proxy requests. This behaves like rnode/rproxy by
+# stripping the /pun/rproxy/<host>/<port> prefix before forwarding upstream.
+# Example:
+#     pun_rproxy_uri: '/pun/rproxy'
+# Default: '/pun/rproxy' when pun_proxy_uri is set, otherwise null
+#pun_rproxy_uri: null
+
 #
 # Support for OpenID Connect
 #
