@@ -7,7 +7,7 @@ class SettingsController < ApplicationController
   ALLOWED_SETTINGS = [:profile, { announcements: {} }].freeze
 
   def update
-    new_settings = read_settings(settings_param)
+    new_settings = settings_param.to_h
     update_user_settings(new_settings) unless new_settings.empty?
 
     logger.info "settings: updated user settings to: #{new_settings}"
@@ -24,7 +24,7 @@ class SettingsController < ApplicationController
   end
 
   def update_user_customization
-    new_settings = read_settings(user_customization_param)
+    new_settings = user_customization_param.to_h
     alert = nil
     updated = false
     if new_settings.include?(:custom_files_favorites)
@@ -58,9 +58,5 @@ class SettingsController < ApplicationController
 
   def back_param
     params.permit(:back)[:back]
-  end
-
-  def read_settings(params)
-    params.to_h
   end
 end
