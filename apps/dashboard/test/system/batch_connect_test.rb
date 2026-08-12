@@ -1886,8 +1886,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       assert_equal('Advanced', find_value('node_type'))
-      assert_equal('High', find_value('memory'))
-      assert_equal('None', find_value('gpu_type'))
+      assert_equal('Medium', find_value('memory'))
+      assert_equal('Advanced', find_value('gpu_type'))
     end
   end
 
