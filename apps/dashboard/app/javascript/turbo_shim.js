@@ -22,10 +22,8 @@ export function replaceHTML(id, html) {
 
 export function pollAndReplace(url, delay, id, callback, continuePolling = () => true) {
   // Log every time the polling check is hit
-  console.log("[TurboShim] Polling check - Document hidden:", document.hidden);
 
   if (document.visibilityState === 'hidden') {
-    console.log("[TurboShim] Polling deferred because tab is hidden.");
     if (continuePolling()) {
       const handleVisibilityChange = () => {
         if (document.visibilityState === 'visible') {
@@ -42,8 +40,6 @@ export function pollAndReplace(url, delay, id, callback, continuePolling = () =>
     }
     return;
   }
-
-  console.log("[TurboShim] Executing normal poll refresh...");
 
   var focusedId = null;
   var focusedSelector = null;
