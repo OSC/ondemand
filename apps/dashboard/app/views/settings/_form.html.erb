@@ -12,7 +12,7 @@
       </div>
     </li>
 
-    <ul id="current_favorites" class="nav nav-pills flex-column flex-nowrap">
+    <ul id="current_favorites" class="favorite-buttons nav nav-pills flex-column flex-nowrap">
     <% @user_customization.custom_files_favorites.each do |favorite| %>
       <li class="nav-item mt-1" data-favorite-title="<%= favorite[:title] %>" data-favorite-path="<%= favorite[:path] %>">
         <div class="input-group">
