@@ -54,7 +54,7 @@ class ConfigurationSingleton
       :host_based_profiles          => false,
       :disable_bc_shell             => false,
       :cancel_session_enabled       => false,
-      :hide_app_version             => false,
+      :hide_app_version             => true,
       :motd_render_html             => false,
       :upload_enabled               => true,
       :download_enabled             => true,
