@@ -1,14 +1,14 @@
 ---
-fa_IR:
+fa-IR:
   activemodel:
     errors:
       messages:
-        format: "قالب %{attribute} نامعتبر است یا وجود ندارد"
+        format: قالب %{attribute} نامعتبر است یا وجود ندارد
         invalid: "%{attribute} نامعتبر است"
-        required: "وارد کردن %{attribute} الزامی است"
+        required: وارد کردن %{attribute} الزامی است
         used: "%{attribute} قبلاً استفاده شده است"
   dashboard:
-    active_jobs_close_details: "بستن پنل جزئیات تکمیلی."
+    active_jobs_close_details: بستن پنل جزئیات تکمیلی.
     active_sessions_caption_html: <a href="%{all_sessions_url}">مشاهده همه (%{number_of_sessions})</a>
     active_sessions_title: نشست‌های تعاملی فعال
     add: افزودن
@@ -36,7 +36,7 @@ fa_IR:
     balance_additional_message: درخواست %{balanace_units} بیشتر را در نظر بگیرید
     balance_message: "%{units_balance} برابر با %{value} است"
     balance_reload_message_html: 'برای مشاهده موجودی به‌روز، صفحه را دوباره بارگذاری کنید. موجودی‌ها روزانه به‌روزرسانی می‌شوند.<br>آخرین به‌روزرسانی: %{last_update}'
-    balance_warning_prefix_html: "هشدار %{units_balance} برای"
+    balance_warning_prefix_html: هشدار %{units_balance} برای
     batch_connect_apps_menu_title: برنامه‌های تعاملی
     batch_connect_form_attr_cache_error: استفاده از مقادیر ذخیره‌شده قبلی ممکن نیست؛ از مقادیر پیش‌فرض استفاده می‌شود. (%{error_message})
     batch_connect_form_choose_template_name: یک نام برای الگو انتخاب کنید
@@ -46,49 +46,51 @@ fa_IR:
     batch_connect_form_launch: راه‌اندازی
     batch_connect_form_prefill: استفاده از تنظیمات ذخیره‌شده
     batch_connect_form_prefill_error: متأسفیم، مشکلی در الگوی شما وجود دارد.
+    batch_connect_form_reset_resolution: بازنشانی وضوح
     batch_connect_form_resolution_height: ارتفاع وضوح (پیکسل)
     batch_connect_form_resolution_width: عرض وضوح (پیکسل)
-    batch_connect_form_reset_resolution: بازنشانی وضوح
     batch_connect_form_save: ذخیره تنظیمات
     batch_connect_form_save_new_template: ذخیره تنظیمات جدید
     batch_connect_form_save_submit: ذخیره تنظیمات و بستن
     batch_connect_form_select_template: انتخاب تنظیمات ذخیره‌شده
-    batch_connect_form_session_data_html: |
-      * داده‌های نشست %{title} از طریق %{data_link_tag} در دسترس است.
+    batch_connect_form_session_data_html: "* داده‌های نشست %{title} از طریق %{data_link_tag} در دسترس است.\n"
     batch_connect_form_template_name_label: نام تنظیم
     batch_connect_form_type_new_name: نام تنظیمات برنامه
     batch_connect_form_type_new_name_error: برای ادامه، یک نام معتبر وارد کنید
-    batch_connect_invalid_form_array: "عنصر «form» در form.yml از نوع Array نیست"
-    batch_connect_invalid_form_attributes: "عنصر «attributes» در form.yml از نوع Map نیست"
-    batch_connect_missing_cluster: |
-      کلاستر تنظیم نشده است. آن را در form.yml.erb با `cluster` یا `form.cluster` تنظیم کنید، یا `cluster` را در submit.yml.erb قرار دهید.
+    batch_connect_invalid_form_array: عنصر «form» در form.yml از نوع Array نیست
+    batch_connect_invalid_form_attributes: عنصر «attributes» در form.yml از نوع Map نیست
+    batch_connect_missing_cluster: 'کلاستر تنظیم نشده است. آن را در form.yml.erb با `cluster` یا `form.cluster` تنظیم کنید، یا `cluster` را در submit.yml.erb قرار دهید.
+
+      '
     batch_connect_no_apps: هیچ برنامه تعاملی در دسترس نیست.
     batch_connect_no_sessions: هیچ نشست فعالی ندارید.
     batch_connect_sandbox: " [محیط آزمایشی]"
     batch_connect_sessions_cancel_confirm: آیا مطمئن هستید؟
-    batch_connect_sessions_cancel_full_title: "لغو نشست %{title}"
+    batch_connect_sessions_cancel_full_title: لغو نشست %{title}
     batch_connect_sessions_cancel_title: لغو
-    batch_connect_sessions_data_html: |
-      داده‌های نشست %{title} از طریق %{data_link_tag} در دسترس است.
+    batch_connect_sessions_data_html: 'داده‌های نشست %{title} از طریق %{data_link_tag} در دسترس است.
+
+      '
     batch_connect_sessions_delete_confirm: آیا مطمئن هستید؟
-    batch_connect_sessions_delete_full_title: "حذف نشست %{title}"
+    batch_connect_sessions_delete_full_title: حذف نشست %{title}
     batch_connect_sessions_delete_hover: حذف نشست
     batch_connect_sessions_delete_title: حذف
     batch_connect_sessions_edit_title: ویرایش %{title} جدید با پارامترهای این نشست
-    batch_connect_sessions_error_invalid_job_name_html: |
-      اگر ارسال این کار به‌دلیل نام نامعتبر کار ناموفق بود، از مدیر سامانه بخواهید OnDemand را طوری پیکربندی کند که متغیر محیطی OOD_JOB_NAME_ILLEGAL_CHARS تنظیم شود.
+    batch_connect_sessions_error_invalid_job_name_html: 'اگر ارسال این کار به‌دلیل نام نامعتبر کار ناموفق بود، از مدیر سامانه بخواهید OnDemand را طوری پیکربندی کند که متغیر محیطی OOD_JOB_NAME_ILLEGAL_CHARS تنظیم شود.
+
+      '
     batch_connect_sessions_errors_staging: 'آماده‌سازی الگو با خطای زیر ناموفق بود:'
     batch_connect_sessions_errors_submission: 'ارسال نشست با خطای زیر ناموفق بود:'
     batch_connect_sessions_novnc_launch: راه‌اندازی %{app_title}
     batch_connect_sessions_novnc_view_only: فقط مشاهده (پیوند قابل اشتراک)
     batch_connect_sessions_path_selector_forbidden_error: اجازه انتخاب آن پوشه یا فایل را ندارید.
-    batch_connect_sessions_relaunch_full_title: "راه‌اندازی مجدد نشست %{title}"
+    batch_connect_sessions_relaunch_full_title: راه‌اندازی مجدد نشست %{title}
     batch_connect_sessions_relaunch_title: راه‌اندازی مجدد
     batch_connect_sessions_staged_root: پوشه ریشه آماده‌سازی‌شده
     batch_connect_sessions_stats_created_at: 'زمان ایجاد:'
     batch_connect_sessions_stats_host: 'میزبان:'
+    batch_connect_sessions_stats_session_dir_link_title: باز کردن پوشه نشست %{session_id}
     batch_connect_sessions_stats_session_id: 'شناسه نشست:'
-    batch_connect_sessions_stats_session_dir_link_title: 'باز کردن پوشه نشست %{session_id}'
     batch_connect_sessions_stats_support_ticket: در این نشست مشکلی دارید؟
     batch_connect_sessions_stats_support_ticket_link_text: ارسال درخواست پشتیبانی
     batch_connect_sessions_stats_time_remaining: 'زمان باقی‌مانده:'
@@ -102,12 +104,15 @@ fa_IR:
     batch_connect_sessions_status_blurb_delete_failure: حذف نشست ناموفق بود.
     batch_connect_sessions_status_blurb_delete_success: نشست با موفقیت حذف شد.
     batch_connect_sessions_status_completed: برای اشکال‌زدایی، این کارت تا %{days} روز دیگر نگه داشته می‌شود
-    batch_connect_sessions_status_missing_connection: |
-      اطلاعات لازم برای برقراری اتصال در این برنامه ناقص است. به‌طور مشخص، فایل view.html.erb وجود ندارد. اگر این پیام را می‌بینید با پشتیبانی تماس بگیرید.
-    batch_connect_sessions_status_queued: |
-      لطفاً شکیبا باشید؛ کار شما اکنون در صف است. زمان انتظار به تعداد هسته‌ها و زمان درخواستی بستگی دارد.
-    batch_connect_sessions_status_starting: |
-      نشست شما در حال راه‌اندازی است. لطفاً شکیبا باشید؛ این فرایند ممکن است چند دقیقه طول بکشد.
+    batch_connect_sessions_status_missing_connection: 'اطلاعات لازم برای برقراری اتصال در این برنامه ناقص است. به‌طور مشخص، فایل view.html.erb وجود ندارد. اگر این پیام را می‌بینید با پشتیبانی تماس بگیرید.
+
+      '
+    batch_connect_sessions_status_queued: 'لطفاً شکیبا باشید؛ کار شما اکنون در صف است. زمان انتظار به تعداد هسته‌ها و زمان درخواستی بستگی دارد.
+
+      '
+    batch_connect_sessions_status_starting: 'نشست شما در حال راه‌اندازی است. لطفاً شکیبا باشید؛ این فرایند ممکن است چند دقیقه طول بکشد.
+
+      '
     batch_connect_sessions_word: نشست
     bc_saved_settings:
       delete_confirm: آیا مطمئن هستید؟
@@ -117,8 +122,8 @@ fa_IR:
       launch_title: راه‌اندازی %{app_title} با پارامترهای %{settings_name}
       missing_settings: تنظیمات ذخیره‌شده انتخابی پیدا نشد.
       no_settings_title: هیچ تنظیمات ذخیره‌شده‌ای ندارید.
-      outdated_message: "پارامترهای %{app_title} از زمان ایجاد این تنظیمات تغییر کرده‌اند."
-      saved_message: "تنظیمات %{settings_name} ذخیره شد"
+      outdated_message: پارامترهای %{app_title} از زمان ایجاد این تنظیمات تغییر کرده‌اند.
+      saved_message: تنظیمات %{settings_name} ذخیره شد
       settings_values_label: مقادیر
       title: تنظیمات ذخیره‌شده
     breadcrumbs_all_apps: همه برنامه‌ها
@@ -145,9 +150,11 @@ fa_IR:
     files_directory_size_calculation_timeout: محاسبه اندازه پوشه به‌دلیل پایان مهلت زمانی متوقف شد.
     files_directory_size_unknown: 'هنگام محاسبه اندازه پوشه، خطایی با وضعیت %{exit_code} رخ داد: %{error}'
     files_directory_too_large: پوشه برای بارگیری به‌صورت ZIP بیش از حد بزرگ است. اندازه پوشه باید کمتر از %{download_directory_size_limit} بایت باشد.
+    files_doesnt_exist: "%{path} وجود ندارد."
     files_download_not_enabled: بارگیری فایل در این سرور فعال نیست.
     files_download_zip: بارگیری به‌صورت ZIP
     files_file_too_large: فایل برای بارگیری بیش از حد بزرگ است. اندازه فایل باید کمتر از %{download_file_size_limit} بایت باشد.
+    files_not_readable: مجوز کافی برای خواندن «%{path}» را ندارید.
     files_remote_dir_not_created: پوشه %{path} ایجاد نشد
     files_remote_disabled: پشتیبانی از فایل راه‌دور فعال نیست
     files_remote_empty_dir_unsupported: سامانه راه‌دور از پوشه خالی پشتیبانی نمی‌کند
@@ -156,8 +163,6 @@ fa_IR:
     files_shell: باز کردن در پایانه
     files_shell_dropdown: انتخاب کلاستر برای باز کردن در پایانه
     files_title: مرور فایل‌ها
-    files_doesnt_exist: "%{path} وجود ندارد."
-    files_not_readable: "مجوز کافی برای خواندن «%{path}» را ندارید."
     home_directory: پوشه خانه
     import: درون‌ریزی
     job_info: اطلاعات کار
@@ -195,7 +200,6 @@ fa_IR:
     jobs_project_delete_label: حذف پروژه %{name}
     jobs_project_delete_project_confirmation: همه محتوای پوشه پروژه حذف شود؟
     jobs_project_deleted: پروژه با موفقیت حذف شد!
-    jobs_project_removed: پروژه از فهرست جست‌وجو حذف شد!
     jobs_project_description_placeholder: توضیحات پروژه
     jobs_project_directory_error: مسیر پوشه پروژه برای این گردش‌کار تنظیم نشده است
     jobs_project_directory_help_html: 'برای ایجاد پوشه جدید، این قسمت را خالی بگذارید. <br />محل پیش‌فرض: %{root_directory}'
@@ -216,6 +220,7 @@ fa_IR:
     jobs_project_not_found: پروژه %{project_id} پیدا نشد
     jobs_project_open_label: باز کردن پروژه %{name}
     jobs_project_remove_label: برداشتن پروژه %{name}
+    jobs_project_removed: پروژه از فهرست جست‌وجو حذف شد!
     jobs_project_save_error: مانیفست در %{path} ذخیره نشد
     jobs_project_select_directory: انتخاب پوشه پروژه
     jobs_project_setgid_help: فعال ماندن setgid باعث می‌شود فایل‌های پروژه با گروه انتخابی ایجاد شوند. این گزینه بر پروژه‌های پوشه خانه شما اثری ندارد.
@@ -224,12 +229,13 @@ fa_IR:
     jobs_toggle_details: برای نمایش یا پنهان کردن جزئیات کار %{job_id} کلیک کنید
     jobs_workflow_clone: تکثیر گردش‌کار %{name}
     jobs_workflow_created: گردش‌کار با موفقیت ایجاد شد!
-    jobs_workflow_delete_title: حذف گردش‌کار %{name}
     jobs_workflow_delete_confirmation: همه محتوای گردش‌کار حذف شود؟
+    jobs_workflow_delete_title: حذف گردش‌کار %{name}
     jobs_workflow_deleted: گردش‌کار با موفقیت حذف شد!
     jobs_workflow_description_placeholder: توضیحات گردش‌کار
     jobs_workflow_edit_settings: ویرایش تنظیمات گردش‌کار %{name}
     jobs_workflow_failed: گردش‌کار با خطای %{error} ناموفق بود
+    jobs_workflow_help: برای انتخاب و جابه‌جایی، روی عنوان کلیک کنید. با انتخاب «اتصال راه‌اندازها»، روی دو راه‌انداز کلیک کنید تا متصل شوند.
     jobs_workflow_manifest_updated: مانیفست گردش‌کار به‌روزرسانی شد!
     jobs_workflow_missing_launchers: حداقل %{count} مورد را انتخاب کنید
     jobs_workflow_name_placeholder: نام گردش‌کار
@@ -237,7 +243,6 @@ fa_IR:
     jobs_workflow_not_found: گردش‌کار %{workflow_id} پیدا نشد
     jobs_workflow_show_graph: باز کردن گردش‌کار %{name} در ویرایشگر گراف
     jobs_workflow_submitted: گردش‌کار با موفقیت ارسال شد!
-    jobs_workflow_help: برای انتخاب و جابه‌جایی، روی عنوان کلیک کنید. با انتخاب «اتصال راه‌اندازها»، روی دو راه‌انداز کلیک کنید تا متصل شوند.
     jobs_workflow_sync_key_help: در صورت فعال بودن، همه راه‌اندازهای این گردش‌کار متغیر محیطی یکسان <code>OOD_WORKFLOW_SYNC_KEY</code> را دریافت می‌کنند؛ این متغیر توکنی تصادفی و یکتا برای هر اجرای گردش‌کار است. برای ساخت نام فایل‌های هماهنگ، فایل‌های قفل یا شناسه‌های مشترک بین کارهای وابسته مفید است.
     jobs_workflows: گردش‌کارها
     launch: راه‌اندازی
@@ -270,7 +275,7 @@ fa_IR:
     not_grouped: سایر برنامه‌ها
     nsf_access_events: رویدادهای NSF ACCESS
     ok: تأیید
-    opens_in_new_tab: 'در زبانه جدید باز می‌شود'
+    opens_in_new_tab: در زبانه جدید باز می‌شود
     owner: مالک
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -297,15 +302,17 @@ fa_IR:
     recently_used_apps_title: برنامه‌های اخیراً استفاده‌شده
     remove: حذف
     reset: بازنشانی
-    restore: بازیابی
     restart_msg_html: |
       عضویت گروهی شما تغییر کرده و بر دسترسی‌تان به برنامه‌ها اثر می‌گذارد. پیشخوان باید به‌طور خودکار راه‌اندازی مجدد شود.
       اگر نشد، روی <a href="%{restart_url}">راه‌اندازی مجدد وب‌سرور</a> کلیک کنید.
+    restore: بازیابی
     root: ریشه
     save: ذخیره
     saved_settings_title: تنظیمات ذخیره‌شده
     select_path: انتخاب مسیر
-    select_path_for: "انتخاب مسیر برای %{element}\n"
+    select_path_for: 'انتخاب مسیر برای %{element}
+
+      '
     settings_invalid_request: تنظیمات ارسالی نامعتبر است
     settings_updated: تنظیمات به‌روزرسانی شد
     shared_apps_caption: اشتراک‌گذاری‌شده توسط %{owner_title} (%{owner})
@@ -314,12 +321,13 @@ fa_IR:
     sharing_catalog_msg_html: "<br>گزیده‌ای از برنامه‌های موجود در %{catalog_link_tag} قابل مشاهده است.\n"
     sharing_catalog_title: فهرست برنامه‌ها
     sharing_no_shared_apps_html: "<strong>هیچ برنامه اشتراکی سفارشی در دسترس نیست.</strong>\n"
-    sharing_support_msg_html: |
-      اگر برنامه موردنظر خود را نمی‌بینید، لطفاً با <a href="%{support_url}">پشتیبانی تماس بگیرید</a>.
+    sharing_support_msg_html: 'اگر برنامه موردنظر خود را نمی‌بینید، لطفاً با <a href="%{support_url}">پشتیبانی تماس بگیرید</a>.
+
+      '
     sharing_welcome_msg_html: |
       برنامه‌های دسترسی به کلاستر از منوهای کشویی نوار پیمایش بالا در دسترس‌اند.
       <br>برنامه‌های اشتراکی سفارشی در پایین قرار دارند.
-    shell_app_title: "دسترسی پوسته به %{cluster_title}"
+    shell_app_title: دسترسی پوسته به %{cluster_title}
     show: نمایش
     size: اندازه
     skip_navigation: پرش از پیمایش
@@ -327,18 +335,18 @@ fa_IR:
     soft_tabs_info: تب‌های نرم به‌جای نویسه واقعی تب، از فاصله در فایل استفاده می‌کنند.
     submit: ارسال
     support_ticket:
-      creation_success: 'ایمیل درخواست پشتیبانی به %{to} ارسال شد'
+      creation_success: ایمیل درخواست پشتیبانی به %{to} ارسال شد
       generic_error: 'هنگام پردازش درخواست شما خطایی رخ داد: %{error}'
       header: درخواست پشتیبانی
       rt:
         creation_success: 'درخواست پشتیبانی در سامانه RequestTracker ایجاد شد. شناسه درخواست: %{ticket_id}'
       servicenow:
-        attachments_failure: 'درخواست پشتیبانی در ServiceNow با شماره %{number} ایجاد شد، اما پیوست‌ها افزوده نشدند.'
-        creation_success: 'درخواست پشتیبانی در ServiceNow با شماره %{number} ایجاد شد.'
+        attachments_failure: درخواست پشتیبانی در ServiceNow با شماره %{number} ایجاد شد، اما پیوست‌ها افزوده نشدند.
+        creation_success: درخواست پشتیبانی در ServiceNow با شماره %{number} ایجاد شد.
       title: درخواست پشتیبانی
       validation:
-        attachments_items: '%{id} نامعتبر است. %{items} مورد افزوده شد؛ بیشینه تعداد پیوست‌ها %{max} است'
-        attachments_size: '%{id} نامعتبر است. بیشینه اندازه پیوست %{max} است'
+        attachments_items: "%{id} نامعتبر است. %{items} مورد افزوده شد؛ بیشینه تعداد پیوست‌ها %{max} است"
+        attachments_size: "%{id} نامعتبر است. بیشینه اندازه پیوست %{max} است"
         email: قالب %{id} نامعتبر است. یک نشانی ایمیل معتبر وارد کنید
         items:
           attachments_js: افزودن پیوست بیشتر مجاز نیست
