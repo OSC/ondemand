@@ -5,7 +5,7 @@ module ActiveJobs
     attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
     # additional attrs to request when calling info_all
-    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time, :dispatch_time]
+    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time ]
 
     def initialize(filter_id:, cluster_id:, controller:, params:, response:)
       @filter_id = filter_id
@@ -71,7 +71,6 @@ module ActiveJobs
 
     def convert_info(info_all, cluster)
       extended_available = %w(torque slurm lsf pbspro sge).include?(cluster.job_config[:adapter])
-      has_grafana = cluster.try { |c| c.custom_allow?(:grafana) } || false
 
       info_all.map { |j|
         {
@@ -85,8 +84,6 @@ module ActiveJobs
           walltime_used: j.wallclock_time,
           username: j.job_owner,
           extended_available: extended_available,
-          has_grafana: has_grafana,
-          starttime: j.dispatch_time.to_i,
           nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?),
           delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : ""
         }

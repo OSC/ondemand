@@ -41,10 +41,6 @@
         <% if Configuration.ood_bc_ssh_to_compute_node && Configuration.can_access_shell? %>
           <%= link_to("#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-dark m-1") if data.shell_url %>
         <% end %>
-        <% if data.has_grafana && data.nodes && data.nodes.any? %>
-          <% grafana_url = "#{base_uri}/grafana/d/ood-job/ood-job-metrics?var-cluster=#{data.cluster}&var-jobid=#{data.pbsid}&from=#{data.starttime.to_i * 1000}&to=now" %>
-          <%= link_to("#{fa_icon("chart-line", classes: nil)} Detailed Metrics".html_safe, grafana_url, :class => "btn btn-outline-secondary m-1", target: "_blank", title: "Detailed Metrics (Grafana)") %>
-        <% end %>
           <%= link_to("#{fa_icon("trash", classes: nil)} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-outline-danger pull-right m-1", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" }) %>
       <% end %>
     </div>
