@@ -148,7 +148,7 @@ module BatchConnect
           raise InvalidDbRoot, "Batch Connect database root '#{path}' lacks required read, write, or execute permissions."
         end
 
-        p
+        path
       end
 
       # Root directory for file system database
