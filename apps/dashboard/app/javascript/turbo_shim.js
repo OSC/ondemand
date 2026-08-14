@@ -21,7 +21,6 @@ export function replaceHTML(id, html) {
 }
 
 export function pollAndReplace(url, delay, id, callback, continuePolling = () => true) {
-  // Log every time the polling check is hit
 
   if (document.visibilityState === 'hidden') {
     if (continuePolling()) {
@@ -33,10 +32,6 @@ export function pollAndReplace(url, delay, id, callback, continuePolling = () =>
       };
       document.addEventListener('visibilitychange', handleVisibilityChange);
       
-      setTimeout(() => {
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        pollAndReplace(url, delay, id, callback, continuePolling);
-      }, delay);
     }
     return;
   }
