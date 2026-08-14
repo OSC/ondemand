@@ -1854,6 +1854,84 @@ class BatchConnectTest < ApplicationSystemTestCase
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
 
+  test 'option for allows cyclical chains of causality' do 
+    form = <<~HEREDOC
+      ---
+      cluster: 
+        - owens
+      form: 
+        - node_type
+        - memory
+        - gpu_type
+      attributes:
+        node_type:
+          widget: select
+          options:
+            - ['Advanced']
+            - ['Basic', data-option-for-memory-high: false, data-option-for-gpu-type-advanced: false]
+        memory:
+          widget: select
+          options:
+            - ['High', data-option-for-node-type-basic: false, data-option-for-gpu-type-advanced: false]
+            - ['Medium']
+        gpu_type:
+          widget: select
+          options:
+            - ['Advanced', data-option-for-node-type-basic: false, data-option-for-memory-high: false]
+            - ['None']
+      HEREDOC
+    
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('display: none;', find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('display: none;', find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('Advanced',       find_value('gpu_type'))
+      assert_equal('',               find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+      
+      select('None', from: bc_ele_id('gpu_type'))
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('',               find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('',               find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('',               find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+
+      select('High', from: bc_ele_id('memory'))
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('display: none;', find_option_style('node_type', 'Basic'))
+      assert_equal('High',           find_value('memory'))
+      assert_equal('',               find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+      
+      select('Medium', from: bc_ele_id('memory'))
+      select('Basic', from: bc_ele_id('node_type'))
+      assert_equal('Basic',          find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('',               find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('display: none;', find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+    end
+  end
+
+
   test 'option for allows special characters with alias' do
     form = <<~HEREDOC
       ---
