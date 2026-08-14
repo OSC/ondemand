@@ -921,10 +921,10 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
     if (newSelectedOption !== undefined) {
       newSelectedOption.selected = true;
     }
+    
+    // now that we're done, propagate this change to data-set or data-hide handlers
+    document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
   }
-
-  // now that we're done, propagate this change to data-set or data-hide handlers
-  document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
 }
 
 // get attributes based on widget id
