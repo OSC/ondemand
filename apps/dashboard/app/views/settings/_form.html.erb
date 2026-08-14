@@ -1,6 +1,6 @@
 <%= turbo_frame_tag(:customization_form) do %>
   <%= bootstrap_form_for(@user_customization, url: update_customization_path, html: { autocomplete: "off" }, data: {turbo: 'false'}) do |f| %>
-    <h5 class="offcanvas-title"><%= t('dashboard.favorite_paths') %></h5>
+    <h2 class="offcanvas-title h5"><%= t('dashboard.favorite_paths') %></h2>
 
     <li class="nav-item mt-1" data-favorite-demo style="display:none">
       <div class="input-group">
