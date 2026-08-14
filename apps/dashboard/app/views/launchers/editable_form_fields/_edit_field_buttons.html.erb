@@ -6,6 +6,7 @@
   data-save-label="<%= t('dashboard.jobs_launchers_save_form_item', label: label)%>"
   data-edit-text="<%= t('dashboard.edit') %>"
   data-save-text="<%= t('dashboard.save') %>"
+  data-field-edit-button
   aria-expanded="false"
   aria-controls="edit_field_<%= field_id %>"
 >
@@ -17,6 +18,7 @@
   <button id='<%= "remove_#{field_id}" %>' 
     class="btn btn-danger float-end" 
     type="button"
+    data-field-remove-button
     aria-label="<%= t('dashboard.jobs_launchers_remove_form_item', label: label)%>"
   >
     <%= t('dashboard.remove') %>

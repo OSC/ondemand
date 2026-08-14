@@ -8,7 +8,7 @@
 </div>
 <ul class="list-unstyled mb-2">
   <li>
-    <%= quota.to_s %><%= ". #{t('dashboard.quota_additional_message')}" %>
+    <%= t('dashboard.quota_message', quota: quota.to_s, additional_message: t('dashboard.quota_additional_message')) %>
   </li>
   <li>
     <%=

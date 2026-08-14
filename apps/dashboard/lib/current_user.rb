@@ -16,7 +16,8 @@ class CurrentUser
 
   class << self
     delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :instance
-    delegate :primary_group, :primary_group_name, :group_names, :groups, to: :instance
+    delegate :primary_group, :primary_group_name, :group_names, :filtered_group_names, :groups, to: :instance
+
 
     alias_method :home, :dir
   end
@@ -40,6 +41,13 @@ class CurrentUser
     @group_names ||= groups.map(&:name)
   end
 
+  def filtered_group_names
+    group_names.grep(/#{Configuration.auto_groups_filter}/)
+  rescue RegexpError => e
+    Rails.logger.warn("auto_groups_filter does not compile, throwing this error: #{e}")
+    []
+  end
+  
   def groups
     @groups ||= begin
 

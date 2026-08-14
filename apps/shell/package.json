@@ -34,7 +34,8 @@
     "lodash": "4.17.21",
     "setprototypeof": "1.2.0",
     "toidentifier": "1.0.1",
-    "encodeurl": "2.0.0"
+    "encodeurl": "2.0.0",
+    "content-type": "2.0.0"
   },
   "devDependencies": {
     "jest": "^30"

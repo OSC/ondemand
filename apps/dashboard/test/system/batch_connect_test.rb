@@ -17,11 +17,11 @@ class BatchConnectTest < ApplicationSystemTestCase
          .returns(['1.2.3', '', exit_success])
   end
 
-  def make_bc_app(dir, form)
+  def make_bc_app(dir, form, scontrol: true, sacctmgr: true)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-    stub_scontrol
-    stub_sacctmgr
+    stub_scontrol if scontrol
+    stub_sacctmgr if sacctmgr
     stub_git(app_dir)
     Pathname.new(app_dir).join('form.yml').write(form)
   end
@@ -2227,8 +2227,8 @@ class BatchConnectTest < ApplicationSystemTestCase
         assert_equal 'owens', find_value('cluster')
 
         # notice that there are no duplicates. These accounts are not cluster aware
-        expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
+        expected_accounts = ['foo-bar', 'pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
+                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'p_s1345'].sort
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).sort
@@ -2280,6 +2280,49 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal '', find_option_style('auto_queues', 'serial-40core')
       assert_equal '', find_option_style('auto_queues', 'serial-48core')
       assert_equal '', find_option_style('auto_queues', 'gpudebug-48core')
+    end
+  end
+
+  test 'check for account alias clashes between clusters when using auto_queues auto_accounts' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      accounts = find_all_options("auto_accounts", nil)
+      queues = find_all_options("auto_queues", nil)
+      aliases = []
+      for queue in queues
+        (0..accounts.size).each do |i|
+          if !queue["data-alias-account#{i}"].nil?
+            aliases.append([queue.value, "account#{i}", queue["data-alias-account#{i}"]])
+          end
+        end
+      end
+      err_msg_lines = []
+      aliases_groupby_acct = aliases.group_by { |x| x[2] }
+      aliases_groupby_acct.each do |acct, aliases_this_acct|
+        pseudonyms = aliases_this_acct.map { |x| x[1] }.uniq
+        if pseudonyms.size > 1
+          err_msg_lines.append("account '#{acct}' has multiple different aliases: #{pseudonyms}")
+        end
+      end
+      aliases_groupby_pseudonym = aliases.group_by { |x| x[1] }
+      aliases_groupby_pseudonym.each do |pseudonym, aliases_this_pseudonym|
+        accts = aliases_this_pseudonym.map { |x| x[2] }.uniq
+        if accts.size > 1
+          err_msg_lines.append("alias '#{pseudonym}' has multiple different accounts: #{accts}")
+        end
+      end
+      # $stderr.puts aliases.inspect
+      assert(err_msg_lines.size == 0, err_msg_lines.join("\n"))
     end
   end
 
@@ -2344,6 +2387,57 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'auto queues qos aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+
+      make_bc_app(dir, form, sacctmgr: false, scontrol: false)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:accounts)
+                                   .returns(accounts)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:queues)
+                                   .returns(queues)
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([owens_cluster]))
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('owens', find_value('cluster'))
+
+      select('no-qos', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos1', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos2', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos12', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+    end
+  end
+
   test 'auto qos are dynamic' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
@@ -2402,6 +2496,82 @@ class BatchConnectTest < ApplicationSystemTestCase
       select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'oakley-default', find_value('auto_qos')
       assert_equal 'pzs1124', find_value('auto_accounts')
+    end
+  end
+
+  test 'auto fields respond to default values' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: geophys
+          auto_accounts:
+            value: pzs1118
+          auto_queues:
+            value: quick
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults that are different than regular defaults.
+      # account would be 'pzs1124', qos would be 'owens-default'
+      # and auto_queues would be 'batch'.
+      assert_equal('pzs1118', find_value('auto_accounts'))
+      assert_equal('geophys', find_value('auto_qos'))
+      assert_equal('quick', find_value('auto_queues'))
+    end
+  end
+
+  test 'auto fields with incorrect values fallback to correct defaults' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: wontexist
+          auto_accounts:
+            value: wontexist
+          auto_queues:
+            value: wontexist
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # regular defaults
+      assert_equal('pzs1124', find_value('auto_accounts'))
+      assert_equal('owens-default', find_value('auto_qos'))
+      assert_equal('batch', find_value('auto_queues'))
     end
   end
 

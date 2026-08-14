@@ -1,6 +1,6 @@
 # Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
-  def create_widget(form, attrib, format: nil, hide_excludable: true, hide_fixed: true)
+  def create_widget(form, attrib, format: nil, hide_excludable: true, hide_fixed: true, grouped: false)
     return '' if hide_fixed && attrib.fixed?
     return '' if attrib.hide_when_empty? && attrib.value.blank?
 
@@ -45,7 +45,7 @@ module BatchConnect::SessionContextsHelper
     wrapped = content_tag(
       :div, 
       id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
-      class: attrib.hide_by_default? ? 'd-none' : '',
+      class: wrapper_class(attrib.hide_by_default?, grouped),
       data: {
         widget_type: widget,
         hide_by_default: attrib.hide_by_default?
@@ -56,6 +56,25 @@ module BatchConnect::SessionContextsHelper
 
     header = sanitize(OodAppkit.markdown.render(attrib.header))
     safe_join([header, wrapped])
+  end
+
+  def wrapper_class(hidden, grouped)
+    classes = []
+    classes.push('d-none') if hidden
+    classes.push('col') if grouped
+
+    classes.empty? ? nil : classes.join(' ')
+  end
+
+  def format_bc_id(id)
+    # global bc_ options strip global_ prefix from their id.
+    ga_bc_rex = /\Aglobal_bc_([\w-]+)\z/.freeze
+    if id.match?(ga_bc_rex)
+      "bc_#{id.match(ga_bc_rex)[1]}"
+    else
+      # auto_modules cast - and / to _
+      id.to_s.downcase.gsub(/[-\/]/, '_')
+    end
   end
 
   def resolution_field(form, id, opts = {})

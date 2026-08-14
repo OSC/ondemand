@@ -57,6 +57,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
         accounting_id:   'account2',
         queue_name:      'short',
         wallclock_time:  120,
+        wallclock_limit: 3600, 
         job_owner:       "currentuser",
         allocated_nodes: [NodeInfo.new(name: 'node003')],
         status:          :queued,
