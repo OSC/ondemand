@@ -16,6 +16,17 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Fix option-for recursion loops (#5681)\
+Add font selection to the Shell app (#5492)\
+Grouped form items (#5632)\
+make xdmod jobs widget more accessible (#5674)\
+lint a random file (#5682)\
+Handle duplicate uploads in Files app (#5603)\
+correct enumerable APIs in bc session contexts (#5617)\
+Add Persian Localization (fa-IR) (#5669)\
+update dependencies (#5672)\
+Update Changelog (#5671)\
+lint a random file (#5670)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
