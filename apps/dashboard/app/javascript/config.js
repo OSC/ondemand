@@ -54,6 +54,11 @@ export function isBCDynamicJSEnabled() {
   return cfgData['bcDynamicJs'] == 'true'
 }
 
+export function isOptionForDirectional() {
+  const cfgData = configData();
+  return cfgData['directionalOptionFor'] == 'true';
+}
+
 export function downloadEnabled() {
   const cfgData = configData();
   return cfgData['downloadEnabled'] == 'true';

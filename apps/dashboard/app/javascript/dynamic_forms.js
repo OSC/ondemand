@@ -1,4 +1,5 @@
 'use strict';
+import { isOptionForDirectional } from './config';
 import { ariaNotify } from './utils'
 // these are initialized in makeChangeHandlers
 var idPrefix = undefined;
@@ -148,7 +149,7 @@ function makeChangeHandlers(prefix){
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
                 let token = key.replace(/^optionFor/,'');
-                addOptionForHandler(idFromToken(token), element['id']);
+                addOptionForHandler(idFromToken(token), element['id'], key, opt);
               } else if (key.startsWith('exclusiveOptionFor')) {
                 let token = key.replace(/^exclusiveOptionFor/, '');
                 addExclusiveOptionForHandler(idFromToken(token), element['id']);
@@ -651,7 +652,27 @@ function sharedOptionForHandler(causeId, targetId, optionForType) {
   }
 }
 
-function addOptionForHandler(causeId, targetId) {
+function addOptionForHandler(causeId, targetId, key, opt) {
+  if(!isOptionForDirectional()) {
+    // Start by finding which option the directive refers to
+    let otherOption = undefined;
+    const options = [...document.querySelectorAll(`#${causeId} option`)];
+    for(let option of options) {
+      if(key === `optionFor${mountainCaseWords(shortId(causeId))}${mountainCaseWords(option.value)}`) {
+        otherOption = option;
+        break;
+      }
+    }
+    // then add the directive and handler, if an option was found
+    if(otherOption !== undefined) {
+      const newKey = `optionFor${mountainCaseWords(shortId(targetId))}${mountainCaseWords(opt.value)}`;
+      if (!Object.keys(otherOption.dataset).includes(newKey)) {
+        otherOption.dataset[newKey] = false;
+        sharedOptionForHandler(targetId, causeId, 'optionFor');
+      }
+    }
+  }
+  
   sharedOptionForHandler(causeId, targetId, 'optionFor');
 };
 
