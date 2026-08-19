@@ -157,6 +157,16 @@ describe OodPortalGenerator::Application do
       test_generate('input/http_redirect_host.yml', 'output/http_redirect_host.conf')
     end
 
+    it 'rasies an error with incomplete oidc configs' do
+      config = {
+        oidc_uri:                   '/oidc',
+        oidc_provider_metadata_url: 'https://idp.example.com/auth/realms/osc/.well-known/openid-configuration',
+        oidc_client_id:             'ondemand.example.com'
+      }
+      allow(described_class).to receive(:context).and_return(config)
+      expect { described_class.generate }.to raise_error(StandardError, 'oidc_crypto_passphrase must be set when using OIDC.')
+    end
+
     it 'generates full OIDC config' do
       config = {
         servername: 'ondemand.example.com',
@@ -169,6 +179,7 @@ describe OodPortalGenerator::Application do
         oidc_session_inactivity_timeout: 28800,
         oidc_session_max_duration: 28800,
         oidc_state_max_number_of_cookies: '10 true',
+        oidc_crypto_passphrase: 'e2c5ee12c92a019f19b5e532641ac0da2f9acdac',
         oidc_settings: {
           OIDCPassIDTokenAs: 'serialized',
           OIDCPassRefreshToken: 'On',
@@ -199,6 +210,7 @@ describe OodPortalGenerator::Application do
         oidc_session_inactivity_timeout: 28800,
         oidc_session_max_duration: 28800,
         oidc_state_max_number_of_cookies: '10 true',
+        oidc_crypto_passphrase: 'e2c5ee12c92a019f19b5e532641ac0da2f9acdac',
         oidc_settings: {
           OIDCPassIDTokenAs: 'serialized',
           OIDCPassRefreshToken: 'On',
@@ -239,8 +251,14 @@ describe OodPortalGenerator::Application do
         allow(described_class).to receive(:dex_output).and_return(dex_config)
       end
 
+      it 'rasies an error with incomplete oidc configs in dex' do
+        config = { dex: true }
+        allow(described_class).to receive(:context).and_return(config)
+        expect { described_class.generate }.to raise_error(StandardError, 'oidc_crypto_passphrase must be set when using OIDC.')
+      end
+
       it 'generates default dex configs' do
-        allow(described_class).to receive(:context).and_return({ dex: true })
+        allow(described_class).to receive(:context).and_return({ dex: true, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
         expected_rendered = read_fixture('ood-portal.conf.dex')
         expect(described_class.output).to receive(:write).with(expected_rendered)
         expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
@@ -250,7 +268,7 @@ describe OodPortalGenerator::Application do
 
       it 'generates default dex configs from nil' do
         # this simulates a config of 'dex: '. I.e., uncommented dex
-        allow(described_class).to receive(:context).and_return({ dex: nil })
+        allow(described_class).to receive(:context).and_return({ dex: nil, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
         expected_rendered = read_fixture('ood-portal.conf.dex')
         expect(described_class.output).to receive(:write).with(expected_rendered)
         expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
@@ -259,7 +277,7 @@ describe OodPortalGenerator::Application do
       end
 
       it 'generates insecure default dex configs' do
-        allow(described_class).to receive(:context).and_return({ dex: true })
+        allow(described_class).to receive(:context).and_return({ dex: true, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
         allow(described_class).to receive(:insecure).and_return(true)
         expected_rendered = read_fixture('ood-portal.conf.dex')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -272,6 +290,7 @@ describe OodPortalGenerator::Application do
         allow(described_class).to receive(:insecure).and_return(true)
         allow_any_instance_of(OodPortalGenerator::Dex).to receive(:hash_password).with('secret').and_return('$2a$12$iKLecAIN9MrxOZ0UltRb.OQOms/bgQbs5F.qCehq15oc3CvGFYzLy')
         allow(described_class).to receive(:context).and_return({
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           dex: {
             static_passwords: [{
               'email'    => 'username@localhost',
@@ -292,6 +311,7 @@ describe OodPortalGenerator::Application do
         # same as test above, only it does not use --insecure and expects the default yaml, not static_passwords
         allow_any_instance_of(OodPortalGenerator::Dex).to receive(:hash_password).with('secret').and_return('$2a$12$iKLecAIN9MrxOZ0UltRb.OQOms/bgQbs5F.qCehq15oc3CvGFYzLy')
         allow(described_class).to receive(:context).and_return({
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           dex: {
             static_passwords: [{
               'email'    => 'username@localhost',
@@ -314,6 +334,7 @@ describe OodPortalGenerator::Application do
           servername: 'example.com',
           proxy_server: 'example-proxy.com',
           port: '443',
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           ssl: [
             'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
@@ -333,6 +354,7 @@ describe OodPortalGenerator::Application do
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           port: '443',
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           ssl: [
             'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
@@ -352,6 +374,7 @@ describe OodPortalGenerator::Application do
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           port: '443',
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           ssl: [
             'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
@@ -372,6 +395,7 @@ describe OodPortalGenerator::Application do
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           port: '443',
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           ssl: [
             'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
@@ -406,6 +430,7 @@ describe OodPortalGenerator::Application do
         File.open(key, 'w') { |f| f.write("KEY") }
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           port: '443',
           ssl: [
             "SSLCertificateFile #{cert}",
@@ -447,6 +472,7 @@ describe OodPortalGenerator::Application do
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           port: '443',
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           ssl: [
             'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
@@ -492,6 +518,7 @@ describe OodPortalGenerator::Application do
         secret = Tempfile.new('secret')
         File.write(secret.path, "supersecret\n")
         allow(described_class).to receive(:context).and_return({
+          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
           dex: {
             client_secret: secret.path,
           }

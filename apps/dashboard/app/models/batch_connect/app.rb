@@ -25,19 +25,21 @@ module BatchConnect
       # @param token [String] the token
       # @return [App] generated object
       def from_token(token)
-        type, *app = token.split('/')
-        case type
-        when 'dev'
-          name, sub_app = app
-          router = DevRouter.new(name)
-        when 'usr'
-          owner, name, sub_app = app
-          router = UsrRouter.new(name, owner)
-        else # "sys"
-          name, sub_app = app
-          router = SysRouter.new(name)
+        Rails.cache.fetch(["batch_connect_app", token].join("/"), expires_in: 6.hours) do
+          type, *app = token.split('/')
+          case type
+          when 'dev'
+            name, sub_app = app
+            router = DevRouter.new(name)
+          when 'usr'
+            owner, name, sub_app = app
+            router = UsrRouter.new(name, owner)
+          else # "sys"
+            name, sub_app = app
+            router = SysRouter.new(name)
+          end
+          new(router: router, sub_app: sub_app)
         end
-        new(router: router, sub_app: sub_app)
       end
     end
 
@@ -242,12 +244,20 @@ module BatchConnect
       end
     end
 
+    def form_layout
+      @form_layout ||= begin
+        # FIXME: duplicate logic in add_cluster_widget
+        form = form_config.fetch(:form, [])
+        form.exclude?('cluster') && clusters.any? ? form.prepend('cluster') : form
+      end
+    end
+
     def attributes
       @attributes ||= begin
         return [] unless valid?
 
         local_attribs = form_config.fetch(:attributes, {})
-        attrib_list   = form_config.fetch(:form, [])
+        attrib_list   = form_layout.flatten
         add_cluster_widget(local_attribs, attrib_list)
 
         attrib_list.map do |attribute_id|

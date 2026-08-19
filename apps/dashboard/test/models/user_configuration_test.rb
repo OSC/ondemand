@@ -72,7 +72,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       navbar_type:                       'dark',
       pinned_apps_group_by:              nil,
 
-      show_all_apps_link:                false,
+      show_all_apps_link:                true,
       filter_nav_categories?:            false,
       nav_categories:                    ['Apps', 'Files', 'Jobs', 'Clusters', 'Interactive Apps'],
       nav_bar:                           [],

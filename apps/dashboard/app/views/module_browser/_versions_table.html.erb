@@ -15,18 +15,23 @@
           <td><%= Configuration.job_clusters[cluster].title %></td>
           <td>
             <% if cluster_versions.any? %>
-              <% cluster_versions.uniq { |v| v.version }.sort_by(&:version).reverse.each do |mod| %>
-                <% next if mod.version.blank? %>
+              <% cluster_versions.group_by(&:version).sort_by { |version, _| version.to_s }.reverse.each do |version, version_entries| %>
+                <% next if version.blank? %>
+                <% mod = version_entries.first %>
+                <% dependency_groups = version_entries.flat_map { |entry| entry.dependencies.is_a?(Array) ? entry.dependencies : [] }
+                                                   .map { |group| group.is_a?(Array) ? group : [group].compact }
+                                                   .reject(&:empty?)
+                                                   .uniq %>
                 <button 
                   class="btn btn-outline-primary btn-sm version-btn" 
-                  title="<%= mod.to_s %>"
+                  title="<%= mod.name %>/<%= version %>"
                   data-role="selectable-version"
                   data-module="<%= mod.name %>"
-                  data-version="<%= mod.version %>"
-                  data-dependencies="<%= (mod.dependencies || []).to_json %>"
+                  data-version="<%= version %>"
+                  data-dependencies="<%= dependency_groups.to_json %>"
                   data-default="<%= mod.default? %>"
                 >
-                  <%= mod.version %>
+                  <%= version %>
                 </button>
               <% end %>
             <% else %>

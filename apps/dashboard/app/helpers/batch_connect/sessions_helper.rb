@@ -24,7 +24,7 @@ module BatchConnect::SessionsHelper
     elsif session.completed?
       views = { partial: "completed", locals: { session: session } }
     else
-      views = { partial: "bad" }
+      views = { partial: "bad", locals: { session: session } }
     end
 
     connection_tabs(session.id, views)
@@ -99,7 +99,7 @@ module BatchConnect::SessionsHelper
 
     user_context = session.user_context
     params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, nil)]}.to_h.compact
-    title = "#{t('dashboard.batch_connect_sessions_relaunch_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_relaunch_full_title', title: session.title)
     button_to(
       batch_connect_session_contexts_path(token: batch_connect_app.token),
       method: :post,
@@ -119,7 +119,7 @@ module BatchConnect::SessionsHelper
     button_to(
       new_batch_connect_session_context_path(token: session.token),
       method: :get,
-      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner],
+      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner edit-session],
       form_class: %w[d-inline edit-session],
       title: title,
       'aria-label': title,
@@ -139,7 +139,7 @@ module BatchConnect::SessionsHelper
   end
 
   def delete(session)
-    title = "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_delete_full_title', title: session.title)
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
@@ -153,7 +153,7 @@ module BatchConnect::SessionsHelper
   end
 
   def cancel(session)
-    title = "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_cancel_full_title', title: session.title)
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
@@ -170,7 +170,11 @@ module BatchConnect::SessionsHelper
     version  = "1.3.0"
     password = view_only ? connect.spassword : connect.password
     resize   = view_only ? "downscale" : "remote"
-    asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
+    base = asset_path(
+      "noVNC-#{version}/vnc.html?autoconnect=true&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}",
+      skip_pipeline: true
+    )
+    "#{base}#password=#{ERB::Util.url_encode(password)}"
   end
 
   def connection_tabs(id, tabs)

@@ -24,6 +24,12 @@ module BatchConnect
       end
     end
 
+    # Return smart attribute value for serialization instead of raw attribute object
+    def read_attribute_for_serialization(name)
+      attribute = self[name]
+      attribute ? attribute.value : super
+    end
+
     # @param attributes [Array<Attribute>] list of attribute objects
     def initialize(attributes = [], app_specific_cache_setting = nil)
       @attributes = attributes
@@ -83,6 +89,26 @@ module BatchConnect
       end
 
       OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
+    end
+
+    # Redefine 'partition' from Enumerable so that sites can use it in a form.
+    def partition(&block)
+      if block_given?
+        @attributes.partition(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['partition'].value
+      end
+    end
+
+    # Redefine 'filter' from Enumerable so that sites can use it in a form.
+    def filter(&block)
+      if block_given?
+        @attributes.filter(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['filter'].value
+      end
     end
 
     private

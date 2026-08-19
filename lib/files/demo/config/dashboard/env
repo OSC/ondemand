@@ -1,2 +1,0 @@
-MOTD_PATH=/etc/motd.md
-MOTD_FORMAT='markdown'

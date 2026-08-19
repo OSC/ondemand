@@ -63,8 +63,8 @@ function addNewField(_event) {
   newFieldButton.before(newFieldTemplate.html());
 
   const justAdded = newFieldButton.prev();
-  const deleteButton = justAdded.find('.btn-danger');
-  const addButton = justAdded.find('.btn-success');
+  const deleteButton = justAdded.find('[data-new-field-action="cancel"]');
+  const addButton = justAdded.find('[data-new-field-action="add"]');
   const selectMenu = justAdded.find('select');
 
   deleteButton.on('click', (event) => { removeInProgressField(event) });
@@ -93,53 +93,50 @@ function updateNewFieldOptions(selectMenu) {
 
 function addHelpTextForOption(event) {
   const helpText = newFieldData[event.target.value].help;
-  const topLevelDiv = event.target.parentElement.parentElement;
+  const inProgressField = event.target.closest('[data-in-progress-field]');
 
-  const helpTextDiv = topLevelDiv.firstElementChild;
+  const helpTextDiv = inProgressField.querySelector('[data-new-field-help]');
   helpTextDiv.innerText = helpText;
 }
 
 function removeInProgressField(event) {
-  const entireDiv = event.target.parentElement.parentElement.parentElement;
-  entireDiv.remove();
-  enableNewFieldButton()
+  event.target.closest('[data-in-progress-field]').remove();
+  enableNewFieldButton();
 }
 
 function removeField(event) {
   // TODO: shouldn't be able to remove cluster & script form fields.
-  const entireDiv = event.target.parentElement;
-  entireDiv.remove();
+  event.target.closest('.editable-form-field').remove();
   enableNewFieldButton();
 }
 
 function showEditField(event) {
-  const entireDiv = event.target.parentElement;
+  const entireDiv = event.target.closest('.editable-form-field');
   const editField = entireDiv.querySelector('.edit-group');
-  editField.classList.remove('d-none');
 
-  const saveButton = entireDiv.querySelector('.btn-success');
-  const editButton = entireDiv.querySelector('.btn-primary');
+  const editButton = entireDiv.querySelector('.btn-primary, .btn-success');
 
-  saveButton.classList.remove('d-none');
-  editButton.disabled = true;
-
-  saveButton.onclick = (event) => { saveEdit(event) };
-}
-
-function saveEdit(event) {
-  const entireDiv = event.target.parentElement;
-  const editField = entireDiv.querySelector('.edit-group');
-  editField.classList.add('d-none');
-
-  const saveButton = entireDiv.querySelector('.btn-success');
-  const editButton = entireDiv.querySelector('.btn-primary');
-
-  saveButton.classList.add('d-none');
-  editButton.disabled = false;
+  if (editField.classList.contains('d-none')) {
+    editField.classList.remove('d-none');
+    editButton.classList.remove('btn-primary');
+    editButton.classList.add('btn-success');
+    editButton.setAttribute('aria-expanded', 'true');
+    editButton.setAttribute('aria-label', editButton.getAttribute('data-save-label'))
+    editButton.textContent = editButton.getAttribute('data-save-text');
+    
+  } else {
+    editField.classList.add('d-none');
+    editButton.classList.remove('btn-success');
+    editButton.classList.add('btn-primary');
+    editButton.setAttribute('aria-expanded', 'false');
+    editButton.setAttribute('aria-label', editButton.getAttribute('data-edit-label'))
+    editButton.textContent = editButton.getAttribute('data-edit-text');
+  }
 }
 
 function addInProgressField(event) {  
-  const selectMenu = event.target.parentElement.parentElement.firstElementChild;
+  const inProgressField = event.target.closest('[data-in-progress-field]');
+  const selectMenu = inProgressField.querySelector('select');
   const choice = selectMenu.value;
   const template = $(`#${choice}_template`);
 
@@ -147,10 +144,10 @@ function addInProgressField(event) {
   newFieldButton.before(template.html());
 
   const justAdded = newFieldButton.prev();
-  justAdded.find('.btn-danger')
+  justAdded.find('[data-field-remove-button]')
            .on('click', (event) => { removeField(event) });
 
-  justAdded.find('.btn-primary')
+  justAdded.find('[data-field-edit-button]')
            .on('click', (event) => { showEditField(event) });
 
   justAdded.find('[data-select-toggler]')
@@ -162,8 +159,7 @@ function addInProgressField(event) {
   justAdded.find('[data-auto-environment-variable="name"]')
            .on('keyup', (event) => { updateAutoEnvironmentVariable(event) });
 
-  const entireDiv = event.target.parentElement.parentElement.parentElement;
-  entireDiv.remove();
+  inProgressField.remove();
   enableNewFieldButton();
 }
 
@@ -172,35 +168,34 @@ function updateAutoEnvironmentVariable(event) {
   const labelString = event.target.dataset.labelString;
   const idString = `launcher_auto_environment_variable_${aev_name}`;
   const nameString = `launcher[auto_environment_variable_${aev_name}]`;
-  var input_field = event.target.parentElement.children[2].children[0].children[1];
+  const editableTextField = event.target.closest('.editable-form-field');
 
+  const formItemPreview = editableTextField.querySelector('[data-form-item-preview]');
+  const input_field = formItemPreview.querySelector('input');
   input_field.removeAttribute('readonly');
   input_field.id = idString;
   input_field.name = nameString;
 
   if (labelString.match(/Environment(&#32;|\s)Variable/)) {
-    const label_field = event.target.parentElement.children[2].children[0].children[0];
+    const label_field = formItemPreview.querySelector('label');
     label_field.innerHTML = `Environment Variable: ${aev_name}`;
   }
 
   // Update the checkbox so that environment variables can be fixed when created
-  let fixedBoxGroup = event.target.parentElement.children[3].children[0].children[0];
+  const fixedField = editableTextField.querySelector('[data-edit-fixed-field]');
 
-  let checkbox = fixedBoxGroup.children[0];
+  const checkbox = fixedField.querySelector('input[type="checkbox"]');
   checkbox.id = `${idString}_fixed`;
   checkbox.name = `launcher[auto_environment_variable_${aev_name}_fixed]`;
   checkbox.setAttribute('data-fixed-toggler', idString);
 
-  // Update hidden field if attribute is already fixed, otherwise just update label
-  let labelIndex = 2;
-  if(fixedBoxGroup.children.length == 3) {
-    let hiddenField = fixedBoxGroup.children[1];
+  // Update hidden field if attribute is already fixed
+  const hiddenField = fixedField.querySelector('input[type="hidden"]');
+  if (hiddenField) {
     hiddenField.name = nameString;
-  } else {
-    labelIndex = 1;
   }
 
-  let fixedLabel = fixedBoxGroup.children[labelIndex];
+  const fixedLabel = fixedField.querySelector('label');
   fixedLabel.setAttribute('for', `${idString}_fixed`);
 }
 
@@ -222,7 +217,7 @@ function fixedFieldEnabled(checkbox, dataElement) {
   if (dataElement.nodeName == 'SELECT') {
     const selectOptions = Array.from(dataElement.options);
     const selectedOption = selectOptions.filter(opt => opt.selected)[0];
-    const selectOptionsConfig = $(dataElement).parents('.editable-form-field').find('li.list-group-item').get();
+    const selectOptionsConfig = $(dataElement).closest('.editable-form-field').find('[data-select-option]').get();
 
     selectOptionsConfig.forEach(configItemLi => {
       const textContent = $(configItemLi).find('[data-select-value]')[0].textContent;
@@ -273,7 +268,7 @@ function enableRemoveOption(optionLi, removeButtonDisabled = false) {
 
 function enableOrDisableSelectOption(event) {
   const toggleAction = event.target.dataset.selectToggler;
-  const li = event.target.parentElement;
+  const li = event.target.closest('[data-select-option]');
   event.target.disabled = true;
 
   const choice = $(li).find('[data-select-value]')[0].textContent;
@@ -353,7 +348,7 @@ function initSelectFields(){
 function initSelect(selectElement) {
   const excludeId = selectElement.dataset.excludeId;
   const selectOptions = Array.from(selectElement.options);
-  const selectOptionsConfig = $(selectElement).parents('.editable-form-field').find('li.list-group-item').get();
+  const selectOptionsConfig = $(selectElement).closest('.editable-form-field').find('[data-select-option]').get();
   const { excludeList } = getExcludeList(excludeId);
 
   selectOptions.forEach(option => {
@@ -394,12 +389,12 @@ jQuery(() => {
   $('#add_new_field_button').on('click', (event) => { addNewField(event) });
   $('.new_launcher')
     .find('.editable-form-field')
-    .find('.btn-danger')
+    .find('[data-field-remove-button]')
     .on('click', (event) => { removeField(event) });
 
   $('.new_launcher')
     .find('.editable-form-field')
-    .find('.btn-primary')
+    .find('[data-field-edit-button]')
     .on('click', (event) => { showEditField(event) });
 
   $('[data-select-toggler]')

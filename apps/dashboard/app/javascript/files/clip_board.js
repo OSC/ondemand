@@ -133,11 +133,18 @@ class ClipBoard {
         listItem.className = 'list-group-item';
 
         const icon = document.createElement('span');
-        icon.title = file.directory ? 'directory' : 'file';
+        const typeLabel = file.directory ? 'directory' : 'file';
+        icon.title = typeLabel;
         icon.className = file.directory
           ? 'fa fa-folder color-gold'
           : 'fa fa-file color-lightgrey';
+        icon.setAttribute('aria-hidden', 'true');
         listItem.appendChild(icon);
+
+        const srOnly = document.createElement('span');
+        srOnly.className = 'sr-only';
+        srOnly.textContent = typeLabel;
+        listItem.appendChild(srOnly);
 
         const fileName = document.createTextNode(` ${file.name}`);
         listItem.appendChild(fileName);

@@ -116,7 +116,7 @@ class Project
   attr_reader :id, :name, :description, :icon, :directory, :template, :files, :group_owner, :setgid
 
   validates :name, presence: { message: :required }, on: [:create, :update]
-  validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
+  validates :id, :directory, presence: { message: :required }, on: [:update]
   validates :icon, format: { with: %r{\Afa[bsrl]://[\w-]+\z}, allow_blank: true, message: :format }, on: [:create, :update]
   validate :project_directory_invalid, on: [:create, :update]
   validate :project_directory_exist, on: [:create]

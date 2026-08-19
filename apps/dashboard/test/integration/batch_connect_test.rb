@@ -36,7 +36,7 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     get new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_response :success
 
-    assert_select 'div.card div.card-header', text: 'Translations title'
+    assert_select 'div.card button.card-header', text: 'Translations title'
     assert_select 'div.card p.header', text: 'Custom Apps Dropdown Header'
     assert_select 'div.card div.list-group a.list-group-item', 2
     assert_select 'div.card div.list-group a.list-group-item' do |links|
@@ -67,10 +67,10 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     get new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_response :success
 
-    assert_select 'div.col-md-3 div.card div.card-header' do |menu_headers|
+    assert_select 'div.col-md-3 div.card button.card-header' do |menu_headers|
       assert_equal 2, menu_headers.size
-      assert_equal 'Shared apps title', menu_headers[0].text
-      assert_equal 'Interactive apps title', menu_headers[1].text
+      assert_equal 'Shared apps title', menu_headers[0].text.strip
+      assert_equal 'Interactive apps title', menu_headers[1].text.strip
     end
   end
 
@@ -88,7 +88,7 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     get new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_response :success
 
-    assert_select 'div.card div.card-header', text: 'Menu Title'
+    assert_select 'div.card button.card-header', text: 'Menu Title'
     assert_select 'div.card p.header', text: 'Submenu Title'
     assert_select 'div.card div.list-group a.list-group-item', 2
     assert_select 'div.card div.list-group a.list-group-item' do |links|
@@ -140,5 +140,13 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     header_link = css_select('span.form_header_supports_some_html>a').first
     assert_equal 'a link', header_link.text
     assert_equal 'https://openondemand.org', header_link['href']
+  end
+
+  test 'PUN restarts if user groups change' do
+    stub_usr_router
+    OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me', 'us']))
+    
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :redirect
   end
 end

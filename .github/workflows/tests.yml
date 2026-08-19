@@ -28,7 +28,7 @@ jobs:
           # Test versions from Amazon Linux 2023 and Ubuntu 24.04
           - os: ubuntu-latest
             ruby: "3.2"
-          # Test versions from RHEL8 & RHEL9 & RHEL10
+          # Test versions from RHEL8 & RHEL9 & RHEL10 && Ubuntu 26.04
           - os: ubuntu-latest
             ruby: "3.3"
     runs-on: ${{ matrix.os }}
@@ -133,6 +133,7 @@ jobs:
           - el10
           - amzn2023
           - ubuntu-24.04
+          - ubuntu-26.04
           - debian-12
           - debian-13
         arch:
@@ -152,6 +153,8 @@ jobs:
             arch: ppc64le
           # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
           - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: ubuntu-26.04
             arch: ppc64le
           - dist: debian-12
             arch: ppc64le
@@ -180,12 +183,11 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
-          # debian-13 needs privileged podman in order to run things like chown and chmod
           if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
-            export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
-          fi
+             unset CONTAINER_RT
+           fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
-        timeout-minutes: 10
+        timeout-minutes: 20
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'

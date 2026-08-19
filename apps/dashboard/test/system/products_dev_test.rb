@@ -12,8 +12,9 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Home Breadcrumb button works' do
-    find('ol', class: 'breadcrumb').find('li', text: 'Home')
-    click_on 'Home'
+    assert_selector('ol.breadcrumb li', text: 'Home')
+    click_on('Home')
+    assert_not_equal(products_path(:dev), current_path)
   end
 
   test 'New App route is correct' do
@@ -21,7 +22,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Launch Shell route is correct' do
-    find('span', class: 'float-end').find('.btn', text: 'Launch Shell')
+    assert_selector('span.float-end .btn', text: 'Launch Shell')
     has_link?('/pun/sys/shell/ssh')
   end
 
@@ -54,7 +55,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Can click dev Launch Home Directory' do
-    button_link?('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
+    button_link?('Launch Home Directory', '/pun/sys/dashboard/apps/show/files/dev/')
   end
 
   test 'Can click dev Launch file-editor' do
