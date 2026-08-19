@@ -1,6 +1,7 @@
 pzs1124|oakley-default
 pzs1118|oakley-default
 pzs1117|oakley-default
+p_s1345|oakley-default
 pzs1010|oakley-default
 pzs0715|oakley-default
 pzs0714|oakley-default

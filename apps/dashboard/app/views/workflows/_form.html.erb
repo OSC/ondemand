@@ -40,6 +40,20 @@
               <%= I18n.t('dashboard.jobs_workflow_missing_launchers', count: launcher_error.options.count) %>
             </div>
           <% end %>
+
+          <div class="field mt-3">
+            <strong>Synchronization</strong><br>
+            <div class="form-check form-switch mt-2">
+              <%= hidden_field_tag "workflow[sync_key_enabled]", "0" %>
+              <%= check_box_tag "workflow[sync_key_enabled]", "1",
+                                @workflow.sync_key_enabled == "1",
+                                id: "workflow_sync_key_enabled",
+                                class: "form-check-input" %>
+              <%= label_tag "workflow_sync_key_enabled",
+                            "Enable OOD_WORKFLOW_SYNC_KEY #{form_label_tooltip(I18n.t('dashboard.jobs_workflow_sync_key_help'))}".html_safe,
+                            class: "form-check-label" %>
+            </div>
+          </div>
         </div>
       </div>
     </div>
