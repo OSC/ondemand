@@ -1,6 +1,6 @@
 # Helper for /files pages.
 
-require 'uri'
+require 'cgi'
 
 module FilesHelper
   include ApplicationHelper
@@ -40,7 +40,12 @@ module FilesHelper
   end
 
   def url_encode_path(path)
-    path.to_s.split('/').map { |seg| ERB::Util.url_encode(seg.to_s) }.join('/')
+    path.to_s.split('/').map do |seg|
+      next seg if seg.empty?
+
+      raw = seg.include?('%') ? CGI.unescape(seg.to_s) : seg.to_s
+      ERB::Util.url_encode(raw)
+    end.join('/')
   end
 
   def url_encode_url_path(url)

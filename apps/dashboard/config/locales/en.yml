@@ -8,7 +8,7 @@ en:
         required: "%{attribute} is required"
         used: "%{attribute} is already used"
   dashboard:
-    active_jobs_close_details: "Close extended details panel."
+    active_jobs_close_details: Close extended details panel.
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
@@ -47,9 +47,9 @@ en:
     batch_connect_form_launch: Launch
     batch_connect_form_prefill: Use saved settings
     batch_connect_form_prefill_error: Oops... Something is wrong with your template
+    batch_connect_form_reset_resolution: Reset Resolution
     batch_connect_form_resolution_height: Resolution height (pixels)
     batch_connect_form_resolution_width: Resolution width (pixels)
-    batch_connect_form_reset_resolution: Reset Resolution
     batch_connect_form_save: Save settings
     batch_connect_form_save_new_template: save new settings
     batch_connect_form_save_submit: Save settings and close
@@ -69,13 +69,13 @@ en:
     batch_connect_no_sessions: You have no active sessions.
     batch_connect_sandbox: " [Sandbox]"
     batch_connect_sessions_cancel_confirm: Are you sure?
-    batch_connect_sessions_cancel_full_title: "Cancel %{title} Session"
+    batch_connect_sessions_cancel_full_title: Cancel %{title} Session
     batch_connect_sessions_cancel_title: Cancel
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: Are you sure?
-    batch_connect_sessions_delete_full_title: "Delete %{title} Session"
+    batch_connect_sessions_delete_full_title: Delete %{title} Session
     batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
@@ -88,13 +88,14 @@ en:
     batch_connect_sessions_novnc_launch: Launch %{app_title}
     batch_connect_sessions_novnc_view_only: View Only (Share-able Link)
     batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.
-    batch_connect_sessions_relaunch_full_title: "Relaunch %{title} Session"
+    batch_connect_sessions_relaunch_full_title: Relaunch %{title} Session
     batch_connect_sessions_relaunch_title: Relaunch
     batch_connect_sessions_staged_root: staged root directory
     batch_connect_sessions_stats_created_at: 'Created at:'
+    batch_connect_sessions_stats_expected_time: 'Expected start:'
     batch_connect_sessions_stats_host: 'Host:'
+    batch_connect_sessions_stats_session_dir_link_title: Open session directory for %{session_id}
     batch_connect_sessions_stats_session_id: 'Session ID:'
-    batch_connect_sessions_stats_session_dir_link_title: 'Open session directory for %{session_id}'
     batch_connect_sessions_stats_support_ticket: Problems with this session?
     batch_connect_sessions_stats_support_ticket_link_text: Submit support ticket
     batch_connect_sessions_stats_time_remaining: 'Time Remaining:'
@@ -154,9 +155,11 @@ en:
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
+    files_doesnt_exist: "%{path} does not exist."
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_download_zip: Download as zip
     files_file_too_large: The file is too large to download. File downloads should be less than %{download_file_size_limit} bytes.
+    files_not_readable: You do not have sufficient permissions to read '%{path}'.
     files_remote_dir_not_created: Did not create directory %{path}
     files_remote_disabled: Remote file support is not enabled
     files_remote_empty_dir_unsupported: Remote does not support empty directories
@@ -165,8 +168,6 @@ en:
     files_shell: Open in Terminal
     files_shell_dropdown: Select Cluster to Open in Terminal
     files_title: File browsing
-    files_doesnt_exist: "%{path} does not exist."
-    files_not_readable: "You do not have sufficient permissions to read '%{path}'."
     home_directory: Home Directory
     import: Import
     job_info: Job Info
@@ -204,7 +205,6 @@ en:
     jobs_project_delete_label: Delete project %{name}
     jobs_project_delete_project_confirmation: Delete all contents of project directory?
     jobs_project_deleted: Project successfully deleted!
-    jobs_project_removed: Project removed from lookup!
     jobs_project_description_placeholder: Project description
     jobs_project_directory_error: Project directory path is not set for this workflow
     jobs_project_directory_help_html: 'Leave empty and a new directory will be created. <br />Default location: %{root_directory}'
@@ -225,6 +225,7 @@ en:
     jobs_project_not_found: Cannot find project %{project_id}
     jobs_project_open_label: Open project %{name}
     jobs_project_remove_label: Remove project %{name}
+    jobs_project_removed: Project removed from lookup!
     jobs_project_save_error: Cannot save manifest to %{path}
     jobs_project_select_directory: Select project directory
     jobs_project_setgid_help: Leaving setgid checked ensures project files are created with the selected group. Does not affect projects in your home directory.
@@ -233,12 +234,13 @@ en:
     jobs_toggle_details: Click to toggle details for job %{job_id}
     jobs_workflow_clone: Clone workflow %{name}
     jobs_workflow_created: Workflow successfully created!
-    jobs_workflow_delete_title: Delete workflow %{name}
     jobs_workflow_delete_confirmation: Delete all contents of workflow?
+    jobs_workflow_delete_title: Delete workflow %{name}
     jobs_workflow_deleted: Workflow successfully deleted!
     jobs_workflow_description_placeholder: Workflow description
     jobs_workflow_edit_settings: Modify settings for workflow %{name}
     jobs_workflow_failed: Workflow failed with error %{error}
+    jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflow_manifest_updated: Workflow manifest updated!
     jobs_workflow_missing_launchers: select at least %{count}
     jobs_workflow_name_placeholder: Workflow name
@@ -246,7 +248,6 @@ en:
     jobs_workflow_not_found: Cannot find workflow %{workflow_id}
     jobs_workflow_show_graph: Open workflow %{name} in graph editor
     jobs_workflow_submitted: Workflow successfully submitted!
-    jobs_workflow_help: Click title to select and drag. Connect by clicking two launchers with 'Connect Launchers' selected
     jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
     launch: Launch
@@ -279,6 +280,7 @@ en:
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
+    opens_in_new_tab: opens in new tab
     owner: Owner
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -305,10 +307,10 @@ en:
     recently_used_apps_title: Recently Used Apps
     remove: Remove
     reset: Reset
-    restore: Restore
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
+    restore: Restore
     root: Root
     save: Save
     saved_settings_title: Saved Settings
