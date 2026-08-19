@@ -110,7 +110,10 @@ class ConfigurationSingleton
   end
 
   def ood_bc_ssh_to_compute_node
-    read_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
+    env_val = ENV['OOD_BC_SSH_TO_COMPUTE_NODE']
+    return read_bool(env_val) unless env_val.nil?
+
+    read_bool(config.fetch(:ood_bc_ssh_to_compute_node, true))
   end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
