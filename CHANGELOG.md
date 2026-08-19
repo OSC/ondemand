@@ -27,6 +27,10 @@ Changes are grouped by type:
 - Session state information is present in "bad" state partials in [5616](https://github.com/OSC/ondemand/pull/5616).
 - PUNs now restart after group changes in [5610](https://github.com/OSC/ondemand/pull/5610).
 - Expected start time is now in queued session cards in [5642](https://github.com/OSC/ondemand/pull/5642).
+- Fonts can be selected in the Shell app in [5492](https://github.com/OSC/ondemand/pull/5492).
+- Batch Connect form items can be grouped to be in the same row in [5632](https://github.com/OSC/ondemand/pull/5632).
+- Duplicate uploads in the Files app will now warn users in [5603](https://github.com/OSC/ondemand/pull/5603).
+- Persian Localization (fa-IR) is now available in [5669](https://github.com/OSC/ondemand/pull/5669).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -50,6 +54,8 @@ Changes are grouped by type:
 - Check for username first in user_map.lua to allow for numeric usernames in [5636](https://github.com/OSC/ondemand/pull/5636).
 - Changes on data-set now propagate in [5235](https://github.com/OSC/ondemand/pull/5235).
 - ActiveJobs extended data now uses info#walltime instead of native attributes in [5630](https://github.com/OSC/ondemand/pull/5630).
+- XDMoD jobs widget is more accessible in [5674](https://github.com/OSC/ondemand/pull/5674).
+- 'partition' and 'filter' can correctly be used in batch connect forms in [5617](https://github.com/OSC/ondemand/pull/5617).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
