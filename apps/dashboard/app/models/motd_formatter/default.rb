@@ -3,7 +3,7 @@ module MotdFormatter
   class Default < Markdown
     def initialize(_motd_file = nil)
       @title = I18n.t('dashboard.motd_title')
-      markdown = I18n.t('dashboard.motd_default_md', default: I18n.t('dashboard.motd_default_md', locale: :en))
+      markdown = I18n.t('dashboard.motd_default_md')
       content = OodAppkit.markdown.render(markdown)
       @content = safe_content(content)
     end

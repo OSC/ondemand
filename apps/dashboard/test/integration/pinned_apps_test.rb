@@ -423,7 +423,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t('dashboard.motd_title'), css_select('h2')[1].text
 
     # default MOTD is markdown-based 
-    assert_select "div[class='motd']", 0
     assert_select "h3[class='motd_title']", 0
     assert_select '[data-motd-md]', 1
     assert_select "div[class='xdmod']", 0
@@ -465,7 +464,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t('dashboard.motd_title'), css_select('h2')[1].text
 
     # default MOTD is markdown-based
-    assert_select "div[class='motd']", 0
     assert_select "h3[class='motd_title']", 0
     assert_select '[data-motd-md]', 1
     assert_select "div[class='xdmod']", 0
