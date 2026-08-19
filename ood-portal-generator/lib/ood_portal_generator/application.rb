@@ -299,8 +299,7 @@ module OodPortalGenerator
 
           parser.separator ''
           parser.separator 'Default:'
-          default_opts = mode == 'generate' ? "-c #{config} -t #{template}" : "-c #{config}"
-          parser.separator "  #{mode} #{default_opts}"
+          parser.separator "  #{mode} -c #{config}"
         end.parse!(argv)
 
         # Render Apache portal config
@@ -325,10 +324,6 @@ module OodPortalGenerator
 
         parser.on('-d', '--dex OUTPUT', String, 'File that rendered Dex config is output to') do |v|
           @dex_output = v
-        end
-
-        parser.on('-t', '--template TEMPLATE', String, 'ERB template that is rendered') do |v|
-          @template = v
         end
       end
 
