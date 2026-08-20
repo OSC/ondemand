@@ -22,6 +22,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
     'Total CPUs',
     'Time Limit',
     'Time Used',
+    'Submission Time',
     'Start Time',
     'End Time',
     'Memory',
@@ -61,6 +62,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
         job_owner:       "currentuser",
         allocated_nodes: [NodeInfo.new(name: 'node003')],
         status:          :queued,
+        submission_time: Time.parse('2025-08-28T13:00:00'),
         native: {
           array_job_id:  '12345',
           array_task_id: '1',
@@ -196,6 +198,7 @@ class ActiveJobsTest < ApplicationSystemTestCase
       'Total CPUs: 64',
       'Time Limit: 01:00:00',
       'Time Used: 00:02:00',
+      'Submission Time: 2025-08-28 13:00:00',
       'Start Time: 2025-08-28 14:00:00',
       'End Time: 2025-08-28 15:00:00',
       'Memory: 128GB',
