@@ -95,9 +95,42 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'creates .ondemand directory with project' do
     Dir.mktmpdir do |dir|
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040700, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
+      exp_children.each do |child|
+        msg = "Path #{child} is not writable"
+        assert File.writable?(File.join(ondemand_dir, child))
+      end
+    end
+  end
 
-      assert File.directory? File.join("#{dir}/projects", project_id, '.ondemand')
+  test 'shared project creates .ondemand directory with proper permissions' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      ondemand_dir = File.join("#{dir}/projects", project_id, '.ondemand')
+      assert File.directory? ondemand_dir
+      stats = File.stat ondemand_dir
+      assert_equal 0o040770, stats.mode
+      exp_children = %w(launchers workflows job_log.yml manifest.yml)
+      assert_equal exp_children.sort, Dir.children(ondemand_dir).sort
+      assert File.writable?(File.join(ondemand_dir, 'manifest.yml'))
+      exp_children.each do |child|
+        unless child == 'manifest.yml'
+          stats = File.stat(File.join(ondemand_dir, child))
+          msg = "Path #{child} exists with incorrect permissions"
+          if %w(launchers workflows).include?(child)
+            assert_equal 0o040770, stats.mode, msg
+          elsif child == 'job_log.yml'
+            assert_equal 0o0100660, stats.mode, msg
+          end
+        end
+      end
     end
   end
 
@@ -248,6 +281,15 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(4, icons.size)
   end
 
+  test 'project group dropdown respects auto_groups_filter' do
+    CurrentUser.instance.stubs(:group_names).returns(%w[domain_users project-a project-b other])
+    Configuration.stubs(:auto_groups_filter).returns('^project-')
+
+    visit(new_project_path)
+    options = page.all('#project_group_owner option').map(&:value)
+    assert_equal(%w[project-a project-b], options)
+  end
+
   test 'all icons show after clearing input field' do
     visit(new_project_path)
     find('#product_icon_select').set('')
@@ -255,10 +297,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
     assert_equal(990, icons.size)
   end
 
-  def check_icon(icon, type)
+  def check_icon(cell, type)
     iclass = type == :file ? 'fa-file' : 'fa-folder'
+    icon = cell.find('i')
     assert_equal "fa #{iclass}",       icon[:class]
-    assert_equal type.to_s.capitalize, icon.find('.sr-only').text
+    assert_equal type.to_s.capitalize, cell.find('.sr-only').text
   end
 
   def check_link(link, text, path)
@@ -268,7 +311,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   def check_top_directory_row(row_data, tmpdir)
-    check_icon(row_data[0].find('i'), :directory)
+    check_icon(row_data[0], :directory)
     link = row_data[1].find('a')
     check_link(link, '..', directory_frame_path(path: "#{tmpdir}/projects"))
     assert_equal 0, row_data[2].all('*').length
@@ -277,7 +320,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   def check_files(name, size, project_dir, row_data)
-    check_icon(row_data[0].find('i'), :file)
+    check_icon(row_data[0], :file)
     link = row_data[1].find('a')
     check_link(link, name, files_path("#{project_dir}/#{name}"))
 
@@ -351,7 +394,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       check_top_directory_row(rows[0].all('td'), dir)
 
       row_2_data = rows[1].all('td')
-      check_icon(row_2_data[0].find('i'), :directory)
+      check_icon(row_2_data[0], :directory)
       row_2_link = row_2_data[1].find('a')
       check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
       assert_equal 0,  row_2_data[2].all('*').length
@@ -408,7 +451,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       check_top_directory_row(rows[0].all('td'), dir)
 
       row_2_data = rows[1].all('td')
-      check_icon(row_2_data[0].find('i'), :directory)
+      check_icon(row_2_data[0], :directory)
       row_2_link = row_2_data[1].find('a')
       check_link(row_2_link, '.ondemand', directory_frame_path(path: "#{project_dir}/.ondemand"))
       assert_equal 0,  row_2_data[2].all('*').length
@@ -568,6 +611,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   
   test 'creating and showing launchers' do
     Dir.mktmpdir do |dir|
+      CurrentUser.stubs(:home).returns(Pathname.new(dir).parent.to_s)
       project_id = setup_project(dir)
       launcher_id = setup_launcher(project_id)
 
@@ -604,14 +648,31 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       success_message = I18n.t('dashboard.jobs_launchers_created')
       assert_selector('.alert-success', text: "#{success_message}")
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/launchers/#{launcher_id}/form.yml"))
+      launcher_dir = File.join(dir, 'projects', project_id, '.ondemand', 'launchers', launcher_id)
+      assert_equal(expected_yml, File.read("#{launcher_dir}/form.yml"))
 
+      Pathname.new(launcher_dir).children do |child|
+        msg = "#{child} is not writable"
+        assert child.writable?, msg
+      end
+      
       launcher_path = project_launcher_path(project_id, launcher_id)
       find("[href='#{launcher_path}'].btn-info").click
       assert_selector('h1', text: 'the launcher title', count: 1)
     end
   end
 
+  test 'launcher files in shared projects have proper permissions' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      launcher_dir = File.join(dir, 'projects', project_id, '.ondemand', 'launchers', launcher_id)
+      assert_equal 0o040770, File.stat(launcher_dir).mode
+      assert_equal ['form.yml'], Dir.children(launcher_dir)
+      assert_equal 0o0100644, File.stat(File.join(launcher_dir, 'form.yml')).mode
+    end
+  end
+    
   test 'creates new launcher with default items' do
     Dir.mktmpdir do |dir|
       Configuration.stubs(:launcher_default_items).returns(['bc_num_hours'])
@@ -675,7 +736,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar', 'p_s1345'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
@@ -747,9 +808,22 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
       jobs = YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"), permitted_classes: [Time])
-
+      cache = JSON.parse(File.read("#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"))
+      
       assert_equal(1, jobs.size)
       assert_equal('job-id-123', jobs[0]['id'])
+
+      assert_equal('owens', cache['auto_batch_clusters'])
+      assert_equal('pas2051', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
+
+      # next form visit prefills cached values
+
+      click_on 'Show'
+      
+      assert_equal 'owens', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pas2051', find('#launcher_auto_accounts').value
+      assert_equal "#{project_dir}/my_cooler_script.bash", find('#launcher_auto_scripts').value
     end
   end
 
@@ -833,6 +907,216 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on 'Launch'
       assert_selector('.alert-danger', text: "some error message")
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
+    end
+  end
+
+  def launcher_cache_test_setup(project_id, launcher_id)
+    add_account(project_id, launcher_id)
+    add_bc_num_hours(project_id, launcher_id)
+
+    find("#edit_#{launcher_id}").click
+
+    click_on 'Add new option'
+    select('Job Name', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_job_name', with: 'my default job name')
+
+    click_on 'Add new option'
+    select('Log Location', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_log_location', with: '/my_default_logfile.out')
+
+    click_on 'Add new option'
+    select('Cores', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_auto_cores', with: '2')
+
+    click_on 'Add new option'
+    select('Nodes', from:'add_new_field_select')
+    click_on I18n.t('dashboard.add')
+    fill_in('launcher_bc_num_nodes', with: '3')
+
+    # add auto_environment_variable
+    add_auto_environment_variable(project_id, launcher_id)
+    find('#edit_launcher_auto_environment_variable').click
+    find("[data-auto-environment-variable='name']").fill_in(with: 'SOME_VARIABLE')
+    find('#launcher_auto_environment_variable_SOME_VARIABLE').fill_in(with: 'default_value')
+    find('#edit_launcher_auto_environment_variable').click
+    click_on(I18n.t('dashboard.save'))
+  end
+
+  test 'launchers quick-launch with default values when no cache' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "default_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my default job name',
+              '-o', '/my_default_logfile.out',
+              '-A', 'pzs1124', 
+              '-t', '01:00:00',
+              '-n', '2',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '3',
+              '--parsable', '-M', 'oakley',
+              stdin_data: "some_other_command\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+      refute File.exist?(cache_file)
+
+      click_on 'Launch'
+      assert_selector('.alert-success', text: 'job-id-123')
+
+      cache = JSON.parse(File.read(cache_file))
+      
+      assert_equal('oakley', cache['auto_batch_clusters'])
+      assert_equal('pzs1124', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cool_script.sh", cache['auto_scripts'])
+      assert_equal('my default job name', cache['auto_job_name'])
+      assert_equal('/my_default_logfile.out', cache['auto_log_location'])
+      assert_equal('1', cache['bc_num_hours'])
+      assert_equal('2', cache['auto_cores'])
+      assert_equal('3', cache['bc_num_nodes'])
+      assert_equal('default_value', cache['auto_environment_variable_SOME_VARIABLE'])
+    end
+  end
+
+  test 'launchers overwrite cache when non-default values are chosen' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+
+      # We simulate the cached values observed in the last test
+      cached_values = {
+        'auto_batch_clusters'                     => 'oakley',
+        'auto_accounts'                           => 'pzs1124',
+        'auto_scripts'                            => "#{project_dir}/my_cool_script.sh",
+        'auto_job_name'                           => 'my default job name',
+        'auto_log_location'                       => '/my_default_logfile.out',
+        'bc_num_hours'                            => '1',
+        'auto_cores'                              => '2',
+        'bc_num_nodes'                            => '3',
+        'auto_environment_variable_SOME_VARIABLE' => 'default_value'
+      }
+
+      File.open(cache_file, 'w') do |f|
+        f.write(cached_values.to_json)
+      end
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "chosen_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my chosen job name',
+              '-o', '/my_chosen_logfile.out',
+              '-A', 'pas2051', 
+              '-t', '04:00:00',
+              '-n', '5',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '6',
+              '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("#show_#{launcher_id}").click
+
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas2051', from: 'launcher_auto_accounts')
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
+      fill_in('launcher_auto_job_name', with: '')
+      fill_in('launcher_auto_job_name', with: 'my chosen job name')
+      fill_in('launcher_auto_log_location', with:'')
+      fill_in('launcher_auto_log_location', with:'/my_chosen_logfile.out')
+      fill_in('launcher_bc_num_hours', with: '4')
+      fill_in('launcher_auto_cores', with: '5')
+      fill_in('launcher_bc_num_nodes', with: '6')
+      fill_in('launcher_auto_environment_variable_SOME_VARIABLE', with: 'chosen_value')
+      
+      click_on I18n.t('dashboard.batch_connect_form_launch')
+      assert_selector('.alert-success', text: 'job-id-123')
+
+      cache = JSON.parse(File.read(cache_file))
+      
+      assert_equal('owens', cache['auto_batch_clusters'])
+      assert_equal('pas2051', cache['auto_accounts'])
+      assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
+      assert_equal('my chosen job name', cache['auto_job_name'])
+      assert_equal('/my_chosen_logfile.out', cache['auto_log_location'])
+      assert_equal('4', cache['bc_num_hours'])
+      assert_equal('5', cache['auto_cores'])
+      assert_equal('6', cache['bc_num_nodes'])
+      assert_equal('chosen_value', cache['auto_environment_variable_SOME_VARIABLE'])
+    end
+  end
+
+  test 'launchers quick-launch with cached values when present' do
+        Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+
+      launcher_cache_test_setup(project_id, launcher_id)
+
+      cache_file = "#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"
+
+      # We simulate the cached values observed in the last test
+      cached_values = {
+        'auto_batch_clusters'                     => 'owens',
+        'auto_accounts'                           => 'pas2051',
+        'auto_scripts'                            => "#{project_dir}/my_cooler_script.bash",
+        'auto_job_name'                           => 'my chosen job name',
+        'auto_log_location'                       => '/my_chosen_logfile.out',
+        'bc_num_hours'                            => '4',
+        'auto_cores'                              => '5',
+        'bc_num_nodes'                            => '6',
+        'auto_environment_variable_SOME_VARIABLE' => 'chosen_value'
+      }
+
+      File.open(cache_file, 'w') do |f|
+        f.write(cached_values.to_json)
+      end
+
+      # refresh the page so it picks up the cache.
+      visit(project_path(project_id))
+
+      Open3
+        .stubs(:capture3)
+        .with({"SOME_VARIABLE" => "chosen_value"}, 
+              'sbatch', '-D', project_dir, 
+              '-J', 'project-manager/my chosen job name',
+              '-o', '/my_chosen_logfile.out',
+              '-A', 'pas2051', 
+              '-t', '04:00:00',
+              '-n', '5',
+              '--export', 'SOME_VARIABLE', 
+              '-N', '6',
+              '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+      OodCore::Job::Adapters::Slurm.any_instance
+        .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("#launch_#{launcher_id}").click
+      assert_selector('.alert-success', text: 'job-id-123')
     end
   end
 
@@ -1017,6 +1301,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - pzs1124
             - pzs1118
             - pzs1117
+            - p_s1345
             - pzs1010
             - pzs0715
             - pzs0714
@@ -1028,6 +1313,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - p.s1.71
             - pas1754
             - pas1604
+            - foo-bar
             value: pzs1124
             label: Account
             help: ''
@@ -1146,7 +1432,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_accounts').click
 
       # There are 7 allowed accounts before the 4 excluded ones
-      counter = 7
+      counter = 8
       exclude_accounts = ['pas2051', 'pas1871', 'p_s1.71', 'p-s1.71']
       exclude_accounts.each do |_acct|
         counter += 1
@@ -1178,7 +1464,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
       find('#edit_launcher_auto_accounts').click
 
-      counter = 7
+      counter = 8
       exclude_accounts.each do |acct|
         counter += 1
         html_acct = "option#{counter}"

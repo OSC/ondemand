@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 #
 # Common methods to all Support Ticket backend services
 #
 module SupportTicketService
-
   # Creates a support ticket model with default data.
   # will load an interactive session if a session_id provided in the request parameters.
   #
@@ -57,9 +58,9 @@ module SupportTicketService
   end
 
   def get_session(support_ticket)
-    if !support_ticket.session_id.blank? && BatchConnect::Session.exist?(support_ticket.session_id)
-      BatchConnect::Session.find(support_ticket.session_id)
-    end
+    return unless !support_ticket.session_id.blank? && BatchConnect::Session.exist?(support_ticket.session_id)
+
+    BatchConnect::Session.find(support_ticket.session_id)
   end
 
   def get_job(support_ticket)
@@ -67,9 +68,8 @@ module SupportTicketService
       cluster = OODClusters[support_ticket.cluster.to_sym]
       cluster.job_adapter.info(support_ticket.job_id)
     end
-  rescue => e
+  rescue StandardError => e
     Rails.logger.info("SupportTicket - Invalid job id: #{support_ticket.job_id} - #{e}:#{e.message}")
     nil
   end
-
 end

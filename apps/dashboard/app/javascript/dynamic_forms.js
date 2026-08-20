@@ -98,7 +98,11 @@ function mountainCaseWords(str) {
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
 function snakeCaseWords(str) {
-  if(str === undefined || str === "") return "";
+  if(str === undefined) {
+    return undefined;
+  } else if(str === "") {
+    return "";
+  }
 
   // find all the capital case words and if none are found, we'll just basically
   // return the same string.
@@ -380,27 +384,31 @@ function setValue(event, changeId) {
   const table = setValueLookup[cacheKey];
   if (table === undefined) return;
 
-  const changeVal = table.get(chosenVal, undefined);
+  var changeVal = table.get(chosenVal, undefined);
+  if (changeVal === undefined) return;
 
-  if(changeVal !== undefined) {
-    const element = document.getElementById(changeId);
-    const elementInfo = getWidgetInfo(changeId);
-    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+  const element = document.getElementById(changeId);
+  const isCheckbox = element.type === "checkbox";
 
-    if(element['type'] == 'checkbox') {
-      setCheckboxValue(element, changeVal);
+  // checkboxes needs to cast number values from the table
+  // to strings because element.value will be a string type.
+  if(isCheckbox) {
+    changeVal = String(changeVal);
+  }
+
+  const matches = element.value === changeVal;
+  const needUpdate = isCheckbox ? element.checked !== matches : !matches;
+
+  if (needUpdate) {
+    if (isCheckbox) {
+      element.checked = matches;
     } else {
       element.value = changeVal;
     }
-  }
-}
 
-function setCheckboxValue(checkbox, value) {
-  const positiveValue = checkbox.value;
-  if(value == positiveValue) {
-    checkbox.checked = true;
-  } else {
-    checkbox.checked = false;
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+    element.dispatchEvent(new Event('change', { bubbles: true }));
   }
 }
 
@@ -921,10 +929,10 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
     if (newSelectedOption !== undefined) {
       newSelectedOption.selected = true;
     }
+    
+    // now that we're done, propagate this change to data-set or data-hide handlers
+    document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
   }
-
-  // now that we're done, propagate this change to data-set or data-hide handlers
-  document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
 }
 
 // get attributes based on widget id
