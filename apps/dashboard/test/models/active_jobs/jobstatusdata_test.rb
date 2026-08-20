@@ -9,6 +9,70 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
     OODClusters.stubs(:[]).with(:oakley).returns(oakley)
   end
 
+  def slurm_info(submission_time:)
+    OodCore::Job::Info.new(
+      id:              '42',
+      status:          :queued,
+      job_name:        'job',
+      job_owner:       'user',
+      accounting_id:   'acct',
+      queue_name:      'batch',
+      wallclock_time:  0,
+      submission_time: submission_time,
+      native:          {
+        work_dir:      Dir.home,
+        array_job_id:  '',
+        array_task_id: '',
+        state:         'PENDING',
+        reason:        'Priority',
+        nodes:         '1',
+        cpus:          '1',
+        time_limit:    '01:00:00',
+        start_time:    'N/A',
+        end_time:      'N/A',
+        min_memory:    '1G',
+        gres:          'N/A'
+      }
+    )
+  end
+
+  def cluster_double(adapter)
+    OodCore::Cluster.new(id: adapter, job: { adapter: adapter })
+  end
+
+  def stub_cluster(adapter)
+    cluster = cluster_double(adapter)
+    OODClusters.stubs(:[]).with(adapter.to_s).returns(cluster)
+    OODClusters.stubs(:[]).with(adapter.to_sym).returns(cluster)
+    cluster
+  end
+  
+  def build_info(info = {})
+  default = {
+    id: '123',
+    job_name: 'Test Job',
+    job_owner: 'user',
+    accounting_id: 'acct',
+    status: :queued,
+    queue_name: 'normal',
+    gpus: 0,
+    wallclock_time: 3600,
+    dispatch_time: 1_700_000_000,
+    allocated_nodes: [],
+    wallclock_limit: nil,
+    native: {}
+  }
+  OodCore::Job::Info.new(**default.merge(info))
+end
+
+  # Goes through the real constructor, letting `initialize` do its own
+  # adapter dispatch (extended_data_torque/slurm/lsf/pbspro) rather than
+  # calling those methods directly.
+  def build_jobstatusdata(info, adapter, extended: true)
+    cluster = stub_cluster(adapter)
+    ActiveJobs::Jobstatusdata.new(info, cluster.id, extended)
+  end
+
   test 'slurm extended details include Submission Time from Info#submission_time' do
     submitted_at = Time.local(2024, 6, 15, 14, 30, 0)
     data = ActiveJobs::Jobstatusdata.new(slurm_info(submission_time: submitted_at), 'oakley', true)
@@ -110,71 +174,5 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
     job = build_jobstatusdata(info, 'torque')
 
     assert_equal '00:00:00', job.native_attribs.find { |a| a.name == 'Walltime' }.value
-  end
-
-  private
-
-  def slurm_info(submission_time:)
-    OodCore::Job::Info.new(
-      id:              '42',
-      status:          :queued,
-      job_name:        'job',
-      job_owner:       'user',
-      accounting_id:   'acct',
-      queue_name:      'batch',
-      wallclock_time:  0,
-      submission_time: submission_time,
-      native:          {
-        work_dir:      Dir.home,
-        array_job_id:  '',
-        array_task_id: '',
-        state:         'PENDING',
-        reason:        'Priority',
-        nodes:         '1',
-        cpus:          '1',
-        time_limit:    '01:00:00',
-        start_time:    'N/A',
-        end_time:      'N/A',
-        min_memory:    '1G',
-        gres:          'N/A'
-      }
-    )
-  end
-
-  def cluster_double(adapter)
-    OodCore::Cluster.new(id: adapter, job: { adapter: adapter })
-  end
-
-  def stub_cluster(adapter)
-    cluster = cluster_double(adapter)
-    OODClusters.stubs(:[]).with(adapter.to_s).returns(cluster)
-    OODClusters.stubs(:[]).with(adapter.to_sym).returns(cluster)
-    cluster
-  end
-  
-  def build_info(info = {})
-  default = {
-    id: '123',
-    job_name: 'Test Job',
-    job_owner: 'user',
-    accounting_id: 'acct',
-    status: :queued,
-    queue_name: 'normal',
-    gpus: 0,
-    wallclock_time: 3600,
-    dispatch_time: 1_700_000_000,
-    allocated_nodes: [],
-    wallclock_limit: nil,
-    native: {}
-  }
-  OodCore::Job::Info.new(**default.merge(info))
-end
-
-  # Goes through the real constructor, letting `initialize` do its own
-  # adapter dispatch (extended_data_torque/slurm/lsf/pbspro) rather than
-  # calling those methods directly.
-  def build_jobstatusdata(info, adapter, extended: true)
-    cluster = stub_cluster(adapter)
-    ActiveJobs::Jobstatusdata.new(info, cluster.id, extended)
   end
 end
