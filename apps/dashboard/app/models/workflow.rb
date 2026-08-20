@@ -6,7 +6,7 @@ class Workflow
 
   class << self
     def supported?
-      enabled = Configuration.dashboard_workflows_enabled
+      enabled = Configuration.workflows_enabled
       return enabled unless enabled.nil?
 
       dependency_keys = %i[after afterok afternotok afterany].freeze

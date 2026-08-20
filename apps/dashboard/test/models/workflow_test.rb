@@ -221,16 +221,16 @@ class WorkflowsTest < ActiveSupport::TestCase
     assert_equal true, Workflow.supported?
   end
 
-  test 'supported? honors OOD_DASHBOARD_WORKFLOWS_ENABLED=false override' do
+  test 'supported? honors OOD_WORKFLOWS_ENABLED=false override' do
     Configuration.stubs(:job_clusters).returns([OpenStruct.new(job_adapter: KeywordSubmitAdapter.new)])
-    with_modified_env(OOD_DASHBOARD_WORKFLOWS_ENABLED: 'false') do
+    with_modified_env(OOD_WORKFLOWS_ENABLED: 'false') do
       assert_equal false, Workflow.supported?
     end
   end
 
-  test 'supported? honors OOD_DASHBOARD_WORKFLOWS_ENABLED=true override' do
+  test 'supported? honors OOD_WORKFLOWS_ENABLED=true override' do
     Configuration.stubs(:job_clusters).returns([])
-    with_modified_env(OOD_DASHBOARD_WORKFLOWS_ENABLED: 'true') do
+    with_modified_env(OOD_WORKFLOWS_ENABLED: 'true') do
       assert_equal true, Workflow.supported?
     end
   end
