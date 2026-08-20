@@ -27,9 +27,8 @@ directory OBJDIR
 
 desc "Render the Apache config file"
 file "#{OBJDIR}/#{OBJFILE}" => ["#{SRCDIR}/#{OBJFILE}.erb", OBJDIR, (CNFFILE if File.file?(CNFFILE))].compact do |task|
-  source = task.prerequisites.first
   target = task.name
-  sh "bin/generate -c '#{CNFFILE}' -t '#{source}' -o '#{target}'"
+  sh "bin/generate -c '#{CNFFILE}' -o '#{target}'"
 end
 
 directory PREFIX
