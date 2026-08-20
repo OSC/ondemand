@@ -48,22 +48,22 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
   end
   
   def build_info(info = {})
-  default = {
-    id: '123',
-    job_name: 'Test Job',
-    job_owner: 'user',
-    accounting_id: 'acct',
-    status: :queued,
-    queue_name: 'normal',
-    gpus: 0,
-    wallclock_time: 3600,
-    dispatch_time: 1_700_000_000,
-    allocated_nodes: [],
-    wallclock_limit: nil,
-    native: {}
-  }
-  OodCore::Job::Info.new(**default.merge(info))
-end
+    default = {
+      id: '123',
+      job_name: 'Test Job',
+      job_owner: 'user',
+      accounting_id: 'acct',
+      status: :queued,
+      queue_name: 'normal',
+      gpus: 0,
+      wallclock_time: 3600,
+      dispatch_time: 1_700_000_000,
+      allocated_nodes: [],
+      wallclock_limit: nil,
+      native: {}
+    }
+    OodCore::Job::Info.new(**default.merge(info))
+  end
 
   # Goes through the real constructor, letting `initialize` do its own
   # adapter dispatch (extended_data_torque/slurm/lsf/pbspro) rather than
