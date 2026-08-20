@@ -50,6 +50,11 @@ class BatchConnect::SessionsController < ApplicationController
     end
   end
 
+  def show
+    set_session
+    render(partial: 'no_vnc', layout: false)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_session
