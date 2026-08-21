@@ -42,7 +42,7 @@ GEM
     hocon (1.4.0)
     in-parallel (1.0.1)
     inifile (3.0.0)
-    json (2.11.3)
+    json (2.19.9)
     language_server-protocol (3.17.0.4)
     lint_roller (1.1.0)
     logger (1.7.0)
