@@ -633,7 +633,7 @@ module BatchConnect
 
     # @return [Boolean]
     def global_ssh_to_compute_node?
-      Configuration.ood_bc_ssh_to_compute_node
+      Configuration.bc_ssh_to_compute_node
     end
 
     # A unique identifier that details the current state of a session
