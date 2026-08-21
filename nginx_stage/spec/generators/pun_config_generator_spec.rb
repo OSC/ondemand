@@ -25,6 +25,31 @@ describe NginxStage::PunConfigGenerator do
     expect { described_class.new }.to raise_error(NginxStage::MissingOption, 'missing option: user')
   end
 
+  describe 'missing user' do
+    let(:missing_user) { 'nobody_here' }
+
+    before do
+      allow(Etc).to receive(:getpwnam).with(missing_user)
+        .and_raise(ArgumentError, "can't find user for #{missing_user}")
+    end
+
+    it 'raises InvalidUser with the default missing_user_message' do
+      expect { described_class.new({ :user => missing_user }) }
+        .to raise_error(NginxStage::InvalidUser, "can't find user for nobody_here")
+    end
+
+    it 'raises InvalidUser with a custom missing_user_message' do
+      allow(NginxStage).to receive(:missing_user_message)
+        .and_return('User %s was not found. Ask your advisor to add you to an HPC allocation.')
+
+      expect { described_class.new({ :user => missing_user }) }
+        .to raise_error(
+          NginxStage::InvalidUser,
+          'User nobody_here was not found. Ask your advisor to add you to an HPC allocation.'
+        )
+    end
+  end
+
   describe 'pre_hook_root_cmd' do
     let(:generator)  do
       described_class.new({
