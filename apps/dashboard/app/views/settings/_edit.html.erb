@@ -1,0 +1,15 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="settings_panel" aria-labelledby="settings_panel_label">
+  <div class="offcanvas-header">
+    <h1 class="offcanvas-title h4" id="settings_panel_label"><%= t('dashboard.customizations') %></h1>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">  
+    <%= turbo_frame_tag(:customization_form, src: edit_customization_path, loading: :lazy, target: '_top') do %>
+      <div class="text-center">
+        <div class="spinner-border">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
