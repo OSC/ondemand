@@ -563,28 +563,4 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       refute ConfigurationSingleton.new.rails_env_production?
     end
   end
-
-  test "ood_bc_ssh_to_compute_node defaults to true" do
-    config = ConfigurationSingleton.new
-    assert_equal true, config.ood_bc_ssh_to_compute_node
-  end
-
-  test "ood_bc_ssh_to_compute_node respects yaml configuration" do
-    config = ConfigurationSingleton.new
-    config.stubs(:config).returns({ ood_bc_ssh_to_compute_node: false })
-
-    assert_equal false, config.ood_bc_ssh_to_compute_node
-  end
-
-  test "ood_bc_ssh_to_compute_node env overrides yaml configuration" do
-    begin
-      ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] = 'false'
-      config = ConfigurationSingleton.new
-      config.stubs(:config).returns({ ood_bc_ssh_to_compute_node: true })
-
-      assert_equal false, config.ood_bc_ssh_to_compute_node
-    ensure
-      ENV.delete('OOD_BC_SSH_TO_COMPUTE_NODE')
-    end
-  end
 end

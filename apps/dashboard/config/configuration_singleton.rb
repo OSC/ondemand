@@ -61,6 +61,7 @@ class ConfigurationSingleton
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
+      :ood_bc_ssh_to_compute_node => true,
     }.freeze
   end
 
@@ -109,12 +110,6 @@ class ConfigurationSingleton
     @ood_version ||= (ood_version_from_env || version_from_file('/opt/ood') || version_from_git('/opt/ood') || "Unknown").strip
   end
 
-  def ood_bc_ssh_to_compute_node
-    env_val = ENV['OOD_BC_SSH_TO_COMPUTE_NODE']
-    return read_bool(env_val) unless env_val.nil?
-
-    read_bool(config.fetch(:ood_bc_ssh_to_compute_node, true))
-  end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
   def version_from_git(dir)
