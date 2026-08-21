@@ -1,4 +1,5 @@
 'use strict';
+import { isOptionForDirectional } from './config';
 import { ariaNotify } from './utils'
 // these are initialized in makeChangeHandlers
 var idPrefix = undefined;
@@ -148,7 +149,7 @@ function makeChangeHandlers(prefix){
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
                 let token = key.replace(/^optionFor/,'');
-                addOptionForHandler(idFromToken(token), element['id']);
+                addOptionForHandler(idFromToken(token), element['id'], key, opt);
               } else if (key.startsWith('exclusiveOptionFor')) {
                 let token = key.replace(/^exclusiveOptionFor/, '');
                 addExclusiveOptionForHandler(idFromToken(token), element['id']);
@@ -651,7 +652,40 @@ function sharedOptionForHandler(causeId, targetId, optionForType) {
   }
 }
 
-function addOptionForHandler(causeId, targetId) {
+function addOptionForHandler(causeId, targetId, key, opt) {
+  if(!isOptionForDirectional()) {
+    // Start by finding which option the directive refers to
+    let otherOption = undefined;
+    cacheAliases(targetId);
+    const options = [...document.querySelectorAll(`#${causeId} option`)];
+    for(let option of options) {
+      const keyBase = `optionFor${mountainCaseWords(shortId(causeId))}`;
+      var aliasKey = undefined;
+      if (aliasLookup[targetId] !== undefined) {
+        aliasKey = `${keyBase}${aliasLookup[targetId][option.value]}`;
+      }
+      const stdKey = `${keyBase}${mountainCaseWords(option.value)}`;
+      if(key === stdKey || key === aliasKey) {
+        otherOption = option;
+        break;
+      }
+    }
+    // then add the directive and handler, if an option was found
+    if(otherOption !== undefined) {
+      const newKeyBase = `optionFor${mountainCaseWords(shortId(targetId))}`;
+      const newKey = `${newKeyBase}${mountainCaseWords(opt.value)}`;
+      const keys = Object.keys(otherOption.dataset);
+      if (!keys.includes(newKey)) {
+        cacheAliases(causeId);
+        const valueAlias = aliasLookup[causeId]?.[opt.value];
+        if (valueAlias === undefined || !keys.includes(`${keyBase}${valueAlias}`)) {
+          otherOption.dataset[newKey] = false;
+          sharedOptionForHandler(targetId, causeId, 'optionFor');
+        }
+      }
+    }
+  }
+  
   sharedOptionForHandler(causeId, targetId, 'optionFor');
 };
 
@@ -795,12 +829,12 @@ function idFromToken(str) {
 function cacheAliases(elementId) {
   // This should only run once on each select with an alias defined
   if (aliasLookup[elementId] === undefined) {
-    aliasLookup[elementId] = {};
     const options = [...document.querySelectorAll(`#${elementId} option`)];
     options.forEach(option => {
       const data = option.dataset;
       Object.keys(data).forEach(key => {
         if (key.startsWith('alias')){
+          aliasLookup[elementId] ||= {};
           const alias = key.replace(/^alias/, '');
           const value = data[key];
           aliasLookup[elementId][value] = alias;
