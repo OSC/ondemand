@@ -656,19 +656,32 @@ function addOptionForHandler(causeId, targetId, key, opt) {
   if(!isOptionForDirectional()) {
     // Start by finding which option the directive refers to
     let otherOption = undefined;
+    cacheAliases(targetId);
     const options = [...document.querySelectorAll(`#${causeId} option`)];
     for(let option of options) {
-      if(key === `optionFor${mountainCaseWords(shortId(causeId))}${mountainCaseWords(option.value)}`) {
+      const keyBase = `optionFor${mountainCaseWords(shortId(causeId))}`;
+      var aliasKey = undefined;
+      if (aliasLookup[targetId] !== undefined) {
+        aliasKey = `${keyBase}${aliasLookup[targetId][option.value]}`;
+      }
+      const stdKey = `${keyBase}${mountainCaseWords(option.value)}`;
+      if(key === stdKey || key === aliasKey) {
         otherOption = option;
         break;
       }
     }
     // then add the directive and handler, if an option was found
     if(otherOption !== undefined) {
-      const newKey = `optionFor${mountainCaseWords(shortId(targetId))}${mountainCaseWords(opt.value)}`;
-      if (!Object.keys(otherOption.dataset).includes(newKey)) {
-        otherOption.dataset[newKey] = false;
-        sharedOptionForHandler(targetId, causeId, 'optionFor');
+      const newKeyBase = `optionFor${mountainCaseWords(shortId(targetId))}`;
+      const newKey = `${newKeyBase}${mountainCaseWords(opt.value)}`;
+      const keys = Object.keys(otherOption.dataset);
+      if (!keys.includes(newKey)) {
+        cacheAliases(causeId);
+        const valueAlias = aliasLookup[causeId]?.[opt.value];
+        if (valueAlias === undefined || !keys.includes(`${keyBase}${valueAlias}`)) {
+          otherOption.dataset[newKey] = false;
+          sharedOptionForHandler(targetId, causeId, 'optionFor');
+        }
       }
     }
   }
@@ -816,12 +829,12 @@ function idFromToken(str) {
 function cacheAliases(elementId) {
   // This should only run once on each select with an alias defined
   if (aliasLookup[elementId] === undefined) {
-    aliasLookup[elementId] = {};
     const options = [...document.querySelectorAll(`#${elementId} option`)];
     options.forEach(option => {
       const data = option.dataset;
       Object.keys(data).forEach(key => {
         if (key.startsWith('alias')){
+          aliasLookup[elementId] ||= {};
           const alias = key.replace(/^alias/, '');
           const value = data[key];
           aliasLookup[elementId][value] = alias;
