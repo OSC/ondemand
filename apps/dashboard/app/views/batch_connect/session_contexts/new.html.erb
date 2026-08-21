@@ -85,6 +85,7 @@ locals: {
         <p>
           <%= t('dashboard.batch_connect_form_session_data_html',
                   title: @app.title,
+                  version: @app.version,
                   data_link_tag: link_to(
                     t('dashboard.batch_connect_form_data_root'),
                     OodAppkit.files.url(

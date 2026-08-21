@@ -56,7 +56,7 @@ en:
     batch_connect_form_select_template: select saved settings
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
-        under the %{data_link_tag}.
+        under the %{data_link_tag}.  The OOD App version is %{version}.
     batch_connect_form_template_name_label: setting name
     batch_connect_form_type_new_name: App settings name
     batch_connect_form_type_new_name_error: Please type a valid name to continue
