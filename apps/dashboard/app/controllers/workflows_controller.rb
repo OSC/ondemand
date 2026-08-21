@@ -107,9 +107,10 @@ class WorkflowsController < ApplicationController
   def submit
     return unless load_project_and_workflow_objects(render_json: true)
     metadata = metadata_params(permit_json_data)
-    @workflow.update(metadata)
     submit_param = Workflow.build_submit_params(metadata, project_directory)
     result = @workflow.submit(submit_param)
+    metadata[:metadata][:job_hash] = result if result.present?
+    @workflow.update(metadata)
     if !result.nil?
       render json: { message: I18n.t('dashboard.jobs_workflow_submitted'), job_hash: result }
     else

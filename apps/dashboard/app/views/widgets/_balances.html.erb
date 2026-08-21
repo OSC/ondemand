@@ -6,4 +6,7 @@
       <b><%= balance.project %></b>: <%= balance %>
     </li>
   <%- end -%>
+  <%- if @my_balances.empty? -%>
+    <li class="list-group-item text-center"><%= t('dashboard.balance_no_warnings', threshold: Configuration.balance_threshold.to_i) %></li>
+  <%- end -%>
 </ul>
