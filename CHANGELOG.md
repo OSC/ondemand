@@ -61,7 +61,6 @@ Changes are grouped by type:
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 - oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
 - Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
-- The app version is now hidden by default in [5715](https://github.com/OSC/ondemand/pull/5715).
 
 ## [4.2.3] - 2026-06-24
 
