@@ -9,7 +9,7 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
     OODClusters.stubs(:[]).with(:oakley).returns(oakley)
   end
 
-  def slurm_info(submission_time:)
+  def slurm_info(submission_time:, gres: 'N/A')
     OodCore::Job::Info.new(
       id:              '42',
       status:          :queued,
@@ -31,7 +31,7 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
         start_time:    'N/A',
         end_time:      'N/A',
         min_memory:    '1G',
-        gres:          'N/A'
+        gres:          gres
       }
     )
   end
@@ -86,6 +86,27 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
     data = ActiveJobs::Jobstatusdata.new(slurm_info(submission_time: nil), 'oakley', true)
 
     assert_nil data.native_attribs.find { |a| a.name == 'Submission Time' }
+  end
+
+  test 'slurm extended details omit nil GRES' do
+    data = ActiveJobs::Jobstatusdata.new(slurm_info(submission_time: nil, gres: nil), 'oakley', true)
+
+    assert_nil(data.native_attribs.find { |a| a.name == 'GRES' })
+  end
+
+  test 'slurm extended details preserve supported GRES formatting' do
+    cases = [
+      ['N/A', nil],
+      ['', ''],
+      ['gres:gpu:a100:2,gres:pfsdir:scratch:1', 'gpu:a100:2,pfsdir:scratch:1']
+    ]
+
+    cases.each do |gres, expected|
+      data = ActiveJobs::Jobstatusdata.new(slurm_info(submission_time: nil, gres: gres), 'oakley', true)
+      row = data.native_attribs.find { |a| a.name == 'GRES' }
+
+      expected.nil? ? assert_nil(row) : assert_equal(expected, row.value)
+    end
   end
 
   test 'torque extended data uses wallclock_limit for walltime' do
