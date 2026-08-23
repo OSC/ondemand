@@ -151,6 +151,81 @@ class NavBarTest < ActiveSupport::TestCase
     end
   end
 
+  test "NavBar.items should return navigation group with sort=false when nav_item has apps, title, and sort false" do
+    nav_item = {
+      title: "Custom Apps",
+      apps: "sys/*",
+      sort: false
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1, result.size
+    assert_equal false, result[0].sort
+  end
+
+  test "NavBar.items should return navigation group with sort=false when nav_item has category and sort false" do
+    nav_item = {
+      category: "Interactive Apps",
+      sort: false
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1, result.size
+    assert_equal "layouts/nav/group", result[0].partial_path
+    assert_equal false, result[0].sort
+    assert_equal "Interactive Apps", result[0].title
+  end
+
+  test "NavBar.items should preserve files link order when category has sort false" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    OodFilesApp.stubs(:candidate_favorite_paths).returns([
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/scratch'), title: 'Zebra'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project'), title: 'Alpha'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
+    ])
+
+    result = NavBar.items([{ category: 'Files', sort: false }])
+    assert_equal 1, result.size
+    assert_equal false, result[0].sort
+
+    link_titles = result[0].links.map(&:title)
+    assert_equal [
+      I18n.t('dashboard.home_directory'),
+      'Zebra',
+      'Alpha',
+      'Middle'
+    ], link_titles
+  end
+
+  test "NavBar.items should enable sorting when category uses default sort" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    OodFilesApp.stubs(:candidate_favorite_paths).returns([
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/scratch'), title: 'Zebra'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project'), title: 'Alpha'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
+    ])
+
+    result = NavBar.items(['Files'])
+    assert_equal 1, result.size
+    assert_equal true, result[0].sort
+  end
+
+  test "NavBar.items should honor sort false for links navigation group" do
+    nav_item = {
+      title: "menu title",
+      sort: false,
+      links: [
+        { group: "subcategory" },
+        { title: "Zebra", url: "/z" },
+        { title: "Alpha", url: "/a" }
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal false, result[0].sort
+    assert_equal ["Zebra", "Alpha"], result[0].apps.map(&:title)
+  end
+
   test "NavBar.items should return navigation link when nav_item has apps property and apps token matches 1 app" do
     nav_item = {
       apps: "sys/bc_jupyter",

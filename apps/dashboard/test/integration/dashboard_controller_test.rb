@@ -59,6 +59,36 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     ], dditemurls, 'Files dropdown URLs are incorrect'
   end
 
+  test 'should preserve Files dropdown order when nav_bar category has sort false' do
+    scratch_path = File.expand_path 'test/fixtures/dummy_fs/scratch'
+    project_path = File.expand_path 'test/fixtures/dummy_fs/project'
+    project_path2 = Pathname.new('test/fixtures/dummy_fs/project2').expand_path
+
+    OodFilesApp.stubs(:candidate_favorite_paths).returns(
+      [
+        FavoritePath.new(scratch_path, title: 'Scratch'),
+        project_path,
+        project_path2
+      ]
+    )
+
+    stub_user_configuration(
+      nav_bar: [
+        { category: 'Files', sort: false }
+      ]
+    )
+
+    get root_path
+
+    dditems = dropdown_list_items(dropdown_list('Files'))
+    assert_equal [
+      I18n.t('dashboard.home_directory'),
+      "Scratch #{scratch_path}",
+      project_path,
+      project_path2.to_s
+    ], dditems.map { |e| e.gsub(/\s+/, ' ') }
+  end
+
   test 'should create Clusters dropdown with valid clusters that are alphabetically ordered by title' do
     OodAppkit.stubs(:clusters).returns(
       OodCore::Clusters.new([
