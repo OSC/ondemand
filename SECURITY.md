@@ -15,17 +15,21 @@ Emails sent there are only seen by the core project team.
 
 ## Disclosure Policy
 
-Reporters should get a response from the core team within hours of reporting that
-acknowledging the disclosure.
+Reporters will get a response from the core team as soon as we are able.
     
 When the team receives a security vulnerability, they will generally assign it 
 to a primary handler. This person will coordinate the fix and release process,
 involving the following steps:
 
-  * Confirm the problem and determine the affected versions (1-2 days).
-  * Audit code to find any potential similar problems (1-2 days).
-  * Prepare fixes for all releases still under maintenance. These fixes will be
-    released as fast as possible (2-7 days).
+  * Confirm the problem and determine the affected versions.
+  * Audit code to find any potential similar problems.
+  * Prepare fixes for all releases still under maintenance. Vulnerabilities rated
+    moderate or below may be released in the regular 8 week patch cycle. Vulnerabilities
+    higher than moderate may be released sooner, outside the regular patch cycle.
+  * Redact the information provided by the reporter and publish the vulnerability.
+  * 90 days after publishing the vulnerability the original unredacted may be published
+    if the reporter wishes. During investigation the team will ask if the reporter
+    wishes the original report to be published in full 90 days after publishing.
 
 ## Comments on this Policy
 
