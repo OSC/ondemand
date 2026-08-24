@@ -16,18 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Bump Rails from 7.2.3.1 to 7.2.3.2 (#5695)\
-lint a random file (#5693)\
-Fix Apps navbar dropdown spacing (#5700)\
-Combine test cases for jobstatusdata (#5697) (#5698)\
-Add empty state message for balance warnings widget (#5328)\
-Remove -t option from update_ood_portal (#5479)\
-Add submission time and tests for active jobs (#132) (#5314)\
-Pause batch connect polling when tab is hidden (#5637)\
-Enable i18n tests and configure ignored unused keys (#5673)\
-Update Changelog (#5685)\
-lint a random file (#5684)\
-Handle invalid BatchConnect db_root permissions (#5658)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -43,9 +31,10 @@ Handle invalid BatchConnect db_root permissions (#5658)
 - Batch Connect form items can be grouped to be in the same row in [5632](https://github.com/OSC/ondemand/pull/5632).
 - Duplicate uploads in the Files app will now warn users in [5603](https://github.com/OSC/ondemand/pull/5603).
 - Persian Localization (fa-IR) is now available in [5669](https://github.com/OSC/ondemand/pull/5669).
+- Batch connect polling stops when the tab is hidden in [5637](https://github.com/OSC/ondemand/pull/5637).
 
 ### Fixed 
-- File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
+- File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
 - All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
 - Reserved keyword names like 'format' now work in batch connect forms in [5455](https://github.com/OSC/ondemand/pull/5455).
 - File editor control panel cleanly scales to small screen widths in [5456](https://github.com/OSC/ondemand/pull/5456).
@@ -68,11 +57,13 @@ Handle invalid BatchConnect db_root permissions (#5658)
 - ActiveJobs extended data now uses info#walltime instead of native attributes in [5630](https://github.com/OSC/ondemand/pull/5630).
 - XDMoD jobs widget is more accessible in [5674](https://github.com/OSC/ondemand/pull/5674).
 - 'partition' and 'filter' can correctly be used in batch connect forms in [5617](https://github.com/OSC/ondemand/pull/5617).
+- Balance warnings widget will now indicate that there are no warnings in [5328](https://github.com/OSC/ondemand/pull/5328).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 - oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
 - Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
+- update_ood_portal no longer responds to the -t option in [5479](https://github.com/OS10C/ondemand/pull/5479).
 
 ## [4.2.3] - 2026-06-24
 
