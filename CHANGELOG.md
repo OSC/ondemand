@@ -16,6 +16,18 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Bump Rails from 7.2.3.1 to 7.2.3.2 (#5695)\
+lint a random file (#5693)\
+Fix Apps navbar dropdown spacing (#5700)\
+Combine test cases for jobstatusdata (#5697) (#5698)\
+Add empty state message for balance warnings widget (#5328)\
+Remove -t option from update_ood_portal (#5479)\
+Add submission time and tests for active jobs (#132) (#5314)\
+Pause batch connect polling when tab is hidden (#5637)\
+Enable i18n tests and configure ignored unused keys (#5673)\
+Update Changelog (#5685)\
+lint a random file (#5684)\
+Handle invalid BatchConnect db_root permissions (#5658)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
