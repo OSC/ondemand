@@ -59,7 +59,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     ], dditemurls, 'Files dropdown URLs are incorrect'
   end
 
-  test 'should preserve Files dropdown order when nav_bar category has sort false' do
+  test 'should preserve Files dropdown order when nav_bar apps menu has sort false' do
     scratch_path = File.expand_path 'test/fixtures/dummy_fs/scratch'
     project_path = File.expand_path 'test/fixtures/dummy_fs/project'
     project_path2 = Pathname.new('test/fixtures/dummy_fs/project2').expand_path
@@ -74,7 +74,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
     stub_user_configuration(
       nav_bar: [
-        { category: 'Files', sort: false }
+        { title: 'Files', apps: 'sys/files', sort: false }
       ]
     )
 

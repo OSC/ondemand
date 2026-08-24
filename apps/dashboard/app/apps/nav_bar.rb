@@ -8,7 +8,7 @@ class NavBar
         item_from_token(nav_item)
       elsif nav_item.is_a?(Hash)
         if nav_item[:links]
-          extend_group(nav_menu(nav_item))
+          extend_group(nav_menu(nav_item), sort: nav_item.fetch(:sort, false))
         elsif nav_item[:url]
           extend_link(nav_link(nav_item))
         elsif nav_item[:apps]
@@ -18,8 +18,6 @@ class NavBar
           elsif nav_item[:title]
             extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon]), sort: nav_item.fetch(:sort, true))
           end
-        elsif nav_item[:category]
-          item_from_token(nav_item[:category], sort: nav_item.fetch(:sort, true))
         elsif nav_item[:profile]
           extend_link(nav_profile(nav_item))
         elsif !nav_item[:page].blank?
@@ -65,7 +63,7 @@ class NavBar
       end
     end.flatten.compact
 
-    OodAppGroup.new(apps: apps, title: menu_title, icon_uri: menu_icon, sort: hash_item.fetch(:sort, false))
+    OodAppGroup.new(apps: apps, title: menu_title, icon_uri: menu_icon, sort: false)
   end
 
   def self.nav_link(item, category='', subcategory='')
@@ -117,7 +115,7 @@ class NavBar
     end
   end
 
-  def self.item_from_token(token, sort: true)
+  def self.item_from_token(token)
     static_template = STATIC_TEMPLATES.fetch(token.downcase.to_sym, nil)
     if static_template
       return NavItemDecorator.new(OodAppGroup.new, static_template)
@@ -136,7 +134,7 @@ class NavBar
       group = OodAppGroup.groups_for(apps: SysRouter.apps).select { |g| g.title.downcase == token.downcase }.first
       return nil if group.nil?
       group.apps = extract_links(group.apps)
-      extend_group(group, sort: sort)
+      extend_group(group, sort: true)
     end
   end
 
@@ -148,8 +146,8 @@ class NavBar
     end.flatten
   end
 
-  def self.extend_group(group, sort: nil)
-    group.sort = sort unless sort.nil?
+  def self.extend_group(group, sort: false)
+    group.sort = sort
     NavItemDecorator.new(group, 'layouts/nav/group')
   end
 

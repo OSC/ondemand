@@ -163,20 +163,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal false, result[0].sort
   end
 
-  test "NavBar.items should return navigation group with sort=false when nav_item has category and sort false" do
-    nav_item = {
-      category: "Interactive Apps",
-      sort: false
-    }
-
-    result = NavBar.items([nav_item])
-    assert_equal 1, result.size
-    assert_equal "layouts/nav/group", result[0].partial_path
-    assert_equal false, result[0].sort
-    assert_equal "Interactive Apps", result[0].title
-  end
-
-  test "NavBar.items should preserve files link order when category has sort false" do
+  test "NavBar.items should preserve files link order when apps menu has sort false" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
     OodFilesApp.stubs(:candidate_favorite_paths).returns([
       FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/scratch'), title: 'Zebra'),
@@ -184,7 +171,7 @@ class NavBarTest < ActiveSupport::TestCase
       FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
     ])
 
-    result = NavBar.items([{ category: 'Files', sort: false }])
+    result = NavBar.items([{ title: 'Files', apps: 'sys/files', sort: false }])
     assert_equal 1, result.size
     assert_equal false, result[0].sort
 
