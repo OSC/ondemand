@@ -125,7 +125,7 @@ module ActiveJobs
       attributes.push Attribute.new "Start Time", safe_parse_time(info.native[:start_time])
       attributes.push Attribute.new "End Time", safe_parse_time(info.native[:end_time])
       attributes.push Attribute.new "Memory", info.native[:min_memory]
-      attributes.push Attribute.new "GRES", info.native[:gres].gsub(/gres:/, "") if info.native[:gres]&.!=("N/A")
+      attributes.push Attribute.new "GRES", info.native[:gres].gsub(/gres:/, "") unless ['', 'N/A'].include?(info.native[:gres].to_s)
       self.native_attribs = attributes
 
       self.submit_args = nil

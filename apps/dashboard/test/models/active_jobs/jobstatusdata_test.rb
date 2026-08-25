@@ -97,7 +97,7 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
   test 'slurm extended details preserve supported GRES formatting' do
     cases = [
       ['N/A', nil],
-      ['', ''],
+      ['', nil],
       ['gres:gpu:a100:2,gres:pfsdir:scratch:1', 'gpu:a100:2,pfsdir:scratch:1']
     ]
 
