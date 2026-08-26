@@ -11,7 +11,7 @@ class MotdFile
   # @param [String] path The path to the motd file as a URI
   def initialize(path = ENV['MOTD_PATH'])
     @motd_path = path
-    @content = load(path)
+    @content = path.present? ? load(path) : nil
   end
 
   # Checks the path URI to see if it can be opened
@@ -36,22 +36,24 @@ class MotdFile
   # @return [Object, nil] an MotdFormatter object that responds to `:to_partial_path`
   #                       `nil` if a file does not exist at the path.
   def formatter
-    if exist?
-      @motd = case ENV['MOTD_FORMAT']
-              when 'osc'
-                MotdFormatter::Osc.new(self)
-              when 'markdown'
-                MotdFormatter::Markdown.new(self)
-              when 'markdown_erb'
-                MotdFormatter::MarkdownErb.new(self)
-              when 'rss'
-                MotdFormatter::Rss.new(self)
-              when 'text_erb'
-                MotdFormatter::PlaintextErb.new(self)
-              else
-                MotdFormatter::Plaintext.new(self)
-              end
-    end
+    return MotdFormatter::Default.new if motd_path.nil?
+    return nil if motd_path.blank?
+    return nil unless exist?
+
+    @motd = case ENV['MOTD_FORMAT']
+            when 'osc'
+              MotdFormatter::Osc.new(self)
+            when 'markdown'
+              MotdFormatter::Markdown.new(self)
+            when 'markdown_erb'
+              MotdFormatter::MarkdownErb.new(self)
+            when 'rss'
+              MotdFormatter::Rss.new(self)
+            when 'text_erb'
+              MotdFormatter::PlaintextErb.new(self)
+            else
+              MotdFormatter::Plaintext.new(self)
+            end
   end
 
   # Is the content present and not empty?
@@ -64,6 +66,8 @@ class MotdFile
   private
 
   def load(motd_uri)
+    return nil if motd_uri.blank?
+
     uri = URI.parse(motd_uri)
 
     case uri.scheme
