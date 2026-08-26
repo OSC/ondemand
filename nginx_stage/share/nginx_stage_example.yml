@@ -248,6 +248,11 @@
 #     disabled_shell.
 #disabled_shell_message: 'user has a disabled shell: %s'
 
+# Define an error message that is displayed to users when their account cannot
+#     be found on the local system (e.g. the user authenticated but has not been
+#     provisioned yet). Use %s as a placeholder for the username.
+#missing_user_message: "can't find user for %s"
+
 # Hide the stderr "Run 'nginx_stage --help' to see a full list of available 
 #     command line options." message when calling nginx_stage
 #show_nginx_stage_help_message: true
