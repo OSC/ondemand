@@ -192,9 +192,19 @@ class NavBarTest < ActiveSupport::TestCase
       FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
     ])
 
-    result = NavBar.items(['Files'])
+    result = NavBar.items([{ title: 'Files', apps: 'sys/files' }])
     assert_equal 1, result.size
     assert_equal true, result[0].sort
+
+    link_titles = OodAppGroup.groups_for(apps: result[0].apps, group_by: :subcategory, sort: result[0].sort).flat_map do |g|
+      g.apps.flat_map { |app| app.links.map(&:title) }
+    end
+    assert_equal [
+      'Alpha',
+      I18n.t('dashboard.home_directory'),
+      'Middle',
+      'Zebra'
+    ], link_titles
   end
 
   test "NavBar.items should honor sort false for links navigation group" do
