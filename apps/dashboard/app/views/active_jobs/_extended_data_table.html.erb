@@ -38,7 +38,7 @@
         <% if Configuration.can_access_files? %>
           <%= link_to("#{fa_icon("folder-open", classes: nil)} #{t('dashboard.active_jobs_open_in_file_manager')}".html_safe, data.file_explorer_url, :class => "btn btn-outline-dark m-1") if data.file_explorer_url %>
         <% end %>
-        <% if Configuration.ood_bc_ssh_to_compute_node && Configuration.can_access_shell? %>
+        <% if Configuration.bc_ssh_to_compute_node && Configuration.can_access_shell? %>
           <%= link_to("#{fa_icon("terminal", classes: nil)} #{t('dashboard.active_jobs_open_in_terminal')}".html_safe, data.shell_url, :class => "btn btn-outline-dark m-1") if data.shell_url %>
         <% end %>
           <%= link_to("#{fa_icon("trash", classes: nil)} #{t('dashboard.delete')}".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-outline-danger pull-right m-1", data: { method: "delete", confirm: t('dashboard.active_jobs_confirm_delete_job', pbsid: data.pbsid) }) %>

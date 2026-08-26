@@ -14,11 +14,11 @@
     position: relative;
   }
 
-  tr[aria-expanded=true] .closed {
+  button[aria-expanded=true] .closed {
     display: none;
   }
 
-  tr[aria-expanded=false] .open {
+  button[aria-expanded=false] .open {
     display: none;
   }
 

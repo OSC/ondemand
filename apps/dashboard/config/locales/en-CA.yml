@@ -92,6 +92,7 @@ en-CA:
     batch_connect_sessions_relaunch_title: Relaunch
     batch_connect_sessions_staged_root: staged root directory
     batch_connect_sessions_stats_created_at: 'Created at:'
+    batch_connect_sessions_stats_expected_time: 'Expected start:'
     batch_connect_sessions_stats_host: 'Host:'
     batch_connect_sessions_stats_session_dir_link_title: Open session directory for %{session_id}
     batch_connect_sessions_stats_session_id: 'Session ID:'
@@ -279,6 +280,7 @@ en-CA:
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
+    opens_in_new_tab: opens in new tab
     owner: Owner
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"

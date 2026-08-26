@@ -100,6 +100,7 @@ zh-CN:
     batch_connect_sessions_relaunch_title: 重新启动
     batch_connect_sessions_staged_root: 暂存根目录
     batch_connect_sessions_stats_created_at: 创建于：
+    batch_connect_sessions_stats_expected_time: '预计开始时间:'
     batch_connect_sessions_stats_host: 主机：
     batch_connect_sessions_stats_session_dir_link_title: 打开 %{session_id} 的会话目录
     batch_connect_sessions_stats_session_id: 会话ID：
@@ -315,6 +316,7 @@ zh-CN:
     nsf_access_events: NSF 访问事件
     ok: 确定
     output_location: 输出位置
+    opens_in_new_tab: 在新标签页中打开
     owner: 所有者
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"

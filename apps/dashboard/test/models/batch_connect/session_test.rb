@@ -431,7 +431,7 @@ module BatchConnect
       session = BatchConnect::Session.new
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: false } }))
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(true)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(true)
       refute session.ssh_to_compute_node?
     end
 
@@ -439,7 +439,7 @@ module BatchConnect
       session = BatchConnect::Session.new
       session.stubs(:token).returns('rstudio')
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' } }))
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 
@@ -449,7 +449,7 @@ module BatchConnect
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: true } }))
       session.stubs(:app_ssh_to_compute_node).returns(true)
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       assert session.ssh_to_compute_node?
     end
 
@@ -459,7 +459,7 @@ module BatchConnect
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: true } }))
       session.stubs(:app_ssh_to_compute_node).returns(false)
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 
@@ -469,7 +469,7 @@ module BatchConnect
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: false } }))
       session.stubs(:app_ssh_to_compute_node).returns(true)
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 
@@ -477,7 +477,7 @@ module BatchConnect
       session = BatchConnect::Session.new
       session.stubs(:token).returns('rstudio')
       session.stubs(:cluster).raises(BatchConnect::Session::ClusterNotFound, 'Session specifies nonexistent')
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 

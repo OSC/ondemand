@@ -124,7 +124,7 @@ describe 'update_ood_portal' do
   context 'dex' do
     before(:each) do
       allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
-      allow(OodPortalGenerator::Application).to receive(:context).and_return({ dex: true })
+      allow(OodPortalGenerator::Application).to receive(:context).and_return({ dex: true, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
       allow(OodPortalGenerator).to receive(:dex_user).and_return(user)
       allow(OodPortalGenerator).to receive(:dex_group).and_return(group)
       allow_any_instance_of(OodPortalGenerator::Dex).to receive(:default_secret_path).and_return(dex_secret_path.path)

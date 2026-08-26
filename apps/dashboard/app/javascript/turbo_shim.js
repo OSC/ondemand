@@ -1,4 +1,3 @@
-
 /*
   While we want Turbo enabled at some point,
   it doesn't really work well yet. So, we'll provide
@@ -22,6 +21,21 @@ export function replaceHTML(id, html) {
 }
 
 export function pollAndReplace(url, delay, id, callback, continuePolling = () => true) {
+
+  if (document.visibilityState === 'hidden') {
+    if (continuePolling()) {
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          pollAndReplace(url, delay, id, callback, continuePolling);
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      
+    }
+    return;
+  }
+
   var focusedId = null;
   var focusedSelector = null;
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
@@ -57,7 +71,7 @@ export function pollAndReplace(url, delay, id, callback, continuePolling = () =>
       const newFocus = document.getElementById(focusedId);
       if (newFocus) {
         newFocus.focus();
-      }	else {
+      } else {
         $(focusedSelector).focus();
       }
     })

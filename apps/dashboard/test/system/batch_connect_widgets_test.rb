@@ -726,6 +726,47 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-option-for-cluster with underscore cluster id uses hyphenated attribute name' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - ['Ascend Nextgen', 'ascend_nextgen']
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-ascend-nextgen: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('owens', from: 'batch_connect_session_context_cluster')
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      select('Ascend Nextgen', from: 'batch_connect_session_context_cluster')
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+  
   test 'form element headers support markdown and html' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -1084,6 +1125,129 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal('good', find_value('gpu_type'))
       assert_equal('display: none;', find_option_style('node_type', 'broken'))
       assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+    end
+  end
+
+  test 'enumerable overrides display correctly as text fields' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # previously these would be something like '#<Enumerator:0x00007f0ea4430788>'
+      assert_equal('', find_value('partition'))
+      assert_equal('', find_value('filter'))
+    end
+  end
+
+  test 'enumerable overrides can be checkboxes and select' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      attributes:
+        partition:
+          widget: select
+          options:
+            - 'a'
+            - 'b'
+        filter:
+          widget: check_box
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      filter = find("##{bc_ele_id('filter')}")
+      partition = find("##{bc_ele_id('partition')}")
+
+      assert_equal('1', filter.value)
+      assert_equal('input', filter.tag_name)
+      assert_equal('checkbox', filter[:type])
+      assert_equal('a', partition.value)
+      assert_equal('select', partition.tag_name)
+    end
+  end
+
+  test 'grouped form items work' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - [
+              first_group_item,
+              second_group_item
+            ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # wrappers are columns in a row.
+      ['first_group_item', 'second_group_item'].each do |item|
+        wrapper = find("##{bc_ele_id(item)}_wrapper")
+        parent = wrapper.find(:xpath, '..')
+
+        assert_equal('col', wrapper[:class])
+        assert_equal('row', parent[:class])
+      end
+    end
+  end
+
+  test 'grouped form items can be hidden' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - hide_items
+          - [
+              first_group_item,
+              second_group_item
+            ]
+        attributes:
+          hide_items:
+            widget: check_box
+            html_options:
+              data-hide-first-group-item-when-checked: true
+              data-hide-second-group-item-when-un-checked: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_unchecked_field('Hide Items')
+      refute(find("##{bc_ele_id('second_group_item')}", visible: :hidden).visible?)
+      assert(find("##{bc_ele_id('first_group_item')}").visible?)
+
+      # check to hide and they flip
+      check('Hide Items')
+      assert(find("##{bc_ele_id('second_group_item')}").visible?)
+      refute(find("##{bc_ele_id('first_group_item')}", visible: :hidden).visible?)
     end
   end
 end

@@ -92,6 +92,7 @@ fr-CA:
     batch_connect_sessions_relaunch_title: Relancer
     batch_connect_sessions_staged_root: répertoire racine mis en scène
     batch_connect_sessions_stats_created_at: 'Créé le :'
+    batch_connect_sessions_stats_expected_time: 'Start attendu:'
     batch_connect_sessions_stats_host: 'Hôte :'
     batch_connect_sessions_stats_session_dir_link_title: Ouvrir le répertoire de la session pour %{session_id}
     batch_connect_sessions_stats_session_id: 'ID de session :'
@@ -279,6 +280,7 @@ fr-CA:
     not_grouped: Autres applications
     nsf_access_events: Événements d'accès NSF
     ok: OK
+    opens_in_new_tab: s'ouvre dans un nouvel onglet
     owner: Propriétaire
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"

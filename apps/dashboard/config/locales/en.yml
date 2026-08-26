@@ -49,7 +49,8 @@ en:
     auto_log_location_title: Log Location
     back: Back
     balance_additional_message: Consider requesting additional %{balanace_units}
-    balance_message: '%{units_balance} is %{value}'
+    balance_message: "%{units_balance} is %{value}"
+    balance_no_warnings: No projects are within the %{threshold} day balance warning threshold.
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
     balance_warning_prefix_html: '%{units_balance} warning for'
     batch_connect_apps_menu_title: Interactive Apps
@@ -86,14 +87,14 @@ en:
     batch_connect_no_sessions: You have no active sessions.
     batch_connect_sandbox: ' [Sandbox]'
     batch_connect_sessions_cancel_confirm: Are you sure?
-    batch_connect_sessions_cancel_full_title: "Cancel %{title} Session"
+    batch_connect_sessions_cancel_full_title: Cancel %{title} Session
     batch_connect_sessions_cancel_title: Cancel
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
       
     batch_connect_sessions_delete_confirm: Are you sure?
-    batch_connect_sessions_delete_full_title: "Delete %{title} Session"
+    batch_connect_sessions_delete_full_title: Delete %{title} Session
     batch_connect_sessions_delete_hover: Delete Session
     batch_connect_sessions_delete_title: Delete
     batch_connect_sessions_edit_title: Edit new %{title} with this session parameters
@@ -107,13 +108,14 @@ en:
     batch_connect_sessions_novnc_launch: Launch %{app_title}
     batch_connect_sessions_novnc_view_only: View Only (Share-able Link)
     batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.
-    batch_connect_sessions_relaunch_full_title: "Relaunch %{title} Session"
+    batch_connect_sessions_relaunch_full_title: Relaunch %{title} Session
     batch_connect_sessions_relaunch_title: Relaunch
     batch_connect_sessions_staged_root: staged root directory
     batch_connect_sessions_stats_created_at: 'Created at:'
+    batch_connect_sessions_stats_expected_time: 'Expected start:'
     batch_connect_sessions_stats_host: 'Host:'
+    batch_connect_sessions_stats_session_dir_link_title: Open session directory for %{session_id}
     batch_connect_sessions_stats_session_id: 'Session ID:'
-    batch_connect_sessions_stats_session_dir_link_title: 'Open session directory for %{session_id}'
     batch_connect_sessions_stats_support_ticket: Problems with this session?
     batch_connect_sessions_stats_support_ticket_link_text: Submit support ticket
     batch_connect_sessions_stats_time_remaining: 'Time Remaining:'
@@ -193,7 +195,7 @@ en:
     files_directory_size_calculation_timeout: Timeout while trying to determine directory size.
     files_directory_size_unknown: 'Error with status %{exit_code} when trying to determine directory size: %{error}'
     files_directory_too_large: The directory is too large to download as a zip. The directory should be less than %{download_directory_size_limit} bytes.
-    files_doesnt_exist: '%{path} does not exist.'
+    files_doesnt_exist: "%{path} does not exist."
     files_download: Download
     files_download_not_enabled: Downloading files is not enabled on this server.
     files_download_zip: Download as zip
@@ -335,6 +337,7 @@ en:
     nsf_access_events: NSF ACCESS Events
     ok: OK
     output_location: Output Location
+    opens_in_new_tab: opens in new tab
     owner: Owner
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -365,7 +368,6 @@ en:
     restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
-      
     restore: Restore
     root: Root
     save: Save
