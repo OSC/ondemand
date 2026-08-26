@@ -3,10 +3,10 @@ zh-CN:
   activemodel:
     errors:
       messages:
-        format: '%{attribute} 格式无效或缺失'
-        invalid: '%{attribute} 无效'
-        required: '%{attribute} 是必需的'
-        used: '%{attribute} 已被使用'
+        format: "%{attribute} 格式无效或缺失"
+        invalid: "%{attribute} 无效"
+        required: "%{attribute} 是必需的"
+        used: "%{attribute} 已被使用"
   dashboard:
     account: 账户
     actions: 操作
@@ -29,7 +29,7 @@ zh-CN:
     all_clusters: 所有集群
     announcements_dismissible_button: 确定
     announcements_required_button: 接受
-    apps_folder_icon: "FontAwesome 图标指定：文件夹"
+    apps_folder_icon: FontAwesome 图标指定：文件夹
     apps_setup_failure_html: |
       <h2>初始化此应用程序的数据时出现问题。</h2>
       <p class="lead">
@@ -43,14 +43,13 @@ zh-CN:
       <pre>%{exception_message}</pre>
       <h4>堆栈跟踪：</h4>
       <pre>%{exception_trace}</pre>
-      
     apps_system_apps_title: 系统应用
     auto_log_location_title: 日志位置
     back: 返回
     balance_additional_message: 考虑申请额外的 %{balanace_units}
-    balance_message: '%{units_balance} 是 %{value}'
+    balance_message: "%{units_balance} 是 %{value}"
     balance_reload_message_html: 重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}
-    balance_warning_prefix_html: '%{units_balance} 警告'
+    balance_warning_prefix_html: "%{units_balance} 警告"
     batch_connect_apps_menu_title: 交互式应用
     batch_connect_file_attachments_add: 点击框以添加文件。截图或其他文件可以帮助您解决您的问题。
     batch_connect_form_attr_cache_error: 无法使用先前缓存的值，改为使用默认值。(%{error_message})
@@ -77,10 +76,9 @@ zh-CN:
     batch_connect_missing_cluster: |
       集群从未设置。请在 form.yml.erb 中使用 `cluster` 或 `form.cluster` 设置，或
       在 submit.yml.erb 中设置 `cluster`。
-      
     batch_connect_no_apps: 没有可用的互动应用程序。
     batch_connect_no_sessions: 您没有可运行的会话。
-    batch_connect_sandbox: ' [沙盒]'
+    batch_connect_sandbox: " [沙盒]"
     batch_connect_sessions_cancel_confirm: 你确定吗？
     batch_connect_sessions_cancel_full_title: 取消 %{title} 会话
     batch_connect_sessions_cancel_title: 取消
@@ -130,7 +128,7 @@ zh-CN:
       missing_settings: 未找到所选的保存设置。
       no_settings_title: 您没有保存的设置。
       outdated_message: 自这些设置创建以来，%{app_title} 参数已更改。
-      saved_message: '%{settings_name} 设置已保存'
+      saved_message: "%{settings_name} 设置已保存"
       settings_values_label: 值
       title: 保存的设置
     breadcrumbs_all_apps: 所有应用
@@ -161,8 +159,8 @@ zh-CN:
     editor_key_bindings: 键绑定
     editor_key_bindings_default: 默认
     file: 文件
-    files: 文件夹
     file_quotas: 文件配额
+    files: 文件夹
     files_change_directory: 更改目录
     files_contents_of_directory: 目录内容 %{path}
     files_copy_move: 复制/移动
@@ -174,7 +172,7 @@ zh-CN:
     files_directory_size_calculation_timeout: 尝试确定目录大小时超时。
     files_directory_size_unknown: 尝试确定目录大小时出现状态 %{exit_code} 的错误：%{error}
     files_directory_too_large: 该目录太大，无法作为 zip 下载。目录应小于 %{download_directory_size_limit} 字节。
-    files_doesnt_exist: '%{path} 不存在。'
+    files_doesnt_exist: "%{path} 不存在。"
     files_download: 下载
     files_download_not_enabled: 此服务器上未启用文件下载。
     files_download_zip: 下载为 zip
@@ -315,8 +313,8 @@ zh-CN:
     not_grouped: 其他应用
     nsf_access_events: NSF 访问事件
     ok: 确定
-    output_location: 输出位置
     opens_in_new_tab: 在新标签页中打开
+    output_location: 输出位置
     owner: 所有者
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -335,7 +333,7 @@ zh-CN:
     queue: 队列
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
     quota_block: 配额使用量%{used} 可用 %{available}
-    quota_block_shared: (您的配额%{used_exclusive} )
+    quota_block_shared: "(您的配额%{used_exclusive} )"
     quota_file: 文件配额使用量%{used} 可用 %{available}
     quota_file_shared: "(您的文件配额%{used_exclusive})"
     quota_message: "%{quota}. %{additional_message}"
@@ -347,37 +345,28 @@ zh-CN:
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
-      
     restore: 恢复
     root: 根
     save: 保存
     saved_settings_title: 已保存的设置
     select: 选择
     select_path: 选择路径
-    select_path_for: |
-      %{element} 选择路径
-      
+    select_path_for: "%{element} 选择路径\n"
     settings_invalid_request: 提交的设置无效
     settings_updated: 设置已更新
     shared_apps_caption: 由 %{owner_title} (%{owner}) 共享
     shared_apps_caption_short: 由 %{owner} 共享
     shared_apps_title: 共享应用
-    sharing_catalog_msg_html: |
-      <br>可以在%{catalog_link_tag}上查看可用应用程序的子集。
-      
+    sharing_catalog_msg_html: "<br>可以在%{catalog_link_tag}上查看可用应用程序的子集。\n"
     sharing_catalog_title: 应用目录
-    sharing_no_shared_apps_html: |
-      <strong>没有可用的自定义共享应用。</strong>
-      
+    sharing_no_shared_apps_html: "<strong>没有可用的自定义共享应用。</strong>\n"
     sharing_support_msg_html: |
       如果您没有找到所需的应用程序，请
       <a href="%{support_url}">联系支持</a>.
-      
     sharing_welcome_msg_html: |
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
-      
-    shell_app_title: '%{cluster_title} Shell 访问'
+    shell_app_title: "%{cluster_title} Shell 访问"
     show: 显示
     size: 大小
     skip_navigation: 跳过导航
@@ -397,12 +386,12 @@ zh-CN:
         creation_success: 在 ServiceNow 中创建的支持票。编号：%{number}
       title: 支持票
       validation:
-        attachments_items: '%{id} 无效。%{items} 已添加，最大附件数量为 %{max}'
-        attachments_size: '%{id} 无效。最大附件大小为 %{max}'
-        email: '%{id} 格式无效。期望一个有效的电子邮件地址'
+        attachments_items: "%{id} 无效。%{items} 已添加，最大附件数量为 %{max}"
+        attachments_size: "%{id} 无效。最大附件大小为 %{max}"
+        email: "%{id} 格式无效。期望一个有效的电子邮件地址"
         items:
           attachments_js: 不允许更多附件
-        required: '%{id} 是必需的'
+        required: "%{id} 是必需的"
         size:
           attachments_js: 最大附件大小为 %{max}。所选文件大小为 %{size}
       validation_error: 无效请求。请查看下面的错误信息
@@ -421,5 +410,4 @@ zh-CN:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand为您的所有HPC资源提供了一个集成的单一访问点。</p>
-      
     wrap: 自动换行

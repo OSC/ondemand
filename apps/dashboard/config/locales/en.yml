@@ -3,10 +3,10 @@ en:
   activemodel:
     errors:
       messages:
-        format: '%{attribute} format invalid or missing'
-        invalid: '%{attribute} is invalid'
-        required: '%{attribute} is required'
-        used: '%{attribute} is already used'
+        format: "%{attribute} format invalid or missing"
+        invalid: "%{attribute} is invalid"
+        required: "%{attribute} is required"
+        used: "%{attribute} is already used"
   dashboard:
     account: Account
     actions: Actions
@@ -29,7 +29,7 @@ en:
     all_clusters: All Clusters
     announcements_dismissible_button: OK
     announcements_required_button: Accept
-    apps_folder_icon: "FontAwesome icon specified: folder"
+    apps_folder_icon: 'FontAwesome icon specified: folder'
     apps_setup_failure_html: |
       <h2>A problem occurred while initializing your data for this app.</h2>
       <p class="lead">
@@ -44,7 +44,6 @@ en:
       <pre>%{exception_message}</pre>
       <h4>Stack trace:</h4>
       <pre>%{exception_trace}</pre>
-      
     apps_system_apps_title: System Apps
     auto_log_location_title: Log Location
     back: Back
@@ -52,7 +51,7 @@ en:
     balance_message: "%{units_balance} is %{value}"
     balance_no_warnings: No projects are within the %{threshold} day balance warning threshold.
     balance_reload_message_html: Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}
-    balance_warning_prefix_html: '%{units_balance} warning for'
+    balance_warning_prefix_html: "%{units_balance} warning for"
     batch_connect_apps_menu_title: Interactive Apps
     batch_connect_file_attachments_add: Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
@@ -73,7 +72,6 @@ en:
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
-      
     batch_connect_form_template_name_label: setting name
     batch_connect_form_type_new_name: App settings name
     batch_connect_form_type_new_name_error: Please type a valid name to continue
@@ -82,17 +80,15 @@ en:
     batch_connect_missing_cluster: |
       The cluster was never set. Either set it in form.yml.erb with `cluster` or `form.cluster` or
       set `cluster` in submit.yml.erb.
-      
     batch_connect_no_apps: There are no available Interactive Apps.
     batch_connect_no_sessions: You have no active sessions.
-    batch_connect_sandbox: ' [Sandbox]'
+    batch_connect_sandbox: " [Sandbox]"
     batch_connect_sessions_cancel_confirm: Are you sure?
     batch_connect_sessions_cancel_full_title: Cancel %{title} Session
     batch_connect_sessions_cancel_title: Cancel
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
-      
     batch_connect_sessions_delete_confirm: Are you sure?
     batch_connect_sessions_delete_full_title: Delete %{title} Session
     batch_connect_sessions_delete_hover: Delete Session
@@ -102,7 +98,6 @@ en:
       If this job failed to submit because of an invalid job name
       please ask your administrator to configure OnDemand to set the
       environment variable OOD_JOB_NAME_ILLEGAL_CHARS.
-      
     batch_connect_sessions_errors_staging: 'Failed to stage the template with the following error:'
     batch_connect_sessions_errors_submission: 'Failed to submit session with the following error:'
     batch_connect_sessions_novnc_launch: Launch %{app_title}
@@ -132,15 +127,12 @@ en:
     batch_connect_sessions_status_missing_connection: |
       This app is missing information required to establish a connection. Specifically,
       the view.html.erb file is missing. Please contact support if you see this message.
-      
     batch_connect_sessions_status_queued: |
       Please be patient as your job currently sits in queue. The wait time depends
       on the number of cores as well as time requested.
-      
     batch_connect_sessions_status_starting: |
       Your session is currently starting... Please be patient as this process can
       take a few minutes.
-      
     batch_connect_sessions_word: Session
     bc_saved_settings:
       delete_confirm: Are you sure?
@@ -150,8 +142,8 @@ en:
       launch_title: Launch %{app_title} with %{settings_name} parameters
       missing_settings: Selected saved settings not found.
       no_settings_title: You have no saved settings.
-      outdated_message: '%{app_title} parameters have changed since these settings were created.'
-      saved_message: '%{settings_name} settings saved'
+      outdated_message: "%{app_title} parameters have changed since these settings were created."
+      saved_message: "%{settings_name} settings saved"
       settings_values_label: Values
       title: Saved Settings
     breadcrumbs_all_apps: All Apps
@@ -182,8 +174,8 @@ en:
     editor_key_bindings: Key Bindings
     editor_key_bindings_default: Default
     file: File
-    files: Files
     file_quotas: File Quotas
+    files: Files
     files_change_directory: Change Directory
     files_contents_of_directory: Contents of directory %{path}
     files_copy_move: Copy/Move
@@ -336,8 +328,8 @@ en:
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
-    output_location: Output Location
     opens_in_new_tab: opens in new tab
+    output_location: Output Location
     owner: Owner
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -356,7 +348,7 @@ en:
     queue: Queue
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
-    quota_block_shared: (%{used_exclusive} are yours)
+    quota_block_shared: "(%{used_exclusive} are yours)"
     quota_file: Using %{used} files of quota %{available} files
     quota_file_shared: "(%{used_exclusive} files are yours)"
     quota_message: "%{quota}. %{additional_message}"
@@ -374,30 +366,22 @@ en:
     saved_settings_title: Saved Settings
     select: Select
     select_path: Select Path
-    select_path_for: |
-      %{element} select path
-      
+    select_path_for: "%{element} select path\n"
     settings_invalid_request: Invalid settings submitted
     settings_updated: Settings updated
     shared_apps_caption: Shared by %{owner_title} (%{owner})
     shared_apps_caption_short: Shared by %{owner}
     shared_apps_title: Shared Apps
-    sharing_catalog_msg_html: |
-      <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
-      
+    sharing_catalog_msg_html: "<br>A subset of the apps available can be viewed on the %{catalog_link_tag}.\n"
     sharing_catalog_title: App Catalog
-    sharing_no_shared_apps_html: |
-      <strong>No custom shared apps available.</strong>
-      
+    sharing_no_shared_apps_html: "<strong>No custom shared apps available.</strong>\n"
     sharing_support_msg_html: |
       If you don't see the app you are looking for, please
       <a href="%{support_url}">contact support</a>.
-      
     sharing_welcome_msg_html: |
       Cluster access applications are available from the dropdown menus in the navbar above.
       <br>Custom shared apps are available below.
-      
-    shell_app_title: '%{cluster_title} Shell Access'
+    shell_app_title: "%{cluster_title} Shell Access"
     show: Show
     size: Size
     skip_navigation: Skip Navigation
@@ -441,5 +425,4 @@ en:
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
-      
     wrap: Wrap
