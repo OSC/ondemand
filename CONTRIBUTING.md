@@ -124,11 +124,10 @@ A best guess is encouraged.
 
 All new issues are reviewed weekly by the OOD team to categorize correctly regardless.
 
-## Pull Request Comments
+## Pull Request Notes
 
-Ensure to include what issue this fixes in the **PR comment** to help with automated issue closing:
-
-* "fixes #1234"
+Ensure to include what issue this fixes in the **PR comment** to help with automated issue closing. Please do not
+put the issue number in the title of the PR since this can make things more difficult to track for the maintainers.
 
 ## Tests in Pull Requests
 
