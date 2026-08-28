@@ -9,6 +9,10 @@ en:
         used: "%{attribute} is already used"
   dashboard:
     active_jobs_close_details: Close extended details panel.
+    active_jobs_ganlia_CPU: Ganglia image for CPU.
+    active_jobs_ganlia_load: Ganglia image for system load averages.
+    active_jobs_ganlia_mem: Ganglia image for Memory usage.
+    active_jobs_ganlia_network: Ganglia image for network usage.
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
@@ -141,10 +145,12 @@ en:
     close: Close
     close_alert: Close this alert.
     close_notice: Close this notice.
+    cpu_report: CPU Report + %{node}
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date
     delete: Delete
+    detailed_metrics: Detailed Metrics
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
@@ -171,6 +177,7 @@ en:
     files_title: File browsing
     home_directory: Home Directory
     import: Import
+    job: 'Job:'
     job_info: Job Info
     jobs_create_blank_project: Create a new project
     jobs_create_blank_workflow: New Workflow
@@ -252,8 +259,10 @@ en:
     jobs_workflow_sync_key_help: When enabled, every launcher in this workflow receives the same <code>OOD_WORKFLOW_SYNC_KEY</code> environment variable (a random token unique to each workflow run). Useful for generating synchronized filenames, lock files, or shared identifiers across dependent jobs.
     jobs_workflows: Workflows
     launch: Launch
+    load_report: Load Report + %{node}
     logo_alt_text: Welcome to Open OnDemand
     maximum: Maximum
+    mem_report: Memory Report + %{node}
     minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Last updated: %{last_updated}'
@@ -289,6 +298,8 @@ en:
     nav_restart_server: Restart Web Server
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
+    network_report: Network Report + %{node}
+    node: 'Node:'
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
