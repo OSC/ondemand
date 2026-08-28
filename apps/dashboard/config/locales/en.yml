@@ -293,6 +293,7 @@ en:
     nsf_access_events: NSF ACCESS Events
     ok: OK
     opens_in_new_tab: opens in new tab
+    output_location: 'Output Location:'
     owner: Owner
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -349,6 +350,7 @@ en:
     soft_tabs: Soft Tabs
     soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
     submit: Submit
+    submit_args: 'Submit Args:'
     support_ticket:
       creation_success: 'Support ticket email sent to: %{to}'
       generic_error: 'There was an error processing your request: %{error}'
