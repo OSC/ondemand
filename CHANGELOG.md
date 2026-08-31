@@ -16,6 +16,20 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+localize active_jobs/_extended_data_table.html.erb (#5754)\
+Revise pull request comments to pull request notes (#5747)\
+add cron to debian packages dependencies (#5748)\
+Avoid nil GRES crash in Active Jobs (#5725)\
+Create PR template for ondemand (#5442)\
+Add default MOTD  (#5351)\
+Fix raw HTML rendering in Job Composer template notes (#5667) (#5740)\
+Add configurable user not found error message in nginx_stage (#5723)\
+feat(dashboard): allow configuring ood_bc_ssh_to_compute_node via YAML (#5687)\
+Hide batch connect app version by default (#5715)\
+correct this parameter (#5722)\
+Update Changelog (#5727)\
+update security policy for 90 day redaction (#5624)\
+update dependencies (#5686)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
