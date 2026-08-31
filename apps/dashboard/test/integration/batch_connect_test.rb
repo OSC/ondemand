@@ -135,6 +135,19 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'edit saved settings applies non-cacheable field values' do
+    with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: 'true' }) do
+      file = "#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_edit.yml"
+      Configuration.stubs(:user_settings_file).returns(file)
+
+      get batch_connect_edit_settings_path(token: 'sys/bc_paraview', id: 'edit_name')
+      assert_response :ok
+
+      assert_equal '2', css_select('input[name="batch_connect_session_context[field_a]"]').first['value']
+      assert_equal '2', css_select('input[name="batch_connect_session_context[field_b]"]').first['value']
+    end
+  end
+  
   test 'form header is rendered correctly' do
     get new_batch_connect_session_context_url('sys/bc_jupyter')
     header_link = css_select('span.form_header_supports_some_html>a').first

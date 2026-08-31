@@ -9,7 +9,16 @@ attributes:
     required: true
   bc_account:
     help: "You can leave this blank if **not** in multiple projects."
+  field_a:
+    value: 1
+    widget: number_field
+  field_b:
+    value: 1
+    widget: number_field
+    cacheable: false
 form:
   - bc_num_hours
   - bc_account
   - bc_vnc_resolution
+  - field_a
+  - field_b

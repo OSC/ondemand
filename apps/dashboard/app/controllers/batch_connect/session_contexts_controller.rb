@@ -88,7 +88,7 @@ module BatchConnect
         return
       end
 
-      @session_context.update_with_cache(settings)
+      @session_context.attributes = settings
 
       set_app_groups
       set_saved_settings

@@ -6,3 +6,5 @@ batch_connect_templates:
       bc_num_hours: '10'
       bc_account: edit_account
       bc_vnc_resolution: 800x600
+      field_a: '2'
+      field_b: '2'
