@@ -1632,13 +1632,57 @@ class BatchConnectTest < ApplicationSystemTestCase
       help.assert_text('Choose yes')
 
       select 'First', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose yes')
+      help.assert_text('Choose anything')
 
       select 'Second', from: 'batch_connect_session_context_group'
       help.assert_text('Choose no')
 
       select 'First', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose no')
+      help.assert_text('Choose anything')
+    end
+  end
+
+  test 'data-help restores default help when option has no directive' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'number_field'
+          help: 'Default help text'
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose whatever')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
     end
   end
 
@@ -1685,13 +1729,13 @@ class BatchConnectTest < ApplicationSystemTestCase
       help.assert_text('Choose yes')
 
       select 'Broken', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose yes')
+      help.assert_text('Choose anything')
 
       select 'Second', from: 'batch_connect_session_context_group'
       help.assert_text('Choose no')
 
       select 'Broken', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose no')
+      help.assert_text('Choose anything')
     end
   end
 

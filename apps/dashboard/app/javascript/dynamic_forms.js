@@ -246,19 +246,37 @@ function getNewHelp(changeElement, key) {
   return selectedOptionHelp.dataset[key];
 }
 
+function captureDefaultHelp(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultHelp') !== undefined) return;
+
+  const helpSmall = wrapper.find('small').first();
+  wrapper.data('defaultHelp', helpSmall.length > 0 ? helpSmall.text() : '');
+}
+
 function updateHelp(changeId, changeElement, key) {
+  if (changeId === undefined) return;
+
+  captureDefaultHelp(changeId);
+
   const helpContent = getNewHelp(changeElement, key);
-  if (helpContent === undefined || changeId === undefined) return;
+  const defaultHelp = $(`#${changeId}_wrapper`).data('defaultHelp');
+  const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
+
   const wrapper_id = `#${changeId}_wrapper`;
   var helpElement = $(`${wrapper_id} small p`);
+  const helpSmall = $(`${wrapper_id} small`);
+
+  if (contentToSet === '' && helpElement.length === 0 && helpSmall.length === 0) return;
+
   if (helpElement.length == 0) {
     const small = document.createElement('small');
     small.classList.add('form-text', 'text-muted');
     helpElement = document.createElement('p');
     $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
   }
-  $(helpElement).text(helpContent);
-  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+  $(helpElement).text(contentToSet);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${contentToSet}`);
 }
 
 function addHelpHandler(optionId, option, key, configValue) {
