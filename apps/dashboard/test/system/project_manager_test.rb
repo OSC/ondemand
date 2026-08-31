@@ -1611,9 +1611,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       select('Chemistry 5533', from: 'project_template')
       click_on(I18n.t('dashboard.save'))
 
-      find('i.fa-atom').click
-      input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
+      assert_current_path(projects_root_path)
+      ref = find("a[title='#{I18n.t('dashboard.jobs_project_open_label', name: 'Chemistry 5533')}']")
+      chem_project_path = ref[:href]
+      ref.click
 
+      input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
       project_dir = Dir.children(dir).select { |p| Pathname.new("#{dir}/#{p}").directory? }.first
       project_dir = "#{dir}/#{project_dir}"
 
@@ -1628,6 +1631,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
+      assert_current_path(chem_project_path)
       find('#launch_8woi7ghd').click
 
       assert_selector('.alert-success', text: 'job-id-123')
