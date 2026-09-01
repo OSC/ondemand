@@ -51,7 +51,7 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
   # like download_and_test but skips the download param, so we get the inline response
   def get_file(dest_path, file)
-    put_file(files_path(filepath: dest_path), file)
+    FileUtils.cp(file, dest_path)
     get files_path(filepath: dest_path)
     @response
   end
