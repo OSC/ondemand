@@ -267,7 +267,7 @@ function updateHelp(changeId, changeElement, key) {
   var helpElement = $(`${wrapper_id} small p`);
   const helpSmall = $(`${wrapper_id} small`);
 
-  if (contentToSet === '' && helpElement.length === 0 && helpSmall.length === 0) return;
+  if (contentToSet === '' && helpSmall.length === 0) return;
 
   if (helpElement.length == 0) {
     const small = document.createElement('small');
