@@ -13,37 +13,33 @@ const selectedConnectionTabs = new Map();
 
 function trackConnectionTabSelection(container) {
   container.addEventListener('shown.bs.tab', (event) => {
-    const tabLink = event.target;
+    const tabLink = event.target.closest('.nav-tabs .nav-link');
+    const card = tabLink?.closest('[data-bc-card]');
+    const href = tabLink?.getAttribute('href');
 
-    if (!tabLink.matches('.nav-tabs .nav-link')) {
+    if (!tabLink || !card || !href?.startsWith('#')) {
       return;
     }
 
-    const card = tabLink.closest('[data-bc-card]');
-
-    if (!card) {
+    if (tabLink.hasAttribute('data-default-tab')) {
+      selectedConnectionTabs.delete(card.dataset.id);
       return;
     }
 
-    const href = tabLink.getAttribute('href');
-
-    if (href && href.startsWith('#')) {
-      selectedConnectionTabs.set(card.dataset.id, href);
-    }
+    selectedConnectionTabs.set(card.dataset.id, href);
   });
 }
 
 function restoreConnectionTabs() {
   selectedConnectionTabs.forEach((tabTarget, sessionId) => {
-    const card = document.querySelector(`[data-bc-card][data-id="${CSS.escape(sessionId)}"]`);
+    const tabLink = document.querySelector(`#id_${CSS.escape(sessionId)} .nav-tabs .nav-link[href="${tabTarget}"]`);
 
-    if (!card) {
+    if (!tabLink) {
+      selectedConnectionTabs.delete(sessionId);
       return;
     }
 
-    const tabLink = card.querySelector(`.nav-tabs .nav-link[href="${tabTarget}"]`);
-
-    if (!tabLink || tabLink.classList.contains('active')) {
+    if (tabLink.classList.contains('active')) {
       return;
     }
 
