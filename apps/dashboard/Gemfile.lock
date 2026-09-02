@@ -117,19 +117,19 @@ GEM
     dalli (5.1.0)
       logger
     date (3.5.1)
-    domain_name (0.6.20240107)
+    domain_name (0.6.20260829)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
-    dotiw (5.5.0)
+    dotiw (5.6.0)
       activesupport
       i18n
     drb (2.2.3)
     erb (6.0.7)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
-    excon (1.7.0)
+    excon (1.7.1)
       logger
     execjs (2.10.2)
       json (>= 2)
@@ -225,7 +225,7 @@ GEM
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.2)
+    net-protocol (0.3.0)
       timeout
     net-smtp (0.5.1)
       net-protocol
@@ -362,7 +362,7 @@ GEM
       rack-protection (= 4.2.1)
       sinatra (= 4.2.1)
       tilt (~> 2.0)
-    sprockets (4.4.0)
+    sprockets (4.4.1)
       concurrent-ruby (~> 1.1)
       logger
       rack (>= 2.2.4, < 4)
