@@ -49,6 +49,13 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
     "/files/edit/#{fs}#{filepath}"
   end
 
+  # like download_and_test but skips the download param, so we get the inline response
+  def get_file(dest_path, file)
+    FileUtils.cp(file, dest_path)
+    get files_path(filepath: dest_path)
+    @response
+  end
+
   test 'can download file as text/plain' do
     download_and_test('test_text.txt', 'text/plain')
   end
@@ -83,6 +90,63 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'can upload file binary files as text/plain as application/octet-stream' do
     upload_and_test('hello-world-c', content_type: 'application/octet-stream')
+  end
+
+  test 'can get a text file and its content-type comes back right' do
+    Dir.mktmpdir do |tmpdir|
+      src_file = 'test/fixtures/files/download/test_text.txt'
+      dest_path = "#{tmpdir}/test_text.txt"
+
+      response = get_file(dest_path, src_file)
+
+      assert_response :success
+      assert_match(%r{\Atext/plain}, response.headers['Content-Type'])
+      assert_equal File.read(src_file, encoding: 'BINARY'), response.body.dup.force_encoding('BINARY')
+    end
+  end
+
+  test 'files with utf8 content come back correctly, this is the bug from #1218' do
+    Dir.mktmpdir do |tmpdir|
+      src_file = 'test/fixtures/files/download/utf8_content.txt'
+      dest_path = "#{tmpdir}/utf8_content.txt"
+
+      response = nil
+      assert_nothing_raised { response = get_file(dest_path, src_file) }
+
+      assert_response :success
+      assert_match(/charset=utf-8/i, response.headers['Content-Type'])
+      assert_equal File.read(src_file, encoding: 'BINARY'), response.body.dup.force_encoding('BINARY')
+    end
+  end
+
+  test 'utf8 files can be downloaded too, not just viewed inline' do
+    download_and_test('utf8_content.txt', 'text/plain')
+  end
+
+  test 'filenames with utf8 characters work' do
+    Dir.mktmpdir do |tmpdir|
+      src_file = 'test/fixtures/files/download/utf8_content.txt'
+      utf8_filename = "日本語ファイル_résumé_★.txt"
+      dest_path = "#{tmpdir}/#{utf8_filename}"
+
+      response = get_file(dest_path, src_file)
+
+      assert_response :success
+      assert_equal File.read(src_file, encoding: 'BINARY'), response.body.dup.force_encoding('BINARY')
+    end
+  end
+
+  test 'directory listing shows utf8 filenames correctly' do
+    Dir.mktmpdir do |tmpdir|
+      utf8_filename = "café_日本語.txt"
+      FileUtils.touch("#{tmpdir}/#{utf8_filename}")
+
+      get files_path(filepath: tmpdir), headers: { 'Accept': 'application/json' }
+
+      assert_response :success
+      names = JSON.parse(@response.body)['files'].map { |f| f['name'] }
+      assert_includes names, utf8_filename
+    end
   end
 
   test 'edit redirects when file is not editable' do
