@@ -32,6 +32,8 @@ Changes are grouped by type:
 - Duplicate uploads in the Files app will now warn users in [5603](https://github.com/OSC/ondemand/pull/5603).
 - Persian Localization (fa-IR) is now available in [5669](https://github.com/OSC/ondemand/pull/5669).
 - Batch connect polling stops when the tab is hidden in [5637](https://github.com/OSC/ondemand/pull/5637).
+- bc_ssh_to_compute_node now responds to a YAML configuration in [5687](https://github.com/OSC/ondemand/pull/5687).
+- nginx_stage now has a configurable missing_user_message when users cannot be found in [5723](https://github.com/OSC/ondemand/pull/5723).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -58,12 +60,16 @@ Changes are grouped by type:
 - XDMoD jobs widget is more accessible in [5674](https://github.com/OSC/ondemand/pull/5674).
 - 'partition' and 'filter' can correctly be used in batch connect forms in [5617](https://github.com/OSC/ondemand/pull/5617).
 - Balance warnings widget will now indicate that there are no warnings in [5328](https://github.com/OSC/ondemand/pull/5328).
+- Job Composer's edit job options can correctly set the script in [5722](https://github.com/OSC/ondemand/pull/5722).
+- Job Composer's template notes now correctly display HTML in [5740](https://github.com/OSC/ondemand/pull/5740).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 - oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
 - Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
 - update_ood_portal no longer responds to the -t option in [5479](https://github.com/OS10C/ondemand/pull/5479).
+- hide_app_version now defaults to true in [5715](https://github.com/OS10C/ondemand/pull/5715).
+- There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OS10C/ondemand/pull/5351).
 
 ## [4.2.3] - 2026-06-24
 
