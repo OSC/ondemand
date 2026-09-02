@@ -71,6 +71,24 @@ Changes are grouped by type:
 - hide_app_version now defaults to true in [5715](https://github.com/OS10C/ondemand/pull/5715).
 - There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OS10C/ondemand/pull/5351).
 
+## [4.2.4] - 2026-08-24
+
+### Fixed
+- app_init_url is now relative in nginx_stage to better support proxies in [5661](https://github.com/OSC/ondemand/pull/5661).
+- Fixed an issue with account alias' colliding in [5660](https://github.com/OSC/ondemand/pull/5660).
+- Job Composer's edit job options can correctly set the script in [5739](https://github.com/OSC/ondemand/pull/5739).
+- Fixed option-for recursion loops in [5742](https://github.com/OSC/ondemand/pull/5742).
+- Apps navbar dropdown has better spacing in [5702](https://github.com/OSC/ondemand/pull/5702).
+
+## [4.1.7] - 2026-08-31
+
+### Fixed
+- app_init_url is now relative in nginx_stage to better support proxies in [5690](https://github.com/OSC/ondemand/pull/5690).
+- Fixed an issue with account alias' colliding in [5689](https://github.com/OSC/ondemand/pull/5689).
+- Job Composer's edit job options can correctly set the script in [5738](https://github.com/OSC/ondemand/pull/5738).
+- Fixed option-for recursion loops in [5741](https://github.com/OSC/ondemand/pull/5741).
+- Apps navbar dropdown has better spacing in [5703](https://github.com/OSC/ondemand/pull/5703).
+
 ## [4.2.3] - 2026-06-24
 
 ### Security
@@ -2050,11 +2068,13 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.3...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.4...HEAD
+[4.2.4]: https://github.com/OSC/ondemand/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
+[4.1.7]: https://github.com/OSC/ondemand/compare/v4.1.6...v4.1.7
 [4.1.6]: https://github.com/OSC/ondemand/compare/v4.1.5...v4.1.6
 [4.1.5]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.1.5
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4
