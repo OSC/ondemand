@@ -228,10 +228,13 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
 
       click_on 'Edit'
+      assert_current_path(project_edit_path(project_id))
       find('#project_name').set('my-test-project', clear: :backspace)
       click_on 'Save'
+      assert_current_path(projects_path)
       assert_selector "[href='/projects/#{project_id}']", text: 'My Test Project'
       click_on 'Edit'
+      assert_current_path(project_edit_path(project_id))
       assert_selector 'h1', text: 'Editing: My Test Project'
       assert_equal 'my-test-project', find('#project_name').value
       assert_equal "#{dir}/projects/#{project_id}", find('#project_directory').value
