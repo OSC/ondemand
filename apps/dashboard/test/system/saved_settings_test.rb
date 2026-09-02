@@ -95,6 +95,22 @@ class SavedSettingsTest < ApplicationSystemTestCase
     find('.alert', text: I18n.t('dashboard.bc_saved_settings.missing_settings'))
   end
 
+  test 'editing saved settings restores non-cacheable field values' do
+    with_modified_env({ ENABLE_NATIVE_VNC: '1' }) do
+      bc_account_attr = BatchConnect::App.from_token('sys/bc_paraview')
+                                         .attributes.find { |a| a.id == 'bc_account' }
+      refute bc_account_attr.cacheable?(true),
+             'bc_account must stay `cacheable: false` in the sys/bc_paraview fixture'
+
+      stub_user_settings("#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_edit.yml")
+
+      visit(batch_connect_edit_settings_url('sys/bc_paraview', 'edit_name'))
+
+      assert_equal('edit_account', find_field(bc_ele_id('bc_account')).value)
+      assert_equal('10', find_field(bc_ele_id('bc_num_hours')).value)
+    end
+  end
+
   test 'password_fields settings are encrypted when saved' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }

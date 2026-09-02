@@ -118,6 +118,17 @@ cacheable: true } }, form: ['bc_account', 'num_cores']
       assert_equal ['', '28'], [context['bc_account'].value, context['num_cores'].value]
     end
 
+    test 'should update field ignoring cacheable when ignore_cacheable is true' do
+      app = BatchConnect::App.new(router: nil)
+      app.stubs(:form_config).returns(cacheable: false,
+                                      attributes: { num_cores: { widget: 'number_field', value: '1', cacheable: false } }, form: ['bc_account', 'num_cores'])
+      context = app.build_session_context
+
+      context.update_with_cache({ 'bc_account' => 'project_1234', 'num_cores' => '28' }, ignore_cacheable: true)
+
+      assert_equal ['project_1234', '28'], [context['bc_account'].value, context['num_cores'].value]
+    end
+
     test 'should ignore bad cache keys when updating cache using update_with_cache' do
       app = BatchConnect::App.new(router: nil)
       app.stubs(:form_config).returns(attributes: { num_cores: { widget: 'number_field', value: '1' } },
