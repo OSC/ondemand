@@ -16,7 +16,7 @@ class NavBar
           if matched_apps.length == 1
             extend_link(matched_apps.first)
           elsif nav_item[:title]
-            extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon]), sort: nav_item.fetch(:sort, true))
+            extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon]), sort: sort_nav_group?(nav_item))
           end
         elsif nav_item[:profile]
           extend_link(nav_profile(nav_item))
@@ -134,10 +134,30 @@ class NavBar
       group = OodAppGroup.groups_for(apps: SysRouter.apps).select { |g| g.title.downcase == token.downcase }.first
       return nil if group.nil?
       group.apps = extract_links(group.apps)
-      extend_group(group, sort: true)
+      extend_group(group, sort: sort_category_group?(group))
     end
   end
 
+  def self.sort_nav_group?(nav_item)
+    return nav_item[:sort] if nav_item.key?(:sort)
+
+    files_apps_menu?(nav_item) ? false : true
+  end
+
+  def self.sort_category_group?(group)
+    group.title.to_s.casecmp('files').zero? ? false : true
+  end
+
+  def self.files_apps_menu?(nav_item)
+    return false unless nav_item[:apps]
+
+    Array.wrap(nav_item[:apps]).any? { |token| files_app_token?(token) }
+  end
+
+  def self.files_app_token?(token)
+    token.to_s.downcase == 'sys/files'
+  end
+  
   def self.extract_links(apps, category: nil, subcategory: nil)
     apps.map do |app|
       app.links.map do |link|

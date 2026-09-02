@@ -163,7 +163,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal false, result[0].sort
   end
 
-  test "NavBar.items should preserve files link order when apps menu has sort false" do
+  test "files app menus are unsorted by default for category and apps nav items" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
     OodFilesApp.stubs(:candidate_favorite_paths).returns([
       FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/scratch'), title: 'Zebra'),
@@ -171,20 +171,29 @@ class NavBarTest < ActiveSupport::TestCase
       FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
     ])
 
-    result = NavBar.items([{ title: 'Files', apps: 'sys/files', sort: false }])
-    assert_equal 1, result.size
-    assert_equal false, result[0].sort
-
-    link_titles = result[0].links.map(&:title)
-    assert_equal [
+    expected_link_titles = [
       I18n.t('dashboard.home_directory'),
       'Zebra',
       'Alpha',
       'Middle'
-    ], link_titles
+    ]
+
+    result = NavBar.items([
+      'files',
+      { title: 'Files App', apps: 'sys/files' }
+    ])
+
+    assert_equal 2, result.size
+    assert_equal 'Files', result[0].title
+    assert_equal 'Files App', result[1].title
+
+    result.each do |nav_item|
+      assert_equal false, nav_item.sort
+      assert_equal expected_link_titles, nav_item.links.map(&:title)
+    end
   end
 
-  test "NavBar.items should enable sorting when category uses default sort" do
+  test "files app menus can opt into sorting with sort true" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
     OodFilesApp.stubs(:candidate_favorite_paths).returns([
       FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/scratch'), title: 'Zebra'),
@@ -192,7 +201,7 @@ class NavBarTest < ActiveSupport::TestCase
       FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
     ])
 
-    result = NavBar.items([{ title: 'Files', apps: 'sys/files' }])
+    result = NavBar.items([{ title: 'Files', apps: 'sys/files', sort: true }])
     assert_equal 1, result.size
     assert_equal true, result[0].sort
 
