@@ -69,9 +69,9 @@ module BatchConnect
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
     end
 
-    def update_with_cache(cache)
+    def update_with_cache(cache, ignore_cacheable: false)
       self.attributes = cache.select do |k, _v|
-        self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)
+        self[k.to_sym] && (ignore_cacheable || self[k.to_sym].cacheable?(app_specific_cache_enabled?))
       end
     end
 

@@ -124,6 +124,12 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       file = "#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_edit.yml"
       Configuration.stubs(:user_settings_file).returns(file)
 
+      # Keep bc_account non-cacheable to test that it works regardless of caching.
+      bc_account_attr = BatchConnect::App.from_token('sys/bc_paraview')
+                                         .attributes.find { |a| a.id == 'bc_account' }
+      refute bc_account_attr.cacheable?(true),
+             'bc_account must stay `cacheable: false` in the sys/bc_paraview fixture'
+
       get batch_connect_edit_settings_path(token: 'sys/bc_paraview', id: 'edit_name')
       assert_response :ok
 
