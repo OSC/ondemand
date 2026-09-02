@@ -1657,8 +1657,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
       click_on(I18n.t('dashboard.import'))
 
-      sleep 2 # sleep ensure the project has been imported
-      # redirected back to the index and it has imported the project with a success notice
+      sleep 1 # sleep ensure the project has been imported
+      # visit again becuase the turbo frame is inconsistent in tests.
+      visit(projects_root_path)
       assert_current_path(projects_root_path)
       assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
       assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
