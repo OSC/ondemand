@@ -31,6 +31,11 @@ function trackConnectionTabSelection(container) {
 }
 
 function restoreConnectionTabs() {
+  if (!document.querySelector('[data-bc-card]')) {
+    selectedConnectionTabs.clear();
+    return;
+  }
+  
   selectedConnectionTabs.forEach((tabTarget, sessionId) => {
     const tabLink = document.querySelector(`#id_${CSS.escape(sessionId)} .nav-tabs .nav-link[href="${tabTarget}"]`);
 

@@ -120,12 +120,12 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
 
       refute_selector("##{target_id}.show")
       refute_selector("##{target_id}.collapsing")
-      assert_equal('false', button['aria-expanded'])
+      assert_equal('false', card.find('button.collapsible-app-card-toggle')['aria-expanded'])
 
-      button.click
+      card.find('button.collapsible-app-card-toggle').click
       
       assert_selector("##{target_id}.show")
-      assert_equal('true', button['aria-expanded'])
+      assert_equal('true', card.find('button.collapsible-app-card-toggle')['aria-expanded'])
     end
   end
   
