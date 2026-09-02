@@ -11,7 +11,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     stub_sys_apps
   end
 
-  def get_test_data(token: 'sys/bc_paraview', title: 'Paraview')
+  def get_test_data(token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
     {
       'id':              get_test_bc_id,
       'cluster_id':      'owens',
@@ -19,7 +19,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       "created_at":      1_701_184_869,
       "token":           token,
       "title":           title,
-      "script_type":     'basic',
+      "script_type":     script_type,
       "cache_completed": false
     }
   end
@@ -32,9 +32,27 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     'abc-123'
   end
 
-  def create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview')
+  def create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
     BatchConnect::Session.stubs(:db_root).returns(Pathname.new(dir))
-    File.write("#{dir}/#{get_test_bc_id}", get_test_data(token: token, title: title).to_json)
+    File.write("#{dir}/#{get_test_bc_id}", get_test_data(token: token, title: title, script_type: script_type).to_json)
+  end
+
+  def create_vnc_running_session(db_dir, dataroot_dir, token: 'sys/bc_desktop/owens', title: 'Desktop')
+    create_test_file(db_dir, token: token, title: title, script_type: 'vnc')
+    OodAppkit.stubs(:dataroot).returns(Pathname.new(dataroot_dir))
+
+    connect = {
+      'host'      => 'node1.example.edu',
+      'port'      => 5901,
+      'password'  => 'testpassword',
+      'websocket' => '5901'
+    }
+
+    output_dir = Pathname.new(dataroot_dir).join(
+      'batch_connect', 'owens', token, 'output', get_test_bc_id
+    )
+    FileUtils.mkdir_p(output_dir)
+    File.write(output_dir.join('connection.yml'), connect.to_yaml)
   end
 
   def stub_scheduler(state, cores: 1, nodes: 1)
@@ -205,6 +223,35 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
             assert_no_selector("#{card_selector}[data-original-marker='true']")
             assert_equal(selector.split('.')[1..], evaluate_script('document.activeElement.classList'))
+          end
+        end
+      end
+    end
+  end
+
+  test 'session card connection tabs remain selected when replaced' do
+    Dir.mktmpdir do |db_dir|
+      Dir.mktmpdir do |dataroot_dir|
+        with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SESSIONS_POLL_DELAY: '10' }) do
+          create_vnc_running_session(db_dir, dataroot_dir)
+          stub_scheduler(:running)
+
+          visit(batch_connect_sessions_path)
+
+          card_selector = "#id_#{get_test_bc_id}"
+          assert_selector(card_selector)
+
+          within(card_selector) do
+            click_link('Native Instructions')
+            assert_selector('.nav-link.active', text: 'Native Instructions')
+          end
+
+          execute_script("$('#{card_selector}').attr('data-original-marker', 'true')")
+          assert_no_selector("#{card_selector}[data-original-marker='true']", wait: 5)
+
+          within(card_selector) do
+            assert_selector('.nav-link.active', text: 'Native Instructions')
+            assert_text('establish the SSH tunnel')
           end
         end
       end

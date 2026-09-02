@@ -1,5 +1,6 @@
 'use strict';
 
+import { Tab } from 'bootstrap';
 import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
 import { pollAndReplace } from './turbo_shim';
@@ -7,6 +8,48 @@ import {
   notificationsEnabled, getNotifiedSessionIds, storeNotifiedSessionIds, 
   pruneNotifiedSessionIds, setupNotificationToggle,
 } from './batch_connect/bc_notifications';
+
+const selectedConnectionTabs = new Map();
+
+function trackConnectionTabSelection(container) {
+  container.addEventListener('shown.bs.tab', (event) => {
+    const tabLink = event.target;
+
+    if (!tabLink.matches('.nav-tabs .nav-link')) {
+      return;
+    }
+
+    const card = tabLink.closest('[data-bc-card]');
+
+    if (!card) {
+      return;
+    }
+
+    const href = tabLink.getAttribute('href');
+
+    if (href && href.startsWith('#')) {
+      selectedConnectionTabs.set(card.dataset.id, href);
+    }
+  });
+}
+
+function restoreConnectionTabs() {
+  selectedConnectionTabs.forEach((tabTarget, sessionId) => {
+    const card = document.querySelector(`[data-bc-card][data-id="${CSS.escape(sessionId)}"]`);
+
+    if (!card) {
+      return;
+    }
+
+    const tabLink = card.querySelector(`.nav-tabs .nav-link[href="${tabTarget}"]`);
+
+    if (!tabLink || tabLink.classList.contains('active')) {
+      return;
+    }
+
+    Tab.getOrCreateInstance(tabLink).show();
+  });
+}
 
 function continuePolling() {
   const bcSessionsContainer = document.getElementById('bc_sessions_content');
@@ -99,7 +142,9 @@ document.addEventListener('DOMContentLoaded', function () {
   
   const bcSessionsContainer = document.getElementById('batch_connect_sessions');
   if (bcSessionsContainer) {
+    trackConnectionTabSelection(bcSessionsContainer);
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
+      restoreConnectionTabs();
       bindFullPageSpinnerEvent();
       checkStatusChanges(sessions, notifiedSessionIds);
     }, continuePolling);
