@@ -905,6 +905,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         .returns(['', 'some error message', exit_failure])
 
       click_on 'Launch'
+      assert_current_path(project_path(project_id))
       assert_selector('.alert-danger', text: "some error message")
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
     end
