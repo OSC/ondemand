@@ -75,6 +75,7 @@ describe 'OnDemand browser test' do
     browser.goto "#{ctr_base_url}/pun/sys/files/fs/var/www/ood"
     expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard/files/fs/var/www/ood")
     expect(browser.title).to match(/File browsing - Open OnDemand\b/)
+    sleep 5
     expect(browser.table(id: 'directory-contents').present?).to be true
   end
 end
