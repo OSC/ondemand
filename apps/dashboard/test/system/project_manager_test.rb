@@ -1655,9 +1655,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
 
       fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
-      click_on(I18n.t('dashboard.import'))
+      find('#import_project').click
 
-      sleep 3 # sleep ensure the project has been imported
+      sleep 1 # sleep ensure the project has been imported
       assert_current_path(projects_root_path)
       assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
       assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
