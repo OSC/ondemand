@@ -259,15 +259,13 @@ function updateHelp(changeId, changeElement, key) {
 
   captureDefaultHelp(changeId);
 
-  const helpContent = getNewHelp(changeElement, key);
-  const defaultHelp = $(`#${changeId}_wrapper`).data('defaultHelp');
-  const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
-
   const wrapper_id = `#${changeId}_wrapper`;
+  const helpContent = getNewHelp(changeElement, key);
+  const defaultHelp = $(wrapper_id).data('defaultHelp');
+  const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
   var helpElement = $(`${wrapper_id} small p`);
-  const helpSmall = $(`${wrapper_id} small`);
 
-  if (contentToSet === '' && helpSmall.length === 0) return;
+  if (contentToSet === '' && helpElement.length === 0) return;
 
   if (helpElement.length == 0) {
     const small = document.createElement('small');
