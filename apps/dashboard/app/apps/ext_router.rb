@@ -1,15 +1,12 @@
-# The router class for all system apps.
-class SysRouter
+# The router class for all external apps.
+class ExtRouter
   attr_reader :name, :owner, :caption, :category
-
-  #TODO: consider making SysRouter a subclass of
-  # OodAppkit::Url
 
   # Get array of apps
   #
-  # @return [Array<OodApp>] all system apps
+  # @return [Array<OodApp>] all external apps
   def self.apps
-    Rails.cache.fetch('sys_apps', expires_in: 6.hours) do
+    Rails.cache.fetch('ext_apps', expires_in: 6.hours) do
       target = base_path
       if target.directory? && target.executable? && target.readable?
         target.children.map do |d|
@@ -22,15 +19,15 @@ class SysRouter
            .reject(&:backup?)
       else
         []
-      end + ExtRouter.apps
+      end
     end
   end
 
   def initialize(name)
     @name = name.to_s
-    @owner = :sys
+    @owner = :ext
     @caption = I18n.t('dashboard.system_apps_caption')
-    @category = ""
+    @category = 'External Apps'
   end
 
   def token
@@ -38,15 +35,21 @@ class SysRouter
   end
 
   def self.base_path
-    Pathname.new "/var/www/ood/apps/sys"
+    Pathname.new(Configuration.external_app_path.to_s).tap do |path|
+      blank = Pathname.new('')
+      return blank unless path.exist? && path.absolute?
+
+      owner = PosixFile.username_from_cache(path.stat.uid)
+      return blank unless owner == Configuration.external_app_owner
+    end
   end
 
   def type
-    :sys
+    :ext
   end
 
   def url
-    "/pun/sys/#{name}"
+    "/pun/ext/#{name}"
   end
 
   def path

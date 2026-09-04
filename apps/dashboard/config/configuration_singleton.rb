@@ -79,7 +79,9 @@ class ConfigurationSingleton
       :project_template_dir           => "#{config_root}/projects",
       :rclone_extra_config            => nil,
       :default_profile                => nil,
-      :plugins_directory              => '/etc/ood/config/plugins'
+      :plugins_directory              => '/etc/ood/config/plugins',
+      :external_app_path              => nil,
+      :external_app_owner            => nil
     }.freeze
   end
 
