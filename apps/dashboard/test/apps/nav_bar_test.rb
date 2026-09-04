@@ -216,6 +216,14 @@ class NavBarTest < ActiveSupport::TestCase
     ], link_titles
   end
 
+  test "apps menus that include files with other apps still sort by default" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+
+    result = NavBar.items([{ title: 'Mixed Apps', apps: ['sys/files', 'sys/shell'] }])
+    assert_equal 1, result.size
+    assert_equal true, result[0].sort
+  end
+
   test "NavBar.items should honor sort false for links navigation group" do
     nav_item = {
       title: "menu title",

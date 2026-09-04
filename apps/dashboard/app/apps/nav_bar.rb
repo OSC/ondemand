@@ -149,9 +149,8 @@ class NavBar
   end
 
   def self.files_apps_menu?(nav_item)
-    return false unless nav_item[:apps]
-
-    Array.wrap(nav_item[:apps]).any? { |token| files_app_token?(token) }
+    tokens = Array.wrap(nav_item[:apps])
+    tokens.length == 1 && files_app_token?(tokens.first)
   end
 
   def self.files_app_token?(token)
