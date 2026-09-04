@@ -61,6 +61,7 @@
           <% if @help_bar.empty? %>
             <%= render partial: 'layouts/nav/develop_dropdown' %>
             <%= render partial: 'layouts/nav/help_dropdown' %>
+            <%= render partial: 'layouts/nav/customizations' %>
             <%= render partial: 'layouts/nav/user' %>
             <%= render partial: 'layouts/nav/log_out' %>
           <% else %>
@@ -74,6 +75,8 @@
   <div id="full_page_spinner" class="global-full-page-spinner d-none">
     <div class="spinner-border" role="status"></div>
   </div>
+
+  <%= render partial: "settings/edit" %>
 
   <div id="main_container" class="<%= local_assigns[:layout_container_class] || 'container-md' %> content mt-4" role="main">
 
