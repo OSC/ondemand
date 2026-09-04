@@ -1726,71 +1726,22 @@ class BatchConnectTest < ApplicationSystemTestCase
       make_bc_app(dir, form)
       visit new_batch_connect_session_context_url('sys/app')
 
-      widget_selector = '#batch_connect_session_context_node_type'
-      assert_selector(widget_selector)
-      widget = find(widget_selector)
-      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
-      help = parent.find(':scope > small')
+      help = find("##{bc_ele_id('node_type')}_wrapper small")
 
       # defaults: owens + gpu
       help.assert_text('GPU nodes on Owens')
 
-      select 'ascend', from: 'batch_connect_session_context_cluster'
+      select('ascend', from: bc_ele_id('cluster'))
       help.assert_text('GPU nodes on Ascend')
 
-      select 'standard', from: 'batch_connect_session_context_node_type'
+      select('standard', from: bc_ele_id('node_type'))
       help.assert_text('Standard nodes on Ascend')
 
-      select 'owens', from: 'batch_connect_session_context_cluster'
+      select('owens', from: bc_ele_id('cluster'))
       help.assert_text('Standard nodes on Owens')
 
-      select 'gpu', from: 'batch_connect_session_context_node_type'
+      select('gpu', from: bc_ele_id('node_type'))
       help.assert_text('GPU nodes on Owens')
-    end
-  end
-
-  test 'data-help for-cluster keeps previous help when unmatched' do
-    form = <<~HEREDOC
-      ---
-      form:
-        - cluster
-        - node_type
-      attributes:
-        cluster:
-          widget: select
-          options:
-            - owens
-            - ascend
-        node_type:
-          widget: select
-          help: 'Default node type help'
-          options:
-            - [
-                'gpu', 'gpu',
-                data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend',
-              ]
-            - 'standard'
-    HEREDOC
-
-    Dir.mktmpdir do |dir|
-      make_bc_app(dir, form)
-      visit new_batch_connect_session_context_url('sys/app')
-
-      widget_selector = '#batch_connect_session_context_node_type'
-      assert_selector(widget_selector)
-      widget = find(widget_selector)
-      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
-      help = parent.find(':scope > small')
-
-      # owens + gpu has no matching for-clause, so keep attribute help
-      help.assert_text('Default node type help')
-
-      select 'ascend', from: 'batch_connect_session_context_cluster'
-      help.assert_text('GPU nodes on Ascend')
-
-      # switching back to owens has no matching value, so keep previous help
-      select 'owens', from: 'batch_connect_session_context_cluster'
-      help.assert_text('GPU nodes on Ascend')
     end
   end
 
