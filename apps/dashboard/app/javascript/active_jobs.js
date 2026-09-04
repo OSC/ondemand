@@ -271,7 +271,7 @@ function create_datatable(options){
                 "autoWidth":        true,
                 searchable:        false,
                 render: function(data, type, row, meta) {
-                  let { jobname, pbsid, cluster, delete_path } = data;
+                  let { jobname, pbsid, cluster, delete_path, has_grafana, starttime, nodes } = data;
                   let support_ticket = "";
                   if (support_path != "") {
                     const support_url = new URL(support_path, document.location);
@@ -281,7 +281,6 @@ function create_datatable(options){
                         <a
                           class="btn btn-primary btn-xs"
                           href="${escapeHtml(support_url.toString())}"
-                          aria-labeled-by"title"
                           aria-label="Submit support ticket for job with ID ${pbsid}"
                           data-toggle="tooltip"
                           title="Submit Support Ticket"
@@ -290,11 +289,35 @@ function create_datatable(options){
                         </a>
                     `;
                   }
+
+                  // At the top of your JS where you pull options/config from the DOM:
+                  const grafanaLinkTemplate = $('#active_jobs_config').data('grafana-link');
+
+                  let grafana_button = "";
+                  if (has_grafana && nodes && nodes.length > 0) {
+                    const grafana_url = grafanaLinkTemplate
+                      .replace('{cluster}', encodeURIComponent(cluster))
+                      .replace('{pbsid}', encodeURIComponent(pbsid))
+                      .replace('{starttime}', encodeURIComponent(starttime))
+                      .replace('{nodes}', encodeURIComponent(nodes.join(',')));
+                    grafana_button = `
+                        <a
+                          class="btn btn-secondary btn-xs"
+                          href="${escapeHtml(grafana_url)}"
+                          target="_blank"
+                          aria-label="View detailed metrics in Grafana for job ${pbsid}"
+                          data-toggle="tooltip"
+                          title="Detailed Metrics (Grafana)"
+                        >
+                          <i class='fas fa-chart-line fa-fw' aria-hidden='true'></i>
+                        </a>
+                    `;
+                  }
+
                   if(delete_path == "") {
-                    return "";
+                    return `<div>${grafana_button}${support_ticket}</div>`;
                   } else if (data.status == "completed") {
-                    // This will be empty when support ticket is disabled.
-                    return `<div>${support_ticket}</div>`;
+                    return `<div>${grafana_button}${support_ticket}</div>`;
                   } else {
                     return `
                       <div>
@@ -303,13 +326,13 @@ function create_datatable(options){
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
                           href="${escapeHtml(delete_path)}"
-                          aria-labeled-by"title"
                           aria-label="Delete job ${escapeHtml(jobname)} with ID ${pbsid}"
                           data-toggle="tooltip"
                           title="Delete Job"
                         >
                           <i class='fas fa-trash-alt fa-fw' aria-hidden='true'></i>
                         </a>
+                        ${grafana_button}
                         ${support_ticket}
                       </div>
                     `;
