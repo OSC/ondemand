@@ -299,7 +299,7 @@ en:
     nav_sessions: My Interactive Sessions
     nav_user: Logged in as %{username}
     network_report: Network Report + %{node}
-    node: 'Node:'
+    node: Node
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
     ok: OK
