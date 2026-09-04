@@ -20,7 +20,7 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-const helpHandlerCache = {};
+const helpHandlerCache = [];
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
@@ -240,22 +240,92 @@ function addLabelHandler(optionId, option, key, configValue) {
   updateLabel(changeId, changeElement, key);
 };
 
-function getNewHelp(changeElement, key) {
-  const selectedOptionHelpIndex = changeElement[0].selectedIndex;
-  const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
-  return selectedOptionHelp.dataset[key];
-}
+/**
+ *
+ * @param {*} subjectId batch_connect_session_context_node_type
+ * @param {*} option gpu
+ * @param {*} key helpNodeTypeForClusterAscend
+ * @param {*} configValue 'GPU nodes on Ascend ...'
+ *
+ * node_type:
+ *   widget: select
+ *   options:
+ *    - [
+ *        'gpu',
+ *        data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend ...'
+ *      ]
+ */
+ function addHelpHandler(subjectId, option, key, configValue) {
+  subjectId = String(subjectId || '');
 
-function captureDefaultHelp(changeId) {
-  const wrapper = $(`#${changeId}_wrapper`);
-  if (wrapper.data('defaultHelp') !== undefined) return;
+  const configObj = parseHelpFor(key);
+  const objectId = configObj['subjectId'];
+  // this is the id of the target object we're setting the help for.
+  // if it's undefined - there's nothing to do, it was likely configured wrong.
+  if(objectId === undefined) return;
 
-  const helpSmall = wrapper.find('small').first();
-  wrapper.data('defaultHelp', helpSmall.length > 0 ? helpSmall.text() : '');
-}
+  const secondDimId = configObj['predicateId'];
+  const secondDimValue = configObj['predicateValue'];
 
-function updateHelp(changeId, changeElement, key) {
-  if (changeId === undefined) return;
+  // several subjects can try to change the object, so the table lookup key has to have both
+  const lookupKey = `${subjectId}_${objectId}`;
+  if(helpLookup[lookupKey] === undefined) helpLookup[lookupKey] = new Table(subjectId, secondDimId);
+  const table = helpLookup[lookupKey];
+  table.put(option, secondDimValue, configValue);
+
+  let cacheKey = `${objectId}_${subjectId}_${secondDimId}`;
+  if(!helpHandlerCache.includes(cacheKey)) {
+    const changeElement = $(`#${subjectId}`);
+
+    changeElement.on('change', (event) => {
+      toggleHelp(event, objectId, secondDimId);
+    });
+
+    helpHandlerCache.push(cacheKey);
+  }
+
+  cacheKey = `${objectId}_${secondDimId}_${subjectId}`;
+  if(secondDimId !== undefined && !helpHandlerCache.includes(cacheKey)){
+    const secondEle = $(`#${secondDimId}`);
+
+    secondEle.on('change', (event) => {
+      toggleHelp(event, objectId, subjectId);
+    });
+
+    helpHandlerCache.push(cacheKey);
+  }
+
+  toggleHelp({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
+};
+
+/**
+ * Update the help text of `changeId` based on the
+ * event, the `otherId` and the settings in helpLookup table.
+ */
+function toggleHelp(event, changeId, otherId) {
+  let x = undefined, y = undefined;
+
+  // many subjects can change the object, so we have to find the correct table
+  // in the form <subject>_<object>
+  let lookupKey = `${event.target['id']}_${changeId}`;
+  if(helpLookup[lookupKey] === undefined) {
+    lookupKey = `${otherId}_${changeId}`;
+  }
+
+  const table = helpLookup[lookupKey];
+
+  // in the example of cluster & node_type, either element can trigger a change
+  // so let's figure out the axis' based on the change element's id.
+  if(event.target['id'] == table.x) {
+    x = snakeCaseWords(event.target.value);
+    y = snakeCaseWords($(`#${otherId}`).val());
+  } else {
+    y = snakeCaseWords(event.target.value);
+    x = snakeCaseWords($(`#${otherId}`).val());
+  }
+
+  const helpContent = table.get(x, y);
+  if (helpContent === undefined || changeId === undefined) return;
 
   captureDefaultHelp(changeId);
 
@@ -277,25 +347,6 @@ function updateHelp(changeId, changeElement, key) {
   ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${contentToSet}`);
 }
 
-function addHelpHandler(optionId, option, key, configValue) {
-  const changeId = idFromToken(key.replace(/^help/, ''));
-  const changeElement = $(`#${optionId}`);
-
-  if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
-  const table = helpLookup[optionId];
-  table.put(changeId, option, configValue);
-
-  if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
-  
-  if(!helpHandlerCache[optionId].includes(changeId)) {
-    helpHandlerCache[optionId].push(changeId);
-    changeElement.on('change', (event) => {
-      updateHelp(changeId, changeElement, key);
-    });
-  };
-
-  updateHelp(changeId, changeElement, key);
-};
 /**
  *
  * @param {*} subjectId batch_connect_session_context_node_type
@@ -755,6 +806,22 @@ function parseMinMaxFor(key) {
     'predicateId': predicateId,
     'predicateValue': snakeCaseWords(predicateValue),
   }
+}
+
+/**
+ *
+ * @param {*} key helpNodeTypeForClusterAscend
+ * @returns
+ *
+ *  {
+ *    'subjectId': 'batch_connect_session_context_node_type',
+ *    'predicateId': 'batch_connect_session_context_cluster',
+ *    'predicateValue': 'ascend'
+ *  }
+ */
+ function parseHelpFor(key) {
+  // reuse the same For-clause parser as min/max
+  return parseMinMaxFor(key.replace(/^help/, 'min'));
 }
 
 function minOrMax(key) {
