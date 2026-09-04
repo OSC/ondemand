@@ -1251,7 +1251,6 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  # 
   test 'help does not include dangerous tags while preserving safe tags' do
     Dir.mktmpdir do |dir|
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
