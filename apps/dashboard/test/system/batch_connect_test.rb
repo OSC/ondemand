@@ -1695,6 +1695,56 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-help responds to for-cluster value' do
+    form = <<~HEREDOC
+      ---
+      form:
+        - cluster
+        - node_type
+      attributes:
+        cluster:
+          widget: select
+          options:
+            - owens
+            - ascend
+        node_type:
+          widget: select
+          options:
+            - [
+                'gpu', 'gpu',
+                data-help-node-type-for-cluster-owens: 'GPU nodes on Owens',
+                data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend',
+              ]
+            - [
+                'standard', 'standard',
+                data-help-node-type-for-cluster-owens: 'Standard nodes on Owens',
+                data-help-node-type-for-cluster-ascend: 'Standard nodes on Ascend',
+              ]
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      help = find("##{bc_ele_id('node_type')}_wrapper small")
+
+      # defaults: owens + gpu
+      help.assert_text('GPU nodes on Owens')
+
+      select('ascend', from: bc_ele_id('cluster'))
+      help.assert_text('GPU nodes on Ascend')
+
+      select('standard', from: bc_ele_id('node_type'))
+      help.assert_text('Standard nodes on Ascend')
+
+      select('owens', from: bc_ele_id('cluster'))
+      help.assert_text('Standard nodes on Owens')
+
+      select('gpu', from: bc_ele_id('node_type'))
+      help.assert_text('GPU nodes on Owens')
+    end
+  end
+
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -1828,7 +1878,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     Open3.stubs(:capture2e).raises(StandardError.new(err_msg))
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), err_msg)
   end
 
