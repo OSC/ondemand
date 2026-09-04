@@ -3,7 +3,7 @@
 <div class="card mt-3">
 
         <% if has_ganglia(data.cluster) %>
-          <div class="card-header"><%= t('dashboard.node') %> <%= node %> <span class="float-end"><%= t('dashboard.job') %> <%= data.pbsid %> </span></div>
+          <div class="card-header"><%= t('dashboard.node') %>: <%= node %> <span class="float-end"><%= t('dashboard.job') %>: <%= data.pbsid %> </span></div>
           <div class="card-body">
         
             <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'small'), class:"img-responsive col-lg-auto col-md-auto col-sm-auto col-xs-auto", alt: t('dashboard.active_jobs_ganlia_CPU')), build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'large'), data: { lightbox: "cpu-report", title: t('dashboard.cpu_report', node: node) } %>
@@ -13,8 +13,8 @@
           </div>
         <% elsif has_grafana(data.cluster) %>
           <div class="card-header">
-            <%= t('dashboard.node') %> <%= node %>
-            <span class="ms-3"><%= t('dashboard.job') %> <%= data.pbsid %></span>
+            <%= t('dashboard.node') %>: <%= node %>
+            <span class="ms-3"><%= t('dashboard.job') %>: <%= data.pbsid %></span>
             <span class="ms-3">
               <a href="<%= build_grafana_link(data.cluster, data.starttime, 'node', node, data.pbsid) %>">
                     <span class="fa fa-external-link-square-alt"></span> <%= t('dashboard.detailed_metrics') %>
