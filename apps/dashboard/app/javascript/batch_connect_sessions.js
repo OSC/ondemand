@@ -1,5 +1,6 @@
 'use strict';
 
+import { Tab } from 'bootstrap';
 import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
 import { pollAndReplace } from './turbo_shim';
@@ -7,6 +8,49 @@ import {
   notificationsEnabled, getNotifiedSessionIds, storeNotifiedSessionIds, 
   pruneNotifiedSessionIds, setupNotificationToggle,
 } from './batch_connect/bc_notifications';
+
+const selectedConnectionTabs = new Map();
+
+function trackConnectionTabSelection(container) {
+  container.addEventListener('shown.bs.tab', (event) => {
+    const tabLink = event.target.closest('.nav-tabs .nav-link');
+    const card = tabLink?.closest('[data-bc-card]');
+    const href = tabLink?.getAttribute('href');
+
+    if (!tabLink || !card || !href?.startsWith('#')) {
+      return;
+    }
+
+    if (tabLink.hasAttribute('data-default-tab')) {
+      selectedConnectionTabs.delete(card.dataset.id);
+      return;
+    }
+
+    selectedConnectionTabs.set(card.dataset.id, href);
+  });
+}
+
+function restoreConnectionTabs() {
+  if (!document.querySelector('[data-bc-card]')) {
+    selectedConnectionTabs.clear();
+    return;
+  }
+  
+  selectedConnectionTabs.forEach((tabTarget, sessionId) => {
+    const tabLink = document.querySelector(`#id_${CSS.escape(sessionId)} .nav-tabs .nav-link[href="${tabTarget}"]`);
+
+    if (!tabLink) {
+      selectedConnectionTabs.delete(sessionId);
+      return;
+    }
+
+    if (tabLink.classList.contains('active')) {
+      return;
+    }
+
+    Tab.getOrCreateInstance(tabLink).show();
+  });
+}
 
 function continuePolling() {
   const bcSessionsContainer = document.getElementById('bc_sessions_content');
@@ -99,7 +143,9 @@ document.addEventListener('DOMContentLoaded', function () {
   
   const bcSessionsContainer = document.getElementById('batch_connect_sessions');
   if (bcSessionsContainer) {
+    trackConnectionTabSelection(bcSessionsContainer);
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
+      restoreConnectionTabs();
       bindFullPageSpinnerEvent();
       checkStatusChanges(sessions, notifiedSessionIds);
     }, continuePolling);

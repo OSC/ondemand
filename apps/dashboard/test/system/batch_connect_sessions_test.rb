@@ -11,7 +11,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     stub_sys_apps
   end
 
-  def get_test_data(token: 'sys/bc_paraview', title: 'Paraview')
+  def get_test_data(token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
     {
       'id':              get_test_bc_id,
       'cluster_id':      'owens',
@@ -19,7 +19,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       "created_at":      1_701_184_869,
       "token":           token,
       "title":           title,
-      "script_type":     'basic',
+      "script_type":     script_type,
       "cache_completed": false
     }
   end
@@ -32,9 +32,29 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     'abc-123'
   end
 
-  def create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview')
+  def create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
     BatchConnect::Session.stubs(:db_root).returns(Pathname.new(dir))
-    File.write("#{dir}/#{get_test_bc_id}", get_test_data(token: token, title: title).to_json)
+    File.write("#{dir}/#{get_test_bc_id}", get_test_data(token: token, title: title, script_type: script_type).to_json)
+  end
+
+  def create_vnc_running_session(dir, token: 'sys/bc_paraview', title: 'Paraview')
+    create_test_file(dir, token: token, title: title, script_type: 'vnc')
+    OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+
+    session = BatchConnect::Session.new.from_json(
+      get_test_data(token: token, title: title, script_type: 'vnc').to_json
+    )
+    FileUtils.mkdir_p(session.staged_root)
+    File.write(session.connect_file, vnc_connect_info.stringify_keys.to_yaml)
+  end
+
+  def vnc_connect_info
+    {
+      host:      'node1.example.edu',
+      port:      5901,
+      password:  'testpassword',
+      websocket: '5901'
+    }
   end
 
   def stub_scheduler(state, cores: 1, nodes: 1)
@@ -209,5 +229,42 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
         end
       end
     end
+  end
+
+  test 'session card connection tabs remain selected when replaced' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
+        Configuration.stubs(:bc_sessions_poll_delay).returns(100)
+        create_vnc_running_session(dir)
+        stub_scheduler(:running)
+
+        visit(batch_connect_sessions_path)
+
+        card_selector = "#id_#{get_test_bc_id}"
+        assert_selector(card_selector)
+
+        within(card_selector) do
+          assert_selector('.h5', text: /Running/)
+          assert_selector('.nav-link', text: 'Native Instructions')
+          click_link('Native Instructions')
+          assert_selector('.nav-link.active', text: 'Native Instructions')
+        end
+
+        execute_script("$('#{card_selector}').attr('data-original-marker', 'true')")
+        assert_no_selector("#{card_selector}[data-original-marker='true']", wait: 5)
+
+        within(card_selector) do
+          assert_selector('.nav-link.active', text: 'Native Instructions')
+          assert_text('establish the SSH tunnel')
+        end
+
+        visit root_path
+      end
+    end
+  ensure
+    Configuration.unstub(:bc_sessions_poll_delay) if Configuration.respond_to?(:unstub)
+    BatchConnect::Session.unstub(:db_root) if BatchConnect::Session.respond_to?(:unstub)
+    OodAppkit.unstub(:dataroot) if OodAppkit.respond_to?(:unstub)
+    OodCore::Job::Adapters::Slurm.any_instance.unstub(:info)
   end
 end
