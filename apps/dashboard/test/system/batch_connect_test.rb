@@ -1878,7 +1878,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     Open3.stubs(:capture2e).raises(StandardError.new(err_msg))
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), err_msg)
   end
 
