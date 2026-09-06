@@ -271,10 +271,10 @@ function create_datatable(options){
                 "autoWidth":        true,
                 searchable:        false,
                 render: function(data, type, row, meta) {
-                  let { jobname, pbsid, cluster, delete_path, has_grafana, starttime, nodes } = data;
+                  let { jobname, pbsid, cluster, delete_path, status, starttime, nodes, grafana_url } = data;
                   let support_ticket = "";
-                  if (support_path != "") {
-                    const support_url = new URL(support_path, document.location);
+                  if (delete_path != "") {
+                    const support_url = new URL(delete_path, document.location);
                     support_url.searchParams.set("job_id", pbsid);
                     support_url.searchParams.set("cluster", cluster);
                     support_ticket = `
@@ -291,33 +291,26 @@ function create_datatable(options){
                   }
 
                   // At the top of your JS where you pull options/config from the DOM:
-                  const grafanaLinkTemplate = $('#active_jobs_config').data('grafana-link');
 
-                  let grafana_button = "";
-                  if (has_grafana && nodes && nodes.length > 0) {
-                    const grafana_url = grafanaLinkTemplate
-                      .replace('{cluster}', encodeURIComponent(cluster))
-                      .replace('{pbsid}', encodeURIComponent(pbsid))
-                      .replace('{starttime}', encodeURIComponent(starttime))
-                      .replace('{nodes}', encodeURIComponent(nodes.join(',')));
-                    grafana_button = `
+                  let grafana_link = "";
+                  if (grafana_url) {
+                    grafana_link = `
                         <a
                           class="btn btn-secondary btn-xs"
                           href="${escapeHtml(grafana_url)}"
                           target="_blank"
-                          aria-label="View detailed metrics in Grafana for job ${pbsid}"
                           data-toggle="tooltip"
-                          title="Detailed Metrics (Grafana)"
+                          title="Metrics in Grafana for job ${pbsid}"
                         >
                           <i class='fas fa-chart-line fa-fw' aria-hidden='true'></i>
                         </a>
                     `;
                   }
 
-                  if(delete_path == "") {
-                    return `<div>${grafana_button}${support_ticket}</div>`;
-                  } else if (data.status == "completed") {
-                    return `<div>${grafana_button}${support_ticket}</div>`;
+                  if (delete_path === "") {
+                    return `<div>${grafana_link}${support_ticket}</div>`;
+                  } else if (status === "completed") {
+                    return `<div>${grafana_link}${support_ticket}</div>`;
                   } else {
                     return `
                       <div>
@@ -332,7 +325,7 @@ function create_datatable(options){
                         >
                           <i class='fas fa-trash-alt fa-fw' aria-hidden='true'></i>
                         </a>
-                        ${grafana_button}
+                        ${grafana_link}
                         ${support_ticket}
                       </div>
                     `;
