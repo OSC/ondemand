@@ -16,6 +16,16 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+fix some inconsistent tests (#5760)\
+Add value specific data-help attributes (#5743)\
+Ensure RAILS_ENV is set during test execution (#5761)\
+Add test cases for bc_account.rb widget (#5755)\
+Add 4.2.4 and 4.1.7 to changelog (#5767)\
+Restore saved settings when editing regardless of caching (#5745)\
+update dependencies (#5759)\
+Update Changelog (#5758)\
+allow ood apps to use yaml extensions (#5749)\
+lint a random file (#5751)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
