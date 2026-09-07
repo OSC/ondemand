@@ -117,7 +117,7 @@ GEM
     dalli (5.1.0)
       logger
     date (3.5.1)
-    domain_name (0.6.20260829)
+    domain_name (0.6.20260902)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
