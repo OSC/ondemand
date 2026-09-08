@@ -9,7 +9,7 @@ class ExtRouter
     Rails.cache.fetch('ext_apps', expires_in: 6.hours) do
       target = base_path
       if target.directory? && target.executable? && target.readable?
-        target.children.map do |d|
+        target.children.select {|c| validate_ownership?(c) }.map do |d|
           router = new(d.basename)
           app = OodApp.new(router)
           app.batch_connect_app? ? BatchConnect::App.new(router: router) : app
@@ -36,11 +36,7 @@ class ExtRouter
 
   def self.base_path
     Pathname.new(Configuration.external_app_path.to_s).tap do |path|
-      blank = Pathname.new('')
-      return blank unless path.exist? && path.absolute?
-
-      owner = PosixFile.username_from_cache(path.stat.uid)
-      return blank unless owner == Configuration.external_app_owner
+      return Pathname.new('') unless path.exist? && path.absolute? && validate_ownership?(path)
     end
   end
 
@@ -54,5 +50,11 @@ class ExtRouter
 
   def path
     @path ||= self.class.base_path.join(name)
+  end
+
+  private
+
+  def self.validate_ownership?(path)
+    PosixFile.username_from_cache(path.stat.uid) == Configuration.external_app_owner
   end
 end
