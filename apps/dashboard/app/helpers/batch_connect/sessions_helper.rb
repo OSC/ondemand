@@ -11,7 +11,7 @@ module BatchConnect::SessionsHelper
       else
         if session.vnc?
           views = []
-          views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect, app_title: session.title } }
+          views << { title: "noVNC Connection",    partial: "novnc",      locals: { id: session.id, connect: session.connect, app_title: session.title } }
           views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]
         else
           views = { partial: "missing_connection" }
