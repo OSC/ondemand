@@ -1729,19 +1729,19 @@ class BatchConnectTest < ApplicationSystemTestCase
       help = find("##{bc_ele_id('node_type')}_wrapper small")
 
       # defaults: owens + gpu
-      help.assert_text('GPU nodes on Owens')
+      assert_text(help, 'GPU nodes on Owens')
 
       select('ascend', from: bc_ele_id('cluster'))
-      help.assert_text('GPU nodes on Ascend')
+      assert_text(help, 'GPU nodes on Ascend')
 
       select('standard', from: bc_ele_id('node_type'))
-      help.assert_text('Standard nodes on Ascend')
+      assert_text(help, 'Standard nodes on Ascend')
 
       select('owens', from: bc_ele_id('cluster'))
-      help.assert_text('Standard nodes on Owens')
+      assert_text(help, 'Standard nodes on Owens')
 
       select('gpu', from: bc_ele_id('node_type'))
-      help.assert_text('GPU nodes on Owens')
+      assert_text(help, 'GPU nodes on Owens')
     end
   end
 
