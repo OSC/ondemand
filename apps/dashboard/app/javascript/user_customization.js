@@ -38,7 +38,7 @@ function addFavorite() {
   newItem.style = '';
   document.getElementById('current_favorites').insertBefore(newItem, document.getElementById('new_favorite_item'));
 
-  const hiddenInput = document.getElementById('user_customization_custom_files_favorites')
+  const hiddenInput = document.getElementById('user_customization_custom_files_favorites');
   const newValue = JSON.parse(hiddenInput.value).concat({"title": title, "path": path});
   hiddenInput.value = JSON.stringify(newValue);
   titleInput.value = '';
@@ -47,14 +47,13 @@ function addFavorite() {
 }
 
 function removeFavorite(e) {
-  console.log(e.target)
   const item = e.target.closest('[data-favorite-path]');
   const hiddenInput = document.getElementById('user_customization_custom_files_favorites');
   const values = JSON.parse(hiddenInput.value);
 
   const title = item.getAttribute('data-favorite-title');
   const path = item.getAttribute('data-favorite-path');
-  const new_values = values.filter(value => (value.title !== title) || (value.path !== path))
+  const new_values = values.filter(value => (value.title !== title) || (value.path !== path));
   hiddenInput.value = JSON.stringify(new_values);
   item.remove();
 }
