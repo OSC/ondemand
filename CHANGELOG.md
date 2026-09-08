@@ -16,16 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-fix some inconsistent tests (#5760)\
-Add value specific data-help attributes (#5743)\
-Ensure RAILS_ENV is set during test execution (#5761)\
-Add test cases for bc_account.rb widget (#5755)\
-Add 4.2.4 and 4.1.7 to changelog (#5767)\
-Restore saved settings when editing regardless of caching (#5745)\
-update dependencies (#5759)\
-Update Changelog (#5758)\
-allow ood apps to use yaml extensions (#5749)\
-lint a random file (#5751)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -44,6 +34,7 @@ lint a random file (#5751)
 - Batch connect polling stops when the tab is hidden in [5637](https://github.com/OSC/ondemand/pull/5637).
 - bc_ssh_to_compute_node now responds to a YAML configuration in [5687](https://github.com/OSC/ondemand/pull/5687).
 - nginx_stage now has a configurable missing_user_message when users cannot be found in [5723](https://github.com/OSC/ondemand/pull/5723).
+- data-help directives now respond to data-help-for-<item> in [5743](https://github.com/OSC/ondemand/pull/5743).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -72,6 +63,7 @@ lint a random file (#5751)
 - Balance warnings widget will now indicate that there are no warnings in [5328](https://github.com/OSC/ondemand/pull/5328).
 - Job Composer's edit job options can correctly set the script in [5722](https://github.com/OSC/ondemand/pull/5722).
 - Job Composer's template notes now correctly display HTML in [5740](https://github.com/OSC/ondemand/pull/5740).
+- Restore saved settings when editing regardless of caching in [5745](https://github.com/OSC/ondemand/pull/5745).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
