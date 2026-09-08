@@ -81,7 +81,7 @@ class ConfigurationSingleton
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
       :external_app_path              => nil,
-      :external_app_owner            => nil
+      :external_app_owner             => nil
     }.freeze
   end
 
