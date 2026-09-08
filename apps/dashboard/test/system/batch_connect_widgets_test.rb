@@ -1250,4 +1250,43 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       refute(find("##{bc_ele_id('first_group_item')}", visible: :hidden).visible?)
     end
   end
+
+  test 'help does not include dangerous tags while preserving safe tags' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_item
+        attributes:
+          test_item:
+            help: |
+              # A header
+              <script>window.alert('hello');</script>
+              <a href="https://github.com/OSC/ondemand">an html anchor</a>
+              [a markdown anchor](https://github.com/OSC/ondemand)
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # note there's no <script> tag here.
+      expected_html = <<~HEREDOC
+        <h1>A header</h1>
+
+        window.alert('hello');
+
+        <p><a href="https://github.com/OSC/ondemand">an html anchor</a>
+        <a href="https://github.com/OSC/ondemand">a markdown anchor</a></p>
+      HEREDOC
+
+      help_html = find("##{bc_ele_id('test_item')}_wrapper small")['innerHTML']
+      assert_equal(expected_html, help_html)
+    end
+  end
 end

@@ -5,6 +5,8 @@ module SmartAttributes
   # should subclass.
   class Attribute
     include BoolReader
+    include ActionView::Helpers::SanitizeHelper
+
     # Unique identifier of attribute
     # @return [String] attribute id
     attr_reader :id
@@ -90,7 +92,8 @@ module SmartAttributes
     end
 
     def help_html(fmt: nil)
-      OodAppkit.markdown.render(help(fmt: fmt)).html_safe
+      content = OodAppkit.markdown.render(help(fmt: fmt))
+      sanitize(content)
     end
 
     def hide_by_default?
