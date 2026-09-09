@@ -98,6 +98,41 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'interactive_apps_menu presents external apps alongside system apps' do
+    SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_interactive_apps'))
+    Configuration.stubs(:external_app_path).returns(Rails.root.join('test/fixtures/usr/shared'))
+    Configuration.stubs(:external_app_owner).returns(CurrentUser.name)
+
+    get batch_connect_sessions_path
+    assert_response :success
+
+    assert_select 'div.card button.card-header', text: 'Interactive Apps'
+    assert_select 'div.card div.list-group a.list-group-item', 6
+    assert_select 'div.card div.list-group .list-group-item' do |items|
+      # Ordering mixes sys and ext apps
+      assert_equal 'Apps', items[0].text
+      assert_equal 'Jupyter Notebook', items[1].text.strip
+      assert_equal '/batch_connect/sys/bc_jupyter/session_contexts/new', items[1]['href']
+
+      assert_equal 'Paraview', items[2].text.strip
+      assert_equal '/batch_connect/sys/bc_paraview/session_contexts/new', items[2]['href']
+
+      assert_equal 'Desktops', items[3].text
+      assert_equal 'Oakley Desktop', items[4].text.strip
+      assert_equal '/batch_connect/sys/bc_desktop/oakley/session_contexts/new', items[4]['href']
+
+      assert_equal 'Desktops: Oakley', items[5].text.strip
+      assert_equal '/batch_connect/ext/bc_with_subapps/oakley/session_contexts/new', items[5]['href']
+
+      assert_equal 'Owens Desktop', items[6].text.strip
+      assert_equal '/batch_connect/ext/bc_with_subapps/owens/session_contexts/new', items[6]['href']
+
+      assert_equal 'Servers', items[7].text
+      assert_equal 'Oakley Usr App', items[8].text.strip
+      assert_equal '/batch_connect/ext/bc_app/session_contexts/new', items[8]['href']
+    end
+  end
+
   test 'should render session panel with delete button when cancel_session_enabled is false (default)' do
     Configuration.stubs(:cancel_session_enabled).returns(false)
 
