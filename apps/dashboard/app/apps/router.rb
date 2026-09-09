@@ -8,7 +8,6 @@ class Router
   #
   # return [SysRouter, UsrRouter or DevRouter]
   def self.router_from_token(token)
-    puts "TOKEN: #{token}"
     type, *app = token.split('/')
     case type
     when 'dev'
