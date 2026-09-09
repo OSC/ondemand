@@ -92,6 +92,7 @@ fr-CA:
     batch_connect_sessions_relaunch_title: Relancer
     batch_connect_sessions_staged_root: répertoire racine mis en scène
     batch_connect_sessions_stats_created_at: 'Créé le :'
+    batch_connect_sessions_stats_expected_time: 'Start attendu:'
     batch_connect_sessions_stats_host: 'Hôte :'
     batch_connect_sessions_stats_session_dir_link_title: Ouvrir le répertoire de la session pour %{session_id}
     batch_connect_sessions_stats_session_id: 'ID de session :'

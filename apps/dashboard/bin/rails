@@ -1,4 +1,10 @@
 #!/usr/bin/env ruby
 APP_PATH = File.expand_path('../config/application', __dir__)
+
+# ensure local .env.* files are ignored during testing.
+if (ARGV.first.to_s == 't' || ARGV.first.to_s.start_with?('test')) && ENV['RAILS_ENV'].nil?
+  ENV['RAILS_ENV'] = "test"
+end
+
 require_relative '../config/boot'
 require 'rails/commands'

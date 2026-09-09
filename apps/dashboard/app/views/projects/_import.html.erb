@@ -37,7 +37,7 @@
         </div>
       </div>
     <p>
-      <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', title: 'Save project', data: {turbo_frame: '_top'} %>
+      <%= form.submit I18n.t('dashboard.import'), class: 'btn btn-primary', data: {turbo_frame: '_top'}, id: 'import_project' %>
       <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
     </p>
   <% end %>

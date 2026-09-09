@@ -14,7 +14,11 @@ module NginxStage
           required: true,
           before_init: -> (user) do
             raise InvalidUser, "invalid user name syntax: #{user}" unless user =~ NginxStage.user_regex
-            user ? User.new(user) : nil
+            begin
+              user ? User.new(user) : nil
+            rescue ArgumentError
+              raise InvalidUser, NginxStage.missing_user_message % user
+            end
           end
         }
       end

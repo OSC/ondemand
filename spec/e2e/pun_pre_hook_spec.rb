@@ -29,6 +29,7 @@ describe 'Pun Pre Hook' do
     it 'does not crash login when pre hook crashes' do
       browser_login(browser)
       browser.goto ctr_base_url
+      sleep 1 # give it time to login
       expect(browser.title).to eq('Dashboard - Open OnDemand')
     end
 

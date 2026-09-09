@@ -25,10 +25,19 @@ Changes are grouped by type:
 - The auto_groups_filter now applies to the Project Manager group selection in [5420](https://github.com/OSC/ondemand/pull/5420).
 - System tests now test for color contrast in [5347](https://github.com/OSC/ondemand/pull/5347).
 - Session state information is present in "bad" state partials in [5616](https://github.com/OSC/ondemand/pull/5616).
-
+- PUNs now restart after group changes in [5610](https://github.com/OSC/ondemand/pull/5610).
+- Expected start time is now in queued session cards in [5642](https://github.com/OSC/ondemand/pull/5642).
+- Fonts can be selected in the Shell app in [5492](https://github.com/OSC/ondemand/pull/5492).
+- Batch Connect form items can be grouped to be in the same row in [5632](https://github.com/OSC/ondemand/pull/5632).
+- Duplicate uploads in the Files app will now warn users in [5603](https://github.com/OSC/ondemand/pull/5603).
+- Persian Localization (fa-IR) is now available in [5669](https://github.com/OSC/ondemand/pull/5669).
+- Batch connect polling stops when the tab is hidden in [5637](https://github.com/OSC/ondemand/pull/5637).
+- bc_ssh_to_compute_node now responds to a YAML configuration in [5687](https://github.com/OSC/ondemand/pull/5687).
+- nginx_stage now has a configurable missing_user_message when users cannot be found in [5723](https://github.com/OSC/ondemand/pull/5723).
+- data-help directives now respond to data-help-for-<item> in [5743](https://github.com/OSC/ondemand/pull/5743).
 
 ### Fixed 
-- File/folder icons in file tables have better screen reader behaviour in [5419](https://github.com/OSC/ondemand/pull/5419).
+- File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
 - All CSS border colors are now supported for pinned app border colors in [5325](https://github.com/OSC/ondemand/pull/5325).
 - Reserved keyword names like 'format' now work in batch connect forms in [5455](https://github.com/OSC/ondemand/pull/5455).
 - File editor control panel cleanly scales to small screen widths in [5456](https://github.com/OSC/ondemand/pull/5456).
@@ -45,11 +54,43 @@ Changes are grouped by type:
 - Multiple checks are now used for session store directories in [5558](https://github.com/OSC/ondemand/pull/5558).
 - app_init_url is now relative in nginx_stage to better support proxies in [5598](https://github.com/OSC/ondemand/pull/5598).
 - File modals now focus input in [5605](https://github.com/OSC/ondemand/pull/5605).
+- auto_qos now enforce queue AllowQos and DenyQos in [5647](https://github.com/OSC/ondemand/pull/5647).
+- Check for username first in user_map.lua to allow for numeric usernames in [5636](https://github.com/OSC/ondemand/pull/5636).
+- Changes on data-set now propagate in [5235](https://github.com/OSC/ondemand/pull/5235).
+- ActiveJobs extended data now uses info#walltime instead of native attributes in [5630](https://github.com/OSC/ondemand/pull/5630).
+- XDMoD jobs widget is more accessible in [5674](https://github.com/OSC/ondemand/pull/5674).
+- 'partition' and 'filter' can correctly be used in batch connect forms in [5617](https://github.com/OSC/ondemand/pull/5617).
+- Balance warnings widget will now indicate that there are no warnings in [5328](https://github.com/OSC/ondemand/pull/5328).
+- Job Composer's edit job options can correctly set the script in [5722](https://github.com/OSC/ondemand/pull/5722).
+- Job Composer's template notes now correctly display HTML in [5740](https://github.com/OSC/ondemand/pull/5740).
+- Restore saved settings when editing regardless of caching in [5745](https://github.com/OSC/ondemand/pull/5745).
+- App manifests now respond to yaml extension as well as yml in [5749](https://github.com/OSC/ondemand/pull/5749).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 - oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
 - Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
+- update_ood_portal no longer responds to the -t option in [5479](https://github.com/OS10C/ondemand/pull/5479).
+- hide_app_version now defaults to true in [5715](https://github.com/OS10C/ondemand/pull/5715).
+- There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OS10C/ondemand/pull/5351).
+
+## [4.2.4] - 2026-08-24
+
+### Fixed
+- app_init_url is now relative in nginx_stage to better support proxies in [5661](https://github.com/OSC/ondemand/pull/5661).
+- Fixed an issue with account alias' colliding in [5660](https://github.com/OSC/ondemand/pull/5660).
+- Job Composer's edit job options can correctly set the script in [5739](https://github.com/OSC/ondemand/pull/5739).
+- Fixed option-for recursion loops in [5742](https://github.com/OSC/ondemand/pull/5742).
+- Apps navbar dropdown has better spacing in [5702](https://github.com/OSC/ondemand/pull/5702).
+
+## [4.1.7] - 2026-08-31
+
+### Fixed
+- app_init_url is now relative in nginx_stage to better support proxies in [5690](https://github.com/OSC/ondemand/pull/5690).
+- Fixed an issue with account alias' colliding in [5689](https://github.com/OSC/ondemand/pull/5689).
+- Job Composer's edit job options can correctly set the script in [5738](https://github.com/OSC/ondemand/pull/5738).
+- Fixed option-for recursion loops in [5741](https://github.com/OSC/ondemand/pull/5741).
+- Apps navbar dropdown has better spacing in [5703](https://github.com/OSC/ondemand/pull/5703).
 
 ## [4.2.3] - 2026-06-24
 
@@ -2030,11 +2071,13 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.3...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.4...HEAD
+[4.2.4]: https://github.com/OSC/ondemand/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/OSC/ondemand/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.2.0
+[4.1.7]: https://github.com/OSC/ondemand/compare/v4.1.6...v4.1.7
 [4.1.6]: https://github.com/OSC/ondemand/compare/v4.1.5...v4.1.6
 [4.1.5]: https://github.com/OSC/ondemand/compare/v4.1.4...v4.1.5
 [4.1.4]: https://github.com/OSC/ondemand/compare/v4.1.3...v4.1.4

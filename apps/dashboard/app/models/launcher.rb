@@ -21,11 +21,9 @@ class Launcher
     end
 
     def all(project_dir)
-      Dir.glob("#{launchers_dir(project_dir).to_s}/*/form.yml").map do |file|
+      Dir.glob("#{launchers_dir(project_dir)}/*/form.yml").map do |file|
         Launcher.from_yaml(file, project_dir)
-      end.compact.sort_by do |s|
-        s.created_at
-      end
+      end.compact.sort_by(&:created_at)
     end
 
     def from_yaml(file, project_dir)
@@ -125,12 +123,10 @@ class Launcher
   # @param method_name the method name called
   # @param arguments the arguments to the call
   # @param block an optional block for the call
-  def method_missing(method_name, *arguments, &block)
+  def method_missing(method_name, *_arguments)
     # not a bug here, we want =, not ==
     if /^(?<id>[^=]+)$/ =~ method_name.to_s && (attribute = self[id])
       attribute.value
-    else
-      nil
     end
   end
 
@@ -177,6 +173,7 @@ class Launcher
 
   def destroy
     return true unless id
+
     path = Launcher.path(project_dir, id)
     FileUtils.remove_dir(Launcher.path(project_dir, id)) if path.exist?
     true
@@ -197,11 +194,11 @@ class Launcher
   end
 
   def submit(options, write_cache: true)
-    cluster_id =  if options.has_key?(:auto_batch_clusters)
-                    options[:auto_batch_clusters]
-                  else
-                    smart_attributes.find { |sm| sm.id == 'auto_batch_clusters' }.value.to_sym
-                  end
+    cluster_id = if options.key?(:auto_batch_clusters)
+                   options[:auto_batch_clusters]
+                 else
+                   smart_attributes.find { |sm| sm.id == 'auto_batch_clusters' }.value.to_sym
+                 end
     adapter = adapter(cluster_id).job_adapter
 
     render_format = adapter.class.name.split('::').last.downcase
@@ -223,10 +220,10 @@ class Launcher
 
   def dependency_helper(options)
     {
-      after: Array(options[:after]),
-      afterok: Array(options[:afterok]),
+      after:      Array(options[:after]),
+      afterok:    Array(options[:afterok]),
       afternotok: Array(options[:afternotok]),
-      afterany: Array(options[:afterany])
+      afterany:   Array(options[:afterany])
     }
   end
 
@@ -262,7 +259,7 @@ class Launcher
   end
 
   def self.launcher_form_file(path)
-    File.join(path, "form.yml")
+    File.join(path, 'form.yml')
   end
 
   def make_launcher_dir
@@ -275,7 +272,7 @@ class Launcher
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
-    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") }
+    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name&.end_with?("_#{postfix}") }
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
@@ -329,10 +326,10 @@ class Launcher
   def cached_values
     @cached_values ||= begin
       cache_file_content = File.read(cache_file_path) if cache_file_path.exist?
-      
+
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
-    rescue => exception
-      Rails.logger.error("Error reading cache file: #{exception.message}")
+    rescue StandardError => e
+      Rails.logger.error("Error reading cache file: #{e.message}")
       {}
     end
   end
@@ -359,7 +356,8 @@ class Launcher
       }
     ).tap do |opts|
       if options[:ood_workflow_sync_key]
-        opts[:job_environment] = (opts[:job_environment] || {}).merge('OOD_WORKFLOW_SYNC_KEY' => options[:ood_workflow_sync_key])
+        opts[:job_environment] =
+          (opts[:job_environment] || {}).merge('OOD_WORKFLOW_SYNC_KEY' => options[:ood_workflow_sync_key])
       end
     end
   end

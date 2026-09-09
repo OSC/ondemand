@@ -301,6 +301,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "hides app version by default" do
+    with_modified_env(OOD_CONFIG_FILE: "/dev/null", OOD_CONFIG_D_DIRECTORY: "/dev/null", OOD_HIDE_APP_VERSION: nil) do
+      assert_equal ConfigurationSingleton.new.hide_app_version?, true
+    end
+  end
+
   test "does not read .bak files" do
     with_modified_env(config_fixtures) do
       cfg = ConfigurationSingleton.new.send(:config)

@@ -20,7 +20,7 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-const helpHandlerCache = {};
+const helpHandlerCache = [];
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
@@ -240,46 +240,119 @@ function addLabelHandler(optionId, option, key, configValue) {
   updateLabel(changeId, changeElement, key);
 };
 
-function getNewHelp(changeElement, key) {
-  const selectedOptionHelpIndex = changeElement[0].selectedIndex;
-  const selectedOptionHelp = changeElement[0].options[selectedOptionHelpIndex];
-  return selectedOptionHelp.dataset[key];
+/**
+ *
+ * @param {*} subjectId batch_connect_session_context_node_type
+ * @param {*} option gpu
+ * @param {*} key helpNodeTypeForClusterAscend
+ * @param {*} configValue 'GPU nodes on Ascend ...'
+ *
+ * node_type:
+ *   widget: select
+ *   options:
+ *    - [
+ *        'gpu',
+ *        data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend ...'
+ *      ]
+ */
+function addHelpHandler(subjectId, option, key, configValue) {
+  subjectId = String(subjectId || '');
+
+  const configObj = parseHelpFor(key);
+  const objectId = configObj['subjectId'];
+  // this is the id of the target object we're setting the help for.
+  // if it's undefined - there's nothing to do, it was likely configured wrong.
+  if(objectId === undefined) return;
+
+  const secondDimId = configObj['predicateId'];
+  const secondDimValue = configObj['predicateValue'];
+
+  // several subjects can try to change the object, so the table lookup key has to have both
+  const lookupKey = `${subjectId}_${objectId}`;
+  if(helpLookup[lookupKey] === undefined) helpLookup[lookupKey] = new Table(subjectId, secondDimId);
+  const table = helpLookup[lookupKey];
+  table.put(option, secondDimValue, configValue);
+
+  let cacheKey = `${objectId}_${subjectId}_${secondDimId}`;
+  if(!helpHandlerCache.includes(cacheKey)) {
+    const changeElement = $(`#${subjectId}`);
+
+    changeElement.on('change', (event) => {
+      toggleHelp(event, objectId, secondDimId);
+    });
+
+    helpHandlerCache.push(cacheKey);
+  }
+
+  cacheKey = `${objectId}_${secondDimId}_${subjectId}`;
+  if(secondDimId !== undefined && !helpHandlerCache.includes(cacheKey)){
+    const secondEle = $(`#${secondDimId}`);
+
+    secondEle.on('change', (event) => {
+      toggleHelp(event, objectId, subjectId);
+    });
+
+    helpHandlerCache.push(cacheKey);
+  }
+
+  toggleHelp({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
+};
+
+function captureDefaultHelp(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultHelp') !== undefined) return;
+
+  const helpSmall = wrapper.find('small').first();
+  wrapper.data('defaultHelp', helpSmall.length > 0 ? helpSmall.text() : '');
 }
 
-function updateHelp(changeId, changeElement, key) {
-  const helpContent = getNewHelp(changeElement, key);
-  if (helpContent === undefined || changeId === undefined) return;
+/**
+ * Update the help text of `changeId` based on the
+ * event, the `otherId` and the settings in helpLookup table.
+ */
+function toggleHelp(event, changeId, otherId) {
+  if (changeId === undefined) return;
+
+  captureDefaultHelp(changeId);
+  let x = undefined, y = undefined;
+
+  // many subjects can change the object, so we have to find the correct table
+  // in the form <subject>_<object>
+  let lookupKey = `${event.target['id']}_${changeId}`;
+  if(helpLookup[lookupKey] === undefined) {
+    lookupKey = `${otherId}_${changeId}`;
+  }
+
+  const table = helpLookup[lookupKey];
+
+  // in the example of cluster & node_type, either element can trigger a change
+  // so let's figure out the axis' based on the change element's id.
+  if(event.target['id'] == table.x) {
+    x = snakeCaseWords(event.target.value);
+    y = snakeCaseWords($(`#${otherId}`).val());
+  } else {
+    y = snakeCaseWords(event.target.value);
+    x = snakeCaseWords($(`#${otherId}`).val());
+  }
+
+  const helpContent = table.get(x, y);
   const wrapper_id = `#${changeId}_wrapper`;
+  const defaultHelp = $(wrapper_id).data('defaultHelp');
+  const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
   var helpElement = $(`${wrapper_id} small p`);
+
+  if (contentToSet === '' && helpElement.length === 0) return;
+
   if (helpElement.length == 0) {
     const small = document.createElement('small');
     small.classList.add('form-text', 'text-muted');
     helpElement = document.createElement('p');
     $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
   }
-  $(helpElement).text(helpContent);
-  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+  $(helpElement).text(contentToSet);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${contentToSet}`);
 }
 
-function addHelpHandler(optionId, option, key, configValue) {
-  const changeId = idFromToken(key.replace(/^help/, ''));
-  const changeElement = $(`#${optionId}`);
-
-  if(helpLookup[optionId] === undefined) helpLookup[optionId] = new Table(changeId, undefined);
-  const table = helpLookup[optionId];
-  table.put(changeId, option, configValue);
-
-  if(helpHandlerCache[optionId] === undefined) helpHandlerCache[optionId] = [];
-  
-  if(!helpHandlerCache[optionId].includes(changeId)) {
-    helpHandlerCache[optionId].push(changeId);
-    changeElement.on('change', (event) => {
-      updateHelp(changeId, changeElement, key);
-    });
-  };
-
-  updateHelp(changeId, changeElement, key);
-};
 /**
  *
  * @param {*} subjectId batch_connect_session_context_node_type
@@ -384,27 +457,31 @@ function setValue(event, changeId) {
   const table = setValueLookup[cacheKey];
   if (table === undefined) return;
 
-  const changeVal = table.get(chosenVal, undefined);
+  var changeVal = table.get(chosenVal, undefined);
+  if (changeVal === undefined) return;
 
-  if(changeVal !== undefined) {
-    const element = document.getElementById(changeId);
-    const elementInfo = getWidgetInfo(changeId);
-    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+  const element = document.getElementById(changeId);
+  const isCheckbox = element.type === "checkbox";
 
-    if(element['type'] == 'checkbox') {
-      setCheckboxValue(element, changeVal);
+  // checkboxes needs to cast number values from the table
+  // to strings because element.value will be a string type.
+  if(isCheckbox) {
+    changeVal = String(changeVal);
+  }
+
+  const matches = element.value === changeVal;
+  const needUpdate = isCheckbox ? element.checked !== matches : !matches;
+
+  if (needUpdate) {
+    if (isCheckbox) {
+      element.checked = matches;
     } else {
       element.value = changeVal;
     }
-  }
-}
 
-function setCheckboxValue(checkbox, value) {
-  const positiveValue = checkbox.value;
-  if(value == positiveValue) {
-    checkbox.checked = true;
-  } else {
-    checkbox.checked = false;
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+    element.dispatchEvent(new Event('change', { bubbles: true }));
   }
 }
 
@@ -737,6 +814,22 @@ function parseMinMaxFor(key) {
   }
 }
 
+/**
+ *
+ * @param {*} key helpNodeTypeForClusterAscend
+ * @returns
+ *
+ *  {
+ *    'subjectId': 'batch_connect_session_context_node_type',
+ *    'predicateId': 'batch_connect_session_context_cluster',
+ *    'predicateValue': 'ascend'
+ *  }
+ */
+ function parseHelpFor(key) {
+  // reuse the same For-clause parser as min/max
+  return parseMinMaxFor(key.replace(/^help/, 'min'));
+}
+
 function minOrMax(key) {
   if(key.startsWith('min')){
     return 'min';
@@ -925,10 +1018,10 @@ function sharedToggleOptionsFor(_event, targetId, optionForType) {
     if (newSelectedOption !== undefined) {
       newSelectedOption.selected = true;
     }
+    
+    // now that we're done, propagate this change to data-set or data-hide handlers
+    document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
   }
-
-  // now that we're done, propagate this change to data-set or data-hide handlers
-  document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
 }
 
 // get attributes based on widget id

@@ -17,11 +17,11 @@ class BatchConnectTest < ApplicationSystemTestCase
          .returns(['1.2.3', '', exit_success])
   end
 
-  def make_bc_app(dir, form)
+  def make_bc_app(dir, form, scontrol: true, sacctmgr: true)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-    stub_scontrol
-    stub_sacctmgr
+    stub_scontrol if scontrol
+    stub_sacctmgr if sacctmgr
     stub_git(app_dir)
     Pathname.new(app_dir).join('form.yml').write(form)
   end
@@ -1632,13 +1632,57 @@ class BatchConnectTest < ApplicationSystemTestCase
       help.assert_text('Choose yes')
 
       select 'First', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose yes')
+      help.assert_text('Choose anything')
 
       select 'Second', from: 'batch_connect_session_context_group'
       help.assert_text('Choose no')
 
       select 'First', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose no')
+      help.assert_text('Choose anything')
+    end
+  end
+
+  test 'data-help restores default help when option has no directive' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'number_field'
+          help: 'Default help text'
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose whatever')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
     end
   end
 
@@ -1685,13 +1729,63 @@ class BatchConnectTest < ApplicationSystemTestCase
       help.assert_text('Choose yes')
 
       select 'Broken', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose yes')
+      help.assert_text('Choose anything')
 
       select 'Second', from: 'batch_connect_session_context_group'
       help.assert_text('Choose no')
 
       select 'Broken', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose no')
+      help.assert_text('Choose anything')
+    end
+  end
+
+  test 'data-help responds to for-cluster value' do
+    form = <<~HEREDOC
+      ---
+      form:
+        - cluster
+        - node_type
+      attributes:
+        cluster:
+          widget: select
+          options:
+            - owens
+            - ascend
+        node_type:
+          widget: select
+          options:
+            - [
+                'gpu', 'gpu',
+                data-help-node-type-for-cluster-owens: 'GPU nodes on Owens',
+                data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend',
+              ]
+            - [
+                'standard', 'standard',
+                data-help-node-type-for-cluster-owens: 'Standard nodes on Owens',
+                data-help-node-type-for-cluster-ascend: 'Standard nodes on Ascend',
+              ]
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      help = find("##{bc_ele_id('node_type')}_wrapper small")
+
+      # defaults: owens + gpu
+      assert_text(help, 'GPU nodes on Owens')
+
+      select('ascend', from: bc_ele_id('cluster'))
+      assert_text(help, 'GPU nodes on Ascend')
+
+      select('standard', from: bc_ele_id('node_type'))
+      assert_text(help, 'Standard nodes on Ascend')
+
+      select('owens', from: bc_ele_id('cluster'))
+      assert_text(help, 'Standard nodes on Owens')
+
+      select('gpu', from: bc_ele_id('node_type'))
+      assert_text(help, 'GPU nodes on Owens')
     end
   end
 
@@ -1828,7 +1922,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     Open3.stubs(:capture2e).raises(StandardError.new(err_msg))
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), err_msg)
   end
 
@@ -1853,6 +1947,84 @@ class BatchConnectTest < ApplicationSystemTestCase
     click_on('Launch')
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
+
+  test 'option for allows cyclical chains of causality' do 
+    form = <<~HEREDOC
+      ---
+      cluster: 
+        - owens
+      form: 
+        - node_type
+        - memory
+        - gpu_type
+      attributes:
+        node_type:
+          widget: select
+          options:
+            - ['Advanced']
+            - ['Basic', data-option-for-memory-high: false, data-option-for-gpu-type-advanced: false]
+        memory:
+          widget: select
+          options:
+            - ['High', data-option-for-node-type-basic: false, data-option-for-gpu-type-advanced: false]
+            - ['Medium']
+        gpu_type:
+          widget: select
+          options:
+            - ['Advanced', data-option-for-node-type-basic: false, data-option-for-memory-high: false]
+            - ['None']
+      HEREDOC
+    
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('display: none;', find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('display: none;', find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('Advanced',       find_value('gpu_type'))
+      assert_equal('',               find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+      
+      select('None', from: bc_ele_id('gpu_type'))
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('',               find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('',               find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('',               find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+
+      select('High', from: bc_ele_id('memory'))
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('display: none;', find_option_style('node_type', 'Basic'))
+      assert_equal('High',           find_value('memory'))
+      assert_equal('',               find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+      
+      select('Medium', from: bc_ele_id('memory'))
+      select('Basic', from: bc_ele_id('node_type'))
+      assert_equal('Basic',          find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('',               find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('display: none;', find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+    end
+  end
+
 
   test 'option for allows special characters with alias' do
     form = <<~HEREDOC
@@ -2228,7 +2400,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         # notice that there are no duplicates. These accounts are not cluster aware
         expected_accounts = ['foo-bar', 'pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71'].sort
+                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'p_s1345'].sort
 
         id = bc_ele_id('auto_accounts')
         actual_accounts = page.all("##{id} option").map(&:value).sort
@@ -2387,6 +2559,57 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'auto queues qos aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+
+      make_bc_app(dir, form, sacctmgr: false, scontrol: false)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:accounts)
+                                   .returns(accounts)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:queues)
+                                   .returns(queues)
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([owens_cluster]))
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('owens', find_value('cluster'))
+
+      select('no-qos', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos1', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos2', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos12', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+    end
+  end
+
   test 'auto qos are dynamic' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
@@ -2445,6 +2668,82 @@ class BatchConnectTest < ApplicationSystemTestCase
       select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'oakley-default', find_value('auto_qos')
       assert_equal 'pzs1124', find_value('auto_accounts')
+    end
+  end
+
+  test 'auto fields respond to default values' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: geophys
+          auto_accounts:
+            value: pzs1118
+          auto_queues:
+            value: quick
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults that are different than regular defaults.
+      # account would be 'pzs1124', qos would be 'owens-default'
+      # and auto_queues would be 'batch'.
+      assert_equal('pzs1118', find_value('auto_accounts'))
+      assert_equal('geophys', find_value('auto_qos'))
+      assert_equal('quick', find_value('auto_queues'))
+    end
+  end
+
+  test 'auto fields with incorrect values fallback to correct defaults' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: wontexist
+          auto_accounts:
+            value: wontexist
+          auto_queues:
+            value: wontexist
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # regular defaults
+      assert_equal('pzs1124', find_value('auto_accounts'))
+      assert_equal('owens-default', find_value('auto_qos'))
+      assert_equal('batch', find_value('auto_queues'))
     end
   end
 

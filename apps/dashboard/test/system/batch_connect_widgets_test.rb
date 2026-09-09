@@ -1127,4 +1127,166 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal('display: none;', find_option_style('gpu_type', 'better'))
     end
   end
+
+  test 'enumerable overrides display correctly as text fields' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # previously these would be something like '#<Enumerator:0x00007f0ea4430788>'
+      assert_equal('', find_value('partition'))
+      assert_equal('', find_value('filter'))
+    end
+  end
+
+  test 'enumerable overrides can be checkboxes and select' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      attributes:
+        partition:
+          widget: select
+          options:
+            - 'a'
+            - 'b'
+        filter:
+          widget: check_box
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      filter = find("##{bc_ele_id('filter')}")
+      partition = find("##{bc_ele_id('partition')}")
+
+      assert_equal('1', filter.value)
+      assert_equal('input', filter.tag_name)
+      assert_equal('checkbox', filter[:type])
+      assert_equal('a', partition.value)
+      assert_equal('select', partition.tag_name)
+    end
+  end
+
+  test 'grouped form items work' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - [
+              first_group_item,
+              second_group_item
+            ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # wrappers are columns in a row.
+      ['first_group_item', 'second_group_item'].each do |item|
+        wrapper = find("##{bc_ele_id(item)}_wrapper")
+        parent = wrapper.find(:xpath, '..')
+
+        assert_equal('col', wrapper[:class])
+        assert_equal('row', parent[:class])
+      end
+    end
+  end
+
+  test 'grouped form items can be hidden' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - hide_items
+          - [
+              first_group_item,
+              second_group_item
+            ]
+        attributes:
+          hide_items:
+            widget: check_box
+            html_options:
+              data-hide-first-group-item-when-checked: true
+              data-hide-second-group-item-when-un-checked: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_unchecked_field('Hide Items')
+      refute(find("##{bc_ele_id('second_group_item')}", visible: :hidden).visible?)
+      assert(find("##{bc_ele_id('first_group_item')}").visible?)
+
+      # check to hide and they flip
+      check('Hide Items')
+      assert(find("##{bc_ele_id('second_group_item')}").visible?)
+      refute(find("##{bc_ele_id('first_group_item')}", visible: :hidden).visible?)
+    end
+  end
+
+  test 'help does not include dangerous tags while preserving safe tags' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_item
+        attributes:
+          test_item:
+            help: |
+              # A header
+              <script>window.alert('hello');</script>
+              <a href="https://github.com/OSC/ondemand">an html anchor</a>
+              [a markdown anchor](https://github.com/OSC/ondemand)
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # note there's no <script> tag here.
+      expected_html = <<~HEREDOC
+        <h1>A header</h1>
+
+        window.alert('hello');
+
+        <p><a href="https://github.com/OSC/ondemand">an html anchor</a>
+        <a href="https://github.com/OSC/ondemand">a markdown anchor</a></p>
+      HEREDOC
+
+      help_html = find("##{bc_ele_id('test_item')}_wrapper small")['innerHTML']
+      assert_equal(expected_html, help_html)
+    end
+  end
 end
