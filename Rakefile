@@ -27,21 +27,19 @@ end
 
 desc 'Update Ondemand'
 task :update do
-  ruby_apps.each do |app|
-    chdir app.path
-    Bundler.with_unbundled_env do
-      sh 'bundle update'
+  (ruby_apps + infrastructure.select(&:gemfile?)).each do |app|
+    chdir(app.path) do
+      Bundler.with_unbundled_env do
+        sh 'bundle update'
+      end
     end
   end
 
   yarn_apps.each do |app|
-    chdir app.path
-    sh 'npm install --production --prefix tmp yarn'
-    sh 'tmp/node_modules/yarn/bin/yarn  upgrade'
-  end
-
-  infrastructure.select(&:gemfile?).each do |app|
-    sh 'bundle update'
+    chdir(app.path) do
+      sh 'npm install --production --prefix tmp yarn'
+      sh 'tmp/node_modules/yarn/bin/yarn  upgrade'
+    end
   end
 end
 
