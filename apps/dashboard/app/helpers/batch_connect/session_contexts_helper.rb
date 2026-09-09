@@ -22,11 +22,11 @@ module BatchConnect::SessionContextsHelper
                     form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
                   end
                 when 'radio', 'radio_button'
-                  form.form_group attrib.id, help: field_options[:help] do
+                  form.form_group(attrib.id, help: field_options[:help], class: all_options[:class]) do
                     opts = {
-                      label:   attrib.label,
                       checked: (attrib.value.presence || attrib.field_options[:checked])
-                    }
+                      # need to reject help here or it's duplicated
+                    }.merge(attrib.all_options.reject { |key, _v| key == :help } )
                     content_tag(:div, id: [form.object_name, attrib.id].join('_')) do
                       form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)                  
                     end
