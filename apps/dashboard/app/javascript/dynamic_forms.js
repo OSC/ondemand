@@ -255,7 +255,7 @@ function addLabelHandler(optionId, option, key, configValue) {
  *        data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend ...'
  *      ]
  */
- function addHelpHandler(subjectId, option, key, configValue) {
+function addHelpHandler(subjectId, option, key, configValue) {
   subjectId = String(subjectId || '');
 
   const configObj = parseHelpFor(key);
@@ -298,11 +298,22 @@ function addLabelHandler(optionId, option, key, configValue) {
   toggleHelp({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
 };
 
+function captureDefaultHelp(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultHelp') !== undefined) return;
+
+  const helpSmall = wrapper.find('small').first();
+  wrapper.data('defaultHelp', helpSmall.length > 0 ? helpSmall.text() : '');
+}
+
 /**
  * Update the help text of `changeId` based on the
  * event, the `otherId` and the settings in helpLookup table.
  */
 function toggleHelp(event, changeId, otherId) {
+  if (changeId === undefined) return;
+
+  captureDefaultHelp(changeId);
   let x = undefined, y = undefined;
 
   // many subjects can change the object, so we have to find the correct table
@@ -325,18 +336,21 @@ function toggleHelp(event, changeId, otherId) {
   }
 
   const helpContent = table.get(x, y);
-  if (helpContent === undefined || changeId === undefined) return;
-
   const wrapper_id = `#${changeId}_wrapper`;
+  const defaultHelp = $(wrapper_id).data('defaultHelp');
+  const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
   var helpElement = $(`${wrapper_id} small p`);
+
+  if (contentToSet === '' && helpElement.length === 0) return;
+
   if (helpElement.length == 0) {
     const small = document.createElement('small');
     small.classList.add('form-text', 'text-muted');
     helpElement = document.createElement('p');
     $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
   }
-  $(helpElement).text(helpContent);
-  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+  $(helpElement).text(contentToSet);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${contentToSet}`);
 }
 
 /**
