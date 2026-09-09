@@ -16,7 +16,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
   test 'customizations panel opens and renders without errors' do
     Dir.mktmpdir do |dir|
       stub_user_settings_store(dir)
-      visit('/')
+      visit(files_url(Rails.root)) # Change to '/' once navbar item is enabled
       open_customization_panel
 
       assert_selector('.offcanvas-header', text: I18n.t('dashboard.customizations'))
@@ -131,7 +131,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
   test 'adding a path that does not exist' do
     Dir.mktmpdir do |dir|
       stub_user_settings_store(dir)
-      visit('/')
+      visit(files_url(Rails.root)) # Change to '/' once navbar item is enabled
       open_customization_panel
 
       click_on(I18n.t('dashboard.add_favorite_path'))
