@@ -39,6 +39,10 @@ task :update do
     sh 'npm install --production --prefix tmp yarn'
     sh 'tmp/node_modules/yarn/bin/yarn  upgrade'
   end
+
+  infrastructure.select(&:gemfile?).each do |app|
+    sh 'bundle update'
+  end
 end
 
 task default: ['test']
