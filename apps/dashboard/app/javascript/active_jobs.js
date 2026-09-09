@@ -273,15 +273,15 @@ function create_datatable(options){
                 render: function(data, type, row, meta) {
                   let { jobname, pbsid, cluster, delete_path, status, starttime, nodes, grafana_url } = data;
                   let support_ticket = "";
-                  if (delete_path != "") {
-                    const support_url = new URL(delete_path, document.location);
+                  if (support_path) {
+                    const support_url = new URL(support_path, document.location);
                     support_url.searchParams.set("job_id", pbsid);
                     support_url.searchParams.set("cluster", cluster);
                     support_ticket = `
                         <a
                           class="btn btn-primary btn-xs"
                           href="${escapeHtml(support_url.toString())}"
-                          aria-label="Submit support ticket for job with ID ${pbsid}"
+                          aria-label="Submit support ticket for job with ID ${escapeHtml(pbsid)}"
                           data-toggle="tooltip"
                           title="Submit Support Ticket"
                         >
