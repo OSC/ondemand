@@ -2747,6 +2747,29 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'auto_cores are cluster aware' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        form:
+          - auto_batch_clusters
+          - auto_cores
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+      raise StandardError
+    end
+  end
+
+  test 'auto_cores are queue aware' do
+  end
+
   test 'path_selector works' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
