@@ -148,10 +148,10 @@ en:
     close_alert: Close this alert.
     close_notice: Close this notice.
     cpu_report: CPU Report + %{node}
-    customize: Customize
-    customizations: Customizations
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
+    customizations: Customizations
+    customize: Customize
     date: Date
     delete: Delete
     delete_favorite_title: Remove custom favorite %{favorite}
