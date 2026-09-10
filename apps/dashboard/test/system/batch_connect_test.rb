@@ -3246,6 +3246,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         sleep 1
         find('#batch_connect_session_context_launch').click
+        sleep 1
         expected = output_fixture('user_settings/simple_bc_test.yml')
         actual = File.read("#{dir}/settings.yml")
 
