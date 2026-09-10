@@ -1933,18 +1933,17 @@ class BatchConnectTest < ApplicationSystemTestCase
     BatchConnect::Session.any_instance.stubs(:adapter).returns(BrokenAdapter.new)
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_submission'), err_msg)
   end
 
   test 'save errors are shown' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     err_msg = 'this is a just a test for staging error messages'
-    # Open3.stubs(:capture2e).returns(['', exit_failure])
     BatchConnect::Session.any_instance.stubs(:stage).raises(StandardError.new(err_msg))
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
 
@@ -2302,7 +2301,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # the script.sh.erb raises the message 'context.auto_modules_netcdf_serial' (note the _ in the name)
       # which should be 'netcdf-serial/4.3.3.1'
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
       verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
     end
   end
@@ -3245,8 +3244,8 @@ class BatchConnectTest < ApplicationSystemTestCase
         sleep 5 # modal needs to sleep?
         click_on('Save')
 
-        click_on('Launch', wait: 30)
-        sleep 3
+        sleep 1
+        find('#batch_connect_session_context_launch').click
         expected = output_fixture('user_settings/simple_bc_test.yml')
         actual = File.read("#{dir}/settings.yml")
 
@@ -3346,7 +3345,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       value = find("##{id}").value
       assert_equal('A', value)
 
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
       visit(new_batch_connect_session_context_url('sys/app'))
       cache_data = YAML.safe_load(File.read(cache_file.to_s)).to_h
       assert_equal('A', value)
@@ -3380,7 +3379,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       raw_password = 'abc123'
       fill_in(bc_ele_id('some_field'), with: 42)
       fill_in(bc_ele_id('some_password_field'), with: raw_password)
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
 
       sleep 3
       visit new_batch_connect_session_context_url('sys/app')
