@@ -510,6 +510,48 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'radio_buttons accept html options among other attributes' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_radio
+        attributes:
+          test_radio:
+            widget: radio_button
+            options:
+              - one
+              - two
+            html_options:
+              class: 'text-danger'
+              data:
+                special: 'yes'
+            help: 'my cool help'
+            label: 'my even cooler label'
+            required: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      help = find("##{bc_ele_id('test_radio')}_wrapper > div > small")
+      group_wrapper = find("##{bc_ele_id('test_radio')}_wrapper > div")
+      label = find("##{bc_ele_id('test_radio')}_label")
+
+      # html_options overrides default class mb-3
+      assert_equal('text-danger', group_wrapper['class'])
+      assert_text(help, 'my cool help')
+      assert_text(label, 'my even cooler label')
+      ['one', 'two'].each do |option|
+        ele = find("##{bc_ele_id('test_radio')}_#{option}")
+        assert(ele['required'])
+        assert_equal('yes', ele['data-special'])
+      end
+    end
+  end
+
   test 'auto modules are case sensitive' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
