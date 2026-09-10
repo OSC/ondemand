@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_160_601_203_013) do
+ActiveRecord::Schema[7.0].define(version: 2016_06_01_203013) do
   create_table 'jobs', force: :cascade do |t|
     t.integer 'workflow_id'
     t.string 'status'
