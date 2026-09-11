@@ -68,13 +68,13 @@ class AppsController < ApplicationController
 
   # keyword args?
   def router_for_type(type, owner, app_name, path)
-    if type.to_sym == :sys
-      ::SysRouter.new(app_name)
-    elsif type.to_sym == :usr
+    if type.to_sym == :usr
       ::UsrRouter.new(app_name, owner)
     elsif type.to_sym == :dev
       # FIXME: right now just return my dev apps router
       ::DevRouter.new(app_name)
+    elsif SysRouter.defines?(type.to_sym)
+      ::SysRouter.new(app_name, prefix: type.to_sym)
     else
       #FIXME: app type doesn't exit
       raise ActionController::RoutingError.new('Not Found')

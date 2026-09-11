@@ -16,12 +16,9 @@ class Router
     when 'usr'
       owner, name, = app
       UsrRouter.new(name, owner)
-    when 'sys'
+    else
       name, = app
-      SysRouter.new(name)
-    when 'ext'
-      name, = app
-      ExtRouter.new(name)
+      SysRouter.new(name, prefix: type.to_sym) if SysRouter.defines?(type.to_sym)
     end
   end
 

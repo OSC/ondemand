@@ -121,8 +121,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
   test 'should create Interactive Apps dropdown with external apps' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_interactive_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
-    Configuration.stubs(:external_app_path).returns(Rails.root.join('test/fixtures/usr/shared'))
-    Configuration.stubs(:external_app_owner).returns(CurrentUser.name)
+    Configuration.stubs(:external_apps_config).returns([{path: Rails.root.join('test/fixtures/usr/shared'), owner: CurrentUser.name, prefix: 'ext'}])
 
     get root_path
 
