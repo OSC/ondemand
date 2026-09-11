@@ -30,7 +30,6 @@ class NavTest < ActionDispatch::IntegrationTest
   test 'external app uses its URL directly in navbar' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
     Configuration.stubs(:open_apps_in_new_window?).returns(false)
-    Rails.cache.delete('sys_apps')
 
     get '/'
 
