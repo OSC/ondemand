@@ -34,6 +34,7 @@ Changes are grouped by type:
 - Batch connect polling stops when the tab is hidden in [5637](https://github.com/OSC/ondemand/pull/5637).
 - bc_ssh_to_compute_node now responds to a YAML configuration in [5687](https://github.com/OSC/ondemand/pull/5687).
 - nginx_stage now has a configurable missing_user_message when users cannot be found in [5723](https://github.com/OSC/ondemand/pull/5723).
+- data-help directives now respond to data-help-for-<item> in [5743](https://github.com/OSC/ondemand/pull/5743).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -62,6 +63,8 @@ Changes are grouped by type:
 - Balance warnings widget will now indicate that there are no warnings in [5328](https://github.com/OSC/ondemand/pull/5328).
 - Job Composer's edit job options can correctly set the script in [5722](https://github.com/OSC/ondemand/pull/5722).
 - Job Composer's template notes now correctly display HTML in [5740](https://github.com/OSC/ondemand/pull/5740).
+- Restore saved settings when editing regardless of caching in [5745](https://github.com/OSC/ondemand/pull/5745).
+- App manifests now respond to yaml extension as well as yml in [5749](https://github.com/OSC/ondemand/pull/5749).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).

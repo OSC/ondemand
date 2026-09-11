@@ -510,6 +510,48 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'radio_buttons accept html options among other attributes' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_radio
+        attributes:
+          test_radio:
+            widget: radio_button
+            options:
+              - one
+              - two
+            html_options:
+              class: 'text-danger'
+              data:
+                special: 'yes'
+            help: 'my cool help'
+            label: 'my even cooler label'
+            required: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      help = find("##{bc_ele_id('test_radio')}_wrapper > div > small")
+      group_wrapper = find("##{bc_ele_id('test_radio')}_wrapper > div")
+      label = find("##{bc_ele_id('test_radio')}_label")
+
+      # html_options overrides default class mb-3
+      assert_equal('text-danger', group_wrapper['class'])
+      assert_text(help, 'my cool help')
+      assert_text(label, 'my even cooler label')
+      ['one', 'two'].each do |option|
+        ele = find("##{bc_ele_id('test_radio')}_#{option}")
+        assert(ele['required'])
+        assert_equal('yes', ele['data-special'])
+      end
+    end
+  end
+
   test 'auto modules are case sensitive' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
@@ -1248,6 +1290,45 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       check('Hide Items')
       assert(find("##{bc_ele_id('second_group_item')}").visible?)
       refute(find("##{bc_ele_id('first_group_item')}", visible: :hidden).visible?)
+    end
+  end
+
+  test 'help does not include dangerous tags while preserving safe tags' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_item
+        attributes:
+          test_item:
+            help: |
+              # A header
+              <script>window.alert('hello');</script>
+              <a href="https://github.com/OSC/ondemand">an html anchor</a>
+              [a markdown anchor](https://github.com/OSC/ondemand)
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # note there's no <script> tag here.
+      expected_html = <<~HEREDOC
+        <h1>A header</h1>
+
+        window.alert('hello');
+
+        <p><a href="https://github.com/OSC/ondemand">an html anchor</a>
+        <a href="https://github.com/OSC/ondemand">a markdown anchor</a></p>
+      HEREDOC
+
+      help_html = find("##{bc_ele_id('test_item')}_wrapper small")['innerHTML']
+      assert_equal(expected_html, help_html)
     end
   end
 end

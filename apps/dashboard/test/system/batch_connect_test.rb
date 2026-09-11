@@ -1632,13 +1632,57 @@ class BatchConnectTest < ApplicationSystemTestCase
       help.assert_text('Choose yes')
 
       select 'First', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose yes')
+      help.assert_text('Choose anything')
 
       select 'Second', from: 'batch_connect_session_context_group'
       help.assert_text('Choose no')
 
       select 'First', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose no')
+      help.assert_text('Choose anything')
+    end
+  end
+
+  test 'data-help restores default help when option has no directive' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'number_field'
+          help: 'Default help text'
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose whatever')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
     end
   end
 
@@ -1685,13 +1729,13 @@ class BatchConnectTest < ApplicationSystemTestCase
       help.assert_text('Choose yes')
 
       select 'Broken', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose yes')
+      help.assert_text('Choose anything')
 
       select 'Second', from: 'batch_connect_session_context_group'
       help.assert_text('Choose no')
 
       select 'Broken', from: 'batch_connect_session_context_group'
-      help.assert_text('Choose no')
+      help.assert_text('Choose anything')
     end
   end
 
@@ -1729,19 +1773,19 @@ class BatchConnectTest < ApplicationSystemTestCase
       help = find("##{bc_ele_id('node_type')}_wrapper small")
 
       # defaults: owens + gpu
-      help.assert_text('GPU nodes on Owens')
+      assert_text(help, 'GPU nodes on Owens')
 
       select('ascend', from: bc_ele_id('cluster'))
-      help.assert_text('GPU nodes on Ascend')
+      assert_text(help, 'GPU nodes on Ascend')
 
       select('standard', from: bc_ele_id('node_type'))
-      help.assert_text('Standard nodes on Ascend')
+      assert_text(help, 'Standard nodes on Ascend')
 
       select('owens', from: bc_ele_id('cluster'))
-      help.assert_text('Standard nodes on Owens')
+      assert_text(help, 'Standard nodes on Owens')
 
       select('gpu', from: bc_ele_id('node_type'))
-      help.assert_text('GPU nodes on Owens')
+      assert_text(help, 'GPU nodes on Owens')
     end
   end
 
@@ -1889,18 +1933,17 @@ class BatchConnectTest < ApplicationSystemTestCase
     BatchConnect::Session.any_instance.stubs(:adapter).returns(BrokenAdapter.new)
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_submission'), err_msg)
   end
 
   test 'save errors are shown' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     err_msg = 'this is a just a test for staging error messages'
-    # Open3.stubs(:capture2e).returns(['', exit_failure])
     BatchConnect::Session.any_instance.stubs(:stage).raises(StandardError.new(err_msg))
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
 
@@ -2258,7 +2301,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # the script.sh.erb raises the message 'context.auto_modules_netcdf_serial' (note the _ in the name)
       # which should be 'netcdf-serial/4.3.3.1'
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
       verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
     end
   end
@@ -3201,8 +3244,9 @@ class BatchConnectTest < ApplicationSystemTestCase
         sleep 5 # modal needs to sleep?
         click_on('Save')
 
-        click_on('Launch', wait: 30)
-        sleep 3
+        sleep 1
+        find('#batch_connect_session_context_launch').click
+        sleep 1
         expected = output_fixture('user_settings/simple_bc_test.yml')
         actual = File.read("#{dir}/settings.yml")
 
@@ -3302,7 +3346,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       value = find("##{id}").value
       assert_equal('A', value)
 
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
       visit(new_batch_connect_session_context_url('sys/app'))
       cache_data = YAML.safe_load(File.read(cache_file.to_s)).to_h
       assert_equal('A', value)
@@ -3336,7 +3380,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       raw_password = 'abc123'
       fill_in(bc_ele_id('some_field'), with: 42)
       fill_in(bc_ele_id('some_password_field'), with: raw_password)
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
 
       sleep 3
       visit new_batch_connect_session_context_url('sys/app')
