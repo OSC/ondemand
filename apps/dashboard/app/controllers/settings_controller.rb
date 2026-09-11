@@ -7,7 +7,7 @@ class SettingsController < ApplicationController
   ALLOWED_SETTINGS = [:profile, { announcements: {} }].freeze
 
   def update
-    new_settings = read_settings(settings_param)
+    new_settings = settings_param.to_h
     update_user_settings(new_settings) unless new_settings.empty?
 
     logger.info "settings: updated user settings to: #{new_settings}"
@@ -23,17 +23,40 @@ class SettingsController < ApplicationController
     end
   end
 
+  def update_user_customization
+    new_settings = user_customization_param.to_h
+    alert = nil
+    updated = false
+    if new_settings.include?(:custom_files_favorites)
+      parsed = JSON.parse(new_settings[:custom_files_favorites])
+      if @user_customization.update_files_favorites(parsed)
+        updated = true
+      else
+        alert = I18n.t('dashboard.favorites_not_updated')
+      end
+    end
+
+    announcements = Hash.new
+    announcements[:notice] = I18n.t('dashboard.settings_updated') if updated
+    announcements[:alert] = alert if alert
+    redirect_back allow_other_host: false, fallback_location: root_url, **announcements
+  end
+
+  def edit
+    render(partial: 'settings/form', layout: false)
+  end
+
   private
 
   def settings_param
     params.require(:settings).permit(ALLOWED_SETTINGS) if params[:settings].present?
   end
 
-  def back_param
-    params.permit(:back)[:back]
+  def user_customization_param
+    params.require(:user_customization).permit([:custom_files_favorites])
   end
 
-  def read_settings(params)
-    params.to_h
+  def back_param
+    params.permit(:back)[:back]
   end
 end
