@@ -261,10 +261,5 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
         visit root_path
       end
     end
-  ensure
-    Configuration.unstub(:bc_sessions_poll_delay) if Configuration.respond_to?(:unstub)
-    BatchConnect::Session.unstub(:db_root) if BatchConnect::Session.respond_to?(:unstub)
-    OodAppkit.unstub(:dataroot) if OodAppkit.respond_to?(:unstub)
-    OodCore::Job::Adapters::Slurm.any_instance.unstub(:info)
   end
 end

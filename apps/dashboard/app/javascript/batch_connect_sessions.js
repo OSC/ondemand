@@ -22,10 +22,9 @@ function trackConnectionTabSelection(container) {
 
     if (tabLink.hasAttribute('data-default-tab')) {
       selectedConnectionTabs.delete(card.dataset.id);
-      return;
+    } else {
+      selectedConnectionTabs.set(card.dataset.id, href);
     }
-
-    selectedConnectionTabs.set(card.dataset.id, href);
   });
 }
 
@@ -38,16 +37,13 @@ function restoreConnectionTabs() {
   selectedConnectionTabs.forEach((tabTarget, sessionId) => {
     const tabLink = document.querySelector(`#id_${CSS.escape(sessionId)} .nav-tabs .nav-link[href="${tabTarget}"]`);
 
-    if (!tabLink) {
+    if (tabLink) {
+      if (!tabLink.classList.contains('active')) {
+        tabLink.click();
+      }
+    } else {
       selectedConnectionTabs.delete(sessionId);
-      return;
     }
-
-    if (tabLink.classList.contains('active')) {
-      return;
-    }
-
-    tabLink.click();
   });
 }
 
