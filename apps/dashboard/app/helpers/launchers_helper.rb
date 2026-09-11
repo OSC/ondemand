@@ -70,6 +70,11 @@ module LaunchersHelper
     create_editable_widget(script_form_double, attrib)
   end
 
+  def auto_num_nodes_template
+    attrib = SmartAttributes::AttributeFactory.build_auto_num_nodes
+    create_editable_widget(script_form_double, attrib)
+  end
+  
   def auto_log_location_template
     attrib = SmartAttributes::AttributeFactory.build_auto_log_location
     create_editable_widget(script_form_double, attrib)
