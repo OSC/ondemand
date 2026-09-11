@@ -1,6 +1,5 @@
 'use strict';
 
-import { Tab } from 'bootstrap';
 import { bcIndexUrl, bcPollDelay } from './config';
 import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
 import { pollAndReplace } from './turbo_shim';
@@ -48,7 +47,7 @@ function restoreConnectionTabs() {
       return;
     }
 
-    Tab.getOrCreateInstance(tabLink).show();
+    tabLink.click();
   });
 }
 

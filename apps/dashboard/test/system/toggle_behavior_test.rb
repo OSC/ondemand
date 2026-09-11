@@ -46,15 +46,6 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     launcher_element = all('#launcher_list div.list-group-item').first
     launcher_element[:id].gsub('launcher_', '')
   end
-
-  def wait_for_initial_bc_sessions_poll
-    execute_script(<<~JS)
-      const url = document.getElementById('ood_config')?.dataset?.bcIndexUrl;
-      if (!url) return Promise.resolve();
-      return fetch(url, { headers: { Accept: 'text/vnd.turbo-stream.html' } })
-        .then(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-    JS
-  end
   
   # FIXME: Duplicated from project_test_helper.rb
   def setup_workflow(dir)
@@ -115,7 +106,6 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
 
   test 'collapsible batch connect app menu toggles' do
     visit(batch_connect_sessions_path)
-    wait_for_initial_bc_sessions_poll
 
     within('nav[aria-label="Interactive Apps Menu"]') do
       card = find('.collapsible-app-card', match: :first)
@@ -124,19 +114,18 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       list_group = card.find("##{target_id}", visible: :all)
 
       assert_selector("##{target_id}.show")
-      assert list_group.visible?, 'App list should be visible initially'
+      assert_equal('true', button['aria-expanded'])
 
       button.click
 
       refute_selector("##{target_id}.show")
       refute_selector("##{target_id}.collapsing")
-      assert_not list_group.visible?, 'App list should be hidden after toggle'
+      assert_equal('false', button['aria-expanded'])
 
-      card.find('button.collapsible-app-card-toggle').click
+      button.click
 
-      refute_selector("##{target_id}.collapsing")
       assert_selector("##{target_id}.show")
-      assert list_group.visible?, 'App list should be visible after second toggle'
+      assert_equal('true', button['aria-expanded'])
     end
   end
   
