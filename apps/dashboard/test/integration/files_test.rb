@@ -51,7 +51,7 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
   # like download_and_test but skips the download param, so we get the inline response
   def get_file(dest_path, file)
-    FileUtils.cp(file, dest_path)
+    put_file(files_path(filepath: dest_path), file)
     get files_path(filepath: dest_path)
     @response
   end
@@ -93,30 +93,23 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test 'can get a text file and its content-type comes back right' do
-    Dir.mktmpdir do |tmpdir|
-      src_file = 'test/fixtures/files/download/test_text.txt'
-      dest_path = "#{tmpdir}/test_text.txt"
+    src_file = Rails.root.join('test/fixtures/files/download/test_text.txt').to_s
 
-      response = get_file(dest_path, src_file)
+    get files_path(filepath: src_file)
 
-      assert_response :success
-      assert_match(%r{\Atext/plain}, response.headers['Content-Type'])
-      assert_equal File.read(src_file, encoding: 'BINARY'), response.body.dup.force_encoding('BINARY')
-    end
+    assert_response :success
+    assert_equal 'text/plain; charset=utf-8', response.headers['Content-Type']
+    assert_equal File.read(src_file), response.body
   end
 
   test 'files with utf8 content come back correctly, this is the bug from #1218' do
-    Dir.mktmpdir do |tmpdir|
-      src_file = 'test/fixtures/files/download/utf8_content.txt'
-      dest_path = "#{tmpdir}/utf8_content.txt"
+    src_file = Rails.root.join('test/fixtures/files/download/utf8_content.txt').to_s
 
-      response = nil
-      assert_nothing_raised { response = get_file(dest_path, src_file) }
+    assert_nothing_raised { get files_path(filepath: src_file) }
 
-      assert_response :success
-      assert_match(/charset=utf-8/i, response.headers['Content-Type'])
-      assert_equal File.read(src_file, encoding: 'BINARY'), response.body.dup.force_encoding('BINARY')
-    end
+    assert_response :success
+    assert_equal 'text/plain; charset=utf-8', response.headers['Content-Type']
+    assert_equal File.read(src_file), response.body.force_encoding('UTF-8')
   end
 
   test 'utf8 files can be downloaded too, not just viewed inline' do
@@ -144,6 +137,7 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
       get files_path(filepath: tmpdir), headers: { 'Accept': 'application/json' }
 
       assert_response :success
+      assert_equal 'application/json; charset=utf-8', response.headers['Content-Type']
       names = JSON.parse(@response.body)['files'].map { |f| f['name'] }
       assert_includes names, utf8_filename
     end
