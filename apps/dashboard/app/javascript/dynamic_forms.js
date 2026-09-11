@@ -307,23 +307,19 @@ function captureDefaultHelp(changeId) {
 }
 
 /**
- * Update the help text of `changeId` based on the
- * event, the `otherId` and the settings in helpLookup table.
+ * Resolve a value from a two-dimensional lookup table given a change event.
+ * Either dimension can fire the event; this finds the correct table and axes.
  */
-function toggleHelp(event, changeId, otherId) {
-  if (changeId === undefined) return;
-
-  captureDefaultHelp(changeId);
-  let x = undefined, y = undefined;
-
+ function valueFromLookupTable(event, changeId, otherId, lookup) {
   // many subjects can change the object, so we have to find the correct table
   // in the form <subject>_<object>
   let lookupKey = `${event.target['id']}_${changeId}`;
-  if(helpLookup[lookupKey] === undefined) {
+  if(lookup[lookupKey] === undefined) {
     lookupKey = `${otherId}_${changeId}`;
   }
 
-  const table = helpLookup[lookupKey];
+  const table = lookup[lookupKey];
+  let x = undefined, y = undefined;
 
   // in the example of cluster & node_type, either element can trigger a change
   // so let's figure out the axis' based on the change element's id.
@@ -335,7 +331,19 @@ function toggleHelp(event, changeId, otherId) {
     x = snakeCaseWords($(`#${otherId}`).val());
   }
 
-  const helpContent = table.get(x, y);
+  return table.get(x, y);
+}
+
+/**
+ * Update the help text of `changeId` based on the
+ * event, the `otherId` and the settings in helpLookup table.
+ */
+ function toggleHelp(event, changeId, otherId) {
+  if (changeId === undefined) return;
+
+  captureDefaultHelp(changeId);
+
+  const helpContent = valueFromLookupTable(event, changeId, otherId, helpLookup);
   const wrapper_id = `#${changeId}_wrapper`;
   const defaultHelp = $(wrapper_id).data('defaultHelp');
   const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
@@ -610,30 +618,9 @@ function valueFromEvent(event) {
  * Update the min & max values of `changeId` based on the
  * event, the `otherId` and the settings in minMaxLookup table.
  */
-function toggleMinMax(event, changeId, otherId) {
-  let x = undefined, y = undefined;
-
-  // many subjects can change the object, so we have to find the correct table
-  // in the form <subject>_<object>
-  let lookupKey = `${event.target['id']}_${changeId}`;
-  if(minMaxLookup[lookupKey] === undefined) {
-    lookupKey = `${otherId}_${changeId}`;
-  }
-
-  const table = minMaxLookup[lookupKey];
-
-  // in the example of cluster & node_type, either element can trigger a change
-  // so let's figure out the axis' based on the change element's id.
-  if(event.target['id'] == table.x) {
-    x = snakeCaseWords(event.target.value);
-    y = snakeCaseWords($(`#${otherId}`).val());
-  } else {
-    y = snakeCaseWords(event.target.value);
-    x = snakeCaseWords($(`#${otherId}`).val());
-  }
-
+ function toggleMinMax(event, changeId, otherId) {
   const changeElement = $(`#${changeId}`);
-  const mm = table.get(x, y);
+  const mm = valueFromLookupTable(event, changeId, otherId, minMaxLookup);
   const prev = {
     min: parseInt(changeElement.attr('min')),
     max: parseInt(changeElement.attr('max')),
