@@ -100,8 +100,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test 'interactive_apps_menu presents external apps alongside system apps' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_interactive_apps'))
-    Configuration.stubs(:external_app_path).returns(Rails.root.join('test/fixtures/usr/shared'))
-    Configuration.stubs(:external_app_owner).returns(CurrentUser.name)
+    Configuration.stubs(:external_apps_config).returns([{path: Rails.root.join('test/fixtures/usr/shared'), owner: CurrentUser.name, prefix: 'prefix'}])
 
     get batch_connect_sessions_path
     assert_response :success
