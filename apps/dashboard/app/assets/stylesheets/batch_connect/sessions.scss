@@ -115,9 +115,9 @@ nav[aria-label="Interactive Apps Menu"] {
     // Bootstrap sets hover vars on .list-group; must override here, not on nav.
     --bs-list-group-action-hover-bg: $bc-hover-surface;
     --bs-list-group-action-hover-color: var(--bs-emphasis-color);
-    --bs-list-group-active-bg: rgb(0, 136, 204);
+    --bs-list-group-active-bg: #{$ood-blue};
     --bs-list-group-active-color: #fff;
-    --bs-list-group-active-border-color: rgb(0, 136, 204);
+    --bs-list-group-active-border-color: #{$ood-blue};
     background-color: var(--bs-body-bg);
   }
 
@@ -140,9 +140,9 @@ nav[aria-label="Interactive Apps Menu"] {
     &.active,
     &.active:hover,
     &.active:focus {
-      background-color: rgb(0, 136, 204) !important;
+      background-color: $ood-blue !important;
       color: #fff !important;
-      border-color: rgb(0, 136, 204) !important;
+      border-color: $ood-blue !important;
     }
   }
 }

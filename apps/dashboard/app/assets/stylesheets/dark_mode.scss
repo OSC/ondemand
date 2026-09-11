@@ -356,7 +356,7 @@ $ood-safe-viewing-body-bg: #1a1a1a;
 
   .modal table.dataTable tbody > tr.selected,
   .modal table.dataTable tbody > tr.selected > td {
-    background-color: rgb(0, 136, 204) !important;
+    background-color: $ood-blue !important;
     color: #fff !important;
     box-shadow: none;
   }

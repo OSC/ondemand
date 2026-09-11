@@ -1,10 +1,10 @@
 #directory-contents.table.dataTable {
-  --dt-row-selected: 0, 136, 204;
+  --dt-row-selected: 0, 95, 133;
 }
 
 #directory-contents .selected {
   color: white;
-  background-color: rgb(0, 136, 204);
+  background-color: $ood-blue;
 
   .dropdown-menu a {
     color: var(--bs-dropdown-link-color);
