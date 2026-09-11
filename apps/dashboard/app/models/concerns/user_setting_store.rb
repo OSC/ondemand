@@ -17,6 +17,12 @@ module UserSettingStore
     save_user_settings
   end
 
+  def clear_user_setting(key)
+    user_settings
+    @user_settings.delete(key.to_sym)
+    save_user_settings
+  end
+
   private
 
   def read_user_settings
