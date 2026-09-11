@@ -342,6 +342,89 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-label restores default label when option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small', data-label-cores: 'Number of Cores (1-4)']
+              - ['medium', 'medium']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-4)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+
+      select('large', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-16)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+
+  test 'data-label keeps default when initially selected option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small']
+              - ['medium', 'medium', data-label-cores: 'Number of Cores (1-8)']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+      refute_equal 'undefined', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-8)', label.text
+
+      select('small', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+  
   test 'global_bc_form_items work correctly' do
     Dir.mktmpdir do |dir|
       app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }
