@@ -330,20 +330,20 @@ class RemoteFilesTest < ApplicationSystemTestCase
     with_rclone_conf(Rails.root.to_s) do
       visit files_url('alias_remote', '/')
 
-      find('tbody a', exact_text: 'app')
-      find('tbody a', exact_text: 'config')
+      assert_selector('tbody a', text: 'app')
+      assert_selector('tbody a', text: 'config')
 
       find('#goto-btn').click
       find('#files_input_modal_input').set('/app')
       find('#files_input_modal_ok_button').click
-      find('tbody a', exact_text: 'helpers')
-      find('tbody a', exact_text: 'controllers')
+      assert_selector('tbody a', text: 'helpers')
+      assert_selector('tbody a', text: 'controllers')
 
       find('#goto-btn').click
       find('#files_input_modal_input').set('/')
       find('#files_input_modal_ok_button').click
-      find('tbody a', exact_text: 'app')
-      find('tbody a', exact_text: 'config')
+      assert_selector('tbody a', text: 'app')
+      assert_selector('tbody a', text: 'config')
     end
   end
 

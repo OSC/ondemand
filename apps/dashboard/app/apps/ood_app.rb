@@ -221,7 +221,11 @@ class OodApp
   end
 
   def manifest_path
-    path.join("manifest.yml")
+    potentials = Pathname.glob(path.join("manifest.{yml,yaml}"))
+    mp = potentials.select { |p| p.file? }.first
+
+    # if mp is nil here, just return this path and let another layer deal with the error.
+    mp.nil? ? path.join("manifest.yml") : mp
   end
 
   def svg_icon?

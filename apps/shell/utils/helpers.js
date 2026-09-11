@@ -46,7 +46,17 @@ function definedHosts() {
   return hosts;
 }
 
+function userCSS(baseURI) {
+  // Support providing both absolute and relative (to shell app) stylesheets
+  const css = process.env.OOD_SHELL_USER_CSS_URL || "stylesheets/fonts.css";
+  if (css.startsWith("/")) {
+    return css;
+  }
+  return `${baseURI}/${css}`;
+}
+
 module.exports = {
   hostInAllowList,
-  definedHosts
+  definedHosts,
+  userCSS,
 }

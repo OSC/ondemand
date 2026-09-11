@@ -19,7 +19,10 @@ that may be removed in the next major version.
 
 ## Patch Versions
 Patch versions primarily contain security fixes and bug fixes and are not intended to 
-introduce new functionality.
+introduce new functionality or break existing functionality.
+
+Though security patches may in fact break existing functionality if that functionality
+is insecure and leaves sites vulnerable.
 
 ## Nightly Versions
 Nightly packages (.rpm and .deb) are built every night from the current commit in
@@ -44,7 +47,7 @@ but could contain bugs.
 Patch versions are generally released on an approximately 8-week cadence from announcement 
 to announcement. This cadence was introduced to provide sites with a more predictable 
 planning window for updates. Exceptions may occur for high-impact bugs or security 
-vulnerabilities, which may be released outside of the standard patch window.
+vulnerabilities rated above moderate, which may be released outside of the standard patch window.
 
 Major and minor versions are released as new functionality is ready and validated through 
 internal testing and subsequent production deployment at OSC. 

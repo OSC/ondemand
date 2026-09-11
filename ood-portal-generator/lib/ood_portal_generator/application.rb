@@ -299,7 +299,7 @@ module OodPortalGenerator
 
           parser.separator ''
           parser.separator 'Default:'
-          parser.separator "  #{mode} -c #{config} -t #{template}"
+          parser.separator "  #{mode} -c #{config}"
         end.parse!(argv)
 
         # Render Apache portal config
@@ -345,10 +345,6 @@ module OodPortalGenerator
       def add_shared_opt_parser_attrs(parser)
         parser.on('-c', '--config CONFIG', String, 'YAML config file used to render template') do |v|
           @config = v
-        end
-
-        parser.on('-t', '--template TEMPLATE', String, 'ERB template that is rendered') do |v|
-          @template = v
         end
 
         parser.on('-i', '--insecure', TrueClass, 'Generate insecure configs if configured') do |v|

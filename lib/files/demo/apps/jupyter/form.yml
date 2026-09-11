@@ -1,5 +1,0 @@
-cluster: localhost
-
-
-form:
-  - bc_num_hours

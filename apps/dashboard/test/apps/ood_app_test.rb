@@ -28,4 +28,49 @@ class OodAppTest < ActiveSupport::TestCase
     under_test.stubs(:version_from_file).returns(nil)
     assert_nil under_test.version
   end
+
+  test 'apps correctly pick read manifest' do
+    Dir.mktmpdir do |dir|
+      manifest = <<~HEREDOC
+        ---
+        name: Jupyter
+        category: Interactive Apps
+        subcategory: Apps
+        icon: fa://gear
+        role: batch_connect
+      HEREDOC
+
+      Pathname.new("#{dir}").join('manifest.yml').write(manifest)
+      app = OodApp.new(PathRouter.new(dir))
+
+      assert_equal('Jupyter', app.title)
+      assert_equal('Interactive Apps', app.category)
+      assert_equal('Apps', app.subcategory)
+      assert_equal('fa://gear', app.icon_uri)
+      assert_equal('batch_connect', app.role)
+    end
+  end
+
+  # same as test above, only the manifest has yaml extension instead of yml
+  test 'manifests can be YAML extension' do
+    Dir.mktmpdir do |dir|
+      manifest = <<~HEREDOC
+        ---
+        name: Jupyter
+        category: Interactive Apps
+        subcategory: Apps
+        icon: fa://gear
+        role: batch_connect
+      HEREDOC
+
+      Pathname.new("#{dir}").join('manifest.yaml').write(manifest)
+      app = OodApp.new(PathRouter.new(dir))
+
+      assert_equal('Jupyter', app.title)
+      assert_equal('Interactive Apps', app.category)
+      assert_equal('Apps', app.subcategory)
+      assert_equal('fa://gear', app.icon_uri)
+      assert_equal('batch_connect', app.role)
+    end
+  end
 end

@@ -31,5 +31,14 @@ module SmartAttributes
         assert_equal('pzs0714', attribute.value.to_s)
       end
     end
+
+    test 'dynamic_accounts hyphenates underscores in data-option-for-cluster keys' do
+      Rails.cache.clear
+      Configuration.stubs(:job_clusters).returns([stub(id: 'owens'), stub(id: 'x-nextgen_ascend')])
+      SmartAttributes::AttributeFactory.stubs(:accounts).returns([stub(name: 'pzs0714', cluster: 'owens', to_s: 'pzs0714')])
+
+      data = SmartAttributes::AttributeFactory.dynamic_accounts.find { |t| t[0] == 'pzs0714' }.last
+      assert data.key?('data-option-for-cluster-x-nextgen-ascend')
+    end
   end
 end

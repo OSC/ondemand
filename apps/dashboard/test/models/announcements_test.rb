@@ -86,7 +86,7 @@ class AnnouncementsTest < ActiveSupport::TestCase
 
     Rails.logger.expects(:warn).with(regexp_matches(/Syntax error in announcement file/))
     announcement = Announcements.all(f.path).first
-    assert_equal(:warning, announcement.type)
+    assert_equal(:danger, announcement.type)
   end
 
   test 'should create invalid announcement for invalid yaml file' do

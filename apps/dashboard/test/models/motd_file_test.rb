@@ -40,6 +40,22 @@ class MotdFileTest < ActiveSupport::TestCase
     assert_equal '', motd_file.content
   end
 
+  test 'when MOTD_PATH is unset, a default formatter is returned' do
+    with_modified_env({ 'MOTD_PATH' => nil }) do
+      formatter = MotdFile.new.formatter
+      assert_instance_of(MotdFormatter::Default, formatter)
+      assert_equal(I18n.t('dashboard.motd_title'), formatter.title)
+      assert_not_empty(formatter.content.to_s)
+    end
+  end
+
+  test 'when MOTD_PATH is explicitly blank, no formatter is returned' do
+    with_modified_env({ 'MOTD_PATH' => '' }) do
+      formatter = MotdFile.new.formatter
+      assert_nil(formatter)
+    end
+  end
+  
   test 'when rss is a remote source' do
     with_modified_env({ MOTD_PATH: 'https://www.osc.edu/rss.xml', MOTD_FORMAT: 'rss' }) do
       formatter = MotdFile.new.formatter

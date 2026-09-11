@@ -2,6 +2,9 @@
 
 # Helper for /apps pages.
 module AppHelper
+
+  include ERB::Util
+  
   # FIXME: show_errors is not used
   def manifest_markdown(text, show_errors: false)
     RenderManifestMarkdown.renderer.render(text).html_safe
@@ -18,8 +21,8 @@ module AppHelper
   end
 
   def recent_settings(app)
-    content = app.attributes.select(&:display?).map do |attr|
-      "<div class='row'> <dt>#{attr.label}:</dt> <dd>#{attr.value}</dd> </div>"
+    content = app.attributes.select(&:display?).map do |attrib|
+      "<div class='row'> <dt>#{html_escape(attrib.label)}:</dt> <dd>#{html_escape(attrib.value)}</dd> </div>"
     end
     content.empty? ? nil : ['<dl class="app-settings-popup">', content.join('<hr>'), '</dl>'].join
   end

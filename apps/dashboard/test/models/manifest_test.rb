@@ -18,6 +18,8 @@ class ManifestTest < ActiveSupport::TestCase
     manifest = Manifest.load('test/fixtures/files/manifest_invalid')
     assert !manifest.valid?, 'manifest should not be valid'
     assert manifest.exist?, 'manifest should exist'
+    assert manifest.errors[:load].present?
+    assert_instance_of Psych::SyntaxError, manifest.exception
   end
 
   test 'load an empty manifest' do
@@ -30,6 +32,23 @@ class ManifestTest < ActiveSupport::TestCase
     manifest = Manifest.load('test/fixtures/files/manifest_missing')
     assert !manifest.valid?, 'manifest should not be valid'
     assert !manifest.exist?, 'manifest should not exist'
+    assert manifest.errors[:load].present?
+  end
+
+  test 'save failure records errors' do
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'manifest.yml')
+      File.write(path, "name: test\n")
+      File.chmod(0o444, path)
+
+      manifest = Manifest.new(name: 'updated')
+      save_result = manifest.save(path)
+
+      assert_equal false, save_result
+      assert manifest.errors[:save].present?
+    ensure
+      File.chmod(0o644, path) if defined?(path) && File.exist?(path)
+    end
   end
 
   test 'save a valid manifest' do

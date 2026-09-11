@@ -125,8 +125,6 @@ class UserSettingStoreTest < ActionView::TestCase
       Configuration.stubs(:user_settings_file).returns(File.join(path_parts))
 
       yield if block_given?
-
     end
   end
-
 end
