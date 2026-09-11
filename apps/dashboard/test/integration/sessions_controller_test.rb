@@ -121,14 +121,14 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_equal '/batch_connect/sys/bc_desktop/oakley/session_contexts/new', items[4]['href']
 
       assert_equal 'Desktops: Oakley', items[5].text.strip
-      assert_equal '/batch_connect/ext/bc_with_subapps/oakley/session_contexts/new', items[5]['href']
+      assert_equal '/batch_connect/prefix/bc_with_subapps/oakley/session_contexts/new', items[5]['href']
 
       assert_equal 'Owens Desktop', items[6].text.strip
-      assert_equal '/batch_connect/ext/bc_with_subapps/owens/session_contexts/new', items[6]['href']
+      assert_equal '/batch_connect/prefix/bc_with_subapps/owens/session_contexts/new', items[6]['href']
 
       assert_equal 'Servers', items[7].text
       assert_equal 'Oakley Usr App', items[8].text.strip
-      assert_equal '/batch_connect/ext/bc_app/session_contexts/new', items[8]['href']
+      assert_equal '/batch_connect/prefix/bc_app/session_contexts/new', items[8]['href']
     end
   end
 
