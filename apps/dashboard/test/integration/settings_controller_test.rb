@@ -108,18 +108,46 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-    test 'should redirect to referrer if back param is true' do
-      Dir.mktmpdir do |temp_data_dir|
-        Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
-        data = { settings: {}, back: 'true' }
-        referrer_url = '/some-previous-page'
+  test 'should save safe_viewing setting when posting safe_viewing' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: { safe_viewing: 'true' } }
 
-        post settings_path, params: data, headers: @headers.merge('HTTP_REFERER' => referrer_url)
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal I18n.t('dashboard.settings_updated'), flash[:notice]
+      assert_equal true, TestUserSettings.new.user_settings[:safe_viewing]
 
-        assert_response :redirect
-        assert_redirected_to referrer_url
-      end
+      data[:settings][:safe_viewing] = 'false'
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_equal false, TestUserSettings.new.user_settings[:safe_viewing]
     end
+  end
+
+  test 'should save safe_viewing as json' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: { safe_viewing: true } }
+
+      post settings_path, params: data, headers: @headers.merge('Accept' => 'application/json')
+      assert_response :no_content
+      assert_equal true, TestUserSettings.new.user_settings[:safe_viewing]
+    end
+  end
+
+  test 'should redirect to referrer if back param is true' do
+    Dir.mktmpdir do |temp_data_dir|
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
+      data = { settings: {}, back: 'true' }
+      referrer_url = '/some-previous-page'
+
+      post settings_path, params: data, headers: @headers.merge('HTTP_REFERER' => referrer_url)
+
+      assert_response :redirect
+      assert_redirected_to referrer_url
+    end
+  end
 
   class TestUserSettings
     include UserSettingStore

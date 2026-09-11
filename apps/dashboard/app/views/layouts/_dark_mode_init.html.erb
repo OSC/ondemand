@@ -1,10 +1,15 @@
 <script nonce="<%= content_security_policy_nonce %>">
   (function () {
     try {
-      <%# Must match STORAGE_KEY in app/javascript/dark_mode.js %>
+      var html = document.documentElement;
+      // Server already rendered theme from UserSettingStore — nothing to do.
+      if (html.getAttribute('data-bs-theme') === 'dark') {
+        return;
+      }
+      <%# Flash / migration fallback. Must match STORAGE_KEY in dark_mode.js %>
       if (localStorage.getItem('ood_safe_viewing') === 'true') {
-        document.documentElement.setAttribute('data-bs-theme', 'dark');
-        document.documentElement.classList.add('ood-safe-viewing');
+        html.setAttribute('data-bs-theme', 'dark');
+        html.classList.add('ood-safe-viewing');
       }
     } catch (e) {
       // localStorage may be unavailable in private browsing

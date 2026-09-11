@@ -110,3 +110,13 @@ export function userHome() {
   const cfgData = configData();
   return cfgData['userHome'];
 }
+
+export function settingsPath() {
+  const cfgData = configData();
+  return cfgData['settingsPath'];
+}
+
+export function safeViewingEnabled() {
+  const cfgData = configData();
+  return cfgData['safeViewing'] === 'true';
+}

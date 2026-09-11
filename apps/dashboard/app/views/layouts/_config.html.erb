@@ -15,4 +15,6 @@
   data-support-path="<%= support_path if respond_to?(:support_path) %>"
   data-apps-datatable-page-length="<%= @user_configuration.apps_datatable[:page_length] %>"
   data-user-home="<%= CurrentUser.home %>"
+  data-settings-path="<%= settings_path %>"
+  data-safe-viewing="<%= safe_viewing_enabled? %>"
 ></div>

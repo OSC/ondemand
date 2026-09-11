@@ -130,6 +130,13 @@ module ApplicationHelper
     end
   end
 
+  # Whether the user has Safe Viewing enabled in ~/.config/ondemand/settings.yml
+  def safe_viewing_enabled?
+    return false unless Configuration.dark_mode_enabled?
+
+    ActiveModel::Type::Boolean.new.cast(@user_configuration&.user_settings&.[](:safe_viewing))
+  end
+  
   # Renders default OOD logos for light and safe-viewing themes
   def safe_viewing_logo_tags(light:, dark:, alt:, height:, classes: '')
     logo_class = ['ood-logo', classes].compact.join(' ').strip

@@ -1,10 +1,12 @@
 import { storeBoolean, getBoolean } from './utils';
+import { csrfToken, settingsPath, safeViewingEnabled as serverSafeViewingEnabled } from './config';
 
 export const STORAGE_KEY = 'ood_safe_viewing';
 export const SAFE_VIEWING_CHANGE_EVENT = 'ood-safe-viewing-change';
 
 export function isSafeViewingEnabled() {
-  return getBoolean(STORAGE_KEY);
+  return document.documentElement.getAttribute('data-bs-theme') === 'dark'
+    || document.documentElement.classList.contains('ood-safe-viewing');
 }
 
 export function applySafeViewing(enabled) {
@@ -43,17 +45,47 @@ function updateToggleButton(enabled) {
   }
 }
 
-export function initDarkMode() {
-  applySafeViewing(isSafeViewingEnabled());
+function persistSafeViewing(enabled) {
+  storeBoolean(STORAGE_KEY, enabled);
 
+  const body = new URLSearchParams();
+  body.append('settings[safe_viewing]', enabled ? 'true' : 'false');
+
+  return fetch(settingsPath(), {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': csrfToken(),
+      Accept: 'application/json',
+    },
+    body,
+  }).catch(() => {
+    // Preference remains in localStorage as a short-term fallback if the request fails.
+  });
+}
+
+export function initDarkMode() {
   const button = document.getElementById('ood_dark_mode_toggle');
   if (!button) {
     return;
   }
 
-  button.addEventListener('click', () => {
-    const enabled = !isSafeViewingEnabled();
+  const serverEnabled = serverSafeViewingEnabled();
+  const localEnabled = getBoolean(STORAGE_KEY);
+  let enabled = serverEnabled;
+
+  // Migrate legacy localStorage-only preference into UserSettingStore.
+  if (!serverEnabled && localEnabled) {
+    enabled = true;
+    persistSafeViewing(true);
+  } else {
     storeBoolean(STORAGE_KEY, enabled);
-    applySafeViewing(enabled);
+  }
+
+  applySafeViewing(enabled);
+
+  button.addEventListener('click', () => {
+    const next = !isSafeViewingEnabled();
+    applySafeViewing(next);
+    persistSafeViewing(next);
   });
 }
