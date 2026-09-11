@@ -16,12 +16,14 @@ class WorkflowsController < ApplicationController
   def new
     @workflow = Workflow.new(index_params)
     @launchers = Launcher.all(project_directory)
+    @workflow_overrides = @workflow.override_attributes
   end
 
   # GET /projects/:id/workflows/edit
   def edit
     return unless load_project_and_workflow_objects
     @launchers = Launcher.all(project_directory)
+    @workflow_overrides = @workflow.override_attributes
   end
 
   # TODO to remove this with launcher_ids as we will need them after new UI
@@ -54,9 +56,11 @@ class WorkflowsController < ApplicationController
     cloned = @workflow.deep_dup
     cloned.name += " (Copy)"
     session[:cloned_metadata] = cloned.metadata.to_h.deep_stringify_keys
+    session[:cloned_advanced_overrides] = cloned.advanced_overrides.to_h.deep_stringify_keys
 
     @workflow = cloned
     @launchers = Launcher.all(project_directory)
+    @workflow_overrides = @workflow.override_attributes
 
     render :new
   end
@@ -150,13 +154,29 @@ class WorkflowsController < ApplicationController
     params
       .require(:workflow)
       .permit(:name, :description, :id, :sync_key_enabled, launcher_ids: [])
-      .merge(project_dir: project_directory, metadata: session.delete(:cloned_metadata) || {})
+      .merge(
+        project_dir: project_directory, metadata: session.delete(:cloned_metadata) || {},
+        advanced_overrides: (extract_advanced_overrides || session.delete(:cloned_advanced_overrides) || {}).stringify_keys
+      )
   end
 
   def update_params
     params
       .require(:workflow)
       .permit(:name, :description, :id, :sync_key_enabled, launcher_ids: [])
+      .merge(advanced_overrides: (extract_advanced_overrides || {}).stringify_keys)
+  end
+
+  # We use launcher's smart-attribute widgets, which render fields with name="launcher[<smart_attribute_id>]".
+  # The overrides arrive as params[:launcher], not under params[:workflow].
+  def extract_advanced_overrides
+    raw = params[:launcher]
+    return nil if raw.blank?
+    raw = raw.to_unsafe_h if raw.respond_to?(:to_unsafe_h)
+
+    raw.to_h.reject do |k, v|
+      k.to_s.end_with?('_min', '_max', '_exclude', '_fixed') || v.blank?
+    end
   end
 
   def project_directory
@@ -192,6 +212,7 @@ class WorkflowsController < ApplicationController
 
     flash.now[:alert] = message
     @launchers = Launcher.all(project_directory)
+    @workflow_overrides = @workflow.override_attributes
     render operation == :create ? :new : :edit
   end
 end

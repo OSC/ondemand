@@ -51,7 +51,8 @@ class Workflow
     end
   end
 
-  attr_accessor :id, :name, :description, :project_dir, :created_at, :launcher_ids, :metadata, :sync_key_enabled
+  attr_accessor :id, :name, :description, :project_dir, :created_at, :launcher_ids,
+                :metadata, :sync_key_enabled, :advanced_overrides
 
   validates :name, presence: true
   validates :launcher_ids, length: {minimum: 1}
@@ -65,6 +66,7 @@ class Workflow
     @launcher_ids = attributes[:launcher_ids] || []
     @metadata = attributes[:metadata] || {}
     @sync_key_enabled = attributes[:sync_key_enabled] || "0"
+    @advanced_overrides = attributes[:advanced_overrides] || {}
   end
 
   def to_h
@@ -76,7 +78,8 @@ class Workflow
       :project_dir => project_dir,
       :launcher_ids => launcher_ids,
       :metadata => metadata,
-      :sync_key_enabled => sync_key_enabled
+      :sync_key_enabled => sync_key_enabled,
+      :advanced_overrides => advanced_overrides
     }
   end
 
@@ -127,7 +130,7 @@ class Workflow
   end
 
   def update_attrs(attributes, override = false)
-    [:name, :description, :launcher_ids, :metadata, :sync_key_enabled].each do |attribute|
+    [:name, :description, :launcher_ids, :metadata, :sync_key_enabled, :advanced_overrides].each do |attribute|
       next unless override || attributes.key?(attribute)
       instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
     end
@@ -135,6 +138,12 @@ class Workflow
 
   def editable?
     manifest_file.writable? || !shared?(manifest_file)
+  end
+
+  def override_attributes
+    advanced_overrides.map do |id, value|
+      SmartAttributes::AttributeFactory.build(id.to_s, { value: value })
+    end
   end
 
   def submit(attributes = {})
@@ -188,6 +197,11 @@ class Workflow
     end
     launcher_data["afterok"] = Array(dependent_jobs)
     launcher_data["ood_workflow_sync_key"] = sync_key if sync_key
+    advanced_overrides.each do |key, value|
+      next if value.blank?
+      launcher_data[key.to_s] = value
+    end
+
     launcher_data
   end
 

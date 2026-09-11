@@ -1,0 +1,47 @@
+<%= javascript_include_tag 'launcher_edit', nonce: true, defer: true %>
+<%= javascript_include_tag 'workflow_advanced', nonce: true, defer: true %>
+
+<div class="card mt-3" id="workflow_advanced_card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <%= t('dashboard.jobs_workflow_advanced_overrides_title') %>
+    </h5>
+
+    <p class="text-muted small mb-3">
+      <%= t('dashboard.jobs_workflow_advanced_overrides_description') %>
+    </p>
+
+    <% @workflow_overrides.each do |attrib| %>
+      <%= create_editable_widget(script_form_double, attrib, format: nil) %>
+    <% end %>
+
+    <%= render partial: 'launchers/add_new_field' %>
+  </div>
+</div>
+
+<%# Refer app/lib/smart_attributes.rb to check for other attributes to add here%>
+<template id="bc_num_hours_template">
+  <%= bc_num_hours_template %>
+</template>
+
+<template id="auto_queues_template">
+  <%= auto_queues_template %>
+</template>
+
+<template id="auto_accounts_template">
+  <%= auto_accounts_template %>
+</template>
+
+<template id="auto_job_name_template">
+  <%= auto_job_name_template %>
+</template>
+
+<template id="auto_environment_variable_template">
+  <%= auto_environment_variable_template %>
+</template>
+
+<template id="auto_batch_clusters_template">
+  <%# Reuse the same widget renderer the launcher edit page uses. %>
+  <%= create_editable_widget(script_form_double,
+        SmartAttributes::AttributeFactory.build('auto_batch_clusters', {})) %>
+</template>
