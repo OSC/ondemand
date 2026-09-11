@@ -103,7 +103,8 @@ $ood-safe-viewing-body-bg: #1a1a1a;
     box-shadow: var(--ood-elevation-shadow);
   }
 
-  .btn-default {
+  .btn-default,
+  .btn-light {
     --bs-btn-color: var(--bs-body-color);
     --bs-btn-bg: var(--bs-secondary-bg);
     --bs-btn-border-color: var(--bs-border-color);
