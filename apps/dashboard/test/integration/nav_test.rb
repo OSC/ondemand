@@ -39,7 +39,7 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_equal 'https://external.example.com', link['href']
   end
 
-  test 'default navbar with pinned_apps' do
+  test 'renders pinned_apps when nav_bar is empty and pinned_apps are configured' do
     stub_sys_apps
     stub_user_configuration({
                           pinned_apps: [
@@ -49,16 +49,36 @@ class NavTest < ActionDispatch::IntegrationTest
                             'sys/bc_desktop/doesnt_exist',
                             'sys/pseudofun',
                             'sys/should_get_filtered'
-                          ]
+                          ],
                         })
 
     get '/'
 
     assert_response :success
-    assert_select "nav.navbar div.collapse li.nav-item a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.pinned_apps_category")}']"
+    assert_select "nav.navbar div.collapse li.nav-item" do
+      #shows Apps dropdown buttono
+      assert_select "a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.pinned_apps_category")}']", 1
+
+      #dropdown menu list
+      assert_select "ul.dropdown-menu[title = '#{I18n.t("dashboard.pinned_apps_category")}']", 1 do
+        # Pinned Apps header
+        assert_select "li.dropdown-header", text: "#{I18n.t("dashboard.pinned_apps_title")}"
+
+        # Pinned apps
+        assert_select "a.dropdown-item[title='Jupyter Notebook']", 1
+        assert_select "a.dropdown-item[title='Paraview']", 1
+        assert_select "a.dropdown-item[title='Owens Desktop']", 1
+        assert_select "a.dropdown-item[title='PseudoFuN']", 1
+
+        # All Apps link
+        assert_select "li[title='#{I18n.t("dashboard.nav_all_apps")}']" do
+          assert_select "a.dropdown-item[href='#{apps_index_path}']", 1
+        end
+      end
+    end
   end
 
-  test 'default navbar without pinned_apps' do
+  test 'does not render pinned_apps when nav_bar is empty and pinned_apps are empty' do
     stub_sys_apps
     stub_user_configuration({pinned_apps: []})
 
@@ -68,7 +88,7 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_select "nav.navbar div.collapse li.nav-item a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.pinned_apps_category")}']", 0
   end
 
-  test 'default groups in default navbar ' do
+  test 'Files, Jobs, Clusters, and Interactive Apps nav_bar groups should render' do
     stub_sys_apps
     Configuration.stubs(:open_apps_in_new_window?).returns(false)
 
@@ -83,7 +103,7 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_select "nav.navbar div.collapse li.nav-item a.nav-link.dropdown-toggle[title='Interactive Apps']", 1
   end
 
-  test 'default navbar sessions should render' do
+  test 'navbar sessions should render' do
     stub_sys_apps
     Configuration.stubs(:open_apps_in_new_window?).returns(true)
     get '/'
@@ -91,7 +111,7 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_select "nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_sessions')}']", 1
   end
 
-  test 'default navbar sessions should not render' do
+  test 'navbar sessions should not render' do
     stub_sys_apps
     Configuration.stubs(:open_apps_in_new_window?).returns(false)
     ApplicationController.any_instance.stubs(:sys_app_groups).returns([])
@@ -101,7 +121,7 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_select "nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_sessions')}']", 0
   end
 
-  test 'default navbar with all_apps should render' do
+  test 'all_apps should render' do
     stub_sys_apps
     stub_user_configuration(show_all_apps_link: true)
     get '/'
@@ -109,7 +129,7 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_select "nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_all_apps')}']", 1
   end
 
-  test 'default navbar with all_apps should not render' do
+  test 'all_apps should not render' do
     stub_sys_apps
     stub_user_configuration(show_all_apps_link: false)
     get '/'
