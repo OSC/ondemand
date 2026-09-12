@@ -130,6 +130,38 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'copying files with ctrl-c and ctrl-v keyboard shortcuts' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      find('tbody a', exact_text: 'bar.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 2
+
+      # Focus remains on the checkbox after selection; shortcuts should still work.
+      page.send_keys([:control, 'c'])
+
+      assert_selector '#clipboard li', count: 2
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      visit files_url("#{dir}/dest")
+      assert_selector '#clipboard li', count: 2
+
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
+    end
+  end
+  
   test 'copying empty directories' do
     Dir.mktmpdir do |dir|
       FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])

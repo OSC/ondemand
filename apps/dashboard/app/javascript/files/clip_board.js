@@ -29,6 +29,34 @@ jQuery(function () {
 
   });
 
+  $(document).on('keydown', function (e) {
+    if (!(e.ctrlKey || e.metaKey)) {
+      return;
+    }
+
+    // Keep browser copy/paste in text fields; allow shortcuts on file-selection checkboxes.
+    const tag = e.target.tagName ? e.target.tagName.toLowerCase() : '';
+    const type = e.target.type ? e.target.type.toLowerCase() : '';
+    if (e.target.isContentEditable || tag === 'textarea' || tag === 'select' ||
+        (tag === 'input' && type !== 'checkbox')) {
+      return;
+    }
+
+    const key = e.key.toLowerCase();
+    if (key === 'c') {
+      const selection = $(CONTENTID).DataTable().rows({ selected: true }).data();
+      if (selection.length > 0) {
+        e.preventDefault();
+        $("#copy-move-btn").trigger('click');
+      }
+    } else if (key === 'v') {
+      const copyButton = document.getElementById('clipboard-copy-to-dir');
+      if (copyButton) {
+        e.preventDefault();
+        copyButton.click();
+      }
+    }
+  });
 
   $(CONTENTID).on('success', function (e) {
     $(e.trigger).tooltip({ title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom' }).tooltip('show');
