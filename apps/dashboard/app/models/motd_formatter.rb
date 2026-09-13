@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # Module for all the different Message of the Day (MOTD) formatters.
 module MotdFormatter
-  # aliasing motd classes for backwards compatibility 
+  # aliasing motd classes for backwards compatibility
   MotdFormatterOsc          = MotdFormatter::Osc
   MotdFormatterMarkdown     = MotdFormatter::Markdown
   MotdFormatterMarkdownErb  = MotdFormatter::MarkdownErb
