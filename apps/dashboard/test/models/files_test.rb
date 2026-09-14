@@ -210,4 +210,30 @@ class FilesTest < ActiveSupport::TestCase
     assert(char_dev.chardev?)
     refute(PosixFile.new(char_dev.to_s).downloadable?)
   end
+
+  # this test accounts for recurssion and hidden files.
+  test 'num_files counts files correctly' do
+    Dir.mktmpdir do |dir|
+      (1..2).each do |dir_num|
+        FileUtils.mkdir_p("#{dir}/test_#{dir_num}")
+        FileUtils.touch("#{dir}/test_#{dir_num}/.hidden_file")
+        (1..5).each do |num|
+          FileUtils.touch("#{dir}/test_#{dir_num}/file_#{num}")
+        end
+      end
+
+      # this tests against the old algorithm just for completeness because
+      # there were no tests for it.
+      old_result = Dir.chdir(dir) do
+        `find 2>/dev/null test_1 test_2 | wc -l`.chomp.to_i
+      end
+      new_result = PosixFile.num_files(dir, ['test_1', 'test_2'])
+
+      assert_equal(old_result, new_result)
+
+      # 2 directories, 2 hidden files and 10 regular files
+      assert_equal(14, new_result)
+    end
+  end
+
 end
