@@ -46,7 +46,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     launcher_element = all('#launcher_list div.list-group-item').first
     launcher_element[:id].gsub('launcher_', '')
   end
-
+  
   # FIXME: Duplicated from project_test_helper.rb
   def setup_workflow(dir)
     workflow_dir = Pathname.new(dir).join('workflows')
