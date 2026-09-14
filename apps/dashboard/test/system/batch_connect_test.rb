@@ -2746,6 +2746,30 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'auto_cores are cluster aware' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_sinfo
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        form:
+          - auto_batch_clusters
+          - auto_cores
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+      
+      assert_equal('oakley', find_value('auto_batch_clusters'))
+      assert_equal(80, find_max('auto_cores'))
+
+      select('owens', from: bc_ele_id('auto_batch_clusters'))
+      assert_equal(48, find_max('auto_cores'))
+    end
+  end
+
   test 'path_selector works' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
