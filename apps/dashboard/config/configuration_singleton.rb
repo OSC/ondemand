@@ -79,7 +79,7 @@ class ConfigurationSingleton
       :project_template_dir           => "#{config_root}/projects",
       :rclone_extra_config            => nil,
       :default_profile                => nil,
-      :plugins_directory              => '/etc/ood/config/plugins'
+      :plugins_directory              => '/etc/ood/config/plugins',
     }.freeze
   end
 
@@ -217,6 +217,11 @@ class ConfigurationSingleton
   # @return [Boolean]
   def xdmod_integration_enabled?
     xdmod_host.present?
+  end
+
+  # Configuration object for additional system apps
+  def external_apps_config
+    config.fetch(:external_apps_config, [])
   end
 
   # Support ticket configuration
