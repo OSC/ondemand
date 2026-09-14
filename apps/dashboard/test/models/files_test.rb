@@ -211,7 +211,7 @@ class FilesTest < ActiveSupport::TestCase
     refute(PosixFile.new(char_dev.to_s).downloadable?)
   end
 
-  # this test accounts for recurssion and hidden files.
+  # this test accounts for recursion and hidden files.
   test 'num_files counts files correctly' do
     Dir.mktmpdir do |dir|
       (1..2).each do |dir_num|
