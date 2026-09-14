@@ -223,7 +223,7 @@ class FilesTest < ActiveSupport::TestCase
       end
 
       # this tests against the old algorithm just for completeness because
-      # there were no tests for it.
+      # there were no tests for it prior to the refactor.
       old_result = Dir.chdir(dir) do
         `find 2>/dev/null test_1 test_2 | wc -l`.chomp.to_i
       end
