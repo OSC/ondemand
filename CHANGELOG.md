@@ -16,6 +16,19 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+feat: localize active_jobs/index.html.erb (#5785)\
+Lint a random file (#5779)\
+Refactor toggleHelp and toggleMinMax (#5784)\
+Radio buttons respond to html opts (#5781)\
+replace click_on with find(id).click (#5782)\
+Add option to disable navbar sorting of app links (#5726)\
+upgrade ood-portal-generator libs in upgrade task (#5777)\
+localize active_jobs/ _job_details_node_view.html.erb (#5757)\
+Restore default text when dynamic option is unset (#5763)\
+Change this to a global assert_text to get rid of warnings. (#5774)\
+Update Changelog (#5772)\
+update dependencies (#5773)\
+sanitize help content in bc forms (#5770)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
