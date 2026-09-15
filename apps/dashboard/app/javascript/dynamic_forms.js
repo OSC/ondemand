@@ -214,11 +214,24 @@ function newLabel(changeElement, key) {
   return selectedOptionLabel.dataset[key];
 };
 
+function captureDefaultLabel(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultLabel') !== undefined) return;
+
+  const label = $(`label[for="${changeId}"]`);
+  wrapper.data('defaultLabel', label.length ? label[0].innerHTML : '');
+}
+
 function updateLabel(changeId, changeElement, key) {
-  var labelContent = newLabel(changeElement, key);
+  if (changeId === undefined) return;
+
+  captureDefaultLabel(changeId);
+  const labelContent = newLabel(changeElement, key);
+  const defaultLabel = $(`#${changeId}_wrapper`).data('defaultLabel');
+  const contentToSet = labelContent === undefined ? defaultLabel : labelContent;
   const originalInfo = getWidgetInfo(changeId);
-  $(`label[for="${changeId}"]`)[0].innerHTML = labelContent;
-  ariaStream(`Changed label on ${originalInfo} to new label ${labelContent}`);
+  $(`label[for="${changeId}"]`)[0].innerHTML = contentToSet;
+  ariaStream(`Changed label on ${originalInfo} to new label ${contentToSet}`);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
