@@ -52,7 +52,9 @@
         <%= t('dashboard.jobs_new_launcher') %>
       </a>
     </div>
-    <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
+    <% if workflows_supported? %>
+      <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
+    <% end %>
   </div>
   
   <div id="project_jobs_files_col" class="row col-sm-8 col-lg-10 d-flex">

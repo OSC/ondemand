@@ -2,6 +2,10 @@
 
 # Helpers for the projects page
 module ProjectsHelper
+  def workflows_supported?
+    Workflow.supported?
+  end
+  
   def render_readme(readme_location)
     file_content = File.read(readme_location)
 
