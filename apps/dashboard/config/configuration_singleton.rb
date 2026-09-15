@@ -79,7 +79,8 @@ class ConfigurationSingleton
       :project_template_dir           => "#{config_root}/projects",
       :rclone_extra_config            => nil,
       :default_profile                => nil,
-      :plugins_directory              => '/etc/ood/config/plugins'
+      :plugins_directory              => '/etc/ood/config/plugins',
+      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
     }.freeze
   end
 
@@ -431,6 +432,7 @@ class ConfigurationSingleton
     sources = [:self]
     sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
     sources << xdmod_host if xdmod_integration_enabled?
+    sources << nsf_access_events_url if nsf_access_events_url.present?
 
     sources
   end

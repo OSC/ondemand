@@ -569,4 +569,54 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       refute ConfigurationSingleton.new.rails_env_production?
     end
   end
+
+  test "nsf_access_events_url has default ACCESS API URL" do
+    with_modified_env(no_config_env) do
+      assert_equal 'https://support.access-ci.org/api/2.1/events',
+                   ConfigurationSingleton.new.nsf_access_events_url
+    end
+  end
+
+  test "nsf_access_events_url responds to environment variable" do
+    with_modified_env(no_config_env.merge({ 'OOD_NSF_ACCESS_EVENTS_URL' => 'https://example.com/events' })) do
+      assert_equal 'https://example.com/events', ConfigurationSingleton.new.nsf_access_events_url
+    end
+  end
+
+  test "nsf_access_events_url responds to config file" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/nsf.yml", 'w+') do |f|
+          f.write({ 'nsf_access_events_url' => 'https://events.example.org/api/events' }.to_yaml)
+        end
+
+        assert_equal 'https://events.example.org/api/events', ConfigurationSingleton.new.nsf_access_events_url
+      end
+    end
+  end
+
+  test "connect_sources includes nsf_access_events_url when present" do
+    with_modified_env(no_config_env) do
+      sources = ConfigurationSingleton.new.connect_sources
+      assert_includes sources, :self
+      assert_includes sources, 'https://support.access-ci.org/api/2.1/events'
+    end
+  end
+
+  test "connect_sources uses configured nsf_access_events_url" do
+    with_modified_env(no_config_env.merge({
+      'OOD_NSF_ACCESS_EVENTS_URL' => 'https://events.example.org/api/2.1/events'
+    })) do
+      sources = ConfigurationSingleton.new.connect_sources
+      assert_includes sources, 'https://events.example.org/api/2.1/events'
+      refute_includes sources, 'https://support.access-ci.org/api/2.1/events'
+    end
+  end
+
+  test "connect_sources omits nsf_access_events_url when blank" do
+    with_modified_env(no_config_env.merge({ 'OOD_NSF_ACCESS_EVENTS_URL' => '' })) do
+      sources = ConfigurationSingleton.new.connect_sources
+      assert_equal [:self], sources
+    end
+  end
 end
