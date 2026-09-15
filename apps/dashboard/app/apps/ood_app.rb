@@ -93,7 +93,7 @@ class OodApp
           tile: tile
         )
       ].concat(
-        OodFilesApp.new.favorite_paths.map do |favorite_path|
+        UserCustomization.new.favorite_paths.map do |favorite_path|
           OodAppLink.new(
             title: favorite_path.title || favorite_path.path.to_s,
             subtitle: favorite_path.title ? favorite_path.path.to_s : nil,
