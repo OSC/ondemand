@@ -18,6 +18,9 @@ jQuery(function () {
   var clipBoard = new ClipBoard();
 
   $("#copy-move-btn").on("click", function () {
+    // Default to copy unless a cut overrides this.
+    localStorage.setItem('filesClipboardAction', 'copy');
+    
     let table = $(CONTENTID).DataTable();
     let selection = table.rows({ selected: true }).data();
 
@@ -43,17 +46,20 @@ jQuery(function () {
     }
 
     const key = e.key.toLowerCase();
-    if (key === 'c') {
+    if (key === 'c' || key === 'x') {
       const selection = $(CONTENTID).DataTable().rows({ selected: true }).data();
       if (selection.length > 0) {
         e.preventDefault();
         $("#copy-move-btn").trigger('click');
+        localStorage.setItem('filesClipboardAction', key === 'x' ? 'move' : 'copy');
       }
     } else if (key === 'v') {
-      const copyButton = document.getElementById('clipboard-copy-to-dir');
-      if (copyButton) {
+      const action = localStorage.getItem('filesClipboardAction') || 'copy';
+      const buttonId = action === 'move' ? 'clipboard-move-to-dir' : 'clipboard-copy-to-dir';
+      const button = document.getElementById(buttonId);
+      if (button) {
         e.preventDefault();
-        copyButton.click();
+        button.click();
       }
     }
   });
@@ -105,6 +111,7 @@ class ClipBoard {
 
   clearClipboard() {
     localStorage.removeItem('filesClipboard');
+    localStorage.removeItem('filesClipboardAction');
   }
 
   updateClipboardFromSelection(selection) {
