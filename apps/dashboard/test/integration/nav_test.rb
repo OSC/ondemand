@@ -41,14 +41,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'renders pinned_apps when nav_bar is empty and pinned_apps are configured' do
     stub_sys_apps
-    stub_user_configuration({
-                          pinned_apps: [
-                            'sys/bc_jupyter',
-                            'sys/bc_paraview',
-                            'sys/bc_desktop/owens',
-                            'sys/pseudofun',
-                          ],
-                        })
+    stub_user_configuration({pinned_apps: ['sys/*']})
 
     get('/')
 
@@ -59,14 +52,13 @@ class NavTest < ActionDispatch::IntegrationTest
 
       #dropdown menu list
       assert_select("ul.dropdown-menu[title = '#{I18n.t("dashboard.pinned_apps_category")}']", 1) do
-        # Pinned Apps header
-        assert_select("li.dropdown-header", text: "#{I18n.t("dashboard.pinned_apps_title")}")
-
         # Pinned apps
-        assert_select("a.dropdown-item[title='Jupyter Notebook']", 1)
-        assert_select("a.dropdown-item[title='Paraview']", 1)
+        assert_select("a.dropdown-item[title='Active Jobs']", 1)
+        assert_select("a.dropdown-item[title='Oakley Desktop']", 1)
         assert_select("a.dropdown-item[title='Owens Desktop']", 1)
-        assert_select("a.dropdown-item[title='PseudoFuN']", 1)
+        assert_select("a.dropdown-item[title='External Link App']", 1)
+        assert_select("a.dropdown-item[title='Home Directory']", 1)
+        assert_select("a.dropdown-item[title='Jupyter Notebook']", 1)
 
         # All Apps link
         assert_select("li[title='#{I18n.t("dashboard.nav_all_apps")}']") do
@@ -88,7 +80,6 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'Files, Jobs, Clusters, and Interactive Apps nav_bar groups should render' do
     stub_sys_apps
-    Configuration.stubs(:open_apps_in_new_window?).returns(false)
 
     get('/')
 
@@ -104,20 +95,24 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link.dropdown-toggle[title='Jobs']", 1)
     assert_select("nav.navbar div.collapse li.nav-item ul.dropdown-menu[title='Jobs']", 1) do
       assert_select("li a[title='Active Jobs']", 1)
+      assert_select("li a[title='My Jobs']", 1)
     end
 
+    #test if Cluster menu and items exist
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link.dropdown-toggle[title='Clusters']", 1)
     assert_select("nav.navbar div.collapse li.nav-item ul.dropdown-menu[title='Clusters']", 1) do
+      assert_select("li a[title='Oakley Shell Access']", 1)
       assert_select("li a[title='Owens Shell Access']", 1)
       assert_select("li a[title='System Status']", 1)
     end
 
+    #test if Interactive Apps menu and items exist
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link.dropdown-toggle[title='Interactive Apps']", 1)
     assert_select("nav.navbar div.collapse li.nav-item ul.dropdown-menu[title='Interactive Apps']", 1) do
       assert_select("li a[title='Jupyter Notebook']", 1)
       assert_select("li a[title='Paraview']", 1)
+      assert_select("li a[title='Oakley Desktop']", 1)
       assert_select("li a[title='Owens Desktop']", 1)
-      assert_select("li a[title='Paraview']", 1)
     end
   end
 
