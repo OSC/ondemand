@@ -18,7 +18,7 @@ class PosixFile
     def num_files(from, names)
       names.map do |name|
         path = Pathname.new(Pathname.new(from).join(name))
-        if path.file?
+        if path.file? || path.symlink?
           1
         elsif path.directory?
           Dir.glob("#{path}/**/*", File::FNM_DOTMATCH).length
