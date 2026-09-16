@@ -69,10 +69,10 @@ Changes are grouped by type:
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
 - oidc_cypto_passphrase must be set when using OIDC in [5559](https://github.com/OSC/ondemand/pull/5559).
-- Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OS10C/ondemand/pull/5562).
-- update_ood_portal no longer responds to the -t option in [5479](https://github.com/OS10C/ondemand/pull/5479).
-- hide_app_version now defaults to true in [5715](https://github.com/OS10C/ondemand/pull/5715).
-- There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OS10C/ondemand/pull/5351).
+- Reverted new tab functionality so that VNC applications open in new tabs in [5562](https://github.com/OSC/ondemand/pull/5562).
+- update_ood_portal no longer responds to the -t option in [5479](https://github.com/OSC/ondemand/pull/5479).
+- hide_app_version now defaults to true in [5715](https://github.com/OSC/ondemand/pull/5715).
+- There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OSC/ondemand/pull/5351).
 
 ## [4.2.4] - 2026-08-24
 
