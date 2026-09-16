@@ -229,11 +229,36 @@ class FilesTest < ActiveSupport::TestCase
       end
       new_result = PosixFile.num_files(dir, ['test_1', 'test_2'])
 
-      assert_equal(old_result, new_result)
+      assert(old_result == new_result, "old result #{old_result} does not match new result #{new_result}")
 
       # 2 directories, 2 hidden files and 10 regular files
       assert_equal(14, new_result)
     end
   end
 
+  test 'num_files counts files with symlinks correctly' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p("#{dir}/real_dir")
+      FileUtils.mkdir_p("#{dir}/other_dir")
+
+      (1..3).each { |n| FileUtils.touch("#{dir}/real_dir/file_#{n}") }
+      File.symlink("#{dir}/real_dir", "#{dir}/link_dir")
+
+      FileUtils.touch("#{dir}/other_dir/real_file")
+      File.symlink("#{dir}/other_dir/real_file", "#{dir}/other_dir/linked_file")
+
+      # this tests against the old algorithm just for completeness because
+      # there were no tests for it prior to the refactor.
+      old_result = Dir.chdir(dir) do
+        `find 2>/dev/null link_dir other_dir | wc -l`.chomp.to_i
+      end
+      new_result = PosixFile.num_files(dir, ['link_dir', 'other_dir'])
+
+      assert(old_result == new_result, "old result #{old_result} does not match new result #{new_result}")
+
+      # 1 symlink directory (link_dir), 1 real directory (other_dir) and 2 children
+      # within other_dir a real file and a symlink
+      assert_equal(4, new_result)
+    end
+  end
 end
