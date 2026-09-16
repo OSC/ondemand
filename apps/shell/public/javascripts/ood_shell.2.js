@@ -8,6 +8,7 @@ function OodShell(element, url, profile) {
 }
 
 OodShell.prototype.createTerminal = function () {
+  this.installVisualViewportSizing();
   this.socket = new WebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
@@ -35,6 +36,11 @@ OodShell.prototype.runTerminal = function () {
 
     // Capture all keyboard input
     this.installKeyboard();
+
+    // hterm prevents the default action for touch events, which suppresses
+    // Safari's normal tap-to-focus behavior. Add back focus for taps while
+    // keeping hterm's touch-drag scrolling behavior.
+    that.installTouchKeyboard(this);
   };
 
   // Patch cursor setting
@@ -48,6 +54,80 @@ OodShell.prototype.runTerminal = function () {
   window.onbeforeunload = function() {
     return 'Leaving this page will terminate your terminal session.';
   };
+};
+
+OodShell.prototype.installTouchKeyboard = function (term) {
+  var screen = term.getDocument().querySelector('x-screen');
+  var touchStart = null;
+  if (!screen) {
+    return;
+  }
+
+  screen.addEventListener('touchstart', function (ev) {
+    var touch;
+    if (ev.touches.length !== 1) {
+      touchStart = null;
+      return;
+    }
+    touch = ev.touches[0];
+    touchStart = {
+      id: touch.identifier,
+      x: touch.clientX,
+      y: touch.clientY
+    };
+  }, { passive: true });
+
+  screen.addEventListener('touchend', function (ev) {
+    var touch = null;
+    var dx;
+    var dy;
+    var i;
+
+    if (touchStart === null) {
+      return;
+    }
+    for (i = 0; i < ev.changedTouches.length; ++i) {
+      if (ev.changedTouches[i].identifier === touchStart.id) {
+        touch = ev.changedTouches[i];
+        break;
+      }
+    }
+
+    if (touch !== null) {
+      dx = touch.clientX - touchStart.x;
+      dy = touch.clientY - touchStart.y;
+      // Treat movement within 10 CSS pixels as a tap rather than scrolling.
+      // Keep focus synchronous with the user gesture so iOS/iPadOS Safari can
+      // display its software keyboard.
+      if ((dx * dx + dy * dy) <= 100) {
+        term.focus();
+      }
+    }
+
+    touchStart = null;
+  }, { passive: true });
+
+  screen.addEventListener('touchcancel', function () {
+    touchStart = null;
+  }, { passive: true });
+};
+
+OodShell.prototype.installVisualViewportSizing = function () {
+  var viewport = window.visualViewport;
+  var element = this.element;
+  var resize;
+
+  if (!viewport) {
+    return;
+  }
+
+  resize = function () {
+    element.style.height = Math.round(viewport.height) + 'px';
+  };
+
+  resize();
+  viewport.addEventListener('resize', resize);
+  viewport.addEventListener('scroll', resize);
 };
 
 OodShell.prototype.getMessage = function (ev) {
