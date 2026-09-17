@@ -23,3 +23,5 @@ group :e2e do
   gem 'beaker-docker', '~> 3.1.0'
   gem 'beaker-rspec'
 end
+
+gem "ostruct", "~> 0.6.3"
