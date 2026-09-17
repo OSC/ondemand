@@ -2749,18 +2749,14 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'auto_cores are cluster aware' do
     Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_sinfo
-      stub_git("#{dir}/app")
-
       form = <<~HEREDOC
         form:
           - auto_batch_clusters
           - auto_cores
       HEREDOC
-
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      make_bc_app(dir, form, scontrol: false, sacctmgr: false)
+      stub_sinfo
+      
       visit new_batch_connect_session_context_url('sys/app')
       
       assert_equal('oakley', find_value('auto_batch_clusters'))
