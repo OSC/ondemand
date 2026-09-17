@@ -77,6 +77,31 @@ OodShell.prototype.installTouchKeyboard = function (term) {
     };
   }, { passive: true });
 
+  screen.addEventListener('touchmove', function (ev) {
+    var touch;
+    var dx;
+    var dy;
+    var i;
+
+    if (touchStart === null) {
+      return;
+    }
+    for (i = 0; i < ev.changedTouches.length; ++i) {
+      if (ev.changedTouches[i].identifier === touchStart.id) {
+        touch = ev.changedTouches[i];
+        dx = touch.clientX - touchStart.x;
+        dy = touch.clientY - touchStart.y;
+
+        // Once a gesture has moved beyond the tap threshold, do not allow it
+        // to become a tap again if the finger returns near its starting point.
+        if ((dx * dx + dy * dy) > 100) {
+          touchStart = null;
+        }
+        break;
+      }
+    }
+  }, { passive: true });
+
   screen.addEventListener('touchend', function (ev) {
     var touch = null;
     var dx;
@@ -115,6 +140,7 @@ OodShell.prototype.installTouchKeyboard = function (term) {
 OodShell.prototype.installVisualViewportSizing = function () {
   var viewport = window.visualViewport;
   var element = this.element;
+  var resizeFrame = null;
   var resize;
 
   if (!viewport) {
@@ -123,11 +149,20 @@ OodShell.prototype.installVisualViewportSizing = function () {
 
   resize = function () {
     element.style.height = Math.round(viewport.height) + 'px';
+    if (resizeFrame !== null) {
+      return;
+    }
+
+    resizeFrame = window.requestAnimationFrame(function () {
+      element.style.height = Math.round(viewport.height) + 'px';
+      resizeFrame = null;
+    });
   };
 
-  resize();
+  // Set the initial height immediately. Subsequent visual viewport resizes are
+  // coalesced to one layout update per animation frame.
+  element.style.height = Math.round(viewport.height) + 'px';
   viewport.addEventListener('resize', resize);
-  viewport.addEventListener('scroll', resize);
 };
 
 OodShell.prototype.getMessage = function (ev) {
