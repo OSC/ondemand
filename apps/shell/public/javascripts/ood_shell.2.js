@@ -60,9 +60,10 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   var screen = term.getDocument().querySelector('x-screen');
   var touchStart = null;
   var touchOptions = { passive: true, capture: true };
-  var isAppleWebKitTouch = /AppleWebKit/.test(navigator.userAgent) &&
-                           !/Android/.test(navigator.userAgent) &&
-                           navigator.maxTouchPoints > 0;
+  var needsTouchFocusRefresh = navigator.maxTouchPoints > 0 &&
+                               typeof CSS !== 'undefined' &&
+                               typeof CSS.supports === 'function' &&
+                               CSS.supports('-webkit-touch-callout', 'none');
   if (!screen) {
     return;
   }
@@ -133,7 +134,8 @@ OodShell.prototype.installTouchKeyboard = function (term) {
         // software keyboard is dismissed with Done. Force a fresh focus
         // transition there without changing focus behavior on Chromium,
         // Firefox, or other touch browsers.
-        if (isAppleWebKitTouch && term.getDocument().activeElement === screen) {
+        if (needsTouchFocusRefresh &&
+            term.getDocument().activeElement === screen) {
           term.blur();
         }
         term.focus();
@@ -164,7 +166,9 @@ OodShell.prototype.installVisualViewportSizing = function () {
     }
 
     resizeFrame = window.requestAnimationFrame(function () {
-      var height = Math.round(viewport.height);
+      // Convert the visible height back to layout-space CSS pixels so pinch
+      // zoom does not resize the terminal or remote PTY.
+      var height = Math.round(viewport.height * viewport.scale);
 
       // A VisualViewport belonging to a document that is not fully active can
       // transiently report zero. Preserve the last usable terminal height
