@@ -51,7 +51,7 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
   # like download_and_test but skips the download param, so we get the inline response
   def get_file(dest_path, file)
-    put_file(files_path(filepath: dest_path), file)
+    FileUtils.cp(file, dest_path)
     get files_path(filepath: dest_path)
     @response
   end
@@ -97,9 +97,9 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
     get files_path(filepath: src_file)
 
-    assert_response :success
-    assert_equal 'text/plain; charset=utf-8', response.headers['Content-Type']
-    assert_equal File.read(src_file), response.body
+    assert_response(:success)
+    assert_equal('text/plain; charset=utf-8', response.headers['Content-Type'])
+    assert_equal(File.read(src_file), response.body)
   end
 
   test 'files with utf8 content come back correctly, this is the bug from #1218' do
@@ -107,9 +107,9 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_nothing_raised { get files_path(filepath: src_file) }
 
-    assert_response :success
-    assert_equal 'text/plain; charset=utf-8', response.headers['Content-Type']
-    assert_equal File.read(src_file), response.body.force_encoding('UTF-8')
+    assert_response(:success)
+    assert_equal('text/plain; charset=utf-8', response.headers['Content-Type'])
+    assert_equal(File.read(src_file), response.body.force_encoding('UTF-8'))
   end
 
   test 'utf8 files can be downloaded too, not just viewed inline' do
@@ -124,8 +124,8 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
       response = get_file(dest_path, src_file)
 
-      assert_response :success
-      assert_equal File.read(src_file, encoding: 'BINARY'), response.body.dup.force_encoding('BINARY')
+      assert_response(:success)
+      assert_equal(File.read(src_file), response.body.force_encoding('UTF-8'))
     end
   end
 
@@ -136,10 +136,10 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
 
       get files_path(filepath: tmpdir), headers: { 'Accept': 'application/json' }
 
-      assert_response :success
-      assert_equal 'application/json; charset=utf-8', response.headers['Content-Type']
+      assert_response(:success)
+      assert_equal('application/json; charset=utf-8', response.headers['Content-Type'])
       names = JSON.parse(@response.body)['files'].map { |f| f['name'] }
-      assert_includes names, utf8_filename
+      assert_includes(names, utf8_filename)
     end
   end
 
@@ -165,7 +165,7 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
         File.write(small_file, 'x' * size_limit)
 
         get edit_file_path(filepath: small_file)
-        assert_response :success
+        assert_response(:success)
 
         large_file = "#{tmpdir}/large_file.txt"
         File.write(large_file, 'x' * (size_limit + 1))
