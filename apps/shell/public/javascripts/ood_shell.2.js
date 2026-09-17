@@ -59,6 +59,7 @@ OodShell.prototype.runTerminal = function () {
 OodShell.prototype.installTouchKeyboard = function (term) {
   var screen = term.getDocument().querySelector('x-screen');
   var touchStart = null;
+  var touchOptions = { passive: true, capture: true };
   if (!screen) {
     return;
   }
@@ -75,7 +76,7 @@ OodShell.prototype.installTouchKeyboard = function (term) {
       x: touch.clientX,
       y: touch.clientY
     };
-  }, { passive: true });
+  }, touchOptions);
 
   screen.addEventListener('touchmove', function (ev) {
     var touch;
@@ -100,7 +101,7 @@ OodShell.prototype.installTouchKeyboard = function (term) {
         break;
       }
     }
-  }, { passive: true });
+  }, touchOptions);
 
   screen.addEventListener('touchend', function (ev) {
     var touch = null;
@@ -125,16 +126,22 @@ OodShell.prototype.installTouchKeyboard = function (term) {
       // Keep focus synchronous with the user gesture so iOS/iPadOS Safari can
       // display its software keyboard.
       if ((dx * dx + dy * dy) <= 100) {
+        // Safari can leave a contenteditable element focused after the user
+        // dismisses the software keyboard with Done. Force a fresh focus
+        // transition in that case so a later tap can reopen the keyboard.
+        if (term.getDocument().activeElement === screen) {
+          term.blur();
+        }
         term.focus();
       }
     }
 
     touchStart = null;
-  }, { passive: true });
+  }, touchOptions);
 
   screen.addEventListener('touchcancel', function () {
     touchStart = null;
-  }, { passive: true });
+  }, touchOptions);
 };
 
 OodShell.prototype.installVisualViewportSizing = function () {
@@ -148,7 +155,6 @@ OodShell.prototype.installVisualViewportSizing = function () {
   }
 
   resize = function () {
-    element.style.height = Math.round(viewport.height) + 'px';
     if (resizeFrame !== null) {
       return;
     }
@@ -159,10 +165,13 @@ OodShell.prototype.installVisualViewportSizing = function () {
     });
   };
 
-  // Set the initial height immediately. Subsequent visual viewport resizes are
-  // coalesced to one layout update per animation frame.
-  element.style.height = Math.round(viewport.height) + 'px';
+  // Safari can update the visual viewport as its browser chrome moves as well
+  // as when the software keyboard opens or closes. Measure on the next frame
+  // and coalesce repeated events to avoid redundant layout writes.
+  resize();
   viewport.addEventListener('resize', resize);
+  viewport.addEventListener('scroll', resize);
+  window.addEventListener('resize', resize);
 };
 
 OodShell.prototype.getMessage = function (ev) {
