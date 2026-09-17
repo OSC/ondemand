@@ -60,6 +60,9 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   var screen = term.getDocument().querySelector('x-screen');
   var touchStart = null;
   var touchOptions = { passive: true, capture: true };
+  var isAppleWebKitTouch = /AppleWebKit/.test(navigator.userAgent) &&
+                           !/Android/.test(navigator.userAgent) &&
+                           navigator.maxTouchPoints > 0;
   if (!screen) {
     return;
   }
@@ -126,10 +129,11 @@ OodShell.prototype.installTouchKeyboard = function (term) {
       // Keep focus synchronous with the user gesture so iOS/iPadOS Safari can
       // display its software keyboard.
       if ((dx * dx + dy * dy) <= 100) {
-        // Safari can leave a contenteditable element focused after the user
-        // dismisses the software keyboard with Done. Force a fresh focus
-        // transition in that case so a later tap can reopen the keyboard.
-        if (term.getDocument().activeElement === screen) {
+        // Apple WebKit can leave a contenteditable element focused after the
+        // software keyboard is dismissed with Done. Force a fresh focus
+        // transition there without changing focus behavior on Chromium,
+        // Firefox, or other touch browsers.
+        if (isAppleWebKitTouch && term.getDocument().activeElement === screen) {
           term.blur();
         }
         term.focus();
@@ -160,7 +164,14 @@ OodShell.prototype.installVisualViewportSizing = function () {
     }
 
     resizeFrame = window.requestAnimationFrame(function () {
-      element.style.height = Math.round(viewport.height) + 'px';
+      var height = Math.round(viewport.height);
+
+      // A VisualViewport belonging to a document that is not fully active can
+      // transiently report zero. Preserve the last usable terminal height
+      // rather than collapsing the shell until the next viewport event.
+      if (height > 0) {
+        element.style.height = height + 'px';
+      }
       resizeFrame = null;
     });
   };
