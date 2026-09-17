@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["3.4"]
+        ruby: ["4.0"]
         include:
           # Test versions from Debian 12
           - os: ubuntu-latest
@@ -31,6 +31,8 @@ jobs:
           # Test versions from RHEL8 & RHEL9 & RHEL10 && Ubuntu 26.04
           - os: ubuntu-latest
             ruby: "3.3"
+          - os: ubuntu-latest
+            ruby: "3.4"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
