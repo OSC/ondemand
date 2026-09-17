@@ -54,7 +54,6 @@ class PosixTransfer < Transfer
     elsif remove?
       @steps = names.size
     else
-      # TODO: num_files issues 'find' command. so likely needs optimized
       @steps = PosixFile.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end
