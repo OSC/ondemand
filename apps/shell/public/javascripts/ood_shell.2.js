@@ -96,7 +96,6 @@ OodShell.prototype.installTouchKeyboard = function (term) {
         touch = ev.changedTouches[i];
         dx = touch.clientX - touchStart.x;
         dy = touch.clientY - touchStart.y;
-
         // Once a gesture has moved beyond the tap threshold, do not allow it
         // to become a tap again if the finger returns near its starting point.
         if ((dx * dx + dy * dy) > 100) {
@@ -122,7 +121,6 @@ OodShell.prototype.installTouchKeyboard = function (term) {
         break;
       }
     }
-
     if (touch !== null) {
       dx = touch.clientX - touchStart.x;
       dy = touch.clientY - touchStart.y;
@@ -144,7 +142,6 @@ OodShell.prototype.installTouchKeyboard = function (term) {
 
     touchStart = null;
   }, touchOptions);
-
   screen.addEventListener('touchcancel', function () {
     touchStart = null;
   }, touchOptions);
