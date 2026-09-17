@@ -25,7 +25,7 @@ jobs:
           - "3.2" # Test versions from Amazon Linux 2023 and Ubuntu 24.04
           - "3.3" # Test versions from RHEL8 & RHEL9 & RHEL10 && Ubuntu 26.04
           - "3.4"
-          - "4.0"
+          - "4.0" # Test versions from RHEL9 & RHEL10
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
