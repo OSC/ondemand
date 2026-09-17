@@ -6,6 +6,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'rake'
 gem 'dotenv', '~> 2.1'
+gem 'ostruct'
 
 group :package do
   gem 'ood_packaging', '~> 0.22.0'
@@ -23,5 +24,3 @@ group :e2e do
   gem 'beaker-docker', '~> 3.1.0'
   gem 'beaker-rspec'
 end
-
-gem "ostruct", "~> 0.6.3"
