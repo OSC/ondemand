@@ -54,6 +54,10 @@ describe 'Pun Pre Hook' do
       sleep 1
       expect(browser.title).to eq('Dashboard - Open OnDemand')
     end
+
+    describe file('/tmp/hook.out') do
+      its(:content) { is_expected.to contain '/opt/hooks/pun_pre_hook: line 4: wont_find_cmd: command not found' }
+    end
   end
 
   context 'missing pre hook' do
@@ -77,6 +81,10 @@ describe 'Pun Pre Hook' do
       browser_login(browser)
       browser.goto ctr_base_url
       expect(browser.title).to eq('Dashboard - Open OnDemand')
+    end
+
+    describe file('/tmp/hook.out') do
+      its(:content) { is_expected.to contain "input args are --user ood\naccess token set\nemail claim set\n" }
     end
   end
 end
