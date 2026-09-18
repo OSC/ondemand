@@ -1,6 +1,9 @@
 require 'application_system_test_case'
 
 class AccessibilityTest < ApplicationSystemTestCase
+  # Yield one browser event-loop turn so MutationObserver callbacks can run.
+  MUTATION_OBSERVER_TURN_SCRIPT = 'setTimeout(arguments[arguments.length - 1], 0)'
+
   test 'contrast watcher detects violations on page load' do
     with_modified_env(OOD_BRAND_BG_COLOR: 'cadetblue') do 
       error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
@@ -18,6 +21,7 @@ class AccessibilityTest < ApplicationSystemTestCase
     visit files_url(Rails.root.to_s)
     text = find('#directory-contents_info')
     text.execute_script('this.style = "color: darkseagreen"')
+    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       find('#path-breadcrumbs')
     end
@@ -32,6 +36,7 @@ class AccessibilityTest < ApplicationSystemTestCase
     visit files_url(Rails.root.to_s)
     button = find('#path-breadcrumbs')
     button.execute_script('this.classList.add("bg-danger")')
+    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       find('#path-breadcrumbs')
     end
@@ -46,6 +51,7 @@ class AccessibilityTest < ApplicationSystemTestCase
     visit files_url(Rails.root.to_s)
     button = find('#copy-move-btn')
     button.execute_script('this.classList.add("bg-danger")')
+    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       find('#copy-move-btn')
     end
@@ -59,12 +65,15 @@ class AccessibilityTest < ApplicationSystemTestCase
   test 'contrast watcher detects violations from inserted elements' do
     NEW_ELEMENT_SCRIPT = <<~HEREDOC
       span = document.createElement('span');
+      span.id = 'contrast-test-element';
       span.textContent = 'NEW ELEMENT';
       span.style = 'color: lightgrey';
       document.getElementById('main_container').appendChild(span);
     HEREDOC
     visit('/')
     page.execute_script(NEW_ELEMENT_SCRIPT)
+    page.assert_selector('#contrast-test-element')
+    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       assert_selector('#main_container')
     end
