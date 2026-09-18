@@ -27,6 +27,7 @@ def browser_login(browser)
   browser.text_field(id: 'username').set 'ood@localhost'
   browser.text_field(id: 'password').set 'password'
   browser.button(id: 'submit-login').click
+  CONFLICT
 end
 
 def hook_fixture(file)
