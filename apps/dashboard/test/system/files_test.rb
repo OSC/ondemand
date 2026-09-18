@@ -196,7 +196,31 @@ class FilesTest < ApplicationSystemTestCase
       refute File.exist?(File.join(dir, 'src', 'bar.txt'))
     end
   end
-  
+
+  test 'ctrl-v defaults to copy after opening clipboard with copy-move button' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 1
+
+      # Opening via the button (not Ctrl+X) should default Ctrl+V to copy.
+      find('#copy-move-btn').click
+      assert_selector '#clipboard li', count: 1
+
+      visit files_url("#{dir}/dest")
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'src', 'foo.txt'))
+    end
+  end
+
   test 'copying empty directories' do
     Dir.mktmpdir do |dir|
       FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
