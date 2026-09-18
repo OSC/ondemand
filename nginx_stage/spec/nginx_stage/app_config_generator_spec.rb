@@ -88,6 +88,7 @@ describe NginxStage::AppConfigGenerator do
         .with(['/usr/sbin/nginx', '(spec)'], 'start').ordered.and_return(['', status])
 
       expect { generator.instance_eval(&hook) }
+        .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
     end
 
     it 'does not start when a lingering socket remains without a PUN pid file' do
@@ -102,7 +103,6 @@ describe NginxStage::AppConfigGenerator do
 
       expect { generator.instance_eval(&hook) }
         .to raise_error(NginxStage::Error, 'socket cleanup timed out')
-
     end
 
     it 'does not start the replacement PUN when socket cleanup times out' do
