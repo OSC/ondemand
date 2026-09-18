@@ -149,4 +149,33 @@ class NavTest < ActionDispatch::IntegrationTest
     assert_response(:success)
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_all_apps')}']", 0)
   end
+
+  test 'develop dropdown should render when app_development_enabled is true' do
+    stub_user_configuration(help_bar: [])
+    Configuration.stubs(:app_development_enabled?).returns(true)
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+    get('/')
+    assert_response(:success)
+    assert_select("nav.navbar div.collapse li.nav-item") do
+      assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_develop_title")}']", 1)
+      assert_select("ul.dropdown-menu") do
+        assert_select('a', text: I18n.t('dashboard.nav_restart_server'))
+        assert_select('a', text: I18n.t('dashboard.nav_develop_docs'))
+        assert_select('a', text: I18n.t('dashboard.nav_develop_my_sandbox_apps_dev'))
+        assert_select('a', text: I18n.t('dashboard.nav_develop_my_sandbox_apps_prod'))
+      end
+    end
+  end
+
+  test 'develop dropdown should not render when app_development_enabled is false' do
+    stub_user_configuration(help_bar: [])
+    Configuration.stubs(:app_development_enabled?).returns(false)
+    get('/')
+    assert_response(:success)
+    assert_select("nav.navbar div.collapse li.nav-item") do
+      assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_develop_title")}']", 0)
+    end
+  end
+
+
 end
