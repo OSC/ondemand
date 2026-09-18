@@ -8,8 +8,13 @@ describe 'Nginx stage' do
   end
 
   after do
-    browser.close
-    on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
+    if @browser
+      begin
+        @browser.close
+      ensure
+        clean_nginx
+      end
+    end
   end
 
   context 'missing users' do
@@ -23,6 +28,7 @@ describe 'Nginx stage' do
 
     after(:all) do
       on hosts, 'rm -rf /var/run/ondemand-nginx/deleted_user'
+      on hosts, 'rm -f /var/lib/ondemand-nginx/config/puns/deleted_user.conf /var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'
     end
 
     it 'does not crash login when pre hook is misconfigured' do
