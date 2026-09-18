@@ -121,7 +121,7 @@ module NginxStage
         socket_path = NginxStage.pun_socket_path(user: user)
         deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
 
-        while File.lexist?(socket_path)
+        while File.exist?(socket_path) || File.symlink?(socket_path)
           if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
             raise Error, "timed out waiting for previous PUN socket to disappear: #{socket_path}"
           end
