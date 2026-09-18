@@ -8,6 +8,7 @@ function OodShell(element, url, profile) {
 }
 
 OodShell.prototype.createTerminal = function () {
+  this.installVisualViewportSizing();
   this.socket = new WebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
@@ -16,7 +17,7 @@ OodShell.prototype.createTerminal = function () {
 
 
 OodShell.prototype.runTerminal = function () {
-  var that = this;
+  const that = this;
 
   // Create an instance of hterm.Terminal
   this.term = new hterm.Terminal({ profileId: this.profile });
@@ -26,7 +27,7 @@ OodShell.prototype.runTerminal = function () {
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
-    var io = this.io.push();
+    const io = this.io.push();
 
     // Set up event handlers for io
     io.onVTKeystroke    = that.onVTKeystroke.bind(that);
@@ -35,6 +36,11 @@ OodShell.prototype.runTerminal = function () {
 
     // Capture all keyboard input
     this.installKeyboard();
+
+    // hterm prevents the default action for touch events, which suppresses
+    // Safari's normal tap-to-focus behavior. Add back focus for taps while
+    // keeping hterm's touch-drag scrolling behavior.
+    that.installTouchKeyboard(this);
   };
 
   // Patch cursor setting
@@ -50,12 +56,145 @@ OodShell.prototype.runTerminal = function () {
   };
 };
 
+/**
+ * Restore tap-to-focus for hterm on touch devices without treating a drag or
+ * scroll gesture as a tap.
+ */
+OodShell.prototype.installTouchKeyboard = function (term) {
+  const screen = term.getDocument().querySelector('x-screen');
+  // Track the initial position of the active one-finger tap candidate.
+  let touchStart = null;
+  // Capture before hterm handles the event; passive listeners preserve its
+  // scrolling behavior while this handler only observes the gesture.
+  const touchOptions = { passive: true, capture: true };
+  const needsTouchFocusRefresh = navigator.maxTouchPoints > 0 &&
+                                 typeof CSS !== 'undefined' &&
+                                 typeof CSS.supports === 'function' &&
+                                 CSS.supports('-webkit-touch-callout', 'none');
+  if (!screen) {
+    return;
+  }
+
+  screen.addEventListener('touchstart', function (ev) {
+    if (ev.touches.length !== 1) {
+      touchStart = null;
+      return;
+    }
+    const touch = ev.touches[0];
+    touchStart = {
+      id: touch.identifier,
+      x: touch.clientX,
+      y: touch.clientY
+    };
+  }, touchOptions);
+
+  screen.addEventListener('touchmove', function (ev) {
+    if (touchStart === null) {
+      return;
+    }
+    for (let i = 0; i < ev.changedTouches.length; ++i) {
+      if (ev.changedTouches[i].identifier === touchStart.id) {
+        const touch = ev.changedTouches[i];
+        const dx = touch.clientX - touchStart.x;
+        const dy = touch.clientY - touchStart.y;
+        // Once a gesture has moved beyond the tap threshold, do not allow it
+        // to become a tap again if the finger returns near its starting point.
+        if ((dx * dx + dy * dy) > 100) {
+          touchStart = null;
+        }
+        break;
+      }
+    }
+  }, touchOptions);
+
+  screen.addEventListener('touchend', function (ev) {
+    let touch = null;
+
+    if (touchStart === null) {
+      return;
+    }
+    for (let i = 0; i < ev.changedTouches.length; ++i) {
+      if (ev.changedTouches[i].identifier === touchStart.id) {
+        touch = ev.changedTouches[i];
+        break;
+      }
+    }
+    if (touch !== null) {
+      const dx = touch.clientX - touchStart.x;
+      const dy = touch.clientY - touchStart.y;
+      // Treat movement within 10 CSS pixels as a tap rather than scrolling.
+      // Keep focus synchronous with the user gesture so iOS/iPadOS Safari can
+      // display its software keyboard.
+      if ((dx * dx + dy * dy) <= 100) {
+        // Apple WebKit can leave a contenteditable element focused after the
+        // software keyboard is dismissed with Done. Force a fresh focus
+        // transition there without changing focus behavior on Chromium,
+        // Firefox, or other touch browsers.
+        if (needsTouchFocusRefresh &&
+            term.getDocument().activeElement === screen) {
+          term.blur();
+        }
+        term.focus();
+      }
+    }
+
+    touchStart = null;
+  }, touchOptions);
+  screen.addEventListener('touchcancel', function () {
+    touchStart = null;
+  }, touchOptions);
+};
+
+/**
+ * Keep the terminal sized to the visible viewport when browser chrome or the
+ * software keyboard changes the space available to the page.
+ */
+OodShell.prototype.installVisualViewportSizing = function () {
+  const viewport = window.visualViewport;
+  const element = this.element;
+  let resizeFrame = null;
+
+  if (!viewport) {
+    return;
+  }
+
+  const resize = function () {
+    if (resizeFrame !== null) {
+      return;
+    }
+
+    // Use a single animation-frame callback to coalesce bursts of viewport
+    // events into one layout update.
+    resizeFrame = window.requestAnimationFrame(function () {
+      // Convert the visible height back to layout-space CSS pixels so pinch
+      // zoom does not resize the terminal or remote PTY.
+      const height = Math.round(viewport.height * viewport.scale);
+
+      // A VisualViewport belonging to a document that is not fully active can
+      // transiently report zero. Preserve the last usable terminal height
+      // rather than collapsing the shell until the next viewport event.
+      if (height > 0) {
+        element.style.height = height + 'px';
+      }
+      resizeFrame = null;
+    });
+  };
+
+  // Safari can update the visual viewport as its browser chrome moves as well
+  // as when the software keyboard opens or closes. Measure on the next frame
+  // and coalesce repeated events to avoid redundant layout writes.
+  resize();
+  viewport.addEventListener('resize', resize);
+  viewport.addEventListener('scroll', resize);
+  window.addEventListener('resize', resize);
+};
+
 OodShell.prototype.getMessage = function (ev) {
   this.term.io.print(ev.data);
 }
 
 OodShell.prototype.closeTerminal = function (ev) {
-  var errorDiv;
+  let errorDiv;
 
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
