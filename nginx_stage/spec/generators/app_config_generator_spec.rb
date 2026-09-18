@@ -49,7 +49,7 @@ describe NginxStage::AppConfigGenerator do
   describe 'exec_nginx hook' do
     let(:hook) { generator.class.hooks[:exec_nginx] }
     let(:pid_path) { '/var/run/ondemand-nginx/spec/passenger.pid' }
-    let(:status) { double(:status, :success? => true) }
+    let(:status) { double(:success? => true) }
 
     before do
       allow(NginxStage).to receive(:clean_nginx_env).with(user: generator.user)
