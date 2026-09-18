@@ -186,7 +186,6 @@ class NavTest < ActionDispatch::IntegrationTest
     ) do
         stub_user_configuration(help_bar: [])
         get('/')
-        warn response.body
         assert_response(:success)
         assert_select("nav.navbar div.collapse li.nav-item") do
           assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_help_title")}']", 1)
@@ -200,5 +199,15 @@ class NavTest < ActionDispatch::IntegrationTest
       end
   end
 
+  test 'user button should render' do
+    CurrentUser.stubs(:name).returns('me')
+    get('/')
+    assert_response(:success)
+    assert_select("nav.navbar div.collapse li.nav-item[data-content = '#{I18n.t("dashboard.nav_user", username: 'me')}']") do
+      assert_select("a.nav-link[title = '#{I18n.t("dashboard.nav_user", username: 'me')}']", 1) do
+      assert_select('span', text: "#{I18n.t("dashboard.nav_user", username: 'me')}")
+    end
+    end
+  end
 
 end
