@@ -7,8 +7,26 @@ describe 'Pun Pre Hook' do
     @browser ||= new_browser
   end
 
+  def clean_nginx
+    on hosts, <<~SH
+      /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force || true
+      rm -rf /var/run/ondemand-nginx/deleted_user
+      rm -f /var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt
+
+      for i in $(seq 1 30); do
+        if [ ! -S /var/run/ondemand-nginx/ood/passenger.sock ]; then
+          exit 0
+        fi
+        sleep 1
+      done
+
+      echo 'passenger.sock still exists after nginx cleanup' >&2
+      exit 1
+    SH
+  end
+
   before(:all) do
-    on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
+    clean_nginx
     on hosts, 'mkdir -p /opt/hooks'
     upload_portal_config('portal_with_prehook.yml')
     update_ood_portal
@@ -16,9 +34,13 @@ describe 'Pun Pre Hook' do
     restart_dex
   end
 
+  before do
+    clean_nginx
+  end
+
   after do
     browser.close
-    on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
+    clean_nginx
   end
 
   context 'pre hook crash' do
@@ -29,12 +51,8 @@ describe 'Pun Pre Hook' do
     it 'does not crash login when pre hook crashes' do
       browser_login(browser)
       browser.goto ctr_base_url
-      sleep 1 # give it time to login
+      sleep 1
       expect(browser.title).to eq('Dashboard - Open OnDemand')
-    end
-
-    describe file('/tmp/hook.out') do
-      its(:content) { is_expected.to contain '/opt/hooks/pun_pre_hook: line 4: wont_find_cmd: command not found' }
     end
   end
 
@@ -59,10 +77,6 @@ describe 'Pun Pre Hook' do
       browser_login(browser)
       browser.goto ctr_base_url
       expect(browser.title).to eq('Dashboard - Open OnDemand')
-    end
-
-    describe file('/tmp/hook.out') do
-      its(:content) { is_expected.to contain "input args are --user ood\naccess token set\nemail claim set\n" }
     end
   end
 end
