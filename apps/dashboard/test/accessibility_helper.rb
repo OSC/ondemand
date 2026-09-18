@@ -157,6 +157,9 @@ class ActiveSupport::TestCase
   HEREDOC
 
   def inject_contrast_observer
+    # MutationObserver callbacks run asynchronously. Yield one browser event-loop
+    # turn so pending mutations are recorded before checking changed elements.
+    page.evaluate_async_script('setTimeout(arguments[0], 0)')
     page.execute_script(CONTRAST_WATCH_SCRIPT)
   end
 end
