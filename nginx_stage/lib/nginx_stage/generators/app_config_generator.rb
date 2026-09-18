@@ -113,6 +113,7 @@ module NginxStage
       def app_config_path
         NginxStage.app_config_path(env: env, owner: owner, name: name)
       end
+
       # nginx -s stop returns before Passenger necessarily removes its Unix
       # socket. Starting the replacement PUN while that path still exists can
       # fail with EADDRINUSE, so wait for the old socket to be released first.
