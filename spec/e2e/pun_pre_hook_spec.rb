@@ -18,8 +18,11 @@ describe 'Pun Pre Hook' do
 
   after do
     if @browser
-      @browser.close
-      clean_nginx
+      begin
+        @browser.close
+      ensure
+        clean_nginx
+      end
     end
   end
 
