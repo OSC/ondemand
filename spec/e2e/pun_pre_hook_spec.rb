@@ -17,7 +17,7 @@ describe 'Pun Pre Hook' do
         if [ ! -S /var/run/ondemand-nginx/ood/passenger.sock ]; then
           exit 0
         fi
-        sleep 1 # give it time to login
+        sleep 1
       done
 
       echo 'passenger.sock still exists after nginx cleanup' >&2
@@ -51,7 +51,7 @@ describe 'Pun Pre Hook' do
     it 'does not crash login when pre hook crashes' do
       browser_login(browser)
       browser.goto ctr_base_url
-      sleep 1
+      sleep 1  # give it time to login
       expect(browser.title).to eq('Dashboard - Open OnDemand')
     end
 
