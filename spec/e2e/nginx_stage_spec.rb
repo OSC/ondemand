@@ -34,7 +34,6 @@ describe 'Nginx stage' do
     it 'does not crash login when pre hook is misconfigured' do
       # get the 'ood' users' pun ready
       browser_login(browser)
-      browser.goto ctr_base_url
       expect(browser.title).to eq('Dashboard - Open OnDemand')
 
       # Note there's no error here about 'deleted_user'
