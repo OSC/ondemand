@@ -2,7 +2,7 @@ require 'application_system_test_case'
 
 class AccessibilityTest < ApplicationSystemTestCase
   # Yield one browser event-loop turn so MutationObserver callbacks can run.
-  MUTATION_OBSERVER_TURN_SCRIPT = 'setTimeout(arguments[arguments.length - 1], 0)'
+  MUTATION_OBSERVER_TURN_SCRIPT = 'setTimeout(arguments[arguments.length - 1], 0)'.freeze
 
   test 'contrast watcher detects violations on page load' do
     with_modified_env(OOD_BRAND_BG_COLOR: 'cadetblue') do 
@@ -65,14 +65,14 @@ class AccessibilityTest < ApplicationSystemTestCase
   test 'contrast watcher detects violations from inserted elements' do
     NEW_ELEMENT_SCRIPT = <<~HEREDOC
       span = document.createElement('span');
-      span.id = 'contrast-test-element';
+      span.id = 'contrast_test_element';
       span.textContent = 'NEW ELEMENT';
       span.style = 'color: lightgrey';
       document.getElementById('main_container').appendChild(span);
     HEREDOC
     visit('/')
     page.execute_script(NEW_ELEMENT_SCRIPT)
-    page.assert_selector('#contrast-test-element')
+    page.assert_selector('#contrast_test_element')
     page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       assert_selector('#main_container')
