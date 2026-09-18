@@ -41,7 +41,8 @@ describe NginxStage::AppConfigGenerator do
     end
 
     it 'fails when the previous socket does not disappear before the timeout' do
-      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC)
+      allow(Process).to receive(:clock_gettime)
+        .with(Process::CLOCK_MONOTONIC)
         .and_return(0.0, described_class::PUN_SOCKET_SHUTDOWN_TIMEOUT)
       allow(File).to receive(:exist?).with(socket_path).and_return(true)
 
@@ -106,7 +107,7 @@ describe NginxStage::AppConfigGenerator do
     end
 
     it 'does not start the replacement PUN when socket cleanup times out' do
-      expect(Open3).to receive(:capture2e)
+      allow(Open3).to receive(:capture2e)
         .with(['/usr/sbin/nginx', '(spec)'], 'stop').and_return(['', status])
       expect(generator).to receive(:wait_for_pun_socket_shutdown)
         .and_raise(NginxStage::Error, 'socket cleanup timed out')
