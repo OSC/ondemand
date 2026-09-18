@@ -17,7 +17,7 @@ describe 'Pun Pre Hook' do
         if [ ! -S /var/run/ondemand-nginx/ood/passenger.sock ]; then
           exit 0
         fi
-        sleep 1
+        sleep 1 # give it time to login
       done
 
       echo 'passenger.sock still exists after nginx cleanup' >&2
