@@ -17,7 +17,7 @@ OodShell.prototype.createTerminal = function () {
 
 
 OodShell.prototype.runTerminal = function () {
-  var that = this;
+  const that = this;
 
   // Create an instance of hterm.Terminal
   this.term = new hterm.Terminal({ profileId: this.profile });
@@ -27,7 +27,7 @@ OodShell.prototype.runTerminal = function () {
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
-    var io = this.io.push();
+    const io = this.io.push();
 
     // Set up event handlers for io
     io.onVTKeystroke    = that.onVTKeystroke.bind(that);
@@ -56,25 +56,31 @@ OodShell.prototype.runTerminal = function () {
   };
 };
 
+/**
+ * Restore tap-to-focus for hterm on touch devices without treating a drag or
+ * scroll gesture as a tap.
+ */
 OodShell.prototype.installTouchKeyboard = function (term) {
-  var screen = term.getDocument().querySelector('x-screen');
-  var touchStart = null;
-  var touchOptions = { passive: true, capture: true };
-  var needsTouchFocusRefresh = navigator.maxTouchPoints > 0 &&
-                               typeof CSS !== 'undefined' &&
-                               typeof CSS.supports === 'function' &&
-                               CSS.supports('-webkit-touch-callout', 'none');
+  const screen = term.getDocument().querySelector('x-screen');
+  // Track the initial position of the active one-finger tap candidate.
+  let touchStart = null;
+  // Capture before hterm handles the event; passive listeners preserve its
+  // scrolling behavior while this handler only observes the gesture.
+  const touchOptions = { passive: true, capture: true };
+  const needsTouchFocusRefresh = navigator.maxTouchPoints > 0 &&
+                                 typeof CSS !== 'undefined' &&
+                                 typeof CSS.supports === 'function' &&
+                                 CSS.supports('-webkit-touch-callout', 'none');
   if (!screen) {
     return;
   }
 
   screen.addEventListener('touchstart', function (ev) {
-    var touch;
     if (ev.touches.length !== 1) {
       touchStart = null;
       return;
     }
-    touch = ev.touches[0];
+    const touch = ev.touches[0];
     touchStart = {
       id: touch.identifier,
       x: touch.clientX,
@@ -83,19 +89,14 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 
   screen.addEventListener('touchmove', function (ev) {
-    var touch;
-    var dx;
-    var dy;
-    var i;
-
     if (touchStart === null) {
       return;
     }
-    for (i = 0; i < ev.changedTouches.length; ++i) {
+    for (let i = 0; i < ev.changedTouches.length; ++i) {
       if (ev.changedTouches[i].identifier === touchStart.id) {
-        touch = ev.changedTouches[i];
-        dx = touch.clientX - touchStart.x;
-        dy = touch.clientY - touchStart.y;
+        const touch = ev.changedTouches[i];
+        const dx = touch.clientX - touchStart.x;
+        const dy = touch.clientY - touchStart.y;
         // Once a gesture has moved beyond the tap threshold, do not allow it
         // to become a tap again if the finger returns near its starting point.
         if ((dx * dx + dy * dy) > 100) {
@@ -107,23 +108,20 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 
   screen.addEventListener('touchend', function (ev) {
-    var touch = null;
-    var dx;
-    var dy;
-    var i;
+    let touch = null;
 
     if (touchStart === null) {
       return;
     }
-    for (i = 0; i < ev.changedTouches.length; ++i) {
+    for (let i = 0; i < ev.changedTouches.length; ++i) {
       if (ev.changedTouches[i].identifier === touchStart.id) {
         touch = ev.changedTouches[i];
         break;
       }
     }
     if (touch !== null) {
-      dx = touch.clientX - touchStart.x;
-      dy = touch.clientY - touchStart.y;
+      const dx = touch.clientX - touchStart.x;
+      const dy = touch.clientY - touchStart.y;
       // Treat movement within 10 CSS pixels as a tap rather than scrolling.
       // Keep focus synchronous with the user gesture so iOS/iPadOS Safari can
       // display its software keyboard.
@@ -147,25 +145,30 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 };
 
+/**
+ * Keep the terminal sized to the visible viewport when browser chrome or the
+ * software keyboard changes the space available to the page.
+ */
 OodShell.prototype.installVisualViewportSizing = function () {
-  var viewport = window.visualViewport;
-  var element = this.element;
-  var resizeFrame = null;
-  var resize;
+  const viewport = window.visualViewport;
+  const element = this.element;
+  let resizeFrame = null;
 
   if (!viewport) {
     return;
   }
 
-  resize = function () {
+  const resize = function () {
     if (resizeFrame !== null) {
       return;
     }
 
+    // Use a single animation-frame callback to coalesce bursts of viewport
+    // events into one layout update.
     resizeFrame = window.requestAnimationFrame(function () {
       // Convert the visible height back to layout-space CSS pixels so pinch
       // zoom does not resize the terminal or remote PTY.
-      var height = Math.round(viewport.height * viewport.scale);
+      const height = Math.round(viewport.height * viewport.scale);
 
       // A VisualViewport belonging to a document that is not fully active can
       // transiently report zero. Preserve the last usable terminal height
@@ -191,7 +194,7 @@ OodShell.prototype.getMessage = function (ev) {
 }
 
 OodShell.prototype.closeTerminal = function (ev) {
-  var errorDiv;
+  let errorDiv;
 
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
