@@ -21,7 +21,7 @@ class AccessibilityTest < ApplicationSystemTestCase
     visit files_url(Rails.root.to_s)
     text = find('#directory-contents_info')
     text.execute_script('this.style = "color: darkseagreen"')
-    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
+    page.evaluate_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       find('#path-breadcrumbs')
     end
@@ -36,7 +36,7 @@ class AccessibilityTest < ApplicationSystemTestCase
     visit files_url(Rails.root.to_s)
     button = find('#path-breadcrumbs')
     button.execute_script('this.classList.add("bg-danger")')
-    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
+    page.evaluate_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       find('#path-breadcrumbs')
     end
@@ -51,7 +51,7 @@ class AccessibilityTest < ApplicationSystemTestCase
     visit files_url(Rails.root.to_s)
     button = find('#copy-move-btn')
     button.execute_script('this.classList.add("bg-danger")')
-    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
+    page.evaluate_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       find('#copy-move-btn')
     end
@@ -73,7 +73,7 @@ class AccessibilityTest < ApplicationSystemTestCase
     visit('/')
     page.execute_script(NEW_ELEMENT_SCRIPT)
     page.assert_selector('#contrast_test_element')
-    page.execute_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
+    page.evaluate_async_script(MUTATION_OBSERVER_TURN_SCRIPT)
     error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
       assert_selector('#main_container')
     end
