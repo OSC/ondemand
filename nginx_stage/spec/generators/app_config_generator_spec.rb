@@ -26,17 +26,24 @@ describe NginxStage::AppConfigGenerator do
 
     it 'waits until the previous socket path is removed' do
       allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(0.0, 0.1)
-      allow(File).to receive(:lexist?).with(socket_path).and_return(true, false)
-
+      allow(File).to receive(:exist?).with(socket_path).and_return(true, false)
+      allow(File).to receive(:symlink?).with(socket_path).and_return(false)
       expect(generator).to receive(:sleep).with(described_class::PUN_SOCKET_SHUTDOWN_POLL_INTERVAL).once
+      generator.send(:wait_for_pun_socket_shutdown)
+    end
 
+    it 'waits for a dangling symlink at the socket path to be removed' do
+      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(0.0, 0.1)
+      allow(File).to receive(:exist?).with(socket_path).and_return(false)
+      allow(File).to receive(:symlink?).with(socket_path).and_return(true, false)
+      expect(generator).to receive(:sleep).with(described_class::PUN_SOCKET_SHUTDOWN_POLL_INTERVAL).once
       generator.send(:wait_for_pun_socket_shutdown)
     end
 
     it 'fails when the previous socket does not disappear before the timeout' do
       allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC)
         .and_return(0.0, described_class::PUN_SOCKET_SHUTDOWN_TIMEOUT)
-      allow(File).to receive(:lexist?).with(socket_path).and_return(true)
+      allow(File).to receive(:exist?).with(socket_path).and_return(true)
 
       expect { generator.send(:wait_for_pun_socket_shutdown) }
         .to raise_error(
