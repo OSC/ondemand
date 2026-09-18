@@ -177,5 +177,28 @@ class NavTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'help dropdown should render when help_bar is empty' do
+    with_modified_env(
+      OOD_DASHBOARD_SUPPORT_URL: '/support',
+      OOD_DASHBOARD_DOCS_URL: '/docs',
+      OOD_DASHBOARD_PASSWD_URL: '/password',
+      OOD_DASHBOARD_2FA_URL: '/two-factor'
+    ) do
+        stub_user_configuration(help_bar: [])
+        get('/')
+        warn response.body
+        assert_response(:success)
+        assert_select("nav.navbar div.collapse li.nav-item") do
+          assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_help_title")}']", 1)
+          assert_select("ul.dropdown-menu") do
+            assert_select('a', text: I18n.t('dashboard.nav_help_support'))
+            assert_select('a', text: I18n.t('dashboard.nav_help_docs'))
+            assert_select('a', text: I18n.t('dashboard.nav_help_change_password'))
+            assert_select('a', text: I18n.t('dashboard.nav_help_two_factor'))
+          end
+        end
+      end
+  end
+
 
 end
