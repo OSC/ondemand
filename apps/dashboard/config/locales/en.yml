@@ -162,6 +162,7 @@ en:
     edit: Edit
     file: File
     file_quotas: File Quotas
+    files: Files
     files_directory_download_error_modal_title: Directory too large to download
     files_directory_download_unauthorized: You can only download a file or directory that you have read and execute access to
     files_directory_size_calculation_error: Timeout while trying to determine directory size.

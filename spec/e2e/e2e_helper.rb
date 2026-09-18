@@ -27,7 +27,27 @@ def browser_login(browser)
   browser.text_field(id: 'username').set 'ood@localhost'
   browser.text_field(id: 'password').set 'password'
   browser.button(id: 'submit-login').click
-  CONFLICT
+  # The submit click is asynchronous. Do not let callers race the Dex
+  # and authenticated dashboard navigation.
+  Watir::Wait.until(timeout: 60, interval: 0.25) do
+    browser.title == 'Dashboard - Open OnDemand'
+  end
+end
+
+def clean_nginx
+  on hosts, <<~SH
+    set -e
+    socket=/var/run/ondemand-nginx/ood/passenger.sock
+    /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force
+    for _ in $(seq 1 30); do
+      if [ ! -e "$socket" ] && [ ! -L "$socket" ]; then
+        exit 0
+      fi
+      sleep 1
+    done
+    echo "PUN socket still exists after nginx cleanup: $socket" >&2
+    exit 1
+  SH
 end
 
 def hook_fixture(file)
