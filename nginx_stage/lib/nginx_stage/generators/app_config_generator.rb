@@ -3,7 +3,7 @@ module NginxStage
   # responsible for reloading the per-user NGINX process after updating the app
   # config.
   class AppConfigGenerator < Generator
-    PUN_SOCKET_SHUTDOWN_TIMEOUT = 5
+    PUN_SOCKET_SHUTDOWN_TIMEOUT = 30
     PUN_SOCKET_SHUTDOWN_POLL_INTERVAL = 0.05
     desc 'Generate a new nginx app config and reload process'
 
@@ -90,8 +90,8 @@ module NginxStage
             *NginxStage.nginx_args(user: user, signal: :stop)
           )
           abort(o) unless s.success?
-          wait_for_pun_socket_shutdown
         end
+        wait_for_pun_socket_shutdown
         o, s = Open3.capture2e(
           [
             NginxStage.nginx_bin,
