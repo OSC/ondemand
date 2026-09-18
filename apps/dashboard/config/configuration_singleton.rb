@@ -92,7 +92,7 @@ class ConfigurationSingleton
       :download_dir_timeout_seconds => 5,
       :download_dir_max             => 10_737_418_240, # 10*1024*1024*1024 bytes
       :file_editor_max_size         => 12_582_912,     # 12*1024*1024 bytes
-      :file_download_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
+      :download_file_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
       :project_size_timeout         => 15,
       :novnc_default_compression    => 6,
       :novnc_default_quality        => 2,

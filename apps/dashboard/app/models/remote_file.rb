@@ -53,7 +53,7 @@ class RemoteFile
   end
 
   def can_download_file?
-    download_file_size_limit = Configuration.file_download_max
+    download_file_size_limit = Configuration.download_file_max
     can_download = size <= download_file_size_limit
     error = can_download ? nil : I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
     [can_download, error]
