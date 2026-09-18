@@ -70,5 +70,28 @@ describe NginxStage::AppConfigGenerator do
       expect { generator.instance_eval(&hook) }
         .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
     end
+
+    it 'does not wait when there is no existing PUN' do
+      allow(File).to receive(:file?).with(pid_path).and_return(false)
+
+      expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+      expect(Open3).to receive(:capture2e)
+        .with(['/usr/sbin/nginx', '(spec)'], 'start').and_return(['', status])
+
+      expect { generator.instance_eval(&hook) }
+        .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
+    end
+
+    it 'does not start the replacement PUN when socket cleanup times out' do
+      expect(Open3).to receive(:capture2e)
+        .with(['/usr/sbin/nginx', '(spec)'], 'stop').and_return(['', status])
+      expect(generator).to receive(:wait_for_pun_socket_shutdown)
+        .and_raise(NginxStage::Error, 'socket cleanup timed out')
+      expect(Open3).not_to receive(:capture2e)
+        .with(['/usr/sbin/nginx', '(spec)'], 'start')
+
+      expect { generator.instance_eval(&hook) }
+        .to raise_error(NginxStage::Error, 'socket cleanup timed out')
+    end
   end
 end
