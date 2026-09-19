@@ -9,29 +9,10 @@ class Workflow
       enabled = Configuration.workflows_enabled
       return enabled unless enabled.nil?
 
-      dependency_keys = %i[after afterok afternotok afterany].freeze
-      clusters = Configuration.job_clusters.to_a
-      return false if clusters.empty?
-
-      clusters.any? do |cluster|
-        job_adapter =
-          begin
-            cluster.respond_to?(:job_adapter) ? cluster.job_adapter : nil
-          rescue OodCore::AdapterNotSpecified => e
-            Rails.logger.debug("Workflow.supported?: adapter not specified for cluster: #{e.message}")
-            nil
-          end
-        next false if job_adapter.nil?
-
-        method = job_adapter.method(:submit)
-        params = method.parameters
-
-        next true if params.any? { |type, _name| type == :keyrest }
-
-        accepted_keys = params.select { |type, _name| type == :key || type == :keyreq }.map { |_type, name| name }.compact.map(&:to_sym)
-
-        (dependency_keys - accepted_keys).empty?
-      rescue NameError, NoMethodError
+      Configuration.job_clusters.any? do |cluster|
+        cluster.job_adapter.supports_job_dependencies?
+      rescue OodCore::AdapterNotSpecified, NoMethodError => e
+        Rails.logger.debug("Workflow.supported?: #{e.class}: #{e.message}")
         false
       end
     end
