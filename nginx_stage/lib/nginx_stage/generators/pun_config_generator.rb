@@ -7,8 +7,11 @@ module NginxStage
   class PunConfigGenerator < Generator
     desc 'Generate a new per-user nginx config and process'
 
-    # Serialize the complete PUN initialization sequence, including directory
-    # setup, secret/config generation, pre-hooks, and process startup.
+    # Serialize the complete PUN initialization sequence, including:
+    # directory setup
+    # secret/config generation
+    # pre-hooks
+    # process startup.
     def invoke
       with_pun_restart_lock(user: user) { super }
     end
