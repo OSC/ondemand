@@ -19,6 +19,42 @@ describe NginxStage::AppConfigGenerator do
     allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
   end
 
+  describe '#with_pun_restart_lock' do
+    let(:config_path) { '/var/lib/ondemand-nginx/config/puns/spec.conf' }
+    let(:lock) { double('lock') }
+
+    before do
+      allow(NginxStage).to receive(:pun_config_path).with(user: generator.user).and_return(config_path)
+    end
+
+    it 'holds an exclusive lock while restarting the PUN' do
+      events = []
+      allow(File).to receive(:open).with(config_path, File::RDONLY).and_yield(lock)
+      allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB) do
+        events << :locked
+        0
+      end
+
+      generator.send(:with_pun_restart_lock) { events << :yielded }
+
+      expect(events).to eq([:locked, :yielded])
+    end
+
+    it 'fails when another restart holds the lock for too long' do
+      allow(Process).to receive(:clock_gettime)
+        .with(Process::CLOCK_MONOTONIC)
+        .and_return(0.0, described_class::PUN_RESTART_LOCK_TIMEOUT)
+      allow(File).to receive(:open).with(config_path, File::RDONLY).and_yield(lock)
+      allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB).and_return(false)
+
+      expect { generator.send(:with_pun_restart_lock) {} }
+        .to raise_error(
+          NginxStage::Error,
+          "timed out waiting for another PUN restart to finish: #{config_path}"
+        )
+    end
+  end
+
   describe '#wait_for_pun_socket_shutdown' do
     before do
       allow(NginxStage).to receive(:pun_socket_path).with(user: generator.user).and_return(socket_path)
@@ -66,9 +102,11 @@ describe NginxStage::AppConfigGenerator do
       allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
       allow(NginxStage).to receive(:nginx_args).with(user: generator.user, signal: :stop).and_return(['stop'])
       allow(NginxStage).to receive(:nginx_args).with(user: generator.user).and_return(['start'])
+      allow(generator).to receive(:with_pun_restart_lock).and_yield
     end
 
     it 'waits for the old socket before starting the replacement PUN' do
+      expect(generator).to receive(:with_pun_restart_lock).ordered.and_yield
       expect(Open3).to receive(:capture2e)
         .with(['/usr/sbin/nginx', '(spec)'], 'stop').ordered.and_return(['', status])
       expect(generator).to receive(:wait_for_pun_socket_shutdown).ordered
