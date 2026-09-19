@@ -53,4 +53,56 @@ describe NginxStage::NginxCleanGenerator do
       generator.invoke
     end
   end
+
+  context 'with a disabled user' do
+    let(:disabled_user) { 'deleted_user' }
+    let(:disabled_pid_path_value) { '/tmp/deleted_user/passenger.pid' }
+    let(:disabled_pid_path) do
+      double('disabled_pid_path', pid: 1234, to_s: disabled_pid_path_value)
+    end
+    let(:kill_status) { double(:success? => true) }
+
+    before do
+      allow(NginxStage).to receive(:active_users).and_return([])
+      allow(NginxStage).to receive(:inactive_users).and_return([disabled_user])
+      allow(NginxStage).to receive(:pun_pid_path)
+        .with(user: disabled_user)
+        .and_return(disabled_pid_path_value)
+      allow(NginxStage::PidFile).to receive(:new)
+        .with(disabled_pid_path_value)
+        .and_return(disabled_pid_path)
+      allow(generator).to receive(:with_pun_restart_lock).with(user: disabled_user).and_yield
+      allow(Open3).to receive(:capture2e)
+        .with('kill', '-s', 'TERM', '1234')
+        .and_return(['', kill_status])
+      allow(NginxStage).to receive(:pun_secret_key_base_path)
+        .with(user: disabled_user)
+        .and_return('/tmp/deleted_user.secret_key_base.txt')
+      allow(NginxStage).to receive(:pun_config_path)
+        .with(user: disabled_user)
+        .and_return('/tmp/deleted_user.conf')
+      allow(FileUtils).to receive(:rm)
+      allow(FileUtils).to receive(:rmdir)
+    end
+
+    it 'holds the lifecycle lock until the disabled PUN socket disappears' do
+      expect(generator).to receive(:with_pun_restart_lock).with(user: disabled_user).ordered.and_yield
+      expect(Open3).to receive(:capture2e)
+        .with('kill', '-s', 'TERM', '1234').ordered.and_return(['', kill_status])
+      expect(generator).to receive(:wait_for_pun_socket_shutdown)
+        .with(user: disabled_user).ordered
+
+      generator.invoke
+    end
+
+    context 'when SIGTERM fails' do
+      let(:kill_status) { double(:success? => false) }
+
+      it 'does not wait for socket cleanup that was not initiated' do
+        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+
+        generator.invoke
+      end
+    end
+  end
 end
