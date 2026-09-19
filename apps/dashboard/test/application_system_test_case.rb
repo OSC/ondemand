@@ -70,8 +70,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   def verify_bc_alert(token, header, message)
-    # Wait for the post-submit navigation to settle before querying the alert.
-    # Otherwise Capybara can inspect an element from the outgoing document.
+    # Wait for the browser to reach the post-submit path before locating the alert.
+    # Locating it earlier can leave Selenium querying an element from the outgoing document.
     assert_current_path(batch_connect_session_contexts_path(token))
     alert = find('div[role="alert"]', text: header)
     within(alert) do
