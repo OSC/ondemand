@@ -73,9 +73,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     # Wait for the post-submit navigation to settle before querying the alert.
     # Otherwise Capybara can inspect an element from the outgoing document.
     assert_current_path(batch_connect_session_contexts_path(token))
-    assert_selector('div[role="alert"] h4', exact_text: header)
-    assert_selector('div[role="alert"] pre', exact_text: message)
-    find('div[role="alert"] button').click
+    alert = find('div[role="alert"]', text: header)
+    within(alert) do
+      assert_selector('h4', exact_text: header)
+      assert_selector('pre', exact_text: message)
+      find('button').click
+    end
   end
 
   def expect_no_page_reload(&block)
