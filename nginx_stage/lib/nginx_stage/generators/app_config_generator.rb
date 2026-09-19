@@ -109,25 +109,26 @@ module NginxStage
     end
 
     private
-      # NGINX app config path
-      def app_config_path
-        NginxStage.app_config_path(env: env, owner: owner, name: name)
-      end
 
-      # A stopped PUN can leave its Unix socket behind briefly, and the socket
-      # path can also outlive its PID file. Starting a replacement while that
-      # path exists can fail with EADDRINUSE, so wait for it to disappear.
-      def wait_for_pun_socket_shutdown
-        socket_path = NginxStage.pun_socket_path(user: user)
-        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
+    # NGINX app config path
+    def app_config_path
+      NginxStage.app_config_path(env: env, owner: owner, name: name)
+    end
 
-        while File.exist?(socket_path) || File.symlink?(socket_path)
-          if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
-            raise Error, "timed out waiting for previous PUN socket to disappear: #{socket_path}"
-          end
+    # A stopped PUN can leave its Unix socket behind briefly, and the socket
+    # path can also outlive its PID file. Starting a replacement while that
+    # path exists can fail with EADDRINUSE, so wait for it to disappear.
+    def wait_for_pun_socket_shutdown
+      socket_path = NginxStage.pun_socket_path(user: user)
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
 
-          sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
+      while File.exist?(socket_path) || File.symlink?(socket_path)
+        if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+          raise Error, "timed out waiting for previous PUN socket to disappear: #{socket_path}"
         end
+
+        sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
       end
+    end
   end
 end
