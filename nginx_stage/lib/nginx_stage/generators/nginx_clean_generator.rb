@@ -60,19 +60,21 @@ module NginxStage
       NginxStage.active_users.each do |u|
         begin
           next if (user && user != u.to_s)
-          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
-          socket = SocketFile.new NginxStage.pun_socket_path(user: u)
-          sessions = session_count(u)
-          cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
-          if sessions.zero? || force
-            puts u
-            if !skip_nginx
-              NginxStage.clean_nginx_env(user: user)
-              o, s = Open3.capture2e(
-                NginxStage.nginx_bin,
-                *NginxStage.nginx_args(user: u, signal: :stop)
-              )
-              $stderr.puts o unless s.success?
+          with_pun_restart_lock(user: u) do
+            pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+            socket = SocketFile.new NginxStage.pun_socket_path(user: u)
+            sessions = session_count(u)
+            cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
+            if sessions.zero? || force
+              puts u
+              if !skip_nginx
+                NginxStage.clean_nginx_env(user: user)
+                o, s = Open3.capture2e(
+                  NginxStage.nginx_bin,
+                  *NginxStage.nginx_args(user: u, signal: :stop)
+                )
+                $stderr.puts o unless s.success?
+              end
             end
           end
         rescue
@@ -83,16 +85,18 @@ module NginxStage
       pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
         begin
-          puts "#{u} (disabled)"
-          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+          with_pun_restart_lock(user: u) do
+            puts "#{u} (disabled)"
+            pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
-          # Send a SIGTERM to the master nginx process to kill the PUN.
-          # 'nginx stop' won't work, since getpwnam(3) will cause an error.
-          `kill -s TERM #{pid_path.pid}`
-          FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
-          FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
-          pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
-          pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
+            # Send a SIGTERM to the master nginx process to kill the PUN.
+            # 'nginx stop' won't work, since getpwnam(3) will cause an error.
+            `kill -s TERM #{pid_path.pid}`
+            FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
+            FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
+            pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
+            pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
+          end
         rescue StandardError => e
           warn "Error trying to clean up disabled user #{u}: #{e.message}"
         end

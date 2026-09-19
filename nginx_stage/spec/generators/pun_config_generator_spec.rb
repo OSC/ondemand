@@ -6,6 +6,7 @@ require 'nginx_stage'
 describe NginxStage::PunConfigGenerator do
   let(:test_user) { 'spec' }
   let(:test_user_gid) { 1000 }
+  let(:generator) { described_class.new(user: test_user, skip_nginx: true) }
 
   before do
     etc_stub = {
@@ -23,6 +24,19 @@ describe NginxStage::PunConfigGenerator do
 
   it 'requires the user option' do
     expect { described_class.new }.to raise_error(NginxStage::MissingOption, 'missing option: user')
+  end
+
+  describe '#invoke' do
+    it 'holds the PUN lifecycle lock across all setup hooks' do
+      allow(described_class).to receive(:hooks).and_return(
+        probe: proc { @pun_lock_probe_ran = true }
+      )
+      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield
+
+      generator.invoke
+
+      expect(generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
+    end
   end
 
   describe 'missing user' do

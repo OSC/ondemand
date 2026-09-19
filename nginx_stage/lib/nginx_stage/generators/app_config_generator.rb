@@ -5,8 +5,6 @@ module NginxStage
   class AppConfigGenerator < Generator
     PUN_SOCKET_SHUTDOWN_TIMEOUT = 30
     PUN_SOCKET_SHUTDOWN_POLL_INTERVAL = 0.05
-    PUN_RESTART_LOCK_TIMEOUT = 60
-    PUN_RESTART_LOCK_POLL_INTERVAL = 0.05
     desc 'Generate a new nginx app config and reload process'
 
     footer <<-EOF.gsub(/^ {4}/, '')
@@ -83,7 +81,11 @@ module NginxStage
     add_hook :exec_nginx do
       if !skip_nginx
         NginxStage.clean_nginx_env(user: user)
-        with_pun_restart_lock do
+        with_pun_restart_lock(user: user) do
+          config_path = NginxStage.pun_config_path(user: user)
+          unless File.file?(config_path)
+            raise Error, "missing PUN config while restarting PUN: #{config_path}"
+          end
           if File.file? NginxStage.pun_pid_path(user: user)
             o, s = Open3.capture2e(
               [
@@ -116,33 +118,6 @@ module NginxStage
     # NGINX app config path
     def app_config_path
       NginxStage.app_config_path(env: env, owner: owner, name: name)
-    end
-
-    # Serialize app-triggered PUN restarts without leaving a persistent lock
-    # file behind in the runtime directory.
-    def with_pun_restart_lock
-      lock_path = NginxStage.pun_config_path(user: user)
-      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_RESTART_LOCK_TIMEOUT
-
-      lock = begin
-        File.open(lock_path, File::RDONLY)
-      rescue Errno::ENOENT
-        raise Error, "missing PUN config while acquiring restart lock: #{lock_path}"
-      end
-
-      begin
-        until lock.flock(File::LOCK_EX | File::LOCK_NB)
-          if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
-            raise Error, "timed out waiting for another PUN restart to finish: #{lock_path}"
-          end
-
-          sleep PUN_RESTART_LOCK_POLL_INTERVAL
-        end
-
-        yield
-      ensure
-        lock.close
-      end
     end
 
     # A stopped PUN can leave its Unix socket behind briefly, and the socket
