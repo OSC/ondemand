@@ -30,7 +30,6 @@ describe NginxStage::AppConfigGenerator do
 
     it 'holds an exclusive lock while restarting the PUN' do
       events = []
-      allow(File).to receive(:open).with(config_path, File::RDONLY).and_yield(lock)
       allow(File).to receive(:open).with(config_path, File::RDONLY).and_return(lock)
       allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB) do
         events << :locked
@@ -46,7 +45,7 @@ describe NginxStage::AppConfigGenerator do
       allow(Process).to receive(:clock_gettime)
         .with(Process::CLOCK_MONOTONIC)
         .and_return(0.0, described_class::PUN_RESTART_LOCK_TIMEOUT)
-      allow(File).to receive(:open).with(config_path, File::RDONLY).and_return(lock))
+      allow(File).to receive(:open).with(config_path, File::RDONLY).and_return(lock)
       allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB).and_return(false)
 
       expect { generator.send(:with_pun_restart_lock) {} }
