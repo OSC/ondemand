@@ -136,11 +136,9 @@ module NginxStage
         FileUtils.mkdir_p File.dirname(lock_path)
         deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_RESTART_LOCK_TIMEOUT
         lock = File.open(lock_path, File::RDWR | File::CREAT, 0644)
-        waited = false
 
         begin
           until lock.flock(File::LOCK_EX | File::LOCK_NB)
-            waited = true
             if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
               raise Error, "timed out waiting for another PUN lifecycle operation to finish: #{lock_path}"
             end
@@ -148,7 +146,7 @@ module NginxStage
             sleep PUN_RESTART_LOCK_POLL_INTERVAL
           end
 
-          yield waited
+          yield
         ensure
           lock.close
         end

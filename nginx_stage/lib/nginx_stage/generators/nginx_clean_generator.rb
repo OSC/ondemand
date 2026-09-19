@@ -107,8 +107,8 @@ module NginxStage
         end
       end
 
-      # Remove the PID path parent directories after signaling the nginx processes
-      # and waiting for their Unix sockets to be cleaned up.
+      # Remove the PID path parent directories after processing disabled-user
+      # shutdowns; successful SIGTERM paths have already waited for socket cleanup.
       pid_parent_dirs_to_remove_later.each do |dir|
         begin
           begin

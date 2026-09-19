@@ -32,7 +32,6 @@ describe NginxStage::AppConfigGenerator do
 
     it 'holds an exclusive lock on a stable file beside the PUN config' do
       events = []
-      waited = nil
       allow(File).to receive(:open)
         .with(lock_path, File::RDWR | File::CREAT, 0644)
         .and_return(lock)
@@ -41,29 +40,9 @@ describe NginxStage::AppConfigGenerator do
         0
       end
 
-      generator.send(:with_pun_restart_lock, user: generator.user) do |did_wait|
-        waited = did_wait
-        events << :yielded
-      end
+      generator.send(:with_pun_restart_lock, user: generator.user) { events << :yielded }
 
       expect(events).to eq([:locked, :yielded])
-      expect(waited).to be(false)
-    end
-
-    it 'reports when lock acquisition was contended' do
-      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(0.0, 0.1)
-      allow(File).to receive(:open)
-        .with(lock_path, File::RDWR | File::CREAT, 0644)
-        .and_return(lock)
-      allow(lock).to receive(:flock)
-        .with(File::LOCK_EX | File::LOCK_NB)
-        .and_return(false, 0)
-      allow(generator).to receive(:sleep).with(described_class::PUN_RESTART_LOCK_POLL_INTERVAL)
-
-      waited = nil
-      generator.send(:with_pun_restart_lock, user: generator.user) { |did_wait| waited = did_wait }
-
-      expect(waited).to be(true)
     end
 
     it 'fails when another PUN lifecycle operation holds the lock for too long' do

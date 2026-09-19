@@ -34,14 +34,14 @@ describe NginxStage::PunConfigGenerator do
     end
 
     it 'holds the PUN lifecycle lock across all setup hooks' do
-      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield(false)
+      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield
 
       generator.invoke
 
       expect(generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
     end
 
-    it 'does not suppress an uncontended explicit initialization of an existing PUN' do
+    it 'skips initialization when the PUN is already running' do
       running_generator = described_class.new(user: test_user)
       expect(running_generator).to receive(:pun_running?)
         .with(user: running_generator.user)
@@ -49,60 +49,30 @@ describe NginxStage::PunConfigGenerator do
         .and_return(true)
       expect(running_generator).to receive(:with_pun_restart_lock)
         .with(user: running_generator.user)
-        .and_yield(false)
-
-      running_generator.invoke
-
-      expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
-    end
-
-    it 'skips duplicate initialization after waiting when another operation started the PUN' do
-      running_generator = described_class.new(user: test_user)
-      expect(running_generator).to receive(:pun_running?)
-        .with(user: running_generator.user)
-        .twice
-        .and_return(false, true)
-      expect(running_generator).to receive(:with_pun_restart_lock)
-        .with(user: running_generator.user)
-        .and_yield(true)
+        .and_yield
 
       running_generator.invoke
 
       expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be_nil
     end
 
-    it 'retries initialization after waiting when the PUN is still not running' do
-      running_generator = described_class.new(user: test_user)
-      expect(running_generator).to receive(:pun_running?)
-        .with(user: running_generator.user)
-        .twice
-        .and_return(false, false)
-      expect(running_generator).to receive(:with_pun_restart_lock)
-        .with(user: running_generator.user)
-        .and_yield(true)
-
-      running_generator.invoke
-
-      expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
-    end
-
-    it 'does not suppress a contended explicit initialization when the PUN was already running' do
+    it 'initializes when the PUN is not running' do
       running_generator = described_class.new(user: test_user)
       expect(running_generator).to receive(:pun_running?)
         .with(user: running_generator.user)
         .once
-        .and_return(true)
+        .and_return(false)
       expect(running_generator).to receive(:with_pun_restart_lock)
         .with(user: running_generator.user)
-        .and_yield(true)
+        .and_yield
 
       running_generator.invoke
 
       expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
     end
 
-    it 'does not suppress config-only generation after waiting' do
-      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield(true)
+    it 'does not suppress config-only generation' do
+      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield
       expect(generator).not_to receive(:pun_running?)
 
       generator.invoke

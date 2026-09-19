@@ -7,14 +7,11 @@ module NginxStage
   class PunConfigGenerator < Generator
     desc 'Generate a new per-user nginx config and process'
 
-    # Serialize the complete PUN initialization sequence. If this invocation
-    # had to wait for another lifecycle operation, do not repeat setup or
-    # startup when that operation started a previously absent PUN.
+    # Serialize the complete PUN initialization sequence and make startup
+    # idempotent when another request has already started this user's PUN.
     def invoke
-      pun_was_running = !skip_nginx && pun_running?(user: user)
-
-      with_pun_restart_lock(user: user) do |waited|
-        return if waited && !pun_was_running && pun_running?(user: user)
+      with_pun_restart_lock(user: user) do
+        return if !skip_nginx && pun_running?(user: user)
 
         super
       end
