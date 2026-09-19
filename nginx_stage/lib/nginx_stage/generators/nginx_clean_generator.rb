@@ -73,7 +73,11 @@ module NginxStage
                   NginxStage.nginx_bin,
                   *NginxStage.nginx_args(user: u, signal: :stop)
                 )
-                $stderr.puts o unless s.success?
+                if s.success?
+                  wait_for_pun_socket_shutdown(user: u)
+                else
+                  $stderr.puts o
+                end
               end
             end
           end

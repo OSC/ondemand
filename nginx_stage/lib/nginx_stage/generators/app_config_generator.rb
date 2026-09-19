@@ -3,8 +3,6 @@ module NginxStage
   # responsible for reloading the per-user NGINX process after updating the app
   # config.
   class AppConfigGenerator < Generator
-    PUN_SOCKET_SHUTDOWN_TIMEOUT = 30
-    PUN_SOCKET_SHUTDOWN_POLL_INTERVAL = 0.05
     desc 'Generate a new nginx app config and reload process'
 
     footer <<-EOF.gsub(/^ {4}/, '')
@@ -118,22 +116,6 @@ module NginxStage
     # NGINX app config path
     def app_config_path
       NginxStage.app_config_path(env: env, owner: owner, name: name)
-    end
-
-    # A stopped PUN can leave its Unix socket behind briefly, and the socket
-    # path can also outlive its PID file. Starting a replacement while that
-    # path exists can fail with EADDRINUSE, so wait for it to disappear.
-    def wait_for_pun_socket_shutdown
-      socket_path = NginxStage.pun_socket_path(user: user)
-      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
-
-      while File.exist?(socket_path) || File.symlink?(socket_path)
-        if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
-          raise Error, "timed out waiting for previous PUN socket to disappear: #{socket_path}"
-        end
-
-        sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
-      end
     end
   end
 end

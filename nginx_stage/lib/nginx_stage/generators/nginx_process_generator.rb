@@ -43,7 +43,12 @@ module NginxStage
             ],
             *NginxStage.nginx_args(user: user, signal: signal)
           )
-          s.success? ? exit : abort(o)
+          if s.success?
+            wait_for_pun_socket_shutdown(user: user) if %w[stop quit].include?(signal.to_s)
+            exit
+          else
+            abort(o)
+          end
         end
       end
     end
