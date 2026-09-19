@@ -571,7 +571,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "nsf_access_events_url has default ACCESS API URL" do
-    with_modified_env(no_config_env) do
+    with_modified_env(no_config_env.merge({ 'OOD_NSF_ACCESS_EVENTS_URL' => nil })) do
       assert_equal 'https://support.access-ci.org/api/2.1/events',
                    ConfigurationSingleton.new.nsf_access_events_url
     end
@@ -585,7 +585,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "nsf_access_events_url responds to config file" do
     Dir.mktmpdir do |dir|
-      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_NSF_ACCESS_EVENTS_URL: nil }) do
         File.open("#{dir}/nsf.yml", 'w+') do |f|
           f.write({ 'nsf_access_events_url' => 'https://events.example.org/api/events' }.to_yaml)
         end
@@ -595,26 +595,98 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "connect_sources includes nsf_access_events_url when present" do
-    with_modified_env(no_config_env) do
-      sources = ConfigurationSingleton.new.connect_sources
-      assert_includes sources, :self
-      assert_includes sources, 'https://support.access-ci.org/api/2.1/events'
+  test "nsf_access_events_widget_enabled? is false when widget is not in dashboard layout" do
+    with_modified_env(no_config_env.merge({ 'OOD_NSF_ACCESS_EVENTS_URL' => nil })) do
+      refute ConfigurationSingleton.new.nsf_access_events_widget_enabled?
     end
   end
 
-  test "connect_sources uses configured nsf_access_events_url" do
-    with_modified_env(no_config_env.merge({
-      'OOD_NSF_ACCESS_EVENTS_URL' => 'https://events.example.org/api/2.1/events'
-    })) do
-      sources = ConfigurationSingleton.new.connect_sources
-      assert_includes sources, 'https://events.example.org/api/2.1/events'
-      refute_includes sources, 'https://support.access-ci.org/api/2.1/events'
+  test "nsf_access_events_widget_enabled? is true when widget is in dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_NSF_ACCESS_EVENTS_URL: nil }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_events'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_events_widget_enabled?
+      end
     end
   end
 
-  test "connect_sources omits nsf_access_events_url when blank" do
-    with_modified_env(no_config_env.merge({ 'OOD_NSF_ACCESS_EVENTS_URL' => '' })) do
+  test "nsf_access_events_widget_enabled? is true when widget is in a profile dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_NSF_ACCESS_EVENTS_URL: nil }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'profiles' => {
+              'team1' => {
+                'dashboard_layout' => {
+                  'rows' => [
+                    { 'columns' => [{ 'width' => 12, 'widgets' => ['motd', 'nsf_access_events'] }] }
+                  ]
+                }
+              }
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_events_widget_enabled?
+      end
+    end
+  end
+
+  test "connect_sources includes nsf_access_events hostname when widget is enabled" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_NSF_ACCESS_EVENTS_URL: nil }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_events'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, :self
+        assert_includes sources, 'support.access-ci.org'
+        refute_includes sources, 'https://support.access-ci.org/api/2.1/events'
+      end
+    end
+  end
+
+  test "connect_sources uses configured nsf_access_events hostname" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({
+        OOD_CONFIG_D_DIRECTORY:      dir.to_s,
+        OOD_NSF_ACCESS_EVENTS_URL: 'https://events.example.org/api/2.1/events'
+      }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_events'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, 'events.example.org'
+        refute_includes sources, 'support.access-ci.org'
+      end
+    end
+  end
+
+  test "connect_sources omits nsf_access_events host when widget is not enabled" do
+    with_modified_env(no_config_env.merge({ 'OOD_NSF_ACCESS_EVENTS_URL' => nil })) do
       sources = ConfigurationSingleton.new.connect_sources
       assert_equal [:self], sources
     end

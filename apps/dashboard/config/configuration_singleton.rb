@@ -432,9 +432,21 @@ class ConfigurationSingleton
     sources = [:self]
     sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
     sources << xdmod_host if xdmod_integration_enabled?
-    sources << nsf_access_events_url if nsf_access_events_url.present?
+    sources << nsf_access_events_host if nsf_access_events_widget_enabled? && nsf_access_events_host.present?
 
     sources
+  end
+
+  # Whether the nsf_access_events widget is configured in any dashboard layout.
+  def nsf_access_events_widget_enabled?
+    return false if nsf_access_events_url.blank?
+
+    layouts = [config[:dashboard_layout]]
+    config.fetch(:profiles, {}).each_value do |profile|
+      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
+    end
+
+    layouts.compact.any? { |layout| layout_includes_widget?(layout, 'nsf_access_events') }
   end
 
   def rails_env_production?
@@ -453,6 +465,26 @@ class ConfigurationSingleton
     app_dir.directory? && app_dir.join('manifest.yml').readable?
   end
 
+  def nsf_access_events_host
+    URI.parse(nsf_access_events_url).host
+  rescue URI::InvalidURIError
+    nil
+  end
+
+  def layout_includes_widget?(layout, widget_name)
+    return false unless layout.is_a?(Hash)
+
+    Array.wrap(layout[:rows]).any? do |row|
+      next false unless row.is_a?(Hash)
+
+      Array.wrap(row[:columns]).any? do |column|
+        next false unless column.is_a?(Hash)
+
+        Array.wrap(column[:widgets]).map(&:to_s).include?(widget_name.to_s)
+      end
+    end
+  end
+  
   def read_config
     files = Pathname.glob(config_directory.join("*.{yml,yaml,yml.erb,yaml.erb}"))
     files.sort.select do |f|
