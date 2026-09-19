@@ -5,6 +5,18 @@ class Workflow
   include ProjectPermissions
 
   class << self
+    def supported?
+      enabled = Configuration.workflows_enabled
+      return enabled unless enabled.nil?
+
+      Configuration.job_clusters.any? do |cluster|
+        cluster.job_adapter.supports_job_dependencies?
+      rescue OodCore::AdapterNotSpecified, NoMethodError => e
+        Rails.logger.debug("Workflow.supported?: #{e.class}: #{e.message}")
+        false
+      end
+    end
+
     def workflow_dir(project_dir)
       Pathname.new("#{project_dir}/.ondemand/workflows")
     end
