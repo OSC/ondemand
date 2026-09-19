@@ -124,7 +124,13 @@ module NginxStage
       lock_path = NginxStage.pun_config_path(user: user)
       deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_RESTART_LOCK_TIMEOUT
 
-      File.open(lock_path, File::RDONLY) do |lock|
+      lock = begin
+        File.open(lock_path, File::RDONLY)
+      rescue Errno::ENOENT
+        raise Error, "missing PUN config while acquiring restart lock: #{lock_path}"
+      end
+
+      begin
         until lock.flock(File::LOCK_EX | File::LOCK_NB)
           if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
             raise Error, "timed out waiting for another PUN restart to finish: #{lock_path}"
@@ -134,9 +140,9 @@ module NginxStage
         end
 
         yield
+      ensure
+        lock.close
       end
-    rescue Errno::ENOENT
-      raise Error, "missing PUN config while acquiring restart lock: #{lock_path}"
     end
 
     # A stopped PUN can leave its Unix socket behind briefly, and the socket
