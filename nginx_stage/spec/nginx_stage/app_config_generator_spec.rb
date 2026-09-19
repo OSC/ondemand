@@ -25,11 +25,13 @@ describe NginxStage::AppConfigGenerator do
 
     before do
       allow(NginxStage).to receive(:pun_config_path).with(user: generator.user).and_return(config_path)
+      allow(lock).to receive(:close)
     end
 
     it 'holds an exclusive lock while restarting the PUN' do
       events = []
       allow(File).to receive(:open).with(config_path, File::RDONLY).and_yield(lock)
+      allow(File).to receive(:open).with(config_path, File::RDONLY).and_return(lock)
       allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB) do
         events << :locked
         0
@@ -44,7 +46,7 @@ describe NginxStage::AppConfigGenerator do
       allow(Process).to receive(:clock_gettime)
         .with(Process::CLOCK_MONOTONIC)
         .and_return(0.0, described_class::PUN_RESTART_LOCK_TIMEOUT)
-      allow(File).to receive(:open).with(config_path, File::RDONLY).and_yield(lock)
+      allow(File).to receive(:open).with(config_path, File::RDONLY).and_return(lock))
       allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB).and_return(false)
 
       expect { generator.send(:with_pun_restart_lock) {} }
@@ -53,6 +55,30 @@ describe NginxStage::AppConfigGenerator do
           "timed out waiting for another PUN restart to finish: #{config_path}"
         )
     end
+
+    it 'reports a missing PUN config only when opening the lock fails' do
+      allow(File).to receive(:open)
+        .with(config_path, File::RDONLY)
+        .and_raise(Errno::ENOENT, config_path)
+
+      expect { generator.send(:with_pun_restart_lock) {} }
+        .to raise_error(
+          NginxStage::Error,
+          "missing PUN config while acquiring restart lock: #{config_path}"
+        )
+    end
+
+    it 'preserves ENOENT raised by the protected restart operation' do
+      allow(File).to receive(:open).with(config_path, File::RDONLY).and_return(lock)
+      allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB).and_return(0)
+
+      expect do
+        generator.send(:with_pun_restart_lock) { raise Errno::ENOENT, '/usr/sbin/nginx' }
+      end.to raise_error(Errno::ENOENT, /usr\/sbin\/nginx/)
+
+      expect(lock).to have_received(:close)
+    end
+
   end
 
   describe '#wait_for_pun_socket_shutdown' do
