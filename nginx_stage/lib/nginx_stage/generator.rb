@@ -126,7 +126,7 @@ module NginxStage
     end
 
     private
-      # Serialize operations that can start, stop, or replace a user's PUN.
+      # Serialize operations that can start, stop, replace, or remove a user's PUN.
       #
       # The lock is deliberately separate from the PUN config. Some lifecycle
       # paths remove and recreate that config; locking the config inode itself
@@ -155,8 +155,9 @@ module NginxStage
       end
 
       # A queued PUN initialization can find that the lifecycle operation ahead
-      # of it has already started the PUN. Require both the nginx master PID and
-      # its Unix socket so stale lifecycle files do not suppress a retry.
+      # of it has already started the PUN. Require both the Unix socket and a PID
+      # file whose process is still running so incomplete or stale state does not
+      # suppress a retry.
       def pun_running?(user:)
         return false unless File.socket?(NginxStage.pun_socket_path(user: user))
 
@@ -166,8 +167,8 @@ module NginxStage
       end
 
       # A stopped PUN can leave its Unix socket behind briefly, and the socket
-      # path can also outlive its PID file. Keep the lifecycle lock until that
-      # path disappears so a following start cannot race nginx shutdown.
+      # path can also outlive its PID file. Call this while holding the lifecycle
+      # lock so a following start cannot race nginx shutdown.
       def wait_for_pun_socket_shutdown(user: self.user)
         socket_path = NginxStage.pun_socket_path(user: user)
         deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
