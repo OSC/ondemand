@@ -153,6 +153,38 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     end
   end
 
+  test 'should create Interactive Apps dropdown with external apps' do
+    SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_interactive_apps'))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
+    Configuration.stubs(:external_apps_config).returns([{path: Rails.root.join('test/fixtures/usr/shared'), owner: CurrentUser.name, prefix: 'ext'}])
+
+    get root_path
+
+    dd = dropdown_list('Interactive Apps')
+    dditems = dropdown_list_items(dd)
+    assert dditems.any?, 'dropdown list items not found'
+    assert_equal [
+      { header: 'Apps' },
+      'Jupyter Notebook',
+      'Paraview',
+      :divider,
+      { header: 'Desktops' },
+      'Oakley Desktop',
+      'Desktops: Oakley',
+      'Owens Desktop',
+      :divider, 
+      {:header=>"Servers"},
+      'Oakley Usr App',
+      :divider,
+      'Broken App'
+    ], dditems
+
+    assert_select dd, 'li a', 'Oakley Desktop' do |link|
+      assert_equal '/batch_connect/sys/bc_desktop/oakley/session_contexts/new', link.first['href'],
+                   'Desktops link is incorrect'
+    end
+  end
+
   test 'should create My Interactive Apps link if Interactive Apps exist and not developer' do
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_interactive_apps'))
     Configuration.stubs(:app_development_enabled?).returns(false)

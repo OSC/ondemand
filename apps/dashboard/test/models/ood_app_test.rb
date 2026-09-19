@@ -89,7 +89,7 @@ class OodAppTest < ActiveSupport::TestCase
       app_dir = dir.join('app').tap(&:mkdir)
       app_dir.join('manifest.yml').write("---\nname: Ood Dashboard\ndescription: stuff")
 
-      refute OodApp.new(SysRouter.new(app_dir.basename.to_s)).should_appear_in_nav?
+      refute OodApp.new(SysRouter.new(app_dir.basename.to_s, prefix: :sys)).should_appear_in_nav?
     end
   end
 
@@ -101,7 +101,7 @@ class OodAppTest < ActiveSupport::TestCase
       app_dir = dir.join('app').tap(&:mkdir)
       app_dir.join('manifest.yml').write("---\nname: Jobs\ncategory: Jobs")
 
-      assert OodApp.new(SysRouter.new(app_dir.basename.to_s)).should_appear_in_nav?
+      assert OodApp.new(SysRouter.new(app_dir.basename.to_s, prefix: :sys)).should_appear_in_nav?
     end
   end
 
