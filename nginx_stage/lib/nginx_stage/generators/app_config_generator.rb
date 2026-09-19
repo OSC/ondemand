@@ -109,7 +109,6 @@ module NginxStage
     end
 
     private
-
     # NGINX app config path
     def app_config_path
       NginxStage.app_config_path(env: env, owner: owner, name: name)
