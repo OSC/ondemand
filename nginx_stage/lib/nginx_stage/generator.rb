@@ -130,8 +130,9 @@ module NginxStage
       # PUN. Different users use different lock files and remain independent.
       #
       # The lock is deliberately separate from the PUN config. Some lifecycle
-      # paths remove and recreate that config; locking the config inode itself
-      # would allow old and new processes to synchronize on different inodes.
+      # paths remove and recreate that config; locking the config file itself
+      # could leave old and new processes locking different inodes and therefore
+      # fail to serialize their lifecycle operations.
       def with_pun_lifecycle_lock(user:)
         lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
         held_locks = Thread.current.thread_variable_get(:nginx_stage_pun_lifecycle_locks) || {}
@@ -162,9 +163,9 @@ module NginxStage
       end
 
       # A queued PUN initialization can find that the lifecycle operation ahead
-      # of it has already started the PUN. Require both the Unix socket and a PID
-      # file whose process is still running so incomplete or stale state does not
-      # suppress a retry.
+      # of it has already started the PUN. Treat the PUN as running only when its
+      # Unix socket exists and its PID file identifies a currently running process.
+      # Missing, invalid, or non-running PID state therefore does not suppress retry.
       def pun_running?(user:)
         return false unless File.socket?(NginxStage.pun_socket_path(user: user))
 
