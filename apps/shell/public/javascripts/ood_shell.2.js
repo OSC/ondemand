@@ -8,6 +8,10 @@ function OodShell(element, url, profile) {
 }
 
 OodShell.prototype.createTerminal = function () {
+  // Viewport sizing is intentionally independent of the WebSocket lifecycle:
+  // the shell chrome should fit the visible page even if the connection fails.
+  // If this app ever creates/destroys OodShell instances without a page load,
+  // add a matching destroy path for the listeners installed below.
   this.installVisualViewportSizing();
   this.socket = new WebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
@@ -59,6 +63,11 @@ OodShell.prototype.runTerminal = function () {
 /**
  * Restore tap-to-focus for hterm on touch devices without treating a drag or
  * scroll gesture as a tap.
+ *
+ * This depends on hterm continuing to use a contenteditable x-screen and to
+ * install its own touch handlers without capture. If a future hterm update
+ * changes either behavior, re-test whether this wrapper is still necessary
+ * before carrying the workaround forward. 
  */
 OodShell.prototype.installTouchKeyboard = function (term) {
   const screen = term.getDocument().querySelector('x-screen');
@@ -67,6 +76,11 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   // Capture before hterm handles the event; passive listeners preserve its
   // scrolling behavior while this handler only observes the gesture.
   const touchOptions = { passive: true, capture: true };
+  // This is a capability heuristic for the Apple/WebKit environment where a
+  // dismissed software keyboard can leave contenteditable logically focused.
+  // It is intentionally not a browser-name check. The non-standard property,
+  // or the underlying focus behavior, may change in future engines/releases;
+  // if that happens prefer re-testing the behavior over expanding UA sniffing.
   const needsTouchFocusRefresh = navigator.maxTouchPoints > 0 &&
                                  typeof CSS !== 'undefined' &&
                                  typeof CSS.supports === 'function' &&
@@ -97,8 +111,10 @@ OodShell.prototype.installTouchKeyboard = function (term) {
         const touch = ev.changedTouches[i];
         const dx = touch.clientX - touchStart.x;
         const dy = touch.clientY - touchStart.y;
-        // Once a gesture has moved beyond the tap threshold, do not allow it
-        // to become a tap again if the finger returns near its starting point.
+        // Once a gesture has moved beyond the 10 CSS-pixel tap radius, do
+        // not allow it to become a tap again if the finger returns near its
+        // starting point. The threshold is a usability choice rather than a
+        // browser invariant and may need tuning for future touch hardware.
         if ((dx * dx + dy * dy) > 100) {
           touchStart = null;
         }
@@ -128,8 +144,8 @@ OodShell.prototype.installTouchKeyboard = function (term) {
       if ((dx * dx + dy * dy) <= 100) {
         // Apple WebKit can leave a contenteditable element focused after the
         // software keyboard is dismissed with Done. Force a fresh focus
-        // transition there without changing focus behavior on Chromium,
-        // Firefox, or other touch browsers.
+        // transition only for the detected environment; doing this for every
+        // touch browser could disrupt IME/composition or accessibility focus.
         if (needsTouchFocusRefresh &&
             term.getDocument().activeElement === screen) {
           term.blur();
@@ -148,6 +164,11 @@ OodShell.prototype.installTouchKeyboard = function (term) {
 /**
  * Keep the terminal sized to the visible viewport when browser chrome or the
  * software keyboard changes the space available to the page.
+ *
+ * Only height is overridden here. Width remains under normal page/flex layout
+ * so pinch-zoom panning and visualViewport.offsetLeft do not become terminal
+ * geometry. If mobile browsers begin resizing layout width for their software
+ * keyboards, revisit that assumption before adding visualViewport.width.
  */
 OodShell.prototype.installVisualViewportSizing = function () {
   const viewport = window.visualViewport;
@@ -163,11 +184,19 @@ OodShell.prototype.installVisualViewportSizing = function () {
       return;
     }
 
+    // 100vh style.css is the legacy fallback; 100dvh handles dynamic browser chrome.
+    // When VisualViewport is available, ood_shell.2.js may override this with
+    // an inline pixel height to account for the software keyboard as well.
+
     // Use a single animation-frame callback to coalesce bursts of viewport
     // events into one layout update.
     resizeFrame = window.requestAnimationFrame(function () {
-      // Convert the visible height back to layout-space CSS pixels so pinch
-      // zoom does not resize the terminal or remote PTY.
+      // Convert the visible height back to approximate layout-space CSS
+      // pixels so pinch zoom does not intentionally resize the remote PTY.
+      // Browsers, notably WebKit, have had small precision/interoperability
+      // errors in height * scale. A few pixels are tolerated here; if future
+      // reports show row-count jitter at cell boundaries, revisit this math
+      // rather than assuming the product exactly equals layout viewport height.
       const height = Math.round(viewport.height * viewport.scale);
 
       // A VisualViewport belonging to a document that is not fully active can
@@ -180,9 +209,10 @@ OodShell.prototype.installVisualViewportSizing = function () {
     });
   };
 
-  // Safari can update the visual viewport as its browser chrome moves as well
-  // as when the software keyboard opens or closes. Measure on the next frame
-  // and coalesce repeated events to avoid redundant layout writes.
+  // The listeners intentionally live for the page lifetime: current Shell
+  // creates one OodShell instance and keeps the disconnected terminal visible.
+  // If the app gains in-page terminal replacement, these listeners and any
+  // pending animation frame should move behind an explicit destroy lifecycle.
   resize();
   viewport.addEventListener('resize', resize);
   viewport.addEventListener('scroll', resize);
