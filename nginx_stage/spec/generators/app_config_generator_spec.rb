@@ -154,6 +154,7 @@ describe NginxStage::AppConfigGenerator do
 
     it 'waits for the old socket before starting the replacement PUN' do
       expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).ordered.and_yield
+      expect(NginxStage).to receive(:clean_nginx_env).with(user: generator.user).ordered
       expect(Open3).to receive(:capture2e)
         .with(['/usr/sbin/nginx', '(spec)'], 'stop').ordered.and_return(['', status])
       expect(generator).to receive(:wait_for_pun_socket_shutdown).ordered
