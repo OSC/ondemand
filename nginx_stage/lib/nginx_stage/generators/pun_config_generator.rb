@@ -8,7 +8,7 @@ module NginxStage
     desc 'Generate a new per-user nginx config and process'
 
     # Serialize the complete PUN initialization sequence and make startup
-    # idempotent when another request has already started this user's PUN.
+    # idempotent when this user's PUN is already running.
     def invoke
       with_pun_lifecycle_lock(user: user) do
         return if !skip_nginx && pun_running?(user: user)
