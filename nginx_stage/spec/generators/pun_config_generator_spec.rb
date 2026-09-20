@@ -34,7 +34,7 @@ describe NginxStage::PunConfigGenerator do
     end
 
     it 'holds the PUN lifecycle lock across all setup hooks' do
-      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield
+      expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).and_yield
 
       generator.invoke
 
@@ -47,7 +47,7 @@ describe NginxStage::PunConfigGenerator do
         .with(user: running_generator.user)
         .once
         .and_return(true)
-      expect(running_generator).to receive(:with_pun_restart_lock)
+      expect(running_generator).to receive(:with_pun_lifecycle_lock)
         .with(user: running_generator.user)
         .and_yield
 
@@ -62,7 +62,7 @@ describe NginxStage::PunConfigGenerator do
         .with(user: running_generator.user)
         .once
         .and_return(false)
-      expect(running_generator).to receive(:with_pun_restart_lock)
+      expect(running_generator).to receive(:with_pun_lifecycle_lock)
         .with(user: running_generator.user)
         .and_yield
 
@@ -72,7 +72,7 @@ describe NginxStage::PunConfigGenerator do
     end
 
     it 'does not suppress config-only generation' do
-      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield
+      expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).and_yield
       expect(generator).not_to receive(:pun_running?)
 
       generator.invoke

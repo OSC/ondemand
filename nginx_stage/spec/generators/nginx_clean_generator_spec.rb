@@ -19,7 +19,7 @@ describe NginxStage::NginxCleanGenerator do
     allow(NginxStage::SocketFile).to receive(:new).with('/tmp/passenger.sock').and_return(socket)
     allow(generator).to receive(:session_count).with(active_user).and_return(0)
     allow(generator).to receive(:puts)
-    allow(generator).to receive(:with_pun_restart_lock).with(user: active_user).and_yield
+    allow(generator).to receive(:with_pun_lifecycle_lock).with(user: active_user).and_yield
     allow(NginxStage).to receive(:clean_nginx_env).with(user: nil)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)
@@ -31,7 +31,7 @@ describe NginxStage::NginxCleanGenerator do
   end
 
   it 'holds the lifecycle lock until the stopped PUN socket disappears' do
-    expect(generator).to receive(:with_pun_restart_lock).with(user: active_user).ordered.and_yield
+    expect(generator).to receive(:with_pun_lifecycle_lock).with(user: active_user).ordered.and_yield
     expect(Open3).to receive(:capture2e)
       .with('/usr/sbin/nginx', 'stop').ordered.and_return(['', status])
     expect(generator).to receive(:wait_for_pun_socket_shutdown)
@@ -71,7 +71,7 @@ describe NginxStage::NginxCleanGenerator do
       allow(NginxStage::PidFile).to receive(:new)
         .with(disabled_pid_path_value)
         .and_return(disabled_pid_path)
-      allow(generator).to receive(:with_pun_restart_lock).with(user: disabled_user).and_yield
+      allow(generator).to receive(:with_pun_lifecycle_lock).with(user: disabled_user).and_yield
       allow(Open3).to receive(:capture2e)
         .with('kill', '-s', 'TERM', '1234')
         .and_return(['', kill_status])
@@ -86,7 +86,7 @@ describe NginxStage::NginxCleanGenerator do
     end
 
     it 'holds the lifecycle lock until the disabled PUN socket disappears' do
-      expect(generator).to receive(:with_pun_restart_lock).with(user: disabled_user).ordered.and_yield
+      expect(generator).to receive(:with_pun_lifecycle_lock).with(user: disabled_user).ordered.and_yield
       expect(Open3).to receive(:capture2e)
         .with('kill', '-s', 'TERM', '1234').ordered.and_return(['', kill_status])
       expect(generator).to receive(:wait_for_pun_socket_shutdown)

@@ -79,7 +79,7 @@ module NginxStage
     add_hook :exec_nginx do
       if !skip_nginx
         NginxStage.clean_nginx_env(user: user)
-        with_pun_restart_lock(user: user) do
+        with_pun_lifecycle_lock(user: user) do
           config_path = NginxStage.pun_config_path(user: user)
           unless File.file?(config_path)
             raise Error, "missing PUN config while restarting PUN: #{config_path}"

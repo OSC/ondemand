@@ -10,7 +10,7 @@ module NginxStage
     # Serialize the complete PUN initialization sequence and make startup
     # idempotent when another request has already started this user's PUN.
     def invoke
-      with_pun_restart_lock(user: user) do
+      with_pun_lifecycle_lock(user: user) do
         return if !skip_nginx && pun_running?(user: user)
 
         super

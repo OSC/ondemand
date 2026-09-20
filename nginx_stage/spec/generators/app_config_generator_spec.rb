@@ -19,7 +19,7 @@ describe NginxStage::AppConfigGenerator do
     allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
   end
 
-  describe '#with_pun_restart_lock' do
+  describe '#with_pun_lifecycle_lock' do
     let(:config_path) { '/var/lib/ondemand-nginx/config/puns/spec.conf' }
     let(:lock_path) { "#{config_path}.lock" }
     let(:lock) { double('lock') }
@@ -40,21 +40,44 @@ describe NginxStage::AppConfigGenerator do
         0
       end
 
-      generator.send(:with_pun_restart_lock, user: generator.user) { events << :yielded }
+      generator.send(:with_pun_lifecycle_lock, user: generator.user) { events << :yielded }
 
       expect(events).to eq([:locked, :yielded])
+    end
+
+    it 'fails immediately when the same thread re-enters the same lifecycle lock' do
+      allow(Process).to receive(:clock_gettime)
+        .with(Process::CLOCK_MONOTONIC)
+        .and_return(0.0)
+      allow(File).to receive(:open)
+        .with(lock_path, File::RDWR | File::CREAT, 0644)
+        .and_return(lock)
+      allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB).and_return(0)
+
+      expect do
+        generator.send(:with_pun_lifecycle_lock, user: generator.user) do
+          generator.send(:with_pun_lifecycle_lock, user: generator.user) {}
+        end
+      end.to raise_error(
+        NginxStage::Error,
+        "PUN lifecycle lock already held by this thread: #{lock_path}"
+      )
+
+      expect(File).to have_received(:open).once
+      expect(lock).to have_received(:flock).once
+      expect(lock).to have_received(:close).once
     end
 
     it 'fails when another PUN lifecycle operation holds the lock for too long' do
       allow(Process).to receive(:clock_gettime)
         .with(Process::CLOCK_MONOTONIC)
-        .and_return(0.0, described_class::PUN_RESTART_LOCK_TIMEOUT)
+        .and_return(0.0, described_class::PUN_LIFECYCLE_LOCK_TIMEOUT)
       allow(File).to receive(:open)
         .with(lock_path, File::RDWR | File::CREAT, 0644)
         .and_return(lock)
       allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB).and_return(false)
 
-      expect { generator.send(:with_pun_restart_lock, user: generator.user) {} }
+      expect { generator.send(:with_pun_lifecycle_lock, user: generator.user) {} }
         .to raise_error(
           NginxStage::Error,
           "timed out waiting for another PUN lifecycle operation to finish: #{lock_path}"
@@ -68,7 +91,7 @@ describe NginxStage::AppConfigGenerator do
       allow(lock).to receive(:flock).with(File::LOCK_EX | File::LOCK_NB).and_return(0)
 
       expect do
-        generator.send(:with_pun_restart_lock, user: generator.user) { raise Errno::ENOENT, '/usr/sbin/nginx' }
+        generator.send(:with_pun_lifecycle_lock, user: generator.user) { raise Errno::ENOENT, '/usr/sbin/nginx' }
       end.to raise_error(Errno::ENOENT, /usr\/sbin\/nginx/)
 
       expect(lock).to have_received(:close)
@@ -126,11 +149,11 @@ describe NginxStage::AppConfigGenerator do
       allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
       allow(NginxStage).to receive(:nginx_args).with(user: generator.user, signal: :stop).and_return(['stop'])
       allow(NginxStage).to receive(:nginx_args).with(user: generator.user).and_return(['start'])
-      allow(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield
+      allow(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).and_yield
     end
 
     it 'waits for the old socket before starting the replacement PUN' do
-      expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).ordered.and_yield
+      expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).ordered.and_yield
       expect(Open3).to receive(:capture2e)
         .with(['/usr/sbin/nginx', '(spec)'], 'stop').ordered.and_return(['', status])
       expect(generator).to receive(:wait_for_pun_socket_shutdown).ordered

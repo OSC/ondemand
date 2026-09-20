@@ -9,8 +9,8 @@ module NginxStage
   # is basically a class with helper methods and the ability to invoke all
   # callback methods in a sequence.
   class Generator
-    PUN_RESTART_LOCK_TIMEOUT = 60
-    PUN_RESTART_LOCK_POLL_INTERVAL = 0.05
+    PUN_LIFECYCLE_LOCK_TIMEOUT = 60
+    PUN_LIFECYCLE_LOCK_POLL_INTERVAL = 0.05
     PUN_SOCKET_SHUTDOWN_TIMEOUT = 30
     PUN_SOCKET_SHUTDOWN_POLL_INTERVAL = 0.05
 
@@ -126,15 +126,22 @@ module NginxStage
     end
 
     private
-      # Serialize operations that can start, stop, replace, or remove a user's PUN.
+      # Serialize operations that can start, stop, replace, or remove one user's
+      # PUN. Different users use different lock files and remain independent.
       #
       # The lock is deliberately separate from the PUN config. Some lifecycle
       # paths remove and recreate that config; locking the config inode itself
       # would allow old and new processes to synchronize on different inodes.
-      def with_pun_restart_lock(user:)
+      def with_pun_lifecycle_lock(user:)
         lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
+        held_locks = Thread.current.thread_variable_get(:nginx_stage_pun_lifecycle_locks) || {}
+        Thread.current.thread_variable_set(:nginx_stage_pun_lifecycle_locks, held_locks)
+        if held_locks.key?(lock_path)
+          raise Error, "PUN lifecycle lock already held by this thread: #{lock_path}"
+        end
+
         FileUtils.mkdir_p File.dirname(lock_path)
-        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_RESTART_LOCK_TIMEOUT
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_LIFECYCLE_LOCK_TIMEOUT
         lock = File.open(lock_path, File::RDWR | File::CREAT, 0644)
 
         begin
@@ -143,11 +150,13 @@ module NginxStage
               raise Error, "timed out waiting for another PUN lifecycle operation to finish: #{lock_path}"
             end
 
-            sleep PUN_RESTART_LOCK_POLL_INTERVAL
+            sleep PUN_LIFECYCLE_LOCK_POLL_INTERVAL
           end
 
+          held_locks[lock_path] = true
           yield
         ensure
+          held_locks.delete(lock_path)
           lock.close
         end
       end

@@ -19,7 +19,7 @@ describe NginxStage::NginxProcessGenerator do
 
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
     allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
-    allow(generator).to receive(:with_pun_restart_lock).with(user: generator.user).and_yield
+    allow(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).and_yield
     allow(NginxStage).to receive(:clean_nginx_env).with(user: generator.user)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)
@@ -31,7 +31,7 @@ describe NginxStage::NginxProcessGenerator do
   end
 
   it 'keeps the lifecycle lock until a stop removes the PUN socket' do
-    expect(generator).to receive(:with_pun_restart_lock).with(user: generator.user).ordered.and_yield
+    expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).ordered.and_yield
     expect(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'nginx-args').ordered.and_return(['', status])
     expect(generator).to receive(:wait_for_pun_socket_shutdown)

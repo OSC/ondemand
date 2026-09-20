@@ -60,7 +60,7 @@ module NginxStage
       NginxStage.active_users.each do |u|
         begin
           next if (user && user != u.to_s)
-          with_pun_restart_lock(user: u) do
+          with_pun_lifecycle_lock(user: u) do
             pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
             socket = SocketFile.new NginxStage.pun_socket_path(user: u)
             sessions = session_count(u)
@@ -89,7 +89,7 @@ module NginxStage
       pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
         begin
-          with_pun_restart_lock(user: u) do
+          with_pun_lifecycle_lock(user: u) do
             puts "#{u} (disabled)"
             pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
