@@ -16,11 +16,17 @@ class PosixFile
     end
 
     def num_files(from, names)
-      args = names.map {|n| Shellwords.escape(n) }.join(' ')
-      o, e, s = Open3.capture3("find 2>/dev/null #{args} | wc -l", chdir: from)
-
-      # FIXME: handle status error
-      o.lines.last.to_i
+      names.map do |name|
+        path = Pathname.new(Pathname.new(from).join(name))
+        if path.file? || path.symlink?
+          1
+        elsif path.directory?
+          Dir.glob("#{path}/**/*", File::FNM_DOTMATCH).length
+        else
+          # not real?
+          0
+        end
+      end.sum
     end
 
     def username(uid)
