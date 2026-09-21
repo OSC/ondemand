@@ -16,6 +16,17 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Change `file_download_max` to `download_file_max` (#5810)\
+Reduce E2E login and PUN cleanup races (#5807)\
+move header out into its own partial (#5806)\
+Add test cases for the left part of the navbar (#5778)\
+Update Changelog (#5791)\
+feat: localize strings in views/apps (#5800)\
+lint a random file (#5799)\
+Fix undefined data-label on select options (#5787)\
+Preserve batch connect session card tab state (#5766)\
+lint a random file (#5790)\
+update dependencies (#5792)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
