@@ -288,7 +288,7 @@ class ConfigurationSingleton
   def download_file_max_shim
     e = ENV["OOD_FILE_DOWNLOAD_MAX"]
     cfg_value = (e.nil? ? config.fetch(:file_download_max, nil) : e)
-    cfg_value || download_file_max
+    (cfg_value || download_file_max).to_i
   end
 
   def dataroot
