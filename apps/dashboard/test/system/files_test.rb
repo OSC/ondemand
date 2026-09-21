@@ -349,7 +349,17 @@ class FilesTest < ApplicationSystemTestCase
       # verify app dir deleted according to UI
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
       assert_no_selector 'tbody a', exact_text: 'single_file', wait: 10
-REBASE
+
+      # The completed transfer fades out after four seconds. Include hidden
+      # status so synchronization does not depend on catching that window.
+      assert_selector(
+        '.transfers-status span',
+        text: '100% remove files',
+        count: 1,
+        visible: :all,
+        wait: MAX_WAIT
+      )
+
       # verify app dir & single_file were actually deleted
       refute(File.exist?(src), Dir.children(dir))
       refute(File.exist?(single_file), Dir.children(dir))
