@@ -16,17 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Change `file_download_max` to `download_file_max` (#5810)\
-Reduce E2E login and PUN cleanup races (#5807)\
-move header out into its own partial (#5806)\
-Add test cases for the left part of the navbar (#5778)\
-Update Changelog (#5791)\
-feat: localize strings in views/apps (#5800)\
-lint a random file (#5799)\
-Fix undefined data-label on select options (#5787)\
-Preserve batch connect session card tab state (#5766)\
-lint a random file (#5790)\
-update dependencies (#5792)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -47,7 +36,8 @@ update dependencies (#5792)
 - nginx_stage now has a configurable missing_user_message when users cannot be found in [5723](https://github.com/OSC/ondemand/pull/5723).
 - data-help directives now respond to data-help-for-<item> in [5743](https://github.com/OSC/ondemand/pull/5743).
 - nav_bar items can now disable sorting in [5726](https://github.com/OSC/ondemand/pull/5726).
-
+- Data-label directives now fall back to the original label when an option does not set it in [5787](https://github.com/OSC/ondemand/pull/5787).
+- The header and navbar are now in a partial for reconfiguration in [5806](https://github.com/OSC/ondemand/pull/5806).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -80,6 +70,7 @@ update dependencies (#5792)
 - App manifests now respond to yaml extension as well as yml in [5749](https://github.com/OSC/ondemand/pull/5749).
 - Radio buttons respond to html_options in [5781](https://github.com/OSC/ondemand/pull/5781).
 - The default help text is now shown when there is no dynamic option data-help directive for an option in [5763](https://github.com/OSC/ondemand/pull/5763).
+- Batch connect session cards preserve the tab state in [5766](https://github.com/OSC/ondemand/pull/5766).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
@@ -89,6 +80,7 @@ update dependencies (#5792)
 - hide_app_version now defaults to true in [5715](https://github.com/OSC/ondemand/pull/5715).
 - There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OSC/ondemand/pull/5351).
 - Help content in batch connect forms no longer render unsafe tags in [5770](https://github.com/OSC/ondemand/pull/5770).
+- `file_download_max` has been corrected to `download_file_max` in [5810](https://github.com/OSC/ondemand/pull/5810).
 
 ## [4.2.4] - 2026-08-24
 
