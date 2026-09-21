@@ -349,7 +349,7 @@ class FilesTest < ApplicationSystemTestCase
       # verify app dir deleted according to UI
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
       assert_no_selector 'tbody a', exact_text: 'single_file', wait: 10
-
+REBASE
       # verify app dir & single_file were actually deleted
       refute(File.exist?(src), Dir.children(dir))
       refute(File.exist?(single_file), Dir.children(dir))
