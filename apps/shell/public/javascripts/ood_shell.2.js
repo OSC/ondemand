@@ -65,16 +65,20 @@ OodShell.prototype.runTerminal = function () {
  * scroll gesture as a tap.
  *
  * This depends on hterm continuing to use a contenteditable x-screen and to
- * install its own touch handlers without capture. If a future hterm update
- * changes either behavior, re-test whether this wrapper is still necessary
- * before carrying the workaround forward. 
+ * install its own touch handlers on that same element without capture. If a
+ * future hterm update changes either behavior, re-test whether this wrapper is
+ * still necessary before carrying the workaround forward.
  */
 OodShell.prototype.installTouchKeyboard = function (term) {
   const screen = term.getDocument().querySelector('x-screen');
   // Track the initial position of the active one-finger tap candidate.
   let touchStart = null;
-  // Capture before hterm handles the event; passive listeners preserve its
-  // scrolling behavior while this handler only observes the gesture.
+  // hterm registers non-capture touch listeners on this same x-screen. DOM
+  // event dispatch invokes capture listeners on the target before non-capture
+  // listeners on that target, so this observes the gesture before hterm calls
+  // preventDefault(). Registration order only orders listeners within the
+  // same phase. Passive is intentional: OOD does not cancel the event and
+  // leaves hterm responsible for touch scrolling.
   const touchOptions = { passive: true, capture: true };
   // This is a capability heuristic for the Apple/WebKit environment where a
   // dismissed software keyboard can leave contenteditable logically focused.
