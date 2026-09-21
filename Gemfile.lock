@@ -155,7 +155,7 @@ DEPENDENCIES
   beaker-rspec
   dotenv (~> 2.1)
   ood_packaging (~> 0.22.0)
-  ostruct (~> 0.6.3)
+  ostruct
   rake
   rspec
   rubocop
