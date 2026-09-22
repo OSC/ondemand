@@ -52,7 +52,7 @@ module BatchConnect
 
       # Eagerly cache form config for sys/dev apps. Usr apps defer ERB evaluation
       # until the app is opened so shared-app code cannot run on dashboard load.
-      form_config unless type == :usr
+      form_config unless router&.type == :usr
     end
 
     # Generate a token from this object
@@ -390,7 +390,7 @@ module BatchConnect
 
     # True when this is a usr app whose form.yml(.erb) has not been evaluated yet.
     def form_config_deferred?
-      type == :usr && !@form_config_evaluated
+      router&.type == :usr && !@form_config_evaluated
     end
 
     # Form.yml value, or +default+ without evaluating ERB for deferred usr apps.
