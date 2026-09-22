@@ -157,19 +157,21 @@ GEM
       reline
     globalid (1.4.0)
       activesupport (>= 6.1)
-    highline (2.1.0)
+    highline (3.1.2)
+      reline
     http-accept (1.7.0)
     http-cookie (1.1.6)
       domain_name (~> 0.5)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (1.0.15)
+    i18n-tasks (1.1.2)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       erubi
-      highline (>= 2.0.0)
+      highline (>= 3.0.0)
       i18n
       parser (>= 3.2.2.1)
+      prism
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.8, >= 1.8.1)
@@ -416,8 +418,8 @@ DEPENDENCIES
   dotenv-rails (~> 2.1)
   dotiw
   erubi
-  highline (= 2.1.0)
-  i18n-tasks (~> 1.0.15)
+  highline (~> 3.0)
+  i18n-tasks (~> 1.1)
   jbuilder (~> 2.0)
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
