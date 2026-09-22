@@ -50,8 +50,9 @@ module BatchConnect
       super(router)
       @sub_app = sub_app&.to_s
 
-      # read the form config now so it's there when this object is cached in upper layers.
-      form_config
+      # Eagerly cache form config for sys/dev apps. Usr apps defer ERB evaluation
+      # until the app is opened so shared-app code cannot run on dashboard load.
+      form_config unless type == :usr
     end
 
     # Generate a token from this object
@@ -91,7 +92,7 @@ module BatchConnect
     # Title for the batch connect app
     # @return [String] title of app
     def title
-      form_config.fetch(:title, default_title)
+      form_lookup(:title, default_title)
     end
 
     # Default title for the batch connect app
@@ -105,7 +106,7 @@ module BatchConnect
     # Description for the batch connect app
     # @return [String] description of app
     def description
-      form_config.fetch(:description, default_description)
+      form_lookup(:description, default_description)
     end
 
     # Default description for the batch connect app
@@ -115,27 +116,31 @@ module BatchConnect
     end
 
     def icon_uri
-      form_config.fetch(:icon, super)
+      form_lookup(:icon, super)
     end
 
     def caption
-      form_config.fetch(:caption, super)
+      form_lookup(:caption, super)
     end
 
     def tile
+      return super if form_config_deferred?
+
       super.merge(form_config.fetch(:tile, {}))
     end
 
     def category
-      form_config.fetch(:category, super)
+      form_lookup(:category, super)
     end
 
     def subcategory
-      form_config.fetch(:subcategory, super)
+      form_lookup(:subcategory, super)
     end
 
     def metadata
       parent_md = OodApp.instance_method(:metadata).bind(self).call
+      return parent_md if form_config_deferred?
+
       parent_md.merge(form_config.fetch(:metadata, {}))
     end
 
@@ -203,6 +208,7 @@ module BatchConnect
     end
 
     def preset?
+      return false if form_config_deferred?
       return false unless valid?
       return true if attributes.all?(&:fixed?)
 
@@ -214,6 +220,10 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
+      if form_config_deferred?
+        return root.directory? && !form_file(root: root).nil?
+      end
+      
       if form_config.empty?
         false
       elsif !form_config.fetch(:form, []).is_a?(Array)
@@ -254,6 +264,8 @@ module BatchConnect
 
     def attributes
       @attributes ||= begin
+        # Load form before validating so usr apps get full validation when opened.
+        form_config
         return [] unless valid?
 
         local_attribs = form_config.fetch(:attributes, {})
@@ -376,6 +388,18 @@ module BatchConnect
 
     private
 
+    # True when this is a usr app whose form.yml(.erb) has not been evaluated yet.
+    def form_config_deferred?
+      type == :usr && !@form_config_evaluated
+    end
+
+    # Form.yml value, or +default+ without evaluating ERB for deferred usr apps.
+    def form_lookup(key, default)
+      return default if form_config_deferred?
+
+      form_config.fetch(key, default)
+    end
+    
     def url
       helpers = Rails.application.routes.url_helpers
 
@@ -443,6 +467,8 @@ module BatchConnect
     # Hash describing the full form object
     def form_config(binding: nil)
       return @form_config if @form_config
+
+      @form_config_evaluated = true
 
       raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
 
