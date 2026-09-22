@@ -2782,7 +2782,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       find('span', text: 'test').click
-      sleep 3 # make sure the table has time to refresh
+      find("##{base_id}_path_selector_button:not(:disabled)")
       assert_no_selector("##{base_id}_path_selector_table_spinner", visible: true)
 
       find("##{base_id}_path_selector_button").click
@@ -2918,7 +2918,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       find('span', text: 'test').click
-      find("##{base_id}_path_selector_button").click
+      find("##{base_id}_path_selector_button:not(:disabled)").click
 
       text_field = find("##{base_id}")
       assert_equal("#{Rails.root}/test", text_field.value)
@@ -2972,7 +2972,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # and we can select the hidden directory just for good measure.
       find('span', text: '.hidden_dir').click
-      find("##{base_id}_path_selector_button").click
+      find("##{base_id}_path_selector_button:not(:disabled)").click
 
       text_field = find("##{base_id}")
       assert_equal("#{dir}/app/.hidden_dir", text_field.value)
