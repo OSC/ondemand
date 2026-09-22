@@ -73,6 +73,44 @@ class ChromeDetachedDocumentVisibilityRetryTest < ActiveSupport::TestCase
     assert_equal false, query.matches_filters?(node)
   end
 
+  test 'reports Capybara version drift for workaround review' do
+    supported = CapybaraChromeDetachedDocumentVisibilityRetry::SUPPORTED_CAPYBARA_VERSION
+
+    message = "Capybara changed to #{Capybara::VERSION}; " \
+              'review whether the detached-document workaround is still needed'
+    assert_equal supported, Capybara::VERSION, message
+  end
+
+  test 'reports new upstream ChromeNode error handling for workaround review' do
+    message = 'ChromeNode now defines catch_error?; verify upstream detached-document handling ' \
+              'and remove this workaround if obsolete'
+    refute Capybara::Selenium::ChromeNode.protected_instance_methods(false).include?(:catch_error?), message
+  end
+
+  test 'upstream visibility filtering still requires the workaround' do
+    node = FakeNode.new(base: chrome_base, error: detached_document_error)
+    selector_query = query
+    patched_method = selector_query.method(:matches_visibility_filters?)
+
+    assert_equal CapybaraChromeDetachedDocumentVisibilityRetry, patched_method.owner
+
+    upstream_method = patched_method.super_method
+    refute_nil upstream_method
+
+    upstream_error = begin
+      upstream_method.call(node)
+      nil
+    rescue Selenium::WebDriver::Error::UnknownError => error
+      error
+    end
+
+    message = 'Upstream Capybara no longer propagates the detached-document visibility error; ' \
+              'review and remove this workaround'
+    refute_nil upstream_error, message
+    assert_includes upstream_error.message,
+                    CapybaraChromeDetachedDocumentVisibilityRetry::DETACHED_DOCUMENT_ERROR_MESSAGE
+  end
+
   test 'does not depend on inspector error JSON formatting' do
     node = FakeNode.new(base: chrome_base, error: detached_document_error(''))
 

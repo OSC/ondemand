@@ -27,6 +27,11 @@ require 'selenium-webdriver'
 # whether the action already took effect, so automatic replay could duplicate
 # an action.
 #
+# Unit tests deliberately bypass the shim to verify that upstream Capybara
+# still needs it. Version drift and new ChromeNode-level handling are also
+# reported as test failures so dependency upgrades produce actionable output
+# instead of aborting while this helper is loaded.
+#
 # Remove this shim only after OOD verifies that its supported
 # Capybara/ChromeDriver combination no longer reproduces the failure without it.
 #
@@ -52,17 +57,6 @@ module CapybaraChromeDetachedDocumentVisibilityRetry
       node.base.is_a?(Capybara::Selenium::ChromeNode) &&
       error.message.include?(DETACHED_DOCUMENT_ERROR_MESSAGE)
   end
-end
-
-supported_capybara = CapybaraChromeDetachedDocumentVisibilityRetry::SUPPORTED_CAPYBARA_VERSION
-unless Capybara::VERSION == supported_capybara
-  raise "Review Chrome detached-document visibility retry for Capybara #{Capybara::VERSION}: " \
-        "workaround was validated against Capybara #{supported_capybara}"
-end
-
-if Capybara::Selenium::ChromeNode.protected_instance_methods(false).include?(:catch_error?)
-  raise "Review Chrome detached-document visibility retry for Capybara #{Capybara::VERSION}: " \
-        'ChromeNode now defines its own catch_error? handling'
 end
 
 visibility_filter = Capybara::Queries::SelectorQuery.instance_method(:matches_visibility_filters?)
