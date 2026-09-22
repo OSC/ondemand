@@ -495,7 +495,7 @@ class ConfigurationSingleton
         content = ERB.new(f.read, trim_mode: "-").result(binding)
         yml = YAML.safe_load(content, aliases: true) || {}
         conf.deep_merge!(yml.deep_symbolize_keys)
-      rescue Exception, StandardError => e
+      rescue Exception => e
         $stderr.puts("Can't read or parse #{f} because of error #{e}")
       end
     end
