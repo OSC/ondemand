@@ -151,6 +151,95 @@ class NavBarTest < ActiveSupport::TestCase
     end
   end
 
+  test "NavBar.items should return navigation group with sort=false when nav_item has apps, title, and sort false" do
+    nav_item = {
+      title: "Custom Apps",
+      apps: "sys/*",
+      sort: false
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1, result.size
+    assert_equal false, result[0].sort
+  end
+
+  test "files app menus are unsorted by default for category and apps nav items" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    OodFilesApp.stubs(:candidate_favorite_paths).returns([
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/scratch'), title: 'Zebra'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project'), title: 'Alpha'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
+    ])
+
+    expected_link_titles = [
+      I18n.t('dashboard.home_directory'),
+      'Zebra',
+      'Alpha',
+      'Middle'
+    ]
+
+    result = NavBar.items([
+      'files',
+      { title: 'Files App', apps: 'sys/files' }
+    ])
+
+    assert_equal 2, result.size
+    assert_equal 'Files', result[0].title
+    assert_equal 'Files App', result[1].title
+
+    result.each do |nav_item|
+      assert_equal false, nav_item.sort
+      assert_equal expected_link_titles, nav_item.links.map(&:title)
+    end
+  end
+
+  test "files app menus can opt into sorting with sort true" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    OodFilesApp.stubs(:candidate_favorite_paths).returns([
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/scratch'), title: 'Zebra'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project'), title: 'Alpha'),
+      FavoritePath.new(File.expand_path('test/fixtures/dummy_fs/project2'), title: 'Middle')
+    ])
+
+    result = NavBar.items([{ title: 'Files', apps: 'sys/files', sort: true }])
+    assert_equal 1, result.size
+    assert_equal true, result[0].sort
+
+    link_titles = OodAppGroup.groups_for(apps: result[0].apps, group_by: :subcategory, sort: result[0].sort).flat_map do |g|
+      g.apps.flat_map { |app| app.links.map(&:title) }
+    end
+    assert_equal [
+      'Alpha',
+      I18n.t('dashboard.home_directory'),
+      'Middle',
+      'Zebra'
+    ], link_titles
+  end
+
+  test "apps menus that include files with other apps still sort by default" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+
+    result = NavBar.items([{ title: 'Mixed Apps', apps: ['sys/files', 'sys/shell'] }])
+    assert_equal 1, result.size
+    assert_equal true, result[0].sort
+  end
+
+  test "NavBar.items should honor sort false for links navigation group" do
+    nav_item = {
+      title: "menu title",
+      sort: false,
+      links: [
+        { group: "subcategory" },
+        { title: "Zebra", url: "/z" },
+        { title: "Alpha", url: "/a" }
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal false, result[0].sort
+    assert_equal ["Zebra", "Alpha"], result[0].apps.map(&:title)
+  end
+
   test "NavBar.items should return navigation link when nav_item has apps property and apps token matches 1 app" do
     nav_item = {
       apps: "sys/bc_jupyter",

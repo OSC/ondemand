@@ -214,11 +214,24 @@ function newLabel(changeElement, key) {
   return selectedOptionLabel.dataset[key];
 };
 
+function captureDefaultLabel(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultLabel') !== undefined) return;
+
+  const label = $(`label[for="${changeId}"]`);
+  wrapper.data('defaultLabel', label.length ? label[0].innerHTML : '');
+}
+
 function updateLabel(changeId, changeElement, key) {
-  var labelContent = newLabel(changeElement, key);
+  if (changeId === undefined) return;
+
+  captureDefaultLabel(changeId);
+  const labelContent = newLabel(changeElement, key);
+  const defaultLabel = $(`#${changeId}_wrapper`).data('defaultLabel');
+  const contentToSet = labelContent === undefined ? defaultLabel : labelContent;
   const originalInfo = getWidgetInfo(changeId);
-  $(`label[for="${changeId}"]`)[0].innerHTML = labelContent;
-  ariaStream(`Changed label on ${originalInfo} to new label ${labelContent}`);
+  $(`label[for="${changeId}"]`)[0].innerHTML = contentToSet;
+  ariaStream(`Changed label on ${originalInfo} to new label ${contentToSet}`);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
@@ -255,7 +268,7 @@ function addLabelHandler(optionId, option, key, configValue) {
  *        data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend ...'
  *      ]
  */
- function addHelpHandler(subjectId, option, key, configValue) {
+function addHelpHandler(subjectId, option, key, configValue) {
   subjectId = String(subjectId || '');
 
   const configObj = parseHelpFor(key);
@@ -298,21 +311,28 @@ function addLabelHandler(optionId, option, key, configValue) {
   toggleHelp({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
 };
 
-/**
- * Update the help text of `changeId` based on the
- * event, the `otherId` and the settings in helpLookup table.
- */
-function toggleHelp(event, changeId, otherId) {
-  let x = undefined, y = undefined;
+function captureDefaultHelp(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultHelp') !== undefined) return;
 
+  const helpSmall = wrapper.find('small').first();
+  wrapper.data('defaultHelp', helpSmall.length > 0 ? helpSmall.text() : '');
+}
+
+/**
+ * Resolve a value from a two-dimensional lookup table given a change event.
+ * Either dimension can fire the event; this finds the correct table and axes.
+ */
+ function valueFromLookupTable(event, changeId, otherId, lookup) {
   // many subjects can change the object, so we have to find the correct table
   // in the form <subject>_<object>
   let lookupKey = `${event.target['id']}_${changeId}`;
-  if(helpLookup[lookupKey] === undefined) {
+  if(lookup[lookupKey] === undefined) {
     lookupKey = `${otherId}_${changeId}`;
   }
 
-  const table = helpLookup[lookupKey];
+  const table = lookup[lookupKey];
+  let x = undefined, y = undefined;
 
   // in the example of cluster & node_type, either element can trigger a change
   // so let's figure out the axis' based on the change element's id.
@@ -324,19 +344,34 @@ function toggleHelp(event, changeId, otherId) {
     x = snakeCaseWords($(`#${otherId}`).val());
   }
 
-  const helpContent = table.get(x, y);
-  if (helpContent === undefined || changeId === undefined) return;
+  return table.get(x, y);
+}
 
+/**
+ * Update the help text of `changeId` based on the
+ * event, the `otherId` and the settings in helpLookup table.
+ */
+ function toggleHelp(event, changeId, otherId) {
+  if (changeId === undefined) return;
+
+  captureDefaultHelp(changeId);
+
+  const helpContent = valueFromLookupTable(event, changeId, otherId, helpLookup);
   const wrapper_id = `#${changeId}_wrapper`;
+  const defaultHelp = $(wrapper_id).data('defaultHelp');
+  const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
   var helpElement = $(`${wrapper_id} small p`);
+
+  if (contentToSet === '' && helpElement.length === 0) return;
+
   if (helpElement.length == 0) {
     const small = document.createElement('small');
     small.classList.add('form-text', 'text-muted');
     helpElement = document.createElement('p');
     $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
   }
-  $(helpElement).text(helpContent);
-  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${helpContent}`);
+  $(helpElement).text(contentToSet);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${contentToSet}`);
 }
 
 /**
@@ -596,30 +631,9 @@ function valueFromEvent(event) {
  * Update the min & max values of `changeId` based on the
  * event, the `otherId` and the settings in minMaxLookup table.
  */
-function toggleMinMax(event, changeId, otherId) {
-  let x = undefined, y = undefined;
-
-  // many subjects can change the object, so we have to find the correct table
-  // in the form <subject>_<object>
-  let lookupKey = `${event.target['id']}_${changeId}`;
-  if(minMaxLookup[lookupKey] === undefined) {
-    lookupKey = `${otherId}_${changeId}`;
-  }
-
-  const table = minMaxLookup[lookupKey];
-
-  // in the example of cluster & node_type, either element can trigger a change
-  // so let's figure out the axis' based on the change element's id.
-  if(event.target['id'] == table.x) {
-    x = snakeCaseWords(event.target.value);
-    y = snakeCaseWords($(`#${otherId}`).val());
-  } else {
-    y = snakeCaseWords(event.target.value);
-    x = snakeCaseWords($(`#${otherId}`).val());
-  }
-
+ function toggleMinMax(event, changeId, otherId) {
   const changeElement = $(`#${changeId}`);
-  const mm = table.get(x, y);
+  const mm = valueFromLookupTable(event, changeId, otherId, minMaxLookup);
   const prev = {
     min: parseInt(changeElement.attr('min')),
     max: parseInt(changeElement.attr('max')),

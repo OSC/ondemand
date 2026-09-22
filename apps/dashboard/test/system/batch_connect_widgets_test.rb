@@ -342,6 +342,89 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-label restores default label when option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small', data-label-cores: 'Number of Cores (1-4)']
+              - ['medium', 'medium']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-4)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+
+      select('large', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-16)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+
+  test 'data-label keeps default when initially selected option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small']
+              - ['medium', 'medium', data-label-cores: 'Number of Cores (1-8)']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+      refute_equal 'undefined', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-8)', label.text
+
+      select('small', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+  
   test 'global_bc_form_items work correctly' do
     Dir.mktmpdir do |dir|
       app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }
@@ -507,6 +590,48 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       assert_equal('two', find("[for='#{bc_ele_id('scalar_two')}']").text)
       assert_equal('Three', find("[for='#{bc_ele_id('vector_three')}']").text)
       assert_equal('Four', find("[for='#{bc_ele_id('vector_four')}']").text)
+    end
+  end
+
+  test 'radio_buttons accept html options among other attributes' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_radio
+        attributes:
+          test_radio:
+            widget: radio_button
+            options:
+              - one
+              - two
+            html_options:
+              class: 'text-danger'
+              data:
+                special: 'yes'
+            help: 'my cool help'
+            label: 'my even cooler label'
+            required: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      help = find("##{bc_ele_id('test_radio')}_wrapper > div > small")
+      group_wrapper = find("##{bc_ele_id('test_radio')}_wrapper > div")
+      label = find("##{bc_ele_id('test_radio')}_label")
+
+      # html_options overrides default class mb-3
+      assert_equal('text-danger', group_wrapper['class'])
+      assert_text(help, 'my cool help')
+      assert_text(label, 'my even cooler label')
+      ['one', 'two'].each do |option|
+        ele = find("##{bc_ele_id('test_radio')}_#{option}")
+        assert(ele['required'])
+        assert_equal('yes', ele['data-special'])
+      end
     end
   end
 
@@ -1248,6 +1373,45 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       check('Hide Items')
       assert(find("##{bc_ele_id('second_group_item')}").visible?)
       refute(find("##{bc_ele_id('first_group_item')}", visible: :hidden).visible?)
+    end
+  end
+
+  test 'help does not include dangerous tags while preserving safe tags' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_item
+        attributes:
+          test_item:
+            help: |
+              # A header
+              <script>window.alert('hello');</script>
+              <a href="https://github.com/OSC/ondemand">an html anchor</a>
+              [a markdown anchor](https://github.com/OSC/ondemand)
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # note there's no <script> tag here.
+      expected_html = <<~HEREDOC
+        <h1>A header</h1>
+
+        window.alert('hello');
+
+        <p><a href="https://github.com/OSC/ondemand">an html anchor</a>
+        <a href="https://github.com/OSC/ondemand">a markdown anchor</a></p>
+      HEREDOC
+
+      help_html = find("##{bc_ele_id('test_item')}_wrapper small")['innerHTML']
+      assert_equal(expected_html, help_html)
     end
   end
 end
