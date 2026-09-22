@@ -662,7 +662,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "handles bad ERB syntax" do
+  test "handles exception LoadError" do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
         File.write("#{dir}/bad_erb.yml", '<%- require "wont_find_this_library" -%>')
