@@ -13,6 +13,20 @@ require 'selenium-webdriver'
 # Node::Base#synchronize or driver.invalid_element_errors could retry
 # side-effecting actions or hide unrelated browser failures.
 #
+# Deliberate non-coverage:
+#
+# Capybara's Selenium selector lookup can also run the read-only
+# filter_by_text and gather_hints optimizations before matches_filters?. The
+# OOD failure in #4725 does not originate there, so this shim intentionally
+# does not patch that separate private path. If the same ChromeDriver error is
+# observed there, prefer falling back from the optional optimization to normal
+# selector processing rather than making UnknownError generally retryable.
+#
+# This shim also does not make the error retryable for side-effecting WebDriver
+# operations such as click, set, send_keys, or submit. This error does not prove
+# whether the action already took effect, so automatic replay could duplicate
+# an action.
+#
 # Remove this shim only after OOD verifies that its supported
 # Capybara/ChromeDriver combination no longer reproduces the failure without it.
 #

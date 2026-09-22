@@ -90,6 +90,12 @@ class ChromeDetachedDocumentVisibilityRetryTest < ActiveSupport::TestCase
     assert_same error, raised
   end
 
+  test 'does not make UnknownError generally retryable' do
+    driver = Capybara::Selenium::Driver.allocate
+
+    refute_includes driver.invalid_element_errors, Selenium::WebDriver::Error::UnknownError
+  end
+
   test 'does not swallow the same message from a non-Chrome selector candidate' do
     error = detached_document_error
     node = FakeNode.new(base: non_chrome_base, error: error)
