@@ -439,20 +439,18 @@ class FileOps {
     // so this just repeats the status quo
   
     let filename = $($.parseHTML(file.name)).text(),
-        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?download=${Date.now().toString()}`,
+        baseUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}`,
+        downloadUrl = `${baseUrl}?download=${Date.now().toString()}`,
         iframe = document.createElement('iframe'),
         TIME = 30 * 1000;
   
     iframe.setAttribute('class', 'd-none');
     iframe.setAttribute('src', downloadUrl);
     iframe.onload = () => {
-      try {
-        const finalUrl = iframe.contentWindow.location.href;
-        if (finalUrl !== downloadUrl) {
-          // If the iframe redirects somewhere else, the download has failed
-          window.location.href = finalUrl;
-        }
-      } catch (e) {}
+      const finalUrl = iframe.contentWindow.location.href;
+      if (finalUrl !== downloadUrl) {
+        window.location.href = baseUrl;
+      }
     };
 
     document.body.appendChild(iframe);
