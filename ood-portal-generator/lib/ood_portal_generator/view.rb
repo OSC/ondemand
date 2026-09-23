@@ -146,6 +146,13 @@ module OodPortalGenerator
       !@auth.empty?
     end
 
+    # The Header directive restricting an interactive app proxied at +uri+ to
+    # only call back to itself, so it can't reach the OnDemand backend APIs.
+    def node_csp_header(uri)
+      origin = "#{@protocol}#{@servername || @proxy_server}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+      "Header always set Content-Security-Policy \"connect-src #{origin}; form-action #{origin}\""
+    end
+
     # Helper method to set the filename and path for access and error logs
     def log_filename(value,log_type)
       return value.to_s if value.to_s.start_with?('|')
