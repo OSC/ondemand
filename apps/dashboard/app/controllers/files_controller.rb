@@ -297,10 +297,8 @@ class FilesController < ApplicationController
 
   def next_valid
     nearest_dir = @path.directory? ? @path.path : @path.parent
-    logger.warn "#{nearest_dir.inspect}"
     next_valid = nearest_dir.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
     present_path = next_valid.nil? ? Dir.home : next_valid
-    logger.warn("Present path is #{present_path} because next valid was #{next_valid}")
     AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home
   end
 
