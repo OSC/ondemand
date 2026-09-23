@@ -146,8 +146,7 @@ module OodPortalGenerator
       !@auth.empty?
     end
 
-    # The Header directive restricting an interactive app proxied at +uri+ to
-    # only call back to itself, so it can't reach the OnDemand backend APIs.
+    # Helper that builds a Header directive to set the Content-Security-Policy for a given uri
     def node_csp_header(uri)
       origin = "#{@protocol}#{@servername || @proxy_server}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
       "Header always set Content-Security-Policy \"connect-src #{origin}; form-action #{origin}\""
