@@ -177,6 +177,9 @@ Listen 8080
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-node/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-node/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
 
@@ -221,6 +224,9 @@ Listen 8080
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
@@ -269,6 +275,9 @@ Listen 8080
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
 
@@ -316,6 +325,9 @@ Listen 8080
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
 
@@ -326,6 +338,12 @@ Listen 8080
   #
   SetEnv OOD_PUN_URI "/my_pun_apps"
   <Location "/my_pun_apps">
+    # Reject requests to the PUN that didn't come from within pun_uri (e.g. an
+    # interactive app proxied at node_uri/rnode_uri), unless it's a real page load
+    RewriteEngine On
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !=document
+    RewriteCond %{HTTP_REFERER} !^https?://[^/]+/my_pun_apps(/|$)
+    RewriteRule ^ - [F]
     AuthType openid-connect
     Require valid-user
 

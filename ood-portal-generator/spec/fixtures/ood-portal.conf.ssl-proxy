@@ -165,6 +165,9 @@
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
 
@@ -212,6 +215,9 @@
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
 
@@ -222,6 +228,12 @@
   #
   SetEnv OOD_PUN_URI "/pun"
   <Location "/pun">
+    # Reject requests to the PUN that didn't come from within pun_uri (e.g. an
+    # interactive app proxied at node_uri/rnode_uri), unless it's a real page load
+    RewriteEngine On
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !=document
+    RewriteCond %{HTTP_REFERER} !^https?://[^/]+/pun(/|$)
+    RewriteRule ^ - [F]
     AuthType openid-connect
     Require valid-user
 
