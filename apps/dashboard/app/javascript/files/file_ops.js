@@ -450,6 +450,7 @@ class FileOps {
       const finalUrl = iframe.contentWindow.location.href;
       if (finalUrl !== downloadUrl) {
         window.location.href = baseUrl;
+	document.body.removeChild(iframe);
       }
     };
 
