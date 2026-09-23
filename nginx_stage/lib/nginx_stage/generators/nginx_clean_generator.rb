@@ -94,7 +94,7 @@ module NginxStage
             pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
             # Send a SIGTERM to the master nginx process to kill the PUN.
-            # 'nginx stop' won't work, since getpwnam(3) will cause an error.
+            # 'nginx stop' will not work, since getpwnam(3) will cause an error.
             _, status = Open3.capture2e('kill', '-s', 'TERM', pid_path.pid.to_s)
             wait_for_pun_socket_shutdown(user: u) if status.success?
             FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
