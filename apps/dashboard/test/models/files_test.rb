@@ -106,6 +106,20 @@ class FilesTest < ActiveSupport::TestCase
     end 
   end
 
+  test "can_download_file? handles files exceeding limit" do 
+    download_file_size_limit = Configuration.download_file_max
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'file.txt').tap {|f| FileUtils.touch(f)}
+      file_size = download_file_size_limit + 1
+      Pathname.any_instance.stubs(:lstat)
+        .returns(OpenStruct.new({size: file_size}))
+      result = PosixFile.new(file).can_download_file?
+      error = I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
+
+      assert_equal([false, error], result)
+    end
+  end
+
   test "Ensuring PosixFile.username(uid) returns string" do
     assert_equal "9999999", PosixFile.username(9999999)
   end
@@ -209,5 +223,56 @@ class FilesTest < ActiveSupport::TestCase
     assert(char_dev.exist?)
     assert(char_dev.chardev?)
     refute(PosixFile.new(char_dev.to_s).downloadable?)
+  end
+
+  # this test accounts for recursion and hidden files.
+  test 'num_files counts files correctly' do
+    Dir.mktmpdir do |dir|
+      (1..2).each do |dir_num|
+        FileUtils.mkdir_p("#{dir}/test_#{dir_num}")
+        FileUtils.touch("#{dir}/test_#{dir_num}/.hidden_file")
+        (1..5).each do |num|
+          FileUtils.touch("#{dir}/test_#{dir_num}/file_#{num}")
+        end
+      end
+
+      # this tests against the old algorithm just for completeness because
+      # there were no tests for it prior to the refactor.
+      old_result = Dir.chdir(dir) do
+        `find 2>/dev/null test_1 test_2 | wc -l`.chomp.to_i
+      end
+      new_result = PosixFile.num_files(dir, ['test_1', 'test_2'])
+
+      assert(old_result == new_result, "old result #{old_result} does not match new result #{new_result}")
+
+      # 2 directories, 2 hidden files and 10 regular files
+      assert_equal(14, new_result)
+    end
+  end
+
+  test 'num_files counts files with symlinks correctly' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p("#{dir}/real_dir")
+      FileUtils.mkdir_p("#{dir}/other_dir")
+
+      (1..3).each { |n| FileUtils.touch("#{dir}/real_dir/file_#{n}") }
+      File.symlink("#{dir}/real_dir", "#{dir}/link_dir")
+
+      FileUtils.touch("#{dir}/other_dir/real_file")
+      File.symlink("#{dir}/other_dir/real_file", "#{dir}/other_dir/linked_file")
+
+      # this tests against the old algorithm just for completeness because
+      # there were no tests for it prior to the refactor.
+      old_result = Dir.chdir(dir) do
+        `find 2>/dev/null link_dir other_dir | wc -l`.chomp.to_i
+      end
+      new_result = PosixFile.num_files(dir, ['link_dir', 'other_dir'])
+
+      assert(old_result == new_result, "old result #{old_result} does not match new result #{new_result}")
+
+      # 1 symlink directory (link_dir), 1 real directory (other_dir) and 2 children
+      # within other_dir a real file and a symlink
+      assert_equal(4, new_result)
+    end
   end
 end
