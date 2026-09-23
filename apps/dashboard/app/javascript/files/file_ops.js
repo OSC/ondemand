@@ -445,7 +445,16 @@ class FileOps {
   
     iframe.setAttribute('class', 'd-none');
     iframe.setAttribute('src', downloadUrl);
-  
+    iframe.onload = () => {
+      try {
+        const finalUrl = iframe.contentWindow.location.href;
+        if (finalUrl !== downloadUrl) {
+          // If the iframe redirects somewhere else, the download has failed
+          window.location.href = finalUrl;
+        }
+      } catch (e) {}
+    };
+
     document.body.appendChild(iframe);
   
     setTimeout(function() {

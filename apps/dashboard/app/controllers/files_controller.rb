@@ -224,7 +224,7 @@ class FilesController < ApplicationController
 
   def rescue_action(exception)
     @files = []
-    flash.now[:alert] = exception.message.to_s
+    flash[:alert] = exception.message.to_s
 
     logger.error(exception.message)
 
