@@ -11,8 +11,7 @@ class Workflow
 
       Configuration.job_clusters.any? do |cluster|
         cluster.job_adapter.supports_job_dependencies?
-      rescue OodCore::AdapterNotSpecified, NoMethodError => e
-        Rails.logger.debug("Workflow.supported?: #{e.class}: #{e.message}")
+      rescue OodCore::AdapterNotSpecified, NoMethodError
         false
       end
     end

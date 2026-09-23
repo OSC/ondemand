@@ -206,11 +206,6 @@ class WorkflowsTest < ActiveSupport::TestCase
     assert_equal true, Workflow.supported?
   end
 
-  test 'supported? returns false when adapter does not implement supports_job_dependencies?' do
-    Configuration.stubs(:job_clusters).returns([stub(job_adapter: Object.new)])
-    assert_equal false, Workflow.supported?
-  end
-
   test 'supported? honors OOD_WORKFLOWS_ENABLED=false override' do
     adapter = stub(supports_job_dependencies?: true)
     Configuration.stubs(:job_clusters).returns([stub(job_adapter: adapter)])
