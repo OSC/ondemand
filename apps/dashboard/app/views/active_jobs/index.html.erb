@@ -70,6 +70,7 @@
   data-console-log-performance-report='<%= Configuration.console_log_performance_report? %>'
   data-base-uri='<%= controller.relative_url_root %>'
   data-ood-version='<%= Configuration.ood_version %>'
+  data-grafana-link='<%= controller.relative_url_root %>/grafana/d/ood-job/ood-job-metrics?var-cluster={cluster}&var-jobid={pbsid}&from={starttime}&to=now'
 >
 </div>
 
