@@ -106,6 +106,20 @@ class FilesTest < ActiveSupport::TestCase
     end 
   end
 
+  test "can_download_file? handles files exceeding limit" do 
+    download_file_size_limit = Configuration.download_file_max
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'file.txt').tap {|f| FileUtils.touch(f)}
+      file_size = download_file_size_limit + 1
+      Pathname.any_instance.stubs(:lstat)
+        .returns(OpenStruct.new({size: file_size}))
+      result = PosixFile.new(file).can_download_file?
+      error = I18n.t('dashboard.files_file_too_large', download_file_size_limit: download_file_size_limit)
+
+      assert_equal([false, error], result)
+    end
+  end
+
   test "Ensuring PosixFile.username(uid) returns string" do
     assert_equal "9999999", PosixFile.username(9999999)
   end

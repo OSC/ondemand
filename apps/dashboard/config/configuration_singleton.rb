@@ -92,7 +92,7 @@ class ConfigurationSingleton
       :download_dir_timeout_seconds => 5,
       :download_dir_max             => 10_737_418_240, # 10*1024*1024*1024 bytes
       :file_editor_max_size         => 12_582_912,     # 12*1024*1024 bytes
-      :file_download_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
+      :download_file_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
       :project_size_timeout         => 15,
       :novnc_default_compression    => 6,
       :novnc_default_quality        => 2,
@@ -283,6 +283,12 @@ class ConfigurationSingleton
 
   def developer_docs_url
     ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
+  end
+
+  def download_file_max_shim
+    e = ENV["OOD_FILE_DOWNLOAD_MAX"]
+    cfg_value = (e.nil? ? config.fetch(:file_download_max, nil) : e)
+    (cfg_value || download_file_max).to_i
   end
 
   def dataroot
