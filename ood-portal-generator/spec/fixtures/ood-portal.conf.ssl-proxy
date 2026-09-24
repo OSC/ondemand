@@ -166,7 +166,7 @@
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
-    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/ wss://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
@@ -216,7 +216,7 @@
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
-    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+    Header always set Content-Security-Policy "connect-src https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/ wss://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.server.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
