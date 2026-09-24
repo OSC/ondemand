@@ -8,13 +8,21 @@ fa-IR:
         required: وارد کردن %{attribute} الزامی است
         used: "%{attribute} قبلاً استفاده شده است"
   dashboard:
+    account: حساب کاربری
+    actions: اقدامات
+    active_jobs: مشاغل فعال
     active_jobs_close_details: بستن پنل جزئیات تکمیلی.
+    active_jobs_ganlia_CPU: تصویر گانگلیون برای CPU.
+    active_jobs_ganlia_load: تصویر گانگلیا برای میانگین بار سیستم.
+    active_jobs_ganlia_mem: تصویر گانگلیون برای استفاده از حافظه.
+    active_jobs_ganlia_network: تصویر گانگلیون برای استفاده در شبکه.
     active_sessions_caption_html: <a href="%{all_sessions_url}">مشاهده همه (%{number_of_sessions})</a>
     active_sessions_title: نشست‌های تعاملی فعال
     add: افزودن
     all_apps_table_app_column: نام
     all_apps_table_category_column: دسته‌بندی
     all_apps_table_sub_category_column: زیر‌دسته
+    all_clusters: همه خوشه‌ها
     announcements_dismissible_button: تأیید
     announcements_required_button: پذیرفتن
     apps_setup_failure_html: |
@@ -35,6 +43,7 @@ fa-IR:
     back: بازگشت
     balance_additional_message: درخواست %{balanace_units} بیشتر را در نظر بگیرید
     balance_message: "%{units_balance} برابر با %{value} است"
+    balance_no_warnings: هیچ پروژه‌ای در محدوده‌ی آستانه‌ی هشدار موجودی %{threshold} روزه قرار ندارد.
     balance_reload_message_html: 'برای مشاهده موجودی به‌روز، صفحه را دوباره بارگذاری کنید. موجودی‌ها روزانه به‌روزرسانی می‌شوند.<br>آخرین به‌روزرسانی: %{last_update}'
     balance_warning_prefix_html: هشدار %{units_balance} برای
     batch_connect_apps_menu_title: برنامه‌های تعاملی
@@ -88,6 +97,7 @@ fa-IR:
     batch_connect_sessions_relaunch_title: راه‌اندازی مجدد
     batch_connect_sessions_staged_root: پوشه ریشه آماده‌سازی‌شده
     batch_connect_sessions_stats_created_at: 'زمان ایجاد:'
+    batch_connect_sessions_stats_expected_time: 'شروع مورد انتظار:'
     batch_connect_sessions_stats_host: 'میزبان:'
     batch_connect_sessions_stats_session_dir_link_title: باز کردن پوشه نشست %{session_id}
     batch_connect_sessions_stats_session_id: 'شناسه نشست:'
@@ -135,15 +145,20 @@ fa-IR:
     close: بستن
     close_alert: بستن این هشدار.
     close_notice: بستن این اعلان.
+    cluster: خوشه
+    cpu_report: گزارش پردازنده + %{node}
     custom_pages:
       invalid: 'کد صفحه نامعتبر است: %{page}. این صفحه پیکربندی نشده است'
     date: تاریخ
     delete: حذف
+    detailed_metrics: معیارهای دقیق
+    details: جزئیات
     development_apps_caption: برنامه آزمایشی
     directory: پوشه
     edit: ویرایش
     file: فایل
     file_quotas: سهمیه فایل‌ها
+    files: فایل‌ها
     files_directory_download_error_modal_title: پوشه برای بارگیری بیش از حد بزرگ است
     files_directory_download_unauthorized: فقط فایل یا پوشه‌ای را می‌توانید بارگیری کنید که اجازه خواندن و اجرا برای آن دارید
     files_directory_size_calculation_error: محاسبه اندازه پوشه به‌دلیل پایان مهلت زمانی متوقف شد.
@@ -164,7 +179,9 @@ fa-IR:
     files_shell_dropdown: انتخاب کلاستر برای باز کردن در پایانه
     files_title: مرور فایل‌ها
     home_directory: پوشه خانه
+    id: شناسه
     import: درون‌ریزی
+    job: شغل
     job_info: اطلاعات کار
     jobs_create_blank_project: ایجاد پروژه جدید
     jobs_create_blank_workflow: گردش‌کار جدید
@@ -246,12 +263,23 @@ fa-IR:
     jobs_workflow_sync_key_help: در صورت فعال بودن، همه راه‌اندازهای این گردش‌کار متغیر محیطی یکسان <code>OOD_WORKFLOW_SYNC_KEY</code> را دریافت می‌کنند؛ این متغیر توکنی تصادفی و یکتا برای هر اجرای گردش‌کار است. برای ساخت نام فایل‌های هماهنگ، فایل‌های قفل یا شناسه‌های مشترک بین کارهای وابسته مفید است.
     jobs_workflows: گردش‌کارها
     launch: راه‌اندازی
+    load_report: گزارش بارگیری + %{node}
     logo_alt_text: به Open OnDemand خوش آمدید
     maximum: بیشینه
+    mem_report: گزارش حافظه + %{node}
     minimum: کمینه
     mode: حالت
     module_browser_last_updated: 'آخرین به‌روزرسانی: %{last_updated}'
     module_browser_title: مرورگر ماژول
+    motd_default_md: |
+      توسعه Open OnDemand از طریق [بنیاد ملی علوم](https://www.nsf.gov/)
+      تحت شماره‌های کمک‌هزینه [1534949](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1534949) و
+      [1835725](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1835725) پشتیبانی می‌شود.
+       برای کسب اطلاعات بیشتر یا مشارکت:
+       - [Discourse](https://discourse.openondemand.org/)
+      - [مخزن Open OnDemand](https://github.com/OSC/ondemand)
+      - [مخزن ood-core](https://github.com/OSC/ood_core)
+      - [مستندات](https://osc.github.io/ood-documentation/latest/)
     motd_erb_render_error: 'پیام روز به‌درستی تجزیه یا نمایش داده نشد: %{error_message}'
     motd_title: پیام روز
     name: نام
@@ -272,10 +300,13 @@ fa-IR:
     nav_restart_server: راه‌اندازی مجدد وب‌سرور
     nav_sessions: نشست‌های تعاملی من
     nav_user: واردشده با نام %{username}
+    network_report: گزارش شبکه + %{node}
+    node: گره
     not_grouped: سایر برنامه‌ها
     nsf_access_events: رویدادهای NSF ACCESS
     ok: تأیید
     opens_in_new_tab: در زبانه جدید باز می‌شود
+    output_location: 'محل خروجی:'
     owner: مالک
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -291,6 +322,7 @@ fa-IR:
     project_directory: پوشه پروژه
     project_zip_error_message: 'خطا در ایجاد فایل ZIP: %{error}'
     project_zip_success_message: 'عملیات موفق بود: فایل project.zip در پوشه پروژه شما ایجاد شد.'
+    queue: صف
     quota_additional_message: برای آزاد کردن فضای دیسک، حذف یا بایگانی فایل‌ها را در نظر بگیرید.
     quota_block: استفاده از %{used} از سهمیه %{available}
     quota_block_shared: "(%{used_exclusive} متعلق به شماست)"
@@ -333,7 +365,9 @@ fa-IR:
     skip_navigation: پرش از پیمایش
     soft_tabs: تب نرم
     soft_tabs_info: تب‌های نرم به‌جای نویسه واقعی تب، از فاصله در فایل استفاده می‌کنند.
+    status: وضعیت
     submit: ارسال
+    submit_args: 'ارسال آرگومان‌ها:'
     support_ticket:
       creation_success: ایمیل درخواست پشتیبانی به %{to} ارسال شد
       generic_error: 'هنگام پردازش درخواست شما خطایی رخ داد: %{error}'
@@ -358,6 +392,7 @@ fa-IR:
     type: نوع
     unknown: نامشخص
     uppy: Uppy
+    user: کاربر
     user_configuration:
       support_ticket_error: پیکربندی support_ticket نادرست است. یک پیاده‌سازی backend در فایل پیکربندی YAML اضافه کنید.
     welcome_html: |
