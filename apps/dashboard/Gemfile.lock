@@ -128,19 +128,10 @@ GEM
     drb (2.2.3)
     erb (6.0.7)
     erubi (1.13.1)
-    event_stream_parser (1.0.0)
     excon (1.7.1)
       logger
     execjs (2.10.2)
       json (>= 2)
-    faraday (2.14.4)
-      faraday-net_http (>= 2.0, < 3.5)
-      json
-      logger
-    faraday-multipart (1.2.0)
-      multipart-post (~> 2.0)
-    faraday-net_http (3.4.4)
-      net-http (~> 0.5)
     ffi (1.16.3)
     fog-core (2.6.0)
       builder
@@ -157,19 +148,21 @@ GEM
       reline
     globalid (1.4.0)
       activesupport (>= 6.1)
-    highline (2.1.0)
+    highline (3.1.2)
+      reline
     http-accept (1.7.0)
     http-cookie (1.1.6)
       domain_name (~> 0.5)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (1.0.15)
+    i18n-tasks (1.1.2)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       erubi
-      highline (>= 2.0.0)
+      highline (>= 3.0.0)
       i18n
       parser (>= 3.2.2.1)
+      prism
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.8, >= 1.8.1)
@@ -216,10 +209,7 @@ GEM
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
     multi_json (1.21.2)
-    multipart-post (2.4.1)
     mustermann (3.1.1)
-    net-http (0.9.1)
-      uri (>= 0.11.1)
     net-imap (0.6.7)
       date
       net-protocol
@@ -333,10 +323,6 @@ GEM
     rexml (3.4.4)
     rss (0.3.3)
       rexml
-    ruby-openai (8.3.0)
-      event_stream_parser (>= 0.3.0, < 2.0.0)
-      faraday (>= 1)
-      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
@@ -383,10 +369,9 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (3.3.0)
-      unicode-emoji (~> 4.3)
-    unicode-emoji (4.3.0)
-    uri (1.1.1)
+    unicode-display_width (3.2.0)
+      unicode-emoji (~> 4.1)
+    unicode-emoji (4.2.0)
     useragent (0.16.11)
     webrick (1.9.2)
     websocket (1.2.11)
@@ -416,8 +401,8 @@ DEPENDENCIES
   dotenv-rails (~> 2.1)
   dotiw
   erubi
-  highline (= 2.1.0)
-  i18n-tasks (~> 1.0.15)
+  highline
+  i18n-tasks (~> 1.1.0)
   jbuilder (~> 2.0)
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
@@ -436,7 +421,6 @@ DEPENDENCIES
   redcarpet (~> 3.3)
   rest-client (~> 2.0)
   rss (~> 0.2)
-  ruby-openai
   sdoc
   selenium-webdriver (= 4.26.0)
   sinatra
