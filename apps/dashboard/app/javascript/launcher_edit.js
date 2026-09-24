@@ -27,6 +27,10 @@ const newFieldData = {
     label: "Nodes",
     help: "How many nodes the job will run on."
   },
+  auto_num_nodes: {
+    label: 'Auto Nodes',
+    help: 'How many nodes the job will run on.'
+  },
   auto_environment_variable: {
     label: 'Environment Variable',
     help: 'Add an environment variable.'
