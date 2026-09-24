@@ -3,7 +3,7 @@
 class UserCustomization
   include ActiveModel::Model
   include UserSettingStore
-
+    
   attr_reader :custom_files_favorites
 
   def initialize
@@ -22,6 +22,12 @@ class UserCustomization
 
   def favorite_paths
     OodFilesApp.new.favorite_paths + favorites_from_array(custom_files_favorites)
+  end
+
+  def custom_favorite?(favorite)
+    custom_files_favorites.any? do |custom|
+      favorite.path.to_s == custom[:path] && favorite.title == custom[:title]
+    end
   end
 
   private

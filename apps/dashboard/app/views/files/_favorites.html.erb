@@ -1,19 +1,37 @@
 <div id="clipboard" class="sticky-top">
 </div>
 
-<ul id="favorites" class="nav nav-pills flex-column" role="region" aria-label="Favorites">
+<li class="nav-item mt-1" data-favorite-demo style="display:none">
+  <div class="input-group">
+    <div class="input-group-text px-3 py-2 bg-light text-dark">
+    </div>
+    <a class="btn bg-danger" href="#" role="button" data-delete-favorite>
+      <i class="fas fa-trash" aria-hidden="true"></i>
+    </a>
+  </div>
+</li>
+
+<ul id="favorites" class="nav nav-pills flex-column flex-nowrap" role="region" aria-label="Favorites">
   <li role="presentation" class="nav-item">
     <%= link_to files_path(Dir.home), class: "nav-link d bg-light" do %>
       <%= fa_icon "home", classes: '' %>
         <%= I18n.t('dashboard.home_directory') %>
     <% end %>
   </li>
+
   <% @user_customization.favorite_paths.each do |p| %>
     <li class="nav-item">
-      <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light" do %>
-      <%= fa_icon p.icon, classes: '' %>
-      <%= p.title || p.path.to_s  %>
-      <% end %>
+      <div class="input-group">
+        <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light input-group-text px-3 py-2 flex-grow-1 text-start" do %>
+          <%= fa_icon p.icon, classes: '' %>
+          <%= p.title || p.path.to_s  %>
+        <% end %>
+        <% if @user_customization.custom_favorite?(p) %>
+          <a class="btn bg-danger" href="#" role="button" data-delete-favorite title="<%=t('dashboard.delete_favorite_title', favorite: p.title || p.path) %>">
+            <i class="fas fa-trash" aria-hidden="true"></i>
+          </a>
+        <% end %>
+      </div>
     </li>
   <% end %>
 </ul>
