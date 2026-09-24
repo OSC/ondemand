@@ -189,6 +189,38 @@ class WorkflowsTest < ActiveSupport::TestCase
     assert_equal({'bc_num_hours' => '1', 'auto_queues' => 'batch', 'afterok' => ['1234'], 'ood_workflow_sync_key' => 'abc123TOKEN'}, with_key)
   end
 
+  test 'supported? returns false when no job clusters exist' do
+    Configuration.stubs(:job_clusters).returns([])
+    assert_equal false, Workflow.supported?
+  end
+
+  test 'supported? returns false when adapter does not support job dependencies' do
+    adapter = stub(supports_job_dependencies?: false)
+    Configuration.stubs(:job_clusters).returns([stub(job_adapter: adapter)])
+    assert_equal false, Workflow.supported?
+  end
+
+  test 'supported? returns true when adapter supports job dependencies' do
+    adapter = stub(supports_job_dependencies?: true)
+    Configuration.stubs(:job_clusters).returns([stub(job_adapter: adapter)])
+    assert_equal true, Workflow.supported?
+  end
+
+  test 'supported? honors OOD_WORKFLOWS_ENABLED=false override' do
+    adapter = stub(supports_job_dependencies?: true)
+    Configuration.stubs(:job_clusters).returns([stub(job_adapter: adapter)])
+    with_modified_env(OOD_WORKFLOWS_ENABLED: 'false') do
+      assert_equal false, Workflow.supported?
+    end
+  end
+
+  test 'supported? honors OOD_WORKFLOWS_ENABLED=true override' do
+    Configuration.stubs(:job_clusters).returns([])
+    with_modified_env(OOD_WORKFLOWS_ENABLED: 'true') do
+      assert_equal true, Workflow.supported?
+    end
+  end
+
   def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [], sync_key_enabled: '0')
     attrs = { name: name, id: id, description: description, project_dir: project_dir, launcher_ids: launcher_ids, sync_key_enabled: sync_key_enabled}
     workflow = Workflow.new(attrs)
