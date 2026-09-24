@@ -626,6 +626,71 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'cannot download directories that are too large' do
+    with_modified_env({OOD_DOWNLOAD_DIR_MAX: '100'}) do
+      zip_file = DOWNLOAD_DIRECTORY.join('dir_to_download.zip')
+      File.delete(zip_file) if File.exist?(zip_file)
+
+      Dir.mktmpdir do |dir|
+        dir_size = 101
+        PosixFile.any_instance.stubs(:calculate_directory_size)
+          .returns(dir_size)
+        Open3.stubs(:capture3).returns(["#{dir_size} #{dir} 
+          \n #{dir_size} total", "", exit_success])
+
+        dir_to_dl = "#{dir}/dir_to_download"
+        `mkdir -p #{dir_to_dl}`
+        `echo 'abc123' > #{dir_to_dl}/real_file`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'dir_to_download').ancestor('tr').click
+
+        click_on('Download')
+        alert_text = "Error while downloading: #{I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: '100')}"
+        assert_selector '.alert-danger span', text: alert_text
+        refute(File.exist?(zip_file), "#{zip_file} was downloaded despite being too large")
+      end
+    end
+  end
+
+  test 'can download files' do
+    new_file = DOWNLOAD_DIRECTORY.join('file_to_download')
+    File.delete(new_file) if File.exist?(new_file)
+
+    Dir.mktmpdir do |dir|
+      `echo 'some content' > #{dir}/file_to_download`
+
+      visit files_url(dir)
+      find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
+      click_on('Download')
+      sleep 5
+      assert(File.exist?(new_file), "#{new_file} was not downloaded")
+    end
+  end
+
+  test 'cannot open or download files that are too large' do
+    with_modified_env({OOD_DOWNLOAD_FILE_MAX: '116'}) do
+      new_file = DOWNLOAD_DIRECTORY.join('file_to_download')
+      File.delete(new_file) if File.exist?(new_file)
+
+      Dir.mktmpdir do |dir|
+        content = 'some content '*9 # produces 117 Bytes of text
+        `echo '#{content}' > #{dir}/file_to_download`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'file_to_download').click
+        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
+        find('.alert-danger button.btn-close').click
+        refute_selector('.alert-danger')
+
+        find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
+        click_on('Download')
+        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
+        refute(File.exist?(new_file), "#{new_file} was downloaded despite being too large")
+      end
+    end
+  end
+
   test 'cannot download files outside of allowlist' do
     zip_file = DOWNLOAD_DIRECTORY.join('allowed.zip')
     File.delete(zip_file) if File.exist?(zip_file)
