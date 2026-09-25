@@ -6,6 +6,7 @@ require 'nginx_stage'
 describe NginxStage::PunConfigGenerator do
   let(:test_user) { 'spec' }
   let(:test_user_gid) { 1000 }
+  let(:generator) { described_class.new(user: test_user, skip_nginx: true) }
 
   before do
     etc_stub = {
@@ -23,6 +24,103 @@ describe NginxStage::PunConfigGenerator do
 
   it 'requires the user option' do
     expect { described_class.new }.to raise_error(NginxStage::MissingOption, 'missing option: user')
+  end
+
+  describe '#invoke' do
+    before do
+      allow(described_class).to receive(:hooks).and_return(
+        probe: proc { @pun_lock_probe_ran = true }
+      )
+    end
+
+    it 'holds the PUN lifecycle lock across all setup hooks' do
+      expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).and_yield
+
+      generator.invoke
+
+      expect(generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
+    end
+
+    it 'skips initialization when the PUN is already running' do
+      running_generator = described_class.new(user: test_user)
+      expect(running_generator).to receive(:pun_running?)
+        .with(user: running_generator.user)
+        .once
+        .and_return(true)
+      expect(running_generator).to receive(:with_pun_lifecycle_lock)
+        .with(user: running_generator.user)
+        .and_yield
+
+      running_generator.invoke
+
+      expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be_nil
+    end
+
+    it 'initializes when the PUN is not running' do
+      running_generator = described_class.new(user: test_user)
+      expect(running_generator).to receive(:pun_running?)
+        .with(user: running_generator.user)
+        .once
+        .and_return(false)
+      expect(running_generator).to receive(:with_pun_lifecycle_lock)
+        .with(user: running_generator.user)
+        .and_yield
+
+      running_generator.invoke
+
+      expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
+    end
+
+    it 'does not suppress config-only generation' do
+      expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).and_yield
+      expect(generator).not_to receive(:pun_running?)
+
+      generator.invoke
+
+      expect(generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
+    end
+  end
+
+  describe '#pun_running?' do
+    let(:running_generator) { described_class.new(user: test_user) }
+    let(:pid_path) { '/var/run/ondemand-nginx/spec/passenger.pid' }
+    let(:socket_path) { '/var/run/ondemand-nginx/spec/passenger.sock' }
+    let(:pid_file) { double('pid_file') }
+
+    before do
+      allow(NginxStage).to receive(:pun_pid_path).with(user: running_generator.user).and_return(pid_path)
+      allow(NginxStage).to receive(:pun_socket_path).with(user: running_generator.user).and_return(socket_path)
+    end
+
+    it 'requires both a live PID and a socket' do
+      allow(File).to receive(:socket?).with(socket_path).and_return(true)
+      allow(NginxStage::PidFile).to receive(:new).with(pid_path).and_return(pid_file)
+      allow(pid_file).to receive(:running_process?).and_return(true)
+
+      expect(running_generator.send(:pun_running?, user: running_generator.user)).to be(true)
+    end
+
+    it 'does not treat a live PID without a socket as a running PUN' do
+      allow(File).to receive(:socket?).with(socket_path).and_return(false)
+      expect(NginxStage::PidFile).not_to receive(:new)
+
+      expect(running_generator.send(:pun_running?, user: running_generator.user)).to be(false)
+    end
+
+    it 'does not treat a stale PID as a running PUN' do
+      allow(File).to receive(:socket?).with(socket_path).and_return(true)
+      allow(NginxStage::PidFile).to receive(:new).with(pid_path).and_return(pid_file)
+      allow(pid_file).to receive(:running_process?).and_return(false)
+
+      expect(running_generator.send(:pun_running?, user: running_generator.user)).to be(false)
+    end
+
+    it 'does not treat a missing PID file as a running PUN' do
+      allow(File).to receive(:socket?).with(socket_path).and_return(true)
+      allow(NginxStage::PidFile).to receive(:new).with(pid_path).and_raise(NginxStage::MissingPidFile)
+
+      expect(running_generator.send(:pun_running?, user: running_generator.user)).to be(false)
+    end
   end
 
   describe 'missing user' do

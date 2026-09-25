@@ -7,6 +7,16 @@ module NginxStage
   class PunConfigGenerator < Generator
     desc 'Generate a new per-user nginx config and process'
 
+    # Serialize the complete PUN initialization sequence and make startup
+    # idempotent when this user's PUN is already running.
+    def invoke
+      with_pun_lifecycle_lock(user: user) do
+        return if !skip_nginx && pun_running?(user: user)
+
+        super
+      end
+    end
+
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
         To generate a per-user nginx environment & launch nginx:

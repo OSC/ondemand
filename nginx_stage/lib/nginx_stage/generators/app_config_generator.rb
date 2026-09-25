@@ -78,25 +78,32 @@ module NginxStage
     # Restart the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        NginxStage.clean_nginx_env(user: user)
-        if File.file? NginxStage.pun_pid_path(user: user)
+        with_pun_lifecycle_lock(user: user) do
+          NginxStage.clean_nginx_env(user: user)
+          config_path = NginxStage.pun_config_path(user: user)
+          unless File.file?(config_path)
+            raise Error, "missing PUN config while restarting PUN: #{config_path}"
+          end
+          if File.file? NginxStage.pun_pid_path(user: user)
+            o, s = Open3.capture2e(
+              [
+                NginxStage.nginx_bin,
+                "(#{user})"
+              ],
+              *NginxStage.nginx_args(user: user, signal: :stop)
+            )
+            abort(o) unless s.success?
+          end
+          wait_for_pun_socket_shutdown
           o, s = Open3.capture2e(
             [
               NginxStage.nginx_bin,
               "(#{user})"
             ],
-            *NginxStage.nginx_args(user: user, signal: :stop)
+            *NginxStage.nginx_args(user: user)
           )
-          abort(o) unless s.success?
+          s.success? ? exit : abort(o)
         end
-        o, s = Open3.capture2e(
-          [
-            NginxStage.nginx_bin,
-            "(#{user})"
-          ],
-          *NginxStage.nginx_args(user: user)
-        )
-        s.success? ? exit : abort(o)
       end
     end
 
@@ -106,9 +113,9 @@ module NginxStage
     end
 
     private
-      # NGINX app config path
-      def app_config_path
-        NginxStage.app_config_path(env: env, owner: owner, name: name)
-      end
+    # NGINX app config path
+    def app_config_path
+      NginxStage.app_config_path(env: env, owner: owner, name: name)
+    end
   end
 end
