@@ -4,6 +4,7 @@ import { ariaNotify, customizeTableHeaders, hide, show } from "../utils";
 export class PathSelectorTable {
   _table = null;
   _currentListPath = undefined;
+  _reloadRequestId = 0;
 
   // input data that should be passed into the constructor
   tableId             = undefined;
@@ -95,12 +96,19 @@ export class PathSelectorTable {
   }
 
   async reloadTable(url) {
+    const requestId = ++this._reloadRequestId;
+    $(`#${this.selectButtonId}`).prop('disabled', true);
+
     try {
       $(this.tableWrapper()).hide();
       show(`${this.tableId}_spinner`);
       ariaNotify('Loading directory contents');
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
+      if (requestId !== this._reloadRequestId) {
+        return;
+      }
+
       this._currentListPath = data.path;
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
       this._table.clear();
@@ -110,6 +118,10 @@ export class PathSelectorTable {
       this.resetTable();
       ariaNotify('Directory loaded with ' + data.files.length + ' items');
     } catch (err) {
+      if (requestId !== this._reloadRequestId) {
+        return;
+      }
+
       this.resetTable();
       if (err.message) {
         const msg = err.message;	    
@@ -122,6 +134,10 @@ export class PathSelectorTable {
           .trigger('focus');
       }
       console.log(err);
+    } finally {
+      if (requestId === this._reloadRequestId) {
+        $(`#${this.selectButtonId}`).prop('disabled', false);
+      }
     }
   }
 
