@@ -41,7 +41,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'renders pinned_apps when nav_bar is empty and pinned_apps are configured' do
     stub_sys_apps
-    stub_user_configuration({pinned_apps: ['sys/*']})
+    stub_user_configuration({pinned_apps: ['sys/*'], nav_bar: []})
 
     get('/')
 
@@ -70,7 +70,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'does not render pinned_apps when nav_bar is empty and pinned_apps are empty' do
     stub_sys_apps
-    stub_user_configuration({pinned_apps: []})
+    stub_user_configuration({pinned_apps: [], nav_bar: []})
 
     get('/')
 
@@ -80,7 +80,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'Files, Jobs, Clusters, and Interactive Apps nav_bar groups should render' do
     stub_sys_apps
-
+    stub_user_configuration({nav_bar: []})
     get('/')
 
     assert_response(:success)
@@ -117,6 +117,7 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'navbar sessions should render' do
+    stub_user_configuration({nav_bar: []})
     stub_sys_apps
     Configuration.stubs(:open_apps_in_new_window?).returns(true)
     get('/')
@@ -125,6 +126,7 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'navbar sessions should not render' do
+    stub_user_configuration({nav_bar: []})
     stub_sys_apps
     Configuration.stubs(:open_apps_in_new_window?).returns(false)
     ApplicationController.any_instance.stubs(:sys_app_groups).returns([])
@@ -136,7 +138,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'all_apps should render' do
     stub_sys_apps
-    stub_user_configuration(show_all_apps_link: true)
+    stub_user_configuration({nav_bar: [], show_all_apps_link: true})
     get('/')
     assert_response(:success)
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_all_apps')}']", 1)
@@ -144,9 +146,82 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'all_apps should not render' do
     stub_sys_apps
-    stub_user_configuration(show_all_apps_link: false)
+    stub_user_configuration({nav_bar: [], show_all_apps_link: false})
     get('/')
     assert_response(:success)
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_all_apps')}']", 0)
   end
+
+  test 'develop dropdown should render when app_development_enabled is true' do
+    stub_user_configuration(help_bar: [])
+    Configuration.stubs(:app_development_enabled?).returns(true)
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+    get('/')
+    assert_response(:success)
+    assert_select("nav.navbar div.collapse li.nav-item") do
+      assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_develop_title")}']", 1)
+      assert_select("ul.dropdown-menu") do
+        assert_select('a', text: I18n.t('dashboard.nav_restart_server'))
+        assert_select('a', text: I18n.t('dashboard.nav_develop_docs'))
+        assert_select('a', text: I18n.t('dashboard.nav_develop_my_sandbox_apps_dev'))
+        assert_select('a', text: I18n.t('dashboard.nav_develop_my_sandbox_apps_prod'))
+      end
+    end
+  end
+
+  test 'develop dropdown should not render when app_development_enabled is false' do
+    stub_user_configuration(help_bar: [])
+    Configuration.stubs(:app_development_enabled?).returns(false)
+    get('/')
+    assert_response(:success)
+    assert_select("nav.navbar div.collapse li.nav-item") do
+      assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_develop_title")}']", 0)
+    end
+  end
+
+  test 'help dropdown should render when help_bar is empty' do
+    with_modified_env(
+      OOD_DASHBOARD_SUPPORT_URL: '/support',
+      OOD_DASHBOARD_DOCS_URL: '/docs',
+      OOD_DASHBOARD_PASSWD_URL: '/password',
+      OOD_DASHBOARD_2FA_URL: '/two-factor'
+    ) do
+        stub_user_configuration(help_bar: [])
+        get('/')
+        assert_response(:success)
+        assert_select("nav.navbar div.collapse li.nav-item") do
+          assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_help_title")}']", 1)
+          assert_select("ul.dropdown-menu") do
+            assert_select('a', text: I18n.t('dashboard.nav_help_support'))
+            assert_select('a', text: I18n.t('dashboard.nav_help_docs'))
+            assert_select('a', text: I18n.t('dashboard.nav_help_change_password'))
+            assert_select('a', text: I18n.t('dashboard.nav_help_two_factor'))
+          end
+        end
+      end
+  end
+
+  test 'user button should render' do
+    stub_user_configuration(help_bar: [])
+    CurrentUser.stubs(:name).returns('me')
+    get('/')
+    assert_response(:success)
+    assert_select("nav.navbar div.collapse li.nav-item[data-content = '#{I18n.t("dashboard.nav_user", username: 'me')}']") do
+      assert_select("a.nav-link[title = '#{I18n.t("dashboard.nav_user", username: 'me')}']", 1) do
+      assert_select('span', text: "#{I18n.t("dashboard.nav_user", username: 'me')}")
+    end
+    end
+  end
+
+  test 'logout button should render' do
+    stub_user_configuration(help_bar: [])
+    get('/')
+    assert_response(:success)
+    assert_select("nav.navbar div.collapse li.nav-item") do
+      assert_select("a.nav-link[title = '#{I18n.t("dashboard.nav_logout")}']", 1) do
+      assert_select('span', text: "#{I18n.t("dashboard.nav_logout")}")
+    end
+    end
+  end
+
 end
