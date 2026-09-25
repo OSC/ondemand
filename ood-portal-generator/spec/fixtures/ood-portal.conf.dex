@@ -128,6 +128,12 @@
   #
   SetEnv OOD_PUN_URI "/pun"
   <Location "/pun">
+    # Reject requests to the PUN that didn't come from within pun_uri (e.g. an
+    # interactive app proxied at node_uri/rnode_uri), unless it's a real page load
+    RewriteEngine On
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !=document
+    RewriteCond %{HTTP_REFERER} !^https?://[^/]+/pun(/|$)
+    RewriteRule ^ - [F]
     AuthType openid-connect
     Require valid-user
 
