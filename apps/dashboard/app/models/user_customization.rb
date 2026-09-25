@@ -25,8 +25,9 @@ class UserCustomization
   end
 
   def custom_favorite?(favorite)
+    #raise "custom_favorites: #{custom_files_favorites.inspect}, candidate: #{favorite.inspect}" if favorite.path.to_s.include?("dashboard")
     custom_files_favorites.any? do |custom|
-      favorite.path.to_s == custom[:path] && favorite.title == custom[:title]
+      favorite.path.to_s == custom[:path] && favorite.title.to_s == custom[:title]
     end
   end
 

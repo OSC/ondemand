@@ -11,7 +11,7 @@
   </div>
 </li>
 
-<ul id="favorites" class="nav nav-pills flex-column flex-nowrap" role="region" aria-label="Favorites">
+<ul id="favorites" class="nav nav-pills flex-column" role="region" aria-label="Favorites">
   <li role="presentation" class="nav-item">
     <%= link_to files_path(Dir.home), class: "nav-link d bg-light" do %>
       <%= fa_icon "home", classes: '' %>
@@ -21,13 +21,18 @@
 
   <% @user_customization.favorite_paths.each do |p| %>
     <li class="nav-item">
-      <div class="input-group">
-        <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light input-group-text px-3 py-2 flex-grow-1 text-start" do %>
+      <div class="input-group flex-nowrap">
+        <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light input-group-text pe-0 py-2 d-flex flex-grow-1 text-start" do %>
           <%= fa_icon p.icon, classes: '' %>
+          <span class="text-wrap text-break px-2">
           <%= p.title || p.path.to_s  %>
+          </span>
         <% end %>
         <% if @user_customization.custom_favorite?(p) %>
-          <a class="btn bg-danger" href="#" role="button" data-delete-favorite title="<%=t('dashboard.delete_favorite_title', favorite: p.title || p.path) %>">
+          <a class="btn bg-secondary text-light align-content-center" href="#" role="button" data-edit-favorite title="<%=t('dashboard.edit_favorite_title', favorite: p.title || p.path) %>">
+            <i class="fas fa-pen" aria-hidden="true"></i>
+          </a>
+          <a class="btn bg-danger text-light align-content-center" href="#" role="button" data-delete-favorite title="<%=t('dashboard.delete_favorite_title', favorite: p.title || p.path) %>">
             <i class="fas fa-trash" aria-hidden="true"></i>
           </a>
         <% end %>

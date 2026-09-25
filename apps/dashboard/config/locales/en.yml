@@ -165,6 +165,7 @@ en:
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    edit_favorite_title: Rename custom favorite %{favorite}
     favorite_paths: Favorite Paths
     favorites_not_updated: Some favorite paths do not exist. Custom favorites have not been updated
     file: File
