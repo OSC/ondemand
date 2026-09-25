@@ -3,6 +3,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@hotwired/turbo-rails": ">=7.3.0 <8",
+    "@novnc/novnc": "github:novnc/novnc#7c36fa",
     "@popperjs/core": "^2.11.8",
     "@rails/ujs": "^7.0.1",
     "@uppy/core": "^4.0",
