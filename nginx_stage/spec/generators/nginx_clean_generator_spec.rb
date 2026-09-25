@@ -20,7 +20,7 @@ describe NginxStage::NginxCleanGenerator do
     allow(generator).to receive(:session_count).with(active_user).and_return(0)
     allow(generator).to receive(:puts)
     allow(generator).to receive(:with_pun_lifecycle_lock).with(user: active_user).and_yield
-    allow(NginxStage).to receive(:clean_nginx_env).with(user: nil)
+    allow(NginxStage).to receive(:clean_nginx_env).with(user: active_user)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)
       .with(user: active_user, signal: :stop)
