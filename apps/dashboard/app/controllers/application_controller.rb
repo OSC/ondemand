@@ -125,7 +125,8 @@ class ApplicationController < ActionController::Base
   # an insufficient disk resource
   def set_my_quotas
     @my_quotas = []
-    ::Configuration.quota_paths.each { |path| @my_quotas += Quota.find(path, OodSupport::User.new.name) }
+    user = OodSupport::User.new
+    ::Configuration.quota_paths.each { |path| @my_quotas += Quota.find(path, user.name, user.groups.map(&:name)) }
     @my_quotas
   end
 

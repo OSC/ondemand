@@ -18,8 +18,13 @@ class Quota
   class << self
     # Get quota objects only for requested user in JSON file(s)
     #
+    # @param quota_path [String] path or URL to quota JSON file
+    # @param user [String] user name
+    # @param groups [Array<String>] list of group names the user belongs to
+    # @return [Array<Quota>] array of Quota objects for user and their groups
+    #
     # KeyError and JSON::ParserErrors shall be non-fatal errors
-    def find(quota_path, user)
+    def find(quota_path, user, groups = [])
       raw = read_uri(quota_path)
 
       raise InvalidQuotaFile, 'No content returned when attempting to read quota file' if raw.nil? || raw.empty?
@@ -34,7 +39,9 @@ class Quota
       # FIXME: any validation of the structure here? otherwise we don't need the complexity of the code below
       # until we have more than one quota version schema, which we do not
       # so assume version is 1
-      build_quotas(json['quotas'], json['timestamp'], user)
+      user_quotas = build_quotas(json['quotas'], json['timestamp'], user)
+      group_quotas = build_quotas_other(json['quotas_other'], json['timestamp'], groups)
+      user_quotas + group_quotas
     rescue StandardError => e
       Rails.logger.error("Error #{e.class} when reading and parsing quota file #{quota_path} for user #{user}: #{e.message}")
       []
@@ -76,6 +83,55 @@ class Quota
         user_usage:    params.fetch(:block_usage, params.fetch(:total_block_usage)).to_i,
         limit:         params.fetch(:block_limit).to_i,
         grace:         params.fetch(:block_grace, 0).to_i, # future functionality
+        updated_at:    Time.at(params.fetch(:updated_at).to_i)
+      )
+      [file_quota, block_quota]
+    end
+
+    # Parse JSON object using version 1 formatting for quotas_other array
+    # These are group-level quotas, filtered by the user's groups
+    # @param quota_hashes [Array, nil] array of quota hash objects
+    # @param updated_at [Integer] timestamp for the quotas
+    # @param user_groups [Array<String>] list of group names the user belongs to
+    # @return [Array<Quota>] array of Quota objects for user's groups
+    def build_quotas_other(quota_hashes, updated_at, user_groups)
+      return [] unless quota_hashes&.is_a?(Array) && user_groups.any?
+
+      q = []
+      quota_hashes.each do |quota|
+        group_name = quota['group']
+        # Only include quotas for groups the user belongs to
+        if group_name && user_groups.include?(group_name)
+          q += create_group_quota(quota.merge('updated_at' => quota.fetch('timestamp',
+                                                                          updated_at)))
+        end
+      end
+      q
+    end
+
+    # Create file and block quota instances for a group quota
+    def create_group_quota(params)
+      params = params.to_h.compact.symbolize_keys
+      file_quota = Quota.new(
+        type:          :group,
+        path:          Pathname.new(params.fetch(:path).to_s),
+        user:          params.fetch(:group).to_s,
+        resource_type: 'file',
+        total_usage:   params.fetch(:total_file_usage).to_i,
+        user_usage:    params.fetch(:total_file_usage).to_i,
+        limit:         params.fetch(:file_limit).to_i,
+        grace:         0,
+        updated_at:    Time.at(params.fetch(:updated_at).to_i)
+      )
+      block_quota = Quota.new(
+        type:          :group,
+        path:          Pathname.new(params.fetch(:path).to_s),
+        user:          params.fetch(:group).to_s,
+        resource_type: 'block',
+        total_usage:   params.fetch(:total_block_usage).to_i,
+        user_usage:    params.fetch(:total_block_usage).to_i,
+        limit:         params.fetch(:block_limit).to_i,
+        grace:         0,
         updated_at:    Time.at(params.fetch(:updated_at).to_i)
       )
       [file_quota, block_quota]
@@ -178,20 +234,24 @@ class Quota
   end
 
   def to_s
-    if @resource_type == 'file'
+    if @resource_type == 'file' && @type != :group
       msg = I18n.translate('dashboard.quota_file', used:      number_to_human(@total_usage).downcase,
                                                    available: number_to_human(@limit).downcase)
-      return msg unless shared?
-
-      msg + " #{I18n.translate('dashboard.quota_file_shared',
-                               used_exclusive: number_to_human(@user_usage).downcase)}"
-    elsif @resource_type == 'block'
+      return shared? ? "#{msg} #{I18n.translate('dashboard.quota_file_shared',
+                                                used_exclusive: number_to_human(@user_usage).downcase)}" : msg
+    elsif @resource_type == 'block' && @type != :group
       msg = I18n.translate('dashboard.quota_block', used:      number_to_human_size(@total_usage * BLOCK_SIZE),
                                                     available: number_to_human_size(@limit * BLOCK_SIZE))
-      return msg unless shared?
-
-      msg + " #{I18n.translate('dashboard.quota_block_shared',
-                               used_exclusive: number_to_human_size(@user_usage * BLOCK_SIZE))}"
+      return shared? ? "#{msg} #{I18n.translate('dashboard.quota_block_shared',
+                                                used_exclusive: number_to_human_size(@user_usage * BLOCK_SIZE))}" : msg
+    elsif @resource_type == 'file' && @type == :group
+      return I18n.translate('dashboard.quota_file_group', user:      @user,
+                                                          used:      number_to_human(@total_usage).downcase,
+                                                          available: number_to_human(@limit).downcase)
+    elsif @resource_type == 'block' && @type == :group
+      return I18n.translate('dashboard.quota_block_group', user:      @user,
+                                                           used:      number_to_human_size(@total_usage * BLOCK_SIZE),
+                                                           available: number_to_human_size(@limit * BLOCK_SIZE))
     end
   end
 end

@@ -332,8 +332,10 @@ en:
     quota_additional_message: Consider deleting or archiving files to free up disk space.
     quota_block: Using %{used} of quota %{available}
     quota_block_shared: "(%{used_exclusive} are yours)"
+    quota_block_group: Group %{user} using %{used} of quota %{available}
     quota_file: Using %{used} files of quota %{available} files
     quota_file_shared: "(%{used_exclusive} files are yours)"
+    quota_file_group: Group %{user} using %{used} files of quota %{available} files
     quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: Reload page to see updated quota. Quotas are updated every 5 minutes.
     quota_warning_prefix_html: Quota limit warning for
