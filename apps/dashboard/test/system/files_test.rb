@@ -129,9 +129,9 @@ class FilesTest < ApplicationSystemTestCase
       # with copying done, let's assert on the UI and the file system
       assert_selector 'span', text: '100% copy files', count: 1
       assert_copied_without_symlinks(File.join(dir, 'app'), Rails.root.join('app'),
-                                     'failed to recursively copy app dir')
+                   'failed to recursively copy app dir')
       assert_copied_without_symlinks(File.join(dir, 'config'), Rails.root.join('config'),
-                                     'failed to recursively copy config dir')
+                   'failed to recursively copy config dir')
       assert_equal '', `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip,
                    'failed to copy manifest.yml'
 
