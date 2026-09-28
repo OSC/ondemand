@@ -13,6 +13,16 @@ class FilesTest < ApplicationSystemTestCase
     Capybara.current_session.quit
   end
 
+  def assert_copied_without_symlinks(dest, src, msg = nil)
+    diff_output = `diff -rq #{dest} #{src}`.lines.reject { |line|
+      next false unless (m = line.match(/\AOnly in (.+): (.+)\s*\z/))
+
+      File.symlink?(File.join(m[1], m[2]))
+    }.join.strip
+
+    assert_equal '', diff_output, msg
+  end
+
   test "visiting files app doesn't raise js errors" do
     visit files_url(Rails.root.to_s)
 
@@ -118,10 +128,10 @@ class FilesTest < ApplicationSystemTestCase
 
       # with copying done, let's assert on the UI and the file system
       assert_selector 'span', text: '100% copy files', count: 1
-      assert_equal '', `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app')}`.strip,
-                   'failed to recursively copy app dir'
-      assert_equal '', `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config')}`.strip,
-                   'failed to recursively copy config dir'
+      assert_copied_without_symlinks(File.join(dir, 'app'), Rails.root.join('app'),
+                                     'failed to recursively copy app dir')
+      assert_copied_without_symlinks(File.join(dir, 'config'), Rails.root.join('config'),
+                                     'failed to recursively copy config dir')
       assert_equal '', `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip,
                    'failed to copy manifest.yml'
 
