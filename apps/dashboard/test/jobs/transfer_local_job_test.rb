@@ -117,13 +117,15 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
     walk = ->(path) {
       path = Pathname.new(path)
-      if path.file? || path.symlink?
+      if path.symlink?
+        nil
+      elsif path.file?
         files += 1
       elsif path.directory?
         if path.children.empty?
           empty_dirs += 1
         else
-          dirs_with_direct_children.add(path) if path.children.any? { |c| c.file? || c.symlink? }
+          dirs_with_direct_children.add(path) if path.children.any? { |c| c.file? && !c.symlink? }
           path.children.each { |c| walk.call(c) }
         end
       end
@@ -149,17 +151,27 @@ class TransferLocalJobTest < ActiveJob::TestCase
       num_paths = src_paths.map do |path|
         Dir["#{path}/**/*"].length
       end.sum
+      # symlinks are skipped during copy and do not update progress.
+      copied_paths = src_paths.map do |path|
+        Dir["#{path}/**/*"].count { |p| !File.symlink?(p) }
+      end.sum
 
       transfer = PosixTransfer.build(action: 'cp', files: input)
       assert_equal(num_paths, transfer.steps)
       # The difference here depends on the file traversal order, since some mkdir_p 
       # calls create more paths than others. See worst_case_update_calls for more info
-      transfer.expects(:percent=).times(num_paths..worst_case_update_calls(src_paths))
+      transfer.expects(:percent=).times(copied_paths..worst_case_update_calls(src_paths))
 
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
-      assert_equal '', `diff -r #{destdir} #{Rails.root.join('app')}`.strip
+      src_app = Rails.root.join('app')
+      diff_output = `diff -r #{destdir} #{src_app}`.lines.reject { |line|
+        next false unless (m = line.match(/\AOnly in (.+): (.+)\s*\z/))
+
+        File.symlink?(File.join(m[1], m[2]))
+      }.join.strip
+      assert_equal '', diff_output
     end
   end
 
@@ -208,7 +220,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       refute(Pathname.new("#{dir}/dest/src/link").exist?)
     end
   end
-  
+
   ################################################################################################
   # TODO: testing mv becomes difficult without clever mocking
   # would have to mock the object returned by File.stat(path1) and File.stat(path2)
