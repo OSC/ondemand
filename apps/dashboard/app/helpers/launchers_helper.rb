@@ -44,12 +44,7 @@ module LaunchersHelper
     attrib = SmartAttributes::AttributeFactory.build_auto_queues
     create_editable_widget(script_form_double, attrib)
   end
-
-  def bc_num_nodes_template
-    attrib = SmartAttributes::AttributeFactory.build_bc_num_nodes
-    create_editable_widget(script_form_double, attrib)
-  end
-
+  
   def auto_accounts_template
     attrib = SmartAttributes::AttributeFactory.build_auto_accounts
     create_editable_widget(script_form_double, attrib)

@@ -934,7 +934,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     click_on 'Add new option'
     select('Nodes', from:'add_new_field_select')
     click_on I18n.t('dashboard.add')
-    fill_in('launcher_bc_num_nodes', with: '3')
+    fill_in('launcher_auto_num_nodes', with: '3')
 
     # add auto_environment_variable
     add_auto_environment_variable(project_id, launcher_id)
@@ -986,7 +986,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal('/my_default_logfile.out', cache['auto_log_location'])
       assert_equal('1', cache['bc_num_hours'])
       assert_equal('2', cache['auto_cores'])
-      assert_equal('3', cache['bc_num_nodes'])
+      assert_equal('3', cache['auto_num_nodes'])
       assert_equal('default_value', cache['auto_environment_variable_SOME_VARIABLE'])
     end
   end
@@ -1011,7 +1011,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         'auto_log_location'                       => '/my_default_logfile.out',
         'bc_num_hours'                            => '1',
         'auto_cores'                              => '2',
-        'bc_num_nodes'                            => '3',
+        'auto_num_nodes'                          => '3',
         'auto_environment_variable_SOME_VARIABLE' => 'default_value'
       }
 
@@ -1047,7 +1047,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       fill_in('launcher_auto_log_location', with:'/my_chosen_logfile.out')
       fill_in('launcher_bc_num_hours', with: '4')
       fill_in('launcher_auto_cores', with: '5')
-      fill_in('launcher_bc_num_nodes', with: '6')
+      fill_in('launcher_auto_num_nodes', with: '6')
       fill_in('launcher_auto_environment_variable_SOME_VARIABLE', with: 'chosen_value')
       
       click_on I18n.t('dashboard.batch_connect_form_launch')
@@ -1062,7 +1062,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal('/my_chosen_logfile.out', cache['auto_log_location'])
       assert_equal('4', cache['bc_num_hours'])
       assert_equal('5', cache['auto_cores'])
-      assert_equal('6', cache['bc_num_nodes'])
+      assert_equal('6', cache['auto_num_nodes'])
       assert_equal('chosen_value', cache['auto_environment_variable_SOME_VARIABLE'])
     end
   end
@@ -1087,7 +1087,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         'auto_log_location'                       => '/my_chosen_logfile.out',
         'bc_num_hours'                            => '4',
         'auto_cores'                              => '5',
-        'bc_num_nodes'                            => '6',
+        'auto_num_nodes'                          => '6',
         'auto_environment_variable_SOME_VARIABLE' => 'chosen_value'
       }
 
@@ -1135,7 +1135,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       actual_new_options = page.all("##{new_field_id} option").map(&:value).to_set
       expected_new_options = [
-        'bc_num_hours', 'auto_queues', 'bc_num_nodes', 'auto_cores', 'auto_num_nodes',
+        'bc_num_hours', 'auto_queues', 'auto_num_nodes', 'auto_cores',
         'auto_accounts', 'auto_job_name', 'auto_environment_variable',
         'auto_log_location'
       ].to_set
