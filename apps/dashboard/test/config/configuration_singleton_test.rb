@@ -569,4 +569,110 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       refute ConfigurationSingleton.new.rails_env_production?
     end
   end
+
+  test "nsf_access_events_widget_enabled? is false when widget is not in dashboard layout" do
+    with_modified_env(no_config_env) do
+      cfg = ConfigurationSingleton.new
+      refute cfg.nsf_access_events_widget_enabled?
+      refute_includes cfg.connect_sources, 'support.access-ci.org'
+    end
+  end
+
+  test "nsf_access_events_widget_enabled? is true when widget is in dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_events'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_events_widget_enabled?
+      end
+    end
+  end
+
+  test "nsf_access_events_widget_enabled? is true when widget is in a profile dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'profiles' => {
+              'team1' => {
+                'dashboard_layout' => {
+                  'rows' => [
+                    { 'columns' => [{ 'width' => 12, 'widgets' => ['motd', 'nsf_access_events'] }] }
+                  ]
+                }
+              }
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_events_widget_enabled?
+      end
+    end
+  end
+
+  test "connect_sources includes nsf_access_events hostname when widget is enabled" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_events'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, :self
+        assert_includes sources, 'support.access-ci.org'
+        refute_includes sources, 'https://support.access-ci.org/api/2.1/events'
+      end
+    end
+  end
+
+  test "connect_sources uses configured nsf_access_events hostname" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({
+        OOD_CONFIG_D_DIRECTORY:      dir.to_s,
+        OOD_NSF_ACCESS_EVENTS_URL: 'https://events.example.org/api/2.1/events'
+      }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_events'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, 'events.example.org'
+        refute_includes sources, 'support.access-ci.org'
+      end
+    end
+  end
+
+  test "handles exception LoadError" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.write("#{dir}/bad_erb.yml", '<%- require "wont_find_this_library" -%>')
+        File.write("#{dir}/good.yml", 'csp_enabled: true')
+
+        cfg = ConfigurationSingleton.new
+        refute(cfg.nil?)
+        assert(cfg.csp_enabled)
+        assert(cfg.csp_enabled?)
+      end
+    end
+  end
 end

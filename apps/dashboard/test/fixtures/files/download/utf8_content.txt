@@ -1,0 +1,5 @@
+Hello — UTF-8 content test
+日本語のテキストです。
+Àccented çharacters: café, résumé, naïve
+Emoji test: 🐶🐱🚀✨
+Math symbols: 0.123 × 1045−8140 ÷ 2 ≈ π

@@ -7,6 +7,7 @@
   data-uppy-locale="<%= I18n.t('dashboard.uppy', :default => {}).to_json %>"
   data-bc-dynamic-js="<%= Configuration.bc_dynamic_js? %>"
   data-xdmod-url="<%= Configuration.xdmod_host %>"
+  data-nsf-access-events-url="<%= Configuration.nsf_access_events_url %>"
   data-base-analytics-path="<%= analytics_path('delme').gsub(/[\/]*delme[\/]*/,'') %>"
   data-bc-poll-delay="<%= Configuration.bc_sessions_poll_delay %>"
   data-bc-index-url="<%= batch_connect_sessions_path %>"

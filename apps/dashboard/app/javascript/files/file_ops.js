@@ -439,13 +439,21 @@ class FileOps {
     // so this just repeats the status quo
   
     let filename = $($.parseHTML(file.name)).text(),
-        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?download=${Date.now().toString()}`,
+        baseUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}`,
+        downloadUrl = `${baseUrl}?download=${Date.now().toString()}`,
         iframe = document.createElement('iframe'),
         TIME = 30 * 1000;
   
     iframe.setAttribute('class', 'd-none');
     iframe.setAttribute('src', downloadUrl);
-  
+    iframe.onload = () => {
+      const finalUrl = iframe.contentWindow.location.href;
+      if (finalUrl !== downloadUrl) {
+        window.location.href = baseUrl;
+		document.body.removeChild(iframe);
+      }
+    };
+
     document.body.appendChild(iframe);
   
     setTimeout(function() {

@@ -8,13 +8,21 @@ fr-CA:
         required: "%{attribute} est requis"
         used: "%{attribute} est déjà utilisé"
   dashboard:
+    account: Compte
+    actions: Actes
+    active_jobs: Offres d'emploi actives
     active_jobs_close_details: Fermer le panneau de détails étendus.
+    active_jobs_ganlia_CPU: Image des ganglions pour le processeur.
+    active_jobs_ganlia_load: Image Ganglia pour les moyennes de charge système.
+    active_jobs_ganlia_mem: Image des ganglions pour l'utilisation de la mémoire.
+    active_jobs_ganlia_network: Image des ganglions pour utilisation en réseau.
     active_sessions_caption_html: <a href="%{all_sessions_url}"> voir tout (%{number_of_sessions})</a>
     active_sessions_title: Sessions interactives actives
     add: Ajouter
     all_apps_table_app_column: Nom
     all_apps_table_category_column: Catégorie
     all_apps_table_sub_category_column: Sous-catégorie
+    all_clusters: Tous les groupes
     announcements_dismissible_button: OK
     announcements_required_button: Accepter
     apps_setup_failure_html: |
@@ -36,6 +44,7 @@ fr-CA:
     back: Retour
     balance_additional_message: Envisagez de demander %{balanace_units} supplémentaires
     balance_message: "%{units_balance} est %{value}"
+    balance_no_warnings: Aucun projet n'est dans la zone d'alerte de solde de %{threshold} jours.
     balance_reload_message_html: 'Rechargez la page pour voir le solde mis à jour. Les soldes sont mis à jour quotidiennement.<br>Dernière mise à jour : %{last_update}'
     balance_warning_prefix_html: "%{units_balance} avertissement pour"
     batch_connect_apps_menu_title: Applications interactives
@@ -140,15 +149,20 @@ fr-CA:
     close: Fermer
     close_alert: Fermer cette alerte.
     close_notice: Fermer cet avis.
+    cluster: Regrouper
+    cpu_report: Rapport du processeur + %{node}
     custom_pages:
       invalid: 'Code de page invalide : %{page}. Cette page n’a pas été configurée'
     date: Date
     delete: Supprimer
+    detailed_metrics: Mesures détaillées
+    details: Détails
     development_apps_caption: Application bac à sable
     directory: Répertoire
     edit: Modifier
     file: Fichier
     file_quotas: Quotas de fichiers
+    files: Fichiers
     files_directory_download_error_modal_title: Répertoire trop volumineux à télécharger
     files_directory_download_unauthorized: Vous ne pouvez télécharger qu’un répertoire au format zip si vous y avez les droits de lecture et d’exécution
     files_directory_size_calculation_error: Délai dépassé lors de la détermination de la taille du répertoire.
@@ -169,7 +183,9 @@ fr-CA:
     files_shell_dropdown: Sélectionner le cluster à ouvrir dans le terminal
     files_title: Navigation de fichiers
     home_directory: Répertoire Personnel
+    id: IDENTIFIANT
     import: Importer
+    job: Travail
     job_info: Informations sur le travail
     jobs_create_blank_project: Créer un nouveau projet
     jobs_create_blank_workflow: Nouveau flux de travail
@@ -251,12 +267,15 @@ fr-CA:
     jobs_workflow_sync_key_help: Lorsqu'il est activé, chaque lanceur dans ce flux de travail reçoit la même variable d'environnement <code>OOD_WORKFLOW_SYNC_KEY</code> (un jeton aléatoire unique à chaque exécution de flux de travail). Utile pour générer des noms de fichiers synchronisés, des fichiers de verrouillage ou des identifiants partagés entre les tâches dépendantes.
     jobs_workflows: Flux de travail
     launch: Lancer
+    load_report: Rapport de chargement + %{node}
     logo_alt_text: Bienvenue dans Open OnDemand
     maximum: Maximum
+    mem_report: Rapport de mémoire + %{node}
     minimum: Minimum
     mode: Mode
     module_browser_last_updated: 'Dernière mise à jour : %{last_updated}'
     module_browser_title: Navigateur de modules
+    motd_default_md: 'Le développement d''Open OnDemand est soutenu par la National Science Foundation (NSF) grâce aux subventions n° 1534949 et n° 1835725. Pour en savoir plus ou participer : - Discours (https://discourse.openondemand.org/) - Dépôt Open OnDemand (https://github.com/OSC/ondemand) - Dépôt ood-core (https://github.com/OSC/ood_core) - Documentation (https://osc.github.io/ood-documentation/latest/).'
     motd_erb_render_error: 'Le MOTD n’a pas été analysé ou rendu correctement : %{error_message}'
     motd_title: Message du jour
     name: Nom
@@ -277,10 +296,13 @@ fr-CA:
     nav_restart_server: Redémarrer le serveur web
     nav_sessions: Mes sessions interactives
     nav_user: Connecté en tant que %{username}
+    network_report: Rapport réseau + %{node}
+    node: Noeud
     not_grouped: Autres applications
     nsf_access_events: Événements d'accès NSF
     ok: OK
     opens_in_new_tab: s'ouvre dans un nouvel onglet
+    output_location: 'Emplacement de sortie :'
     owner: Propriétaire
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -296,6 +318,7 @@ fr-CA:
     project_directory: Répertoire du projet
     project_zip_error_message: 'Erreur lors de la création du fichier ZIP : %{error}'
     project_zip_success_message: 'SUCCÈS : project.zip a été créé dans votre répertoire de projet.'
+    queue: File d'attente
     quota_additional_message: Envisagez de supprimer ou d’archiver des fichiers pour libérer de l’espace disque.
     quota_block: Utilisation de %{used} sur quota %{available}
     quota_block_shared: "(%{used_exclusive} vous appartiennent)"
@@ -336,7 +359,9 @@ fr-CA:
     skip_navigation: Ignorer la navigation
     soft_tabs: Tabulations souples
     soft_tabs_info: Les tabulations souples sont des espaces dans le fichier au lieu de véritables caractères de tabulation.
+    status: Statut
     submit: Soumettre
+    submit_args: 'Soumettre les arguments :'
     support_ticket:
       creation_success: 'Courriel de billet de soutien envoyé à : %{to}'
       generic_error: 'Erreur lors du traitement de votre requête : %{error}'
@@ -361,6 +386,7 @@ fr-CA:
     type: Type
     unknown: Inconnu
     uppy: Uppy
+    user: Utilisateur
     user_configuration:
       support_ticket_error: support_ticket est mal configuré. Les sections « email » ou « rt_api » sont requises dans le YAML de configuration.
     welcome_html: |

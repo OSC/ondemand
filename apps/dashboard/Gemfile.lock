@@ -114,10 +114,10 @@ GEM
     crass (1.0.7)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
-    dalli (5.1.0)
+    dalli (5.1.1)
       logger
     date (3.5.1)
-    domain_name (0.6.20260907)
+    domain_name (0.6.20260921)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -128,19 +128,10 @@ GEM
     drb (2.2.3)
     erb (6.0.7)
     erubi (1.13.1)
-    event_stream_parser (1.0.0)
     excon (1.7.1)
       logger
     execjs (2.10.2)
       json (>= 2)
-    faraday (2.14.3)
-      faraday-net_http (>= 2.0, < 3.5)
-      json
-      logger
-    faraday-multipart (1.2.0)
-      multipart-post (~> 2.0)
-    faraday-net_http (3.4.4)
-      net-http (~> 0.5)
     ffi (1.16.3)
     fog-core (2.6.0)
       builder
@@ -211,23 +202,20 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0701)
+    mime-types-data (3.2026.0922)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.27.0)
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
     multi_json (1.21.2)
-    multipart-post (2.4.1)
     mustermann (3.1.1)
-    net-http (0.9.1)
-      uri (>= 0.11.1)
     net-imap (0.6.7)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.3.0)
+    net-protocol (0.4.0)
       timeout
     net-smtp (0.5.1)
       net-protocol
@@ -322,7 +310,7 @@ GEM
       rbs (>= 4.0.0)
       tsort
     redcarpet (3.6.1)
-    regexp_parser (2.12.0)
+    regexp_parser (2.13.0)
     reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -335,10 +323,6 @@ GEM
     rexml (3.4.4)
     rss (0.3.3)
       rexml
-    ruby-openai (8.3.0)
-      event_stream_parser (>= 0.3.0, < 2.0.0)
-      faraday (>= 1)
-      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
@@ -385,10 +369,9 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (3.2.0)
-      unicode-emoji (~> 4.1)
-    unicode-emoji (4.2.0)
-    uri (1.1.1)
+    unicode-display_width (3.3.0)
+      unicode-emoji (~> 4.3)
+    unicode-emoji (4.3.0)
     useragent (0.16.11)
     webrick (1.9.2)
     websocket (1.2.11)
@@ -438,7 +421,6 @@ DEPENDENCIES
   redcarpet (~> 3.3)
   rest-client (~> 2.0)
   rss (~> 0.2)
-  ruby-openai
   sdoc
   selenium-webdriver (= 4.26.0)
   sinatra

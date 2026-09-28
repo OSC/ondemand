@@ -1,9 +1,8 @@
+import { nsfAccessEventsUrl } from './config';
+
 document.addEventListener('DOMContentLoaded', () => {
   listEvents();
 });
-
-// TODO: make this configurable
-const eventsAPI = "https://support.access-ci.org/api/2.1/events";
 
 function listEvents() {
   getEvents()
@@ -39,7 +38,7 @@ function eventsContainer() {
 }
 
 function getEvents() {
-  return fetch(eventsAPI, {
+  return fetch(nsfAccessEventsUrl(), {
             headers: {
               'Cache-Control': 'max-age=604800'
             }

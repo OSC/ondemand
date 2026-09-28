@@ -296,7 +296,7 @@ class FilesController < ApplicationController
   end
 
   def next_valid
-    next_valid = @path.path.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
+    next_valid = @path.parent.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
     present_path = next_valid.nil? ? Dir.home : next_valid
     AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home
   end

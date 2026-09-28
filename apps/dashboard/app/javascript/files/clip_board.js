@@ -18,6 +18,9 @@ jQuery(function () {
   var clipBoard = new ClipBoard();
 
   $("#copy-move-btn").on("click", function () {
+    // Default to copy unless a cut overrides this.
+    localStorage.setItem('filesClipboardAction', 'copy');
+    
     let table = $(CONTENTID).DataTable();
     let selection = table.rows({ selected: true }).data();
 
@@ -29,6 +32,37 @@ jQuery(function () {
 
   });
 
+  $(document).on('keydown', function (e) {
+    if (!(e.ctrlKey || e.metaKey)) {
+      return;
+    }
+
+    // Keep browser copy/paste in text fields; allow shortcuts on file-selection checkboxes.
+    const tag = e.target.tagName ? e.target.tagName.toLowerCase() : '';
+    const type = e.target.type ? e.target.type.toLowerCase() : '';
+    if (e.target.isContentEditable || tag === 'textarea' || tag === 'select' ||
+        (tag === 'input' && type !== 'checkbox')) {
+      return;
+    }
+
+    const key = e.key.toLowerCase();
+    if (key === 'c' || key === 'x') {
+      const selection = $(CONTENTID).DataTable().rows({ selected: true }).data();
+      if (selection.length > 0) {
+        e.preventDefault();
+        $("#copy-move-btn").trigger('click');
+        localStorage.setItem('filesClipboardAction', key === 'x' ? 'move' : 'copy');
+      }
+    } else if (key === 'v') {
+      const action = localStorage.getItem('filesClipboardAction') || 'copy';
+      const buttonId = action === 'move' ? 'clipboard-move-to-dir' : 'clipboard-copy-to-dir';
+      const button = document.getElementById(buttonId);
+      if (button) {
+        e.preventDefault();
+        button.click();
+      }
+    }
+  });
 
   $(CONTENTID).on('success', function (e) {
     $(e.trigger).tooltip({ title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom' }).tooltip('show');
@@ -77,6 +111,7 @@ class ClipBoard {
 
   clearClipboard() {
     localStorage.removeItem('filesClipboard');
+    localStorage.removeItem('filesClipboardAction');
   }
 
   updateClipboardFromSelection(selection) {

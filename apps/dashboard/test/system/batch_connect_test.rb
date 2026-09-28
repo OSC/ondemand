@@ -918,6 +918,70 @@ class BatchConnectTest < ApplicationSystemTestCase
     data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
   end
 
+  test 'hiding when form element names have a shared prefix' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - cluster
+        - cluster_file_system
+        - checkbox_hide_cluster
+        - checkbox_hide_cluster_file_system
+      attributes:
+        cluster:
+          widget: 'text_area'
+        cluster_file_system:
+          widget: 'text_area'
+        checkbox_hide_cluster:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-cluster-when-checked: true
+        checkbox_hide_cluster_file_system:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-cluster-file-system-when-checked: true
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      refute(find("##{bc_ele_id("checkbox_hide_cluster")}").checked?)
+      refute(find("##{bc_ele_id("checkbox_hide_cluster_file_system")}").checked?)
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
+
+      # check the checkbox, and 'cluster' is hidden
+      check(bc_ele_id("checkbox_hide_cluster"))
+      check_visibility("cluster", true)
+      check_visibility("cluster_file_system", false)
+
+      # un-check the checkbox, and 'cluster' is back to being visible
+      uncheck(bc_ele_id("checkbox_hide_cluster"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
+
+      # check the checkbox, and 'cluster_file_system' is hidden
+      check(bc_ele_id("checkbox_hide_cluster_file_system"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", true)
+
+      # un-check the checkbox, and 'cluster_file_system' is back to being visible
+      uncheck(bc_ele_id("checkbox_hide_cluster_file_system"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
+    end
+  end
+
   def basic_default_hide_check_hidden(invert = false)
     if invert
       assert_selector("##{bc_ele_id('gpus')}")
@@ -2743,6 +2807,26 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('pzs1124', find_value('auto_accounts'))
       assert_equal('owens-default', find_value('auto_qos'))
       assert_equal('batch', find_value('auto_queues'))
+    end
+  end
+
+  test 'auto_cores are cluster aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        form:
+          - auto_batch_clusters
+          - auto_cores
+      HEREDOC
+      make_bc_app(dir, form, scontrol: false, sacctmgr: false)
+      stub_sinfo
+      
+      visit new_batch_connect_session_context_url('sys/app')
+      
+      assert_equal('oakley', find_value('auto_batch_clusters'))
+      assert_equal(80, find_max('auto_cores'))
+
+      select('owens', from: bc_ele_id('auto_batch_clusters'))
+      assert_equal(48, find_max('auto_cores'))
     end
   end
 

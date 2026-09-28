@@ -8,7 +8,7 @@ describe 'Pun Pre Hook' do
   end
 
   before(:all) do
-    on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
+    clean_nginx
     on hosts, 'mkdir -p /opt/hooks'
     upload_portal_config('portal_with_prehook.yml')
     update_ood_portal
@@ -17,8 +17,13 @@ describe 'Pun Pre Hook' do
   end
 
   after do
-    browser.close
-    on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
+    if @browser
+      begin
+        @browser.close
+      ensure
+        clean_nginx
+      end
+    end
   end
 
   context 'pre hook crash' do
@@ -28,8 +33,6 @@ describe 'Pun Pre Hook' do
 
     it 'does not crash login when pre hook crashes' do
       browser_login(browser)
-      browser.goto ctr_base_url
-      sleep 1 # give it time to login
       expect(browser.title).to eq('Dashboard - Open OnDemand')
     end
 
@@ -45,7 +48,6 @@ describe 'Pun Pre Hook' do
 
     it 'does not crash login when pre hook is misconfigured' do
       browser_login(browser)
-      browser.goto ctr_base_url
       expect(browser.title).to eq('Dashboard - Open OnDemand')
     end
   end
@@ -57,7 +59,6 @@ describe 'Pun Pre Hook' do
 
     it 'does not crash login when pre hook crashes' do
       browser_login(browser)
-      browser.goto ctr_base_url
       expect(browser.title).to eq('Dashboard - Open OnDemand')
     end
 

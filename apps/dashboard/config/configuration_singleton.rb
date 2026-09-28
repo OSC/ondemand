@@ -79,7 +79,8 @@ class ConfigurationSingleton
       :project_template_dir           => "#{config_root}/projects",
       :rclone_extra_config            => nil,
       :default_profile                => nil,
-      :plugins_directory              => '/etc/ood/config/plugins'
+      :plugins_directory              => '/etc/ood/config/plugins',
+      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
     }.freeze
   end
 
@@ -93,7 +94,7 @@ class ConfigurationSingleton
       :download_dir_timeout_seconds => 5,
       :download_dir_max             => 10_737_418_240, # 10*1024*1024*1024 bytes
       :file_editor_max_size         => 12_582_912,     # 12*1024*1024 bytes
-      :file_download_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
+      :download_file_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
       :project_size_timeout         => 15,
       :novnc_default_compression    => 6,
       :novnc_default_quality        => 2,
@@ -431,8 +432,21 @@ class ConfigurationSingleton
     sources = [:self]
     sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
     sources << xdmod_host if xdmod_integration_enabled?
+    sources << nsf_access_events_host if nsf_access_events_widget_enabled? && nsf_access_events_host.present?
 
     sources
+  end
+
+  # Whether the nsf_access_events widget is configured in any dashboard layout.
+  def nsf_access_events_widget_enabled?
+    return false if nsf_access_events_url.blank?
+
+    layouts = [config[:dashboard_layout]]
+    config.fetch(:profiles, {}).each_value do |profile|
+      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
+    end
+
+    layouts.compact.any? { |layout| layout_includes_widget?(layout, 'nsf_access_events') }
   end
 
   def rails_env_production?
@@ -451,6 +465,26 @@ class ConfigurationSingleton
     app_dir.directory? && app_dir.join('manifest.yml').readable?
   end
 
+  def nsf_access_events_host
+    URI.parse(nsf_access_events_url).host
+  rescue URI::InvalidURIError
+    nil
+  end
+
+  def layout_includes_widget?(layout, widget_name)
+    return false unless layout.is_a?(Hash)
+
+    Array.wrap(layout[:rows]).any? do |row|
+      next false unless row.is_a?(Hash)
+
+      Array.wrap(row[:columns]).any? do |column|
+        next false unless column.is_a?(Hash)
+
+        Array.wrap(column[:widgets]).map(&:to_s).include?(widget_name.to_s)
+      end
+    end
+  end
+  
   def read_config
     files = Pathname.glob(config_directory.join("*.{yml,yaml,yml.erb,yaml.erb}"))
     files.sort.select do |f|
@@ -461,7 +495,7 @@ class ConfigurationSingleton
         content = ERB.new(f.read, trim_mode: "-").result(binding)
         yml = YAML.safe_load(content, aliases: true) || {}
         conf.deep_merge!(yml.deep_symbolize_keys)
-      rescue => e
+      rescue Exception => e
         $stderr.puts("Can't read or parse #{f} because of error #{e}")
       end
     end

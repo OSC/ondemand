@@ -8,13 +8,21 @@ ja_JP:
         required: "%{attribute}は必須です"
         used: "%{attribute}はすでに使用されています"
   dashboard:
+    account: アカウント
+    actions: 行動
+    active_jobs: 募集中の求人
     active_jobs_close_details: 詳細パネルを閉じる。
+    active_jobs_ganlia_CPU: CPU用の神経節画像。
+    active_jobs_ganlia_load: システム負荷平均を示す神経節画像。
+    active_jobs_ganlia_mem: メモリ使用量に関する神経節の画像。
+    active_jobs_ganlia_network: ネットワーク利用のための神経節画像。
     active_sessions_caption_html: <a href="%{all_sessions_url}"> すべて表示 (%{number_of_sessions})</a>
     active_sessions_title: アクティブなインタラクティブセッション
     add: 追加
     all_apps_table_app_column: 名前
     all_apps_table_category_column: カテゴリ
     all_apps_table_sub_category_column: サブカテゴリ
+    all_clusters: すべてのクラスター
     announcements_dismissible_button: OK
     announcements_required_button: 受け入れる
     apps_setup_failure_html: |
@@ -34,6 +42,7 @@ ja_JP:
     back: 戻る
     balance_additional_message: 追加の%{balanace_units}をリクエストすることを検討してください
     balance_message: "%{units_balance}は%{value}です"
+    balance_no_warnings: "%{threshold}日残高警告しきい値に該当するプロジェクトはありません。"
     balance_reload_message_html: ページを再読み込みして、更新された残高を確認してください。残高は毎日更新されます。<br>最終更新は %{last_update} でした。
     balance_warning_prefix_html: "%{units_balance} の警告"
     batch_connect_apps_menu_title: インタラクティブアプリ
@@ -137,15 +146,20 @@ ja_JP:
     close: 閉じる
     close_alert: このアラートを閉じる。
     close_notice: この通知を閉じる。
+    cluster: クラスタ
+    cpu_report: CPUレポート + %{node}
     custom_pages:
       invalid: 無効なページコード：%{page}。このページは構成されていません
     date: 日付
     delete: 削除
+    detailed_metrics: 詳細な指標
+    details: 詳細
     development_apps_caption: サンドボックスアプリ
     directory: ディレクトリ
     edit: 編集
     file: ファイル
     file_quotas: ファイルクォータ
+    files: ファイル
     files_directory_download_error_modal_title: ダウンロードするにはディレクトリが大きすぎます
     files_directory_download_unauthorized: 読み取りおよび実行アクセス権のあるファイルまたはディレクトリのみをダウンロードできます
     files_directory_size_calculation_error: ディレクトリサイズを決定しようとしてタイムアウトしました。
@@ -166,7 +180,9 @@ ja_JP:
     files_shell_dropdown: ターミナルで開くクラスターを選択
     files_title: ファイルブラウジング
     home_directory: ホームディレクトリ
+    id: ID
     import: インポート
+    job: 仕事
     job_info: ジョブ情報
     jobs_create_blank_project: 新しいプロジェクトを作成
     jobs_create_blank_workflow: 新しいワークフロー
@@ -248,12 +264,23 @@ ja_JP:
     jobs_workflow_sync_key_help: 有効にすると、このワークフロー内のすべてのランチャーは同じ <code>OOD_WORKFLOW_SYNC_KEY</code> 環境変数（各ワークフロー実行に固有のランダムトークン）を受け取ります。これは、同期されたファイル名、ロックファイル、または依存ジョブ間で共有される識別子を生成するのに便利です。
     jobs_workflows: ワークフロー
     launch: 起動
+    load_report: ロードレポート + %{node}
     logo_alt_text: Open OnDemandへようこそ
     maximum: 最大
+    mem_report: メモリレポート + %{node}
     minimum: 最小
     mode: モード
     module_browser_last_updated: '最終更新日: %{last_updated}'
     module_browser_title: モジュールブラウザ
+    motd_default_md: |
+      Open OnDemand の開発は、[米国国立科学財団](https://www.nsf.gov/)
+      の助成金番号 [1534949](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1534949) および
+      [1835725](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1835725) によって支援されています。
+       詳細を確認したり、参加したりするには、以下をご覧ください。
+       - [Discourse](https://discourse.openondemand.org/)
+      - [Open OnDemand リポジトリ](https://github.com/OSC/ondemand)
+      - [ood-core リポジトリ](https://github.com/OSC/ood_core)
+      - [ドキュメント](https://osc.github.io/ood-documentation/latest/)
     motd_erb_render_error: 'MOTD が正しく解析またはレンダリングされませんでした: %{error_message}'
     motd_title: 今日のメッセージ
     name: 名前
@@ -274,10 +301,13 @@ ja_JP:
     nav_restart_server: Web サーバーを再起動
     nav_sessions: 私のインタラクティブセッション
     nav_user: "%{username} としてログインしています"
+    network_report: ネットワークレポート + %{node}
+    node: ノード
     not_grouped: その他のアプリ
     nsf_access_events: NSF ACCESS イベント
     ok: OK
     opens_in_new_tab: 新しいタブで開く
+    output_location: '出力場所:'
     owner: 所有者
     page_title: "%{page} - %{site}"
     page_title_with_dir: "%{page} - %{site} - %{dir}"
@@ -293,6 +323,7 @@ ja_JP:
     project_directory: プロジェクトディレクトリ
     project_zip_error_message: 'ZIP ファイルの作成中にエラーが発生しました: %{error}'
     project_zip_success_message: '成功: project.zip がプロジェクトディレクトリに作成されました。'
+    queue: 列
     quota_additional_message: ディスクスペースを空けるためにファイルを削除またはアーカイブすることを検討してください。
     quota_block: クォータ %{available} のうち %{used} を使用中
     quota_block_shared: "(%{used_exclusive} はあなたのものです)"
@@ -333,7 +364,9 @@ ja_JP:
     skip_navigation: ナビゲーションをスキップ
     soft_tabs: ソフトタブ
     soft_tabs_info: ソフトタブはファイル内の実際のタブ文字の代わりにスペースです。
+    status: 状態
     submit: 送信
+    submit_args: '引数を送信します:'
     support_ticket:
       creation_success: 'サポートチケットのメールが送信されました: %{to}'
       generic_error: 'リクエストの処理中にエラーが発生しました: %{error}'
@@ -358,6 +391,7 @@ ja_JP:
     type: タイプ
     unknown: 不明
     uppy: Uppy
+    user: ユーザー
     user_configuration:
       support_ticket_error: support_ticketが誤って構成されています。設定YAMLにバックエンド実装を追加してください。
     welcome_html: |
