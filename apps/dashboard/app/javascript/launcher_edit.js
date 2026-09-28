@@ -24,7 +24,7 @@ const newFieldData = {
     help: "The destination of the job's log output."
   },
   auto_num_nodes: {
-    label: 'Auto Nodes',
+    label: 'Nodes',
     help: 'How many nodes the job will run on.'
   },
   auto_environment_variable: {
@@ -32,8 +32,8 @@ const newFieldData = {
     help: 'Add an environment variable.'
   },
   auto_cores: {
-    label: 'Nodes',
-    help: 'How many nodes the job will run on.'
+    label: 'Cores',
+    help: 'How many cores the job will run on.'
   }
 }
 
