@@ -16,6 +16,21 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Fix variable name for cleaning Nginx environment (#5817)\
+Add tests for auto_batch_clusters setting auto_cores (#5783)\
+move to use google translate for missing-translations (#5811)\
+Fix accessibility tests with async script execution (#5815)\
+Fix file download limiting (#5835)\
+Add tests for GET files API with UTF-8 files (#5764)\
+Add dynamic bc test for shared prefix (#5146)\
+Rescue Exceptions when loading configs (#5827)\
+Add Ctrl+C and Ctrl+V shortcuts to FileExplorer (#5789)\
+lint a random file (#5826)\
+Make NSF events URL configurable (#5798)\
+Fix FilesTest race with asynchronous file removal (#5816)\
+Update Changelog (#5818)\
+refactor PosixFile.num_files to use ruby instead of find (#5795)\
+update dependencies (#5819)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
