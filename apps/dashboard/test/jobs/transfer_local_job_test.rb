@@ -192,6 +192,23 @@ class TransferLocalJobTest < ActiveJob::TestCase
     end
   end
 
+  test 'skips nested symlinks when copying a directory' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      real_file = "#{dir}/src/real_file"
+      FileUtils.touch(real_file)
+      File.symlink(real_file, "#{dir}/src/link")
+
+      transfer = PosixTransfer.build(action: 'cp', files: { "#{dir}/src" => "#{dir}/dest/src" })
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+      transfer.perform
+
+      assert_equal(0, transfer.exit_status, transfer.errors.full_messages.join('. '))
+      assert(Pathname.new("#{dir}/dest/src/real_file").file?)
+      refute(Pathname.new("#{dir}/dest/src/link").exist?)
+    end
+  end
+  
   ################################################################################################
   # TODO: testing mv becomes difficult without clever mocking
   # would have to mock the object returned by File.stat(path1) and File.stat(path2)
