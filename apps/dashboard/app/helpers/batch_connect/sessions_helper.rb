@@ -179,10 +179,10 @@ module BatchConnect::SessionsHelper
     "#{base}#password=#{ERB::Util.url_encode(password)}"
   end
 
-  # The Selkies client behind the portal's reverse proxy, carrying the session
-  # token its page and WebSocket authenticate with
+  # The Selkies client behind the portal's reverse proxy, with the session token
+  # in the fragment, as noVNC's password is, so no request line carries it
   def selkies_link(connect)
-    "/rnode/#{connect.host}/#{connect.port}/?token=#{ERB::Util.url_encode(connect.password)}"
+    "/rnode/#{connect.host}/#{connect.port}/#token=#{ERB::Util.url_encode(connect.password)}"
   end
 
   def connection_tabs(id, tabs)
