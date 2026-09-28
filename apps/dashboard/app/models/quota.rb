@@ -51,14 +51,12 @@ class Quota
 
     # Parse JSON object using version 1 formatting
     def build_quotas(quota_hashes, updated_at, user)
-      q = []
-      quota_hashes.each do |quota|
+      quota_hashes.filter_map do |quota|
         if user == quota['user']
-          q += create_both_quota_types(quota.merge('updated_at' => quota.fetch('timestamp',
-                                                                               updated_at)))
+          create_both_quota_types(quota.merge('updated_at' => quota.fetch('timestamp',
+                                                                           updated_at)))
         end
-      end
-      q
+      end.flatten
     end
 
     def create_both_quota_types(params)
@@ -97,16 +95,14 @@ class Quota
     def build_quotas_other(quota_hashes, updated_at, user_groups)
       return [] unless quota_hashes&.is_a?(Array) && user_groups.any?
 
-      q = []
-      quota_hashes.each do |quota|
+      quota_hashes.filter_map do |quota|
         group_name = quota['group']
         # Only include quotas for groups the user belongs to
         if group_name && user_groups.include?(group_name)
-          q += create_group_quota(quota.merge('updated_at' => quota.fetch('timestamp',
-                                                                          updated_at)))
+          create_group_quota(quota.merge('updated_at' => quota.fetch('timestamp',
+                                                                     updated_at)))
         end
-      end
-      q
+      end.flatten
     end
 
     # Create file and block quota instances for a group quota

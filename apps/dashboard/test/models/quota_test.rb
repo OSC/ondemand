@@ -121,22 +121,22 @@ class QuotaTest < ActiveSupport::TestCase
     assert_equal 2, group_quotas.count, "Should have 2 group quotas (1 file + 1 block for efranz_group)"
 
     # Verify the efranz_group quota from fixtures
-    efranz_group_file_quota = group_quotas.find { |q| q.path.to_s == "/users/PAN0014" && q.resource_type == 'file' }
-    assert efranz_group_file_quota, "Failed to find group quota for efranz_group and path /users/PAN0014"
-    assert_equal :group, efranz_group_file_quota.type
-    assert_equal 10000, efranz_group_file_quota.total_usage
-    assert_equal 10000, efranz_group_file_quota.user_usage
-    assert_equal 500000, efranz_group_file_quota.limit
-    assert efranz_group_file_quota.shared?
-    assert_equal "efranz_group", efranz_group_file_quota.user
+    group_file_quota = group_quotas.find { |q| q.path.to_s == "/users/PAN0014" && q.resource_type == 'file' }
+    assert group_file_quota, "Failed to find group quota for efranz_group and path /users/PAN0014"
+    assert_equal :group, group_file_quota.type
+    assert_equal 10000, group_file_quota.total_usage
+    assert_equal 10000, group_file_quota.user_usage
+    assert_equal 500000, group_file_quota.limit
+    assert group_file_quota.shared?
+    assert_equal "efranz_group", group_file_quota.user
 
-    efranz_group_block_quota = group_quotas.find { |q| q.path.to_s == "/users/PAN0014" && q.resource_type == 'block' }
-    assert efranz_group_block_quota, "Failed to find group block quota for efranz_group and path /users/PAN0014"
-    assert_equal :group, efranz_group_block_quota.type
-    assert_equal 2500000, efranz_group_block_quota.total_usage
-    assert_equal 2500000, efranz_group_block_quota.user_usage
-    assert_equal 5368709120, efranz_group_block_quota.limit
-    assert efranz_group_block_quota.shared?
+    group_block_quota = group_quotas.find { |q| q.path.to_s == "/users/PAN0014" && q.resource_type == 'block' }
+    assert group_block_quota, "Failed to find group block quota for efranz_group and path /users/PAN0014"
+    assert_equal :group, group_block_quota.type
+    assert_equal 2500000, group_block_quota.total_usage
+    assert_equal 2500000, group_block_quota.user_usage
+    assert_equal 5368709120, group_block_quota.limit
+    assert group_block_quota.shared?
   end
 
   test "loading fixtures from URL includes group quotas" do
@@ -157,11 +157,11 @@ class QuotaTest < ActiveSupport::TestCase
     assert_equal 2, group_quotas.count, "Should have 2 group quotas (1 file + 1 block for efranz_group)"
 
     # Verify the efranz_group quota from fixtures
-    efranz_group_file_quota = group_quotas.find { |q| q.path.to_s == "/users/PAN0014" && q.resource_type == 'file' }
-    assert efranz_group_file_quota, "Failed to find group quota for efranz_group and path /users/PAN0014"
-    assert_equal :group, efranz_group_file_quota.type
-    assert_equal 10000, efranz_group_file_quota.total_usage
-    assert_equal 500000, efranz_group_file_quota.limit
+    group_file_quota = group_quotas.find { |q| q.path.to_s == "/users/PAN0014" && q.resource_type == 'file' }
+    assert group_file_quota, "Failed to find group quota for efranz_group and path /users/PAN0014"
+    assert_equal :group, group_file_quota.type
+    assert_equal 10000, group_file_quota.total_usage
+    assert_equal 500000, group_file_quota.limit
   end
 
   test "handle error loading URL" do
@@ -176,17 +176,15 @@ class QuotaTest < ActiveSupport::TestCase
 
     # per quota timestamp
     quotas = Quota.find(quota_file, 'djohnson', ['djohnson'])
-    # djohnson's user quotas (file and block) should have per-quota timestamp
-    djohnson_quotas = quotas.select { |q| q.user == 'djohnson' }
-    assert_equal 2, djohnson_quotas.count, "Should have 2 quotas (file and block) for djohnson"
-    assert_equal 1546456000, djohnson_quotas.first.updated_at.to_i
+    assert_equal 2, quotas.count, "Should have 2 quotas (file and block) for djohnson"
+    assert_equal 1546456000, quotas.first.updated_at.to_i
 
     # global timestamp
     quotas = Quota.find(quota_file, 'efranz', ['efranz', 'efranz_group'])
     # efranz's user quotas should use global timestamp
-    efranz_user_quotas = quotas.select { |q| q.user == 'efranz' && q.type == :user }
-    assert efranz_user_quotas.any?
-    assert_equal 1546455993, efranz_user_quotas.first.updated_at.to_i
+    user_quotas = quotas.select { |q| q.user == 'efranz' && q.type == :user }
+    assert user_quotas.any?
+    assert_equal 1546455993, user_quotas.first.updated_at.to_i
   end
 
   test "group quotas only returned for user's groups" do
@@ -201,18 +199,18 @@ class QuotaTest < ActiveSupport::TestCase
     assert quotas.all? { |q| q.type == :group }
 
     # Verify the PZS0720 quota values from fixtures
-    pz0720_file_quota = quotas.find { |q| q.resource_type == 'file' }
-    assert pz0720_file_quota, "Failed to find file quota for PZS0720"
-    assert_equal 566201, pz0720_file_quota.total_usage
-    assert_equal 566201, pz0720_file_quota.user_usage
-    assert_equal 1000000, pz0720_file_quota.limit
-    assert_equal "/fs/project", pz0720_file_quota.path.to_s
+    file_quota = quotas.find { |q| q.resource_type == 'file' && q.user == 'PZS0720' }
+    assert file_quota, "Failed to find file quota for PZS0720"
+    assert_equal 566201, file_quota.total_usage
+    assert_equal 566201, file_quota.user_usage
+    assert_equal 1000000, file_quota.limit
+    assert_equal "/fs/project", file_quota.path.to_s
 
-    pz0720_block_quota = quotas.find { |q| q.resource_type == 'block' }
-    assert pz0720_block_quota, "Failed to find block quota for PZS0720"
-    assert_equal 10534483488, pz0720_block_quota.total_usage
-    assert_equal 10534483488, pz0720_block_quota.user_usage
-    assert_equal 10737418240, pz0720_block_quota.limit
+    block_quota = quotas.find { |q| q.resource_type == 'block' }
+    assert block_quota, "Failed to find block quota for PZS0720"
+    assert_equal 10534483488, block_quota.total_usage
+    assert_equal 10534483488, block_quota.user_usage
+    assert_equal 10737418240, block_quota.limit
   end
 
   test "group quota type is :group" do
@@ -224,9 +222,9 @@ class QuotaTest < ActiveSupport::TestCase
     assert quotas.all? { |q| q.shared? }
 
     # Verify the efranz_group quota has correct type
-    efranz_group_quota = quotas.first
-    assert_equal :group, efranz_group_quota.type
-    assert_equal 'efranz_group', efranz_group_quota.user
+    group_quota = quotas.find { |q| q.user == 'efranz_group' }
+    assert_equal :group, group_quota.type
+    assert_equal 'efranz_group', group_quota.user
   end
 
   test "group quota returns empty when user has no matching groups" do
