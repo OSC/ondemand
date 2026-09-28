@@ -16,21 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Fix variable name for cleaning Nginx environment (#5817)\
-Add tests for auto_batch_clusters setting auto_cores (#5783)\
-move to use google translate for missing-translations (#5811)\
-Fix accessibility tests with async script execution (#5815)\
-Fix file download limiting (#5835)\
-Add tests for GET files API with UTF-8 files (#5764)\
-Add dynamic bc test for shared prefix (#5146)\
-Rescue Exceptions when loading configs (#5827)\
-Add Ctrl+C and Ctrl+V shortcuts to FileExplorer (#5789)\
-lint a random file (#5826)\
-Make NSF events URL configurable (#5798)\
-Fix FilesTest race with asynchronous file removal (#5816)\
-Update Changelog (#5818)\
-refactor PosixFile.num_files to use ruby instead of find (#5795)\
-update dependencies (#5819)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -53,6 +38,8 @@ update dependencies (#5819)
 - nav_bar items can now disable sorting in [5726](https://github.com/OSC/ondemand/pull/5726).
 - Data-label directives now fall back to the original label when an option does not set it in [5787](https://github.com/OSC/ondemand/pull/5787).
 - The header and navbar are now in a partial for reconfiguration in [5806](https://github.com/OSC/ondemand/pull/5806).
+- The NSF events URL is now configurable in [5798](https://github.com/OSC/ondemand/pull/5798).
+- Ctrl+C and Ctrl+V (copy/paste) shortcuts now work in the FileExplorer in [5789](https://github.com/OSC/ondemand/pull/5789).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -86,6 +73,8 @@ update dependencies (#5819)
 - Radio buttons respond to html_options in [5781](https://github.com/OSC/ondemand/pull/5781).
 - The default help text is now shown when there is no dynamic option data-help directive for an option in [5763](https://github.com/OSC/ondemand/pull/5763).
 - Batch connect session cards preserve the tab state in [5766](https://github.com/OSC/ondemand/pull/5766).
+- File download limits work correctly in [5835](https://github.com/OSC/ondemand/pull/5835).
+- The dashboard's configuration now rescues Exceptions when loading configs in [5827](https://github.com/OSC/ondemand/pull/5827).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
