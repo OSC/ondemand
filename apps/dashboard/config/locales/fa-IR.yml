@@ -325,8 +325,10 @@ fa-IR:
     queue: صف
     quota_additional_message: برای آزاد کردن فضای دیسک، حذف یا بایگانی فایل‌ها را در نظر بگیرید.
     quota_block: استفاده از %{used} از سهمیه %{available}
+    quota_block_group: گروه %{user} از %{used} از سهمیه %{available} استفاده می‌کند
     quota_block_shared: "(%{used_exclusive} متعلق به شماست)"
     quota_file: استفاده از %{used} فایل از سهمیه %{available} فایل
+    quota_file_group: گروه %{user} از %{used} فایل از سهمیه %{available} فایل استفاده می‌کند
     quota_file_shared: "(%{used_exclusive} فایل متعلق به شماست)"
     quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: برای مشاهده سهمیه به‌روز، صفحه را دوباره بارگذاری کنید. سهمیه‌ها هر ۵ دقیقه به‌روزرسانی می‌شوند.
