@@ -62,6 +62,10 @@
 
   <script type="text/javascript">var selected_id = <%= @selected_id || 0 %>;</script>
 
+  <div class="alert alert-warning" role="alert">
+    <%= t('jobcomposer.deprecation_warning_html', projects_url: OodAppkit.dashboard.url.join('projects').to_s) %>
+  </div>
+  
   <% if alert %>
   <div class="alert alert-danger alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert">

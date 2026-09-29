@@ -32,6 +32,7 @@
 en:
   jobcomposer:
     skip_navigation: "Skip Navigation"
+    deprecation_warning_html: The Job Composer is deprecated and will be removed in a future release. Please consider using the <a href="%{projects_url}">Project Manager</a> instead.
     # Site specific translations
     options_account_help:  "Account is an optional field. If not set, the account may be auto-set by the submit filter."
 
