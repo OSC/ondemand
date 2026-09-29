@@ -178,4 +178,26 @@ class FilesIntegrationTest < ActionDispatch::IntegrationTest
       end
     end
   end
+
+  test 'edit respects download_file_max when lower than file_editor_max_size' do
+    download_limit = 20
+    with_modified_env(OOD_DOWNLOAD_FILE_MAX: download_limit.to_s, OOD_FILE_EDITOR_MAX_SIZE: '100') do
+      Dir.mktmpdir do |tmpdir|
+        small_file = "#{tmpdir}/small_file.txt"
+        File.write(small_file, 'x' * download_limit)
+
+        get edit_file_path(filepath: small_file)
+        assert_response(:success)
+
+        large_file = "#{tmpdir}/large_file.txt"
+        File.write(large_file, 'x' * (download_limit + 1))
+
+        get edit_file_path(filepath: large_file)
+        assert_redirected_to root_path
+        follow_redirect!
+        assert_match(/exceeds editor limit of #{download_limit} B/, flash[:alert])
+        assert_match(/Please download the file to edit or view it locally/, flash[:alert])
+      end
+    end
+  end
 end
