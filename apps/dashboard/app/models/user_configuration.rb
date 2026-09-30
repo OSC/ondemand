@@ -38,6 +38,10 @@ class UserConfiguration
                                    env_names: ['OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG']),
     ConfigurationProperty.property(name: :brand_link_active_bg_color, read_from_env: true,
                                    env_names: ['OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG', 'BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG']),
+    # Navbar foreground/text colors
+    ConfigurationProperty.property(name: :brand_link_color, read_from_env: true),
+    ConfigurationProperty.property(name: :brand_link_hover_color, read_from_env: true),
+    ConfigurationProperty.property(name: :brand_link_active_color, read_from_env: true),
 
     # The dashboard's landing page layout. Defaults to nil.
     ConfigurationProperty.property(name: :dashboard_layout),
