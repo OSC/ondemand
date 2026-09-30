@@ -150,7 +150,6 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'develop dropdown should render when app_development_enabled is true' do
-    stub_user_configuration(help_bar: [])
     Configuration.stubs(:app_development_enabled?).returns(true)
     Configuration.stubs(:app_sharing_enabled?).returns(true)
     get('/')
@@ -167,7 +166,6 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'develop dropdown should not render when app_development_enabled is false' do
-    stub_user_configuration(help_bar: [])
     Configuration.stubs(:app_development_enabled?).returns(false)
     get('/')
     assert_response(:success)
@@ -183,7 +181,6 @@ class NavTest < ActionDispatch::IntegrationTest
       OOD_DASHBOARD_PASSWD_URL: '/password',
       OOD_DASHBOARD_2FA_URL: '/two-factor'
     ) do
-        stub_user_configuration(help_bar: [])
         get('/')
         assert_response(:success)
         assert_select("nav.navbar div.collapse li.nav-item") do
@@ -199,7 +196,6 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'user button should render' do
-    stub_user_configuration(help_bar: [])
     CurrentUser.stubs(:name).returns('me')
     get('/')
     assert_response(:success)
@@ -211,7 +207,6 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'logout button should render' do
-    stub_user_configuration(help_bar: [])
     get('/')
     assert_response(:success)
     assert_select("nav.navbar div.collapse li.nav-item") do
