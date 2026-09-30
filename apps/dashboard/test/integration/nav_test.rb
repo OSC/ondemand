@@ -41,7 +41,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'renders pinned_apps when nav_bar is empty and pinned_apps are configured' do
     stub_sys_apps
-    stub_user_configuration({pinned_apps: ['sys/*'], nav_bar: []})
+    stub_user_configuration({pinned_apps: ['sys/*']})
 
     get('/')
 
@@ -70,7 +70,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'does not render pinned_apps when nav_bar is empty and pinned_apps are empty' do
     stub_sys_apps
-    stub_user_configuration({pinned_apps: [], nav_bar: []})
+    stub_user_configuration({pinned_apps: []})
 
     get('/')
 
@@ -80,7 +80,6 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'Files, Jobs, Clusters, and Interactive Apps nav_bar groups should render' do
     stub_sys_apps
-    stub_user_configuration({nav_bar: []})
     get('/')
 
     assert_response(:success)
@@ -117,7 +116,6 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'navbar sessions should render' do
-    stub_user_configuration({nav_bar: []})
     stub_sys_apps
     Configuration.stubs(:open_apps_in_new_window?).returns(true)
     get('/')
@@ -126,7 +124,6 @@ class NavTest < ActionDispatch::IntegrationTest
   end
 
   test 'navbar sessions should not render' do
-    stub_user_configuration({nav_bar: []})
     stub_sys_apps
     Configuration.stubs(:open_apps_in_new_window?).returns(false)
     ApplicationController.any_instance.stubs(:sys_app_groups).returns([])
@@ -138,7 +135,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'all_apps should render' do
     stub_sys_apps
-    stub_user_configuration({nav_bar: [], show_all_apps_link: true})
+    stub_user_configuration({show_all_apps_link: true})
     get('/')
     assert_response(:success)
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_all_apps')}']", 1)
@@ -146,7 +143,7 @@ class NavTest < ActionDispatch::IntegrationTest
 
   test 'all_apps should not render' do
     stub_sys_apps
-    stub_user_configuration({nav_bar: [], show_all_apps_link: false})
+    stub_user_configuration({show_all_apps_link: false})
     get('/')
     assert_response(:success)
     assert_select("nav.navbar div.collapse li.nav-item a.nav-link[title='#{I18n.t('dashboard.nav_all_apps')}']", 0)
