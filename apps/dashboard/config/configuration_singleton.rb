@@ -220,6 +220,11 @@ class ConfigurationSingleton
     xdmod_host.present?
   end
 
+  # Configuration object for additional system apps
+  def external_apps_config
+    config.fetch(:external_apps_config, [])
+  end
+
   # Support ticket configuration
   def support_ticket_enabled?
     config.has_key?(:support_ticket) || config.fetch(:profiles, {}).any? { |_, profile| profile.has_key?(:support_ticket) }
