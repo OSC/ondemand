@@ -1,16 +1,6 @@
 <div id="clipboard" class="sticky-top">
 </div>
 
-<li class="nav-item mt-1" data-favorite-demo style="display:none">
-  <div class="input-group">
-    <div class="input-group-text px-3 py-2 bg-light text-dark">
-    </div>
-    <a class="btn bg-danger" href="#" role="button" data-delete-favorite>
-      <i class="fas fa-trash" aria-hidden="true"></i>
-    </a>
-  </div>
-</li>
-
 <ul id="favorites" class="nav nav-pills flex-column" role="region" aria-label="Favorites">
   <li role="presentation" class="nav-item">
     <%= link_to files_path(Dir.home), class: "nav-link d bg-light" do %>
@@ -19,6 +9,7 @@
     <% end %>
   </li>
 
+  <% custom_favorite_count = 0 %>
   <% @user_customization.favorite_paths.each do |p| %>
     <li class="nav-item">
       <div class="input-group flex-nowrap">
@@ -29,12 +20,21 @@
           </span>
         <% end %>
         <% if @user_customization.custom_favorite?(p) %>
-          <a class="btn bg-secondary text-light align-content-center" href="#" role="button" data-edit-favorite title="<%=t('dashboard.edit_favorite_title', favorite: p.title || p.path) %>">
+          <a class="btn bg-secondary text-light align-content-center" 
+             href="#" role="button" data-edit-favorite=<%= custom_favorite_count %> 
+             title="<%=t('dashboard.edit_favorite_title', favorite: p.title || p.path) %>">
             <i class="fas fa-pen" aria-hidden="true"></i>
           </a>
-          <a class="btn bg-danger text-light align-content-center" href="#" role="button" data-delete-favorite title="<%=t('dashboard.delete_favorite_title', favorite: p.title || p.path) %>">
+          <%= button_to(
+                update_customization_path,
+                method: :post,
+                class: 'btn btn-link text-light bg-danger h-100 rounded-0 rounded-end',
+                title: t('dashboard.delete_favorite_title', favorite: p.title || p.path),
+                params: { user_customization: { delete_files_favorite: custom_favorite_count }} 
+          ) do %>
             <i class="fas fa-trash" aria-hidden="true"></i>
-          </a>
+          <% end %>
+          <% custom_favorite_count += 1 %>
         <% end %>
       </div>
     </li>

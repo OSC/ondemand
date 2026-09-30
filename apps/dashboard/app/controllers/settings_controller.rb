@@ -24,12 +24,12 @@ class SettingsController < ApplicationController
   end
 
   def update_user_customization
+    #raise params.inspect
     new_settings = user_customization_param.to_h
     alert = nil
     updated = false
-    if new_settings.include?(:custom_files_favorites)
-      parsed = JSON.parse(new_settings[:custom_files_favorites])
-      if @user_customization.update_files_favorites(parsed)
+    new_settings.each do |action, args|
+      if @user_customization.send(action, args)
         updated = true
       else
         alert = I18n.t('dashboard.favorites_not_updated')
@@ -39,7 +39,19 @@ class SettingsController < ApplicationController
     announcements = Hash.new
     announcements[:notice] = I18n.t('dashboard.settings_updated') if updated
     announcements[:alert] = alert if alert
-    redirect_back allow_other_host: false, fallback_location: root_url, **announcements
+    respond_to do |format|
+      format.html do
+        redirect_back allow_other_host: false, fallback_location: root_url, **announcements
+      end
+
+      format.json do
+        if alert
+          render json: { error_message: announcements[:alert] }
+        else
+          render json: {}
+        end
+      end
+    end
   end
 
   def edit
@@ -53,7 +65,7 @@ class SettingsController < ApplicationController
   end
 
   def user_customization_param
-    params.require(:user_customization).permit([:custom_files_favorites])
+    params.require(:user_customization).permit(UserCustomization.supported_actions)
   end
 
   def back_param

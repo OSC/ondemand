@@ -510,6 +510,17 @@ class DataTable {
             downloadItem.appendChild(downloadLink);
             dropdownMenu.appendChild(downloadItem);
         }
+
+        if (!file) {
+            const favoriteItem = document.createElement('li');
+            const favoriteLink = document.createElement('a');
+            favoriteLink.href = '#';
+            favoriteLink.classList.add('add-favorite', 'dropdown-item');
+            favoriteLink.setAttribute('data-row-index', rowIndex);
+            favoriteLink.innerHTML = '<i class="fas fa-heart" aria-hidden="true"></i> Favorite';
+            favoriteItem.appendChild(favoriteLink);
+            dropdownMenu.appendChild(favoriteItem);
+        }
           
         // Add a divider between options
         const dividerItem = document.createElement('li');
@@ -561,10 +572,12 @@ class DataTable {
                             currentDirectory: data.path,
                             currentDirectoryUrl: data.url,
                             currentFilesPath: data.files_path,
+                            currentFavoritesPath: history.state.currentFavoritesPath,
                             currentFilesUploadPath: data.files_upload_path,
                             currentFilesystem: data.filesystem,
                             currentFilenames: Array.from(data.files, x => x.name)
                         }, data.name, data.url);
+                        console.log(history)
                     }
                     this.updateGlobus();
                 }

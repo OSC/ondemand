@@ -167,7 +167,7 @@ en:
     edit: Edit
     edit_favorite_title: Rename custom favorite %{favorite}
     favorite_paths: Favorite Paths
-    favorites_not_updated: Some favorite paths do not exist. Custom favorites have not been updated
+    favorites_not_updated: Custom favorites have not been updated
     file: File
     file_quotas: File Quotas
     files: Files
