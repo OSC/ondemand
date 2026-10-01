@@ -310,6 +310,7 @@ en:
     node: Node
     not_grouped: Other Apps
     nsf_access_events: NSF ACCESS Events
+    nsf_access_outages: NSF ACCESS Outages
     ok: OK
     opens_in_new_tab: opens in new tab
     output_location: 'Output Location:'
