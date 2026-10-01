@@ -52,6 +52,22 @@
 # error page can be customized with this mechanism.
 #pun_custom_html_root: '/etc/ood/config/pun/html'
 
+# Whether mTLS proxying from the PUN to compute nodes is enabled
+#pun_mtls_enabled: false
+
+# Directory under the user's home for storing mTLS PKI material
+#pun_mtls_pki_dir: '~/ondemand/pki'
+
+# Validity period in days for the generated mTLS certificate
+#pun_mtls_cert_days: 3650
+
+# Regex used to validate target hosts for mTLS proxying (SSRF protection)
+#pun_mtls_host_regex: '[\w.-]+'
+
+# DNS resolver for nginx to use with variable-based proxy_pass
+# Auto-detected from /etc/resolv.conf if not set
+#pun_mtls_resolver: '8.8.8.8'
+
 # Location of the ERB templates used in the generation of the NGINX configs
 #
 #template_root: '/opt/ood/nginx_stage/templates'
