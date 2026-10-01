@@ -37,7 +37,15 @@ class UserCustomization
     false
   end
 
-  def rename_files_favorite(index, new_title)
+  def rename_files_favorite(json)
+    args = JSON.parse(json)
+    index = args['index'].to_i
+    
+    @custom_files_favorites[index][:title] = args['name']
+    update_favorites
+    true
+  rescue 
+    false
   end
 
   def favorite_paths

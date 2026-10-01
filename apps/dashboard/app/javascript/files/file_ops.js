@@ -23,7 +23,8 @@ const EVENTNAME = {
   newDirectory: 'newDirectory',
   renameFile: 'renameFile',
   renameFilePrompt: 'renameFilePrompt',
-  addFavorite: 'addFavorite'
+  addFavorite: 'addFavorite',
+  renameFavorite: 'renameFavorite'
 }
 
 
@@ -134,7 +135,22 @@ jQuery(function() {
     $(CONTENTID).trigger(EVENTNAME.renameFilePrompt, eventData);
   });
 
+  $(document).on('click', '.delete-file', function (e) {
+    e.preventDefault();
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+    let fileName = $($.parseHTML(row.name)).text();
+
+    const eventData = {
+        files: [fileName]
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+  });
+
   $(document).on('click', '.add-favorite', function (e) {
+    e.preventDefault();
     let table = $(CONTENTID).DataTable();
     let rowId = e.currentTarget.dataset.rowIndex;
     let row = table.row(rowId).data();
@@ -147,19 +163,9 @@ jQuery(function() {
     $(CONTENTID).trigger(EVENTNAME.addFavorite, eventData);
   }); 
 
-  $(document).on('click', '.delete-file', function (e) {
-      e.preventDefault();
-      let table = $(CONTENTID).DataTable();
-      let rowId = e.currentTarget.dataset.rowIndex;
-      let row = table.row(rowId).data();
-      let fileName = $($.parseHTML(row.name)).text();
-
-      const eventData = {
-          files: [fileName]
-      };
-
-      $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
-
+  $(document).on('click', '.rename-favorite', function (e) {
+    e.preventDefault();
+    $(CONTENTID).trigger(EVENTNAME.renameFavorite, e);
   });
 
   $(CONTENTID).on(EVENTNAME.newFilePrompt, function () {
@@ -194,10 +200,6 @@ jQuery(function() {
     }
   });
 
-  $(CONTENTID).on(EVENTNAME.addFavorite, function (e, options) {
-    fileOps.addFavorite(options.file);
-  });
-
   $(CONTENTID).on(EVENTNAME.deletePrompt, function (e, options) {
     if(options.files.length == 0) {
       OODAlertError('Select a file, files, or directory to delete. You have selected none.');
@@ -226,6 +228,13 @@ jQuery(function() {
     fileOps.changeDirectory(options.result.value);
   });
 
+  $(CONTENTID).on(EVENTNAME.addFavorite, function (e, options) {
+    fileOps.addFavorite(options.file);
+  });
+
+  $(CONTENTID).on(EVENTNAME.renameFavorite, function (e, options) {
+    fileOps.renameFavorite(options);
+  });
 });
 
 class FileOps {
@@ -491,6 +500,35 @@ class FileOps {
       .catch(function (e) {
         OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
       });
+  }
+
+  renameFavorite(e) {
+    const clicked = e.currentTarget;
+    const index = clicked.dataset.favoriteIndex;
+    const parent = $(clicked).closest('.input-group');
+    const link = parent.find('.nav-link');
+    const oldName = link.text().trim();
+    const saveBtn = parent.find('a[data-confirm-rename]');
+
+    const input = document.createElement('input');
+    input.classList.add('form-control', 'mx-2');
+    input.value = oldName;
+    link.find('span').replaceWith(input);
+    clicked.classList.add('d-none');
+    saveBtn.removeClass('d-none');
+    const getData = this.dataFromJsonResponse;
+    saveBtn.on('click', function (e) {
+      const formData = new FormData();
+      formData.append('user_customization[rename_files_favorite]', JSON.stringify({'index': index, name: input.value}));
+      fetch(history.state.currentFavoritesPath, { method: 'post', headers: { 'X-CSRF-Token': csrfToken(), 'Accept': 'application/json' }, body: formData })
+        .then(response => getData(response))
+        .then(function() {
+          window.location.reload();
+        })
+        .catch(function (e) {
+          OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+        });
+    })
   }
   
   delete(files) {
