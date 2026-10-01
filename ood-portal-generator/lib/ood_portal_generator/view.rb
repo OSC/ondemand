@@ -146,6 +146,13 @@ module OodPortalGenerator
       !@auth.empty?
     end
 
+    # Helper that builds a Header directive to set the Content-Security-Policy for a given uri
+    def node_csp_header(uri)
+      http_origin = "#{@protocol}#{@proxy_server}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+      wss_origin = "wss://#{@proxy_server}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+      "Header always set Content-Security-Policy \"connect-src #{http_origin} #{wss_origin}; form-action #{http_origin}\""
+    end
+
     # Helper method to set the filename and path for access and error logs
     def log_filename(value,log_type)
       return value.to_s if value.to_s.start_with?('|')
