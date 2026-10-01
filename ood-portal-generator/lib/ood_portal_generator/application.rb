@@ -130,7 +130,6 @@ module OodPortalGenerator
         checksum_str = File.readlines(sum_path)[0]
         checksum = checksum_str.split(' ')[0]
 
-        read_file_omitting_comments(input)
         new_checksum = checksum(input)
 
         checksum == new_checksum
