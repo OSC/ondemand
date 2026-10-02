@@ -10,5 +10,11 @@ at https://www.openondemand.org/accessibility
 Please refer to the website 
 for the most up to date details.
 
+If you have a disability and experience difficulty accessing Open OnDemand, 
+please contact your local Open OnDemand team for assistance via email. 
+
 If you have accessibility questions or feedback, please 
-open an issue in this repository.
+open an issue in this repository or contact the Open OnDemand maintainers 
+at info@openondemand.org. 
+
+
