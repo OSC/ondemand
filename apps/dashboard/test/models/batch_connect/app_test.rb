@@ -262,9 +262,9 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
 
     Dir.mktmpdir do |dir|
       app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       r = PathRouter.new(app_dir)
       app = BatchConnect::App.new(router: r)
-      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       assert !app.valid?
       assert_equal I18n.t('dashboard.batch_connect_invalid_form_array'), app.validation_reason 
 
@@ -284,9 +284,9 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
 
     Dir.mktmpdir do |dir|
       app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       r = PathRouter.new(app_dir)
       app = BatchConnect::App.new(router: r)
-      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       assert !app.valid?
       assert_equal I18n.t('dashboard.batch_connect_invalid_form_attributes'), app.validation_reason
 
@@ -344,9 +344,9 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
 
     Dir.mktmpdir do |dir|
       app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       r = PathRouter.new(app_dir)
       app = BatchConnect::App.new(router: r)
-      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       app.build_session_context
       assert app.valid?
       expected_opts = { script: { accounting_id: Etc.getgrgid(Etc.getpwuid.gid).name } }
