@@ -9,7 +9,7 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
     OODClusters.stubs(:[]).with(:oakley).returns(oakley)
   end
 
-  def slurm_info(submission_time:, gres: 'N/A')
+  def slurm_info(submission_time:, gres: 'N/A', native: {})
     OodCore::Job::Info.new(
       id:              '42',
       status:          :queued,
@@ -32,7 +32,7 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
         end_time:      'N/A',
         min_memory:    '1G',
         gres:          gres
-      }
+      }.merge(native)
     )
   end
 
@@ -74,12 +74,40 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
   end
 
   test 'slurm extended details include Submission Time from Info#submission_time' do
-    submitted_at = Time.local(2024, 6, 15, 14, 30, 0)
-    data = ActiveJobs::Jobstatusdata.new(slurm_info(submission_time: submitted_at), 'oakley', true)
+    with_modified_env(TZ: 'Europe/Helsinki') do
+      submitted_at = Time.local(2024, 6, 15, 14, 30, 0)
+      data = ActiveJobs::Jobstatusdata.new(slurm_info(submission_time: submitted_at), 'oakley', true)
 
-    row = data.native_attribs.find { |a| a.name == 'Submission Time' }
-    assert_not_nil row
-    assert_equal '2024-06-15 14:30:00', row.value
+      row = data.native_attribs.find { |a| a.name == 'Submission Time' }
+      assert_not_nil row
+      assert_equal '2024-06-15 14:30:00 EEST', row.value
+    end
+  end
+
+  test 'slurm extended details show times in the local timezone' do
+    with_modified_env(TZ: 'Europe/Helsinki') do
+      info = slurm_info(
+        submission_time: Time.new(2025, 8, 28, 11, 0, 0, '+00:00'),
+        native:          { start_time: '2025-08-28T14:00:00+0200', end_time: '2025-08-28T15:00:00+0200' }
+      )
+      data = ActiveJobs::Jobstatusdata.new(info, 'oakley', true)
+      value = ->(name) { data.native_attribs.find { |a| a.name == name }.value }
+
+      assert_equal '2025-08-28 14:00:00 EEST', value.call('Submission Time')
+      assert_equal '2025-08-28 15:00:00 EEST', value.call('Start Time')
+      assert_equal '2025-08-28 16:00:00 EEST', value.call('End Time')
+    end
+  end
+
+  test 'slurm extended details treat times without an offset as local time' do
+    with_modified_env(TZ: 'Europe/Helsinki') do
+      info = slurm_info(submission_time: nil, native: { start_time: '2025-08-28T14:00:00', end_time: 'Unknown' })
+      data = ActiveJobs::Jobstatusdata.new(info, 'oakley', true)
+      value = ->(name) { data.native_attribs.find { |a| a.name == name }.value }
+
+      assert_equal '2025-08-28 14:00:00 EEST', value.call('Start Time')
+      assert_equal '', value.call('End Time')
+    end
   end
 
   test 'slurm extended details omit Submission Time when Info#submission_time is missing' do

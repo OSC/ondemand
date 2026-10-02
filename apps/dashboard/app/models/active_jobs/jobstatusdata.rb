@@ -309,16 +309,16 @@ module ActiveJobs
 
     private
 
+      # Format a time in the server's local timezone, including the zone name.
+      # Strings with a UTC offset (e.g. Slurm with SLURM_TIME_FORMAT) are
+      # converted, strings without one are assumed to already be local time.
       def safe_parse_time(time)
-        if ['N/A', 'NONE'].include?(time.to_s)
-          ''
-        else
-          begin
-            DateTime.parse(time.to_s).strftime('%Y-%m-%d %H:%M:%S')
-          rescue Date::Error
-            ''
-          end
-        end
+        return '' if time.blank? || ['N/A', 'NONE'].include?(time.to_s)
+
+        time = time.is_a?(String) ? Time.parse(time) : time.to_time
+        time.getlocal.strftime('%Y-%m-%d %H:%M:%S %Z')
+      rescue ArgumentError
+        ''
       end
 
       def build_file_explorer_url(path)
