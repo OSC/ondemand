@@ -24,6 +24,7 @@ const EVENTNAME = {
   renameFile: 'renameFile',
   renameFilePrompt: 'renameFilePrompt',
   addFavorite: 'addFavorite',
+  renameFavoritePrompt: 'renameFavoritePrompt',
   renameFavorite: 'renameFavorite'
 }
 
@@ -165,7 +166,20 @@ jQuery(function() {
 
   $(document).on('click', '.rename-favorite', function (e) {
     e.preventDefault();
-    $(CONTENTID).trigger(EVENTNAME.renameFavorite, e);
+    const clicked = e.currentTarget;
+    const index = clicked.dataset.favoriteIndex;
+    const path = clicked.dataset.favoritePath;
+    const parent = $(clicked).closest('.input-group');
+    const link = parent.find('.nav-link');
+    const oldName = link.text().trim();
+
+    const eventData = {
+      index: index,
+      name: oldName,
+      path: path
+    }
+
+    $(CONTENTID).trigger(EVENTNAME.renameFavoritePrompt, eventData);
   });
 
   $(CONTENTID).on(EVENTNAME.newFilePrompt, function () {
@@ -232,8 +246,12 @@ jQuery(function() {
     fileOps.addFavorite(options.file);
   });
 
+  $(CONTENTID).on(EVENTNAME.renameFavoritePrompt, function (e, options) {
+    fileOps.renameFavoritePrompt(options);
+  });
+
   $(CONTENTID).on(EVENTNAME.renameFavorite, function (e, options) {
-    fileOps.renameFavorite(options);
+    fileOps.renameFavorite(options.index, options.result.value);
   });
 });
 
@@ -502,33 +520,36 @@ class FileOps {
       });
   }
 
-  renameFavorite(e) {
-    const clicked = e.currentTarget;
-    const index = clicked.dataset.favoriteIndex;
-    const parent = $(clicked).closest('.input-group');
-    const link = parent.find('.nav-link');
-    const oldName = link.text().trim();
-    const saveBtn = parent.find('a[data-confirm-rename]');
+  renameFavoritePrompt(options) {
+    const eventData = {
+      action: EVENTNAME.renameFavorite,
+      index: options.index,
+      'inputOptions': {
+        title: `Rename favorite ${options.path}`,
+        input: 'text',
+        inputLabel: 'Name',
+        inputValue: options.name,
+        inputAttributes: {
+          spellcheck: 'false',
+        },
+        showCancelButton: true,
+      }
+    };
 
-    const input = document.createElement('input');
-    input.classList.add('form-control', 'mx-2');
-    input.value = oldName;
-    link.find('span').replaceWith(input);
-    clicked.classList.add('d-none');
-    saveBtn.removeClass('d-none');
-    const getData = this.dataFromJsonResponse;
-    saveBtn.on('click', function (e) {
-      const formData = new FormData();
-      formData.append('user_customization[rename_files_favorite]', JSON.stringify({'index': index, name: input.value}));
-      fetch(history.state.currentFavoritesPath, { method: 'post', headers: { 'X-CSRF-Token': csrfToken(), 'Accept': 'application/json' }, body: formData })
-        .then(response => getData(response))
-        .then(function() {
-          window.location.reload();
-        })
-        .catch(function (e) {
-          OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
-        });
-    })
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
+  }
+
+  renameFavorite(index, name) {
+    const formData = new FormData();
+    formData.append('user_customization[rename_files_favorite]', JSON.stringify({ index: index, name: name }));
+    fetch(history.state.currentFavoritesPath, { method: 'post', headers: { 'X-CSRF-Token': csrfToken(), 'Accept': 'application/json' }, body: formData })
+      .then(response => getData(response))
+      .then(function() {
+        window.location.reload();
+      })
+      .catch(function (e) {
+        OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+      });
   }
   
   delete(files) {
