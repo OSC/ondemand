@@ -27,9 +27,14 @@ describe NginxStage::PunConfigGenerator do
   end
 
   describe '#invoke' do
+    let(:original_hooks) { described_class.hooks.dup }
+
     before do
+      skip_running_pun = original_hooks.fetch(:skip_running_pun)
       allow(described_class).to receive(:hooks).and_return(
-        probe: proc { @pun_lock_probe_ran = true }
+        validation_probe: proc { @validation_probe_ran = true },
+        skip_running_pun: skip_running_pun,
+        setup_probe: proc { @pun_lock_probe_ran = true }
       )
     end
 
@@ -38,10 +43,19 @@ describe NginxStage::PunConfigGenerator do
 
       generator.invoke
 
+      expect(generator.instance_variable_get(:@validation_probe_ran)).to be(true)
       expect(generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
     end
 
-    it 'skips initialization when the PUN is already running' do
+    it 'keeps the running-PUN shortcut after the normal user validation hooks' do
+      hook_names = original_hooks.keys
+      running_check = hook_names.index(:skip_running_pun)
+
+      expect(hook_names.index(:validate_user_not_special)).to be < running_check
+      expect(hook_names.index(:block_user_with_disabled_shell)).to be < running_check
+    end
+
+    it 'skips initialization only after earlier validation hooks when the PUN is already running' do
       running_generator = described_class.new(user: test_user)
       expect(running_generator).to receive(:pun_running?)
         .with(user: running_generator.user)
@@ -53,6 +67,7 @@ describe NginxStage::PunConfigGenerator do
 
       running_generator.invoke
 
+      expect(running_generator.instance_variable_get(:@validation_probe_ran)).to be(true)
       expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be_nil
     end
 
@@ -68,6 +83,7 @@ describe NginxStage::PunConfigGenerator do
 
       running_generator.invoke
 
+      expect(running_generator.instance_variable_get(:@validation_probe_ran)).to be(true)
       expect(running_generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
     end
 
@@ -77,6 +93,7 @@ describe NginxStage::PunConfigGenerator do
 
       generator.invoke
 
+      expect(generator.instance_variable_get(:@validation_probe_ran)).to be(true)
       expect(generator.instance_variable_get(:@pun_lock_probe_ran)).to be(true)
     end
   end

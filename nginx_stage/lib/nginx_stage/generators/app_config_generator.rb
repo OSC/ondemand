@@ -5,6 +5,15 @@ module NginxStage
   class AppConfigGenerator < Generator
     desc 'Generate a new nginx app config and reload process'
 
+    # Keep app config generation and the PUN restart in one serialized
+    # lifecycle so concurrent app requests cannot overwrite configuration
+    # between generation and restart.
+    def invoke
+      with_pun_lifecycle_lock(user: user) do
+        super
+      end
+    end
+
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
         To generate an app config from a URI request and reload the nginx
@@ -78,32 +87,30 @@ module NginxStage
     # Restart the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        with_pun_lifecycle_lock(user: user) do
-          NginxStage.clean_nginx_env(user: user)
-          config_path = NginxStage.pun_config_path(user: user)
-          unless File.file?(config_path)
-            raise Error, "missing PUN config while restarting PUN: #{config_path}"
-          end
-          if File.file? NginxStage.pun_pid_path(user: user)
-            o, s = Open3.capture2e(
-              [
-                NginxStage.nginx_bin,
-                "(#{user})"
-              ],
-              *NginxStage.nginx_args(user: user, signal: :stop)
-            )
-            abort(o) unless s.success?
-          end
-          wait_for_pun_socket_shutdown
+        NginxStage.clean_nginx_env(user: user)
+        config_path = NginxStage.pun_config_path(user: user)
+        unless File.file?(config_path)
+          raise Error, "missing PUN config while restarting PUN: #{config_path}"
+        end
+        if File.file? NginxStage.pun_pid_path(user: user)
           o, s = Open3.capture2e(
             [
               NginxStage.nginx_bin,
               "(#{user})"
             ],
-            *NginxStage.nginx_args(user: user)
+            *NginxStage.nginx_args(user: user, signal: :stop)
           )
-          s.success? ? exit : abort(o)
+          abort(o) unless s.success?
         end
+        wait_for_pun_socket_shutdown
+        o, s = Open3.capture2e(
+          [
+            NginxStage.nginx_bin,
+            "(#{user})"
+          ],
+          *NginxStage.nginx_args(user: user)
+        )
+        s.success? ? exit : abort(o)
       end
     end
 

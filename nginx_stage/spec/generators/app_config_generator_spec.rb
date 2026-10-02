@@ -19,6 +19,26 @@ describe NginxStage::AppConfigGenerator do
     allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
   end
 
+  describe '#invoke' do
+    before do
+      allow(described_class).to receive(:hooks).and_return(
+        create_config: proc { @app_config_probe_ran = true },
+        exec_nginx: proc { @app_restart_probe_ran = true }
+      )
+    end
+
+    it 'holds the lifecycle lock across app config generation and restart hooks' do
+      expect(generator).to receive(:with_pun_lifecycle_lock)
+        .with(user: generator.user)
+        .and_yield
+
+      generator.invoke
+
+      expect(generator.instance_variable_get(:@app_config_probe_ran)).to be(true)
+      expect(generator.instance_variable_get(:@app_restart_probe_ran)).to be(true)
+    end
+  end
+
   describe '#with_pun_lifecycle_lock' do
     let(:config_path) { '/var/lib/ondemand-nginx/config/puns/spec.conf' }
     let(:lock_path) { "#{config_path}.lock" }
@@ -149,11 +169,9 @@ describe NginxStage::AppConfigGenerator do
       allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
       allow(NginxStage).to receive(:nginx_args).with(user: generator.user, signal: :stop).and_return(['stop'])
       allow(NginxStage).to receive(:nginx_args).with(user: generator.user).and_return(['start'])
-      allow(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).and_yield
     end
 
     it 'waits for the old socket before starting the replacement PUN' do
-      expect(generator).to receive(:with_pun_lifecycle_lock).with(user: generator.user).ordered.and_yield
       expect(NginxStage).to receive(:clean_nginx_env).with(user: generator.user).ordered
       expect(Open3).to receive(:capture2e)
         .with(['/usr/sbin/nginx', '(spec)'], 'stop').ordered.and_return(['', status])
