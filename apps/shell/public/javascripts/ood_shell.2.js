@@ -178,6 +178,7 @@ OodShell.prototype.installVisualViewportSizing = function () {
   const viewport = window.visualViewport;
   const element = this.element;
   let resizeFrame = null;
+  let lastHeight = null;
 
   if (!viewport) {
     return;
@@ -206,8 +207,9 @@ OodShell.prototype.installVisualViewportSizing = function () {
       // A VisualViewport belonging to a document that is not fully active can
       // transiently report zero. Preserve the last usable terminal height
       // rather than collapsing the shell until the next viewport event.
-      if (height > 0) {
+      if (height > 0 && height !== lastHeight) {
         element.style.height = height + 'px';
+        lastHeight = height;
       }
       resizeFrame = null;
     });
