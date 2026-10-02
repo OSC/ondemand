@@ -7,6 +7,17 @@ module NginxStage
   class PunConfigGenerator < Generator
     desc 'Generate a new per-user nginx config and process'
 
+    # Serialize the complete PUN initialization sequence. The running-PUN
+    # shortcut is a hook so normal user validation still runs before startup
+    # is suppressed.
+    def invoke
+      with_pun_lifecycle_lock(user: user) do
+        catch(:pun_already_running) do
+          super
+        end
+      end
+    end
+
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
         To generate a per-user nginx environment & launch nginx:
@@ -35,6 +46,13 @@ module NginxStage
 
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
+
+    # A queued initialization may find that another request has already
+    # completed startup. Keep this after the user-validation hooks so an
+    # already-running PUN does not bypass normal validation.
+    add_hook :skip_running_pun do
+      throw :pun_already_running if !skip_nginx && pun_running?(user: user)
+    end
 
     # @!method app_init_url
     #   The app initialization URL the user is redirected to if can't find the

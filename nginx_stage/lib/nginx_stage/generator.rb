@@ -9,6 +9,11 @@ module NginxStage
   # is basically a class with helper methods and the ability to invoke all
   # callback methods in a sequence.
   class Generator
+    PUN_LIFECYCLE_LOCK_TIMEOUT = 60
+    PUN_LIFECYCLE_LOCK_POLL_INTERVAL = 0.05
+    PUN_SOCKET_SHUTDOWN_TIMEOUT = 30
+    PUN_SOCKET_SHUTDOWN_POLL_INTERVAL = 0.05
+
     extend GeneratorHelpers
 
     # Adds a new hook method that is invoked in the order it is defined
@@ -121,6 +126,70 @@ module NginxStage
     end
 
     private
+      # Serialize operations that can start, stop, replace, or remove one user's
+      # PUN. Different users use different lock files and remain independent.
+      #
+      # The lock is deliberately separate from the PUN config. Some lifecycle
+      # paths remove and recreate that config; locking the config file itself
+      # could leave old and new processes locking different inodes and therefore
+      # fail to serialize their lifecycle operations.
+      def with_pun_lifecycle_lock(user:)
+        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
+        held_locks = Thread.current.thread_variable_get(:nginx_stage_pun_lifecycle_locks) || {}
+        Thread.current.thread_variable_set(:nginx_stage_pun_lifecycle_locks, held_locks)
+        if held_locks.key?(lock_path)
+          raise Error, "PUN lifecycle lock already held by this thread: #{lock_path}"
+        end
+
+        FileUtils.mkdir_p File.dirname(lock_path)
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_LIFECYCLE_LOCK_TIMEOUT
+        lock = File.open(lock_path, File::RDWR | File::CREAT, 0644)
+
+        begin
+          until lock.flock(File::LOCK_EX | File::LOCK_NB)
+            if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+              raise Error, "timed out waiting for another PUN lifecycle operation to finish: #{lock_path}"
+            end
+
+            sleep PUN_LIFECYCLE_LOCK_POLL_INTERVAL
+          end
+
+          held_locks[lock_path] = true
+          yield
+        ensure
+          held_locks.delete(lock_path)
+          lock.close
+        end
+      end
+
+      # A queued PUN initialization can find that the lifecycle operation ahead
+      # of it has already started the PUN. Treat the PUN as running only when its
+      # Unix socket exists and its PID file identifies a currently running process.
+      # Missing, invalid, or non-running PID state therefore does not suppress retry.
+      def pun_running?(user:)
+        return false unless File.socket?(NginxStage.pun_socket_path(user: user))
+
+        PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
+      rescue MissingPidFile, InvalidPidFile
+        false
+      end
+
+      # A stopped PUN can leave its Unix socket behind briefly, and the socket
+      # path can also outlive its PID file. Call this while holding the lifecycle
+      # lock so a following start cannot race nginx shutdown.
+      def wait_for_pun_socket_shutdown(user: self.user)
+        socket_path = NginxStage.pun_socket_path(user: user)
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
+
+        while File.exist?(socket_path) || File.symlink?(socket_path)
+          if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+            raise Error, "timed out waiting for previous PUN socket to disappear: #{socket_path}"
+          end
+
+          sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
+        end
+      end
+
       # Retrieves a value from superclass. If it reaches the baseclass,
       # returns default
       def self.from_superclass(method, default = nil)
