@@ -102,7 +102,8 @@ OodShell.prototype.installTouchKeyboard = function (term) {
     touchStart = {
       id: touch.identifier,
       x: touch.clientX,
-      y: touch.clientY
+      y: touch.clientY,
+      time: ev.timeStamp
     };
   }, touchOptions);
 
@@ -142,10 +143,12 @@ OodShell.prototype.installTouchKeyboard = function (term) {
     if (touch !== null) {
       const dx = touch.clientX - touchStart.x;
       const dy = touch.clientY - touchStart.y;
-      // Treat movement within 10 CSS pixels as a tap rather than scrolling.
+      const duration = ev.timeStamp - touchStart.time;
+      // Treat a short touch within 10 CSS pixels as a tap rather than
+      // scrolling or a long press.
       // Keep focus synchronous with the user gesture so iOS/iPadOS Safari can
       // display its software keyboard.
-      if ((dx * dx + dy * dy) <= 100) {
+      if ((dx * dx + dy * dy) <= 100 && duration < 500) {
         // Apple WebKit can leave a contenteditable element focused after the
         // software keyboard is dismissed with Done. Force a fresh focus
         // transition only for the detected environment; doing this for every
