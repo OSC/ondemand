@@ -8,12 +8,35 @@
         <%= I18n.t('dashboard.home_directory') %>
     <% end %>
   </li>
-  <% OodFilesApp.new.favorite_paths.each do |p| %>
+
+  <% custom_favorite_count = 0 %>
+  <% @user_customization.favorite_paths.each do |p| %>
     <li class="nav-item">
-      <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light" do %>
-      <%= fa_icon p.icon, classes: '' %>
-      <%= p.title || p.path.to_s  %>
-      <% end %>
+      <div class="input-group flex-nowrap">
+        <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light input-group-text pe-0 py-2 d-flex flex-grow-1 text-start" do %>
+          <%= fa_icon p.icon, classes: '' %>
+          <span class="text-wrap text-break px-2">
+          <%= p.title || p.path.to_s  %>
+          </span>
+        <% end %>
+        <% if @user_customization.custom_favorite?(p) %>
+          <a class="btn bg-secondary text-light align-content-center rename-favorite" 
+             href="#" role="button" data-favorite-path="<%= p.path %>" data-favorite-index="<%= custom_favorite_count %>" 
+             title="<%=t('dashboard.edit_favorite_title', favorite: p.title || p.path) %>">
+            <i class="fas fa-pen" aria-hidden="true"></i>
+          </a>
+          <%= button_to(
+                update_customization_path,
+                method: :post,
+                class: 'btn btn-link text-light bg-danger h-100 rounded-0 rounded-end',
+                title: t('dashboard.delete_favorite_title', favorite: p.title || p.path),
+                params: { user_customization: { delete_files_favorite: custom_favorite_count }} 
+          ) do %>
+            <i class="fas fa-trash" aria-hidden="true"></i>
+          <% end %>
+          <% custom_favorite_count += 1 %>
+        <% end %>
+      </div>
     </li>
   <% end %>
 </ul>

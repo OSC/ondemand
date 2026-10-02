@@ -155,11 +155,14 @@ en:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date
     delete: Delete
+    delete_favorite_title: Remove custom favorite %{favorite}
     detailed_metrics: Detailed Metrics
     details: Details
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    edit_favorite_title: Rename custom favorite %{favorite}
+    favorites_not_updated: Custom favorites have not been updated
     file: File
     file_quotas: File Quotas
     files: Files
