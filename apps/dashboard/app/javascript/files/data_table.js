@@ -577,7 +577,6 @@ class DataTable {
                             currentFilesystem: data.filesystem,
                             currentFilenames: Array.from(data.files, x => x.name)
                         }, data.name, data.url);
-                        console.log(history)
                     }
                     this.updateGlobus();
                 }

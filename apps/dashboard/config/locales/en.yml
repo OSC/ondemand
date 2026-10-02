@@ -19,8 +19,6 @@ en:
     active_sessions_caption_html: <a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>
     active_sessions_title: Active interactive sessions
     add: Add
-    add_favorite: Add Favorite
-    add_favorite_path: Add Favorite Path
     all_apps_table_app_column: Name
     all_apps_table_category_column: Category
     all_apps_table_sub_category_column: Sub Category
@@ -155,8 +153,6 @@ en:
     cpu_report: CPU Report + %{node}
     custom_pages:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
-    customizations: Customizations
-    customize: Customize
     date: Date
     delete: Delete
     delete_favorite_title: Remove custom favorite %{favorite}
@@ -166,7 +162,6 @@ en:
     directory: Directory
     edit: Edit
     edit_favorite_title: Rename custom favorite %{favorite}
-    favorite_paths: Favorite Paths
     favorites_not_updated: Custom favorites have not been updated
     file: File
     file_quotas: File Quotas
@@ -354,7 +349,6 @@ en:
     restore: Restore
     root: Root
     save: Save
-    save_changes: Save Changes
     saved_settings_title: Saved Settings
     select_path: Select Path
     select_path_for: "%{element} select path\n"
@@ -402,7 +396,6 @@ en:
           attachments_js: Max attachment size is %{max}. Selected file size is %{size}
       validation_error: Invalid Request. Please review the error messages below
     system_apps_caption: System Installed App
-    title: Title
     type: Type
     unknown: Unknown
     uppy: Uppy
