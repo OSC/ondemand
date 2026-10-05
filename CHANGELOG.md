@@ -40,6 +40,7 @@ Changes are grouped by type:
 - The header and navbar are now in a partial for reconfiguration in [5806](https://github.com/OSC/ondemand/pull/5806).
 - The NSF events URL is now configurable in [5798](https://github.com/OSC/ondemand/pull/5798).
 - Ctrl+C and Ctrl+V (copy/paste) shortcuts now work in the FileExplorer in [5789](https://github.com/OSC/ondemand/pull/5789).
+- The file browser now shows timezones in the modified date field in [5839](https://github.com/OSC/ondemand/pull/5839).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -75,6 +76,8 @@ Changes are grouped by type:
 - Batch connect session cards preserve the tab state in [5766](https://github.com/OSC/ondemand/pull/5766).
 - File download limits work correctly in [5835](https://github.com/OSC/ondemand/pull/5835).
 - The dashboard's configuration now rescues Exceptions when loading configs in [5827](https://github.com/OSC/ondemand/pull/5827).
+- Rclone remotes are sorted fixing an issue with newer rclone versions in [5860](https://github.com/OSC/ondemand/pull/5860).
+- The file editor now chooses the minimum value between file_editor_max_size and download_file_max in [5857](https://github.com/OSC/ondemand/pull/5857).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
