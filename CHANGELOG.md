@@ -16,6 +16,17 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Add tests for the right side of the navbar (help bar) (#5844)\
+Add guidelines for updating locales (#5853)\
+Respect download max in file editor (#5857)\
+Lint a random file (#5862)\
+Update accessibility contact information (#5863)\
+Sort Rclone remotes (#5860)\
+Add timezone to files' modified at date (#5839)\
+Update Changelog (#5850)\
+Bump rubyzip from 2.4.1 to 3.4.0 (#5848)\
+lint a random file (#5843)\
+update dependencies (#5851)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
