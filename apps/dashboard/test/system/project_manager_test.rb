@@ -217,7 +217,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on I18n.t('dashboard.jobs_create_blank_project')
       find('#project_name').set(proj)
       find('#product_icon_select').set(icon)
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(projects_path)
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
@@ -225,10 +226,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'update with invalid icon' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
       click_on 'Edit'
       find('#product_icon_select').set('fas://bad&icon')
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(project_path(project_id))
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
