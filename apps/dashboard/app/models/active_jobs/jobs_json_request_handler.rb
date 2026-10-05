@@ -85,9 +85,36 @@ module ActiveJobs
           username: j.job_owner,
           extended_available: extended_available,
           nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?),
-          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : ""
+          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : "",
+          grafana_url: grafana_url(cluster, j)
         }
       }
+    end
+
+    private
+
+    def grafana_url(cluster, job)
+      grafana_config = cluster.custom&.dig(:grafana)
+      return "" unless grafana_config
+
+      if grafana_config.is_a?(String)
+        grafana_config % { jobid: job.id, cluster: cluster.id }
+      elsif grafana_config.is_a?(Hash)
+        host = grafana_config[:host]
+        org_id = grafana_config[:orgId] || 1
+        uid = grafana_config[:uid]
+        dashboard = grafana_config[:dashboard] || "ondemand-job"
+
+        query_params = {
+          orgId: org_id,
+          "var-cluster": cluster.id.to_s,
+          "var-jobid": job.id.to_s
+        }.to_query
+
+        "#{host}/d/#{uid}/#{dashboard}?#{query_params}"
+      else
+        ""
+      end
     end
 
     # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefully
