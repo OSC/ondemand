@@ -79,7 +79,6 @@ OodShell.prototype.installTouchKeyboard = function (term) {
     }
     const touch = ev.touches[0];
     touchStart = {
-      id: touch.identifier,
       x: touch.clientX,
       y: touch.clientY,
       time: ev.timeStamp
@@ -90,44 +89,40 @@ OodShell.prototype.installTouchKeyboard = function (term) {
     if (touchStart === null) {
       return;
     }
-    for (let i = 0; i < ev.changedTouches.length; ++i) {
-      if (ev.changedTouches[i].identifier === touchStart.id) {
-        const touch = ev.changedTouches[i];
-        const dx = touch.clientX - touchStart.x;
-        const dy = touch.clientY - touchStart.y;
-        if ((dx * dx + dy * dy) > 100) {
-          touchStart = null;
-        }
-        break;
-      }
+    if (ev.touches.length !== 1) {
+      touchStart = null;
+      return;
+    }
+
+    const touch = ev.touches[0];
+    const dx = touch.clientX - touchStart.x;
+    const dy = touch.clientY - touchStart.y;
+    if ((dx * dx + dy * dy) > 100) {
+      touchStart = null;
     }
   }, touchOptions);
 
   screen.addEventListener('touchend', function (ev) {
-    let touch = null;
-
     if (touchStart === null) {
       return;
     }
-    for (let i = 0; i < ev.changedTouches.length; ++i) {
-      if (ev.changedTouches[i].identifier === touchStart.id) {
-        touch = ev.changedTouches[i];
-        break;
-      }
+    if (ev.touches.length !== 0 || ev.changedTouches.length !== 1) {
+      touchStart = null;
+      return;
     }
-    if (touch !== null) {
-      const dx = touch.clientX - touchStart.x;
-      const dy = touch.clientY - touchStart.y;
-      const duration = ev.timeStamp - touchStart.time;
-      // Safari requires focus to remain synchronous with the user gesture.
-      if ((dx * dx + dy * dy) <= 100 && duration < 500) {
-        // WebKit may need a fresh focus transition after keyboard dismissal.
-        if (needsTouchFocusRefresh &&
-            term.getDocument().activeElement === screen) {
-          term.blur();
-        }
-        term.focus();
+
+    const touch = ev.changedTouches[0];
+    const dx = touch.clientX - touchStart.x;
+    const dy = touch.clientY - touchStart.y;
+    const duration = ev.timeStamp - touchStart.time;
+    // Safari requires focus to remain synchronous with the user gesture.
+    if ((dx * dx + dy * dy) <= 100 && duration < 500) {
+      // WebKit may need a fresh focus transition after keyboard dismissal.
+      if (needsTouchFocusRefresh &&
+          term.getDocument().activeElement === screen) {
+        term.blur();
       }
+      term.focus();
     }
 
     touchStart = null;
