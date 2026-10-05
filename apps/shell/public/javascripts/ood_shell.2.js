@@ -8,10 +8,6 @@ function OodShell(element, url, profile) {
 }
 
 OodShell.prototype.createTerminal = function () {
-  // Viewport sizing is intentionally independent of the WebSocket lifecycle:
-  // the shell chrome should fit the visible page even if the connection fails.
-  // If this app ever creates/destroys OodShell instances without a page load,
-  // add a matching destroy path for the listeners installed below.
   this.installVisualViewportSizing();
   this.socket = new WebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
@@ -41,9 +37,7 @@ OodShell.prototype.runTerminal = function () {
     // Capture all keyboard input
     this.installKeyboard();
 
-    // hterm prevents the default action for touch events, which suppresses
-    // Safari's normal tap-to-focus behavior. Add back focus for taps while
-    // keeping hterm's touch-drag scrolling behavior.
+    // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
   };
 
@@ -60,31 +54,16 @@ OodShell.prototype.runTerminal = function () {
   };
 };
 
-/**
- * Restore tap-to-focus for hterm on touch devices without treating a drag or
- * scroll gesture as a tap.
- *
- * This depends on hterm continuing to use a contenteditable x-screen and to
- * install its own touch handlers on that same element without capture. If a
- * future hterm update changes either behavior, re-test whether this wrapper is
- * still necessary before carrying the workaround forward.
- */
+// This depends on hterm using a contenteditable x-screen with non-capture
+// touch handlers that call preventDefault(). Re-test after hterm touch changes.
 OodShell.prototype.installTouchKeyboard = function (term) {
   const screen = term.getDocument().querySelector('x-screen');
-  // Track the initial position of the active one-finger tap candidate.
   let touchStart = null;
-  // hterm registers non-capture touch listeners on this same x-screen. DOM
-  // event dispatch invokes capture listeners on the target before non-capture
-  // listeners on that target, so this observes the gesture before hterm calls
-  // preventDefault(). Registration order only orders listeners within the
-  // same phase. Passive is intentional: OOD does not cancel the event and
-  // leaves hterm responsible for touch scrolling.
+  // Capture observes the gesture before hterm's non-capture handler calls
+  // preventDefault(); passive leaves hterm responsible for touch scrolling.
   const touchOptions = { passive: true, capture: true };
-  // This is a capability heuristic for the Apple/WebKit environment where a
-  // dismissed software keyboard can leave contenteditable logically focused.
-  // It is intentionally not a browser-name check. The non-standard property,
-  // or the underlying focus behavior, may change in future engines/releases;
-  // if that happens prefer re-testing the behavior over expanding UA sniffing.
+  // Apple/WebKit can leave contenteditable focused after dismissing the
+  // software keyboard; use a capability check rather than UA sniffing.
   const needsTouchFocusRefresh = navigator.maxTouchPoints > 0 &&
                                  typeof CSS !== 'undefined' &&
                                  typeof CSS.supports === 'function' &&
@@ -116,10 +95,6 @@ OodShell.prototype.installTouchKeyboard = function (term) {
         const touch = ev.changedTouches[i];
         const dx = touch.clientX - touchStart.x;
         const dy = touch.clientY - touchStart.y;
-        // Once a gesture has moved beyond the 10 CSS-pixel tap radius, do
-        // not allow it to become a tap again if the finger returns near its
-        // starting point. The threshold is a usability choice rather than a
-        // browser invariant and may need tuning for future touch hardware.
         if ((dx * dx + dy * dy) > 100) {
           touchStart = null;
         }
@@ -144,15 +119,9 @@ OodShell.prototype.installTouchKeyboard = function (term) {
       const dx = touch.clientX - touchStart.x;
       const dy = touch.clientY - touchStart.y;
       const duration = ev.timeStamp - touchStart.time;
-      // Treat a short touch within 10 CSS pixels as a tap rather than
-      // scrolling or a long press.
-      // Keep focus synchronous with the user gesture so iOS/iPadOS Safari can
-      // display its software keyboard.
+      // Safari requires focus to remain synchronous with the user gesture.
       if ((dx * dx + dy * dy) <= 100 && duration < 500) {
-        // Apple WebKit can leave a contenteditable element focused after the
-        // software keyboard is dismissed with Done. Force a fresh focus
-        // transition only for the detected environment; doing this for every
-        // touch browser could disrupt IME/composition or accessibility focus.
+        // WebKit may need a fresh focus transition after keyboard dismissal.
         if (needsTouchFocusRefresh &&
             term.getDocument().activeElement === screen) {
           term.blur();
@@ -168,15 +137,6 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 };
 
-/**
- * Keep the terminal sized to the visible viewport when browser chrome or the
- * software keyboard changes the space available to the page.
- *
- * Only height is overridden here. Width remains under normal page/flex layout
- * so pinch-zoom panning and visualViewport.offsetLeft do not become terminal
- * geometry. If mobile browsers begin resizing layout width for their software
- * keyboards, revisit that assumption before adding visualViewport.width.
- */
 OodShell.prototype.installVisualViewportSizing = function () {
   const viewport = window.visualViewport;
   const element = this.element;
@@ -192,24 +152,11 @@ OodShell.prototype.installVisualViewportSizing = function () {
       return;
     }
 
-    // 100vh style.css is the legacy fallback; 100dvh handles dynamic browser chrome.
-    // When VisualViewport is available, ood_shell.2.js may override this with
-    // an inline pixel height to account for the software keyboard as well.
-
-    // Use a single animation-frame callback to coalesce bursts of viewport
-    // events into one layout update.
     resizeFrame = window.requestAnimationFrame(function () {
-      // Convert the visible height back to approximate layout-space CSS
-      // pixels so pinch zoom does not intentionally resize the remote PTY.
-      // Browsers, notably WebKit, have had small precision/interoperability
-      // errors in height * scale. A few pixels are tolerated here; if future
-      // reports show row-count jitter at cell boundaries, revisit this math
-      // rather than assuming the product exactly equals layout viewport height.
+      // scale preserves layout-space height during pinch zoom; WebKit may
+      // introduce small precision differences in height * scale.
       const height = Math.round(viewport.height * viewport.scale);
 
-      // A VisualViewport belonging to a document that is not fully active can
-      // transiently report zero. Preserve the last usable terminal height
-      // rather than collapsing the shell until the next viewport event.
       if (height > 0 && height !== lastHeight) {
         element.style.height = height + 'px';
         lastHeight = height;
@@ -218,10 +165,6 @@ OodShell.prototype.installVisualViewportSizing = function () {
     });
   };
 
-  // The listeners intentionally live for the page lifetime: current Shell
-  // creates one OodShell instance and keeps the disconnected terminal visible.
-  // If the app gains in-page terminal replacement, these listeners and any
-  // pending animation frame should move behind an explicit destroy lifecycle.
   resize();
   viewport.addEventListener('resize', resize);
   viewport.addEventListener('scroll', resize);
