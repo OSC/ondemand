@@ -70,15 +70,15 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   def verify_bc_alert(token, header, message)
-    # Wait for the browser to reach the post-submit path before locating the alert.
-    # Locating it earlier can leave Selenium querying an element from the outgoing document.
-    assert_current_path(batch_connect_session_contexts_path(token))
-    alert = find('div[role="alert"]', text: header)
+    # Wait for the post-submit page before locating elements in the new document.
+    assert_current_path(batch_connect_session_contexts_path(token), ignore_query: true)
+    alert = find('div[role="alert"][data-notice]', text: header)
     within(alert) do
       assert_selector('h4', exact_text: header)
       assert_selector('pre', exact_text: message)
-      find('button').click
+      find('button[data-bs-dismiss="alert"]').click
     end
+    assert_no_selector('div[role="alert"][data-notice]', text: header)
   end
 
   def expect_no_page_reload(&block)
