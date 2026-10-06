@@ -185,7 +185,7 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
-          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+          if [[ "${{ matrix.dist }}" == "debian-13" || "${{ matrix.dist }}" == "ubuntu-26.04" ]]; then
              unset CONTAINER_RT
            fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
