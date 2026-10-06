@@ -162,7 +162,7 @@ en:
     directory: Directory
     edit: Edit
     edit_favorite_title: Rename custom favorite %{favorite}
-    favorites_not_updated: Custom favorites have not been updated
+    favorites_not_updated: 'Custom favorites have not been updated: %{error}'
     file: File
     file_quotas: File Quotas
     files: Files

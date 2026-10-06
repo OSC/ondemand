@@ -6,7 +6,7 @@ class UserCustomization
     
   attr_reader :custom_files_favorites
 
-  # supported actions modify customization in a clear way, and return a boolean
+  # supported actions modify customization in a clear way, and raise if they fail
   def self.supported_actions
     [:add_files_favorite, :delete_files_favorite, :rename_files_favorite].freeze
   end
@@ -16,36 +16,23 @@ class UserCustomization
   end
 
   def add_files_favorite(favorite_path)
-    if validate_favorite_path?(favorite_path)
-      @custom_files_favorites << { title: '', path: favorite_path }
-      update_favorites
-      true
-    else
-      false
-    end
-  rescue
-    false
+    validate_favorite_path!(favorite_path)
+    @custom_files_favorites << { title: '', path: favorite_path }
+    update_favorites
   end
 
   def delete_files_favorite(index)
     removed = @custom_files_favorites.delete_at(index.to_i)
-    return false if removed.nil?
+    raise 'Failed to delete favorite' if removed.nil?
     
     update_favorites
-    true
-  rescue 
-    false
   end
 
   def rename_files_favorite(json)
     args = JSON.parse(json)
     index = args['index'].to_i
-    
     @custom_files_favorites[index][:title] = args['name']
     update_favorites
-    true
-  rescue 
-    false
   end
 
   def favorite_paths
@@ -71,7 +58,8 @@ class UserCustomization
     end
   end
 
-  def validate_favorite_path?(path)
-    File.absolute_path?(path) && File.directory?(path) && File.readable?(path)
+  def validate_favorite_path!(path)
+    msg = "Invalid path specified: #{path}"
+    raise msg unless File.absolute_path?(path) && File.directory?(path) && File.readable?(path)
   end
 end

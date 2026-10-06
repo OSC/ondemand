@@ -29,10 +29,11 @@ class SettingsController < ApplicationController
     alert = nil
     updated = false
     new_settings.each do |action, args|
-      if @user_customization.send(action, args)
+      begin
+        @user_customization.send(action, args)
         updated = true
-      else
-        alert = I18n.t('dashboard.favorites_not_updated')
+      rescue StandardError => e
+        alert = I18n.t('dashboard.favorites_not_updated', error: e)
       end
     end
 

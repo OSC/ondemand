@@ -24,8 +24,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
         tr.find('.add-favorite').click
 
         assert_selector('#favorites li', count: 4)
-        fav_row = find('#favorites a', text: Rails.root.join('config')).ancestor('div.input-group')
-        within(fav_row) do
+        within(find('#favorites a', text: Rails.root.join('config')).ancestor('div.input-group')) do
           assert_selector('a.rename-favorite')
           assert_selector('button.bg-danger')
         end
