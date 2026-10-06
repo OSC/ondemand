@@ -110,6 +110,15 @@ class ActiveJobs::JobstatusdataTest < ActiveSupport::TestCase
     end
   end
 
+  test 'slurm extended details show blank times for unparsable values' do
+    info = slurm_info(submission_time: nil, native: { start_time: :unknown, end_time: 1_700_000_000 })
+    data = ActiveJobs::Jobstatusdata.new(info, 'oakley', true)
+    value = ->(name) { data.native_attribs.find { |a| a.name == name }.value }
+
+    assert_equal '', value.call('Start Time')
+    assert_equal '', value.call('End Time')
+  end
+
   test 'slurm extended details omit Submission Time when Info#submission_time is missing' do
     data = ActiveJobs::Jobstatusdata.new(slurm_info(submission_time: nil), 'oakley', true)
 
