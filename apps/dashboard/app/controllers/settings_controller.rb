@@ -55,10 +55,6 @@ class SettingsController < ApplicationController
     end
   end
 
-  def edit
-    render(partial: 'settings/form', layout: false)
-  end
-
   private
 
   def settings_param
