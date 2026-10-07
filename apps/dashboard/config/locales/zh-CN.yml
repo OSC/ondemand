@@ -309,8 +309,10 @@ zh-CN:
     queue: 队列
     quota_additional_message: 考虑删除或归档文件以释放磁盘空间。
     quota_block: 配额使用量%{used} 可用 %{available}
+    quota_block_group: 组 %{user} 使用配额 %{used} / %{available}
     quota_block_shared: "(您的配额%{used_exclusive} )"
     quota_file: 文件配额使用量%{used} 可用 %{available}
+    quota_file_group: 组 %{user} 使用文件配额 %{used} / %{available}
     quota_file_shared: "(您的文件配额%{used_exclusive})"
     quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: 重新加载页面以查看更新的配额。 配额每5分钟更新一次。
