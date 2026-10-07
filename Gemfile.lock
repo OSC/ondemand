@@ -64,7 +64,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.0)
     net-telnet (0.2.0)
-    ood_packaging (0.23.0)
+    ood_packaging (0.23.1)
       ostruct
       rake (~> 13.0)
     ostruct (0.6.3)
@@ -76,7 +76,7 @@ GEM
     pstore (0.2.1)
     racc (1.8.1)
     rainbow (3.1.1)
-    rake (13.0.6)
+    rake (13.4.2)
     readline (0.0.4)
       reline
     regexp_parser (2.11.3)
