@@ -23,6 +23,44 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
 
+  test "session view uses the sub app view when a sub app exists" do
+    Dir.mktmpdir do |dir|
+      router = PathRouter.new(dir)
+      router.path.join("form.yml").write("{}\n")
+      sub_app_root = router.path.join("local")
+      sub_app_root.mkdir
+      sub_app_root.join("desktop.yml").write("view: desktop_view.html.erb\n")
+      sub_app_root.join("desktop_view.html.erb").write("<p>Desktop session</p>")
+
+      app = BatchConnect::App.new(router: router, sub_app: "desktop")
+
+      assert_equal "<p>Desktop session</p>", app.session_view
+    end
+  end
+
+  test "session view uses the app view when there is no sub app" do
+    Dir.mktmpdir do |dir|
+      router = PathRouter.new(dir)
+      router.path.join("form.yml").write("{}\n")
+      router.path.join("view.html.erb").write("<p>App session</p>")
+
+      app = BatchConnect::App.new(router: router)
+
+      assert_equal "<p>App session</p>", app.session_view
+    end
+  end
+
+  test "session view is nil when the app view does not exist" do
+    Dir.mktmpdir do |dir|
+      router = PathRouter.new(dir)
+      router.path.join("form.yml").write("{}\n")
+
+      app = BatchConnect::App.new(router: router)
+
+      assert_nil app.session_view
+    end
+  end
+
   test "missing app handled gracefully" do
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir + "/missing_app")
