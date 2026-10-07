@@ -94,11 +94,12 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_link('/apps/show/pseudofun'), 1
     assert_select pinned_app_link('/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
 
-    # pinned apps show captions
+    # pinned apps show captions with tightened spacing
+    assert_select "a[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.app-caption.text-muted", 1
     assert_equal  'A really cool Jupyter app',
-                  css_select("a[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.text-muted").text
+                  css_select("a[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.app-caption").text
     assert_equal  'System Installed App',
-                  css_select("a[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.text-muted").text
+                  css_select("a[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.app-caption").text
   end
 
   test 'should add tile attributes to pinned app HTML' do
