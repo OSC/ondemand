@@ -2866,7 +2866,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       find('span', text: 'test').click
-      find("##{base_id}_path_selector_button:not(:disabled)")
+      assert_selector("##{base_id}_path_selector_button:not(:disabled)")
       assert_no_selector("##{base_id}_path_selector_table_spinner", visible: true)
 
       find("##{base_id}_path_selector_button").click
