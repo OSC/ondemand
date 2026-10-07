@@ -9,8 +9,10 @@ describe NginxStage::PunConfigGenerator do
 
   before do
     etc_stub = {
-      :gid  => test_user_gid,
-      :name => test_user
+      :gid   => test_user_gid,
+      :name  => test_user,
+      :uid   => 1000,
+      :shell => '/bin/bash'
     }
 
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
@@ -23,6 +25,100 @@ describe NginxStage::PunConfigGenerator do
 
   it 'requires the user option' do
     expect { described_class.new }.to raise_error(NginxStage::MissingOption, 'missing option: user')
+  end
+
+
+  describe 'concurrent startup protection' do
+    let(:generator) { described_class.new(user: test_user) }
+    let(:lock_path) { '/var/lib/ondemand-nginx/config/puns/spec.conf.lock' }
+    let(:lock) { instance_double(File) }
+
+    it 'takes an exclusive per-user lock while invoking startup hooks' do
+      allow(NginxStage).to receive(:pun_config_path).with(user: generator.user)
+        .and_return('/var/lib/ondemand-nginx/config/puns/spec.conf')
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(File).to receive(:open)
+        .with(lock_path, File::RDWR | File::CREAT, 0644)
+        .and_yield(lock)
+      expect(lock).to receive(:flock).with(File::LOCK_EX)
+      allow(generator).to receive(:pun_running?).and_return(true)
+
+      generator.invoke
+    end
+
+    it 'checks for an already-running PUN after normal user validation' do
+      hook_names = described_class.hooks.keys
+      running_check = hook_names.index(:skip_running_pun)
+
+      expect(hook_names.index(:validate_user_not_special)).to be < running_check
+      expect(hook_names.index(:block_user_with_disabled_shell)).to be < running_check
+    end
+
+    it 'stops setup when another request has already started the PUN' do
+      original_hooks = described_class.hooks.dup
+      skip_running_pun = original_hooks.fetch(:skip_running_pun)
+
+      allow(described_class).to receive(:hooks).and_return(
+        validation_probe: proc { @validation_probe_ran = true },
+        skip_running_pun: skip_running_pun,
+        setup_probe: proc { @setup_probe_ran = true }
+      )
+      allow(generator).to receive(:with_pun_start_lock).and_yield
+      allow(generator).to receive(:pun_running?).and_return(true)
+
+      generator.invoke
+
+      expect(generator.instance_variable_get(:@validation_probe_ran)).to be(true)
+      expect(generator.instance_variable_get(:@setup_probe_ran)).to be_nil
+    end
+
+    it 'does not suppress --skip-nginx configuration generation' do
+      generator = described_class.new(user: test_user, skip_nginx: true)
+      original_hooks = described_class.hooks.dup
+      skip_running_pun = original_hooks.fetch(:skip_running_pun)
+
+      allow(described_class).to receive(:hooks).and_return(
+        skip_running_pun: skip_running_pun,
+        setup_probe: proc { @setup_probe_ran = true }
+      )
+      allow(generator).to receive(:with_pun_start_lock).and_yield
+      expect(generator).not_to receive(:pun_running?)
+
+      generator.invoke
+
+      expect(generator.instance_variable_get(:@setup_probe_ran)).to be(true)
+    end
+  end
+
+  describe '#pun_running?' do
+    let(:generator) { described_class.new(user: test_user) }
+    let(:pid_file) { instance_double(NginxStage::PidFile) }
+
+    before do
+      allow(NginxStage).to receive(:pun_socket_path).with(user: generator.user)
+        .and_return('/var/run/ondemand-nginx/spec/passenger.sock')
+      allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user)
+        .and_return('/var/run/ondemand-nginx/spec/passenger.pid')
+    end
+
+    it 'requires both a socket and a live PID' do
+      allow(File).to receive(:socket?)
+        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
+      allow(NginxStage::PidFile).to receive(:new)
+        .with('/var/run/ondemand-nginx/spec/passenger.pid').and_return(pid_file)
+      allow(pid_file).to receive(:running_process?).and_return(true)
+
+      expect(generator.send(:pun_running?)).to be(true)
+    end
+
+    it 'treats missing PID state as not running' do
+      allow(File).to receive(:socket?)
+        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
+      allow(NginxStage::PidFile).to receive(:new)
+        .and_raise(NginxStage::MissingPidFile)
+
+      expect(generator.send(:pun_running?)).to be(false)
+    end
   end
 
   describe 'missing user' do
