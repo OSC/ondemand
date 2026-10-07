@@ -148,6 +148,26 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     assert_equal 'https://openondemand.org', header_link['href']
   end
 
+  test 'app version is displayed at the bottom of the form' do
+    BatchConnect::App.any_instance.stubs(:version).returns('1.2.3')
+
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :success
+
+    assert_equal 'Jupyter Notebook', css_select('div.col-md-6 > h3').first.text.strip
+    assert_select 'div.col-md-6 > h3 small', false
+    assert_select 'p#app_version', text: /version:\s*1\.2\.3/
+  end
+
+  test 'app version is not displayed when version is nil' do
+    BatchConnect::App.any_instance.stubs(:version).returns(nil)
+
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :success
+
+    assert_select 'p#app_version', false
+  end
+  
   test 'PUN restarts if user groups change' do
     stub_usr_router
     OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me', 'us']))

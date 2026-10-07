@@ -8,6 +8,7 @@ function OodShell(element, url, profile) {
 }
 
 OodShell.prototype.createTerminal = function () {
+  this.installVisualViewportSizing();
   this.socket = new WebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
@@ -16,7 +17,7 @@ OodShell.prototype.createTerminal = function () {
 
 
 OodShell.prototype.runTerminal = function () {
-  var that = this;
+  const that = this;
 
   // Create an instance of hterm.Terminal
   this.term = new hterm.Terminal({ profileId: this.profile });
@@ -26,7 +27,7 @@ OodShell.prototype.runTerminal = function () {
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
-    var io = this.io.push();
+    const io = this.io.push();
 
     // Set up event handlers for io
     io.onVTKeystroke    = that.onVTKeystroke.bind(that);
@@ -35,6 +36,9 @@ OodShell.prototype.runTerminal = function () {
 
     // Capture all keyboard input
     this.installKeyboard();
+
+    // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
+    that.installTouchKeyboard(this);
   };
 
   // Patch cursor setting
@@ -50,12 +54,124 @@ OodShell.prototype.runTerminal = function () {
   };
 };
 
+// This depends on hterm using a contenteditable x-screen with non-capture
+// touch handlers that call preventDefault(). Re-test after hterm touch changes.
+OodShell.prototype.installTouchKeyboard = function (term) {
+  const screen = term.getDocument().querySelector('x-screen');
+  let touchStart = null;
+  // Capture observes the gesture before hterm's non-capture handler calls
+  // preventDefault(); passive leaves hterm responsible for touch scrolling.
+  const touchOptions = { passive: true, capture: true };
+  // Apple/WebKit can leave contenteditable focused after dismissing the
+  // software keyboard; use a capability check rather than UA sniffing.
+  const needsTouchFocusRefresh = navigator.maxTouchPoints > 0 &&
+                                 typeof CSS !== 'undefined' &&
+                                 typeof CSS.supports === 'function' &&
+                                 CSS.supports('-webkit-touch-callout', 'none');
+  if (!screen) {
+    return;
+  }
+
+  screen.addEventListener('touchstart', function (ev) {
+    if (ev.touches.length !== 1) {
+      touchStart = null;
+      return;
+    }
+    const touch = ev.touches[0];
+    touchStart = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: ev.timeStamp
+    };
+  }, touchOptions);
+
+  screen.addEventListener('touchmove', function (ev) {
+    if (touchStart === null) {
+      return;
+    }
+    if (ev.touches.length !== 1) {
+      touchStart = null;
+      return;
+    }
+
+    const touch = ev.touches[0];
+    const dx = touch.clientX - touchStart.x;
+    const dy = touch.clientY - touchStart.y;
+    if ((dx * dx + dy * dy) > 100) {
+      touchStart = null;
+    }
+  }, touchOptions);
+
+  screen.addEventListener('touchend', function (ev) {
+    if (touchStart === null) {
+      return;
+    }
+    if (ev.touches.length !== 0 || ev.changedTouches.length !== 1) {
+      touchStart = null;
+      return;
+    }
+
+    const touch = ev.changedTouches[0];
+    const dx = touch.clientX - touchStart.x;
+    const dy = touch.clientY - touchStart.y;
+    const duration = ev.timeStamp - touchStart.time;
+    // Safari requires focus to remain synchronous with the user gesture.
+    if ((dx * dx + dy * dy) <= 100 && duration < 500) {
+      // WebKit may need a fresh focus transition after keyboard dismissal.
+      if (needsTouchFocusRefresh &&
+          term.getDocument().activeElement === screen) {
+        term.blur();
+      }
+      term.focus();
+    }
+
+    touchStart = null;
+  }, touchOptions);
+  screen.addEventListener('touchcancel', function () {
+    touchStart = null;
+  }, touchOptions);
+};
+
+OodShell.prototype.installVisualViewportSizing = function () {
+  const viewport = window.visualViewport;
+  const element = this.element;
+  let resizeFrame = null;
+  let lastHeight = null;
+
+  if (!viewport) {
+    return;
+  }
+
+  const resize = function () {
+    if (resizeFrame !== null) {
+      return;
+    }
+
+    resizeFrame = window.requestAnimationFrame(function () {
+      // scale preserves layout-space height during pinch zoom; WebKit may
+      // introduce small precision differences in height * scale.
+      const height = Math.round(viewport.height * viewport.scale);
+
+      if (height > 0 && height !== lastHeight) {
+        element.style.height = height + 'px';
+        lastHeight = height;
+      }
+      resizeFrame = null;
+    });
+  };
+
+  resize();
+  viewport.addEventListener('resize', resize);
+  viewport.addEventListener('scroll', resize);
+  window.addEventListener('resize', resize);
+};
+
 OodShell.prototype.getMessage = function (ev) {
   this.term.io.print(ev.data);
 }
 
 OodShell.prototype.closeTerminal = function (ev) {
-  var errorDiv;
+  let errorDiv;
 
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
