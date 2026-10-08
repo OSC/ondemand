@@ -89,6 +89,20 @@ Changes are grouped by type:
 - Help content in batch connect forms no longer render unsafe tags in [5770](https://github.com/OSC/ondemand/pull/5770).
 - `file_download_max` has been corrected to `download_file_max` in [5810](https://github.com/OSC/ondemand/pull/5810).
 
+## [4.2.5] - 2026-09-24
+
+### Fixed
+- File download max works correctly by alerting the user when files are too large to download in [5841](https://github.com/OSC/ondemand/pull/5841).
+  This also corrects the configuration item to `download_file_max` to match documentation and other similar keys
+  in [5823](https://github.com/OSC/ondemand/pull/5841). The erroneous `file_download_max` will continue to work in the 4.2 series,
+  but will be removed in future versions.
+- Saved batch connect settings now correctly override cached values in [5821](https://github.com/OSC/ondemand/pull/5821).
+- VNC Batch connect cards keep the connection tab open when updating in [5822](https://github.com/OSC/ondemand/pull/5822).
+
+### Security
+- Resolved GHSA-frjp-qp79-hc3g (no CVE yet). Fixes specially crafted transfer requests
+  that can execute commands on the web node in [5820](https://github.com/OSC/ondemand/pull/5820).
+
 ## [4.2.4] - 2026-08-24
 
 ### Fixed
@@ -2086,7 +2100,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.4...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.5...HEAD
+[4.2.5]: https://github.com/OSC/ondemand/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/OSC/ondemand/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
