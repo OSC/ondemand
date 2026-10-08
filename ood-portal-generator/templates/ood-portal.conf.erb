@@ -345,6 +345,11 @@ Listen <%= addr_port %>
   #
   <LocationMatch "^<%= @secure_rnode_uri %>/(?<host><%= @host_regex || "[^/]+" %>)/(?<port>\d+)(?<uri>/.*|)">
     SetEnv OOD_SECURE_UPSTREAM 1
+    SetEnv OOD_SECURE_RNODE 1
+    SetEnv OOD_SECURE_RNODE_PREFIX "<%= @secure_rnode_uri %>"
+    <%- if secure_rnode_ports_env -%>
+    SetEnv OOD_SECURE_RNODE_PORTS "<%= secure_rnode_ports_env %>"
+    <%- end -%>
 
     <%- @auth.each do |line| -%>
     <%= line %>

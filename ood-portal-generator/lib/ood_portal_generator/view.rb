@@ -87,6 +87,7 @@ module OodPortalGenerator
       @rnode_uri  = opts.fetch(:rnode_uri, nil)
       @secure_node_uri   = opts.fetch(:secure_node_uri, nil)
       @secure_rnode_uri  = opts.fetch(:secure_rnode_uri, nil)
+      @secure_rnode_ports = normalize_secure_rnode_ports(opts.fetch(:secure_rnode_ports, nil))
 
       # Per-user NGINX sub-uri
       @nginx_uri              = opts.fetch(:nginx_uri, "/nginx")
@@ -205,6 +206,34 @@ module OodPortalGenerator
       else
         value.split('.', 4).join('\.')
       end
+    end
+
+    def normalize_secure_rnode_ports(value)
+      return nil if value.nil?
+
+      unless value.is_a?(Array) && !value.empty? && value.length <= 64
+        raise ArgumentError, 'secure_rnode_ports must be an array containing between 1 and 64 ports'
+      end
+
+      normalized = value.map do |entry|
+        text = entry.to_s
+        unless /\A[0-9]{1,5}\z/.match?(text)
+          raise ArgumentError, 'secure_rnode_ports entries must be decimal TCP ports'
+        end
+
+        port = Integer(text, 10)
+        unless (1..65_535).cover?(port)
+          raise ArgumentError, 'secure_rnode_ports entries must be in the range 1..65535'
+        end
+
+        port
+      end
+
+      normalized.uniq.sort
+    end
+
+    def secure_rnode_ports_env
+      @secure_rnode_ports && @secure_rnode_ports.join(',')
     end
 
     # Render the provided template as a string

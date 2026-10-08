@@ -279,6 +279,8 @@ Listen 8080
   #
   <LocationMatch "^/configured-secure-rnode/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)(?<uri>/.*|)">
     SetEnv OOD_SECURE_UPSTREAM 1
+    SetEnv OOD_SECURE_RNODE 1
+    SetEnv OOD_SECURE_RNODE_PREFIX "/configured-secure-rnode"
 
     AuthType openid-connect
     Require valid-user
