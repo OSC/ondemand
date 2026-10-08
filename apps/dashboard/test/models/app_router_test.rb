@@ -80,6 +80,7 @@ class AppRouterTest < ActiveSupport::TestCase
       ].each { |d| dir.join(d).mkdir }
 
       Configuration.stubs(:external_apps_config).returns([{path: dir, owner: CurrentUser.name, prefix: 'new'}])
+      Etc.stubs(:getpwnam).with(CurrentUser.name).returns(OpenStruct.new({shell: '/sbin/nologin'}))
 
       apps = SysRouter.apps.map(&:name).sort
       assert_equal ["app1", "app-3"].sort, apps
@@ -97,6 +98,7 @@ class AppRouterTest < ActiveSupport::TestCase
 
       SysRouter.stubs(:base_path).returns(sys_dir)
       Configuration.stubs(:external_apps_config).returns([{path: ext_dir.to_s, owner: CurrentUser.name, prefix: 'new'}])
+      Etc.stubs(:getpwnam).with(CurrentUser.name).returns(OpenStruct.new({shell: '/sbin/nologin'}))
 
       all_apps = ['ext_app1', 'ext_app2', 'ext_app3', 'sys_app1', 'sys_app2', 'sys_app3'].sort
       assert_equal all_apps, SysRouter.apps.map(&:name).sort
@@ -107,15 +109,44 @@ class AppRouterTest < ActiveSupport::TestCase
     Dir.mktmpdir "apps" do |dir|
       dir = Pathname.new(dir)
       good_app = dir.join('trusted_app')
-      bad_app  = dir.join('other_app')
+      bad_app  = dir.join('untrusted_app')
       [good_app, bad_app].each(&:mkdir)
 
       Configuration.stubs(:external_apps_config).returns([{path: dir.to_s, owner: CurrentUser.name, prefix: 'ext'}])
+      Etc.stubs(:getpwnam).with(CurrentUser.name).returns(OpenStruct.new({shell: '/sbin/nologin'}))
 
       original_stat = File.method(:stat)
       File.stubs(:stat).with(bad_app.to_s).returns(OpenStruct.new({uid: 0, world_writable?: true}))
       File.stubs(:stat).with(dir.parent.to_s).returns(original_stat.call(dir.parent.to_s))
-      File.stubs(:stat).with(dir.to_s       ).returns(original_stat.call(dir.to_s))
+      File.stubs(:stat).with(good_app.to_s  ).returns(original_stat.call(dir.to_s))
+      
+      assert_equal [good_app.basename.to_s], SysRouter.apps.map(&:name)
+    end
+  end
+
+  test "SysRouter.apps should hide apps from users with login access" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      good_app_dir = dir.join('trusted_apps')
+      bad_app_dir  = dir.join('other_apps')
+      good_app = good_app_dir.join('trusted_app')
+      bad_app = bad_app_dir.join('other_app')
+      [good_app, bad_app].each(&:mkpath)
+
+
+      Configuration.stubs(:external_apps_config).returns([
+        {path: dir.join('trusted_apps').to_s, owner: CurrentUser.name, prefix: 'ext'},
+        {path: dir.join('other_apps').to_s, owner: 'otheruser', prefix: 'other'},
+      ])
+
+      PosixFile.stubs(:username_from_cache).with(123456).returns('otheruser')
+      PosixFile.stubs(:username_from_cache).with(CurrentUser.uid).returns(CurrentUser.name)
+      Etc.stubs(:getpwnam).with(CurrentUser.name).returns(OpenStruct.new({shell: 'usr/sbin/nologin'}))
+      Etc.stubs(:getpwnam).with('otheruser').returns(OpenStruct.new({shell: '/bin/bash'}))
+
+      original_stat = File.method(:stat)
+      File.stubs(:stat).with(bad_app.to_s).returns(OpenStruct.new({uid: 123456, world_writable?: true}))
+      File.stubs(:stat).with(dir.parent.to_s).returns(original_stat.call(dir.parent.to_s))
       File.stubs(:stat).with(good_app.to_s  ).returns(original_stat.call(dir.to_s))
       
       assert_equal [good_app.basename.to_s], SysRouter.apps.map(&:name)
