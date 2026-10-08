@@ -662,6 +662,97 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "nsf_access_announcements_widget_enabled? is false when widget is not in dashboard layout" do
+    with_modified_env(no_config_env) do
+      cfg = ConfigurationSingleton.new
+      refute cfg.nsf_access_announcements_widget_enabled?
+    end
+  end
+  
+  test "nsf_access_announcements_widget_enabled? is true when widget is in dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_announcements'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+  
+        assert ConfigurationSingleton.new.nsf_access_announcements_widget_enabled?
+      end
+    end
+  end
+  
+  test "nsf_access_announcements_widget_enabled? is true when widget is in a profile dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'profiles' => {
+              'team1' => {
+                'dashboard_layout' => {
+                  'rows' => [
+                    { 'columns' => [{ 'width' => 12, 'widgets' => ['motd', 'nsf_access_announcements'] }] }
+                  ]
+                }
+              }
+            }
+          }.to_yaml)
+        end
+  
+        assert ConfigurationSingleton.new.nsf_access_announcements_widget_enabled?
+      end
+    end
+  end
+  
+  test "connect_sources includes nsf_access_announcements hostname when widget is enabled" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_announcements'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+  
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, :self
+        assert_includes sources, 'support.access-ci.org'
+        refute_includes sources, 'https://support.access-ci.org/api/2.2/announcements'
+      end
+    end
+  end
+  
+  test "connect_sources uses configured nsf_access_announcements hostname" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({
+        OOD_CONFIG_D_DIRECTORY:           dir.to_s,
+        OOD_NSF_ACCESS_ANNOUNCEMENTS_URL: 'https://announcements.example.org/api/2.2/announcements'
+      }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_announcements'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+  
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, 'announcements.example.org'
+        refute_includes sources, 'support.access-ci.org'
+      end
+    end
+  end
+  
   test "handles exception LoadError" do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do

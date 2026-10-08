@@ -19,5 +19,7 @@ class NsfAccessAnnouncementsWidgetTest < ActionDispatch::IntegrationTest
     assert_select 'div.h2', text: I18n.t('dashboard.nsf_access_announcements')
     assert_select 'div#nsf_access_announcements.spinner-border[role=status]', 1
     assert_select 'div#nsf_access_announcements span.visually-hidden', text: 'Loading...'
+    assert_select 'div#ood_config[data-nsf-access-announcements-url=?]',
+                  'https://support.access-ci.org/api/2.2/announcements'
   end
 end

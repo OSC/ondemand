@@ -80,7 +80,8 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
-      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
+      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events',
+      :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements'
     }.freeze
   end
 
@@ -433,20 +434,19 @@ class ConfigurationSingleton
     sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
     sources << xdmod_host if xdmod_integration_enabled?
     sources << nsf_access_events_host if nsf_access_events_widget_enabled? && nsf_access_events_host.present?
+    sources << nsf_access_announcements_host if nsf_access_announcements_widget_enabled? && nsf_access_announcements_host.present?
 
     sources
   end
 
   # Whether the nsf_access_events widget is configured in any dashboard layout.
   def nsf_access_events_widget_enabled?
-    return false if nsf_access_events_url.blank?
+    nsf_access_widget_enabled?('nsf_access_events', nsf_access_events_url)
+  end
 
-    layouts = [config[:dashboard_layout]]
-    config.fetch(:profiles, {}).each_value do |profile|
-      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
-    end
-
-    layouts.compact.any? { |layout| layout_includes_widget?(layout, 'nsf_access_events') }
+  # Whether the nsf_access_announcements widget is configured in any dashboard layout.
+  def nsf_access_announcements_widget_enabled?
+    nsf_access_widget_enabled?('nsf_access_announcements', nsf_access_announcements_url)
   end
 
   def rails_env_production?
@@ -464,9 +464,28 @@ class ConfigurationSingleton
     app_dir = Rails.root.realpath.parent.join(name)
     app_dir.directory? && app_dir.join('manifest.yml').readable?
   end
+  
+  def nsf_access_widget_enabled?(widget_name, url)
+    return false if url.blank?
+
+    layouts = [config[:dashboard_layout]]
+    config.fetch(:profiles, {}).each_value do |profile|
+      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
+    end
+
+    layouts.compact.any? { |layout| layout_includes_widget?(layout, widget_name) }
+  end
 
   def nsf_access_events_host
-    URI.parse(nsf_access_events_url).host
+    host_from_url(nsf_access_events_url)
+  end
+
+  def nsf_access_announcements_host
+    host_from_url(nsf_access_announcements_url)
+  end
+
+  def host_from_url(url)
+    URI.parse(url).host
   rescue URI::InvalidURIError
     nil
   end
