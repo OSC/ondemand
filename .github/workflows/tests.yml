@@ -163,6 +163,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
+    env:
+      OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v6
@@ -183,7 +185,7 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
-          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+          if [[ "${{ matrix.dist }}" == "debian-13" || "${{ matrix.dist }}" == "ubuntu-26.04" ]]; then
              unset CONTAINER_RT
            fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
