@@ -157,6 +157,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_interactive_apps'))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
     Configuration.stubs(:external_apps_config).returns([{path: Rails.root.join('test/fixtures/usr/shared'), owner: CurrentUser.name, prefix: 'ext'}])
+    Etc.stubs(:getpwnam).with(CurrentUser.name).returns(OpenStruct.new({name: CurrentUser.name, shell: 'usr/sbin/nologin'}))
 
     get root_path
 
