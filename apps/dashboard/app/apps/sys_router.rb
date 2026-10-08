@@ -82,6 +82,14 @@ class SysRouter
   end
 
   def self.validate_ownership?(path, owner)
-    PosixFile.username_from_cache(path.stat.uid) == owner || owner == nil
+    # default paths are always valid, regardless of owner
+    return true if owner.nil?
+
+    true_owner = PosixFile.username_from_cache(path.stat.uid)
+    owner == true_owner && nologin_user?(true_owner)
+  end
+
+  def self.nologin_user?(user)
+    Etc.getpwnam(user).shell.ends_with?('nologin')
   end
 end
