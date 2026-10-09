@@ -43,7 +43,7 @@ describe NginxStage::PunConfigGenerator do
       expect(lock).to receive(:flock).with(File::LOCK_EX)
       allow(generator).to receive(:pun_running?).and_return(true)
 
-      generator.invoke
+      expect { generator.invoke }.to raise_error(NginxStage::LockFileError, 'Startup blocked because a PUN is already running')
     end
 
     it 'checks for an already-running PUN after normal user validation' do
@@ -66,7 +66,7 @@ describe NginxStage::PunConfigGenerator do
       allow(generator).to receive(:with_pun_start_lock).and_yield
       allow(generator).to receive(:pun_running?).and_return(true)
 
-      generator.invoke
+      expect { generator.invoke }.to raise_error(NginxStage::LockFileError, 'Startup blocked because a PUN is already running')
 
       expect(generator.instance_variable_get(:@validation_probe_ran)).to be(true)
       expect(generator.instance_variable_get(:@setup_probe_ran)).to be_nil
