@@ -43,4 +43,7 @@ module NginxStage
 
   # An exception raised when attempting to access an invalid socket file
   class InvalidSocketFile < Error; end
+
+  # An exception raised when attempting to access a lock file used by another process
+  class LockFileError < Error; end
 end

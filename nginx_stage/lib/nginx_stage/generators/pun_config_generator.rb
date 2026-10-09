@@ -47,7 +47,7 @@ module NginxStage
     # Keep validation ahead of the running-PUN shortcut. Configuration-only
     # generation still runs even when the PUN is already active.
     add_hook :skip_running_pun do
-      throw :pun_already_running if !skip_nginx && pun_running?
+      raise LockFileError, 'Startup blocked because a PUN is already running' if !skip_nginx && pun_running?
     end
 
     # @!method app_init_url
