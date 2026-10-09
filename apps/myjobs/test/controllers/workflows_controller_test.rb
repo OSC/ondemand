@@ -11,11 +11,14 @@ class WorkflowsControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_not_nil assigns(:workflows)
+    assert_select 'div.alert.alert-warning[role=alert]', /deprecated/
+    assert_select 'div.alert.alert-warning a[href=?]', OodAppkit.dashboard.url.join('projects').to_s, text: 'Project Manager'
   end
 
   test 'should get new' do
     get :new
     assert_response :success
+    assert_select 'div.alert.alert-warning[role=alert]', /deprecated/
   end
 
   # test "should create workflow" do
