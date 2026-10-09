@@ -3,7 +3,17 @@ module NginxStage
   # responsible for reloading the per-user NGINX process after updating the app
   # config.
   class AppConfigGenerator < Generator
+    PUN_SOCKET_SHUTDOWN_TIMEOUT = 30
+    PUN_SOCKET_SHUTDOWN_POLL_INTERVAL = 0.1
+
     desc 'Generate a new nginx app config and reload process'
+
+    # Keep config generation and PUN replacement serialized for this user.
+    def invoke
+      with_pun_app_lock do
+        super
+      end
+    end
 
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
@@ -88,6 +98,7 @@ module NginxStage
             *NginxStage.nginx_args(user: user, signal: :stop)
           )
           abort(o) unless s.success?
+          wait_for_pun_socket_shutdown
         end
         o, s = Open3.capture2e(
           [
@@ -106,6 +117,29 @@ module NginxStage
     end
 
     private
+      def with_pun_app_lock
+        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
+        FileUtils.mkdir_p File.dirname(lock_path)
+
+        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
+          lock.flock(File::LOCK_EX)
+          yield
+        end
+      end
+
+      def wait_for_pun_socket_shutdown
+        socket_path = NginxStage.pun_socket_path(user: user)
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
+
+        while File.exist?(socket_path) || File.symlink?(socket_path)
+          if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+            raise Error, "timed out waiting for previous PUN socket to disappear: #{socket_path}"
+          end
+
+          sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
+        end
+      end
+
       # NGINX app config path
       def app_config_path
         NginxStage.app_config_path(env: env, owner: owner, name: name)
