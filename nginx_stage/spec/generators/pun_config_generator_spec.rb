@@ -63,7 +63,8 @@ describe NginxStage::PunConfigGenerator do
         skip_running_pun: skip_running_pun,
         setup_probe: proc { @setup_probe_ran = true }
       )
-      allow(generator).to receive(:with_pun_start_lock).and_yield
+      allow(generator).to receive(:with_pun_lifecycle_lock)
+        .with(user: generator.user).and_yield
       allow(generator).to receive(:pun_running?).and_return(true)
 
       generator.invoke
@@ -81,7 +82,8 @@ describe NginxStage::PunConfigGenerator do
         skip_running_pun: skip_running_pun,
         setup_probe: proc { @setup_probe_ran = true }
       )
-      allow(generator).to receive(:with_pun_start_lock).and_yield
+      allow(generator).to receive(:with_pun_lifecycle_lock)
+        .with(user: generator.user).and_yield
       expect(generator).not_to receive(:pun_running?)
 
       generator.invoke

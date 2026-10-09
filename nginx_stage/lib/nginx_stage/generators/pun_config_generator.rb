@@ -10,7 +10,7 @@ module NginxStage
     # Serialize PUN initialization for one user. A second request that queued
     # behind another startup re-checks PUN state before running setup hooks.
     def invoke
-      with_pun_start_lock do
+      with_pun_lifecycle_lock(user: user) do
         catch(:pun_already_running) do
           super
         end
@@ -171,16 +171,6 @@ module NginxStage
 
 
     private
-      def with_pun_start_lock
-        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
-        FileUtils.mkdir_p File.dirname(lock_path)
-
-        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
-          lock.flock(File::LOCK_EX)
-          yield
-        end
-      end
-
       def pun_running?
         return false unless File.socket?(NginxStage.pun_socket_path(user: user))
 
