@@ -70,11 +70,15 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   def verify_bc_alert(token, header, message)
-    assert_selector('div[role="alert"]')
-    assert_equal batch_connect_session_contexts_path(token), current_path
-    assert_equal header, find('div[role="alert"]').find('h4').text
-    assert_equal message, find('div[role="alert"]').find('pre').text
-    find('div[role="alert"]').find('button').click
+    # Wait for the post-submit page before locating elements in the new document.
+    assert_current_path(batch_connect_session_contexts_path(token), ignore_query: true)
+    alert = find('div[role="alert"][data-notice]', text: header)
+    within(alert) do
+      assert_selector('h4', exact_text: header)
+      assert_selector('pre', exact_text: message)
+      find('button[data-bs-dismiss="alert"]').click
+    end
+    assert_no_selector('div[role="alert"][data-notice]', text: header)
   end
 
   def expect_no_page_reload(&block)
