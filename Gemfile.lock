@@ -64,7 +64,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-ssh (7.3.0)
     net-telnet (0.2.0)
-    ood_packaging (0.23.1)
+    ood_packaging (0.23.2)
       ostruct
       rake (~> 13.0)
     ostruct (0.6.3)
