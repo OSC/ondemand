@@ -11,9 +11,7 @@ module NginxStage
     # behind another startup re-checks PUN state before running setup hooks.
     def invoke
       with_pun_start_lock do
-        catch(:pun_already_running) do
-          super
-        end
+        super
       end
     end
 
