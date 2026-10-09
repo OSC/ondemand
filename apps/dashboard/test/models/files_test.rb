@@ -275,4 +275,29 @@ class FilesTest < ActiveSupport::TestCase
       assert_equal(4, new_result)
     end
   end
+
+  test 'symlinks are not downloadable' do
+    Dir.mktmpdir do |dir|
+      real_file = File.join(dir, 'real_file')
+      symlink = File.join(dir, 'link')
+      FileUtils.touch(real_file)
+      File.symlink(real_file, symlink)
+
+      refute(PosixFile.new(symlink).downloadable?)
+      refute(PosixFile.new(symlink).can_download_file?.first)
+    end
+  end
+
+  test 'files_to_zip excludes symlinks' do
+    Dir.mktmpdir do |dir|
+      real_file = File.join(dir, 'real_file')
+      symlink = File.join(dir, 'link')
+      FileUtils.touch(real_file)
+      File.symlink(real_file, symlink)
+
+      paths = PosixFile.new(dir).files_to_zip.map(&:path)
+      assert_includes(paths, real_file)
+      refute_includes(paths, symlink)
+    end
+  end
 end
