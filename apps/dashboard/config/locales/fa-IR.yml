@@ -262,6 +262,7 @@ fa-IR:
     jobs_workflow_submitted: گردش‌کار با موفقیت ارسال شد!
     jobs_workflow_sync_key_help: در صورت فعال بودن، همه راه‌اندازهای این گردش‌کار متغیر محیطی یکسان <code>OOD_WORKFLOW_SYNC_KEY</code> را دریافت می‌کنند؛ این متغیر توکنی تصادفی و یکتا برای هر اجرای گردش‌کار است. برای ساخت نام فایل‌های هماهنگ، فایل‌های قفل یا شناسه‌های مشترک بین کارهای وابسته مفید است.
     jobs_workflows: گردش‌کارها
+    jobs_workflows_not_supported: Workflows are not supported by the configured scheduler.
     launch: راه‌اندازی
     load_report: گزارش بارگیری + %{node}
     logo_alt_text: به Open OnDemand خوش آمدید

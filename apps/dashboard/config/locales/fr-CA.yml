@@ -266,6 +266,7 @@ fr-CA:
     jobs_workflow_submitted: Flux de travail soumis avec succès !
     jobs_workflow_sync_key_help: Lorsqu'il est activé, chaque lanceur dans ce flux de travail reçoit la même variable d'environnement <code>OOD_WORKFLOW_SYNC_KEY</code> (un jeton aléatoire unique à chaque exécution de flux de travail). Utile pour générer des noms de fichiers synchronisés, des fichiers de verrouillage ou des identifiants partagés entre les tâches dépendantes.
     jobs_workflows: Flux de travail
+    jobs_workflows_not_supported: Workflows are not supported by the configured scheduler.
     launch: Lancer
     load_report: Rapport de chargement + %{node}
     logo_alt_text: Bienvenue dans Open OnDemand
