@@ -16,20 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Harden BatchConnect alert system tests against navigation races (#5813)\
-update changelog for 4.2.5 (#5900)\
-upgrad rails to 7.2.4 (#5870)\
-Bump source-map-js from 1.2.1 to 1.2.2 in /apps/dashboard (#5894)\
-Prevent stale path selection while directory contents are loading (#5830)\
-Support early-access (#5878)\
-Add timezone to Active jobs extended details (#5838)\
-Fix mobile Shell keyboard focus and viewport sizing (#5804)\
-Move batch connect app version to form footer (#5876)\
-Serialize concurrent pun initialization (#5872)\
-Disable workflows when scheduler doesn't support it (#5435)\
-Add test cases for bc_num_nodes (#5846)\
-Fix project-manager navigation race after invalid form submission (#5865)\
-Update Changelog (#5867)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -55,6 +41,8 @@ Update Changelog (#5867)
 - The NSF events URL is now configurable in [5798](https://github.com/OSC/ondemand/pull/5798).
 - Ctrl+C and Ctrl+V (copy/paste) shortcuts now work in the FileExplorer in [5789](https://github.com/OSC/ondemand/pull/5789).
 - The file browser now shows timezones in the modified date field in [5839](https://github.com/OSC/ondemand/pull/5839).
+- Pun initialization now locks to serialize itself in [5872](https://github.com/OSC/ondemand/pull/5872).
+- The timezone now shows in Active jobs extended details in [5838](https://github.com/OSC/ondemand/pull/5838).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -92,6 +80,7 @@ Update Changelog (#5867)
 - The dashboard's configuration now rescues Exceptions when loading configs in [5827](https://github.com/OSC/ondemand/pull/5827).
 - Rclone remotes are sorted fixing an issue with newer rclone versions in [5860](https://github.com/OSC/ondemand/pull/5860).
 - The file editor now chooses the minimum value between file_editor_max_size and download_file_max in [5857](https://github.com/OSC/ondemand/pull/5857).
+- Fix mobile Shell keyboard focus and viewport sizing in [5804](https://github.com/OSC/ondemand/pull/5804).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
@@ -102,6 +91,8 @@ Update Changelog (#5867)
 - There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OSC/ondemand/pull/5351).
 - Help content in batch connect forms no longer render unsafe tags in [5770](https://github.com/OSC/ondemand/pull/5770).
 - `file_download_max` has been corrected to `download_file_max` in [5810](https://github.com/OSC/ondemand/pull/5810).
+- Batch connect app versions now show at the bottom of the page in [5876](https://github.com/OSC/ondemand/pull/5876).
+- Workflows are now disabled for schedulers that don't support them in [5435](https://github.com/OSC/ondemand/pull/5435).
 
 ## [4.2.5] - 2026-09-24
 
