@@ -16,6 +16,20 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Harden BatchConnect alert system tests against navigation races (#5813)\
+update changelog for 4.2.5 (#5900)\
+upgrad rails to 7.2.4 (#5870)\
+Bump source-map-js from 1.2.1 to 1.2.2 in /apps/dashboard (#5894)\
+Prevent stale path selection while directory contents are loading (#5830)\
+Support early-access (#5878)\
+Add timezone to Active jobs extended details (#5838)\
+Fix mobile Shell keyboard focus and viewport sizing (#5804)\
+Move batch connect app version to form footer (#5876)\
+Serialize concurrent pun initialization (#5872)\
+Disable workflows when scheduler doesn't support it (#5435)\
+Add test cases for bc_num_nodes (#5846)\
+Fix project-manager navigation race after invalid form submission (#5865)\
+Update Changelog (#5867)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
