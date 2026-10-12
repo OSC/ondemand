@@ -183,8 +183,8 @@ jobs:
         continue-on-error: true
         uses: docker/login-action@v4
         with:
-          username: ${{ env.DOCKERHUB_USER }}
-          password: ${{ env.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.ONDEMAND_DOCKERHUB_USER }}
+          password: ${{ secrets.ONDEMAND_DOCKERHUB_PASSWORD }}
 
       - name: Build package
         if: matrix.arch == 'x86_64'
