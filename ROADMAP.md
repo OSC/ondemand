@@ -22,7 +22,7 @@ Development work comes from several places:
 - GitHub issues opened by the community or OOD team
 - Security advisories and vulnerabilities
 - Community feedback through Discourse, conferences, and community meetings
-- Input from project leadership, grant PIs, governance committees, grant committments, and OSC
+- Input from project leadership, grant PIs, governance committees, grant commitments, and OSC
 
 ## How We Prioritize Work
 
