@@ -1,7 +1,7 @@
 > Please review our [Contributing Guide](https://github.com/OSC/ondemand/blob/master/CONTRIBUTING.md) before submitting a pull request.
 
 ## What does this PR do, and what is the related issue, if applicable? 
-A brief description of the change and why it's being made.
+<!-- A brief description of the change and why it's being made. -->
 
 Fixes #_______
 
@@ -11,7 +11,7 @@ Fixes #_______
 - [ ] No test is needed because _____ (documentation fix, dependency update, etc.) 
 
 ## Documentation
-If this PR is for a new feature or behavior change, please help us kick start the documentation with a blurb. 
+<!-- If this PR is for a new feature or behavior change, please help us kick start the documentation with a blurb. -->
 
 `Documentation blurb here`
 
@@ -26,4 +26,4 @@ and I take responsibility for its correctness.
 - [ ] This is a large pull request and was discussed first in an issue or with the maintainers.
       
 ## Anything else?
-Screenshots, context, or anything reviewers should know.
+<!-- Screenshots, context, or anything reviewers should know. -->
