@@ -87,6 +87,20 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
     I18n.t('dashboard.batch_connect_sessions_delete_full_title', title: 'AppName')
   end
 
+  test 'render_connection links a running Selkies session to its client with the session token in the fragment' do
+    session = create_session
+    session.script_type = 'selkies'
+    session.stubs(:starting?).returns(false)
+    session.stubs(:view).returns(nil)
+    session.stubs(:connect).returns(OpenStruct.new(host: 'node1', port: 8080, password: 'abc123'))
+
+    link = Nokogiri::HTML(render_connection(session)).at_css('a.btn-primary')
+
+    assert_equal '/rnode/node1/8080/#token=abc123', link['href']
+    assert_equal 'Launch AppName', link.text.strip
+    assert_equal '_blank', link['target']
+  end
+
   test 'connection_tabs marks the first tab as the default tab' do
     tabs = [
       { title: 'Tab One', partial: 'starting', locals: {} },
