@@ -13,16 +13,6 @@ class FilesTest < ApplicationSystemTestCase
     Capybara.current_session.quit
   end
 
-  def assert_copied_without_symlinks(dest, src, msg = nil)
-    diff_output = `diff -rq #{dest} #{src}`.lines.reject { |line|
-      next false unless (m = line.match(/\AOnly in (.+): (.+)\s*\z/))
-
-      File.symlink?(File.join(m[1], m[2]))
-    }.join.strip
-
-    assert_equal '', diff_output, msg
-  end
-
   test "visiting files app doesn't raise js errors" do
     visit files_url(Rails.root.to_s)
 
@@ -128,10 +118,10 @@ class FilesTest < ApplicationSystemTestCase
 
       # with copying done, let's assert on the UI and the file system
       assert_selector 'span', text: '100% copy files', count: 1
-      assert_copied_without_symlinks(File.join(dir, 'app'), Rails.root.join('app'),
-                   'failed to recursively copy app dir')
-      assert_copied_without_symlinks(File.join(dir, 'config'), Rails.root.join('config'),
-                   'failed to recursively copy config dir')
+      assert_equal '', `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app')}`.strip,
+                   'failed to recursively copy app dir'
+      assert_equal '', `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config')}`.strip,
+                   'failed to recursively copy config dir'
       assert_equal '', `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip,
                    'failed to copy manifest.yml'
 
@@ -268,7 +258,7 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
-  test 'copying directories skips nested symlinks' do
+  test 'copying symlinks' do
     Dir.mktmpdir do |dir|
       FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
       `touch #{dir}/src/real_file`
@@ -287,19 +277,25 @@ class FilesTest < ApplicationSystemTestCase
       # src directory is copied
       find('tbody a', exact_text: 'src', wait: MAX_WAIT)
 
-      # only the real file is copied; symlinks are skipped
+      # and has real file and the symlinks
       visit files_url("#{dir}/dest/src")
-      assert_selector '#directory-contents tbody tr', count: 1
+      assert_selector '#directory-contents tbody tr', count: 3
       find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'link', wait: MAX_WAIT)
+      find('tbody a[data-type="d"]', exact_text: 'linked_dir', wait: MAX_WAIT)
+
+      # the symlinks are copied as a symlinks and they still point to the same realpath
+      sym_file = Pathname.new("#{dir}/dest/src/link")
+      sym_dir = Pathname.new("#{dir}/dest/src/linked_dir")
+      assert(sym_file.symlink?)
+      assert(sym_dir.symlink?)
+      assert_equal("#{dir}/src/real_file", sym_file.realpath.to_s)
+      assert_equal(Rails.root.to_s, sym_dir.realpath.to_s)
       assert(Pathname.new("#{dir}/dest/src/real_file").file?)
-      refute(Pathname.new("#{dir}/dest/src/link").exist?)
-      refute(Pathname.new("#{dir}/dest/src/linked_dir").exist?)
     end
   end
 
-  # similar to the test above, but the symlink is outside of the
-  # allowlist. nested symlinks are skipped during copy.
-  test 'copying directories skips symlinks outside of allowlist' do
+  test 'copying symlinked files outside of allowlist' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
         FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
@@ -319,18 +315,25 @@ class FilesTest < ApplicationSystemTestCase
         # src directory is copied
         find('tbody a', exact_text: 'src', wait: MAX_WAIT)
 
-        # only the real file is copied (symlinks are skipped)
+        # but it only shows the real file (no symlinks)
         visit files_url("#{dir}/dest/src")
         assert_selector '#directory-contents tbody tr', count: 1
         find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+
+        # the symlink is copied as a symlink as points to the the file outside the allowlist
+        sym = Pathname.new("#{dir}/dest/src/link")
+        assert(sym.symlink?)
+        assert_equal('/etc/passwd', sym.realpath.to_s)
         assert(Pathname.new("#{dir}/dest/src/real_file").file?)
-        refute(Pathname.new("#{dir}/dest/src/link").exist?)
-        refute(Pathname.new("#{dir}/dest/src/linked_dir").exist?)
+
+        sym = Pathname.new("#{dir}/dest/src/linked_dir")
+        assert(sym.symlink?)
+        assert_equal('/var/log', sym.realpath.to_s)
       end
     end
   end
 
-  test 'copying directories skips relative symlinks' do
+  test 'copying  relative symlinks' do
     Dir.mktmpdir do |dir|
       FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
       `mkdir -p #{dir}/src/real_dir`
@@ -351,11 +354,46 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'src', wait: MAX_WAIT)
       visit files_url("#{dir}/dest/src")
 
+      # assert_selector('#directory-contents tbody tr', count: 4)
       find('tbody a', exact_text: 'real_dir', wait: MAX_WAIT)
       find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
-      assert_selector '#directory-contents tbody tr', count: 2
-      refute(Pathname.new("#{dir}/dest/src/link").exist?)
-      refute(Pathname.new("#{dir}/dest/src/linked_dir").exist?)
+      find('tbody a', exact_text: 'link', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'linked_dir', wait: MAX_WAIT)
+
+      sym_file = Pathname.new("#{dir}/dest/src/link")
+      sym_dir = Pathname.new("#{dir}/dest/src/linked_dir")
+      assert(sym_file.symlink?)
+      assert(sym_dir.symlink?)
+      assert_equal('real_file', sym_file.readlink.to_s)
+      assert_equal('real_dir', sym_dir.readlink.to_s)
+    end
+  end
+
+  test 'copying directories skips nested symlinks when allow_symlink_ops is false' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOW_SYMLINK_OPS: 'false' }) do
+        FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+        `touch #{dir}/src/real_file`
+        `ln -s #{dir}/src/real_file #{dir}/src/link`
+        `ln -s #{Rails.root} #{dir}/src/linked_dir`
+
+        visit files_url(dir)
+        find('a', exact_text: 'src').ancestor('tr').find('input[type="checkbox"]').click
+        find('#copy-move-btn').click
+
+        visit files_url("#{dir}/dest")
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('#clipboard-copy-to-dir').click
+
+        find('tbody a', exact_text: 'src', wait: MAX_WAIT)
+
+        visit files_url("#{dir}/dest/src")
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+        assert(Pathname.new("#{dir}/dest/src/real_file").file?)
+        refute(Pathname.new("#{dir}/dest/src/link").exist?)
+        refute(Pathname.new("#{dir}/dest/src/linked_dir").exist?)
+      end
     end
   end
 

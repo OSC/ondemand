@@ -10,9 +10,11 @@ class PosixTransfer < Transfer
       non_existant = files.keys.reject { |f| File.exist?(f) }
       record.errors.add :files, "cannot copy or move files that do not exist: #{non_existant.join(', ')}" if non_existant.present?
 
-      # disallow copy/move of symlinks
-      symlinks = files.keys.select { |f| File.symlink?(f) }
-      record.errors.add :files, "cannot copy or move symlinks: #{symlinks.join(', ')}" if symlinks.present?
+      unless Configuration.allow_symlink_ops?
+        # Disallow copy/move of symlinks to avoid TOCTOU attacks.
+        symlinks = files.keys.select { |f| File.symlink?(f) }
+        record.errors.add :files, "cannot copy or move symlinks: #{symlinks.join(', ')}" if symlinks.present?
+      end
     end
 
     files.each do |k, v|
@@ -143,9 +145,9 @@ class PosixTransfer < Transfer
     original_src = src if original_src.nil?
     new_dest = translate_cp_path(src, dest, original_src)
 
-    if src.symlink?
+    if src.symlink? && !Configuration.allow_symlink_ops?
       return
-    elsif src.file?
+    elsif src.file? || src.symlink?
       cp_single(src, new_dest)
     elsif src.directory? && src.empty?
       inc_cp_percent
@@ -164,9 +166,19 @@ class PosixTransfer < Transfer
       inc_cp_percent
     end
 
-    real_src = src.realpath
-    AllowlistPolicy.default.validate!(real_src.to_s)
-    FileUtils.cp(real_src, dest)
+    if src.symlink?
+      # you're symlinking a directory, but the name of the link can differ
+      # from the actual directory, so we have to ensure that the name
+      # of the new link we're making is the same name as the original
+      dest = dest.join(src.basename) if dest.directory?
+      FileUtils.symlink(src.readlink, dest)
+    else
+      # have to get the real path, validate and copy _it_
+      # in case it's under a symlink outside of the allowlist.
+      real_src = src.realpath
+      AllowlistPolicy.default.validate!(real_src.to_s)
+      FileUtils.cp(real_src, dest)
+    end
 
     inc_cp_percent
   end

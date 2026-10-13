@@ -65,7 +65,21 @@ class TransferTest < ActiveSupport::TestCase
     end
   end
 
-  test 'copy of symlink is invalid' do
+  test 'copy of symlink is valid by default' do
+    Dir.mktmpdir do |dir|
+      real_file = "#{dir}/real_file"
+      symlink = "#{dir}/link"
+      FileUtils.touch(real_file)
+      File.symlink(real_file, symlink)
+
+      transfer = PosixTransfer.build(action: 'cp', files: { symlink => "#{dir}/link.copy" })
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+    end
+  end
+
+  test 'copy of symlink is invalid when allow_symlink_ops is false' do
+    Configuration.stubs(:allow_symlink_ops?).returns(false)
+
     Dir.mktmpdir do |dir|
       real_file = "#{dir}/real_file"
       symlink = "#{dir}/link"
@@ -78,7 +92,9 @@ class TransferTest < ActiveSupport::TestCase
     end
   end
 
-  test 'move of symlink is invalid' do
+  test 'move of symlink is invalid when allow_symlink_ops is false' do
+    Configuration.stubs(:allow_symlink_ops?).returns(false)
+
     Dir.mktmpdir do |dir|
       real_file = "#{dir}/real_file"
       symlink = "#{dir}/link"
@@ -91,7 +107,9 @@ class TransferTest < ActiveSupport::TestCase
     end
   end
 
-  test 'rm of symlink is still valid' do
+  test 'rm of symlink is still valid when allow_symlink_ops is false' do
+    Configuration.stubs(:allow_symlink_ops?).returns(false)
+
     Dir.mktmpdir do |dir|
       real_file = "#{dir}/real_file"
       symlink = "#{dir}/link"

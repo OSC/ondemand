@@ -58,6 +58,7 @@ class ConfigurationSingleton
       :motd_render_html             => false,
       :upload_enabled               => true,
       :download_enabled             => true,
+      :allow_symlink_ops            => true,
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
