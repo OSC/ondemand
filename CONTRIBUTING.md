@@ -12,6 +12,7 @@
     3. [Tagging Your Issue](#tagging-your-issue)
     4. [Pull Request Comments](#pull-request-comments)
     5. [Tests in Pull Requests](#tests-in-pull-requests)
+    6. [Updating Locales](#update-locales)
 3. [Project Style Guide](#project-style-guide)
     1. [Project Conventions](#project-conventions)
     2. [Linters](#linters)
@@ -148,6 +149,11 @@ If you do not include tests, add a short note in the PR description that explain
 * Why tests were not added
 * What manual testing was performed
 * Any areas reviewers should pay close attention to
+
+## Updating Locales
+
+You may be adding new translatable text in your pull request. If so, please only add the English (en)
+locale as we have automation in place to update the other locales when they have missing keys.
 
 ## Project Style Guide 
 

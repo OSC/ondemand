@@ -253,7 +253,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on I18n.t('dashboard.jobs_create_blank_project')
       find('#project_name').set(proj)
       find('#product_icon_select').set(icon)
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(projects_path)
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
@@ -261,10 +262,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'update with invalid icon' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
       click_on 'Edit'
       find('#product_icon_select').set('fas://bad&icon')
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(project_path(project_id))
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
@@ -1396,6 +1398,21 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, '12345678')
       assert_current_path("/projects/#{project_id}")
       assert_selector('.alert-danger', text: "Cannot find launcher 12345678")
+    end
+  end
+
+  test 'workflows are hidden and disabled when unsupported' do
+    Workflow.stubs(:supported?).returns(false)
+
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+
+      visit project_path(project_id)
+      assert_no_text(I18n.t('dashboard.jobs_workflows'))
+
+      visit new_project_workflow_path(project_id)
+      assert_current_path(project_path(project_id))
+      assert_selector('.alert-danger', text: I18n.t('dashboard.jobs_workflows_not_supported'))
     end
   end
 

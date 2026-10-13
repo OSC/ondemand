@@ -7,6 +7,16 @@ module NginxStage
   class PunConfigGenerator < Generator
     desc 'Generate a new per-user nginx config and process'
 
+    # Serialize PUN initialization for one user. A second request that queued
+    # behind another startup re-checks PUN state before running setup hooks.
+    def invoke
+      with_pun_start_lock do
+        catch(:pun_already_running) do
+          super
+        end
+      end
+    end
+
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
         To generate a per-user nginx environment & launch nginx:
@@ -35,6 +45,12 @@ module NginxStage
 
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
+
+    # Keep validation ahead of the running-PUN shortcut. Configuration-only
+    # generation still runs even when the PUN is already active.
+    add_hook :skip_running_pun do
+      throw :pun_already_running if !skip_nginx && pun_running?
+    end
 
     # @!method app_init_url
     #   The app initialization URL the user is redirected to if can't find the
@@ -155,6 +171,24 @@ module NginxStage
 
 
     private
+      def with_pun_start_lock
+        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
+        FileUtils.mkdir_p File.dirname(lock_path)
+
+        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
+          lock.flock(File::LOCK_EX)
+          yield
+        end
+      end
+
+      def pun_running?
+        return false unless File.socket?(NginxStage.pun_socket_path(user: user))
+
+        PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
+      rescue MissingPidFile, InvalidPidFile
+        false
+      end
+
       # per-user NGINX config path
       def config_path
         NginxStage.pun_config_path(user: user)

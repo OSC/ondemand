@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'English'
-require 'English'
 require 'digest'
 require 'fileutils'
 require 'optparse'
@@ -131,7 +130,6 @@ module OodPortalGenerator
         checksum_str = File.readlines(sum_path)[0]
         checksum = checksum_str.split(' ')[0]
 
-        str = read_file_omitting_comments(input)
         new_checksum = checksum(input)
 
         checksum == new_checksum
@@ -141,7 +139,7 @@ module OodPortalGenerator
         return false unless File.exist?(sum_path)
         return false if File.zero?(sum_path)
 
-        File.readlines(sum_path).grep(apache).size.zero?
+        File.readlines(sum_path).grep(apache).empty?
       end
 
       def update_replace?

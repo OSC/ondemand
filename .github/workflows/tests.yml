@@ -158,6 +158,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
+    env:
+      OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
+      HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v6
@@ -171,6 +174,10 @@ jobs:
           bundler: "2.5.23"
           bundler-cache: true
 
+      - name: Login to Docker Hub
+        if: env.HAS_DOCKERHUB_CREDENTIALS == 'true'
+        run: docker login -u ${{ secrets.ONDEMAND_DOCKERHUB_USER }} -p ${{ secrets.ONDEMAND_DOCKERHUB_PASSWORD }}
+
       - name: Build package
         if: matrix.arch == 'x86_64'
         run: |
@@ -178,7 +185,7 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
-          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+          if [[ "${{ matrix.dist }}" == "debian-13" || "${{ matrix.dist }}" == "ubuntu-26.04" ]]; then
              unset CONTAINER_RT
            fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]

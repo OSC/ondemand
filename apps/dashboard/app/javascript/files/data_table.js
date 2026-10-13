@@ -241,8 +241,8 @@ class DataTable {
                         if (type == "display") {
                             let date = new Date(data * 1000)
 
-                            // Return formatted date "3/23/2021 10:52:28 AM"
-                            return isNaN(data) ? 'Invalid Date' : `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+                            // Return formatted date "3/23/2021 10:52:28 AM EDT"
+                            return isNaN(data) ? 'Invalid Date' : `${date.toLocaleDateString()} ${date.toLocaleTimeString(undefined, { timeZoneName: 'short' })}`
                         }
                         else {
                             return data;
