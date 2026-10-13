@@ -76,7 +76,8 @@ class ConfigurationSingleton
       :facl_domain                    => nil,
       :auto_groups_filter             => nil,
       :google_analytics_tag_id        => nil,
-      :project_template_dir           => "#{config_root}/projects",
+      :app_config_root                => '/etc/ood/config/apps/dashboard',
+      :project_template_dir           => "#{ENV['OOD_APP_CONFIG_ROOT'] || '/etc/ood/config/apps/dashboard'}/projects",
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
@@ -155,12 +156,6 @@ class ConfigurationSingleton
 
   def ood_version_from_env
     ENV['OOD_VERSION'] || ENV['ONDEMAND_VERSION']
-  end
-
-  # The app's configuration root directory
-  # @return [Pathname] path to configuration root
-  def config_root
-    Pathname.new(ENV["OOD_APP_CONFIG_ROOT"] || "/etc/ood/config/apps/dashboard")
   end
 
   def load_external_config?
@@ -528,8 +523,9 @@ class ConfigurationSingleton
   end
 
   def dotenv_files
+    root = Pathname.new(ENV['OOD_APP_CONFIG_ROOT'] || '/etc/ood/config/apps/dashboard')
     [
-      (config_root.join("env") if load_external_config?),
+      (root.join("env") if load_external_config?),
       app_root.join(".env.#{rails_env}"),
       app_root.join(".env")
     ].compact

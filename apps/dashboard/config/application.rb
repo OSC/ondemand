@@ -47,9 +47,10 @@ module Dashboard
     if ::Configuration.load_external_config?
       # Ensuring OOD initializers run last so that user's cannot override what we 
       # specify unless we allow the override as well in our own initializers.
-      config.paths["config/initializers"] << ::Configuration.config_root.join("initializers").to_s
-      config.autoload_paths << ::Configuration.config_root.join("lib").to_s
-      config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
+      config_root = Pathname.new(::Configuration.app_config_root)
+      config.paths["config/initializers"] << config_root.join("initializers").to_s
+      config.autoload_paths << config_root.join("lib").to_s
+      config.paths["app/views"].unshift config_root.join("views").to_s
     end
 
     # Determine if this path is safe to load. I.e., are all the files root owned.
