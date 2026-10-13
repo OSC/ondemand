@@ -50,6 +50,8 @@ namespace :test do
       end
     end
 
+    sh 'lua5.4 mod_ood_proxy/spec/node_proxy_test.lua'
+
     chdir PROJ_DIR.join('apps/shell') do
       sh 'tmp/node_modules/yarn/bin/yarn test'
     end
