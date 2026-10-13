@@ -353,4 +353,90 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal expected_opts, app.submit_opts(app.build_session_context)
     end
   end
+
+  test "usr apps do not evaluate form ERB on initialize" do
+    Dir.mktmpdir do |dir|
+      side_effect = File.join(dir, 'erb_evaluated')
+      app_dir = File.join(dir, 'gateway', 'evil_app').tap { |d| FileUtils.mkdir_p(d) }
+      File.write(File.join(app_dir, 'manifest.yml'), <<~YAML)
+        ---
+        name: Evil App
+        category: Interactive Apps
+        role: batch_connect
+      YAML
+      File.write(File.join(app_dir, 'form.yml.erb'), <<~ERB)
+        ---
+        title: "Should not load yet"
+        cluster: "oakley"
+        form:
+          - bc_account
+        <%- File.write('#{side_effect}', 'evaluated') -%>
+      ERB
+
+      UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new(File.join(dir, 'gateway')))
+      router = UsrRouter.new('evil_app', 'shared')
+      app = BatchConnect::App.new(router: router)
+
+      refute File.exist?(side_effect), 'usr app form ERB should not run during initialize'
+      assert_equal 'Evil App', app.title
+      assert app.valid?, 'usr apps with a form file should appear valid before form load'
+      refute File.exist?(side_effect), 'usr app form ERB should not run for title or valid?'
+
+      link = app.link
+      assert_equal 'Evil App', link.title
+      refute File.exist?(side_effect), 'usr app form ERB should not run when building nav links'
+    end
+  end
+
+  test "usr apps evaluate form ERB when the form is opened" do
+    Dir.mktmpdir do |dir|
+      side_effect = File.join(dir, 'erb_evaluated')
+      app_dir = File.join(dir, 'gateway', 'evil_app').tap { |d| FileUtils.mkdir_p(d) }
+      File.write(File.join(app_dir, 'manifest.yml'), <<~YAML)
+        ---
+        name: Evil App
+        category: Interactive Apps
+        role: batch_connect
+      YAML
+      File.write(File.join(app_dir, 'form.yml.erb'), <<~ERB)
+        ---
+        title: "Loaded Title"
+        cluster: "oakley"
+        form:
+          - bc_account
+        <%- File.write('#{side_effect}', 'evaluated') -%>
+      ERB
+
+      UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new(File.join(dir, 'gateway')))
+      router = UsrRouter.new('evil_app', 'shared')
+      app = BatchConnect::App.new(router: router)
+
+      refute File.exist?(side_effect)
+      app.build_session_context
+      assert File.exist?(side_effect), 'usr app form ERB should run when the app is opened'
+      assert_equal 'Loaded Title', app.title
+      assert app.valid?
+    end
+  end
+
+  test "sys apps still evaluate form ERB on initialize" do
+    Dir.mktmpdir do |dir|
+      side_effect = File.join(dir, 'erb_evaluated')
+      app_dir = File.join(dir, 'sys_app').tap { |d| FileUtils.mkdir_p(d) }
+      File.write(File.join(app_dir, 'form.yml.erb'), <<~ERB)
+        ---
+        title: "Sys Title"
+        cluster: "oakley"
+        form:
+          - bc_account
+        <%- File.write('#{side_effect}', 'evaluated') -%>
+      ERB
+
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      router = SysRouter.new('sys_app')
+      BatchConnect::App.new(router: router)
+
+      assert File.exist?(side_effect), 'sys app form ERB should still run during initialize'
+    end
+  end
 end
