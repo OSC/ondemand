@@ -59,13 +59,13 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     assert_select 'div.row', 1
     assert_select 'div.row > div.col-md-8', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container)', 1
+    assert_select 'div.row > div.col-md-4', 1
 
     assert_select 'div.row > div.col-md-8 h2', 1
     assert_equal(I18n.t('dashboard.motd_title'), css_select('div.row > div.col-md-8 h2').text)
     assert_select 'div.row > div.col-md-8 [data-motd-md]', 1
 
-    pinned_apps = css_select('div.row > div.col-md-4:not(.app-launcher-container)')
+    pinned_apps = css_select('div.row > div.col-md-4')
     assert_equal pinned_apps.children.size, 1
     assert_equal pinned_apps.children.first.to_s.gsub(/[\s\n]/, ''), ''
   end
@@ -96,12 +96,12 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     assert_select 'div.row', 1
     assert_select 'div.row > div.col-md-8', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container)', 1
+    assert_select 'div.row > div.col-md-4', 1
     assert_select 'div.row > div.col-md-8 h2', 0
     assert_select '[data-motd-md]', 0
 
     motd = css_select('div.row > div.col-md-8')
-    pinned_apps = css_select('div.row > div.col-md-4:not(.app-launcher-container)')
+    pinned_apps = css_select('div.row > div.col-md-4')
 
     assert_equal motd.children.size, 1
     assert_equal motd.children.first.to_s.gsub(/[\s\n]/, ''), ''
@@ -168,11 +168,11 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-8 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-8 > div.motd > div.motd_body', 3
 
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container)', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod', 2
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod > [id="jobsEfficiencyReportPanelDiv"]', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod > [id="coreHoursEfficiencyReportPanelDiv"]', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod > [id="jobsPanelDiv"]', 1
+    assert_select 'div.row > div.col-md-4', 1
+    assert_select 'div.row > div.col-md-4 > div.xdmod', 2
+    assert_select 'div.row > div.col-md-4 > div.xdmod > [id="jobsEfficiencyReportPanelDiv"]', 1
+    assert_select 'div.row > div.col-md-4 > div.xdmod > [id="coreHoursEfficiencyReportPanelDiv"]', 1
+    assert_select 'div.row > div.col-md-4 > div.xdmod > [id="jobsPanelDiv"]', 1
   end
 
   test 'app sharing layout' do
@@ -201,13 +201,13 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     # pinned_apps makes rows for every 'group', resulting in 2 rows
     # recently used apps is also 1 row
     assert_select 'div.row', 3
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container)', 1
+    assert_select 'div.row > div.col-md-4', 1
     assert_select 'div.row > div.col-md-8', 1
 
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container)', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.motd', 3
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.motd > h3', 3
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.motd > div.motd_body', 3
+    assert_select 'div.row > div.col-md-4', 1
+    assert_select 'div.row > div.col-md-4 > div.motd', 3
+    assert_select 'div.row > div.col-md-4 > div.motd > h3', 3
+    assert_select 'div.row > div.col-md-4 > div.motd > div.motd_body', 3
 
     assert_select pinned_app_row_css_query('8'), 4
     assert_select pinned_app_link_css_query('8', '/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
@@ -264,11 +264,11 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-8 > div.motd > h3', 3
     assert_select 'div.row > div.col-md-8 > div.motd > div.motd_body', 3
 
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container)', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod', 2
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod > [id="jobsEfficiencyReportPanelDiv"]', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod > [id="coreHoursEfficiencyReportPanelDiv"]', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container) > div.xdmod > [id="jobsPanelDiv"]', 1
+    assert_select 'div.row > div.col-md-4', 1
+    assert_select 'div.row > div.col-md-4 > div.xdmod', 2
+    assert_select 'div.row > div.col-md-4 > div.xdmod > [id="jobsEfficiencyReportPanelDiv"]', 1
+    assert_select 'div.row > div.col-md-4 > div.xdmod > [id="coreHoursEfficiencyReportPanelDiv"]', 1
+    assert_select 'div.row > div.col-md-4 > div.xdmod > [id="jobsPanelDiv"]', 1
 
     assert_select 'div.row > div.col-md-12', 1
     assert_select pinned_app_row_css_query('12'), 4
@@ -307,9 +307,9 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     end
 
     assert_select 'div.row', 1
-    assert_select 'div.row > div.col-md-4:not(.app-launcher-container)', 3
+    assert_select 'div.row > div.col-md-4', 3
 
-    error_widgets = css_select('div.row > div.col-md-4:not(.app-launcher-container) > div.alert.alert-danger.card > div.card-body')
+    error_widgets = css_select('div.row > div.col-md-4 > div.alert.alert-danger.card > div.card-body')
     assert_equal 3, error_widgets.size
     assert_equal true, %r{Missing partial widgets/_this_widget_doesnt_exist}.match?(error_widgets[0].text)
     puts error_widgets[1].text

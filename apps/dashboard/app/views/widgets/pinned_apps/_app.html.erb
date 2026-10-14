@@ -2,7 +2,7 @@
 
 <% links.each do |link| %>
   <%- tile_data = link.tile -%>
-  <div class="col-12 col-sm-6 col-md-4 col-lg-3 app-launcher-container">
+  <div class="col app-launcher-container">
     <div class="app-launcher app-launcher-hover" data-bs-toggle="<%= link.new_tab? ? '' : 'launcher-button' %>">
     <%=
       link_to(

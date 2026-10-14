@@ -1,5 +1,5 @@
 <h3 class="apps-section-header-blue"><%= group.title || I18n.t('dashboard.not_grouped') %></h3>
 
-<div class="row app-launcher-row">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 app-launcher-row">
   <%= render partial: "/widgets/pinned_apps/app", collection: group.apps %>
 </div>
