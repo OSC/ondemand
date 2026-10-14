@@ -129,12 +129,26 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default bc config root" do
-    assert_equal Pathname.new("/etc/ood/config/apps"), ConfigurationSingleton.new.bc_config_root
+    with_modified_env(no_config_env) do
+      assert_equal Pathname.new('/etc/ood/config/apps'), ConfigurationSingleton.new.bc_config_root
+    end
   end
 
-  test "can configure bc config root" do
-    with_modified_env(OOD_BC_APP_CONFIG_ROOT: '/path/to/bc_config') do
+  test "can configure bc config root through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_BC_APP_CONFIG_ROOT: '/path/to/bc_config')) do
       assert_equal Pathname.new('/path/to/bc_config'), ConfigurationSingleton.new.bc_config_root
+    end
+  end
+
+  test "can configure bc config root through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'bc_config_root' => '/path/from/file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal Pathname.new('/path/from/file'), ConfigurationSingleton.new.bc_config_root
+      end
     end
   end
 
