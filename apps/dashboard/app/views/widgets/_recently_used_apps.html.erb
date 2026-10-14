@@ -2,14 +2,14 @@
 <%- unless apps.empty? -%>
   <div class="recently-used-apps-header">
     <h4 class="apps-section-header-blue"><%= t('dashboard.recently_used_apps_title') %></h4>
-    <div class="row">
+    <div class="row app-launcher-row">
     <%- apps.each do |app| -%>
       <%- link = app.link -%>
       <%- tile_data = link.tile -%>
       <%-
         params = app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", attribute.value]}.to_h
       -%>
-      <div class="col-sm-3 col-md-3 app-launcher-container">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 app-launcher-container">
         <div class="app-launcher app-launcher-hover" data-bs-toggle="launcher-button">
           <%=
             button_to(
