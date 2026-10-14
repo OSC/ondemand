@@ -21,18 +21,18 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "can configure config root through environment variable" do
     with_modified_env(no_config_env.merge(OOD_APP_CONFIG_ROOT: '/path/to/config')) do
-      assert_equal '/path/to/config', ConfigurationSingleton.new.app_config_root
+      assert_equal Pathname.new('/path/to/config'), ConfigurationSingleton.new.config_root
     end
   end
 
   test "can configure config root through ondemand.d" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'app_config_root' => '/path/from/file' }.to_yaml)
+        file.write({ 'config_root' => '/path/from/file' }.to_yaml)
       end
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
-        assert_equal '/path/from/file', ConfigurationSingleton.new.app_config_root
+        assert_equal Pathname.new('/path/from/file'), ConfigurationSingleton.new.config_root
       end
     end
   end
