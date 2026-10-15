@@ -56,6 +56,7 @@ class Launcher
   end
 
   ID_REX = /\A\w{8}\Z/.freeze
+  DEPENDENCY_KEYS = [ :after, :afterok, :afternotok, :afterany ].freeze
 
   validates(:id, format: { with: ID_REX, message: "ID does not match #{Launcher::ID_REX.inspect}" }, on: [:save])
   validates(:title, presence: true)
@@ -214,17 +215,14 @@ class Launcher
     job_id
   rescue StandardError => e
     errors.add(:submit, e.message)
-    Rails.logger.error("ERROR: #{e.class} - #{e.message}")
+    Rails.logger.error("ERROR: #{e.class} - #{e.message} \n #{e.backtrace.join("\n")}")
     nil
   end
 
   def dependency_helper(options)
-    {
-      after:      Array(options[:after]),
-      afterok:    Array(options[:afterok]),
-      afternotok: Array(options[:afternotok]),
-      afterany:   Array(options[:afterany])
-    }
+    DEPENDENCY_KEYS.each_with_object({}) do |key, hash|
+      hash[key] = options[key] if options.keys.include?(key)
+    end
   end
 
   def create_default_script
