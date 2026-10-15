@@ -23,6 +23,9 @@ const EVENTNAME = {
   newDirectory: 'newDirectory',
   renameFile: 'renameFile',
   renameFilePrompt: 'renameFilePrompt',
+  addFavorite: 'addFavorite',
+  renameFavoritePrompt: 'renameFavoritePrompt',
+  renameFavorite: 'renameFavorite'
 }
 
 
@@ -131,22 +134,52 @@ jQuery(function() {
     };
     
     $(CONTENTID).trigger(EVENTNAME.renameFilePrompt, eventData);
-
   });
 
   $(document).on('click', '.delete-file', function (e) {
-      e.preventDefault();
-      let table = $(CONTENTID).DataTable();
-      let rowId = e.currentTarget.dataset.rowIndex;
-      let row = table.row(rowId).data();
-      let fileName = $($.parseHTML(row.name)).text();
+    e.preventDefault();
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+    let fileName = $($.parseHTML(row.name)).text();
 
-      const eventData = {
-          files: [fileName]
-      };
+    const eventData = {
+        files: [fileName]
+    };
 
-      $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+    $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+  });
 
+  $(document).on('click', '.add-favorite', function (e) {
+    e.preventDefault();
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+    let fileName = $($.parseHTML(row.name)).text();
+
+    const eventData = {
+      file: fileName
+    }
+
+    $(CONTENTID).trigger(EVENTNAME.addFavorite, eventData);
+  }); 
+
+  $(document).on('click', '.rename-favorite', function (e) {
+    e.preventDefault();
+    const clicked = e.currentTarget;
+    const index = clicked.dataset.favoriteIndex;
+    const path = clicked.dataset.favoritePath;
+    const parent = $(clicked).closest('.input-group');
+    const link = parent.find('.nav-link');
+    const oldName = link.text().trim();
+
+    const eventData = {
+      index: index,
+      name: oldName,
+      path: path
+    }
+
+    $(CONTENTID).trigger(EVENTNAME.renameFavoritePrompt, eventData);
   });
 
   $(CONTENTID).on(EVENTNAME.newFilePrompt, function () {
@@ -209,6 +242,17 @@ jQuery(function() {
     fileOps.changeDirectory(options.result.value);
   });
 
+  $(CONTENTID).on(EVENTNAME.addFavorite, function (e, options) {
+    fileOps.addFavorite(options.file);
+  });
+
+  $(CONTENTID).on(EVENTNAME.renameFavoritePrompt, function (e, options) {
+    fileOps.renameFavoritePrompt(options);
+  });
+
+  $(CONTENTID).on(EVENTNAME.renameFavorite, function (e, options) {
+    fileOps.renameFavorite(options.index, options.result.value);
+  });
 });
 
 class FileOps {
@@ -470,7 +514,51 @@ class FileOps {
             .catch((e) => reject(e))
     });
   }
-    
+   
+  addFavorite(file) {
+    const formData = new FormData();
+    formData.append('user_customization[add_files_favorite]', [history.state.currentDirectory, file].join('/'));
+    fetch(history.state.currentFavoritesPath, { method: 'post', headers: { 'X-CSRF-Token': csrfToken(), 'Accept': 'application/json' }, body: formData })
+      .then(response => this.dataFromJsonResponse(response))
+      .then(function() {
+        window.location.reload();
+      })
+      .catch(function (e) {
+        OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+      });
+  }
+
+  renameFavoritePrompt(options) {
+    const eventData = {
+      action: EVENTNAME.renameFavorite,
+      index: options.index,
+      'inputOptions': {
+        title: `Rename favorite ${options.path}`,
+        input: 'text',
+        inputLabel: 'Name',
+        inputValue: options.name,
+        inputAttributes: {
+          spellcheck: 'false',
+        },
+        showCancelButton: true,
+      }
+    };
+
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
+  }
+
+  renameFavorite(index, name) {
+    const formData = new FormData();
+    formData.append('user_customization[rename_files_favorite]', JSON.stringify({ index: index, name: name }));
+    fetch(history.state.currentFavoritesPath, { method: 'post', headers: { 'X-CSRF-Token': csrfToken(), 'Accept': 'application/json' }, body: formData })
+      .then(response => getData(response))
+      .then(function() {
+        window.location.reload();
+      })
+      .catch(function (e) {
+        OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+      });
+  }
   
   delete(files) {
     this.showSwalLoading('Deleting files...: ');
