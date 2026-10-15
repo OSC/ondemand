@@ -187,13 +187,17 @@ class ConfigurationSingleton
   # @return [Array<String>] quota paths
   def quota_paths
     # regex uses negative lookahead to ignore : preceding //
-    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
+    if ENV['OOD_QUOTA_PATH']
+      ENV['OOD_QUOTA_PATH'].strip.split(/:(?!\/\/)/)
+    else
+      Array.wrap(config.fetch(:quota_paths, []))
+    end
   end
 
   # The threshold for determining if there is sufficient quota remaining
   # @return [Float] threshold factor
   def quota_threshold
-    ENV.fetch("OOD_QUOTA_THRESHOLD", 0.95).to_f
+    (ENV['OOD_QUOTA_THRESHOLD'] || config.fetch(:quota_threshold, 0.95)).to_f
   end
 
   # The paths to the JSON files that store the balance information
