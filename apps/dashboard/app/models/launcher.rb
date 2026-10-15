@@ -221,7 +221,7 @@ class Launcher
 
   def dependency_helper(options)
     DEPENDENCY_KEYS.each_with_object({}) do |key, hash|
-      hash[key] = options[key] if options.keys.include?(key)
+      hash[key] = Array(options[key]) if options.keys.include?(key)
     end
   end
 

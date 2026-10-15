@@ -176,7 +176,7 @@ test 'passes dependency params to adapter when specified' do
     launcher = Launcher.new({ project_dir: dir, id: '12345678', title: 'Test Script' })
     assert launcher.save
 
-    assert_equal 'job-1', launcher.submit({ auto_batch_clusters: 'owens', afterok: ['123'] }, write_cache: false)
+    assert_equal 'job-1', launcher.submit({ auto_batch_clusters: 'owens', afterok: '123' }, write_cache: false)
     assert_empty launcher.errors[:submit]
   end
 end
