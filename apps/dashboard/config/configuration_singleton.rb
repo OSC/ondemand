@@ -160,7 +160,7 @@ class ConfigurationSingleton
   # The app's configuration root directory
   # @return [Pathname] path to configuration root
   def config_root
-    Pathname.new(ENV["OOD_APP_CONFIG_ROOT"] || "/etc/ood/config/apps/dashboard")
+    Pathname.new(ENV['OOD_APP_CONFIG_ROOT'] || config.fetch(:config_root, '/etc/ood/config/apps/dashboard'))
   end
 
   def load_external_config?
