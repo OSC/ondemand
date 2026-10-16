@@ -1,0 +1,90 @@
+<div class="modal fade" id="pinnedAppsModal" tabindex="-1"
+     aria-labelledby="pinnedAppsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pinnedAppsModalLabel">
+          <%= t('dashboard.pinned_apps_editor_title') %>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="<%= t('dashboard.close') %>"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted"><%= t('dashboard.pinned_apps_editor_help') %></p>
+        <% if dashboard_pinned_app_options.empty? %>
+          <div class="alert alert-info mb-0">
+            <%= t('dashboard.pinned_apps_no_available') %>
+          </div>
+        <% else %>
+          <%= form_with(
+            url: pinned_apps_path,
+            method: :patch,
+            local: true
+          ) do |form| %>
+            <div class="mb-2">
+              <% search_placeholder =
+                t('dashboard.pinned_apps_search_placeholder') %>
+              <label for="pinned-apps-search" class="form-label">
+                <%= t('dashboard.pinned_apps_search') %>
+              </label>
+              <input id="pinned-apps-search" type="text"
+                     class="form-control"
+                     placeholder="<%= search_placeholder %>">
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap mb-2">
+              <button type="button" class="btn btn-sm btn-outline-primary"
+                      id="select-all-pinned-apps">
+                <%= t('dashboard.pinned_apps_select_all') %>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      id="clear-all-pinned-apps">
+                <%= t('dashboard.pinned_apps_clear_all') %>
+              </button>
+            </div>
+
+            <div class="border rounded overflow-auto p-3 ps-4 mb-3">
+              <% dashboard_pinned_app_options.each do |title, token| %>
+                <div class="form-check pinned-app-checkbox-item mb-2"
+                     data-app-title="<%= title.downcase %>"
+                     data-app-token="<%= token.downcase %>">
+                  <%= check_box_tag(
+                    'pinned_app_tokens[]',
+                    token,
+                    dashboard_selected_pinned_app_tokens.include?(token),
+                    id: "pinned_app_token_#{token.parameterize}",
+                    class: 'form-check-input'
+                  ) %>
+                  <%= label_tag(
+                    "pinned_app_token_#{token.parameterize}",
+                    title,
+                    class: 'form-check-label'
+                  ) %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="d-flex justify-content-between flex-wrap gap-2">
+              <%= link_to t('dashboard.pinned_apps_reset'),
+                          pinned_apps_path,
+                          method: :delete,
+                          data: {
+                            confirm: t('dashboard.pinned_apps_reset_confirm'),
+                            turbo_method: :delete
+                          },
+                          class: 'btn btn-outline-danger' %>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                  <%= t('dashboard.close') %>
+                </button>
+                <%= form.submit t('dashboard.pinned_apps_save'),
+                                class: 'btn btn-primary' %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
