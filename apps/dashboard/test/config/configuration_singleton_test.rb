@@ -308,14 +308,38 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "quota_paths can be configured through ondemand.d" do
+  test "quota_paths can be configured through ondemand.d as an array" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'quota_paths' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
+        file.write({ 'quota_path' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
       end
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
         assert_equal ['/path_from/file_a.json', '/path_from/file_b.json'], ConfigurationSingleton.new.quota_paths
+      end
+    end
+  end
+
+  test "quota_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => '/path_from/file_a.json:https://example.com/quota.json' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal ['/path_from/file_a.json', 'https://example.com/quota.json'], ConfigurationSingleton.new.quota_paths
+      end
+    end
+  end
+
+  test "quota_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => ['/path_from/file.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_QUOTA_PATH: '/path_from/env.json') do
+        assert_equal ['/path_from/env.json'], ConfigurationSingleton.new.quota_paths
       end
     end
   end
@@ -334,6 +358,18 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
         assert_equal 0.75, ConfigurationSingleton.new.quota_threshold
+      end
+    end
+  end
+
+  test "quota_threshold environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_QUOTA_THRESHOLD: '0.50') do
+        assert_equal 0.50, ConfigurationSingleton.new.quota_threshold
       end
     end
   end

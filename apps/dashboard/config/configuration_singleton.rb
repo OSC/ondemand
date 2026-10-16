@@ -187,11 +187,8 @@ class ConfigurationSingleton
   # @return [Array<String>] quota paths
   def quota_paths
     # regex uses negative lookahead to ignore : preceding //
-    if ENV['OOD_QUOTA_PATH']
-      ENV['OOD_QUOTA_PATH'].strip.split(/:(?!\/\/)/)
-    else
-      Array.wrap(config.fetch(:quota_paths, []))
-    end
+    paths = ENV['OOD_QUOTA_PATH'] || config.fetch(:quota_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(/:(?!\/\/)/) }
   end
 
   # The threshold for determining if there is sufficient quota remaining
