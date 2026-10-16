@@ -207,7 +207,7 @@ class NavBar
     hash[['all_apps', 'all apps']] = OodAppLink.new(title: I18n.t('dashboard.nav_all_apps'), url: url_helpers.apps_index_path, icon_uri: URI('fas://th'), new_tab: false)
     hash[['sessions', 'my_interactive_sessions', 'my interactive sessions']] = OodAppLink.new(title: I18n.t('dashboard.nav_sessions'), url: url_helpers.batch_connect_sessions_path, icon_uri: URI('fas://window-restore'), new_tab: false)
     hash[['support_ticket', 'support ticket', 'support']] = OodAppLink.new(title: I18n.t('dashboard.nav_help_support_ticket'), url: url_helpers.support_path, icon_uri: URI('fas://medkit'), new_tab: false) if url_helpers.respond_to?(:support_path)
-    hash[['docs']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_docs'), url: Configuration.developer_docs_url, icon_uri: URI('fas://book'), new_tab: true)
+    hash[['docs']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_docs'), url: Configuration.dashboard_dev_docs_url, icon_uri: URI('fas://book'), new_tab: true)
     hash[['products_dev', 'products dev']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_dev'), url: url_helpers.products_path(type: 'dev'), icon_uri: URI('fas://cog'), new_tab: false)
     hash[['products_usr', 'products usr']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_prod'), url: url_helpers.products_path(type: 'usr'), icon_uri: URI('fas://share-alt'), new_tab: false)
     hash[['log_out', 'logout', 'log out']] = OodAppLink.new(title: I18n.t('dashboard.nav_logout'), url: '/logout', icon_uri: URI('fas://sign-out-alt'), new_tab: false)
