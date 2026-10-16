@@ -4,7 +4,14 @@ require 'test_helper'
 
 class LauncherTest < ActiveSupport::TestCase
   def setup
+    Rails.cache.clear
+    stub_clusters
     stub_sinfo
+  end
+
+  def teardown
+    Configuration.instance_variable_set('@job_clusters', nil)
+    Rails.cache.clear
   end
 
   test 'supported field postfix' do
@@ -159,10 +166,11 @@ class LauncherTest < ActiveSupport::TestCase
   end
 
 def stub_cluster(adapter)
-  cluster = mock('cluster')
-  cluster.stubs(:job_adapter).returns(adapter)
-  cluster.stubs(:job_allow?).returns(true)
-  OodAppkit.stubs(:clusters).returns({ 'owens' => cluster })
+  cluster = OodCore::Clusters.load_file('test/fixtures/config/clusters.d')['owens']
+  # Keep cached clusters serializable by stubbing the factory instead of the cluster.
+  OodCore::Job::Factory.stubs(:build).with(has_entries(id: :owens)).returns(adapter)
+  adapter.stubs(:nodes).returns([])
+  OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([cluster]))
 end
 
 test 'passes dependency params to adapter when specified' do
