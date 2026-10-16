@@ -27,6 +27,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     Dir.mktmpdir do |dir|
       router = PathRouter.new(dir)
       router.path.join("form.yml").write("{}\n")
+      router.path.join("view.html.erb").write("<p>App session</p>")
       sub_app_root = router.path.join("local")
       sub_app_root.mkdir
       sub_app_root.join("desktop.yml").write("view: desktop_view.html.erb\n")
