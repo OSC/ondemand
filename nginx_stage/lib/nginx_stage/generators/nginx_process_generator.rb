@@ -34,15 +34,29 @@ module NginxStage
     # Run the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        NginxStage.clean_nginx_env(user: user)
-        o, s = Open3.capture2e(
-          [
-            NginxStage.nginx_bin,
-            "(#{user})"
-          ],
-          *NginxStage.nginx_args(user: user, signal: signal)
-        )
-        s.success? ? exit : abort(o)
+        operation = proc do
+          NginxStage.clean_nginx_env(user: user)
+          o, s = Open3.capture2e(
+            [
+              NginxStage.nginx_bin,
+              "(#{user})"
+            ],
+            *NginxStage.nginx_args(user: user, signal: signal)
+          )
+
+          if s.success?
+            wait_for_pun_socket_shutdown(user: user) if %w[stop quit].include?(signal.to_s)
+            exit
+          else
+            abort(o)
+          end
+        end
+
+        if %w[stop quit].include?(signal.to_s)
+          with_pun_lifecycle_lock(user: user, &operation)
+        else
+          operation.call
+        end
       end
     end
 

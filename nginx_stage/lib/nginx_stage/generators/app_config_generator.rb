@@ -5,6 +5,13 @@ module NginxStage
   class AppConfigGenerator < Generator
     desc 'Generate a new nginx app config and reload process'
 
+    # Keep config generation and PUN replacement serialized for this user.
+    def invoke
+      with_pun_lifecycle_lock(user: user) do
+        super
+      end
+    end
+
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
         To generate an app config from a URI request and reload the nginx
@@ -88,6 +95,7 @@ module NginxStage
             *NginxStage.nginx_args(user: user, signal: :stop)
           )
           abort(o) unless s.success?
+          wait_for_pun_socket_shutdown(user: user)
         end
         o, s = Open3.capture2e(
           [
