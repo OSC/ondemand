@@ -80,6 +80,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :xdmod_host                     => nil,
       :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
     }.freeze
   end
@@ -213,12 +214,6 @@ class ConfigurationSingleton
   # @return [Float] threshold factor
   def balance_threshold
     ENV.fetch("OOD_BALANCE_THRESHOLD", 0).to_f
-  end
-
-  # The XMoD host
-  # @return [String, null] the host, or null if not set
-  def xdmod_host
-    ENV["OOD_XDMOD_HOST"]
   end
 
   # Whether or not XDMoD integration is enabled
