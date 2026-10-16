@@ -318,14 +318,38 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "balance_paths can be configured through ondemand.d" do
+  test "balance_paths can be configured through ondemand.d as an array" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'balance_paths' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
+        file.write({ 'balance_path' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
       end
 
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: nil) do
         assert_equal ['/path_from/file_a.json', '/path_from/file_b.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
+
+  test "balance_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => '/path_from/file_a.json:https://example.com/balance.json' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: nil) do
+        assert_equal ['/path_from/file_a.json', 'https://example.com/balance.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
+
+  test "balance_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => ['/path_from/file.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: '/path_from/env.json') do
+        assert_equal ['/path_from/env.json'], ConfigurationSingleton.new.balance_paths
       end
     end
   end
@@ -342,8 +366,20 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         file.write({ 'balance_threshold' => 0.75 }.to_yaml)
       end
 
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: nil) do
         assert_equal 0.75, ConfigurationSingleton.new.balance_threshold
+      end
+    end
+  end
+
+  test "balance_threshold environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: '0.50') do
+        assert_equal 0.50, ConfigurationSingleton.new.balance_threshold
       end
     end
   end

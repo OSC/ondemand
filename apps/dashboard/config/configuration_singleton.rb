@@ -206,11 +206,8 @@ class ConfigurationSingleton
   # @return [Array<String>] balance paths
   def balance_paths
     # regex uses negative lookahead to ignore : preceding //
-    if ENV['OOD_BALANCE_PATH']
-      ENV['OOD_BALANCE_PATH'].strip.split(/:(?!\/\/)/)
-    else
-      Array.wrap(config.fetch(:balance_paths, []))
-    end
+    paths = ENV['OOD_BALANCE_PATH'] || config.fetch(:balance_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(/:(?!\/\/)/) }
   end
 
   # The threshold for determining if there is sufficient balance remaining
