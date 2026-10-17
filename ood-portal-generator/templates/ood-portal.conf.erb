@@ -259,6 +259,9 @@ Listen <%= addr_port %>
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=<%= @node_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    <%= node_csp_header(@node_uri) %>
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
   <%- end -%>
@@ -294,6 +297,9 @@ Listen <%= addr_port %>
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=<%= @rnode_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    <%= node_csp_header(@rnode_uri) %>
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
@@ -333,6 +339,9 @@ Listen <%= addr_port %>
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=<%= @secure_node_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    <%= node_csp_header(@secure_node_uri) %>
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
   <%- end -%>
@@ -371,6 +380,9 @@ Listen <%= addr_port %>
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=<%= @secure_rnode_uri %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    <%= node_csp_header(@secure_rnode_uri) %>
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
   <%- end -%>
@@ -383,6 +395,12 @@ Listen <%= addr_port %>
   #
   SetEnv OOD_PUN_URI "<%= @pun_uri %>"
   <Location "<%= @pun_uri %>">
+    # Reject requests to the PUN that didn't come from within pun_uri (e.g. an
+    # interactive app proxied at node_uri/rnode_uri), unless it's a real page load
+    RewriteEngine On
+    RewriteCond %{HTTP:Sec-Fetch-Dest} !=document
+    RewriteCond %{HTTP_REFERER} !^https?://[^/]+<%= @pun_uri %>(/|$)
+    RewriteRule ^ - [F]
     <%- @auth.each do |line| -%>
     <%= line %>
     <%- end -%>
