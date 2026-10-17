@@ -326,8 +326,10 @@ ja_JP:
     queue: 列
     quota_additional_message: ディスクスペースを空けるためにファイルを削除またはアーカイブすることを検討してください。
     quota_block: クォータ %{available} のうち %{used} を使用中
+    quota_block_group: グループ %{user} はクォータ %{available} のうち %{used} を使用中
     quota_block_shared: "(%{used_exclusive} はあなたのものです)"
     quota_file: クォータ %{available} ファイルのうち %{used} ファイルを使用中
+    quota_file_group: グループ %{user} はクォータ %{available} ファイルのうち %{used} ファイルを使用中
     quota_file_shared: "(%{used_exclusive} ファイルはあなたのものです)"
     quota_message: "%{quota}. %{additional_message}"
     quota_reload_message: 更新されたクォータを見るにはページを再読み込みしてください。クォータは5分ごとに更新されます。
