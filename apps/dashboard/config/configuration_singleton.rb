@@ -80,6 +80,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :locales_root                   => '/etc/ood/config/locales',
       :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
     }.freeze
   end
@@ -315,11 +316,7 @@ class ConfigurationSingleton
   end
 
   def locale
-    (ENV['OOD_LOCALE'] || 'en').to_sym
-  end
-
-  def locales_root
-    Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
+    (ENV['OOD_LOCALE'] || config.fetch(:locale, 'en')).to_sym
   end
 
   # Set the login host in the Native Instructions VNC session partial

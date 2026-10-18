@@ -298,6 +298,78 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "should have default locale" do
+    with_modified_env(no_config_env.merge(OOD_LOCALE: nil)) do
+      assert_equal :en, ConfigurationSingleton.new.locale
+    end
+  end
+
+  test "can configure locale through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_LOCALE: 'es')) do
+      assert_equal :es, ConfigurationSingleton.new.locale
+    end
+  end
+
+  test "can configure locale through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'locale' => 'fr' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_LOCALE: nil) do
+        assert_equal :fr, ConfigurationSingleton.new.locale
+      end
+    end
+  end
+
+  test "locale environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'locale' => 'fr' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_LOCALE: 'de') do
+        assert_equal :de, ConfigurationSingleton.new.locale
+      end
+    end
+  end
+
+  test "should have default locales_root" do
+    with_modified_env(no_config_env.merge(OOD_LOCALES_ROOT: nil)) do
+      assert_equal '/etc/ood/config/locales', ConfigurationSingleton.new.locales_root
+    end
+  end
+
+  test "can configure locales_root through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_LOCALES_ROOT: '/custom/locales')) do
+      assert_equal '/custom/locales', ConfigurationSingleton.new.locales_root
+    end
+  end
+
+  test "can configure locales_root through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'locales_root' => '/locales/from/file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_LOCALES_ROOT: nil) do
+        assert_equal '/locales/from/file', ConfigurationSingleton.new.locales_root
+      end
+    end
+  end
+
+  test "locales_root environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'locales_root' => '/locales/from/file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_LOCALES_ROOT: '/locales/from/env') do
+        assert_equal '/locales/from/env', ConfigurationSingleton.new.locales_root
+      end
+    end
+  end
+  
   test "quota_paths correctly parses OOD_QUOTA_PATH" do
     with_modified_env(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json') do
       assert_equal ['/path_a/quota.json', '/path_b/quota.json'], ConfigurationSingleton.new.quota_paths
