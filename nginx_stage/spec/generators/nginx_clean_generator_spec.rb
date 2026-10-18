@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'nginx_stage'
+require 'tmpdir'
 
 describe NginxStage::NginxCleanGenerator do
   let(:generator) { described_class.new }
@@ -64,6 +65,7 @@ describe NginxStage::NginxCleanGenerator do
       double('pid_path', pid: 1234, to_s: '/tmp/deleted_user/passenger.pid')
     end
     let(:kill_status) { double(:success? => true) }
+    let(:kill_output) { '' }
 
     before do
       allow(NginxStage).to receive(:active_users).and_return([])
@@ -75,7 +77,7 @@ describe NginxStage::NginxCleanGenerator do
       allow(generator).to receive(:with_pun_lifecycle_lock)
         .with(user: disabled_user).and_yield
       allow(Open3).to receive(:capture2e)
-        .with('kill', '-s', 'TERM', '1234').and_return(['', kill_status])
+        .with('kill', '-s', 'TERM', '1234').and_return([kill_output, kill_status])
       allow(NginxStage).to receive(:pun_secret_key_base_path)
         .with(user: disabled_user).and_return('/tmp/deleted_user.secret')
       allow(NginxStage).to receive(:pun_config_path)
@@ -93,6 +95,85 @@ describe NginxStage::NginxCleanGenerator do
         .with(user: disabled_user).ordered
 
       generator.invoke
+    end
+
+    context 'with --skip-nginx' do
+      let(:generator) { described_class.new(skip_nginx: true) }
+
+      it 'displays the disabled user without signalling or deleting PUN state' do
+        expect(generator).to receive(:puts).with('deleted_user (disabled)')
+        expect(NginxStage::PidFile).not_to receive(:new)
+        expect(Open3).not_to receive(:capture2e)
+        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(FileUtils).not_to receive(:rm)
+        expect(FileUtils).not_to receive(:rmdir)
+
+        generator.invoke
+      end
+    end
+
+    context 'with a different --user' do
+      let(:generator) { described_class.new(user: 'another_user') }
+
+      it 'does not inspect, signal, lock or delete an unselected disabled user' do
+        expect(generator).not_to receive(:with_pun_lifecycle_lock)
+        expect(generator).not_to receive(:puts)
+        expect(NginxStage::PidFile).not_to receive(:new)
+        expect(Open3).not_to receive(:capture2e)
+        expect(FileUtils).not_to receive(:rm)
+        expect(FileUtils).not_to receive(:rmdir)
+
+        generator.invoke
+      end
+    end
+
+    context 'with the matching --user' do
+      let(:generator) { described_class.new(user: disabled_user) }
+
+      it 'still reaches the selected user after skipping another disabled user' do
+        allow(NginxStage).to receive(:inactive_users)
+          .and_return(['another_disabled_user', disabled_user])
+        expect(generator).not_to receive(:with_pun_lifecycle_lock)
+          .with(user: 'another_disabled_user')
+        expect(Open3).to receive(:capture2e)
+          .with('kill', '-s', 'TERM', '1234').and_return(['', kill_status])
+        expect(generator).to receive(:wait_for_pun_socket_shutdown)
+          .with(user: disabled_user)
+        expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.secret')
+        expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.conf')
+
+        generator.invoke
+      end
+    end
+
+    it 'rejects an empty real PID file before signalling or deleting state' do
+      Dir.mktmpdir('disabled-user-pid-spec') do |dir|
+        path = File.join(dir, 'passenger.pid')
+        File.write(path, '')
+        allow(NginxStage).to receive(:pun_pid_path).with(user: disabled_user).and_return(path)
+        allow(NginxStage::PidFile).to receive(:new).with(path).and_call_original
+        expect(Open3).not_to receive(:capture2e)
+        expect(FileUtils).not_to receive(:rm)
+        expect(FileUtils).not_to receive(:rmdir)
+        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+
+        expect { generator.invoke }
+          .to output(/Error trying to clean up disabled user deleted_user: invalid PID file/).to_stderr
+      end
+    end
+
+    context 'when SIGTERM fails' do
+      let(:kill_status) { double(:success? => false) }
+      let(:kill_output) { 'kill: Operation not permitted' }
+
+      it 'reports the failure while preserving stale-state cleanup without a socket wait' do
+        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.secret')
+        expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.conf')
+
+        expect { generator.invoke }
+          .to output("Error sending SIGTERM to disabled user deleted_user: #{kill_output}\n").to_stderr
+      end
     end
   end
 end

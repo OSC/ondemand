@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'nginx_stage'
+require 'tmpdir'
 
 describe NginxStage::NginxProcessGenerator do
   let(:test_user) { 'spec' }
@@ -48,6 +49,38 @@ describe NginxStage::NginxProcessGenerator do
 
       expect { generator.instance_eval(&hook) }
         .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
+    end
+  end
+
+  context 'with a direct start' do
+    let(:signal) { nil }
+    let(:generator) { described_class.new(user: test_user) }
+
+    it 'holds the shared lifecycle lock during startup and releases it afterward' do
+      Dir.mktmpdir('nginx-start-spec') do |dir|
+        config_path = File.join(dir, 'spec.conf')
+        lock_path = "#{config_path}.lock"
+        allow(NginxStage).to receive(:pun_config_path)
+          .with(user: generator.user).and_return(config_path)
+        File.write(lock_path, '')
+
+        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(Open3).to receive(:capture2e)
+          .with(['/usr/sbin/nginx', '(spec)'], 'nginx-args') do
+            # A competing lifecycle operation must not acquire the same lock.
+            File.open(lock_path, File::RDWR) do |competitor|
+              expect(competitor.flock(File::LOCK_EX | File::LOCK_NB)).to be(false)
+            end
+            ['', status]
+          end
+
+        expect { generator.invoke }
+          .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
+
+        File.open(lock_path, File::RDWR) do |competitor|
+          expect(competitor.flock(File::LOCK_EX | File::LOCK_NB)).to eq(0)
+        end
+      end
     end
   end
 

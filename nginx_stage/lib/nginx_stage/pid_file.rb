@@ -17,7 +17,12 @@ module NginxStage
       raise MissingPidFile, "missing PID file: #{pid_path}" unless @pid_path.exist?
       raise InvalidPidFile, "invalid PID file: #{pid_path}" unless @pid_path.file?
 
-      @pid = @pid_path.read.to_i
+      contents = @pid_path.read.strip
+      # Require a positive decimal token, allowing leading zeros.
+      unless /\A0*[1-9][0-9]*\z/.match?(contents)
+        raise InvalidPidFile, "invalid PID file: #{pid_path}"
+      end
+      @pid = Integer(contents, 10)
     end
 
     # Whether the corresponding pid is a running process

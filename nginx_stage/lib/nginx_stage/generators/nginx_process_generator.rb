@@ -52,7 +52,8 @@ module NginxStage
           end
         end
 
-        if %w[stop quit].include?(signal.to_s)
+        # A missing signal starts nginx directly, so it must also be serialized.
+        if signal.nil? || %w[stop quit].include?(signal.to_s)
           with_pun_lifecycle_lock(user: user, &operation)
         else
           operation.call
