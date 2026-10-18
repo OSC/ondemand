@@ -259,4 +259,3 @@ jobs:
           else
             echo "No E2E container log directory found at tmp/e2e_ctr/."
           fi
-
