@@ -2,6 +2,7 @@
 
 require 'test_helper'
 require 'accessibility_helper'
+require_relative 'support/chrome_stale_visibility'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
