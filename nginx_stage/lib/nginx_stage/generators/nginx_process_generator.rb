@@ -45,7 +45,7 @@ module NginxStage
           )
 
           if s.success?
-            wait_for_pun_socket_shutdown(user: user) if %w[stop quit].include?(signal.to_s)
+            wait_for_pun_socket_shutdown(user: user) if ['stop', 'quit'].include?(signal.to_s)
             exit
           else
             abort(o)
@@ -53,7 +53,7 @@ module NginxStage
         end
 
         # A missing signal starts nginx directly, so it must also be serialized.
-        if signal.nil? || %w[stop quit].include?(signal.to_s)
+        if signal.nil? || ['stop', 'quit'].include?(signal.to_s)
           with_pun_lifecycle_lock(user: user, &operation)
         else
           operation.call

@@ -8,7 +8,7 @@ describe NginxStage::AppConfigGenerator do
   let(:test_user_gid) { 1000 }
   let(:generator) do
     described_class.new(
-      user: test_user,
+      user:        test_user,
       sub_request: '/sys/dashboard'
     )
   end
@@ -19,7 +19,7 @@ describe NginxStage::AppConfigGenerator do
 
   before do
     passwd = Struct.new(:gid, :name, :uid, :shell)
-      .new(test_user_gid, test_user, 1000, '/bin/bash')
+                   .new(test_user_gid, test_user, 1000, '/bin/bash')
     group = Struct.new(:gid, :name).new(test_user_gid, test_user)
 
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(passwd)
@@ -64,8 +64,10 @@ describe NginxStage::AppConfigGenerator do
     allow(File).to receive(:file?).with(pid_path).and_return(false)
 
     expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
-    expect(Open3).to receive(:capture2e)
+    allow(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'start').and_return(['', status])
+    expect(Open3).to receive(:capture2e)
+      .with(['/usr/sbin/nginx', '(spec)'], 'start')
 
     expect { generator.instance_eval(&hook) }
       .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
@@ -74,8 +76,10 @@ describe NginxStage::AppConfigGenerator do
   it 'does not wait or start a replacement when the stop command fails' do
     allow(File).to receive(:file?).with(pid_path).and_return(true)
     failed_status = double(:success? => false)
-    expect(Open3).to receive(:capture2e)
+    allow(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'stop').and_return(['stop failed', failed_status])
+    expect(Open3).to receive(:capture2e)
+      .with(['/usr/sbin/nginx', '(spec)'], 'stop')
     expect(Open3).not_to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'start')
     expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
@@ -87,8 +91,10 @@ describe NginxStage::AppConfigGenerator do
 
   it 'does not start a replacement if socket cleanup times out' do
     allow(File).to receive(:file?).with(pid_path).and_return(true)
-    expect(Open3).to receive(:capture2e)
+    allow(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'stop').and_return(['', status])
+    expect(Open3).to receive(:capture2e)
+      .with(['/usr/sbin/nginx', '(spec)'], 'stop')
     expect(generator).to receive(:wait_for_pun_socket_shutdown)
       .with(user: generator.user).and_raise(NginxStage::Error, 'socket shutdown timed out')
     expect(Open3).not_to receive(:capture2e)

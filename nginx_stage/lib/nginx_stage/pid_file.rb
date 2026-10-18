@@ -19,9 +19,8 @@ module NginxStage
 
       contents = @pid_path.read.strip
       # Require a positive decimal token, allowing leading zeros.
-      unless /\A0*[1-9][0-9]*\z/.match?(contents)
-        raise InvalidPidFile, "invalid PID file: #{pid_path}"
-      end
+      raise InvalidPidFile, "invalid PID file: #{pid_path}" unless /\A0*[1-9][0-9]*\z/.match?(contents)
+
       @pid = Integer(contents, 10)
     end
 

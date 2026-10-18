@@ -6,9 +6,9 @@ require 'tmpdir'
 
 RSpec.describe NginxStage::PidFile do
   {
-    "1234\n" => 1234,
+    "1234\n"      => 1234,
     " \t001234\n" => 1234,
-    '1' => 1
+    '1'           => 1
   }.each do |contents, expected|
     it "reads the complete positive decimal PID #{contents.inspect}" do
       Dir.mktmpdir('pid-file-spec') do |dir|

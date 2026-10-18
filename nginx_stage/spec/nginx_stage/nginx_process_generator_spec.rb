@@ -14,7 +14,7 @@ describe NginxStage::NginxProcessGenerator do
 
   before do
     passwd = Struct.new(:gid, :name, :uid, :shell)
-      .new(test_user_gid, test_user, 1000, '/bin/bash')
+                   .new(test_user_gid, test_user, 1000, '/bin/bash')
     group = Struct.new(:gid, :name).new(test_user_gid, test_user)
 
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(passwd)

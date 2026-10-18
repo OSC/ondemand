@@ -6,14 +6,16 @@ require 'tmpdir'
 
 describe NginxStage::NginxCleanGenerator do
   let(:generator) { described_class.new }
-  let(:active_user) { double('user', to_s: 'spec') }
-  let(:pid_path) { double('pid_path', running_process?: true) }
-  let(:socket) { double('socket') }
+  let(:active_user) { instance_double(NginxStage::User, to_s: 'spec') }
+  let(:pid_path) { instance_double(NginxStage::PidFile, running_process?: true) }
+  let(:socket) { instance_double(NginxStage::SocketFile) }
   let(:status) { double(:success? => true) }
+  let(:stop_output) { '' }
 
   before do
-    allow(NginxStage).to receive(:active_users).and_return([active_user])
-    allow(NginxStage).to receive(:inactive_users).and_return([])
+    allow(NginxStage).to receive_messages(
+      active_users: [active_user], inactive_users: [], nginx_bin: '/usr/sbin/nginx'
+    )
     allow(NginxStage).to receive(:pun_pid_path)
       .with(user: active_user).and_return('/tmp/passenger.pid')
     allow(NginxStage).to receive(:pun_socket_path)
@@ -27,11 +29,10 @@ describe NginxStage::NginxCleanGenerator do
     allow(generator).to receive(:with_pun_lifecycle_lock)
       .with(user: active_user).and_yield
     allow(NginxStage).to receive(:clean_nginx_env).with(user: active_user)
-    allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)
       .with(user: active_user, signal: :stop).and_return(['stop'])
     allow(Open3).to receive(:capture2e)
-      .with('/usr/sbin/nginx', 'stop').and_return(['', status])
+      .with('/usr/sbin/nginx', 'stop').and_return([stop_output, status])
   end
 
   it 'keeps active-user cleanup serialized through socket removal' do
@@ -47,12 +48,10 @@ describe NginxStage::NginxCleanGenerator do
 
   context 'when nginx stop fails' do
     let(:status) { double(:success? => false) }
-
-    before do
-      allow($stderr).to receive(:puts)
-    end
+    let(:stop_output) { 'stop failed' }
 
     it 'does not wait for cleanup that was not initiated' do
+      expect(generator).to receive(:warn).with(stop_output)
       expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
 
       generator.invoke
@@ -62,14 +61,13 @@ describe NginxStage::NginxCleanGenerator do
   context 'with a disabled user' do
     let(:disabled_user) { 'deleted_user' }
     let(:disabled_pid_path) do
-      double('pid_path', pid: 1234, to_s: '/tmp/deleted_user/passenger.pid')
+      instance_double(NginxStage::PidFile, pid: 1234, to_s: '/tmp/deleted_user/passenger.pid')
     end
     let(:kill_status) { double(:success? => true) }
     let(:kill_output) { '' }
 
     before do
-      allow(NginxStage).to receive(:active_users).and_return([])
-      allow(NginxStage).to receive(:inactive_users).and_return([disabled_user])
+      allow(NginxStage).to receive_messages(active_users: [], inactive_users: [disabled_user])
       allow(NginxStage).to receive(:pun_pid_path)
         .with(user: disabled_user).and_return('/tmp/deleted_user/passenger.pid')
       allow(NginxStage::PidFile).to receive(:new)
@@ -135,8 +133,9 @@ describe NginxStage::NginxCleanGenerator do
           .and_return(['another_disabled_user', disabled_user])
         expect(generator).not_to receive(:with_pun_lifecycle_lock)
           .with(user: 'another_disabled_user')
-        expect(Open3).to receive(:capture2e)
+        allow(Open3).to receive(:capture2e)
           .with('kill', '-s', 'TERM', '1234').and_return(['', kill_status])
+        expect(Open3).to receive(:capture2e).with('kill', '-s', 'TERM', '1234')
         expect(generator).to receive(:wait_for_pun_socket_shutdown)
           .with(user: disabled_user)
         expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.secret')

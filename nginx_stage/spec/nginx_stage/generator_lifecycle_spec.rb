@@ -5,22 +5,21 @@ require 'nginx_stage'
 require 'tmpdir'
 require 'timeout'
 
-describe 'PUN lifecycle coordination' do
+describe NginxStage::Generator do
   let(:test_user) { 'spec' }
+  let(:directory) { Dir.mktmpdir('pun-lifecycle-spec') }
+  let(:config_path) { File.join(directory, 'spec.conf') }
 
   before do
     passwd = Struct.new(:gid, :name, :uid, :shell)
-      .new(1000, test_user, 1000, '/bin/bash')
+                   .new(1000, test_user, 1000, '/bin/bash')
     group = Struct.new(:gid, :name).new(1000, test_user)
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(passwd)
     allow(Etc).to receive(:getgrgid).with(1000).and_return(group)
   end
 
-  around do |example|
-    Dir.mktmpdir('pun-lifecycle-spec') do |dir|
-      @config_path = File.join(dir, 'spec.conf')
-      example.run
-    end
+  after do
+    FileUtils.remove_entry(directory)
   end
 
   it 'blocks startup until app shutdown, socket cleanup, and replacement start finish' do
@@ -32,12 +31,14 @@ describe 'PUN lifecycle coordination' do
     startup_attempted = Queue.new
     status = double(:success? => true)
 
-    allow(NginxStage).to receive(:pun_config_path).and_return(@config_path)
-    allow(NginxStage).to receive(:pun_pid_path).and_return('/tmp/pun-lifecycle-spec.pid')
+    allow(NginxStage).to receive_messages(
+      pun_config_path: config_path,
+      pun_pid_path:    '/tmp/pun-lifecycle-spec.pid',
+      nginx_bin:       '/usr/sbin/nginx'
+    )
     allow(File).to receive(:file?).and_call_original
     allow(File).to receive(:file?).with('/tmp/pun-lifecycle-spec.pid').and_return(true)
     allow(NginxStage).to receive(:clean_nginx_env)
-    allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)
       .with(user: app.user, signal: :stop).and_return(['stop'])
     allow(NginxStage).to receive(:nginx_args)
@@ -70,11 +71,9 @@ describe 'PUN lifecycle coordination' do
 
     begin
       app_thread = Thread.new do
-        begin
-          app.invoke
-        rescue SystemExit => error
-          error.status
-        end
+        app.invoke
+      rescue SystemExit => e
+        e.status
       end
       Timeout.timeout(5) { waiting_for_socket.pop }
       startup_thread = Thread.new { startup.invoke }
@@ -101,7 +100,7 @@ describe 'PUN lifecycle coordination' do
 
   it 'preserves the blocked-startup error and releases the shared lock after it' do
     startup = NginxStage::PunConfigGenerator.new(user: test_user)
-    allow(NginxStage).to receive(:pun_config_path).and_return(@config_path)
+    allow(NginxStage).to receive(:pun_config_path).and_return(config_path)
     allow(startup).to receive(:pun_running?).and_return(true)
     allow(NginxStage::PunConfigGenerator).to receive(:hooks).and_return(
       skip_running_pun: NginxStage::PunConfigGenerator.hooks.fetch(:skip_running_pun)
@@ -109,7 +108,7 @@ describe 'PUN lifecycle coordination' do
 
     expect { startup.invoke }
       .to raise_error(NginxStage::Error, 'Startup blocked because a PUN is already running')
-    File.open("#{@config_path}.lock", File::RDWR) do |lock|
+    File.open("#{config_path}.lock", File::RDWR) do |lock|
       expect(lock.flock(File::LOCK_EX | File::LOCK_NB)).to eq(0)
     end
   end

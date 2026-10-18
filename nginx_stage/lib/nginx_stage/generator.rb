@@ -124,30 +124,30 @@ module NginxStage
     end
 
     private
-      # Use one stable file for startup, app restart, shutdown, and cleanup.
-      # Replacing or removing the PUN config must not replace this lock.
-      def with_pun_lifecycle_lock(user:)
-        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
-        FileUtils.mkdir_p File.dirname(lock_path)
+    # Use one stable file for startup, app restart, shutdown, and cleanup.
+    # Replacing or removing the PUN config must not replace this lock.
+    def with_pun_lifecycle_lock(user:)
+      lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
+      FileUtils.mkdir_p File.dirname(lock_path)
 
-        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
-          lock.flock(File::LOCK_EX)
-          yield
-        end
+      File.open(lock_path, File::RDWR | File::CREAT, 0o644) do |lock|
+        lock.flock(File::LOCK_EX)
+        yield
       end
+    end
 
-      def wait_for_pun_socket_shutdown(user:)
-        socket_path = NginxStage.pun_socket_path(user: user)
-        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
+    def wait_for_pun_socket_shutdown(user:)
+      socket_path = NginxStage.pun_socket_path(user: user)
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
 
-        while File.exist?(socket_path) || File.symlink?(socket_path)
-          if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
-            raise Error, "timed out waiting for PUN socket shutdown: #{socket_path}"
-          end
-
-          sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
+      while File.exist?(socket_path) || File.symlink?(socket_path)
+        if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+          raise Error, "timed out waiting for PUN socket shutdown: #{socket_path}"
         end
+
+        sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
       end
+    end
 
       # Retrieves a value from superclass. If it reaches the baseclass,
       # returns default

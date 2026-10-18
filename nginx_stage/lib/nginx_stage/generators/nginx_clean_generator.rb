@@ -76,7 +76,7 @@ module NginxStage
                 if s.success?
                   wait_for_pun_socket_shutdown(user: u)
                 else
-                  $stderr.puts o
+                  warn o
                 end
               end
             end
@@ -89,10 +89,12 @@ module NginxStage
       pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
         begin
-          next if (user && user != u.to_s)
+          next if user && user != u.to_s
+
           with_pun_lifecycle_lock(user: u) do
             puts "#{u} (disabled)"
             next if skip_nginx
+
             pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
             # Send a SIGTERM to the master nginx process to kill the PUN.
