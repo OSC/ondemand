@@ -143,7 +143,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   test "can configure bc config root through ondemand.d" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'bc_config_root' => '/path/from/file' }.to_yaml)
+        file.write({ 'bc_app_config_root' => '/path/from/file' }.to_yaml)
       end
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
