@@ -318,9 +318,39 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "can set native vnc login host" do
-    with_modified_env(OOD_NATIVE_VNC_LOGIN_HOST: 'owens.osc.edu') do
-      assert_equal ENV['OOD_NATIVE_VNC_LOGIN_HOST'], ConfigurationSingleton.new.native_vnc_login_host
+  test "native_vnc_login_host is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_NATIVE_VNC_LOGIN_HOST: nil)) do
+      assert_nil ConfigurationSingleton.new.native_vnc_login_host
+    end
+  end
+
+  test "can configure native_vnc_login_host through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_NATIVE_VNC_LOGIN_HOST: 'owens.osc.edu')) do
+      assert_equal 'owens.osc.edu', ConfigurationSingleton.new.native_vnc_login_host
+    end
+  end
+
+  test "can configure native_vnc_login_host through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'native_vnc_login_host' => 'host.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'host.from.file', ConfigurationSingleton.new.native_vnc_login_host
+      end
+    end
+  end
+
+  test "native_vnc_login_host environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'native_vnc_login_host' => 'host.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_NATIVE_VNC_LOGIN_HOST: 'host.from.env') do
+        assert_equal 'host.from.env', ConfigurationSingleton.new.native_vnc_login_host
+      end
     end
   end
 
