@@ -206,13 +206,14 @@ class ConfigurationSingleton
   # @return [Array<String>] balance paths
   def balance_paths
     # regex uses negative lookahead to ignore : preceding //
-    ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
+    paths = ENV['OOD_BALANCE_PATH'] || config.fetch(:balance_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(/:(?!\/\/)/) }
   end
 
   # The threshold for determining if there is sufficient balance remaining
   # @return [Float] threshold factor
   def balance_threshold
-    ENV.fetch("OOD_BALANCE_THRESHOLD", 0).to_f
+    (ENV['OOD_BALANCE_THRESHOLD'] || config.fetch(:balance_threshold, 0)).to_f
   end
 
   # The XMoD host
