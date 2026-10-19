@@ -2,11 +2,13 @@ module ActiveJobs
   # Utility class for responding to json activejobs requests. This class generates
   # the resulting json body that the controller will ultimately respond with.
   class JobsJsonRequestHandler
+    include ActiveJobsHelper
+
     attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
     # additional attrs to request when calling info_all
-    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time ]
-
+    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time, :dispatch_time, :submit_time]
+    
     def initialize(filter_id:, cluster_id:, controller:, params:, response:)
       @filter_id = filter_id
       @cluster_id = cluster_id
@@ -86,35 +88,23 @@ module ActiveJobs
           extended_available: extended_available,
           nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?),
           delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : "",
-          grafana_url: grafana_url(cluster, j)
+          grafana_url: grafana_link_for(cluster, j)
         }
       }
     end
 
     private
 
-    def grafana_url(cluster, job)
-      grafana_config = cluster.custom&.dig(:grafana)
-      return "" unless grafana_config
+    def grafana_link_for(cluster, j)
+      return "" if j.allocated_nodes.empty?
 
-      if grafana_config.is_a?(String)
-        grafana_config % { jobid: job.id, cluster: cluster.id }
-      elsif grafana_config.is_a?(Hash)
-        host = grafana_config[:host]
-        org_id = grafana_config[:orgId] || 1
-        uid = grafana_config[:uid]
-        dashboard = grafana_config[:dashboard] || "ondemand-job"
-
-        query_params = {
-          orgId: org_id,
-          "var-cluster": cluster.id.to_s,
-          "var-jobid": job.id.to_s
-        }.to_query
-
-        "#{host}/d/#{uid}/#{dashboard}?#{query_params}"
-      else
-        ""
-      end
+      build_grafana_link(
+        cluster.id.to_s,
+        (j.dispatch_time || j.submit_time)&.to_i,
+        nil,
+        j.allocated_nodes.first&.name.to_s,
+        j.id.to_s
+      ) || ""
     end
 
     # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefully
