@@ -16,23 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-feat: add test cases for bc session_view sub-app override (#5880)\
-Update API key in localizations workflow (#5930)\
-lint a random file (#5950)\
-Raise error message from blocked PUN startup (#5918)\
-Remove blank dependency keys from `Launcher#submit` (#5944)\
-Refactor config_root to have ondemand.d support (#5937)\
-Add Job Composer deprecation warning (#5858)\
-Update Changelog (#5925)\
-lint a random file (#5931)\
-Use run instead of action for Docker Login (#5932)\
-Allow pull requests without secrets to run (#5928)\
-update dependencies (#5927)\
-Revise and expand roadmap doc to merge cheat sheet (#5921)\
-Place GitHub template instructions in comments (#5916)\
-Update to latest ood_packaging (#5919)\
-Login to Docker Hub for e2e tests (#5924)\
-lint a random file (#5923)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -60,6 +43,8 @@ lint a random file (#5923)
 - The file browser now shows timezones in the modified date field in [5839](https://github.com/OSC/ondemand/pull/5839).
 - Pun initialization now locks to serialize itself in [5872](https://github.com/OSC/ondemand/pull/5872).
 - The timezone now shows in Active jobs extended details in [5838](https://github.com/OSC/ondemand/pull/5838).
+- Job Composer now shows a deprecation warning in [5858](https://github.com/OSC/ondemand/pull/5858).
+- OOD_APP_CONFIG_ROOT now has ondemand.d support in [5937](https://github.com/OSC/ondemand/pull/5937).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -98,6 +83,7 @@ lint a random file (#5923)
 - Rclone remotes are sorted fixing an issue with newer rclone versions in [5860](https://github.com/OSC/ondemand/pull/5860).
 - The file editor now chooses the minimum value between file_editor_max_size and download_file_max in [5857](https://github.com/OSC/ondemand/pull/5857).
 - Fix mobile Shell keyboard focus and viewport sizing in [5804](https://github.com/OSC/ondemand/pull/5804).
+- The Project Manager Launchers now work for HTCondor in [5944](https://github.com/OSC/ondemand/pull/5944).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
