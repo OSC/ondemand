@@ -263,6 +263,7 @@ ja_JP:
     jobs_workflow_submitted: ワークフローが正常に送信されました！
     jobs_workflow_sync_key_help: 有効にすると、このワークフロー内のすべてのランチャーは同じ <code>OOD_WORKFLOW_SYNC_KEY</code> 環境変数（各ワークフロー実行に固有のランダムトークン）を受け取ります。これは、同期されたファイル名、ロックファイル、または依存ジョブ間で共有される識別子を生成するのに便利です。
     jobs_workflows: ワークフロー
+    jobs_workflows_not_supported: 設定されたスケジューラではワークフローはサポートされていません。
     launch: 起動
     load_report: ロードレポート + %{node}
     logo_alt_text: Open OnDemandへようこそ
