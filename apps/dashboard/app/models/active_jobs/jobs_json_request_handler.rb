@@ -2,11 +2,13 @@ module ActiveJobs
   # Utility class for responding to json activejobs requests. This class generates
   # the resulting json body that the controller will ultimately respond with.
   class JobsJsonRequestHandler
+    include ActiveJobsHelper
+
     attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
     # additional attrs to request when calling info_all
-    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time ]
-
+    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time, :dispatch_time, :submit_time]
+    
     def initialize(filter_id:, cluster_id:, controller:, params:, response:)
       @filter_id = filter_id
       @cluster_id = cluster_id
@@ -85,9 +87,24 @@ module ActiveJobs
           username: j.job_owner,
           extended_available: extended_available,
           nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?),
-          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : ""
+          delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : "",
+          grafana_url: grafana_link_for(cluster, j)
         }
       }
+    end
+
+    private
+
+    def grafana_link_for(cluster, j)
+      return "" if j.allocated_nodes.empty?
+
+      build_grafana_link(
+        cluster.id.to_s,
+        (j.dispatch_time || j.submit_time)&.to_i,
+        nil,
+        j.allocated_nodes.first&.name.to_s,
+        j.id.to_s
+      ) || ""
     end
 
     # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefully
