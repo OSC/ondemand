@@ -196,8 +196,9 @@ class ConfigurationSingleton
 
   # The root directory that holds configuration information for Batch Connect
   # apps (typically each app will have a sub-directory underneath this)
+  # @return [Pathname] path to Batch Connect configuration root\
   def bc_config_root
-    Pathname.new(ENV["OOD_BC_APP_CONFIG_ROOT"] || "/etc/ood/config/apps")
+    Pathname.new(ENV['OOD_BC_APP_CONFIG_ROOT'] || config.fetch(:bc_app_config_root, '/etc/ood/config/apps'))
   end
 
   def load_external_bc_config?
