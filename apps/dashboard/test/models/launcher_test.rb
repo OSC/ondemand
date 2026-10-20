@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'ood_core/job/adapters/slurm'
 
 class LauncherTest < ActiveSupport::TestCase
   def setup
