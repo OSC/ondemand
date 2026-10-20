@@ -14,25 +14,28 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default config root" do
-    with_modified_env(no_config_env) do
-      assert_equal Pathname.new('/etc/ood/config/apps/dashboard'), ConfigurationSingleton.new.config_root
-    end
+    assert_equal Pathname.new("/etc/ood/config/apps/dashboard"), ConfigurationSingleton.new.config_root
   end
 
-  test "can configure config root through environment variable" do
-    with_modified_env(no_config_env.merge(OOD_APP_CONFIG_ROOT: '/path/to/config')) do
+  test "can configure config root" do
+    with_modified_env(OOD_APP_CONFIG_ROOT: '/path/to/config') do
       assert_equal Pathname.new('/path/to/config'), ConfigurationSingleton.new.config_root
     end
   end
 
-  test "can configure config root through ondemand.d" do
+  test "considers all .env files before reading config" do
     Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'config_root' => '/path/from/file' }.to_yaml)
-      end
+      with_modified_env(OOD_LOAD_EXTERNAL_CONFIG: 'true') do
+        dir = Pathname.new(dir)
+        app_root = dir.join('app')
+        config_d_dir = dir.join('ondemand.d')
+        [app_root, config_d_dir].each(&:mkpath)
+        app_root.join('.env').write("OOD_CONFIG_D_DIRECTORY=#{config_d_dir}")
+        config_d_dir.join('test.yml').write("download_dir_timeout_seconds: 10")
 
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
-        assert_equal Pathname.new('/path/from/file'), ConfigurationSingleton.new.config_root
+        ConfigurationSingleton.any_instance.stubs(:app_root).returns(app_root)
+
+        assert_equal 10, ConfigurationSingleton.new.download_dir_timeout_seconds
       end
     end
   end
