@@ -269,7 +269,6 @@ class ConfigurationSingleton
     # load overloads
     Dotenv.overload(*(overload_files(dotenv_files)))
     Dotenv.overload(*(overload_files(dotenv_local_files)))
-    @env_loaded = true
   end
 
   def dev_apps_root_path
