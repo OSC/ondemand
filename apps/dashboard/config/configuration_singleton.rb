@@ -1,5 +1,8 @@
 require 'pathname'
 require 'dotenv'
+require 'erb'
+require 'yaml'
+require 'active_support/core_ext/hash'
 require_relative '../lib/current_user'
 require_relative '../app/models/concerns/bool_reader.rb'
 
@@ -19,6 +22,29 @@ require_relative '../app/models/concerns/bool_reader.rb'
 #
 # This is functionally equivalent to taking every instance method on
 # ConfigurationSingleton and defining it as a class method on Configuration.
+#
+# !! WARNING !!
+# Some configs below have the capacity to influence other configs, like 
+# config_root and config_d_directory. These configs must ONLY be set from
+# the environment, and must execute in a specific order to give the proper
+# configuration. The call stack is as follows:
+# ---- Before initialization ---------------------
+#   1. initialize
+#   2. load_dotenv_files      <~ initialize
+#   3. dotenv_local_files     <~ load_dotenv_files
+#   4. app_root               <~ dotenv_local_files
+#   5. rails_env              <~ dotenv_local_files
+#   6. dotenv_files           <~ load_dotenv_files
+#   7. load_external_config?  <~ dotenv_files
+#   8. config_root            <~ dotenv_files
+#   9. overload_files         <~ load_dotenv_files
+#   
+# ---- After initialization ----------------------
+#  10. config                 <~ * first time an application config is called *
+#  11. read_config            <~ config
+#  12. config_directory       <~ read_config
+# 
+# Only after all of these methods have executed is the full configuration available
 #
 class ConfigurationSingleton
   include BoolReader
@@ -160,7 +186,7 @@ class ConfigurationSingleton
   # The app's configuration root directory
   # @return [Pathname] path to configuration root
   def config_root
-    Pathname.new(ENV['OOD_APP_CONFIG_ROOT'] || config.fetch(:config_root, '/etc/ood/config/apps/dashboard'))
+    Pathname.new(ENV["OOD_APP_CONFIG_ROOT"] || "/etc/ood/config/apps/dashboard")
   end
 
   def load_external_config?
@@ -206,13 +232,14 @@ class ConfigurationSingleton
   # @return [Array<String>] balance paths
   def balance_paths
     # regex uses negative lookahead to ignore : preceding //
-    ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
+    paths = ENV['OOD_BALANCE_PATH'] || config.fetch(:balance_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(/:(?!\/\/)/) }
   end
 
   # The threshold for determining if there is sufficient balance remaining
   # @return [Float] threshold factor
   def balance_threshold
-    ENV.fetch("OOD_BALANCE_THRESHOLD", 0).to_f
+    (ENV['OOD_BALANCE_THRESHOLD'] || config.fetch(:balance_threshold, 0)).to_f
   end
 
   # The XMoD host
