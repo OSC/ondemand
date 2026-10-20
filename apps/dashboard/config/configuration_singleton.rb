@@ -45,8 +45,7 @@ require_relative '../app/models/concerns/bool_reader.rb'
 #  12. config_directory       <~ read_config
 # 
 # Only after all of these methods have executed is the full configuration available
-
-
+#
 class ConfigurationSingleton
   include BoolReader
   attr_writer :app_development_enabled
