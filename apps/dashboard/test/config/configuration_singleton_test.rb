@@ -390,6 +390,50 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "open_apps_in_new_window is true by default" do
+    with_modified_env(no_config_env.merge(OOD_OPEN_APPS_IN_NEW_WINDOW: nil)) do
+      c = ConfigurationSingleton.new
+      assert_equal true, c.open_apps_in_new_window
+      assert_equal true, c.open_apps_in_new_window?
+    end
+  end
+
+  test "can configure open_apps_in_new_window through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_OPEN_APPS_IN_NEW_WINDOW: 'false')) do
+      c = ConfigurationSingleton.new
+      assert_equal false, c.open_apps_in_new_window
+      assert_equal false, c.open_apps_in_new_window?
+    end
+  end
+
+  test "can configure open_apps_in_new_window through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: nil) do
+        c = ConfigurationSingleton.new
+        assert_equal false, c.open_apps_in_new_window
+        assert_equal false, c.open_apps_in_new_window?
+      end
+    end
+  end
+
+  test "open_apps_in_new_window environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: 'true') do
+        c = ConfigurationSingleton.new
+        assert_equal true, c.open_apps_in_new_window
+        assert_equal true, c.open_apps_in_new_window?
+      end
+    end
+  end
+
   test "does not throw error when it can't read config files" do
     with_modified_env(OOD_CONFIG_FILE: "/dev/null", OOD_CONFIG_D_DIRECTORY: "/dev/null") do
       assert_equal ConfigurationSingleton.new.files_enable_shell_button, true
