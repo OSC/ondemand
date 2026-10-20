@@ -160,7 +160,7 @@ class ConfigurationSingleton
   # The app's configuration root directory
   # @return [Pathname] path to configuration root
   def config_root
-    Pathname.new(ENV['OOD_APP_CONFIG_ROOT'] || config.fetch(:config_root, '/etc/ood/config/apps/dashboard'))
+    Pathname.new(raw_config_root)
   end
 
   def load_external_config?
@@ -266,6 +266,7 @@ class ConfigurationSingleton
     # load overloads
     Dotenv.overload(*(overload_files(dotenv_files)))
     Dotenv.overload(*(overload_files(dotenv_local_files)))
+    @env_loaded = true
   end
 
   def dev_apps_root_path
@@ -490,6 +491,15 @@ class ConfigurationSingleton
 
         Array.wrap(column[:widgets]).map(&:to_s).include?(widget_name.to_s)
       end
+    end
+  end
+
+  def raw_config_root
+    '/etc/ood/config/apps/dashboard'.tap do |default|
+      return ENV['OOD_APP_CONFIG_ROOT'] if ENV['OOD_APP_CONFIG_ROOT']
+      # Only read from config if the environment is complete. If config is called before
+      # the environment has loaded it can circularly affect the value of config_d_directory
+      return config.fetch(:config_root, default) unless @env_loaded
     end
   end
   
