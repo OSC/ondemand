@@ -303,7 +303,7 @@ class DataTable {
             $('#open-in-terminal-btn').removeClass('disabled');
 
             if ($('#select_all').is(':checked')) {
-                $('#select_all').trigger();
+                $('#select_all').click();
             }
 
             $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
@@ -330,7 +330,7 @@ class DataTable {
             return result;
         } catch (e) {
             OODAlertError(e.message);
-
+            console.error(e)
             $('#open-in-terminal-btn').addClass('disabled');
 
             this.toggleSpinner()
