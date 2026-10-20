@@ -14,13 +14,11 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default config root" do
-    with_modified_env(no_config_env) do
-      assert_equal Pathname.new('/etc/ood/config/apps/dashboard'), ConfigurationSingleton.new.config_root
-    end
+    assert_equal Pathname.new("/etc/ood/config/apps/dashboard"), ConfigurationSingleton.new.config_root
   end
 
-  test "can configure config root through environment variable" do
-    with_modified_env(no_config_env.merge(OOD_APP_CONFIG_ROOT: '/path/to/config')) do
+  test "can configure config root" do
+    with_modified_env(OOD_APP_CONFIG_ROOT: '/path/to/config') do
       assert_equal Pathname.new('/path/to/config'), ConfigurationSingleton.new.config_root
     end
   end
