@@ -14,25 +14,28 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default config root" do
-    with_modified_env(no_config_env) do
-      assert_equal Pathname.new('/etc/ood/config/apps/dashboard'), ConfigurationSingleton.new.config_root
-    end
+    assert_equal Pathname.new("/etc/ood/config/apps/dashboard"), ConfigurationSingleton.new.config_root
   end
 
-  test "can configure config root through environment variable" do
-    with_modified_env(no_config_env.merge(OOD_APP_CONFIG_ROOT: '/path/to/config')) do
+  test "can configure config root" do
+    with_modified_env(OOD_APP_CONFIG_ROOT: '/path/to/config') do
       assert_equal Pathname.new('/path/to/config'), ConfigurationSingleton.new.config_root
     end
   end
 
-  test "can configure config root through ondemand.d" do
+  test "considers all .env files before reading config" do
     Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'config_root' => '/path/from/file' }.to_yaml)
-      end
+      with_modified_env(OOD_LOAD_EXTERNAL_CONFIG: 'true') do
+        dir = Pathname.new(dir)
+        app_root = dir.join('app')
+        config_d_dir = dir.join('ondemand.d')
+        [app_root, config_d_dir].each(&:mkpath)
+        app_root.join('.env').write("OOD_CONFIG_D_DIRECTORY=#{config_d_dir}")
+        config_d_dir.join('test.yml').write("download_dir_timeout_seconds: 10")
 
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
-        assert_equal Pathname.new('/path/from/file'), ConfigurationSingleton.new.config_root
+        ConfigurationSingleton.any_instance.stubs(:app_root).returns(app_root)
+
+        assert_equal 10, ConfigurationSingleton.new.download_dir_timeout_seconds
       end
     end
   end
@@ -309,11 +312,11 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "balance_paths correctly parses OOD_BALANCE_PATH" do
-    with_modified_env(OOD_BALANCE_PATH: '/path_a/balance.json:/path_b/balance.json') do
+    with_modified_env(no_config_env.merge(OOD_BALANCE_PATH: '/path_a/balance.json:/path_b/balance.json')) do
       assert_equal ['/path_a/balance.json', '/path_b/balance.json'], ConfigurationSingleton.new.balance_paths
     end
 
-    with_modified_env(OOD_BALANCE_PATH: 'https://example.com/balance.json:ftp://path_b/balance.json') do
+    with_modified_env(no_config_env.merge(OOD_BALANCE_PATH: 'https://example.com/balance.json:ftp://path_b/balance.json')) do
       assert_equal ['https://example.com/balance.json', 'ftp://path_b/balance.json'], ConfigurationSingleton.new.balance_paths
     end
   end
@@ -341,6 +344,42 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
+  
+  test "balance_paths can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: nil) do
+        assert_equal ['/path_from/file_a.json', '/path_from/file_b.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
+
+  test "balance_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => '/path_from/file_a.json:https://example.com/balance.json' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: nil) do
+        assert_equal ['/path_from/file_a.json', 'https://example.com/balance.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
+
+  test "balance_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => ['/path_from/file.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: '/path_from/env.json') do
+        assert_equal ['/path_from/env.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
 
   test "xdmod_host environment variable has precedence over ondemand.d" do
     Dir.mktmpdir do |dir|
@@ -353,7 +392,37 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
+  
+  test "balance_threshold can be configured through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_BALANCE_THRESHOLD: '0.80')) do
+      assert_equal 0.80, ConfigurationSingleton.new.balance_threshold
+    end
+  end
 
+  test "balance_threshold can be configured through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: nil) do
+        assert_equal 0.75, ConfigurationSingleton.new.balance_threshold
+      end
+    end
+  end
+
+  test "balance_threshold environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: '0.50') do
+        assert_equal 0.50, ConfigurationSingleton.new.balance_threshold
+      end
+    end
+  end
+  
   test "can set native vnc login host" do
     with_modified_env(OOD_NATIVE_VNC_LOGIN_HOST: 'owens.osc.edu') do
       assert_equal ENV['OOD_NATIVE_VNC_LOGIN_HOST'], ConfigurationSingleton.new.native_vnc_login_host
