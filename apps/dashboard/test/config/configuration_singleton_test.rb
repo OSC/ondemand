@@ -392,7 +392,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   test "balance_threshold can be configured through environment variable" do
     with_modified_env(no_config_env.merge(OOD_BALANCE_THRESHOLD: '0.80')) do
       assert_equal 0.80, ConfigurationSingleton.new.balance_threshold
