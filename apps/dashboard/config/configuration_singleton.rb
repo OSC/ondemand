@@ -496,6 +496,7 @@ class ConfigurationSingleton
 
   def raw_config_root
     '/etc/ood/config/apps/dashboard'.tap do |default|
+      puts "DEBUG: ENV['OOD_APP_CONFIG_ROOT']: #{ENV['OOD_APP_CONFIG_ROOT'].inspect}, @env_loaded: #{@env_loaded.inspect}"
       return ENV['OOD_APP_CONFIG_ROOT'] if ENV['OOD_APP_CONFIG_ROOT']
       # Only read from config if the environment is complete. If config is called before
       # the environment has loaded it can circularly affect the value of config_d_directory
