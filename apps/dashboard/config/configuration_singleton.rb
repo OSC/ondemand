@@ -1,5 +1,8 @@
 require 'pathname'
 require 'dotenv'
+require 'erb'
+require 'yaml'
+require 'active_support/core_ext/hash'
 require_relative '../lib/current_user'
 require_relative '../app/models/concerns/bool_reader.rb'
 
