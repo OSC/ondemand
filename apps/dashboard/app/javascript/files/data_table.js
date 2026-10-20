@@ -330,10 +330,10 @@ class DataTable {
             return result;
         } catch (e) {
             OODAlertError(e.message);
-            console.error(e)
-            $('#open-in-terminal-btn').addClass('disabled');
+            console.error(e);
 
-            this.toggleSpinner()
+            $('#open-in-terminal-btn').addClass('disabled');
+            this.toggleSpinner();
             
             // Removed this as it was causing a JS Error and there is no reprocution from removing it.
             // return await Promise.reject(e);
