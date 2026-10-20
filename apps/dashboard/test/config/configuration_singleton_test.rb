@@ -614,6 +614,54 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "ood_bc_card_time is 7 by default" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: nil)) do
+      assert_equal 7, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
+  test "can configure ood_bc_card_time through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: '14')) do
+      assert_equal 14, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
+  test "can configure ood_bc_card_time through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'bc_card_time' => 21 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BC_CARD_TIME: nil) do
+        assert_equal 21, ConfigurationSingleton.new.ood_bc_card_time
+      end
+    end
+  end
+
+  test "ood_bc_card_time environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'bc_card_time' => 21 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BC_CARD_TIME: '14') do
+        assert_equal 14, ConfigurationSingleton.new.ood_bc_card_time
+      end
+    end
+  end
+
+  test "ood_bc_card_time returns 7 for invalid non-numeric values" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: 'abc')) do
+      assert_equal 7, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
+  test "ood_bc_card_time returns 0 for negative values" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: '-3')) do
+      assert_equal 0, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
   test "bc_sessions_poll_delay default value" do
     assert_equal(10_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
   end

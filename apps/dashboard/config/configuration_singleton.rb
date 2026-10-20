@@ -423,7 +423,7 @@ class ConfigurationSingleton
 
   # How many days before a Session record is considered old and ready to delete
   def ood_bc_card_time
-    ood_bc_card_time = ENV['OOD_BC_CARD_TIME']
+    ood_bc_card_time = ENV['OOD_BC_CARD_TIME'] || config.fetch(:bc_card_time, 7)
     return 7 if ood_bc_card_time.blank? || /^([+-]\d+|\d+)/.match(ood_bc_card_time.to_s).nil?
 
     ood_bc_card_time_int = ood_bc_card_time.to_i
