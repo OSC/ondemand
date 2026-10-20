@@ -37,6 +37,23 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "considers all .env files before reading config" do
+    Dir.mktmpdir do |dir|
+      with_modified_env(OOD_LOAD_EXTERNAL_CONFIG: 'true') do
+        dir = Pathname.new(dir)
+        app_root = dir.join('app')
+        config_d_dir = dir.join('ondemand.d')
+        [app_root, config_d_dir].each(&:mkpath)
+        app_root.join('.env').write("OOD_CONFIG_D_DIRECTORY=#{config_d_dir}")
+        config_d_dir.join('test.yml').write("download_dir_timeout_seconds: 10")
+
+        ConfigurationSingleton.any_instance.stubs(:app_root).returns(app_root)
+
+        assert_equal 10, ConfigurationSingleton.new.download_dir_timeout_seconds
+      end
+    end
+  end
+
   test "should not load external configuration by default if not production" do
     refute ConfigurationSingleton.new.load_external_config?
   end
