@@ -4,14 +4,12 @@ require 'test_helper'
 
 class LauncherTest < ActiveSupport::TestCase
   def setup
-    Rails.cache.clear
     stub_clusters
     stub_sinfo
   end
 
   def teardown
     Configuration.instance_variable_set('@job_clusters', nil)
-    Rails.cache.clear
   end
 
   test 'supported field postfix' do
