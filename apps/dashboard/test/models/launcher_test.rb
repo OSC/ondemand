@@ -165,19 +165,9 @@ class LauncherTest < ActiveSupport::TestCase
     end
   end
 
-def stub_cluster(adapter)
-  cluster = OodCore::Clusters.load_file('test/fixtures/config/clusters.d')['owens']
-  # Keep cached clusters serializable by stubbing the factory instead of the cluster.
-  OodCore::Job::Factory.stubs(:build).with(has_entries(id: :owens)).returns(adapter)
-  adapter.stubs(:nodes).returns([])
-  OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([cluster]))
-end
-
 test 'passes dependency params to adapter when specified' do
   Dir.mktmpdir do |dir|
-    adapter = OodCore::Job::Adapter.new
-    stub_cluster(adapter)
-    adapter.expects(:submit).with(anything, afterok: ['123']).returns('job-1')
+    OodCore::Job::Adapters::Slurm.any_instance.expects(:submit).with(anything, afterok: ['123']).returns('job-1')
     script_location = File.join(dir, 'script.sh')
     File.write(script_location, 'echo "Hello world"')
     Launcher.any_instance.stubs(:update_job_log)
@@ -192,9 +182,7 @@ end
 
 test 'will not pass dependency params to adapter unless specified' do
   Dir.mktmpdir do |dir|
-    adapter = OodCore::Job::Adapter.new
-    stub_cluster(adapter)
-    adapter.expects(:submit).with(anything).returns('job-1')
+    OodCore::Job::Adapters::Slurm.any_instance.expects(:submit).with(anything).returns('job-1')
     script_location = File.join(dir, 'script.sh')
     File.write(script_location, 'echo "Hello world"')
     Launcher.any_instance.stubs(:update_job_log)
