@@ -344,6 +344,18 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "xdmod_host environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
+      end
+      
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_XDMOD_HOST: 'https://xdmod.from.env') do
+        assert_equal 'https://xdmod.from.env', ConfigurationSingleton.new.xdmod_host
+      end
+    end
+  end
   
   test "balance_paths can be configured through ondemand.d as an array" do
     Dir.mktmpdir do |dir|
@@ -377,18 +389,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: '/path_from/env.json') do
         assert_equal ['/path_from/env.json'], ConfigurationSingleton.new.balance_paths
-      end
-    end
-  end
-
-  test "xdmod_host environment variable has precedence over ondemand.d" do
-    Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
-      end
-      
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_XDMOD_HOST: 'https://xdmod.from.env') do
-        assert_equal 'https://xdmod.from.env', ConfigurationSingleton.new.xdmod_host
       end
     end
   end
