@@ -87,6 +87,7 @@ class ConfigurationSingleton
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
+      :open_apps_in_new_window      => true,
       :bc_ssh_to_compute_node => true,
     }.freeze
   end
@@ -406,19 +407,6 @@ class ConfigurationSingleton
 
   def allowlist_paths
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
-  end
-
-  # default value for opening apps in new window
-  # that is used if app's manifest doesn't specify
-  # if not set default is true
-  #
-  # @return [Boolean] true if by default open apps in new window
-  def open_apps_in_new_window?
-    if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
-      read_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
-    else
-      true
-    end
   end
 
   # How many days before a Session record is considered old and ready to delete
