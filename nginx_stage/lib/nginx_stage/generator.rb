@@ -124,6 +124,7 @@ module NginxStage
     end
 
     private
+
     # Use one stable file for startup, app restart, shutdown, and cleanup.
     # Replacing or removing the PUN config must not replace this lock.
     def with_pun_lifecycle_lock(user:)
@@ -149,19 +150,19 @@ module NginxStage
       end
     end
 
-      # Retrieves a value from superclass. If it reaches the baseclass,
-      # returns default
-      def self.from_superclass(method, default = nil)
-        if self == NginxStage::Generator || !superclass.respond_to?(method, true)
-          default
-        else
-          superclass.send(method).dup
-        end
+    # Retrieves a value from superclass. If it reaches the baseclass,
+    # returns default
+    def self.from_superclass(method, default = nil)
+      if self == NginxStage::Generator || !superclass.respond_to?(method, true)
+        default
+      else
+        superclass.send(method).dup
       end
+    end
 
-      # Use ERB to render templates
-      def render(data)
-        ERB.new(data, trim_mode: '-').result(binding)
-      end
+    # Use ERB to render templates
+    def render(data)
+      ERB.new(data, trim_mode: '-').result(binding)
+    end
   end
 end
