@@ -148,8 +148,13 @@ module OodPortalGenerator
 
     # Helper that builds a Header directive to set the Content-Security-Policy for a given uri
     def node_csp_header(uri)
-      http_origin = "#{@protocol}#{@proxy_server}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
-      wss_origin = "wss://#{@proxy_server}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+      ws_proto = @ssl ? 'wss' : 'ws'
+      # using a special port
+      csp_port = ['443', '80'].include?(port) ? nil : ":#{port}"
+
+
+      http_origin = "#{@protocol}#{@proxy_server}#{csp_port}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+      wss_origin = "#{ws_proto}://#{@proxy_server}#{csp_port}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
       "Header always set Content-Security-Policy \"connect-src #{http_origin} #{wss_origin}; form-action #{http_origin}\""
     end
 
