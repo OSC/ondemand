@@ -8,7 +8,8 @@ RSpec.describe NginxStage::PidFile do
   {
     "1234\n"      => 1234,
     " \t001234\n" => 1234,
-    '1'           => 1
+    '1'           => 1,
+    '2147483647'  => 2_147_483_647
   }.each do |contents, expected|
     it "reads the complete positive decimal PID #{contents.inspect}" do
       Dir.mktmpdir('pid-file-spec') do |dir|
@@ -19,7 +20,8 @@ RSpec.describe NginxStage::PidFile do
     end
   end
 
-  ['', " \n", '0', '0000', '-1', '-12', '+123', '12abc', '12 34', "12\n34", '0x10', '1_000'].each do |contents|
+  ['', " \n", '0', '0000', '-1', '-12', '+123', '12abc', '12 34', "12\n34", '0x10', '1_000',
+   '2147483648', '0002147483648', '99999999999999999999'].each do |contents|
     it "rejects the unsafe PID contents #{contents.inspect}" do
       Dir.mktmpdir('pid-file-spec') do |dir|
         path = File.join(dir, 'passenger.pid')

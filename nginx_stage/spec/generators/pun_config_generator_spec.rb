@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'nginx_stage'
+require 'tmpdir'
 
 describe NginxStage::PunConfigGenerator do
   let(:test_user) { 'spec' }
@@ -120,6 +121,19 @@ describe NginxStage::PunConfigGenerator do
         .and_raise(NginxStage::MissingPidFile)
 
       expect(generator.send(:pun_running?)).to be(false)
+    end
+
+    it 'treats an out-of-range PID file as not running' do
+      Dir.mktmpdir('pun-oversized-pid-spec') do |dir|
+        path = File.join(dir, 'passenger.pid')
+        File.write(path, '99999999999999999999')
+        allow(File).to receive(:socket?)
+          .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
+        allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user).and_return(path)
+        expect(Process).not_to receive(:getpgid)
+
+        expect(generator.send(:pun_running?)).to be(false)
+      end
     end
   end
 

@@ -9,6 +9,9 @@ module NginxStage
     # @return [Integer] the pid object was initialized with
     attr_reader :pid
 
+    # Linux and macOS use a signed 32-bit pid_t for process IDs.
+    MAX_PID = (2**31) - 1
+
     # @param pid [Integer] the pid describing a process
     # @raise [MissingPidFile] if pid file doesn't exist in file system
     # @raise [InvalidPidFile] if it is an invalid pid file
@@ -22,6 +25,7 @@ module NginxStage
       raise InvalidPidFile, "invalid PID file: #{pid_path}" unless /\A0*[1-9][0-9]*\z/.match?(contents)
 
       @pid = Integer(contents, 10)
+      raise InvalidPidFile, "invalid PID file: #{pid_path}" if @pid > MAX_PID
     end
 
     # Whether the corresponding pid is a running process
