@@ -164,33 +164,33 @@ class LauncherTest < ActiveSupport::TestCase
     end
   end
 
-test 'passes dependency params to adapter when specified' do
-  Dir.mktmpdir do |dir|
-    OodCore::Job::Adapters::Slurm.any_instance.expects(:submit).with(anything, afterok: ['123']).returns('job-1')
-    script_location = File.join(dir, 'script.sh')
-    File.write(script_location, 'echo "Hello world"')
-    Launcher.any_instance.stubs(:update_job_log)
+  test 'passes dependency params to adapter when specified' do
+    Dir.mktmpdir do |dir|
+      OodCore::Job::Adapters::Slurm.any_instance.expects(:submit).with(anything, afterok: ['123']).returns('job-1')
+      script_location = File.join(dir, 'script.sh')
+      File.write(script_location, 'echo "Hello world"')
+      Launcher.any_instance.stubs(:update_job_log)
 
-    launcher = Launcher.new({ project_dir: dir, id: '12345678', title: 'Test Script' })
-    assert launcher.save
+      launcher = Launcher.new({ project_dir: dir, id: '12345678', title: 'Test Script' })
+      assert launcher.save
 
-    assert_equal 'job-1', launcher.submit({ auto_batch_clusters: 'owens', afterok: '123' }, write_cache: false)
-    assert_empty launcher.errors[:submit]
+      assert_equal 'job-1', launcher.submit({ auto_batch_clusters: 'owens', afterok: '123' }, write_cache: false)
+      assert_empty launcher.errors[:submit]
+    end
   end
-end
 
-test 'will not pass dependency params to adapter unless specified' do
-  Dir.mktmpdir do |dir|
-    OodCore::Job::Adapters::Slurm.any_instance.expects(:submit).with(anything).returns('job-1')
-    script_location = File.join(dir, 'script.sh')
-    File.write(script_location, 'echo "Hello world"')
-    Launcher.any_instance.stubs(:update_job_log)
+  test 'will not pass dependency params to adapter unless specified' do
+    Dir.mktmpdir do |dir|
+      OodCore::Job::Adapters::Slurm.any_instance.expects(:submit).with(anything).returns('job-1')
+      script_location = File.join(dir, 'script.sh')
+      File.write(script_location, 'echo "Hello world"')
+      Launcher.any_instance.stubs(:update_job_log)
 
-    launcher = Launcher.new({ project_dir: dir, id: '12345678', title: 'Test Script' })
-    assert launcher.save
+      launcher = Launcher.new({ project_dir: dir, id: '12345678', title: 'Test Script' })
+      assert launcher.save
 
-    assert_equal 'job-1', launcher.submit({ auto_batch_clusters: 'owens' }, write_cache: false)
-    assert_empty launcher.errors[:submit]
+      assert_equal 'job-1', launcher.submit({ auto_batch_clusters: 'owens' }, write_cache: false)
+      assert_empty launcher.errors[:submit]
+    end
   end
-end
 end
