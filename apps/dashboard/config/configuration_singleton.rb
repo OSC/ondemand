@@ -87,6 +87,7 @@ class ConfigurationSingleton
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
+      :open_apps_in_new_window      => true,
       :bc_ssh_to_compute_node => true,
     }.freeze
   end
@@ -195,8 +196,9 @@ class ConfigurationSingleton
 
   # The root directory that holds configuration information for Batch Connect
   # apps (typically each app will have a sub-directory underneath this)
+  # @return [Pathname] path to Batch Connect configuration root\
   def bc_config_root
-    Pathname.new(ENV["OOD_BC_APP_CONFIG_ROOT"] || "/etc/ood/config/apps")
+    Pathname.new(ENV['OOD_BC_APP_CONFIG_ROOT'] || config.fetch(:bc_app_config_root, '/etc/ood/config/apps'))
   end
 
   def load_external_bc_config?
@@ -408,22 +410,9 @@ class ConfigurationSingleton
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
   end
 
-  # default value for opening apps in new window
-  # that is used if app's manifest doesn't specify
-  # if not set default is true
-  #
-  # @return [Boolean] true if by default open apps in new window
-  def open_apps_in_new_window?
-    if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
-      read_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
-    else
-      true
-    end
-  end
-
   # How many days before a Session record is considered old and ready to delete
   def ood_bc_card_time
-    ood_bc_card_time = ENV['OOD_BC_CARD_TIME']
+    ood_bc_card_time = ENV['OOD_BC_CARD_TIME'] || config.fetch(:bc_card_time, 7)
     return 7 if ood_bc_card_time.blank? || /^([+-]\d+|\d+)/.match(ood_bc_card_time.to_s).nil?
 
     ood_bc_card_time_int = ood_bc_card_time.to_i
