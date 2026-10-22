@@ -57,9 +57,13 @@ describe NginxStage::Generator do
   end
 
   it 'does not regard a dangling PID symlink as completed shutdown' do
-    File.symlink(File.join(directory, 'missing-target'), pid_path)
+    File.write(pid_path, Process.pid.to_s)
     expect(Open3).to receive(:capture2e)
-      .with(['/usr/sbin/nginx', '(spec)'], 'quit').once.and_return(['', status])
+      .with(['/usr/sbin/nginx', '(spec)'], 'quit') do
+        File.unlink(pid_path)
+        File.symlink(File.join(directory, 'missing-target'), pid_path)
+        ['', status]
+      end
     stub_const('NginxStage::Generator::PUN_SHUTDOWN_TIMEOUT', 0)
 
     expect { generator.send(:run_nginx, user: test_user, signal: :quit) }

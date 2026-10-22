@@ -19,6 +19,10 @@ describe NginxStage::NginxProcessGenerator do
 
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(passwd)
     allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(group)
+    allow(NginxStage).to receive(:pun_pid_path)
+      .with(user: generator.user).and_return('/tmp/nginx-process-spec.pid')
+    allow(NginxStage::PidFile).to receive(:new)
+      .with('/tmp/nginx-process-spec.pid').and_return(instance_double(NginxStage::PidFile))
     allow(NginxStage).to receive(:clean_nginx_env).with(user: generator.user)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)

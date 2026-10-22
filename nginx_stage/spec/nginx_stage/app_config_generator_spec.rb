@@ -26,6 +26,8 @@ describe NginxStage::AppConfigGenerator do
     allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(group)
     allow(NginxStage).to receive(:clean_nginx_env).with(user: generator.user)
     allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user).and_return(pid_path)
+    allow(NginxStage::PidFile).to receive(:new)
+      .with(pid_path).and_return(instance_double(NginxStage::PidFile))
     allow(NginxStage).to receive(:pun_socket_path).with(user: generator.user).and_return(socket_path)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)

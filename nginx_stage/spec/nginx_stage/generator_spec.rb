@@ -25,6 +25,8 @@ describe NginxStage::Generator do
     let(:status) { double(:success? => true) }
 
     before do
+      allow(NginxStage::PidFile).to receive(:new)
+        .with(pid_path).and_return(instance_double(NginxStage::PidFile))
       allow(NginxStage).to receive(:clean_nginx_env).with(user: test_user)
       allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
       allow(NginxStage).to receive(:nginx_args)

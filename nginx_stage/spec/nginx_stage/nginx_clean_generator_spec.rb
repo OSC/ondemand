@@ -90,7 +90,7 @@ describe NginxStage::NginxCleanGenerator do
 
     it 'never removes even an inactive PID or socket' do
       allow(pid_path).to receive(:running_process?).and_return(false)
-      expect(generator).not_to receive(:cleanup_stale_files)
+      expect(FileUtils).not_to receive(:rm)
       expect(generator).not_to receive(:run_nginx)
 
       generator.invoke

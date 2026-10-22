@@ -172,6 +172,10 @@ module NginxStage
     def run_nginx(user:, signal: nil)
       raise Error, 'Startup blocked because a PUN is already running' if signal.nil? && pun_running?(user: user)
 
+      # nginx reads the PID file itself for signals, but its parser can accept
+      # values such as zero that must never be used as a process target.
+      PidFile.new(NginxStage.pun_pid_path(user: user)) if signal
+
       NginxStage.clean_nginx_env(user: user)
       args = if signal
                NginxStage.nginx_args(user: user, signal: signal)

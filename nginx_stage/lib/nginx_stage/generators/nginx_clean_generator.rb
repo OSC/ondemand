@@ -63,6 +63,9 @@ module NginxStage
           with_pun_lifecycle_lock(user: u) do
             begin
               pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+            rescue MissingPidFile, Errno::ENOENT
+              # Enumeration precedes lock acquisition; shutdown may have finished.
+              next
             rescue InvalidPidFile => e
               # Never unlink an existing socket based on an invalid PID.
               socket_path = NginxStage.pun_socket_path(user: u)
@@ -75,9 +78,19 @@ module NginxStage
               end
               next
             end
-            socket = SocketFile.new NginxStage.pun_socket_path(user: u)
+            socket_path = NginxStage.pun_socket_path(user: u)
+            unless pid_path.running_process?
+              cleanup_stale_pid(user: u, pid_path: pid_path, socket_path: socket_path)
+              next
+            end
+
+            begin
+              SocketFile.new(socket_path)
+            rescue MissingSocketFile
+              # A live master may already have unlinked its socket while draining.
+              next
+            end
             sessions = session_count(u)
-            cleanup_stale_files(pid_path, socket) if !skip_nginx && !pid_path.running_process?
             if sessions.zero? || force
               puts u
               unless skip_nginx
@@ -149,14 +162,19 @@ module NginxStage
       end
     end
 
-    def cleanup_stale_files(pid_path, socket)
-      pid_path.delete
-      socket.delete
-
-      $stderr.puts "stale pid file removed: #{pid_path.to_s}"
-    end
-
     private
+
+    # A dead recorded PID does not establish who owns a remaining socket.
+    # Remove only a stale PID with no occupied socket path, and report real removal.
+    def cleanup_stale_pid(user:, pid_path:, socket_path:)
+      if path_occupied?(socket_path)
+        warn "Skipping cleanup for #{user}: PID is gone but socket path still exists"
+      elsif skip_nginx
+        puts user
+      elsif remove_if_present(pid_path)
+        warn "stale pid file removed: #{pid_path}"
+      end
+    end
 
     def remove_if_present(path)
       FileUtils.rm(path.to_s)
