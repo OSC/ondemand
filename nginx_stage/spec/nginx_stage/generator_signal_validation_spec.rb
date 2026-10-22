@@ -33,6 +33,19 @@ describe NginxStage::Generator do
   end
 
   ['stop', 'quit', 'reload', 'reopen'].each do |signal|
+    [20, 22].each do |padding|
+      it "rejects #{padding} leading zeros before invoking nginx for #{signal}" do
+        contents = "#{'0' * padding}12345"
+        File.write(pid_path, contents)
+        controller = NginxStage::NginxProcessGenerator.new(user: user, signal: signal)
+        expect(Open3).not_to receive(:capture2e)
+        expect(NginxStage).not_to receive(:clean_nginx_env)
+
+        expect { controller.invoke }.to raise_error(NginxStage::InvalidPidFile)
+        expect(File.read(pid_path)).to eq(contents)
+      end
+    end
+
     it "rejects PID zero before invoking nginx for #{signal}" do
       File.write(pid_path, '0')
       controller = NginxStage::NginxProcessGenerator.new(user: user, signal: signal)

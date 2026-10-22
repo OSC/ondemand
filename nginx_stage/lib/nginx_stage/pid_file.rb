@@ -12,6 +12,10 @@ module NginxStage
     # Linux and macOS use a signed 32-bit pid_t for process IDs.
     MAX_PID = (2**31) - 1
 
+    # nginx's signal reader uses NGX_INT64_LEN + 2 bytes. Never validate a
+    # longer record whose prefix nginx could interpret as a different PID.
+    MAX_FILE_BYTES = 22
+
     # @param pid [Integer] the pid describing a process
     # @raise [MissingPidFile] if pid file doesn't exist in file system
     # @raise [InvalidPidFile] if it is an invalid pid file
@@ -20,7 +24,11 @@ module NginxStage
       raise MissingPidFile, "missing PID file: #{pid_path}" unless @pid_path.exist?
       raise InvalidPidFile, "invalid PID file: #{pid_path}" unless @pid_path.file?
 
-      contents = @pid_path.read.strip
+      # Read one extra byte to detect oversized files without reading all of them.
+      contents = @pid_path.read(MAX_FILE_BYTES + 1).to_s
+      raise InvalidPidFile, "invalid PID file: #{pid_path}" if contents.bytesize > MAX_FILE_BYTES
+
+      contents = contents.strip
       # Require a positive decimal token, allowing leading zeros.
       raise InvalidPidFile, "invalid PID file: #{pid_path}" unless /\A0*[1-9][0-9]*\z/.match?(contents)
 
