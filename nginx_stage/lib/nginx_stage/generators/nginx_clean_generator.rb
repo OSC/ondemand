@@ -115,13 +115,15 @@ module NginxStage
                 warn "Skipping disabled user #{u}: PID is gone but socket path still exists"
                 next
               end
+              # No process remains to remove its stale PID file.
+              remove_disabled_user_file(pid_path)
             rescue Errno::EPERM => e
               # Preserve secrets/configuration if the PUN may still be running.
               warn "Cannot terminate disabled user #{u}: #{e.message}"
               next
             end
-            FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
-            FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
+            remove_disabled_user_file(NginxStage.pun_secret_key_base_path(user: u))
+            remove_disabled_user_file(NginxStage.pun_config_path(user: u))
             pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
             pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
           end
@@ -153,6 +155,15 @@ module NginxStage
       socket.delete
 
       $stderr.puts "stale pid file removed: #{pid_path.to_s}"
+    end
+
+    private
+
+    def remove_disabled_user_file(path)
+      FileUtils.rm(path.to_s)
+    rescue Errno::ENOENT
+      # A previous partial cleanup may already have removed this file.
+      nil
     end
   end
 end
