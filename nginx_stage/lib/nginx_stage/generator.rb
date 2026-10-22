@@ -9,8 +9,8 @@ module NginxStage
   # is basically a class with helper methods and the ability to invoke all
   # callback methods in a sequence.
   class Generator
-    PUN_SOCKET_SHUTDOWN_TIMEOUT = 30
-    PUN_SOCKET_SHUTDOWN_POLL_INTERVAL = 0.1
+    PUN_SHUTDOWN_TIMEOUT = 30
+    PUN_SHUTDOWN_POLL_INTERVAL = 0.1
 
     extend GeneratorHelpers
 
@@ -137,22 +137,41 @@ module NginxStage
       end
     end
 
-    def wait_for_pun_socket_shutdown(user:)
-      socket_path = NginxStage.pun_socket_path(user: user)
-      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SOCKET_SHUTDOWN_TIMEOUT
+    def wait_for_pun_shutdown(user:)
+      paths = [NginxStage.pun_socket_path(user: user), NginxStage.pun_pid_path(user: user)]
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SHUTDOWN_TIMEOUT
 
-      while File.exist?(socket_path) || File.symlink?(socket_path)
+      # Graceful quit unlinks the socket before the master finishes draining.
+      # That master can still unlink the shared PID path when it finally exits.
+      while paths.any? { |path| path_occupied?(path) }
         if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
-          raise Error, "timed out waiting for PUN socket shutdown: #{socket_path}"
+          raise Error, "timed out waiting for PUN shutdown for #{user}: socket or PID path still exists"
         end
 
-        sleep PUN_SOCKET_SHUTDOWN_POLL_INTERVAL
+        sleep PUN_SHUTDOWN_POLL_INTERVAL
       end
     end
 
-    # Keep every nginx command's execution path and socket shutdown rule in one place.
+    def path_occupied?(path)
+      File.exist?(path) || File.symlink?(path)
+    end
+
+    def pun_running?(user:)
+      pid_path = NginxStage.pun_pid_path(user: user)
+      socket_path = NginxStage.pun_socket_path(user: user)
+      return false unless path_occupied?(pid_path) || path_occupied?(socket_path)
+
+      # A draining master still owns the PID path even after its socket is gone.
+      PidFile.new(pid_path).running_process?
+    rescue MissingPidFile, InvalidPidFile, Errno::ENOENT => e
+      raise Error, "PUN PID state is unusable for #{user}: #{e.message}"
+    end
+
+    # Keep every nginx command's execution path and shutdown rule in one place.
     # Callers must hold the lifecycle lock where ordering with other operations matters.
     def run_nginx(user:, signal: nil)
+      raise Error, 'Startup blocked because a PUN is already running' if signal.nil? && pun_running?(user: user)
+
       NginxStage.clean_nginx_env(user: user)
       args = if signal
                NginxStage.nginx_args(user: user, signal: signal)
@@ -163,7 +182,7 @@ module NginxStage
         [NginxStage.nginx_bin, "(#{user})"], *args
       )
       if status.success? && %w[stop quit].include?(signal.to_s)
-        wait_for_pun_socket_shutdown(user: user)
+        wait_for_pun_shutdown(user: user)
       end
       [output, status]
     end

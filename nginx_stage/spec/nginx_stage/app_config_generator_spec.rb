@@ -51,7 +51,7 @@ describe NginxStage::AppConfigGenerator do
 
     expect(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'stop').ordered.and_return(['', status])
-    expect(generator).to receive(:wait_for_pun_socket_shutdown)
+    expect(generator).to receive(:wait_for_pun_shutdown)
       .with(user: generator.user).ordered
     expect(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'start').ordered.and_return(['', status])
@@ -63,7 +63,7 @@ describe NginxStage::AppConfigGenerator do
   it 'does not wait when there was no PUN process to stop' do
     allow(File).to receive(:file?).with(pid_path).and_return(false)
 
-    expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+    expect(generator).not_to receive(:wait_for_pun_shutdown)
     allow(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'start').and_return(['', status])
     expect(Open3).to receive(:capture2e)
@@ -82,7 +82,7 @@ describe NginxStage::AppConfigGenerator do
       .with(['/usr/sbin/nginx', '(spec)'], 'stop')
     expect(Open3).not_to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'start')
-    expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+    expect(generator).not_to receive(:wait_for_pun_shutdown)
     allow(generator).to receive(:abort).with('stop failed').and_raise(SystemExit.new(1))
 
     expect { generator.instance_eval(&hook) }
@@ -95,7 +95,7 @@ describe NginxStage::AppConfigGenerator do
       .with(['/usr/sbin/nginx', '(spec)'], 'stop').and_return(['', status])
     expect(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'stop')
-    expect(generator).to receive(:wait_for_pun_socket_shutdown)
+    expect(generator).to receive(:wait_for_pun_shutdown)
       .with(user: generator.user).and_raise(NginxStage::Error, 'socket shutdown timed out')
     expect(Open3).not_to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'start')
@@ -107,7 +107,7 @@ describe NginxStage::AppConfigGenerator do
   it 'preserves configuration-only behavior with --skip-nginx' do
     generator = described_class.new(user: test_user, sub_request: '/sys/dashboard', skip_nginx: true)
     expect(Open3).not_to receive(:capture2e)
-    expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+    expect(generator).not_to receive(:wait_for_pun_shutdown)
 
     generator.instance_eval(&hook)
   end

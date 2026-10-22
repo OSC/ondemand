@@ -47,7 +47,7 @@ module NginxStage
     # Keep validation ahead of the running-PUN shortcut. Configuration-only
     # generation still runs even when the PUN is already active.
     add_hook :skip_running_pun do
-      raise Error, 'Startup blocked because a PUN is already running' if !skip_nginx && pun_running?
+      raise Error, 'Startup blocked because a PUN is already running' if !skip_nginx && pun_running?(user: user)
     end
 
     # @!method app_init_url
@@ -162,15 +162,6 @@ module NginxStage
 
 
     private
-      def pun_running?
-        return false unless File.socket?(NginxStage.pun_socket_path(user: user))
-
-        PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
-      rescue MissingPidFile, InvalidPidFile => e
-        # An existing socket with unknown ownership must not be overwritten.
-        raise Error, "PUN socket exists but PID state is unusable for #{user}: #{e.message}"
-      end
-
       # per-user NGINX config path
       def config_path
         NginxStage.pun_config_path(user: user)

@@ -66,12 +66,11 @@ module NginxStage
             rescue InvalidPidFile => e
               # Never unlink an existing socket based on an invalid PID.
               socket_path = NginxStage.pun_socket_path(user: u)
-              if File.exist?(socket_path) || File.symlink?(socket_path)
+              if path_occupied?(socket_path)
                 warn "Skipping cleanup for #{u}: #{e.message}; socket path still exists"
               elsif skip_nginx
                 warn "Skipping cleanup for #{u}: #{e.message}"
-              else
-                FileUtils.rm_f(NginxStage.pun_pid_path(user: u))
+              elsif remove_if_present(NginxStage.pun_pid_path(user: u))
                 warn "Removed invalid PID file for #{u} (no socket path exists)"
               end
               next
@@ -107,23 +106,23 @@ module NginxStage
             # avoids a shell and distinguishes nonexistent from forbidden PIDs.
             begin
               Process.kill('TERM', pid_path.pid)
-              wait_for_pun_socket_shutdown(user: u)
+              wait_for_pun_shutdown(user: u)
             rescue Errno::ESRCH
               # A missing PID does not prove a remaining socket is abandoned.
               socket_path = NginxStage.pun_socket_path(user: u)
-              if File.exist?(socket_path) || File.symlink?(socket_path)
+              if path_occupied?(socket_path)
                 warn "Skipping disabled user #{u}: PID is gone but socket path still exists"
                 next
               end
               # No process remains to remove its stale PID file.
-              remove_disabled_user_file(pid_path)
+              remove_if_present(pid_path)
             rescue Errno::EPERM => e
               # Preserve secrets/configuration if the PUN may still be running.
               warn "Cannot terminate disabled user #{u}: #{e.message}"
               next
             end
-            remove_disabled_user_file(NginxStage.pun_secret_key_base_path(user: u))
-            remove_disabled_user_file(NginxStage.pun_config_path(user: u))
+            remove_if_present(NginxStage.pun_secret_key_base_path(user: u))
+            remove_if_present(NginxStage.pun_config_path(user: u))
             pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
             pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
           end
@@ -159,7 +158,7 @@ module NginxStage
 
     private
 
-    def remove_disabled_user_file(path)
+    def remove_if_present(path)
       FileUtils.rm(path.to_s)
     rescue Errno::ENOENT
       # A previous partial cleanup may already have removed this file.

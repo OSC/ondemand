@@ -102,25 +102,24 @@ describe NginxStage::PunConfigGenerator do
         .and_return('/var/run/ondemand-nginx/spec/passenger.sock')
       allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user)
         .and_return('/var/run/ondemand-nginx/spec/passenger.pid')
+      allow(File).to receive(:exist?).and_call_original
+      allow(File).to receive(:exist?)
+        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
     end
 
-    it 'requires both a socket and a live PID' do
-      allow(File).to receive(:socket?)
-        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
+    it 'detects a live PID when a socket exists' do
       allow(NginxStage::PidFile).to receive(:new)
         .with('/var/run/ondemand-nginx/spec/passenger.pid').and_return(pid_file)
       allow(pid_file).to receive(:running_process?).and_return(true)
 
-      expect(generator.send(:pun_running?)).to be(true)
+      expect(generator.send(:pun_running?, user: generator.user)).to be(true)
     end
 
     it 'refuses startup with a socket but no PID file' do
-      allow(File).to receive(:socket?)
-        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
       allow(NginxStage::PidFile).to receive(:new)
         .and_raise(NginxStage::MissingPidFile)
 
-      expect { generator.send(:pun_running?) }
+      expect { generator.send(:pun_running?, user: generator.user) }
         .to raise_error(NginxStage::Error, /PID state is unusable/)
     end
 
@@ -128,12 +127,10 @@ describe NginxStage::PunConfigGenerator do
       Dir.mktmpdir('pun-oversized-pid-spec') do |dir|
         path = File.join(dir, 'passenger.pid')
         File.write(path, '99999999999999999999')
-        allow(File).to receive(:socket?)
-          .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
         allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user).and_return(path)
         expect(Process).not_to receive(:getpgid)
 
-        expect { generator.send(:pun_running?) }
+        expect { generator.send(:pun_running?, user: generator.user) }
           .to raise_error(NginxStage::Error, /PID state is unusable/)
       end
     end

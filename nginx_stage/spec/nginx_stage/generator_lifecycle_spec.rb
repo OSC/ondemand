@@ -53,7 +53,7 @@ describe NginxStage::Generator do
         events << :replacement_start
         ['', status]
       end
-    allow(app).to receive(:wait_for_pun_socket_shutdown).with(user: app.user) do
+    allow(app).to receive(:wait_for_pun_shutdown).with(user: app.user) do
       waiting_for_socket << true
       finish_shutdown.pop
       events << :socket_removed

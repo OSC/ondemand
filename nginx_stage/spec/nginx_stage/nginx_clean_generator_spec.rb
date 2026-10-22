@@ -40,7 +40,7 @@ describe NginxStage::NginxCleanGenerator do
       .with(user: active_user).ordered.and_yield
     expect(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'stop').ordered.and_return(['', status])
-    expect(generator).to receive(:wait_for_pun_socket_shutdown)
+    expect(generator).to receive(:wait_for_pun_shutdown)
       .with(user: active_user).ordered
 
     generator.invoke
@@ -52,7 +52,7 @@ describe NginxStage::NginxCleanGenerator do
 
     it 'does not wait for cleanup that was not initiated' do
       expect(generator).to receive(:warn).with(stop_output)
-      expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+      expect(generator).not_to receive(:wait_for_pun_shutdown)
 
       generator.invoke
     end
@@ -78,7 +78,7 @@ describe NginxStage::NginxCleanGenerator do
       allow(File).to receive(:exist?).with('/tmp/passenger.sock').and_return(false)
       allow(File).to receive(:symlink?).and_call_original
       allow(File).to receive(:symlink?).with('/tmp/passenger.sock').and_return(false)
-      expect(FileUtils).to receive(:rm_f).with('/tmp/passenger.pid')
+      expect(FileUtils).to receive(:rm).with('/tmp/passenger.pid').once.and_return(['/tmp/passenger.pid'])
       expect(generator).not_to receive(:run_nginx)
 
       expect { generator.invoke }.to output(/Removed invalid PID file/).to_stderr
@@ -125,7 +125,7 @@ describe NginxStage::NginxCleanGenerator do
         .with(user: disabled_user).ordered.and_yield
       expect(Process).to receive(:kill)
         .with('TERM', 1234).ordered.and_return(1)
-      expect(generator).to receive(:wait_for_pun_socket_shutdown)
+      expect(generator).to receive(:wait_for_pun_shutdown)
         .with(user: disabled_user).ordered
 
       generator.invoke
@@ -138,7 +138,7 @@ describe NginxStage::NginxCleanGenerator do
         expect(generator).to receive(:puts).with('deleted_user (disabled)')
         expect(NginxStage::PidFile).not_to receive(:new)
         expect(Process).not_to receive(:kill)
-        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(generator).not_to receive(:wait_for_pun_shutdown)
         expect(FileUtils).not_to receive(:rm)
         expect(FileUtils).not_to receive(:rmdir)
 
@@ -170,7 +170,7 @@ describe NginxStage::NginxCleanGenerator do
         expect(generator).not_to receive(:with_pun_lifecycle_lock)
           .with(user: 'another_disabled_user')
         expect(Process).to receive(:kill).with('TERM', 1234)
-        expect(generator).to receive(:wait_for_pun_socket_shutdown)
+        expect(generator).to receive(:wait_for_pun_shutdown)
           .with(user: disabled_user)
         expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.secret')
         expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.conf')
@@ -188,7 +188,7 @@ describe NginxStage::NginxCleanGenerator do
         expect(Process).not_to receive(:kill)
         expect(FileUtils).not_to receive(:rm)
         expect(FileUtils).not_to receive(:rmdir)
-        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(generator).not_to receive(:wait_for_pun_shutdown)
 
         expect { generator.invoke }
           .to output(/Error trying to clean up disabled user deleted_user: invalid PID file/).to_stderr
@@ -198,7 +198,7 @@ describe NginxStage::NginxCleanGenerator do
     context 'when SIGTERM is denied' do
       it 'preserves configuration and secrets for a potentially running PUN' do
         allow(Process).to receive(:kill).with('TERM', 1234).and_raise(Errno::EPERM)
-        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(generator).not_to receive(:wait_for_pun_shutdown)
         expect(FileUtils).not_to receive(:rm)
 
         expect { generator.invoke }
@@ -217,7 +217,7 @@ describe NginxStage::NginxCleanGenerator do
         allow(File).to receive(:exist?).and_call_original
         allow(File).to receive(:exist?)
           .with('/tmp/deleted_user/passenger.sock').and_return(true)
-        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(generator).not_to receive(:wait_for_pun_shutdown)
         expect(FileUtils).not_to receive(:rm)
 
         expect { generator.invoke }
@@ -233,7 +233,7 @@ describe NginxStage::NginxCleanGenerator do
         allow(File).to receive(:symlink?).and_call_original
         allow(File).to receive(:symlink?)
           .with('/tmp/deleted_user/passenger.sock').and_return(false)
-        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(generator).not_to receive(:wait_for_pun_shutdown)
         expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.secret')
         expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.conf')
 

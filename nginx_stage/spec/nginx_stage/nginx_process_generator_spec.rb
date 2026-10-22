@@ -31,7 +31,7 @@ describe NginxStage::NginxProcessGenerator do
   it 'holds the lifecycle lock until stop removes the socket' do
     expect(generator).to receive(:with_pun_lifecycle_lock)
       .with(user: generator.user).and_yield
-    expect(generator).to receive(:wait_for_pun_socket_shutdown)
+    expect(generator).to receive(:wait_for_pun_shutdown)
       .with(user: generator.user)
 
     expect { generator.instance_eval(&hook) }
@@ -44,7 +44,7 @@ describe NginxStage::NginxProcessGenerator do
     it 'also waits for socket cleanup while holding the lifecycle lock' do
       expect(generator).to receive(:with_pun_lifecycle_lock)
         .with(user: generator.user).and_yield
-      expect(generator).to receive(:wait_for_pun_socket_shutdown)
+      expect(generator).to receive(:wait_for_pun_shutdown)
         .with(user: generator.user)
 
       expect { generator.instance_eval(&hook) }
@@ -64,7 +64,7 @@ describe NginxStage::NginxProcessGenerator do
           .with(user: generator.user).and_return(config_path)
         File.write(lock_path, '')
 
-        expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+        expect(generator).not_to receive(:wait_for_pun_shutdown)
         expect(Open3).to receive(:capture2e)
           .with(['/usr/sbin/nginx', '(spec)'], 'nginx-args') do
             # A competing lifecycle operation must not acquire the same lock.
@@ -89,7 +89,7 @@ describe NginxStage::NginxProcessGenerator do
 
     it 'does not take the shutdown lifecycle lock' do
       expect(generator).not_to receive(:with_pun_lifecycle_lock)
-      expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+      expect(generator).not_to receive(:wait_for_pun_shutdown)
 
       expect { generator.instance_eval(&hook) }
         .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
