@@ -22,7 +22,7 @@ describe NginxStage::NginxProcessGenerator do
     allow(NginxStage).to receive(:clean_nginx_env).with(user: generator.user)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)
-      .with(user: generator.user, signal: signal).and_return(['nginx-args'])
+      .with(user: generator.user, **(signal ? { signal: signal } : {})).and_return(['nginx-args'])
     allow(Open3).to receive(:capture2e)
       .with(['/usr/sbin/nginx', '(spec)'], 'nginx-args')
       .and_return(['', status])

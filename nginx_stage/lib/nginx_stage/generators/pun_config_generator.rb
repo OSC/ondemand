@@ -150,14 +150,7 @@ module NginxStage
     # Run the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        NginxStage.clean_nginx_env(user: user)
-        o, s = Open3.capture2e(
-          [
-            NginxStage.nginx_bin,
-            "(#{user})"
-          ],
-          *NginxStage.nginx_args(user: user)
-        )
+        o, s = run_nginx(user: user)
         s.success? ? exit : abort(o)
       end
     end
@@ -173,8 +166,9 @@ module NginxStage
         return false unless File.socket?(NginxStage.pun_socket_path(user: user))
 
         PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
-      rescue MissingPidFile, InvalidPidFile
-        false
+      rescue MissingPidFile, InvalidPidFile => e
+        # An existing socket with unknown ownership must not be overwritten.
+        raise Error, "PUN socket exists but PID state is unusable for #{user}: #{e.message}"
       end
 
       # per-user NGINX config path

@@ -61,28 +61,34 @@ module NginxStage
         begin
           next if (user && user != u.to_s)
           with_pun_lifecycle_lock(user: u) do
-            pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+            begin
+              pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+            rescue InvalidPidFile => e
+              # Never unlink an existing socket based on an invalid PID.
+              socket_path = NginxStage.pun_socket_path(user: u)
+              if File.exist?(socket_path) || File.symlink?(socket_path)
+                warn "Skipping cleanup for #{u}: #{e.message}; socket path still exists"
+              elsif skip_nginx
+                warn "Skipping cleanup for #{u}: #{e.message}"
+              else
+                FileUtils.rm_f(NginxStage.pun_pid_path(user: u))
+                warn "Removed invalid PID file for #{u} (no socket path exists)"
+              end
+              next
+            end
             socket = SocketFile.new NginxStage.pun_socket_path(user: u)
             sessions = session_count(u)
-            cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
+            cleanup_stale_files(pid_path, socket) if !skip_nginx && !pid_path.running_process?
             if sessions.zero? || force
               puts u
-              if !skip_nginx
-                NginxStage.clean_nginx_env(user: u)
-                o, s = Open3.capture2e(
-                  NginxStage.nginx_bin,
-                  *NginxStage.nginx_args(user: u, signal: :stop)
-                )
-                if s.success?
-                  wait_for_pun_socket_shutdown(user: u)
-                else
-                  warn o
-                end
+              unless skip_nginx
+                o, s = run_nginx(user: u, signal: :stop)
+                warn o unless s.success?
               end
             end
           end
-        rescue
-          $stderr.puts "#{$!.to_s}"
+        rescue StandardError => e
+          warn "Error trying to clean up active user #{u}: #{e.message}"
         end
       end
 
@@ -91,17 +97,29 @@ module NginxStage
         begin
           next if user && user != u.to_s
 
-          with_pun_lifecycle_lock(user: u) do
-            puts "#{u} (disabled)"
-            next if skip_nginx
+          puts "#{u} (disabled)"
+          next if skip_nginx
 
+          with_pun_lifecycle_lock(user: u) do
             pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
-            # Send a SIGTERM to the master nginx process to kill the PUN.
-            # 'nginx stop' won't work, since getpwnam(3) will cause an error.
-            output, status = Open3.capture2e('kill', '-s', 'TERM', pid_path.pid.to_s)
-            warn "Error sending SIGTERM to disabled user #{u}: #{output}" unless status.success?
-            wait_for_pun_socket_shutdown(user: u) if status.success?
+            # Disabled users cannot be resolved by nginx -s stop. Process.kill
+            # avoids a shell and distinguishes nonexistent from forbidden PIDs.
+            begin
+              Process.kill('TERM', pid_path.pid)
+              wait_for_pun_socket_shutdown(user: u)
+            rescue Errno::ESRCH
+              # A missing PID does not prove a remaining socket is abandoned.
+              socket_path = NginxStage.pun_socket_path(user: u)
+              if File.exist?(socket_path) || File.symlink?(socket_path)
+                warn "Skipping disabled user #{u}: PID is gone but socket path still exists"
+                next
+              end
+            rescue Errno::EPERM => e
+              # Preserve secrets/configuration if the PUN may still be running.
+              warn "Cannot terminate disabled user #{u}: #{e.message}"
+              next
+            end
             FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
             FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
             pid_path_parent_dir = Pathname.new(pid_path.to_s).parent

@@ -35,21 +35,8 @@ module NginxStage
     add_hook :exec_nginx do
       if !skip_nginx
         operation = proc do
-          NginxStage.clean_nginx_env(user: user)
-          o, s = Open3.capture2e(
-            [
-              NginxStage.nginx_bin,
-              "(#{user})"
-            ],
-            *NginxStage.nginx_args(user: user, signal: signal)
-          )
-
-          if s.success?
-            wait_for_pun_socket_shutdown(user: user) if ['stop', 'quit'].include?(signal.to_s)
-            exit
-          else
-            abort(o)
-          end
+          o, s = run_nginx(user: user, signal: signal)
+          s.success? ? exit : abort(o)
         end
 
         # A missing signal starts nginx directly, so it must also be serialized.

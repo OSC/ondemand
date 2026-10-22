@@ -14,6 +14,48 @@ describe NginxStage::Generator do
       .with(user: test_user).and_return(socket_path)
   end
 
+  describe '#run_nginx' do
+    let(:status) { double(:success? => true) }
+
+    before do
+      allow(NginxStage).to receive(:clean_nginx_env).with(user: test_user)
+      allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
+      allow(NginxStage).to receive(:nginx_args)
+        .with(user: test_user).and_return(['-c', 'config'])
+      allow(NginxStage).to receive(:nginx_args)
+        .with(user: test_user, signal: :stop).and_return(['-s', 'stop'])
+      allow(NginxStage).to receive(:nginx_args)
+        .with(user: test_user, signal: :quit).and_return(['-s', 'quit'])
+    end
+
+    it 'does not wait after a successful start' do
+      expect(Open3).to receive(:capture2e)
+        .with(['/usr/sbin/nginx', '(spec)'], '-c', 'config').and_return(['', status])
+      expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+
+      expect(generator.send(:run_nginx, user: test_user)).to eq(['', status])
+    end
+
+    it 'waits after successful stop and quit' do
+      [:stop, :quit].each do |signal|
+        expect(Open3).to receive(:capture2e)
+          .with(['/usr/sbin/nginx', '(spec)'], '-s', signal.to_s).and_return(['', status])
+        expect(generator).to receive(:wait_for_pun_socket_shutdown).with(user: test_user)
+
+        expect(generator.send(:run_nginx, user: test_user, signal: signal)).to eq(['', status])
+      end
+    end
+
+    it 'does not wait after failed stop' do
+      failed = double(:success? => false)
+      expect(Open3).to receive(:capture2e)
+        .with(['/usr/sbin/nginx', '(spec)'], '-s', 'stop').and_return(['failed', failed])
+      expect(generator).not_to receive(:wait_for_pun_socket_shutdown)
+
+      expect(generator.send(:run_nginx, user: test_user, signal: :stop)).to eq(['failed', failed])
+    end
+  end
+
   describe '#wait_for_pun_socket_shutdown' do
     it 'waits for an ordinary socket path to disappear' do
       allow(Process).to receive(:clock_gettime)

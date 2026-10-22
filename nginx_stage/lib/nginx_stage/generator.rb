@@ -150,6 +150,24 @@ module NginxStage
       end
     end
 
+    # Keep every nginx command's execution path and socket shutdown rule in one place.
+    # Callers must hold the lifecycle lock where ordering with other operations matters.
+    def run_nginx(user:, signal: nil)
+      NginxStage.clean_nginx_env(user: user)
+      args = if signal
+               NginxStage.nginx_args(user: user, signal: signal)
+             else
+               NginxStage.nginx_args(user: user)
+             end
+      output, status = Open3.capture2e(
+        [NginxStage.nginx_bin, "(#{user})"], *args
+      )
+      if status.success? && %w[stop quit].include?(signal.to_s)
+        wait_for_pun_socket_shutdown(user: user)
+      end
+      [output, status]
+    end
+
     # Retrieves a value from superclass. If it reaches the baseclass,
     # returns default
     def self.from_superclass(method, default = nil)

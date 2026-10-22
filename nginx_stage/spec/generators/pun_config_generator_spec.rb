@@ -114,16 +114,17 @@ describe NginxStage::PunConfigGenerator do
       expect(generator.send(:pun_running?)).to be(true)
     end
 
-    it 'treats missing PID state as not running' do
+    it 'refuses startup with a socket but no PID file' do
       allow(File).to receive(:socket?)
         .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
       allow(NginxStage::PidFile).to receive(:new)
         .and_raise(NginxStage::MissingPidFile)
 
-      expect(generator.send(:pun_running?)).to be(false)
+      expect { generator.send(:pun_running?) }
+        .to raise_error(NginxStage::Error, /PID state is unusable/)
     end
 
-    it 'treats an out-of-range PID file as not running' do
+    it 'refuses startup with a socket but invalid PID contents' do
       Dir.mktmpdir('pun-oversized-pid-spec') do |dir|
         path = File.join(dir, 'passenger.pid')
         File.write(path, '99999999999999999999')
@@ -132,7 +133,8 @@ describe NginxStage::PunConfigGenerator do
         allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user).and_return(path)
         expect(Process).not_to receive(:getpgid)
 
-        expect(generator.send(:pun_running?)).to be(false)
+        expect { generator.send(:pun_running?) }
+          .to raise_error(NginxStage::Error, /PID state is unusable/)
       end
     end
   end
