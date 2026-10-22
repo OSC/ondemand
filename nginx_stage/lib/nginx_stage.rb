@@ -192,11 +192,10 @@ module NginxStage
     end.compact
   end
 
-  # List of inactive users.
+  # List of inactive users, including partially removed PUN state without a PID.
   # @return [Array<String>] the list of inactive users.
   def self.inactive_users
-    Dir[pun_pid_path(user: '*')].map do |v|
-      name = v[/#{pun_pid_path(user: '(.+)')}/, 1]
+    staged_pun_users.map do |name|
       User.new(name)
 
       # return nil here because we actually _want_ to rescue.
@@ -206,6 +205,23 @@ module NginxStage
       name
     end.compact
   end
+
+  # Discover residual files and per-user runtime directories after nginx removes
+  # its PID. Escape literal path characters and require repeated user fields to agree.
+  def self.staged_pun_users
+    marker = '__OOD_CLEANUP_USER__'
+    pid_template = pun_pid_path(user: marker)
+    templates = [pid_template, pun_config_path(user: marker), pun_secret_key_base_path(user: marker),
+                 File.dirname(pid_template)]
+    templates.flat_map do |template|
+      next [] unless template.include?(marker)
+
+      parts = Regexp.escape(template).split(marker, -1)
+      pattern = Regexp.new("\\A#{parts.shift}([^/]+)#{parts.join('\\1')}\\z")
+      Dir[template.gsub(marker, '*')].map { |path| path[pattern, 1] }
+    end.compact.uniq
+  end
+  private_class_method :staged_pun_users
 
   # Get a hash of all the staged app configs
   # @example List of all staged app configs

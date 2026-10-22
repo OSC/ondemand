@@ -113,30 +113,12 @@ module NginxStage
           next if skip_nginx
 
           with_pun_lifecycle_lock(user: u) do
-            pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+            # An account can reappear while this operation waits for the lock.
+            next unless disabled_user?(u) && stop_disabled_pun(user: u)
 
-            # Disabled users cannot be resolved by nginx -s stop. Process.kill
-            # avoids a shell and distinguishes nonexistent from forbidden PIDs.
-            begin
-              Process.kill('TERM', pid_path.pid)
-              wait_for_pun_shutdown(user: u)
-            rescue Errno::ESRCH
-              # A missing PID does not prove a remaining socket is abandoned.
-              socket_path = NginxStage.pun_socket_path(user: u)
-              if path_occupied?(socket_path)
-                warn "Skipping disabled user #{u}: PID is gone but socket path still exists"
-                next
-              end
-              # No process remains to remove its stale PID file.
-              remove_if_present(pid_path)
-            rescue Errno::EPERM => e
-              # Preserve secrets/configuration if the PUN may still be running.
-              warn "Cannot terminate disabled user #{u}: #{e.message}"
-              next
-            end
             remove_if_present(NginxStage.pun_secret_key_base_path(user: u))
             remove_if_present(NginxStage.pun_config_path(user: u))
-            pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
+            pid_path_parent_dir = Pathname.new(NginxStage.pun_pid_path(user: u)).parent
             pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
           end
         rescue StandardError => e
@@ -156,6 +138,9 @@ module NginxStage
             # Then try again once.
             FileUtils.rmdir(dir)
           end
+        rescue Errno::ENOENT
+          # Residual configuration may outlive the runtime directory.
+          nil
         rescue StandardError => e
           warn "Error trying to clean up the PID file directory '#{dir}' of disabled user: #{e.message}"
         end
@@ -163,6 +148,45 @@ module NginxStage
     end
 
     private
+
+    # Recheck account state after acquiring the lifecycle lock.
+    def disabled_user?(user)
+      User.new(user)
+      false
+    rescue ArgumentError
+      true
+    end
+
+    # A prior shutdown may already have removed the PID, leaving only metadata.
+    # Preserve occupied PID/socket paths whose owner cannot be established.
+    def stop_disabled_pun(user:)
+      pid_path = PidFile.new(NginxStage.pun_pid_path(user: user))
+      terminate_disabled_pun(user: user, pid_path: pid_path)
+    rescue MissingPidFile, Errno::ENOENT
+      paths = [NginxStage.pun_pid_path(user: user), NginxStage.pun_socket_path(user: user)]
+      return true unless paths.any? { |path| path_occupied?(path) }
+
+      warn "Skipping disabled user #{user}: PID or socket path still exists"
+      false
+    end
+
+    # Disabled users cannot be resolved by nginx -s stop. Wait for both paths
+    # after SIGTERM, or remove a dead PID only when no socket remains.
+    def terminate_disabled_pun(user:, pid_path:)
+      Process.kill('TERM', pid_path.pid)
+      wait_for_pun_shutdown(user: user)
+      true
+    rescue Errno::ESRCH
+      if path_occupied?(NginxStage.pun_socket_path(user: user))
+        warn "Skipping disabled user #{user}: PID is gone but socket path still exists"
+        return false
+      end
+      remove_if_present(pid_path)
+      true
+    rescue Errno::EPERM => e
+      warn "Cannot terminate disabled user #{user}: #{e.message}"
+      false
+    end
 
     # A dead recorded PID does not establish who owns a remaining socket.
     # Remove only a stale PID with no occupied socket path, and report real removal.
