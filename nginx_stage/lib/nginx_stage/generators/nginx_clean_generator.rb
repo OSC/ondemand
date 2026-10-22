@@ -104,7 +104,6 @@ module NginxStage
         end
       end
 
-      pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
         begin
           next if user && user != u.to_s
@@ -118,36 +117,39 @@ module NginxStage
 
             remove_if_present(NginxStage.pun_secret_key_base_path(user: u))
             remove_if_present(NginxStage.pun_config_path(user: u))
-            pid_path_parent_dir = Pathname.new(NginxStage.pun_pid_path(user: u)).parent
-            pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
+            cleanup_disabled_pid_root(user: u)
           end
         rescue StandardError => e
           warn "Error trying to clean up disabled user #{u}: #{e.message}"
         end
       end
-
-      # Remove the PID path parent directories now that the nginx processes have
-      # had time to clean up their Passenger PID file and socket.
-      pid_parent_dirs_to_remove_later.each do |dir|
-        begin
-          begin
-            FileUtils.rmdir(dir)
-          rescue Errno::ENOTEMPTY
-            # Wait for a short time, while Nginx cleans up its PID file.
-            sleep(0.5)
-            # Then try again once.
-            FileUtils.rmdir(dir)
-          end
-        rescue Errno::ENOENT
-          # Residual configuration may outlive the runtime directory.
-          nil
-        rescue StandardError => e
-          warn "Error trying to clean up the PID file directory '#{dir}' of disabled user: #{e.message}"
-        end
-      end
     end
 
     private
+
+    # Keep directory removal inside the same lifecycle lock as shutdown and
+    # metadata removal. A per-user lock cannot protect a shared PID directory.
+    def cleanup_disabled_pid_root(user:)
+      dir = Pathname.new(NginxStage.pun_pid_path(user: user)).parent
+      return if dir.to_s == File.dirname(NginxStage.pun_pid_path(user: '*'))
+
+      remove_pid_directory(dir)
+    end
+
+    # Retry a nonempty directory once while the caller still holds the lock.
+    def remove_pid_directory(dir)
+      begin
+        FileUtils.rmdir(dir)
+      rescue Errno::ENOTEMPTY
+        sleep(0.5)
+        FileUtils.rmdir(dir)
+      end
+    rescue Errno::ENOENT
+      # Residual configuration may outlive the runtime directory.
+      nil
+    rescue StandardError => e
+      warn "Error trying to clean up the PID file directory '#{dir}' of disabled user: #{e.message}"
+    end
 
     # Recheck account state after acquiring the lifecycle lock.
     def disabled_user?(user)

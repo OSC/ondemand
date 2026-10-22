@@ -107,6 +107,8 @@ describe NginxStage::NginxCleanGenerator do
       allow(NginxStage).to receive_messages(active_users: [], inactive_users: [disabled_user])
       allow(NginxStage).to receive(:pun_pid_path)
         .with(user: disabled_user).and_return('/tmp/deleted_user/passenger.pid')
+      allow(NginxStage).to receive(:pun_pid_path)
+        .with(user: '*').and_return('/tmp/*/passenger.pid')
       allow(NginxStage::PidFile).to receive(:new)
         .with('/tmp/deleted_user/passenger.pid').and_return(disabled_pid_path)
       allow(generator).to receive(:with_pun_lifecycle_lock)

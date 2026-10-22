@@ -8,7 +8,7 @@ describe NginxStage::NginxCleanGenerator do
   let(:user) { 'deleted_user' }
   let(:generator) { described_class.new }
   let(:directory) { Dir.mktmpdir('nginx-clean-stale-pid') }
-  let(:pid_root) { File.join(directory, 'run') }
+  let(:pid_root) { File.join(directory, 'run', user) }
   let(:pid_path) { File.join(pid_root, 'passenger.pid') }
   let(:socket_path) { File.join(pid_root, 'passenger.sock') }
   let(:config_path) { File.join(directory, 'pun.conf') }
@@ -21,6 +21,8 @@ describe NginxStage::NginxCleanGenerator do
     File.write(secret_path, 'secret')
     allow(NginxStage).to receive_messages(active_users: [], inactive_users: [user])
     allow(NginxStage).to receive(:pun_pid_path).with(user: user).and_return(pid_path)
+    allow(NginxStage).to receive(:pun_pid_path)
+      .with(user: '*').and_return(File.join(directory, 'run', '*', 'passenger.pid'))
     allow(NginxStage).to receive(:pun_socket_path).with(user: user).and_return(socket_path)
     allow(NginxStage).to receive(:pun_config_path).with(user: user).and_return(config_path)
     allow(NginxStage).to receive(:pun_secret_key_base_path).with(user: user).and_return(secret_path)
