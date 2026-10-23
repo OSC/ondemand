@@ -401,6 +401,54 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
   
+  test "shared_projects_root defaults to an empty list" do
+    with_modified_env(no_config_env.merge(OOD_SHARED_PROJECT_PATH: nil)) do
+      assert_equal [], ConfigurationSingleton.new.shared_projects_root
+    end
+  end
+
+  test "shared_projects_root correctly parses OOD_SHARED_PROJECT_PATH" do
+    with_modified_env(no_config_env.merge(OOD_SHARED_PROJECT_PATH: '/path_a:/path_b')) do
+      assert_equal [Pathname.new('/path_a'), Pathname.new('/path_b')], ConfigurationSingleton.new.shared_projects_root
+    end
+  end
+
+  test "shared_projects_root can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => ['/path_from/file_a', '/path_from/file_b'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+
+  test "shared_projects_root can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => '/path_from/file_a:/path_from/file_b' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+
+  test "shared_projects_root environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => ['/path_from/file'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: '/path_from/env') do
+        assert_equal [Pathname.new('/path_from/env')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+  
   test "can set native vnc login host" do
     with_modified_env(OOD_NATIVE_VNC_LOGIN_HOST: 'owens.osc.edu') do
       assert_equal ENV['OOD_NATIVE_VNC_LOGIN_HOST'], ConfigurationSingleton.new.native_vnc_login_host
