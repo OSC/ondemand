@@ -57,6 +57,9 @@ An executable upgrade or unexpected nginx launch command may leave identity
 uncertain and require operator investigation. A process name or UID alone is
 not accepted as identity. `nginx --skip-nginx --signal=...` describes the requested
 signal without printing a runnable unchecked `nginx -s` command.
+Successful `reload`/`reopen` reports signal delivery; inspect the master log to
+confirm that nginx accepted a reload. No separate nginx signal process parses
+the configuration before delivery.
 
 A dead recorded PID with an occupied socket path also blocks startup. Run
 `nginx_stage nginx_clean --user=exampleuser` before retrying. Cleanup can remove
@@ -78,13 +81,17 @@ probe results are preserved. A malformed active-user PID file can be removed
 only beside an absent or confirmed stale socket; symlinked malformed PIDs are
 preserved.
 
-Disabled-user cleanup candidates come from **PID files and explicit
+Disabled-user cleanup candidates come from **PID/socket paths and explicit
 `<pun-config>.cleanup_pending` records**. Old configs, secrets and empty runtime
 directories alone are not candidates. Historical metadata purging is not a
 feature of this cleanup policy. Configured discovery paths support literal glob
 characters and identical repeated `%{user}` fields, including numeric suffixes.
 Literal directory text matching the internal username placeholder is supported;
 discovery chooses a placeholder absent from each configured path's literal text.
+Cleanup also discovers socket-only accounts. For a resolvable account with no
+PID file, it removes only a confirmed stale socket under the lifecycle lock and
+preserves configuration and secrets. A listening or uncertain socket is retained
+with a diagnostic. The ordinary PID-based user listing remains unchanged.
 
 A private pending record is created beside the stable lifecycle lock before
 shutdown can remove the PID. It remains until shutdown, secret/config deletion

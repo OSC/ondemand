@@ -45,7 +45,7 @@ module NginxStage
         For dead or invalid PID state, refused stale sockets can be recovered.
         Listening sockets, symlinks, and inconclusive probes are preserved.
         Disabled-user cleanup is
-        discovered from PID files and .cleanup_pending retry records beside
+        discovered from PID/socket paths and .cleanup_pending retry records beside
         PUN configs; old configs, secrets, and empty runtime directories alone
         are not cleanup candidates. Partial failures keep the retry record.
         If an account becomes resolvable again, cleanup cancels its safe retry
@@ -76,7 +76,7 @@ module NginxStage
 
     # Find users with PUNs that have no active sessions and kill the process
     add_hook :delete_puns_of_users_with_no_sessions do
-      NginxStage.active_users.each do |u|
+      NginxStage.active_users(include_sockets: true).each do |u|
         begin
           next if (user && user != u.to_s)
           with_pun_lifecycle_lock(user: u) do
@@ -84,6 +84,7 @@ module NginxStage
               pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
             rescue MissingPidFile, Errno::ENOENT
               # Enumeration precedes lock acquisition; shutdown may have finished.
+              cleanup_socket_without_pid(user: u)
               next
             rescue InvalidPidFile => e
               cleanup_invalid_pid(user: u, error: e)
@@ -153,6 +154,21 @@ module NginxStage
     end
 
     private
+
+    # Socket-only crashes must remain discoverable without inventing a PID.
+    # Use the normal conservative probe and leave configuration and secrets alone.
+    def cleanup_socket_without_pid(user:)
+      return if path_occupied?(NginxStage.pun_pid_path(user: user))
+      return unless path_occupied?(NginxStage.pun_socket_path(user: user))
+
+      if skip_nginx
+        puts user
+      elsif SocketProbe.new(NginxStage.pun_socket_path(user: user)).remove_stale
+        warn "stale socket file removed for #{user} (PID file is missing)"
+      else
+        warn "Skipping cleanup for #{user}: PID is missing but socket path is live or uncertain"
+      end
+    end
 
     # Create before shutdown can unlink the PID. Never follow a preexisting link
     # or accept another user's writable file as authorization for a retry.

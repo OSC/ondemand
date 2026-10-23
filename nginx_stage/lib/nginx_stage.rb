@@ -183,10 +183,13 @@ module NginxStage
   end
 
   # List of users with nginx processes running
+  # @param include_sockets [Boolean] include socket-only candidates for cleanup
   # @return [Array<User>] the list of users with running nginx processes
-  def self.active_users
-    marker = pun_user_path_marker(:pun_pid_path)
-    pun_users_from_paths([pun_pid_path(user: marker)], marker: marker).map do |name|
+  def self.active_users(include_sockets: false)
+    methods = include_sockets ? [:pun_pid_path, :pun_socket_path] : [:pun_pid_path]
+    marker = pun_user_path_marker(*methods)
+    templates = methods.map { |method| public_send(method, user: marker) }
+    pun_users_from_paths(templates, marker: marker).map do |name|
       User.new(name)
     rescue ArgumentError => e
       log = Syslog::Logger.new 'ood_nginx_stage'
@@ -195,7 +198,7 @@ module NginxStage
     end.compact
   end
 
-  # List of inactive users with a PID or an explicitly pending cleanup.
+  # List of inactive users with a PID, socket or explicitly pending cleanup.
   # @return [Array<String>] the list of inactive users.
   def self.inactive_users
     staged_pun_users.map do |name|
@@ -221,11 +224,12 @@ module NginxStage
   end
 
   # Do not resolve historical configs, secrets or empty runtime directories.
-  # Only PID files and recorded cleanup attempts authorize disabled-user cleanup.
+  # Only runtime paths and recorded cleanup attempts authorize disabled-user cleanup.
   def self.staged_pun_users
-    marker = pun_user_path_marker(:pun_pid_path, :pun_cleanup_path)
-    pid_template = pun_pid_path(user: marker)
-    pun_users_from_paths([pid_template, pun_cleanup_path(user: marker)], marker: marker)
+    methods = [:pun_pid_path, :pun_socket_path, :pun_cleanup_path]
+    marker = pun_user_path_marker(*methods)
+    templates = methods.map { |method| public_send(method, user: marker) }
+    pun_users_from_paths(templates, marker: marker)
   end
   private_class_method :staged_pun_users
 

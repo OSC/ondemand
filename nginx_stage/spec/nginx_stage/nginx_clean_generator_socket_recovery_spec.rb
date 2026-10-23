@@ -30,7 +30,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     allow(NginxStage).to receive(:pun_pid_path) do |user:|
       File.join(directory, 'run', user.to_s, 'passenger.pid')
     end
-    allow(NginxStage).to receive(:pun_socket_path).with(user: user).and_return(socket_path)
+    allow(NginxStage).to receive(:pun_socket_path) do |user:|
+      File.join(directory, 'run', user.to_s, 'passenger.sock')
+    end
     allow(NginxStage).to receive(:pun_config_path) do |user:|
       File.join(directory, "#{user}.conf")
     end

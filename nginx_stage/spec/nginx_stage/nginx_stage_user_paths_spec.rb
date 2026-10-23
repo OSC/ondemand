@@ -6,11 +6,15 @@ require 'tmpdir'
 
 RSpec.describe NginxStage do
   let(:user) { 'deleted_user' }
+  let(:suffix) { '' }
   let(:directory) { Dir.mktmpdir('cleanup.paths-') }
 
   before do
     allow(described_class).to receive(:pun_pid_path) do |user:|
       File.join(directory, 'run', user.to_s, "#{user}#{suffix}.pid")
+    end
+    allow(described_class).to receive(:pun_socket_path) do |user:|
+      File.join(directory, 'run', user.to_s, "#{user}#{suffix}.sock")
     end
     allow(described_class).to receive(:pun_config_path) do |user:|
       File.join(directory, user.to_s, "#{user}#{suffix}.conf")
@@ -52,6 +56,25 @@ RSpec.describe NginxStage do
         expect(described_class.active_users).to eq([])
       end
 
+      it 'discovers socket-only users for cleanup while preserving PID-only listing' do
+        path = described_class.pun_socket_path(user: user)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, 'socket')
+        account = instance_double(NginxStage::User)
+        allow(NginxStage::User).to receive(:new).with(user).and_return(account)
+
+        expect(described_class.active_users).to eq([])
+        expect(described_class.active_users(include_sockets: true)).to eq([account])
+      end
+
+      it 'discovers a disabled socket-only user without a PID or retry record' do
+        path = described_class.pun_socket_path(user: user)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, 'socket')
+
+        expect(described_class.inactive_users).to eq([user])
+      end
+
       it 'rejects disagreement between repeated user fields' do
         FileUtils.mkdir_p(File.join(directory, user))
         File.write(File.join(directory, user, "different#{suffix}.conf.cleanup_pending"), '12345')
@@ -71,6 +94,9 @@ RSpec.describe NginxStage do
         end
         allow(described_class).to receive(:pun_config_path) do |user:|
           File.join(directory, component, user.to_s, "#{user}2.conf")
+        end
+        allow(described_class).to receive(:pun_socket_path) do |user:|
+          File.join(directory, component, user.to_s, "#{user}10.sock")
         end
       end
 
@@ -92,6 +118,14 @@ RSpec.describe NginxStage do
         expect(File.exist?(described_class.pun_pid_path(user: user))).to be(false)
         expect(described_class.inactive_users).to eq([user])
         expect(described_class.pending_cleanup_users).to eq([user])
+      end
+
+      it 'discovers socket-only accounts through literal glob characters and repeated fields' do
+        path = described_class.pun_socket_path(user: user)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, 'socket entry')
+
+        expect(described_class.inactive_users).to eq([user])
       end
     end
   end

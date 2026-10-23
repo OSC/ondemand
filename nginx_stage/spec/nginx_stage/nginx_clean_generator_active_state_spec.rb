@@ -31,7 +31,7 @@ describe NginxStage::NginxCleanGenerator do
     FileUtils.remove_entry(directory)
   end
 
-  it 'quietly skips a PID that disappeared while cleanup waited for the lifecycle lock' do
+  it 'preserves an uncertain socket when the PID disappears while waiting for the lifecycle lock' do
     File.write(socket_path, 'unidentified socket path')
     allow(generator).to receive(:with_pun_lifecycle_lock).and_wrap_original do |original, **args, &block|
       original.call(**args) do
@@ -42,7 +42,7 @@ describe NginxStage::NginxCleanGenerator do
     expect(Open3).not_to receive(:capture2e)
     expect(FileUtils).not_to receive(:rm)
 
-    expect { generator.invoke }.not_to output.to_stderr
+    expect { generator.invoke }.to output(/PID is missing but socket path is live or uncertain/).to_stderr
     expect(File.read(socket_path)).to eq('unidentified socket path')
   end
 
