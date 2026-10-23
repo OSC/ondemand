@@ -13,6 +13,7 @@ describe NginxStage::NginxCleanGenerator do
   let(:generator) { described_class.new }
 
   before do
+    allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     File.write(pid_path, '12345')
     File.write(config_path, 'configuration')
     allow(NginxStage).to receive_messages(active_users: [user], inactive_users: [])

@@ -301,4 +301,140 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     expect { generator.invoke }.to output(/Permission denied/).to_stderr
     expect(File.read(pid_path)).to eq('12345')
   end
+
+  context 'when an account with pending cleanup is restored' do
+    let(:pending_path) { NginxStage.pun_cleanup_path(user: user) }
+
+    before do
+      File.unlink(pid_path)
+      File.write(pending_path, '')
+      File.chmod(0o600, pending_path)
+      restore_account
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+    end
+
+    it 'cancels only the record under the lifecycle lock before any later account loss' do
+      expect(NginxStage.inactive_users).to eq([])
+      expect(NginxStage.pending_cleanup_users).to eq([user])
+      allow(FileUtils).to receive(:rm).and_wrap_original do |original, path|
+        File.open("#{config_path}.lock", File::RDWR) do |lock|
+          expect(lock.flock(File::LOCK_EX | File::LOCK_NB)).to be(false)
+        end
+        original.call(path)
+      end
+
+      expect { generator.invoke }.not_to output.to_stderr
+
+      expect(File.exist?(pending_path)).to be(false)
+      expect(File.read(config_path)).to eq('configuration')
+      expect(File.read(secret_path)).to eq('secret')
+      expect(File.directory?(runtime_root)).to be(true)
+      expect(File.file?("#{config_path}.lock")).to be(true)
+      allow(Etc).to receive(:getpwnam).with(user).and_raise(ArgumentError, 'user deleted')
+      expect(NginxStage.inactive_users).to eq([])
+    end
+
+    it 'leaves the record untouched during a dry run' do
+      dry_run = described_class.new(skip_nginx: true)
+      expect(dry_run).not_to receive(:with_pun_lifecycle_lock)
+
+      expect { dry_run.invoke }.not_to output.to_stdout
+
+      expect(File.file?(pending_path)).to be(true)
+    end
+
+    it 'leaves an unselected restored account untouched' do
+      targeted = described_class.new(user: 'another_user')
+      expect(targeted).not_to receive(:with_pun_lifecycle_lock)
+
+      targeted.invoke
+
+      expect(File.file?(pending_path)).to be(true)
+    end
+
+    it 'cancels the selected restored account record' do
+      described_class.new(user: user).invoke
+
+      expect(File.exist?(pending_path)).to be(false)
+      expect(File.read(secret_path)).to eq('secret')
+    end
+
+    [:symlink, :directory, :writable_file].each do |kind|
+      it "preserves an unsafe restored-account record of type #{kind}" do
+        File.unlink(pending_path)
+        case kind
+        when :symlink
+          File.symlink(secret_path, pending_path)
+        when :directory
+          FileUtils.mkdir_p(pending_path)
+        when :writable_file
+          File.write(pending_path, '')
+          File.chmod(0o666, pending_path)
+        end
+
+        expect { generator.invoke }.to output(/Unsafe pending cleanup record/).to_stderr
+
+        expect(File.exist?(pending_path) || File.symlink?(pending_path)).to be(true)
+        expect(File.read(secret_path)).to eq('secret')
+      end
+    end
+
+    it 'does not recreate a record removed while waiting for the lock' do
+      allow(generator).to receive(:with_pun_lifecycle_lock).and_wrap_original do |original, **args, &block|
+        original.call(**args) do
+          File.unlink(pending_path)
+          block.call
+        end
+      end
+
+      expect { generator.invoke }.not_to output.to_stderr
+
+      expect(File.exist?(pending_path)).to be(false)
+      expect(File.read(config_path)).to eq('configuration')
+    end
+
+    it 'preserves the record when cancellation is denied' do
+      allow(FileUtils).to receive(:rm).with(pending_path).and_raise(Errno::EACCES)
+
+      expect { generator.invoke }.to output(/Permission denied/).to_stderr
+
+      expect(File.file?(pending_path)).to be(true)
+      expect(File.read(secret_path)).to eq('secret')
+    end
+
+    it 'preserves the record when locked account lookup fails unexpectedly' do
+      allow(generator).to receive(:with_pun_lifecycle_lock).and_wrap_original do |original, **args, &block|
+        original.call(**args) do
+          allow(Etc).to receive(:getpwnam).with(user).and_raise(IOError, 'lookup failed')
+          block.call
+        end
+      end
+
+      expect { generator.invoke }.to output(/lookup failed/).to_stderr
+
+      expect(File.file?(pending_path)).to be(true)
+      expect(File.read(config_path)).to eq('configuration')
+    end
+  end
+
+  it 'cancels an existing retry record when the account returns while waiting' do
+    pending_path = NginxStage.pun_cleanup_path(user: user)
+    File.write(pending_path, '')
+    File.chmod(0o600, pending_path)
+    allow(generator).to receive(:with_pun_lifecycle_lock).and_wrap_original do |original, **args, &block|
+      original.call(**args) do
+        restore_account
+        block.call
+      end
+    end
+    expect(Process).not_to receive(:kill)
+
+    expect { generator.invoke }.not_to output.to_stderr
+
+    expect(File.exist?(pending_path)).to be(false)
+    expect(File.read(pid_path)).to eq('12345')
+    expect(File.read(config_path)).to eq('configuration')
+    expect(File.read(secret_path)).to eq('secret')
+  end
 end

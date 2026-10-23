@@ -48,6 +48,8 @@ module NginxStage
         discovered from PID files and .cleanup_pending retry records beside
         PUN configs; old configs, secrets, and empty runtime directories alone
         are not cleanup candidates. Partial failures keep the retry record.
+        If an account becomes resolvable again, cleanup cancels its safe retry
+        record under the lifecycle lock and preserves its remaining PUN state.
 
         Check user and primary-group lookup health before disabled-user
         cleanup: a directory-service outage can be mistaken for deletion.
@@ -113,17 +115,24 @@ module NginxStage
         end
       end
 
-      NginxStage.inactive_users.each do |u|
+      cleanup_users = NginxStage.inactive_users | NginxStage.pending_cleanup_users
+      cleanup_users.each do |u|
         begin
           next if user && user != u.to_s
 
-          puts "#{u} (disabled)"
-          next if skip_nginx
+          if skip_nginx
+            puts "#{u} (disabled)" if disabled_user?(u)
+            next
+          end
 
           with_pun_lifecycle_lock(user: u) do
-            # An account can reappear while this operation waits for the lock.
-            next unless disabled_user?(u)
+            # Recheck restored accounts as well as disabled cleanup candidates.
+            unless disabled_user?(u)
+              cancel_pending_cleanup(user: u)
+              next
+            end
 
+            puts "#{u} (disabled)"
             record_pending_cleanup(user: u)
             next unless stop_disabled_pun(user: u)
 
@@ -145,6 +154,20 @@ module NginxStage
       path = NginxStage.pun_cleanup_path(user: user)
       File.open(path, File::WRONLY | File::CREAT | File::EXCL, 0o600, &:flush)
     rescue Errno::EEXIST
+      validate_pending_cleanup(path)
+    end
+
+    # A restored account no longer authorizes a pending disabled-user cleanup.
+    # Do not recreate a record that disappeared after enumeration.
+    def cancel_pending_cleanup(user:)
+      path = NginxStage.pun_cleanup_path(user: user)
+      validate_pending_cleanup(path)
+      remove_if_present(path)
+    rescue Errno::ENOENT
+      false
+    end
+
+    def validate_pending_cleanup(path)
       stat = File.lstat(path)
       unless stat.file? && stat.uid == Process.euid && (stat.mode & 0o022).zero?
         raise Error, "Unsafe pending cleanup record: #{path}"

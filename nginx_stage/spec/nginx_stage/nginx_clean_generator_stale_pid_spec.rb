@@ -15,6 +15,7 @@ describe NginxStage::NginxCleanGenerator do
   let(:secret_path) { File.join(directory, 'pun.secret') }
 
   before do
+    allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     FileUtils.mkdir_p(pid_root)
     File.write(pid_path, '1234')
     File.write(config_path, 'config')

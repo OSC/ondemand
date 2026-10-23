@@ -13,6 +13,7 @@ describe NginxStage::NginxCleanGenerator do
   let(:stop_output) { '' }
 
   before do
+    allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     allow(NginxStage).to receive_messages(
       active_users: [active_user], inactive_users: [], nginx_bin: '/usr/sbin/nginx'
     )

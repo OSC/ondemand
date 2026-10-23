@@ -62,8 +62,11 @@ A private pending record is created beside the stable lifecycle lock before
 shutdown can remove the PID. It remains until shutdown, secret/config deletion
 and runtime-directory cleanup finish, allowing a later invocation to retry
 partial failures even when the PID is gone. Shared PID parent directories and
-lifecycle lock files are retained. Do not remove a pending record to suppress an
-error; resolve the reported failure and rerun cleanup.
+lifecycle lock files are retained. If the account becomes resolvable again,
+cleanup cancels its safe pending record under the lifecycle lock and preserves
+the remaining PUN state. This also applies to accounts restored before the
+cleaner starts. Dry runs retain the record. Do not remove a pending record to
+suppress an error; resolve the reported failure and rerun cleanup.
 
 `--skip-nginx` reports candidates without signaling, probing sockets or deleting
 files. With `--user`, only that selected user's state is modified. Candidate

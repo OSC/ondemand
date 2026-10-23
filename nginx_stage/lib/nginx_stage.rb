@@ -213,6 +213,12 @@ module NginxStage
     "#{pun_config_path(user: user)}.cleanup_pending"
   end
 
+  # Include resolvable accounts so obsolete retry records can be cancelled.
+  def self.pending_cleanup_users
+    marker = '__OOD_CLEANUP_USER__'
+    pun_users_from_paths([pun_cleanup_path(user: marker)], marker: marker)
+  end
+
   # Do not resolve historical configs, secrets or empty runtime directories.
   # Only PID files and recorded cleanup attempts authorize disabled-user cleanup.
   def self.staged_pun_users

@@ -13,6 +13,7 @@ describe NginxStage::NginxCleanGenerator do
   let(:config_path) { File.join(directory, 'pun.conf') }
 
   before do
+    allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     File.write(pid_path, 'invalid PID')
     allow(NginxStage).to receive_messages(active_users: [user], inactive_users: [])
     allow(NginxStage).to receive(:pun_pid_path).with(user: user).and_return(pid_path)

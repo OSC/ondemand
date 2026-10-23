@@ -16,6 +16,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   let(:generator) { described_class.new }
 
   before do
+    allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     FileUtils.mkdir_p(runtime_root)
     File.write(pid_path, '12345')
     File.write(config_path, 'configuration')
