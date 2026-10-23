@@ -392,4 +392,30 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal expected_opts, app.submit_opts(app.build_session_context)
     end
   end
+
+  test "app announcements prefer sub_app announcements when present" do
+    Dir.mktmpdir do |dir|
+      File.write("#{dir}/form.yml", "---\ncluster: 'owens'\n")
+      FileUtils.mkdir_p("#{dir}/announcements.d")
+      File.write("#{dir}/announcements.d/parent.md", "Parent notice")
+      FileUtils.mkdir_p("#{dir}/local/owens/announcements.d")
+      File.write("#{dir}/local/owens/announcements.d/sub.md", "Sub-app notice")
+
+      app = BatchConnect::App.new(router: PathRouter.new(dir), sub_app: 'owens')
+
+      assert_equal ['Sub-app notice'], app.app_announcements.map(&:message)
+    end
+  end
+
+  test "app announcements fall back to the app root when no sub_app announcements exist" do
+    Dir.mktmpdir do |dir|
+      File.write("#{dir}/form.yml", "---\ncluster: 'owens'\n")
+      FileUtils.mkdir_p("#{dir}/announcements.d")
+      File.write("#{dir}/announcements.d/parent.md", "Parent notice")
+
+      app = BatchConnect::App.new(router: PathRouter.new(dir), sub_app: 'owens')
+
+      assert_equal ['Parent notice'], app.app_announcements.map(&:message)
+    end
+  end
 end
