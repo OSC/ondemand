@@ -118,4 +118,18 @@ describe NginxStage::Generator do
     expect { controller.invoke }.to output("Verified process signal: stop for spec; no signal sent\n").to_stdout
     expect(File.read(pid_path)).to eq('0')
   end
+
+  it 'prints the startup command without inspecting PID state or running nginx for --skip-nginx' do
+    File.write(pid_path, '0')
+    controller = NginxStage::NginxProcessGenerator.new(user: user, skip_nginx: true)
+    allow(NginxStage).to receive(:nginx_args).with(user: controller.user).and_return(['-c', config_path])
+    expect(Open3).not_to receive(:capture2e)
+    expect(NginxStage::PidFile).not_to receive(:new)
+    expect(NginxStage::PunProcess).not_to receive(:signal)
+
+    expect { controller.invoke }
+      .to output("/usr/sbin/nginx -c #{config_path}\n").to_stdout.and output('').to_stderr
+    expect(File.read(pid_path)).to eq('0')
+    expect(File.exist?("#{config_path}.lock")).to be(false)
+  end
 end

@@ -8,14 +8,9 @@ module PunNativeEnvironment
   include PunOwnedProcesses
 
   def require_native_signaling!
-    native_requirement!(NginxStage::PunProcess.proc_available?, 'requires procfs in the caller PID namespace')
-    supported = NginxStage::PunProcess::SUPPORTED_CPUS.include?(RbConfig::CONFIG['host_cpu'])
-    native_requirement!(supported, 'requires a CPU supported by PUN descriptor signaling')
-    File.open('/proc/self', File::RDONLY) do |handle|
-      Kernel.syscall(NginxStage::PunProcess::SIGNAL_SYSCALL, handle.fileno, 0, 0, 0)
-    end
-  rescue Errno::ENOSYS, Errno::EPERM, Errno::EACCES, NotImplementedError => e
-    native_requirement!(false, "descriptor signaling unavailable: #{e.class}")
+    NginxStage::PunProcess.check_signal_support!
+  rescue NginxStage::Error, SystemCallError, IOError => e
+    native_requirement!(false, "descriptor signaling unavailable: #{e.message}")
   end
 
   def require_native_sockets!(directory)

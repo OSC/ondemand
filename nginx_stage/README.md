@@ -72,6 +72,11 @@ availability must be established on that kernel; its version string alone does
 not prove support. Unsupported or denied signaling preserves PUN state and
 requires a supported kernel/policy, without falling back to a numeric PID.
 
+The Ubuntu CI unit-test matrix sets `OOD_REQUIRE_NATIVE_PUN_TESTS=1`, making
+unavailable native process or Unix-socket coverage fail instead of skip. Native
+process specs use the production capability probe, and CI also runs the script
+above. Other local runs may skip native examples when capabilities are unavailable.
+
 Executable replacement remains identifiable when the running inode is unlinked
 at the exact configured canonical executable path, or is retained at its exact
 `.old` or `.dpkg-tmp` backup path. Retired and replacement files must have the

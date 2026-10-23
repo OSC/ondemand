@@ -40,7 +40,8 @@ RSpec.describe NginxStage::SocketProbe do
     end
   end
 
-  [Errno::EACCES, Errno::EPERM, Errno::EAGAIN, Errno::ENOENT, Errno::EMFILE, IOError].each do |error|
+  [Errno::EACCES, Errno::EPERM, Errno::EAGAIN, Errno::ENOENT, Errno::EMFILE,
+   Errno::ECONNRESET, Errno::ETIMEDOUT, IOError].each do |error|
     it "preserves an inconclusive #{error} result and closes the connection" do
       allow(socket).to receive(:connect_nonblock).and_raise(error)
       expect(socket).to receive(:close).once
@@ -81,6 +82,21 @@ RSpec.describe NginxStage::SocketProbe do
     probe = described_class.new(path)
     expect(probe.state).to eq(:absent)
     expect(probe.remove_stale).to be(false)
+  end
+
+  [:identity_check, :unlink].each do |stage|
+    it "accepts a stale socket that disappears during #{stage}" do
+      allow(socket).to receive(:connect_nonblock).and_raise(Errno::ECONNREFUSED)
+      probe = described_class.new(path)
+      if stage == :identity_check
+        allow(File).to receive(:lstat).with(path).and_raise(Errno::ENOENT)
+        expect(File).not_to receive(:unlink)
+      else
+        expect(File).to receive(:unlink).with(path).once.and_raise(Errno::ENOENT)
+      end
+
+      expect(probe.remove_stale).to be(true)
+    end
   end
 
   it 'preserves the socket if a probe descriptor cannot be allocated' do

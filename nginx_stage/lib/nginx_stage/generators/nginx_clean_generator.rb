@@ -111,10 +111,7 @@ module NginxStage
             sessions = session_count(u)
             if sessions.zero? || force
               puts u
-              unless skip_nginx
-                o, s = run_nginx(user: u, signal: :stop)
-                warn o unless s.success?
-              end
+              run_nginx(user: u, signal: :stop) unless skip_nginx
             end
           end
         rescue StandardError => e
@@ -158,7 +155,10 @@ module NginxStage
     # Socket-only crashes must remain discoverable without inventing a PID.
     # Use the normal conservative probe and leave configuration and secrets alone.
     def cleanup_socket_without_pid(user:)
-      return if path_occupied?(NginxStage.pun_pid_path(user: user))
+      if path_occupied?(NginxStage.pun_pid_path(user: user))
+        warn "Skipping cleanup for #{user}: PID path is still occupied (possibly a dangling symlink)"
+        return
+      end
       return unless path_occupied?(NginxStage.pun_socket_path(user: user))
 
       if skip_nginx

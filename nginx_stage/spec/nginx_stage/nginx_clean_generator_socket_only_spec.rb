@@ -99,6 +99,27 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     expect(File.exist?("#{config_path}.lock")).to be(false)
   end
 
+  [false, true].each do |force|
+    it "warns and preserves a dangling PID symlink and its socket, force=#{force}" do
+      target = File.join(directory, 'missing-pid-target')
+      File.symlink(target, pid_path)
+      expect(Socket).not_to receive(:new)
+      expect(NginxStage::PunProcess).not_to receive(:signal)
+      expect(Process).not_to receive(:kill)
+      expect(Open3).not_to receive(:capture2e)
+
+      expect { described_class.new(force: force).invoke }
+        .to output(/Skipping cleanup for #{user}: PID path is still occupied/).to_stderr
+
+      expect(File.symlink?(pid_path)).to be(true)
+      expect(File.readlink(pid_path)).to eq(target)
+      expect(File.exist?(target)).to be(false)
+      expect(File.read(socket_path)).to eq('socket entry')
+      expect(File.read(config_path)).to eq('configuration')
+      expect(File.read(secret_path)).to eq('secret')
+    end
+  end
+
   [:file, :symlink].each do |kind|
     it "preserves an unidentified #{kind} in the socket path without probing" do
       if kind == :symlink

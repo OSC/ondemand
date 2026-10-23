@@ -40,6 +40,16 @@ RSpec.describe NginxStage::PunProcess do
     expect(process.state).to eq(:matching)
   end
 
+  it 'preserves an identity with no UID metadata even when the caller is root' do
+    allow(Process).to receive(:euid).and_return(0)
+    File.write(File.join(process_root, 'status'), "Name:\tnginx\n")
+    expect(Kernel).not_to receive(:syscall)
+    expect(Process).not_to receive(:kill)
+
+    expect(process.state).to eq(:unknown)
+    expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /identity is unknown/)
+  end
+
   it 'recognizes an unrelated executable without relying on its PID being dead' do
     File.unlink(File.join(process_root, 'exe'))
     File.symlink(other_binary, File.join(process_root, 'exe'))
@@ -299,7 +309,12 @@ RSpec.describe NginxStage::PunProcess do
       expect(described_class.check_signal_support!).to be(true)
     end
 
-    { Errno::ENOSYS => /kernel support/, Errno::EPERM => /permissions or syscall policy/ }.each do |error, message|
+    {
+      Errno::ENOSYS       => /kernel support/,
+      NotImplementedError => /kernel support/,
+      Errno::EPERM        => /permissions or syscall policy/,
+      Errno::EACCES       => /permissions or syscall policy/
+    }.each do |error, message|
       it "diagnoses #{error} on the host kernel without a fallback" do
         expect(Kernel).to receive(:syscall).with(424, handle.fileno, 0, 0, 0).once.and_raise(error)
         expect(Process).not_to receive(:kill)
