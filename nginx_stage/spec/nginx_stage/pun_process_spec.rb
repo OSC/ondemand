@@ -280,6 +280,123 @@ RSpec.describe NginxStage::PunProcess do
     expect { process.signal(:stop) }.to raise_error(Errno::ESRCH)
   end
 
+  it 'does not fall back to numeric-PID signaling when the syscall is denied' do
+    expect(Kernel).to receive(:syscall).with(424, handle.fileno, Signal.list.fetch('TERM'), 0, 0)
+                                       .once.and_raise(Errno::EPERM)
+    expect(Process).not_to receive(:kill)
+    expect(Open3).not_to receive(:capture2e)
+    expect { process.signal(:stop) }.to raise_error(Errno::EPERM)
+  end
+
+  describe '.check_signal_support!' do
+    before do
+      allow(File).to receive(:open).with('/proc/self', File::RDONLY).and_yield(handle)
+    end
+
+    it 'uses signal zero on a self process directory descriptor without sending a real signal' do
+      expect(Kernel).to receive(:syscall).with(424, handle.fileno, 0, 0, 0).once.and_return(0)
+      expect(Process).not_to receive(:kill)
+      expect(described_class.check_signal_support!).to be(true)
+    end
+
+    { Errno::ENOSYS => /kernel support/, Errno::EPERM => /permissions or syscall policy/ }.each do |error, message|
+      it "diagnoses #{error} on the host kernel without a fallback" do
+        expect(Kernel).to receive(:syscall).with(424, handle.fileno, 0, 0, 0).once.and_raise(error)
+        expect(Process).not_to receive(:kill)
+        expect { described_class.check_signal_support! }.to raise_error(NginxStage::Error, message)
+      end
+    end
+
+    it 'refuses a mismatched procfs namespace before probing' do
+      allow(described_class).to receive(:proc_available?).and_return(false)
+      expect(Kernel).not_to receive(:syscall)
+      expect { described_class.check_signal_support! }.to raise_error(NginxStage::Error, /caller PID namespace/)
+    end
+
+    it 'refuses an unsupported architecture before invoking a fixed syscall number' do
+      allow(RbConfig::CONFIG).to receive(:[]).and_call_original
+      allow(RbConfig::CONFIG).to receive(:[]).with('host_cpu').and_return('unsupported')
+      expect(Kernel).not_to receive(:syscall)
+      expect { described_class.check_signal_support! }.to raise_error(NginxStage::Error, /supported CPU/)
+      expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /requires Linux/)
+    end
+  end
+
+  context 'when descriptor signaling is unavailable through public controllers' do
+    let(:paths) do
+      { pid: File.join(directory, 'pun.pid'), socket: File.join(directory, 'pun.sock'),
+        config: File.join(directory, 'pun.conf'), secret: File.join(directory, 'pun.secret') }
+    end
+
+    before do
+      paths.each_value { |path| File.write(path, 'preserve') }
+      File.write(paths[:pid], '12345')
+      passwd = Struct.new(:gid, :name, :uid, :shell).new(1000, 'spec', 1000, '/bin/bash')
+      allow(Etc).to receive(:getpwnam).with('spec').and_return(passwd)
+      allow(Etc).to receive(:getgrgid).with(1000).and_return(Struct.new(:name).new('spec'))
+      allow(Process).to receive(:getpgid).with(12_345).and_return(12_345)
+      allow(NginxStage).to receive_messages(
+        pun_pid_path: paths[:pid], pun_socket_path: paths[:socket], pun_config_path: paths[:config],
+        pun_secret_key_base_path: paths[:secret], active_users: ['spec'],
+        inactive_users: [], pending_cleanup_users: []
+      )
+      allow(File).to receive(:socket?).and_call_original
+      allow(File).to receive(:socket?).with(paths[:socket]).and_return(true)
+    end
+
+    def expect_no_signal_fallback
+      expect(Process).not_to receive(:kill)
+      expect(Open3).not_to receive(:capture2e)
+    end
+
+    { Errno::ENOSYS => NginxStage::Error, Errno::EPERM => Errno::EPERM }.each do |error, raised|
+      it "propagates #{error} from nginx --signal=stop while preserving PUN state" do
+        expect_no_signal_fallback
+        controller = NginxStage::NginxProcessGenerator.new(user: 'spec', signal: :stop)
+        expect(Kernel).to receive(:syscall).with(424, handle.fileno, Signal.list.fetch('TERM'), 0, 0)
+                                           .once.and_raise(error)
+        expect(controller).not_to receive(:wait_for_pun_shutdown)
+        expect { controller.invoke }.to raise_error(raised)
+        expect(paths.transform_values { |path| File.read(path) }).to eq(
+          pid: '12345', socket: 'preserve', config: 'preserve', secret: 'preserve'
+        )
+      end
+
+      [false, true].each do |force|
+        it "preserves active PUN state after #{error}, force=#{force}" do
+          expect_no_signal_fallback
+          cleaner = NginxStage::NginxCleanGenerator.new(force: force)
+          allow(cleaner).to receive(:session_count).with('spec').and_return(0)
+          allow(cleaner).to receive(:puts)
+          expect(Kernel).to receive(:syscall).with(424, handle.fileno, Signal.list.fetch('TERM'), 0, 0)
+                                             .once.and_raise(error)
+          expect(cleaner).not_to receive(:wait_for_pun_shutdown)
+          expect { cleaner.invoke }.to output(/Error trying to clean up active user/).to_stderr
+          expect(paths.transform_values { |path| File.read(path) }).to eq(
+            pid: '12345', socket: 'preserve', config: 'preserve', secret: 'preserve'
+          )
+        end
+      end
+
+      it "preserves disabled PUN state and its retry record after #{error}" do
+        expect_no_signal_fallback
+        allow(NginxStage).to receive_messages(active_users: [], inactive_users: ['spec'])
+        allow(Etc).to receive(:getpwnam).with('spec').and_raise(ArgumentError, 'deleted')
+        cleaner = NginxStage::NginxCleanGenerator.new(force: true)
+        allow(cleaner).to receive(:puts)
+        expect(Kernel).to receive(:syscall).with(424, handle.fileno, Signal.list.fetch('TERM'), 0, 0)
+                                           .once.and_raise(error)
+        expect(cleaner).not_to receive(:wait_for_pun_shutdown)
+        message = error == Errno::EPERM ? /Cannot terminate disabled user/ : /Error trying to clean up disabled user/
+        expect { cleaner.invoke }.to output(message).to_stderr
+        expect(paths.transform_values { |path| File.read(path) }).to eq(
+          pid: '12345', socket: 'preserve', config: 'preserve', secret: 'preserve'
+        )
+        expect(File.file?("#{paths[:config]}.cleanup_pending")).to be(true)
+      end
+    end
+  end
+
   it 'fails closed on kernels without descriptor signaling' do
     expect(Kernel).to receive(:syscall).once.and_raise(Errno::ENOSYS)
     expect(Process).not_to receive(:kill)
@@ -305,5 +422,131 @@ RSpec.describe NginxStage::PunProcess do
     allow(Process).to receive(:getpgid).with(12_345).and_raise(Errno::ESRCH)
     expect(process.state).to eq(:dead)
     expect { process.signal(:stop) }.to raise_error(Errno::ESRCH)
+  end
+
+  it 'refuses to signal on an unsupported CPU before opening the process' do
+    stub_const('RbConfig::CONFIG', RbConfig::CONFIG.merge('host_cpu' => 's390x'))
+    expect(File).not_to receive(:open).with('/proc/12345', File::RDONLY)
+    expect(Kernel).not_to receive(:syscall)
+    expect(Process).not_to receive(:kill)
+
+    expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /x86_64, aarch64 or ppc64le/)
+  end
+
+  it 'accepts the powerpc64le name Ruby reports on ppc64le' do
+    stub_const('RbConfig::CONFIG', RbConfig::CONFIG.merge('host_cpu' => 'powerpc64le'))
+    expect(Kernel).to receive(:syscall).with(424, handle.fileno, Signal.list.fetch('TERM'), 0, 0)
+
+    process.signal(:stop)
+  end
+
+  it 'fails closed when this Ruby cannot make system calls' do
+    expect(Kernel).to receive(:syscall).once.and_raise(NotImplementedError)
+    expect(Process).not_to receive(:kill)
+
+    expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /no signal sent/)
+  end
+
+  ['first.last', 'first-last', 'person@example.org', '1001'].each do |other|
+    it "recognizes another user's master when the username is #{other.inspect}" do
+      File.write(File.join(process_root, 'cmdline'), "nginx: master process (#{other}) -c /trusted/#{other}.conf\0")
+
+      expect(process.state).to eq(:foreign)
+    end
+  end
+
+  context 'when nginx_bin is configured as a symlink' do
+    let(:link) { File.join(directory, 'sbin', 'nginx') }
+
+    before do
+      FileUtils.mkdir_p(File.dirname(link))
+      File.symlink(binary, link)
+      allow(NginxStage).to receive(:nginx_bin).and_return(link)
+    end
+
+    it 'recognizes the master before an upgrade' do
+      expect(process.state).to eq(:matching)
+    end
+
+    it 'recognizes an upgraded master by the real path the kernel reports' do
+      replace_running_binary
+
+      expect(process.state).to eq(:matching)
+    end
+
+    it 'does not accept the symlink name as the retired binary path' do
+      replace_running_binary(link)
+
+      expect(process.state).to eq(:unknown)
+    end
+  end
+
+  [:missing, :wrong].each do |configured|
+    it "preserves a live master when the configured executable path is #{configured}" do
+      if configured == :missing
+        replace_running_binary
+        File.unlink(binary)
+      else
+        allow(NginxStage).to receive(:nginx_bin).and_return(other_binary)
+      end
+      expect(process.state).to eq(:unknown)
+      expect(Kernel).not_to receive(:syscall)
+      expect(Process).not_to receive(:kill)
+      expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /identity is unknown/)
+    end
+  end
+
+  context 'when a disabled account has uncertain process identity' do
+    let(:paths) do
+      { pid: File.join(directory, 'run', 'spec', 'pun.pid'),
+        socket: File.join(directory, 'run', 'spec', 'pun.sock'),
+        config: File.join(directory, 'spec.conf'), secret: File.join(directory, 'spec.secret') }
+    end
+
+    before do
+      FileUtils.mkdir_p(File.dirname(paths[:pid]))
+      File.write(paths[:pid], '12345')
+      File.write(paths[:config], 'configuration')
+      File.write(paths[:secret], 'secret')
+      File.write(File.join(process_root, 'cmdline'), "nginx: cache manager process\0")
+      allow(Process).to receive(:getpgid).with(12_345).and_return(12_345)
+      allow(NginxStage).to receive(:pun_pid_path) do |user:|
+        File.join(directory, 'run', user.to_s, 'pun.pid')
+      end
+      allow(NginxStage).to receive_messages(
+        active_users: [], inactive_users: ['spec'], pending_cleanup_users: [],
+        pun_socket_path: paths[:socket], pun_config_path: paths[:config], pun_secret_key_base_path: paths[:secret]
+      )
+      allow(NginxStage::User).to receive(:new).with('spec').and_raise(ArgumentError, 'deleted')
+    end
+
+    it 'preserves metadata and the retry record across repeated real identity refusals' do
+      expect(Kernel).not_to receive(:syscall)
+      expect(Process).not_to receive(:kill)
+      expect(Open3).not_to receive(:capture2e)
+      2.times do
+        cleaner = NginxStage::NginxCleanGenerator.new
+        allow(cleaner).to receive(:puts)
+        expect { cleaner.invoke }.to output(/process identity is unknown/).to_stderr
+      end
+      expect(File.read(paths[:pid])).to eq('12345')
+      expect(File.read(paths[:config])).to eq('configuration')
+      expect(File.read(paths[:secret])).to eq('secret')
+      expect(File.file?("#{paths[:config]}.cleanup_pending")).to be(true)
+    end
+
+    it 'finishes a later retry once that same process is confirmed dead' do
+      expect(Kernel).not_to receive(:syscall)
+      expect(Process).not_to receive(:kill)
+      expect(Open3).not_to receive(:capture2e)
+      cleaner = NginxStage::NginxCleanGenerator.new
+      allow(cleaner).to receive(:puts)
+      expect { cleaner.invoke }.to output(/process identity is unknown/).to_stderr
+      File.write(File.join(process_root, 'stat'), "12345 (nginx) Z #{'0 ' * 25}")
+      expect { cleaner.invoke }.not_to output.to_stderr
+      expect(paths.values.none? { |path| File.exist?(path) }).to be(true)
+      expect(File.exist?("#{paths[:config]}.cleanup_pending")).to be(false)
+      expect(File.directory?(File.dirname(paths[:pid]))).to be(false)
+    end
   end
 end

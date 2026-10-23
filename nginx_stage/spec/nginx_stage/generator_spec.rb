@@ -56,6 +56,17 @@ describe NginxStage::Generator do
       end
     end
 
+    it 'does not wait for shutdown after reload or reopen' do
+      expect(generator).not_to receive(:wait_for_pun_shutdown)
+
+      [:reload, :reopen].each do |signal|
+        expect(NginxStage::PunProcess).to receive(:signal)
+          .with(pid_file: pid_file, user: test_user, signal: signal)
+
+        expect(generator.send(:run_nginx, user: test_user, signal: signal)).to eq(['', status])
+      end
+    end
+
     it 'does not wait after failed stop' do
       expect(NginxStage::PunProcess).to receive(:signal).and_raise(NginxStage::Error, 'signal failed')
       expect(generator).not_to receive(:wait_for_pun_shutdown)

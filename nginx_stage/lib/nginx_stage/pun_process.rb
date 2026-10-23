@@ -32,6 +32,23 @@ module NginxStage
       new(pid: pid_file.pid, user: user).signal(signal)
     end
 
+    # Probe the actual host kernel and syscall policy without delivering a signal.
+    # This checks the same /proc directory descriptor API used for PUN signaling.
+    def self.check_signal_support!
+      unless proc_available? && SUPPORTED_CPUS.include?(RbConfig::CONFIG['host_cpu'])
+        raise Error, 'Safe PUN signaling requires Linux procfs in the caller PID namespace and a supported CPU'
+      end
+
+      File.open('/proc/self', File::RDONLY) do |handle|
+        Kernel.syscall(SIGNAL_SYSCALL, handle.fileno, 0, 0, 0)
+      end
+      true
+    rescue Errno::ENOSYS, NotImplementedError
+      raise Error, 'Safe PUN signaling requires kernel support for pidfd_send_signal; no signal sent'
+    rescue Errno::EPERM, Errno::EACCES
+      raise Error, 'PUN signaling capability check denied by permissions or syscall policy; no signal sent'
+    end
+
     def initialize(pid:, user:)
       @pid = pid
       @user = user

@@ -52,6 +52,15 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     allow(Etc).to receive(:getgrgid).with(1000).and_return(group)
   end
 
+  # Keep a real File::Stat so filesystem cleanup still sees genuine file types.
+  def simulate_other_owner(path)
+    allow(File).to receive(:lstat).and_wrap_original do |original, candidate|
+      stat = original.call(candidate)
+      allow(stat).to receive(:uid).and_return(Process.euid + 1) if candidate == path
+      stat
+    end
+  end
+
   [:dead_pid, :successful_shutdown].each do |state|
     [:secret, :config].each do |failed_file|
       it "retries a temporary #{failed_file} deletion error after #{state}" do
@@ -281,7 +290,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     expect(NginxStage.inactive_users).to eq([])
   end
 
-  [:symlink, :directory, :writable_file].each do |kind|
+  [:symlink, :directory, :writable_file, :wrong_owner].each do |kind|
     it "rejects an unsafe pending-cleanup #{kind} before signaling or deleting" do
       marker = NginxStage.pun_cleanup_path(user: user)
       case kind
@@ -292,6 +301,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       when :writable_file
         File.write(marker, '')
         File.chmod(0o666, marker)
+      when :wrong_owner
+        File.write(marker, '')
+        simulate_other_owner(marker)
       end
       expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
@@ -301,6 +313,32 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       expect(File.read(pid_path)).to eq('12345')
       expect(File.read(secret_path)).to eq('secret')
     end
+  end
+
+  it 'continues cleaning subsequent users after rejecting an unsafe pending record' do
+    marker = NginxStage.pun_cleanup_path(user: user)
+    File.symlink(secret_path, marker)
+    other_user = 'other_deleted'
+    other_paths = [NginxStage.pun_pid_path(user: other_user),
+                   NginxStage.pun_config_path(user: other_user),
+                   NginxStage.pun_secret_key_base_path(user: other_user)]
+    other_paths.each do |path|
+      FileUtils.mkdir_p(File.dirname(path))
+      File.write(path, '12345')
+    end
+    allow(NginxStage).to receive(:inactive_users).and_return([user, other_user])
+    allow(Etc).to receive(:getpwnam).with(other_user).and_raise(ArgumentError, 'deleted')
+    expect(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 12_345), user: other_user, signal: :stop).once.and_raise(Errno::ESRCH)
+
+    expect { generator.invoke }.to output(/Unsafe pending cleanup record/).to_stderr
+
+    expect(other_paths.none? { |path| File.exist?(path) }).to be(true)
+    expect(File.exist?(NginxStage.pun_cleanup_path(user: other_user))).to be(false)
+    expect(File.symlink?(marker)).to be(true)
+    expect(File.read(pid_path)).to eq('12345')
+    expect(File.read(config_path)).to eq('configuration')
+    expect(File.read(secret_path)).to eq('secret')
   end
 
   it 'does not stop a PUN if its pending-cleanup record cannot be created' do
@@ -386,7 +424,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       expect(File.read(secret_path)).to eq('secret')
     end
 
-    [:symlink, :directory, :writable_file].each do |kind|
+    [:symlink, :directory, :writable_file, :wrong_owner].each do |kind|
       it "preserves an unsafe restored-account record of type #{kind}" do
         expect(NginxStage::PunProcess).not_to receive(:signal)
         expect(Process).not_to receive(:kill)
@@ -401,6 +439,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
         when :writable_file
           File.write(pending_path, '')
           File.chmod(0o666, pending_path)
+        when :wrong_owner
+          File.write(pending_path, '')
+          simulate_other_owner(pending_path)
         end
 
         expect { generator.invoke }.to output(/Unsafe pending cleanup record/).to_stderr

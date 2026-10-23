@@ -44,8 +44,8 @@ that stale PID file without signaling the unrelated process. Uncertain identity
 is preserved with a diagnostic, including with `--force`.
 
 All signals (`stop`, `quit`, `reload`, `reopen`, and disabled-user termination)
-verify the running executable's device/inode, the exact per-user nginx master
-command and configuration path, and the master's effective UID. Signaling uses
+verify the running executable by inode or protected upgrade provenance, the
+exact per-user nginx master command/configuration, and its effective UID. Signaling uses
 the same open `/proc/PID` directory descriptor used to read identity. It does
 not use numeric-PID `kill` or invoke `nginx -s`, so PID reuse or a later PID-file
 change cannot redirect the signal. nginx process titles are not a security
@@ -54,6 +54,24 @@ boundary against a malicious privileged process; configured roots remain trusted
 Safe signaling requires Linux `pidfd_send_signal` support (upstream Linux 5.1
 or a compatible backport), readable procfs in the caller's PID namespace, and
 x86_64, aarch64 or ppc64le. There is no unchecked fallback on unsupported systems.
+Before deploying this signaling path on a native EL8 host or VM, run the
+capability probe as the same administrator/service identity that runs nginx_stage:
+
+```bash
+cd nginx_stage
+bundle exec ruby test/native/check_pun_signal_support.rb
+```
+
+The probe uses signal zero on its own process directory descriptor. It checks
+that the actual kernel and syscall policy accept the API; it does not terminate
+any process or establish permission to signal every PUN. A nonzero exit blocks
+compatibility acceptance. A container on a newer host is not an EL8 kernel test.
+Also exercise stop/quit, reload/reopen, cleanup and executable replacement with
+an isolated PUN on each supported native kernel before release. EL8 backport
+availability must be established on that kernel; its version string alone does
+not prove support. Unsupported or denied signaling preserves PUN state and
+requires a supported kernel/policy, without falling back to a numeric PID.
+
 Executable replacement remains identifiable when the running inode is unlinked
 at the exact configured canonical executable path, or is retained at its exact
 `.old` or `.dpkg-tmp` backup path. Retired and replacement files must have the

@@ -1,0 +1,7 @@
+signal probe and regression tests
+
+   adds a harmless native-kernel
+   capability probe and tests syscall failures through public controllers,
+   active/disabled cleanup, wrong-owner retry records, continued cleanup after
+   an unsafe record, and two actual competing cleanup invocations using flock.
+
