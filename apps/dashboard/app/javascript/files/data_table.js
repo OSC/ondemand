@@ -68,7 +68,13 @@ jQuery(function () {
         } else {
             table.getTable().rows().deselect();
         }
-    })
+    });
+    $('#select_all').on('keypress', function(event) {
+        if (event.which === 13) {
+          this.checked = !this.checked;
+          this.dispatchEvent(new Event('click'));
+        }
+    });
 
     /* END TABLE ACTIONS */
 
