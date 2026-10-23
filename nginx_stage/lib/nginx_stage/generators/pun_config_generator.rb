@@ -10,7 +10,7 @@ module NginxStage
     # Serialize PUN initialization for one user. A second request that queued
     # behind another startup re-checks PUN state before running setup hooks.
     def invoke
-      with_pun_start_lock do
+      with_pun_lifecycle_lock(user: user) do
         super
       end
     end
@@ -47,7 +47,7 @@ module NginxStage
     # Keep validation ahead of the running-PUN shortcut. Configuration-only
     # generation still runs even when the PUN is already active.
     add_hook :skip_running_pun do
-      raise Error, 'Startup blocked because a PUN is already running' if !skip_nginx && pun_running?
+      raise Error, 'Startup blocked because a PUN is already running' if !skip_nginx && pun_running?(user: user)
     end
 
     # @!method app_init_url
@@ -150,14 +150,7 @@ module NginxStage
     # Run the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        NginxStage.clean_nginx_env(user: user)
-        o, s = Open3.capture2e(
-          [
-            NginxStage.nginx_bin,
-            "(#{user})"
-          ],
-          *NginxStage.nginx_args(user: user)
-        )
+        o, s = run_nginx(user: user)
         s.success? ? exit : abort(o)
       end
     end
@@ -169,24 +162,6 @@ module NginxStage
 
 
     private
-      def with_pun_start_lock
-        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
-        FileUtils.mkdir_p File.dirname(lock_path)
-
-        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
-          lock.flock(File::LOCK_EX)
-          yield
-        end
-      end
-
-      def pun_running?
-        return false unless File.socket?(NginxStage.pun_socket_path(user: user))
-
-        PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
-      rescue MissingPidFile, InvalidPidFile
-        false
-      end
-
       # per-user NGINX config path
       def config_path
         NginxStage.pun_config_path(user: user)

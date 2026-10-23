@@ -2,12 +2,16 @@
 
 require 'spec_helper'
 require 'nginx_stage'
+require 'tmpdir'
 
 describe NginxStage::PunConfigGenerator do
   let(:test_user) { 'spec' }
   let(:test_user_gid) { 1000 }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state) do |pid_file:, **|
+      pid_file.running_process? ? :matching : :dead
+    end
     etc_stub = {
       :gid   => test_user_gid,
       :name  => test_user,
@@ -27,7 +31,6 @@ describe NginxStage::PunConfigGenerator do
     expect { described_class.new }.to raise_error(NginxStage::MissingOption, 'missing option: user')
   end
 
-
   describe 'concurrent startup protection' do
     let(:generator) { described_class.new(user: test_user) }
     let(:lock_path) { '/var/lib/ondemand-nginx/config/puns/spec.conf.lock' }
@@ -35,11 +38,12 @@ describe NginxStage::PunConfigGenerator do
 
     it 'takes an exclusive per-user lock while invoking startup hooks' do
       allow(NginxStage).to receive(:pun_config_path).with(user: generator.user)
-        .and_return('/var/lib/ondemand-nginx/config/puns/spec.conf')
+                                                    .and_return('/var/lib/ondemand-nginx/config/puns/spec.conf')
       allow(FileUtils).to receive(:mkdir_p)
       allow(File).to receive(:open)
-        .with(lock_path, File::RDWR | File::CREAT, 0644)
+        .with(lock_path, File::RDWR | File::CREAT, 0o644)
         .and_yield(lock)
+      allow(lock).to receive(:flock).with(File::LOCK_EX).and_return(0)
       expect(lock).to receive(:flock).with(File::LOCK_EX)
       allow(generator).to receive(:pun_running?).and_return(true)
 
@@ -61,9 +65,10 @@ describe NginxStage::PunConfigGenerator do
       allow(described_class).to receive(:hooks).and_return(
         validation_probe: proc { @validation_probe_ran = true },
         skip_running_pun: skip_running_pun,
-        setup_probe: proc { @setup_probe_ran = true }
+        setup_probe:      proc { @setup_probe_ran = true }
       )
-      allow(generator).to receive(:with_pun_start_lock).and_yield
+      allow(generator).to receive(:with_pun_lifecycle_lock)
+        .with(user: generator.user).and_yield
       allow(generator).to receive(:pun_running?).and_return(true)
 
       expect { generator.invoke }.to raise_error(NginxStage::Error, 'Startup blocked because a PUN is already running')
@@ -79,9 +84,10 @@ describe NginxStage::PunConfigGenerator do
 
       allow(described_class).to receive(:hooks).and_return(
         skip_running_pun: skip_running_pun,
-        setup_probe: proc { @setup_probe_ran = true }
+        setup_probe:      proc { @setup_probe_ran = true }
       )
-      allow(generator).to receive(:with_pun_start_lock).and_yield
+      allow(generator).to receive(:with_pun_lifecycle_lock)
+        .with(user: generator.user).and_yield
       expect(generator).not_to receive(:pun_running?)
 
       generator.invoke
@@ -96,28 +102,40 @@ describe NginxStage::PunConfigGenerator do
 
     before do
       allow(NginxStage).to receive(:pun_socket_path).with(user: generator.user)
-        .and_return('/var/run/ondemand-nginx/spec/passenger.sock')
+                                                    .and_return('/var/run/ondemand-nginx/spec/passenger.sock')
       allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user)
-        .and_return('/var/run/ondemand-nginx/spec/passenger.pid')
+                                                 .and_return('/var/run/ondemand-nginx/spec/passenger.pid')
+      allow(File).to receive(:exist?).and_call_original
+      allow(File).to receive(:exist?)
+        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
     end
 
-    it 'requires both a socket and a live PID' do
-      allow(File).to receive(:socket?)
-        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
+    it 'detects a live PID when a socket exists' do
       allow(NginxStage::PidFile).to receive(:new)
         .with('/var/run/ondemand-nginx/spec/passenger.pid').and_return(pid_file)
       allow(pid_file).to receive(:running_process?).and_return(true)
 
-      expect(generator.send(:pun_running?)).to be(true)
+      expect(generator.send(:pun_running?, user: generator.user)).to be(true)
     end
 
-    it 'treats missing PID state as not running' do
-      allow(File).to receive(:socket?)
-        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
+    it 'refuses startup with a socket but no PID file' do
       allow(NginxStage::PidFile).to receive(:new)
         .and_raise(NginxStage::MissingPidFile)
 
-      expect(generator.send(:pun_running?)).to be(false)
+      expect { generator.send(:pun_running?, user: generator.user) }
+        .to raise_error(NginxStage::Error, /PID state is unusable/)
+    end
+
+    it 'refuses startup with a socket but invalid PID contents' do
+      Dir.mktmpdir('pun-oversized-pid-spec') do |dir|
+        path = File.join(dir, 'passenger.pid')
+        File.write(path, '99999999999999999999')
+        allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user).and_return(path)
+        expect(Process).not_to receive(:getpgid)
+
+        expect { generator.send(:pun_running?, user: generator.user) }
+          .to raise_error(NginxStage::Error, /PID state is unusable/)
+      end
     end
   end
 
@@ -126,7 +144,7 @@ describe NginxStage::PunConfigGenerator do
 
     before do
       allow(Etc).to receive(:getpwnam).with(missing_user)
-        .and_raise(ArgumentError, "can't find user for #{missing_user}")
+                                      .and_raise(ArgumentError, "can't find user for #{missing_user}")
     end
 
     it 'raises InvalidUser with the default missing_user_message' do
@@ -147,35 +165,41 @@ describe NginxStage::PunConfigGenerator do
   end
 
   describe 'pre_hook_root_cmd' do
-    let(:generator)  do
+    let(:generator) do
       described_class.new({
-                            :user              => test_user,
-                            :pre_hook_root_cmd => '/opt/pre_hook'
-                          })
+        :user              => test_user,
+        :pre_hook_root_cmd => '/opt/pre_hook'
+      })
     end
 
     let(:hook) do
       generator.class.hooks[:exec_pre_hook]
     end
+    let(:logger) { instance_double(Syslog::Logger) }
+
+    before { allow(Syslog::Logger).to receive(:new).with('ood_nginx_stage').and_return(logger) }
 
     it 'invokes the right root pre hook' do
-      allow(Open3).to receive(:capture3).with('/opt/pre_hook', '--user', test_user)
+      status = instance_double(Process::Status, success?: true)
+      allow(Open3).to receive(:capture3).with('/opt/pre_hook', '--user', test_user).and_return(['', '', status])
+      expect(Open3).to receive(:capture3).with('/opt/pre_hook', '--user', test_user)
       generator.instance_eval(&hook)
     end
 
     it 'logs exceptions from underlying script' do
       allow(Open3).to receive(:capture3).with('/opt/pre_hook', '--user',
                                               test_user).and_raise(StandardError.new('this is a test'))
-      allow_any_instance_of(Syslog::Logger).to receive(:error).with("/opt/pre_hook threw exception 'this is a test' for spec")
+      expect(logger).to receive(:error).with("/opt/pre_hook threw exception 'this is a test' for spec")
       generator.instance_eval(&hook)
     end
 
     it 'logs non-zero exits from underlying script' do
       allow(Open3).to receive(:capture3)
         .with('/opt/pre_hook', '--user', test_user)
-        .and_return(['', 'this is the test stderr message', double(:success? => false, :exitstatus => 3)])
+        .and_return(['', 'this is the test stderr message',
+                     instance_double(Process::Status, success?: false, exitstatus: 3)])
 
-      allow_any_instance_of(Syslog::Logger).to receive(:error)
+      expect(logger).to receive(:error)
         .with("/opt/pre_hook exited with 3 for user spec. stderr was 'this is the test stderr message'")
 
       generator.instance_eval(&hook)

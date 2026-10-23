@@ -33,9 +33,12 @@ jobs:
             ruby: "3.3"
     runs-on: ${{ matrix.os }}
     name: Unit tests
+    env:
+      OOD_REQUIRE_NATIVE_PUN_TESTS: '1'
+      OOD_TEST_NGINX_BIN: /usr/sbin/nginx
 
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout ${{ github.sha }}
         uses: actions/checkout@v6
 
       - name: Setup Ruby ${{ matrix.ruby }}
@@ -54,7 +57,7 @@ jobs:
       - name: Setup os dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y rclone libsqlite3-dev
+          sudo apt-get install -y rclone libsqlite3-dev nginx
 
       - name: Setup Bundler
         run: |
@@ -66,6 +69,10 @@ jobs:
 
       - name: Run unit tests
         run: bundle exec rake test:unit
+
+      - name: Check native PUN signaling support
+        working-directory: nginx_stage
+        run: bundle exec ruby test/native/check_pun_signal_support.rb
 
       - name: Run ShellCheck
         run: bundle exec rake test:shellcheck
@@ -98,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Kubernetes tests
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout ${{ github.sha }}
         uses: actions/checkout@v6
       - name: Create kind cluster
         uses: helm/kind-action@v1
@@ -167,7 +174,7 @@ jobs:
       OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
       HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout ${{ github.sha }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 0

@@ -3,7 +3,9 @@ require_relative "nginx_stage/configuration"
 require_relative "nginx_stage/errors"
 require_relative "nginx_stage/user"
 require_relative "nginx_stage/pid_file"
+require_relative 'nginx_stage/pun_process'
 require_relative "nginx_stage/socket_file"
+require_relative 'nginx_stage/socket_probe'
 require_relative "nginx_stage/secret_key_base_file"
 require_relative "nginx_stage/session_finder"
 require_relative "nginx_stage/views/pun_config_view"
@@ -181,22 +183,25 @@ module NginxStage
   end
 
   # List of users with nginx processes running
+  # @param include_sockets [Boolean] include socket-only candidates for cleanup
   # @return [Array<User>] the list of users with running nginx processes
-  def self.active_users
-    Dir[pun_pid_path(user: '*')].map do |v|
-      User.new v[/#{pun_pid_path(user: '(.+)')}/, 1]
+  def self.active_users(include_sockets: false)
+    methods = include_sockets ? [:pun_pid_path, :pun_socket_path] : [:pun_pid_path]
+    marker = pun_user_path_marker(*methods)
+    templates = methods.map { |method| public_send(method, user: marker) }
+    pun_users_from_paths(templates, marker: marker).map do |name|
+      User.new(name)
     rescue ArgumentError => e
       log = Syslog::Logger.new 'ood_nginx_stage'
-      log.error "cannot create user #{v} because of error '#{e.message}'"
+      log.error "cannot create user #{name} because of error '#{e.message}'"
       nil
     end.compact
   end
 
-  # List of inactive users.
+  # List of inactive users with a PID, socket or explicitly pending cleanup.
   # @return [Array<String>] the list of inactive users.
   def self.inactive_users
-    Dir[pun_pid_path(user: '*')].map do |v|
-      name = v[/#{pun_pid_path(user: '(.+)')}/, 1]
+    staged_pun_users.map do |name|
       User.new(name)
 
       # return nil here because we actually _want_ to rescue.
@@ -206,6 +211,50 @@ module NginxStage
       name
     end.compact
   end
+
+  # A retry record lives beside the stable lifecycle lock, outside the PID root.
+  def self.pun_cleanup_path(user:)
+    "#{pun_config_path(user: user)}.cleanup_pending"
+  end
+
+  # Include resolvable accounts so obsolete retry records can be cancelled.
+  def self.pending_cleanup_users
+    marker = pun_user_path_marker(:pun_cleanup_path)
+    pun_users_from_paths([pun_cleanup_path(user: marker)], marker: marker)
+  end
+
+  # Do not resolve historical configs, secrets or empty runtime directories.
+  # Only runtime paths and recorded cleanup attempts authorize disabled-user cleanup.
+  def self.staged_pun_users
+    methods = [:pun_pid_path, :pun_socket_path, :pun_cleanup_path]
+    marker = pun_user_path_marker(*methods)
+    templates = methods.map { |method| public_send(method, user: marker) }
+    pun_users_from_paths(templates, marker: marker)
+  end
+  private_class_method :staged_pun_users
+
+  # Choose a placeholder absent from the literal portions of configured paths.
+  def self.pun_user_path_marker(*path_methods)
+    literal_paths = path_methods.map { |method| public_send(method, user: '') }
+    marker = '__OOD_CLEANUP_USER__'
+    marker += '_' while literal_paths.any? { |path| path.include?(marker) }
+    marker
+  end
+  private_class_method :pun_user_path_marker
+
+  # Match the complete path, including identical repeated username fields.
+  def self.pun_users_from_paths(templates, marker:)
+    templates.flat_map do |template|
+      next [] unless template.include?(marker)
+
+      parts = Regexp.escape(template).split(marker, -1)
+      pattern = Regexp.new("\\A#{parts.shift}(?<user>[^/]+)#{parts.join('\\k<user>')}\\z")
+      # Escape configured glob characters before adding username wildcards.
+      glob = template.gsub(/[\\*?\[\]{}]/) { |character| "\\#{character}" }.gsub(marker, '*')
+      Dir[glob].map { |path| path[pattern, 1] }
+    end.compact.uniq
+  end
+  private_class_method :pun_users_from_paths
 
   # Get a hash of all the staged app configs
   # @example List of all staged app configs
