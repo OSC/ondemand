@@ -113,11 +113,14 @@ module NginxStage
 
           with_pun_lifecycle_lock(user: u) do
             # An account can reappear while this operation waits for the lock.
-            next unless disabled_user?(u) && stop_disabled_pun(user: u)
+            next unless disabled_user?(u)
+
+            record_pending_cleanup(user: u)
+            next unless stop_disabled_pun(user: u)
 
             remove_if_present(NginxStage.pun_secret_key_base_path(user: u))
             remove_if_present(NginxStage.pun_config_path(user: u))
-            cleanup_disabled_pid_root(user: u)
+            remove_if_present(NginxStage.pun_cleanup_path(user: u)) if cleanup_disabled_pid_root(user: u)
           end
         rescue StandardError => e
           warn "Error trying to clean up disabled user #{u}: #{e.message}"
@@ -127,11 +130,23 @@ module NginxStage
 
     private
 
+    # Create before shutdown can unlink the PID. Never follow a preexisting link
+    # or accept another user's writable file as authorization for a retry.
+    def record_pending_cleanup(user:)
+      path = NginxStage.pun_cleanup_path(user: user)
+      File.open(path, File::WRONLY | File::CREAT | File::EXCL, 0o600, &:flush)
+    rescue Errno::EEXIST
+      stat = File.lstat(path)
+      unless stat.file? && stat.uid == Process.euid && (stat.mode & 0o022).zero?
+        raise Error, "Unsafe pending cleanup record: #{path}"
+      end
+    end
+
     # Keep directory removal inside the same lifecycle lock as shutdown and
     # metadata removal. A per-user lock cannot protect a shared PID directory.
     def cleanup_disabled_pid_root(user:)
       dir = Pathname.new(NginxStage.pun_pid_path(user: user)).parent
-      return if dir.to_s == File.dirname(NginxStage.pun_pid_path(user: '*'))
+      return true if dir.to_s == File.dirname(NginxStage.pun_pid_path(user: '*'))
 
       remove_pid_directory(dir)
     end
@@ -144,11 +159,13 @@ module NginxStage
         sleep(0.5)
         FileUtils.rmdir(dir)
       end
+      true
     rescue Errno::ENOENT
-      # Residual configuration may outlive the runtime directory.
-      nil
+      # A previous attempt may already have removed the runtime directory.
+      true
     rescue StandardError => e
       warn "Error trying to clean up the PID file directory '#{dir}' of disabled user: #{e.message}"
+      false
     end
 
     # Recheck account state after acquiring the lifecycle lock.
@@ -204,9 +221,10 @@ module NginxStage
 
     def remove_if_present(path)
       FileUtils.rm(path.to_s)
+      true
     rescue Errno::ENOENT
       # A previous partial cleanup may already have removed this file.
-      nil
+      false
     end
   end
 end

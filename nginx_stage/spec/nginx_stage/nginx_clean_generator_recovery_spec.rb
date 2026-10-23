@@ -87,19 +87,19 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   end
 
   [:config, :secret, :runtime_directory].each do |remaining|
-    it "discovers and removes a leftover #{remaining} without a PID file" do
+    it "preserves historical #{remaining} without a PID or cleanup record" do
       File.unlink(pid_path)
       File.unlink(config_path) unless remaining == :config
       File.unlink(secret_path) unless remaining == :secret
       FileUtils.rmdir(runtime_root) unless remaining == :runtime_directory
       expect(Process).not_to receive(:kill)
-      expect(NginxStage.inactive_users).to eq([user])
+      expect(NginxStage.inactive_users).to eq([])
 
       expect { generator.invoke }.not_to output.to_stderr
 
-      expect(File.exist?(config_path)).to be(false)
-      expect(File.exist?(secret_path)).to be(false)
-      expect(File.exist?(runtime_root)).to be(false)
+      expect(File.exist?(config_path)).to eq(remaining == :config)
+      expect(File.exist?(secret_path)).to eq(remaining == :secret)
+      expect(File.exist?(runtime_root)).to eq(remaining == :runtime_directory)
       expect(NginxStage.inactive_users).to eq([])
     end
   end
@@ -127,6 +127,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   [:ordinary_file, :dangling_symlink].each do |entry|
     it "preserves residual files beside an occupied socket #{entry} without a PID" do
       File.unlink(pid_path)
+      File.write(NginxStage.pun_cleanup_path(user: user), '')
       if entry == :ordinary_file
         File.write(socket_path, 'unknown owner')
       else
@@ -185,6 +186,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
 
   it 'preserves orphaned state and avoids locking with --skip-nginx' do
     File.unlink(pid_path)
+    File.write(NginxStage.pun_cleanup_path(user: user), '')
     dry_run = described_class.new(skip_nginx: true)
     expect(Process).not_to receive(:kill)
     expect(FileUtils).not_to receive(:rm)
@@ -198,6 +200,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
 
   it 'leaves another user\'s orphaned state alone with --user' do
     File.unlink(pid_path)
+    File.write(NginxStage.pun_cleanup_path(user: user), '')
     targeted = described_class.new(user: 'another_user')
     expect(targeted).not_to receive(:with_pun_lifecycle_lock)
     expect(Process).not_to receive(:kill)
@@ -218,11 +221,84 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       File.join(directory, 'repeated', user.to_s, "#{user}.conf")
     end
     FileUtils.mkdir_p(File.join(directory, 'repeated', user))
-    File.write(File.join(directory, 'repeated', user, 'another_user.conf'), 'unrelated')
+    File.write(File.join(directory, 'repeated', user, 'another_user.conf.cleanup_pending'), 'unrelated')
 
     expect(NginxStage.inactive_users).to eq([])
 
-    File.write(File.join(directory, 'repeated', user, "#{user}.conf"), 'configuration')
+    File.write(File.join(directory, 'repeated', user, "#{user}.conf.cleanup_pending"), 'pending')
     expect(NginxStage.inactive_users).to eq([user])
+  end
+
+  it 'does not resolve historical accounts during a directory service outage' do
+    File.unlink(pid_path)
+    expect(Etc).not_to receive(:getpwnam)
+    expect(NginxStage.inactive_users).to eq([])
+
+    generator.invoke
+
+    expect(File.read(config_path)).to eq('configuration')
+    expect(File.read(secret_path)).to eq('secret')
+    expect(File.directory?(runtime_root)).to be(true)
+  end
+
+  it 'retries metadata deletion after the PID disappears from a shared runtime directory' do
+    shared = File.join(directory, 'shared')
+    FileUtils.mkdir_p(shared)
+    File.unlink(pid_path)
+    allow(NginxStage).to receive(:pun_pid_path) do |user:|
+      File.join(shared, "#{user}.pid")
+    end
+    shared_pid = NginxStage.pun_pid_path(user: user)
+    File.write(shared_pid, '12345')
+    fail_once = true
+    allow(FileUtils).to receive(:rm).and_wrap_original do |original, path|
+      if path == secret_path && fail_once
+        fail_once = false
+        raise Errno::EACCES, path
+      end
+      original.call(path)
+    end
+    expect { generator.invoke }.to output(/Permission denied/).to_stderr
+    expect(File.exist?(shared_pid)).to be(false)
+    expect(File.exist?(NginxStage.pun_cleanup_path(user: user))).to be(true)
+    expect(NginxStage.inactive_users).to eq([user])
+
+    expect { described_class.new.invoke }.to output("#{user} (disabled)\n").to_stdout
+
+    expect(File.exist?(secret_path)).to be(false)
+    expect(File.exist?(config_path)).to be(false)
+    expect(File.directory?(shared)).to be(true)
+    expect(NginxStage.inactive_users).to eq([])
+  end
+
+  [:symlink, :directory, :writable_file].each do |kind|
+    it "rejects an unsafe pending-cleanup #{kind} before signaling or deleting" do
+      marker = NginxStage.pun_cleanup_path(user: user)
+      case kind
+      when :symlink
+        File.symlink(secret_path, marker)
+      when :directory
+        FileUtils.mkdir_p(marker)
+      when :writable_file
+        File.write(marker, '')
+        File.chmod(0o666, marker)
+      end
+      expect(Process).not_to receive(:kill)
+      expect(FileUtils).not_to receive(:rm)
+
+      expect { generator.invoke }.to output(/Unsafe pending cleanup record/).to_stderr
+      expect(File.read(pid_path)).to eq('12345')
+      expect(File.read(secret_path)).to eq('secret')
+    end
+  end
+
+  it 'does not stop a PUN if its pending-cleanup record cannot be created' do
+    marker = NginxStage.pun_cleanup_path(user: user)
+    allow(File).to receive(:open).and_call_original
+    allow(File).to receive(:open).with(marker, anything, 0o600).and_raise(Errno::EACCES)
+    expect(Process).not_to receive(:kill)
+
+    expect { generator.invoke }.to output(/Permission denied/).to_stderr
+    expect(File.read(pid_path)).to eq('12345')
   end
 end

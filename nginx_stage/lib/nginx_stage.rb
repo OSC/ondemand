@@ -193,7 +193,7 @@ module NginxStage
     end.compact
   end
 
-  # List of inactive users, including partially removed PUN state without a PID.
+  # List of inactive users with a PID or an explicitly pending cleanup.
   # @return [Array<String>] the list of inactive users.
   def self.inactive_users
     staged_pun_users.map do |name|
@@ -207,14 +207,17 @@ module NginxStage
     end.compact
   end
 
-  # Discover residual files and per-user runtime directories after nginx removes
-  # its PID. Escape literal path characters and require repeated user fields to agree.
+  # A retry record lives beside the stable lifecycle lock, outside the PID root.
+  def self.pun_cleanup_path(user:)
+    "#{pun_config_path(user: user)}.cleanup_pending"
+  end
+
+  # Do not resolve historical configs, secrets or empty runtime directories.
+  # Only PID files and recorded cleanup attempts authorize disabled-user cleanup.
   def self.staged_pun_users
     marker = '__OOD_CLEANUP_USER__'
     pid_template = pun_pid_path(user: marker)
-    templates = [pid_template, pun_config_path(user: marker), pun_secret_key_base_path(user: marker),
-                 File.dirname(pid_template)]
-    pun_users_from_paths(templates, marker: marker)
+    pun_users_from_paths([pid_template, pun_cleanup_path(user: marker)], marker: marker)
   end
   private_class_method :staged_pun_users
 

@@ -30,7 +30,7 @@ RSpec.describe NginxStage do
       let(:suffix) { ending }
 
       it 'finds the same user and escapes literal directory punctuation' do
-        path = described_class.pun_config_path(user: user)
+        path = described_class.pun_cleanup_path(user: user)
         FileUtils.mkdir_p(File.dirname(path))
         File.write(path, '12345')
         expect(described_class.inactive_users).to eq([user])
@@ -54,7 +54,7 @@ RSpec.describe NginxStage do
 
       it 'rejects disagreement between repeated user fields' do
         FileUtils.mkdir_p(File.join(directory, user))
-        File.write(File.join(directory, user, "different#{suffix}.conf"), '12345')
+        File.write(File.join(directory, user, "different#{suffix}.conf.cleanup_pending"), '12345')
         expect(described_class.inactive_users).to eq([])
       end
     end

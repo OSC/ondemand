@@ -118,6 +118,7 @@ describe NginxStage::NginxCleanGenerator do
         .with(user: disabled_user).and_return('/tmp/deleted_user.secret')
       allow(NginxStage).to receive(:pun_config_path)
         .with(user: disabled_user).and_return('/tmp/deleted_user.conf')
+      allow(generator).to receive(:record_pending_cleanup).with(user: disabled_user)
       allow(FileUtils).to receive(:rm)
       allow(FileUtils).to receive(:rmdir)
     end
