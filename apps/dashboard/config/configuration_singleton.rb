@@ -107,6 +107,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :xdmod_host                     => nil,
       :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
     }.freeze
   end
@@ -242,12 +243,6 @@ class ConfigurationSingleton
   # @return [Float] threshold factor
   def balance_threshold
     (ENV['OOD_BALANCE_THRESHOLD'] || config.fetch(:balance_threshold, 0)).to_f
-  end
-
-  # The XMoD host
-  # @return [String, null] the host, or null if not set
-  def xdmod_host
-    ENV["OOD_XDMOD_HOST"]
   end
 
   # Whether or not XDMoD integration is enabled
@@ -477,8 +472,9 @@ class ConfigurationSingleton
   end
 
   def shared_projects_root
-    # This environment variable will support ':' colon separated paths
-    ENV['OOD_SHARED_PROJECT_PATH'].to_s.split(":").map { |p| Pathname.new(p) }
+    # Supports ':' colon separated paths (env / string) or a YAML array
+    paths = ENV['OOD_SHARED_PROJECT_PATH'] || config.fetch(:shared_project_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(':') }.map { |p| Pathname.new(p) }
   end
 
   private
