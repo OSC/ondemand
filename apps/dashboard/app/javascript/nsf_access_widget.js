@@ -15,9 +15,9 @@ export function fetchNsfAccessJson(url) {
 
 export function mountNsfAccessAccordion({
   elementId,
-  containerId,
+  getContainerId,
   items,
-  idPrefix,
+  getIdPrefix,
   getItemId,
   getTitle,
   getDate,
@@ -26,12 +26,12 @@ export function mountNsfAccessAccordion({
 }) {
   const container = document.createElement('div');
   container.classList.add('accordion');
-  container.id = containerId;
+  container.id = getContainerId();
 
   for (const item of items || []) {
     container.appendChild(itemToElement(item, {
-      containerId,
-      idPrefix,
+      getContainerId,
+      getIdPrefix,
       getItemId,
       getTitle,
       getDate,
@@ -61,8 +61,8 @@ function itemToElement(item, opts) {
 }
 
 function itemHeader(item, opts) {
-  const headerId = `${opts.idPrefix}_header_${opts.getItemId(item)}`;
-  const bodyId = `${opts.idPrefix}_body_${opts.getItemId(item)}`;
+  const headerId = `${opts.getIdPrefix()}_header_${opts.getItemId(item)}`;
+  const bodyId = `${opts.getIdPrefix()}_body_${opts.getItemId(item)}`;
 
   const header = document.createElement('div');
   header.classList.add('h5', 'accordion-header');
@@ -86,14 +86,14 @@ function itemHeader(item, opts) {
 }
 
 function itemBody(item, opts) {
-  const headerId = `${opts.idPrefix}_header_${opts.getItemId(item)}`;
-  const bodyId = `${opts.idPrefix}_body_${opts.getItemId(item)}`;
+  const headerId = `${opts.getIdPrefix()}_header_${opts.getItemId(item)}`;
+  const bodyId = `${opts.getIdPrefix()}_body_${opts.getItemId(item)}`;
 
   const wrapper = document.createElement('div');
   wrapper.classList.add('accordion-collapse', 'collapse');
   wrapper.id = bodyId;
   wrapper.setAttribute('aria-labelledby', headerId);
-  wrapper.dataset.bsParent = `${opts.containerId}`;
+  wrapper.dataset.bsParent = `${opts.getContainerId()}`;
 
   const body = document.createElement('div');
   body.classList.add('accordion-body');
