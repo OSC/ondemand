@@ -13,6 +13,9 @@ describe NginxStage::NginxCleanGenerator do
   let(:generator) { described_class.new }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state) do |pid_file:, **|
+      pid_file.running_process? ? :matching : :dead
+    end
     allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     File.write(pid_path, '12345')
     File.write(config_path, 'configuration')
@@ -76,7 +79,7 @@ describe NginxStage::NginxCleanGenerator do
     expect(FileUtils).not_to receive(:rm)
     expect(generator).not_to receive(:session_count)
 
-    expect { generator.invoke }.not_to output.to_stderr
+    expect { generator.invoke }.to output(/verified PUN master is alive without its socket/).to_stderr
     expect(File.read(pid_path)).to eq('12345')
   end
 
@@ -150,14 +153,13 @@ describe NginxStage::NginxCleanGenerator do
     allow(NginxStage).to receive(:clean_nginx_env).with(user: user)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args).with(user: user, signal: :stop).and_return(['stop'])
-    status = instance_double(Process::Status, success?: true)
-    expect(Open3).to receive(:capture2e).with(['/usr/sbin/nginx', '(spec)'], 'stop') do
+    expect(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 12_345), user: user, signal: :stop) do
       File.open("#{config_path}.lock", File::RDWR) do |competitor|
         expect(competitor.flock(File::LOCK_EX | File::LOCK_NB)).to be(false)
       end
       File.unlink(pid_path)
       File.unlink(socket_path)
-      ['', status]
     end
 
     expect { generator.invoke }.to output("spec\n").to_stdout.and output('').to_stderr

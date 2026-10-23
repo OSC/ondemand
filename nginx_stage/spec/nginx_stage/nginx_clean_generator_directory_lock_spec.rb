@@ -16,6 +16,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   let(:generator) { described_class.new }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state).and_return(:matching)
     allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     FileUtils.mkdir_p(runtime_root)
     File.write(pid_path, '12345')
@@ -31,7 +32,8 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     allow(NginxStage).to receive(:pun_config_path).with(user: user).and_return(config_path)
     allow(NginxStage).to receive(:pun_secret_key_base_path).with(user: user).and_return(secret_path)
     allow(Etc).to receive(:getpwnam).with(user).and_raise(ArgumentError, 'user deleted')
-    allow(Process).to receive(:kill).with('TERM', 12_345).and_raise(Errno::ESRCH)
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 12_345), user: anything, signal: :stop).and_raise(Errno::ESRCH)
     allow(generator).to receive(:puts)
   end
 

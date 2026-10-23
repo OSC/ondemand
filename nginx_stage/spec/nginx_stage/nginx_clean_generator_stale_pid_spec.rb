@@ -15,6 +15,7 @@ describe NginxStage::NginxCleanGenerator do
   let(:secret_path) { File.join(directory, 'pun.secret') }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state).and_return(:matching)
     allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     FileUtils.mkdir_p(pid_root)
     File.write(pid_path, '1234')
@@ -27,7 +28,8 @@ describe NginxStage::NginxCleanGenerator do
     allow(NginxStage).to receive(:pun_socket_path).with(user: user).and_return(socket_path)
     allow(NginxStage).to receive(:pun_config_path).with(user: user).and_return(config_path)
     allow(NginxStage).to receive(:pun_secret_key_base_path).with(user: user).and_return(secret_path)
-    allow(Process).to receive(:kill).with('TERM', 1234).and_raise(Errno::ESRCH)
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop).and_raise(Errno::ESRCH)
     allow(generator).to receive(:puts)
   end
 
@@ -64,7 +66,8 @@ describe NginxStage::NginxCleanGenerator do
   end
 
   it 'finishes cleanup if the PID file disappears after it is read' do
-    allow(Process).to receive(:kill).with('TERM', 1234) do
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop) do
       File.unlink(pid_path)
       raise Errno::ESRCH
     end
@@ -110,7 +113,8 @@ describe NginxStage::NginxCleanGenerator do
   end
 
   it 'preserves files when signaling is denied' do
-    allow(Process).to receive(:kill).with('TERM', 1234).and_raise(Errno::EPERM)
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop).and_raise(Errno::EPERM)
 
     expect { generator.invoke }.to output(/Cannot terminate disabled user/).to_stderr
 
@@ -123,6 +127,7 @@ describe NginxStage::NginxCleanGenerator do
     let(:generator) { described_class.new(skip_nginx: true) }
 
     it 'preserves all files and avoids signaling' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
 
       generator.invoke

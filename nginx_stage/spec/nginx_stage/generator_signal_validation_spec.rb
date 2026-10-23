@@ -11,7 +11,7 @@ describe NginxStage::Generator do
   let(:socket_path) { File.join(directory, 'passenger.sock') }
   let(:config_path) { File.join(directory, 'pun.conf') }
   let(:generator) { described_class.new }
-  let(:status) { instance_double(Process::Status, success?: true) }
+  let(:status) { NginxStage::Generator::SignalStatus.new(0) }
 
   before do
     passwd = Struct.new(:gid, :name, :uid, :shell).new(1000, user, 1000, '/bin/bash')
@@ -61,10 +61,11 @@ describe NginxStage::Generator do
       end
     end
 
-    it "preserves nginx command execution for #{signal} with a valid PID" do
+    it "uses guarded process signaling for #{signal} with a valid PID" do
       File.write(pid_path, Process.pid.to_s)
-      expect(Open3).to receive(:capture2e)
-        .with(['/usr/sbin/nginx', '(spec)'], '-s', signal) do
+      expect(Open3).not_to receive(:capture2e)
+      expect(NginxStage::PunProcess).to receive(:signal)
+        .with(pid_file: have_attributes(pid: Process.pid), user: user, signal: signal) do
           File.unlink(pid_path) if ['stop', 'quit'].include?(signal)
           ['', status]
         end
@@ -114,7 +115,7 @@ describe NginxStage::Generator do
     expect(Open3).not_to receive(:capture2e)
     expect(NginxStage::PidFile).not_to receive(:new)
 
-    expect { controller.invoke }.to output("/usr/sbin/nginx -s stop\n").to_stdout
+    expect { controller.invoke }.to output("Verified process signal: stop for spec; no signal sent\n").to_stdout
     expect(File.read(pid_path)).to eq('0')
   end
 end

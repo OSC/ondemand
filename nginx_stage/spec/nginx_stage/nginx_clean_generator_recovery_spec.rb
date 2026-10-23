@@ -15,6 +15,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   let(:generator) { described_class.new }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state).and_return(:matching)
     [runtime_root, File.dirname(config_path), File.dirname(secret_path)].each { |path| FileUtils.mkdir_p(path) }
     File.write(pid_path, '12345')
     File.write(config_path, 'configuration')
@@ -34,7 +35,8 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       File.join(directory, 'secrets', "#{user}.secret")
     end
     allow(Etc).to receive(:getpwnam).with(user).and_raise(ArgumentError, 'user deleted')
-    allow(Process).to receive(:kill).with('TERM', 12_345).and_raise(Errno::ESRCH)
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 12_345), user: anything, signal: :stop).and_raise(Errno::ESRCH)
     allow(generator).to receive(:puts)
   end
 
@@ -54,10 +56,12 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     [:secret, :config].each do |failed_file|
       it "retries a temporary #{failed_file} deletion error after #{state}" do
         if state == :successful_shutdown
-          expect(Process).to receive(:kill).with('TERM', 12_345).once.and_return(1)
+          expect(NginxStage::PunProcess).to receive(:signal)
+            .with(pid_file: have_attributes(pid: 12_345), user: anything, signal: :stop).once.and_return(1)
           allow(generator).to receive(:wait_for_pun_shutdown) { File.unlink(pid_path) }
         else
-          expect(Process).to receive(:kill).with('TERM', 12_345).once.and_raise(Errno::ESRCH)
+          expect(NginxStage::PunProcess).to receive(:signal)
+            .with(pid_file: have_attributes(pid: 12_345), user: anything, signal: :stop).once.and_raise(Errno::ESRCH)
         end
         target = failed_file == :secret ? secret_path : config_path
         fail_once = true
@@ -92,6 +96,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       File.unlink(config_path) unless remaining == :config
       File.unlink(secret_path) unless remaining == :secret
       FileUtils.rmdir(runtime_root) unless remaining == :runtime_directory
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage.inactive_users).to eq([])
 
@@ -133,6 +138,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       else
         File.symlink(File.join(directory, 'missing-target'), socket_path)
       end
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(FileUtils).not_to receive(:rm)
       expect(FileUtils).not_to receive(:rmdir)
@@ -147,6 +153,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   it 'preserves a dangling PID symlink and residual metadata' do
     File.unlink(pid_path)
     File.symlink(File.join(directory, 'missing-target'), pid_path)
+    expect(NginxStage::PunProcess).not_to receive(:signal)
     expect(Process).not_to receive(:kill)
     expect(FileUtils).not_to receive(:rm)
 
@@ -162,6 +169,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
         block.call
       end
     end
+    expect(NginxStage::PunProcess).not_to receive(:signal)
     expect(Process).not_to receive(:kill)
     expect(FileUtils).not_to receive(:rm)
     expect(FileUtils).not_to receive(:rmdir)
@@ -188,6 +196,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     File.unlink(pid_path)
     File.write(NginxStage.pun_cleanup_path(user: user), '')
     dry_run = described_class.new(skip_nginx: true)
+    expect(NginxStage::PunProcess).not_to receive(:signal)
     expect(Process).not_to receive(:kill)
     expect(FileUtils).not_to receive(:rm)
     expect(FileUtils).not_to receive(:rmdir)
@@ -203,6 +212,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     File.write(NginxStage.pun_cleanup_path(user: user), '')
     targeted = described_class.new(user: 'another_user')
     expect(targeted).not_to receive(:with_pun_lifecycle_lock)
+    expect(NginxStage::PunProcess).not_to receive(:signal)
     expect(Process).not_to receive(:kill)
     expect(FileUtils).not_to receive(:rm)
     expect(FileUtils).not_to receive(:rmdir)
@@ -283,6 +293,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
         File.write(marker, '')
         File.chmod(0o666, marker)
       end
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(FileUtils).not_to receive(:rm)
 
@@ -296,6 +307,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     marker = NginxStage.pun_cleanup_path(user: user)
     allow(File).to receive(:open).and_call_original
     allow(File).to receive(:open).with(marker, anything, 0o600).and_raise(Errno::EACCES)
+    expect(NginxStage::PunProcess).not_to receive(:signal)
     expect(Process).not_to receive(:kill)
 
     expect { generator.invoke }.to output(/Permission denied/).to_stderr
@@ -313,6 +325,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'cancels only the record under the lifecycle lock before any later account loss' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -337,6 +350,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'leaves the record untouched during a dry run' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -349,6 +363,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'leaves an unselected restored account untouched' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -361,6 +376,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'cancels the selected restored account record' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -372,6 +388,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
 
     [:symlink, :directory, :writable_file].each do |kind|
       it "preserves an unsafe restored-account record of type #{kind}" do
+        expect(NginxStage::PunProcess).not_to receive(:signal)
         expect(Process).not_to receive(:kill)
         expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -394,6 +411,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'does not recreate a record removed while waiting for the lock' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -411,6 +429,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'preserves the record when cancellation is denied' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -423,6 +442,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'preserves the record when locked account lookup fails unexpectedly' do
+      expect(NginxStage::PunProcess).not_to receive(:signal)
       expect(Process).not_to receive(:kill)
       expect(NginxStage::SocketProbe).not_to receive(:new)
 
@@ -450,6 +470,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
         block.call
       end
     end
+    expect(NginxStage::PunProcess).not_to receive(:signal)
     expect(Process).not_to receive(:kill)
 
     expect { generator.invoke }.not_to output.to_stderr

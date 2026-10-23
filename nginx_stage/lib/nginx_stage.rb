@@ -3,6 +3,7 @@ require_relative "nginx_stage/configuration"
 require_relative "nginx_stage/errors"
 require_relative "nginx_stage/user"
 require_relative "nginx_stage/pid_file"
+require_relative 'nginx_stage/pun_process'
 require_relative "nginx_stage/socket_file"
 require_relative 'nginx_stage/socket_probe'
 require_relative "nginx_stage/secret_key_base_file"

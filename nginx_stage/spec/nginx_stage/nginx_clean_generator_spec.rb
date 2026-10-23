@@ -13,6 +13,8 @@ describe NginxStage::NginxCleanGenerator do
   let(:stop_output) { '' }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state).and_return(:matching)
+    allow(NginxStage::PunProcess).to receive(:signal)
     allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     allow(NginxStage).to receive_messages(
       active_users: [active_user], inactive_users: [], nginx_bin: '/usr/sbin/nginx'
@@ -32,15 +34,15 @@ describe NginxStage::NginxCleanGenerator do
     allow(NginxStage).to receive(:clean_nginx_env).with(user: active_user)
     allow(NginxStage).to receive(:nginx_args)
       .with(user: active_user, signal: :stop).and_return(['stop'])
-    allow(Open3).to receive(:capture2e)
-      .with(['/usr/sbin/nginx', '(spec)'], 'stop').and_return([stop_output, status])
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: anything, user: anything, signal: :stop).and_return([stop_output, status])
   end
 
   it 'keeps active-user cleanup serialized through socket removal' do
     expect(generator).to receive(:with_pun_lifecycle_lock)
       .with(user: active_user).ordered.and_yield
-    expect(Open3).to receive(:capture2e)
-      .with(['/usr/sbin/nginx', '(spec)'], 'stop').ordered.and_return(['', status])
+    expect(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: anything, user: anything, signal: :stop).ordered.and_return(['', status])
     expect(generator).to receive(:wait_for_pun_shutdown)
       .with(user: active_user).ordered
 
@@ -52,7 +54,8 @@ describe NginxStage::NginxCleanGenerator do
     let(:stop_output) { 'stop failed' }
 
     it 'does not wait for cleanup that was not initiated' do
-      expect(generator).to receive(:warn).with(stop_output)
+      expect(NginxStage::PunProcess).to receive(:signal).and_raise(NginxStage::Error, stop_output)
+      expect(generator).to receive(:warn).with(/#{stop_output}/)
       expect(generator).not_to receive(:wait_for_pun_shutdown)
 
       generator.invoke
@@ -115,7 +118,8 @@ describe NginxStage::NginxCleanGenerator do
         .with('/tmp/deleted_user/passenger.pid').and_return(disabled_pid_path)
       allow(generator).to receive(:with_pun_lifecycle_lock)
         .with(user: disabled_user).and_yield
-      allow(Process).to receive(:kill).with('TERM', 1234).and_return(1)
+      allow(NginxStage::PunProcess).to receive(:signal)
+        .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop).and_return(1)
       allow(NginxStage).to receive(:pun_secret_key_base_path)
         .with(user: disabled_user).and_return('/tmp/deleted_user.secret')
       allow(NginxStage).to receive(:pun_config_path)
@@ -128,8 +132,8 @@ describe NginxStage::NginxCleanGenerator do
     it 'holds the lifecycle lock through SIGTERM socket cleanup' do
       expect(generator).to receive(:with_pun_lifecycle_lock)
         .with(user: disabled_user).ordered.and_yield
-      expect(Process).to receive(:kill)
-        .with('TERM', 1234).ordered.and_return(1)
+      expect(NginxStage::PunProcess).to receive(:signal)
+        .with(pid_file: disabled_pid_path, user: disabled_user, signal: :stop).ordered
       expect(generator).to receive(:wait_for_pun_shutdown)
         .with(user: disabled_user).ordered
 
@@ -142,6 +146,7 @@ describe NginxStage::NginxCleanGenerator do
       it 'displays the disabled user without signalling or deleting PUN state' do
         expect(generator).to receive(:puts).with('deleted_user (disabled)')
         expect(NginxStage::PidFile).not_to receive(:new)
+        expect(NginxStage::PunProcess).not_to receive(:signal)
         expect(Process).not_to receive(:kill)
         expect(generator).not_to receive(:wait_for_pun_shutdown)
         expect(FileUtils).not_to receive(:rm)
@@ -158,6 +163,7 @@ describe NginxStage::NginxCleanGenerator do
         expect(generator).not_to receive(:with_pun_lifecycle_lock)
         expect(generator).not_to receive(:puts)
         expect(NginxStage::PidFile).not_to receive(:new)
+        expect(NginxStage::PunProcess).not_to receive(:signal)
         expect(Process).not_to receive(:kill)
         expect(FileUtils).not_to receive(:rm)
         expect(FileUtils).not_to receive(:rmdir)
@@ -174,7 +180,8 @@ describe NginxStage::NginxCleanGenerator do
           .and_return(['another_disabled_user', disabled_user])
         expect(generator).not_to receive(:with_pun_lifecycle_lock)
           .with(user: 'another_disabled_user')
-        expect(Process).to receive(:kill).with('TERM', 1234)
+        expect(NginxStage::PunProcess).to receive(:signal)
+          .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop)
         expect(generator).to receive(:wait_for_pun_shutdown)
           .with(user: disabled_user)
         expect(FileUtils).to receive(:rm).with('/tmp/deleted_user.secret')
@@ -190,6 +197,7 @@ describe NginxStage::NginxCleanGenerator do
         File.write(path, '')
         allow(NginxStage).to receive(:pun_pid_path).with(user: disabled_user).and_return(path)
         allow(NginxStage::PidFile).to receive(:new).with(path).and_call_original
+        expect(NginxStage::PunProcess).not_to receive(:signal)
         expect(Process).not_to receive(:kill)
         expect(FileUtils).not_to receive(:rm)
         expect(FileUtils).not_to receive(:rmdir)
@@ -202,7 +210,8 @@ describe NginxStage::NginxCleanGenerator do
 
     context 'when SIGTERM is denied' do
       it 'preserves configuration and secrets for a potentially running PUN' do
-        allow(Process).to receive(:kill).with('TERM', 1234).and_raise(Errno::EPERM)
+        allow(NginxStage::PunProcess).to receive(:signal)
+          .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop).and_raise(Errno::EPERM)
         expect(generator).not_to receive(:wait_for_pun_shutdown)
         expect(FileUtils).not_to receive(:rm)
 
@@ -213,7 +222,8 @@ describe NginxStage::NginxCleanGenerator do
 
     context 'when the recorded PID is gone' do
       before do
-        allow(Process).to receive(:kill).with('TERM', 1234).and_raise(Errno::ESRCH)
+        allow(NginxStage::PunProcess).to receive(:signal)
+          .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop).and_raise(Errno::ESRCH)
       end
 
       it 'preserves configuration when the socket remains' do

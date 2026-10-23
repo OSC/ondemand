@@ -13,6 +13,7 @@ describe NginxStage::NginxProcessGenerator do
   let(:status) { double(:success? => true) }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:signal)
     passwd = Struct.new(:gid, :name, :uid, :shell)
                    .new(test_user_gid, test_user, 1000, '/bin/bash')
     group = Struct.new(:gid, :name).new(test_user_gid, test_user)

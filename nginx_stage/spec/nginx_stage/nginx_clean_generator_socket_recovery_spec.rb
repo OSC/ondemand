@@ -17,6 +17,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   let(:socket) { instance_double(Socket, close: nil) }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state) do |pid_file:, **|
+      pid_file.running_process? ? :matching : :dead
+    end
     allow(NginxStage).to receive(:pending_cleanup_users).and_return([])
     FileUtils.mkdir_p(runtime_root)
     File.write(pid_path, '12345')
@@ -33,7 +36,8 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
     allow(NginxStage).to receive(:pun_secret_key_base_path).with(user: user).and_return(secret_path)
     allow(Process).to receive(:getpgid).with(12_345).and_raise(Errno::ESRCH)
-    allow(Process).to receive(:kill).with('TERM', 12_345).and_raise(Errno::ESRCH)
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 12_345), user: anything, signal: :stop).and_raise(Errno::ESRCH)
     # Socket syscalls are unavailable in the test environment. Keep real file
     # identity/deletion and flock behavior; simulate only type and connection.
     allow(File).to receive(:lstat).and_wrap_original do |original, path|
@@ -139,11 +143,14 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   end
 
   it 'rediscovers a timed-out cleanup after shutdown removed the PID but left a stale socket' do
+    allow(NginxStage::PunProcess).to receive(:state).and_return(:matching)
     allow(NginxStage).to receive(:active_users).and_return([])
     allow(NginxStage).to receive(:inactive_users).and_call_original
     allow(NginxStage::User).to receive(:new).with(user).and_raise(ArgumentError)
-    allow(Process).to receive(:kill).with('TERM', 12_345).and_return(1)
-    expect(Process).to receive(:kill).with('TERM', 12_345).once
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 12_345), user: anything, signal: :stop).and_return(1)
+    expect(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: have_attributes(pid: 12_345), user: anything, signal: :stop).once
     allow(generator).to receive(:wait_for_pun_shutdown) do
       File.unlink(pid_path)
       raise NginxStage::Error, 'shutdown timed out'

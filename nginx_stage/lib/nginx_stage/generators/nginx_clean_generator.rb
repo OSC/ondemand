@@ -90,8 +90,13 @@ module NginxStage
               next
             end
             socket_path = NginxStage.pun_socket_path(user: u)
-            unless pid_path.running_process?
+            identity = PunProcess.state(pid_file: pid_path, user: u)
+            if [:dead, :foreign].include?(identity)
               cleanup_stale_pid(user: u, pid_path: pid_path, socket_path: socket_path)
+              next
+            end
+            if identity == :unknown
+              warn "Skipping cleanup for #{u}: PUN process identity is uncertain"
               next
             end
 
@@ -99,6 +104,7 @@ module NginxStage
               SocketFile.new(socket_path)
             rescue MissingSocketFile
               # A live master may already have unlinked its socket while draining.
+              warn "Skipping cleanup for #{u}: verified PUN master is alive without its socket (possibly draining)"
               next
             end
             sessions = session_count(u)
@@ -226,7 +232,10 @@ module NginxStage
     # Disabled users cannot be resolved by nginx -s stop. Wait for both paths
     # after SIGTERM, or remove a dead PID only when no socket remains.
     def terminate_disabled_pun(user:, pid_path:)
-      Process.kill('TERM', pid_path.pid)
+      identity = PunProcess.state(pid_file: pid_path, user: user)
+      raise Errno::ESRCH if [:dead, :foreign].include?(identity)
+
+      PunProcess.signal(pid_file: pid_path, user: user, signal: :stop)
       wait_for_pun_shutdown(user: user)
       true
     rescue Errno::ESRCH

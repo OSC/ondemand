@@ -9,6 +9,9 @@ describe NginxStage::PunConfigGenerator do
   let(:test_user_gid) { 1000 }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state) do |pid_file:, **|
+      pid_file.running_process? ? :matching : :dead
+    end
     etc_stub = {
       :gid   => test_user_gid,
       :name  => test_user,

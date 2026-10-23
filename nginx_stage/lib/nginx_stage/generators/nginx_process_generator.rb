@@ -21,8 +21,9 @@ module NginxStage
         Signals reject unusable PID files, including files over 22 bytes.
         Never delete a PID or socket path merely to bypass a startup error.
 
-        If `--skip-nginx` is supplied it returns the system-level command
-        that would have been called.
+        Signals use verified Linux process descriptors instead of nginx -s.
+        If `--skip-nginx` is supplied it describes the requested signal or
+        returns the startup command without executing it.
     EOF
 
     # Accepts `user` as an option and validates user
@@ -60,7 +61,11 @@ module NginxStage
 
     # If skip nginx, then output nginx command
     add_hook :output_nginx_cmd do
-      puts "#{NginxStage.nginx_bin} #{NginxStage.nginx_args(user: user, signal: signal).join(' ')}"
+      if signal
+        puts "Verified process signal: #{signal} for #{user}; no signal sent"
+      else
+        puts "#{NginxStage.nginx_bin} #{NginxStage.nginx_args(user: user).join(' ')}"
+      end
     end
   end
 end

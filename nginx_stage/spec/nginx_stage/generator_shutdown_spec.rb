@@ -10,10 +10,13 @@ describe NginxStage::Generator do
   let(:config_path) { File.join(directory, 'spec.conf') }
   let(:pid_path) { File.join(directory, 'passenger.pid') }
   let(:socket_path) { File.join(directory, 'passenger.sock') }
-  let(:status) { instance_double(Process::Status, success?: true) }
+  let(:status) { NginxStage::Generator::SignalStatus.new(0) }
   let(:generator) { described_class.new }
 
   before do
+    allow(NginxStage::PunProcess).to receive(:state) do |pid_file:, **|
+      pid_file.running_process? ? :matching : :dead
+    end
     passwd = Struct.new(:gid, :name, :uid, :shell)
                    .new(1000, test_user, 1000, '/bin/bash')
     group = Struct.new(:gid, :name).new(1000, test_user)
@@ -40,8 +43,8 @@ describe NginxStage::Generator do
       File.write(pid_path, Process.pid.to_s)
       # Ordinary files exercise pathname lifetime without requiring live nginx.
       File.write(socket_path, 'occupied')
-      expect(Open3).to receive(:capture2e)
-        .with(['/usr/sbin/nginx', '(spec)'], signal.to_s) do
+      expect(NginxStage::PunProcess).to receive(:signal)
+        .with(pid_file: anything, user: anything, signal: signal) do
           File.unlink(paths.fetch(order.first))
           ['', status]
         end
@@ -58,8 +61,8 @@ describe NginxStage::Generator do
 
   it 'does not regard a dangling PID symlink as completed shutdown' do
     File.write(pid_path, Process.pid.to_s)
-    expect(Open3).to receive(:capture2e)
-      .with(['/usr/sbin/nginx', '(spec)'], 'quit') do
+    expect(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: anything, user: anything, signal: :quit) do
         File.unlink(pid_path)
         File.symlink(File.join(directory, 'missing-target'), pid_path)
         ['', status]
@@ -77,8 +80,8 @@ describe NginxStage::Generator do
       File.write(socket_path, 'occupied')
       stub_const('NginxStage::Generator::PUN_SHUTDOWN_TIMEOUT', 0)
       shutdown = NginxStage::NginxProcessGenerator.new(user: test_user, signal: :quit)
-      expect(Open3).to receive(:capture2e)
-        .with(['/usr/sbin/nginx', '(spec)'], 'quit') do
+      expect(NginxStage::PunProcess).to receive(:signal)
+        .with(pid_file: anything, user: anything, signal: :quit) do
           File.unlink(socket_path)
           ['', status]
         end
@@ -134,8 +137,8 @@ describe NginxStage::Generator do
         .to raise_error(SystemExit) { |error| expect(error.status).to eq(0) }
       expect(File.read(pid_path)).to eq('12345')
 
-      expect(Open3).to receive(:capture2e)
-        .with(['/usr/sbin/nginx', '(spec)'], 'stop') do
+      expect(NginxStage::PunProcess).to receive(:signal)
+        .with(pid_file: anything, user: anything, signal: :stop) do
           expect(File.read(pid_path)).to eq('12345')
           File.unlink(pid_path)
           File.unlink(socket_path)

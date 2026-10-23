@@ -22,11 +22,12 @@ describe NginxStage::Generator do
   end
 
   describe '#run_nginx' do
-    let(:status) { double(:success? => true) }
+    let(:status) { NginxStage::Generator::SignalStatus.new(0) }
+    let(:pid_file) { instance_double(NginxStage::PidFile) }
 
     before do
       allow(NginxStage::PidFile).to receive(:new)
-        .with(pid_path).and_return(instance_double(NginxStage::PidFile))
+        .with(pid_path).and_return(pid_file)
       allow(NginxStage).to receive(:clean_nginx_env).with(user: test_user)
       allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
       allow(NginxStage).to receive(:nginx_args)
@@ -47,8 +48,8 @@ describe NginxStage::Generator do
 
     it 'waits after successful stop and quit' do
       [:stop, :quit].each do |signal|
-        expect(Open3).to receive(:capture2e)
-          .with(['/usr/sbin/nginx', '(spec)'], '-s', signal.to_s).and_return(['', status])
+        expect(NginxStage::PunProcess).to receive(:signal)
+          .with(pid_file: pid_file, user: test_user, signal: signal)
         expect(generator).to receive(:wait_for_pun_shutdown).with(user: test_user)
 
         expect(generator.send(:run_nginx, user: test_user, signal: signal)).to eq(['', status])
@@ -56,12 +57,11 @@ describe NginxStage::Generator do
     end
 
     it 'does not wait after failed stop' do
-      failed = double(:success? => false)
-      expect(Open3).to receive(:capture2e)
-        .with(['/usr/sbin/nginx', '(spec)'], '-s', 'stop').and_return(['failed', failed])
+      expect(NginxStage::PunProcess).to receive(:signal).and_raise(NginxStage::Error, 'signal failed')
       expect(generator).not_to receive(:wait_for_pun_shutdown)
 
-      expect(generator.send(:run_nginx, user: test_user, signal: :stop)).to eq(['failed', failed])
+      expect { generator.send(:run_nginx, user: test_user, signal: :stop) }
+        .to raise_error(NginxStage::Error, 'signal failed')
     end
   end
 

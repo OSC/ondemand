@@ -36,6 +36,28 @@ paths to bypass the startup guard. Missing or malformed PID state can require
 operator investigation. Signals reject raw PID files over 22 bytes before
 execution; PID syntax and liveness alone do not establish process identity.
 
+Startup and cleanup also check process identity. A verified PUN master blocks
+startup while draining even if its socket is gone. A PID reused by an unrelated
+executable does not block startup when the socket is absent; cleanup can remove
+that stale PID file without signaling the unrelated process. Uncertain identity
+is preserved with a diagnostic, including with `--force`.
+
+All signals (`stop`, `quit`, `reload`, `reopen`, and disabled-user termination)
+verify the running executable's device/inode, the exact per-user nginx master
+command and configuration path, and the master's effective UID. Signaling uses
+the same open `/proc/PID` directory descriptor used to read identity. It does
+not use numeric-PID `kill` or invoke `nginx -s`, so PID reuse or a later PID-file
+change cannot redirect the signal. nginx process titles are not a security
+boundary against a malicious privileged process; configured roots remain trusted.
+
+Safe signaling requires Linux `pidfd_send_signal` support (upstream Linux 5.1
+or a compatible backport), readable procfs in the caller's PID namespace, and
+x86_64, aarch64 or ppc64le. There is no unchecked fallback on unsupported systems.
+An executable upgrade or unexpected nginx launch command may leave identity
+uncertain and require operator investigation. A process name or UID alone is
+not accepted as identity. `nginx --skip-nginx --signal=...` describes the requested
+signal without printing a runnable unchecked `nginx -s` command.
+
 A dead recorded PID with an occupied socket path also blocks startup. Run
 `nginx_stage nginx_clean --user=exampleuser` before retrying. Cleanup can remove
 a confirmed stale socket; startup itself does not probe or delete socket state.
@@ -106,14 +128,12 @@ account lookup still occurs during enumeration.
 The lock excludes cooperating nginx_stage operations, not external writers.
 Configured lock, retry-record and runtime roots must exclude untrusted writers.
 The socket identity recheck does not make unlink atomic against external changes,
-and nginx rereads PID files when signaling. `reload`/`reopen` keep their existing
-locking behavior.
+and identity checks do not exclude an external privileged process changing its
+own executable. `reload`/`reopen` keep their existing locking behavior.
 
 See [live lifecycle validation](docs/pun-lifecycle-validation.md) for the nginx/
 Passenger checks required before claiming integration coverage. Outage-aware
-account classification, configurable shutdown waits and stronger process identity
-are separate hardening work; the current implementation does not claim those
-guarantees.
+account classification and configurable shutdown waits remain separate work.
 
 ## Contributing
 

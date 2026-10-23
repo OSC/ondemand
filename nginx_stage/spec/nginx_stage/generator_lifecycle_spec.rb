@@ -45,8 +45,8 @@ describe NginxStage::Generator do
       .with(user: app.user, signal: :stop).and_return(['stop'])
     allow(NginxStage).to receive(:nginx_args)
       .with(user: app.user).and_return(['start'])
-    allow(Open3).to receive(:capture2e)
-      .with(['/usr/sbin/nginx', '(spec)'], 'stop') do
+    allow(NginxStage::PunProcess).to receive(:signal)
+      .with(pid_file: anything, user: app.user, signal: :stop) do
         events << :stop
         ['', status]
       end

@@ -11,6 +11,11 @@ module NginxStage
   class Generator
     PUN_SHUTDOWN_TIMEOUT = 30
     PUN_SHUTDOWN_POLL_INTERVAL = 0.1
+    SignalStatus = Struct.new(:exitstatus) do
+      def success?
+        exitstatus.zero?
+      end
+    end
 
     extend GeneratorHelpers
 
@@ -162,12 +167,14 @@ module NginxStage
       return false unless path_occupied?(pid_path) || path_occupied?(socket_path)
 
       # A draining master still owns the PID path even after its socket is gone.
-      return true if PidFile.new(pid_path).running_process?
+      identity = PunProcess.state(pid_file: PidFile.new(pid_path), user: user)
+      return true if identity == :matching
+      raise Error, "PUN process identity is uncertain for #{user}; refusing startup" if identity == :unknown
       return false unless path_occupied?(socket_path)
 
       # A dead master can leave listening orphaned workers or a stale socket.
       # Only cleanup may probe and remove stale socket state under this lock.
-      raise Error, "Startup blocked because the PUN PID is dead but its socket path is occupied for #{user}; " \
+      raise Error, "Startup blocked: PUN PID is dead or unrelated but its socket path is occupied for #{user}; " \
                    "run nginx_stage nginx_clean --user=#{user} before retrying"
     rescue MissingPidFile, InvalidPidFile, Errno::ENOENT => e
       raise Error, "PUN PID state is unusable for #{user}: #{e.message}"
@@ -178,23 +185,20 @@ module NginxStage
     def run_nginx(user:, signal: nil)
       raise Error, 'Startup blocked because a PUN is already running' if signal.nil? && pun_running?(user: user)
 
-      # nginx reads the PID file itself for signals, but its parser can accept
-      # values such as zero that must never be used as a process target.
-      PidFile.new(NginxStage.pun_pid_path(user: user)) if signal
+      return signal_pun(user: user, signal: signal) if signal
 
       NginxStage.clean_nginx_env(user: user)
-      args = if signal
-               NginxStage.nginx_args(user: user, signal: signal)
-             else
-               NginxStage.nginx_args(user: user)
-             end
       output, status = Open3.capture2e(
-        [NginxStage.nginx_bin, "(#{user})"], *args
+        [NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user)
       )
-      if status.success? && %w[stop quit].include?(signal.to_s)
-        wait_for_pun_shutdown(user: user)
-      end
       [output, status]
+    end
+
+    def signal_pun(user:, signal:)
+      pid_file = PidFile.new(NginxStage.pun_pid_path(user: user))
+      PunProcess.signal(pid_file: pid_file, user: user, signal: signal)
+      wait_for_pun_shutdown(user: user) if ['stop', 'quit'].include?(signal.to_s)
+      ['', SignalStatus.new(0)]
     end
 
     # Retrieves a value from superclass. If it reaches the baseclass,
