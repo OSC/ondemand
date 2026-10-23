@@ -66,7 +66,8 @@ describe NginxStage::NginxCleanGenerator do
 
     it 'preserves an existing socket instead of guessing process ownership' do
       allow(File).to receive(:exist?).and_call_original
-      allow(File).to receive(:exist?).with('/tmp/passenger.sock').and_return(true)
+      allow(File).to receive(:lstat).and_call_original
+      allow(File).to receive(:lstat).with('/tmp/passenger.sock').and_return(instance_double(File::Stat, socket?: false))
       expect(FileUtils).not_to receive(:rm_f)
       expect(generator).not_to receive(:run_nginx)
 

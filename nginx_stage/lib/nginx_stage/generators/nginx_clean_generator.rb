@@ -67,15 +67,7 @@ module NginxStage
               # Enumeration precedes lock acquisition; shutdown may have finished.
               next
             rescue InvalidPidFile => e
-              # Never unlink an existing socket based on an invalid PID.
-              socket_path = NginxStage.pun_socket_path(user: u)
-              if path_occupied?(socket_path)
-                warn "Skipping cleanup for #{u}: #{e.message}; socket path still exists"
-              elsif skip_nginx
-                warn "Skipping cleanup for #{u}: #{e.message}"
-              elsif remove_if_present(NginxStage.pun_pid_path(user: u))
-                warn "Removed invalid PID file for #{u} (no socket path exists)"
-              end
+              cleanup_invalid_pid(user: u, error: e)
               next
             end
             socket_path = NginxStage.pun_socket_path(user: u)
@@ -182,8 +174,10 @@ module NginxStage
       pid_path = PidFile.new(NginxStage.pun_pid_path(user: user))
       terminate_disabled_pun(user: user, pid_path: pid_path)
     rescue MissingPidFile, Errno::ENOENT
-      paths = [NginxStage.pun_pid_path(user: user), NginxStage.pun_socket_path(user: user)]
-      return true unless paths.any? { |path| path_occupied?(path) }
+      if !path_occupied?(NginxStage.pun_pid_path(user: user)) &&
+         SocketProbe.new(NginxStage.pun_socket_path(user: user)).remove_stale
+        return true
+      end
 
       warn "Skipping disabled user #{user}: PID or socket path still exists"
       false
@@ -196,7 +190,7 @@ module NginxStage
       wait_for_pun_shutdown(user: user)
       true
     rescue Errno::ESRCH
-      if path_occupied?(NginxStage.pun_socket_path(user: user))
+      unless SocketProbe.new(NginxStage.pun_socket_path(user: user)).remove_stale
         warn "Skipping disabled user #{user}: PID is gone but socket path still exists"
         return false
       end
@@ -207,15 +201,32 @@ module NginxStage
       false
     end
 
-    # A dead recorded PID does not establish who owns a remaining socket.
-    # Remove only a stale PID with no occupied socket path, and report real removal.
+    # A dead recorded PID can coexist with live orphaned workers. Remove the
+    # socket only after a refused connection and an unchanged socket identity.
     def cleanup_stale_pid(user:, pid_path:, socket_path:)
-      if path_occupied?(socket_path)
-        warn "Skipping cleanup for #{user}: PID is gone but socket path still exists"
-      elsif skip_nginx
+      if skip_nginx
         puts user
-      elsif remove_if_present(pid_path)
+        return
+      end
+      probe = SocketProbe.new(socket_path)
+      if ![:absent, :stale].include?(probe.state)
+        warn "Skipping cleanup for #{user}: PID is gone but socket path still exists"
+      elsif probe.remove_stale && remove_if_present(pid_path)
         warn "stale pid file removed: #{pid_path}"
+      end
+    end
+
+    def cleanup_invalid_pid(user:, error:)
+      if skip_nginx
+        warn "Skipping cleanup for #{user}: #{error.message}"
+        return
+      end
+      path = NginxStage.pun_pid_path(user: user)
+      probe = SocketProbe.new(NginxStage.pun_socket_path(user: user))
+      if File.symlink?(path) || ![:absent, :stale].include?(probe.state)
+        warn "Skipping cleanup for #{user}: #{error.message}; socket path still exists or PID is a symlink"
+      elsif probe.remove_stale && remove_if_present(path)
+        warn "Removed invalid PID file for #{user} (no live socket remains)"
       end
     end
 

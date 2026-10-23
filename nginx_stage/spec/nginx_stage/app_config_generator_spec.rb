@@ -24,6 +24,8 @@ describe NginxStage::AppConfigGenerator do
 
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(passwd)
     allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(group)
+    # RSpec may lazily load matchers after File.file? is stubbed below.
+    allow(File).to receive(:file?).and_call_original
     allow(NginxStage).to receive(:clean_nginx_env).with(user: generator.user)
     allow(NginxStage).to receive(:pun_pid_path).with(user: generator.user).and_return(pid_path)
     allow(NginxStage::PidFile).to receive(:new)
