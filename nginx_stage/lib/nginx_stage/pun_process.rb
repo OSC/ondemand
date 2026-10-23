@@ -106,19 +106,44 @@ module NginxStage
     end
 
     def classify(root, command)
-      executable = File.stat("#{root}/exe")
-      expected = File.stat(NginxStage.nginx_bin)
-      same_executable = executable.dev == expected.dev && executable.ino == expected.ino
+      nginx_executable = nginx_executable?(root)
       title = "#{MASTER_PREFIX}(#{@user}) #{NginxStage.nginx_args(user: @user).join(' ')}"
       uid = File.read("#{root}/status")[/^Uid:\s+\d+\s+(\d+)/, 1]
       return :unknown unless uid
 
-      return :matching if same_executable && command == title && uid.to_i == Process.euid
+      return :matching if nginx_executable && command == title && uid.to_i == Process.euid
 
       # An upgraded/deleted nginx binary or unexpected nginx title is ambiguous.
-      return :unknown if same_executable || command.start_with?('nginx:')
+      return :unknown if nginx_executable || command.start_with?('nginx:')
 
       :foreign
+    end
+
+    def nginx_executable?(root)
+      executable = File.stat("#{root}/exe")
+      expected = File.stat(NginxStage.nginx_bin)
+      return true if executable.dev == expected.dev && executable.ino == expected.ino
+      return false unless secure_binary?(executable, expected.uid) && secure_binary?(expected, expected.uid)
+
+      # Package replacement can unlink the running inode or retain it under a
+      # known backup name in the same trusted binary directory. Never match by
+      # basename or by the '(deleted)' suffix alone.
+      trusted_upgrade_path?(File.readlink("#{root}/exe"), executable)
+    end
+
+    def trusted_upgrade_path?(path, executable)
+      if executable.nlink.zero?
+        return false unless path.end_with?(' (deleted)')
+
+        path = path.delete_suffix(' (deleted)')
+      end
+      canonical = File.realpath(NginxStage.nginx_bin)
+      paths = [canonical, "#{canonical}.old", "#{canonical}.dpkg-tmp"]
+      paths.include?(path) && (executable.nlink.zero? || path != canonical)
+    end
+
+    def secure_binary?(stat, owner)
+      stat.file? && stat.uid == owner && (stat.mode & 0o022).zero?
     end
   end
 end

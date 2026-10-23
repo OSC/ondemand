@@ -53,9 +53,15 @@ boundary against a malicious privileged process; configured roots remain trusted
 Safe signaling requires Linux `pidfd_send_signal` support (upstream Linux 5.1
 or a compatible backport), readable procfs in the caller's PID namespace, and
 x86_64, aarch64 or ppc64le. There is no unchecked fallback on unsupported systems.
-An executable upgrade or unexpected nginx launch command may leave identity
-uncertain and require operator investigation. A process name or UID alone is
-not accepted as identity. `nginx --skip-nginx --signal=...` describes the requested
+Executable replacement remains identifiable when the running inode is unlinked
+at the exact configured canonical executable path, or is retained at its exact
+`.old` or `.dpkg-tmp` backup path. Retired and replacement files must have the
+same owner and exclude group/other writes. The process must still have the exact
+expected master command/configuration and effective UID. A deleted marker or a
+matching basename alone never authorizes a signal. Unexpected binary locations,
+changed symlink targets or unexpected nginx launch commands remain uncertain.
+A process name or UID alone is not accepted as identity.
+`nginx --skip-nginx --signal=...` describes the requested
 signal without printing a runnable unchecked `nginx -s` command.
 Successful `reload`/`reopen` reports signal delivery; inspect the master log to
 confirm that nginx accepted a reload. No separate nginx signal process parses
