@@ -36,6 +36,10 @@ paths to bypass the startup guard. Missing or malformed PID state can require
 operator investigation. Signals reject raw PID files over 22 bytes before
 execution; PID syntax and liveness alone do not establish process identity.
 
+A dead recorded PID with an occupied socket path also blocks startup. Run
+`nginx_stage nginx_clean --user=exampleuser` before retrying. Cleanup can remove
+a confirmed stale socket; startup itself does not probe or delete socket state.
+
 ## Cleanup and retries
 
 `nginx_clean` normally stops PUNs with no active connections. `--force` ignores

@@ -162,7 +162,13 @@ module NginxStage
       return false unless path_occupied?(pid_path) || path_occupied?(socket_path)
 
       # A draining master still owns the PID path even after its socket is gone.
-      PidFile.new(pid_path).running_process?
+      return true if PidFile.new(pid_path).running_process?
+      return false unless path_occupied?(socket_path)
+
+      # A dead master can leave listening orphaned workers or a stale socket.
+      # Only cleanup may probe and remove stale socket state under this lock.
+      raise Error, "Startup blocked because the PUN PID is dead but its socket path is occupied for #{user}; " \
+                   "run nginx_stage nginx_clean --user=#{user} before retrying"
     rescue MissingPidFile, InvalidPidFile, Errno::ENOENT => e
       raise Error, "PUN PID state is unusable for #{user}: #{e.message}"
     end
