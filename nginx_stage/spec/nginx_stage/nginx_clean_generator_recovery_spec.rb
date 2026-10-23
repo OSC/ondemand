@@ -310,11 +310,12 @@ RSpec.describe NginxStage::NginxCleanGenerator do
       File.write(pending_path, '')
       File.chmod(0o600, pending_path)
       restore_account
-      expect(Process).not_to receive(:kill)
-      expect(NginxStage::SocketProbe).not_to receive(:new)
     end
 
     it 'cancels only the record under the lifecycle lock before any later account loss' do
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+
       expect(NginxStage.inactive_users).to eq([])
       expect(NginxStage.pending_cleanup_users).to eq([user])
       allow(FileUtils).to receive(:rm).and_wrap_original do |original, path|
@@ -336,6 +337,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'leaves the record untouched during a dry run' do
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+
       dry_run = described_class.new(skip_nginx: true)
       expect(dry_run).not_to receive(:with_pun_lifecycle_lock)
 
@@ -345,6 +349,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'leaves an unselected restored account untouched' do
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+
       targeted = described_class.new(user: 'another_user')
       expect(targeted).not_to receive(:with_pun_lifecycle_lock)
 
@@ -354,6 +361,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'cancels the selected restored account record' do
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+
       described_class.new(user: user).invoke
 
       expect(File.exist?(pending_path)).to be(false)
@@ -362,6 +372,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
 
     [:symlink, :directory, :writable_file].each do |kind|
       it "preserves an unsafe restored-account record of type #{kind}" do
+        expect(Process).not_to receive(:kill)
+        expect(NginxStage::SocketProbe).not_to receive(:new)
+
         File.unlink(pending_path)
         case kind
         when :symlink
@@ -381,6 +394,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'does not recreate a record removed while waiting for the lock' do
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+
       allow(generator).to receive(:with_pun_lifecycle_lock).and_wrap_original do |original, **args, &block|
         original.call(**args) do
           File.unlink(pending_path)
@@ -395,6 +411,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'preserves the record when cancellation is denied' do
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+
       allow(FileUtils).to receive(:rm).with(pending_path).and_raise(Errno::EACCES)
 
       expect { generator.invoke }.to output(/Permission denied/).to_stderr
@@ -404,6 +423,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
     end
 
     it 'preserves the record when locked account lookup fails unexpectedly' do
+      expect(Process).not_to receive(:kill)
+      expect(NginxStage::SocketProbe).not_to receive(:new)
+
       allow(generator).to receive(:with_pun_lifecycle_lock).and_wrap_original do |original, **args, &block|
         original.call(**args) do
           allow(Etc).to receive(:getpwnam).with(user).and_raise(IOError, 'lookup failed')

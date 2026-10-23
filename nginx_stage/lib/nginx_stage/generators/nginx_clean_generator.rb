@@ -169,9 +169,9 @@ module NginxStage
 
     def validate_pending_cleanup(path)
       stat = File.lstat(path)
-      unless stat.file? && stat.uid == Process.euid && (stat.mode & 0o022).zero?
-        raise Error, "Unsafe pending cleanup record: #{path}"
-      end
+      return if stat.file? && stat.uid == Process.euid && (stat.mode & 0o022).zero?
+
+      raise Error, "Unsafe pending cleanup record: #{path}"
     end
 
     # Keep directory removal inside the same lifecycle lock as shutdown and
