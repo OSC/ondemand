@@ -9,7 +9,7 @@ describe NginxStage::NginxCleanGenerator do
   let(:active_user) { instance_double(NginxStage::User, to_s: 'spec') }
   let(:pid_path) { instance_double(NginxStage::PidFile, running_process?: true) }
   let(:socket) { instance_double(NginxStage::SocketFile) }
-  let(:status) { double(:success? => true) }
+  let(:status) { instance_double(Process::Status, success?: true) }
   let(:stop_output) { '' }
 
   before do
@@ -50,7 +50,7 @@ describe NginxStage::NginxCleanGenerator do
   end
 
   context 'when nginx stop fails' do
-    let(:status) { double(:success? => false) }
+    let(:status) { instance_double(Process::Status, success?: false) }
     let(:stop_output) { 'stop failed' }
 
     it 'does not wait for cleanup that was not initiated' do

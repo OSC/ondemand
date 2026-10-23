@@ -40,7 +40,7 @@ describe NginxStage::Generator do
 
     it 'does not wait after a successful start' do
       expect(Open3).to receive(:capture2e)
-        .with(['/usr/sbin/nginx', '(spec)'], '-c', 'config').and_return(['', status])
+        .with(['/usr/sbin/nginx', '(spec)'], '-c', 'config').once.and_return(['', status])
       expect(generator).not_to receive(:wait_for_pun_shutdown)
 
       expect(generator.send(:run_nginx, user: test_user)).to eq(['', status])

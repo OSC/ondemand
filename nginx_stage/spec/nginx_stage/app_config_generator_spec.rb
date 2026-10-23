@@ -13,7 +13,7 @@ describe NginxStage::AppConfigGenerator do
     )
   end
   let(:hook) { generator.class.hooks[:exec_nginx] }
-  let(:status) { double(:success? => true) }
+  let(:status) { instance_double(Process::Status, success?: true) }
   let(:pid_path) { '/var/run/ondemand-nginx/spec/passenger.pid' }
   let(:socket_path) { '/var/run/ondemand-nginx/spec/passenger.sock' }
 

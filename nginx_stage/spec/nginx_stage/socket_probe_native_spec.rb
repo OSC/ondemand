@@ -6,7 +6,7 @@ require 'socket'
 require 'tmpdir'
 require_relative '../support/pun_native_environment'
 
-RSpec.describe NginxStage::SocketProbe, native: true do
+RSpec.describe NginxStage::SocketProbe, :native do
   include PunNativeEnvironment
 
   let(:directory) { Dir.mktmpdir('pun-sock') }

@@ -59,7 +59,7 @@ module NginxStage
     # Whether we forcefully kill all PUNs even if they have connections
     add_option :force do
       {
-        opt_args: ["-f", "--[no-]force", "# Ignore active connections; retain safety checks", "# Default: false"],
+        opt_args: ['-f', '--[no-]force', '# Ignore active connections; retain safety checks', '# Default: false'],
         default: false
       }
     end

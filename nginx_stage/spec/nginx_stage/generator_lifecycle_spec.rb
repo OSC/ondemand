@@ -29,7 +29,7 @@ describe NginxStage::Generator do
     waiting_for_socket = Queue.new
     finish_shutdown = Queue.new
     startup_attempted = Queue.new
-    status = double(:success? => true)
+    status = instance_double(Process::Status, success?: true)
 
     allow(NginxStage).to receive_messages(
       pun_config_path: config_path,

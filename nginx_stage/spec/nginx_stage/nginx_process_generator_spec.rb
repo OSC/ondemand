@@ -10,7 +10,7 @@ describe NginxStage::NginxProcessGenerator do
   let(:signal) { :stop }
   let(:generator) { described_class.new(user: test_user, signal: signal) }
   let(:hook) { generator.class.hooks[:exec_nginx] }
-  let(:status) { double(:success? => true) }
+  let(:status) { instance_double(Process::Status, success?: true) }
 
   before do
     allow(NginxStage::PunProcess).to receive(:signal)

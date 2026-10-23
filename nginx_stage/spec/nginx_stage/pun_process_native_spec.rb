@@ -8,7 +8,7 @@ require_relative '../support/pun_native_environment'
 
 # A controlled executable with an nginx title exercises real procfs and kernel
 # signals. This tests API plumbing, not nginx/Passenger drain behavior.
-RSpec.describe NginxStage::PunProcess, native: true do
+RSpec.describe NginxStage::PunProcess, :native do
   include PunNativeEnvironment
 
   let(:directory) { Dir.mktmpdir('pun-native') }
