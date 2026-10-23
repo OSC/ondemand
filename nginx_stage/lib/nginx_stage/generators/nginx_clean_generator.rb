@@ -108,8 +108,7 @@ module NginxStage
               warn "Skipping cleanup for #{u}: verified PUN master is alive without its socket (possibly draining)"
               next
             end
-            sessions = session_count(u)
-            if sessions.zero? || force
+            if force || session_count(u).zero?
               puts u
               run_nginx(user: u, signal: :stop) unless skip_nginx
             end

@@ -92,3 +92,43 @@ client or competing startup still owns them. Retain normal lifecycle lock files.
 Attach results to the human review. Keep live integration unchecked until the
 nginx/Passenger scenarios have actual results. This document defines the
 procedure; it is not evidence that a run occurred.
+
+## Automated real-nginx checks and deployment gate
+
+The unit-test CI job installs nginx and sets `OOD_TEST_NGINX_BIN` to run
+`spec/nginx_stage/pun_nginx_integration_spec.rb`. Unlike the controlled-process
+native tests, these checks launch a real foreground nginx with private paths.
+They verify reload acceptance, invalid reload rejection with continued service,
+log reopening after rotation, and stop/quit followed by a manageable replacement.
+A rate-limited static request also exercises graceful-drain timeout, startup
+rejection and recovery after the client closes. These checks do not load Passenger.
+
+Run the same checks on each supported deployment kernel and architecture, as
+the administrator/service identity used for nginx_stage:
+
+```bash
+cd nginx_stage
+bundle exec ruby test/native/check_pun_signal_support.rb
+OOD_REQUIRE_NATIVE_PUN_TESTS=1 OOD_TEST_NGINX_BIN=/absolute/path/to/nginx \
+  bundle exec rspec spec/nginx_stage/pun_process_native_spec.rb \
+  spec/nginx_stage/pun_nginx_integration_spec.rb
+```
+
+Use a native VM or host for EL8 validation. An EL8 container sharing an Ubuntu
+kernel does not establish EL8 kernel support. Record kernel release, CPU,
+executable version and actual results for each supported target. Unsupported or
+denied descriptor signaling must fail this gate; do not bypass the procfs check
+or substitute numeric-PID signaling to obtain a passing result.
+
+Passenger drain beyond the shutdown deadline, startup rejection during that
+drain, and master death with surviving workers remain required staging scenarios
+in the table above. Passing the automated plain-nginx checks does not mark those
+scenarios complete.
+
+## Failed session detection
+
+Ordinary cleanup preserves a live PUN when the process-listing command times out,
+exits unsuccessfully, or cannot execute. Partial output from a failed command is
+not evidence of inactivity. The diagnostic identifies the affected user, and
+cleanup continues with subsequent users. `--force` bypasses session detection,
+including its failures, while retaining process identity and runtime safety checks.
