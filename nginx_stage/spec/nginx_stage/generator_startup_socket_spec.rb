@@ -60,8 +60,8 @@ RSpec.describe NginxStage::Generator do
           expect(NginxStage::SocketProbe).not_to receive(:new)
           expect(Open3).not_to receive(:capture2e)
 
-          expect { startup.invoke }
-            .to raise_error(NginxStage::Error, /PID is dead.*socket path is occupied.*nginx_clean --user=spec/)
+          message = /PID is dead.*socket path is occupied.*scheduled cleanup or contact an administrator/
+          expect { startup.invoke }.to raise_error(NginxStage::Error, message)
 
           expect(File.read(pid_path)).to eq('12345')
           expect(File.read(config_path)).to eq('original configuration')

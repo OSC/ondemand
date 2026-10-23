@@ -27,7 +27,7 @@ RSpec.describe NginxStage::PunProcess do
     allow(File).to receive(:open).and_call_original
     allow(File).to receive(:open).with('/proc/12345', File::RDONLY).and_yield(handle)
     allow(NginxStage).to receive(:nginx_bin).and_return(binary)
-    allow(NginxStage).to receive(:nginx_args).with(user: 'spec').and_return(['-c', '/trusted/spec.conf'])
+    allow(NginxStage).to receive(:nginx_args) { |user:| ['-c', "/trusted/#{user}.conf"] }
   end
 
   after do
@@ -51,7 +51,6 @@ RSpec.describe NginxStage::PunProcess do
   end
 
   [
-    'nginx: worker process',
     'nginx: master process (someone_else) -c /trusted/other.conf',
     'nginx: master process (spec) -c /trusted/spec.conf.extra'
   ].each do |command|
@@ -62,6 +61,87 @@ RSpec.describe NginxStage::PunProcess do
       expect(Kernel).not_to receive(:syscall)
       expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /identity is unknown/)
     end
+  end
+
+  [
+    'nginx: master process (someone_else) -c /trusted/someone_else.conf',
+    'nginx: worker process',
+    'nginx: worker process is shutting down'
+  ].each do |command|
+    it "recognizes another configured master or worker: #{command.inspect}" do
+      File.write(File.join(process_root, 'cmdline'), "#{command}\0\0")
+      expect(process.state).to eq(:foreign)
+      expect(Kernel).not_to receive(:syscall)
+      expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /identity is foreign/)
+    end
+
+    it "recovers a stale PID reused by #{command.inspect} without signaling it" do
+      File.write(File.join(process_root, 'cmdline'), "#{command}\0")
+      pid_path = File.join(directory, 'pun.pid')
+      config_path = File.join(directory, 'spec.conf')
+      File.write(pid_path, '12345')
+      File.write(config_path, 'configuration')
+      allow(Process).to receive(:getpgid).with(12_345).and_return(12_345)
+      allow(NginxStage).to receive_messages(
+        pun_pid_path: pid_path, pun_config_path: config_path,
+        pun_socket_path: File.join(directory, 'absent.sock'),
+        active_users: ['spec'], inactive_users: [], pending_cleanup_users: []
+      )
+      expect(Kernel).not_to receive(:syscall)
+      expect(Process).not_to receive(:kill)
+      expect(Open3).not_to receive(:capture2e)
+      cleaner = NginxStage::NginxCleanGenerator.new(force: true)
+      expect { cleaner.invoke }.to output(/stale pid file removed/).to_stderr
+      expect(File.exist?(pid_path)).to be(false)
+      expect(File.read(config_path)).to eq('configuration')
+    end
+  end
+
+  it 'recognizes an nginx worker even when it runs with a different effective owner' do
+    File.write(File.join(process_root, 'cmdline'), "nginx: worker process\0")
+    File.write(File.join(process_root, 'status'), "Uid:\t0\t#{Process.euid + 1}\t0\t0\n")
+    expect(process.state).to eq(:foreign)
+  end
+
+  it 'preserves a master for another user whose effective owner is unexpected' do
+    File.write(File.join(process_root, 'cmdline'), "nginx: master process (other) -c /trusted/other.conf\0")
+    File.write(File.join(process_root, 'status'), "Uid:\t0\t#{Process.euid + 1}\t0\t0\n")
+    expect(process.state).to eq(:unknown)
+  end
+
+  [
+    'nginx: worker process extra', 'nginx: cache manager process',
+    'nginx: master process (spec) -c /wrong.conf'
+  ].each do |command|
+    it "preserves an unrecognized nginx role or config: #{command.inspect}" do
+      File.write(File.join(process_root, 'cmdline'), "#{command}\0")
+      expect(process.state).to eq(:unknown)
+    end
+  end
+
+  it 'recognizes a kernel thread from proc flags without requiring command or executable metadata' do
+    fields = ['S', *Array.new(25, '0')]
+    fields[6] = (0x00200000 | 0x00000040).to_s
+    File.write(File.join(process_root, 'stat'), "12345 (kworker) #{fields.join(' ')}")
+    File.write(File.join(process_root, 'cmdline'), '')
+    File.unlink(File.join(process_root, 'exe'))
+    expect(process.state).to eq(:foreign)
+    expect(Kernel).not_to receive(:syscall)
+    expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /identity is foreign/)
+  end
+
+  ['not-a-number', '-1'].each do |flags|
+    it "preserves malformed proc flags #{flags.inspect}" do
+      fields = ['S', *Array.new(25, '0')]
+      fields[6] = flags
+      File.write(File.join(process_root, 'stat'), "12345 (nginx) #{fields.join(' ')}")
+      expect(process.state).to eq(:unknown)
+    end
+  end
+
+  it 'parses stat fields after a command name containing spaces and closing parentheses' do
+    File.write(File.join(process_root, 'stat'), "12345 (odd ) command) S #{'0 ' * 25}")
+    expect(process.state).to eq(:matching)
   end
 
   it 'recognizes a trusted nginx upgrade backup while retaining descriptor signaling' do

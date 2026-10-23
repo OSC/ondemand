@@ -38,7 +38,8 @@ execution; PID syntax and liveness alone do not establish process identity.
 
 Startup and cleanup also check process identity. A verified PUN master blocks
 startup while draining even if its socket is gone. A PID reused by an unrelated
-executable does not block startup when the socket is absent; cleanup can remove
+executable, another configured PUN master, a verified nginx worker or a kernel
+thread does not block startup when the socket is absent; cleanup can remove
 that stale PID file without signaling the unrelated process. Uncertain identity
 is preserved with a diagnostic, including with `--force`.
 

@@ -8,6 +8,8 @@ module NginxStage
   class PunProcess
     MAX_COMMAND_BYTES = 16_384
     MASTER_PREFIX = 'nginx: master process '
+    PF_KTHREAD = 0x00200000
+    WORKER_TITLES = ['nginx: worker process', 'nginx: worker process is shutting down'].freeze
     SIGNALS = { stop: 'TERM', quit: 'QUIT', reload: 'HUP', reopen: 'USR1' }.freeze
     SIGNAL_SYSCALL = 424
     SUPPORTED_CPUS = ['x86_64', 'aarch64', 'ppc64le', 'powerpc64le'].freeze
@@ -81,9 +83,8 @@ module NginxStage
     def identify(handle)
       root = "/proc/self/fd/#{handle.fileno}"
       # Read via the open directory, never by reconstructing /proc/<numeric PID>.
-      stat = process_stat(root)
-      return :dead if ['Z', 'X'].include?(stat.first)
-      return :unknown unless stat.length >= 20
+      identity = stat_identity(process_stat(root))
+      return identity if identity
 
       command = read_command(root)
       command ? classify(root, command) : :unknown
@@ -98,6 +99,16 @@ module NginxStage
       File.read("#{root}/stat").split(') ').last.to_s.split
     end
 
+    def stat_identity(stat)
+      return :dead if ['Z', 'X'].include?(stat.first)
+      return :unknown unless stat.length >= 20
+
+      flags = Integer(stat[6], exception: false)
+      return :unknown unless flags && flags >= 0
+
+      :foreign unless (flags & PF_KTHREAD).zero?
+    end
+
     def read_command(root)
       command = File.binread("#{root}/cmdline", MAX_COMMAND_BYTES).to_s
       return if command.empty? || command.bytesize == MAX_COMMAND_BYTES
@@ -107,16 +118,29 @@ module NginxStage
 
     def classify(root, command)
       nginx_executable = nginx_executable?(root)
-      title = "#{MASTER_PREFIX}(#{@user}) #{NginxStage.nginx_args(user: @user).join(' ')}"
       uid = File.read("#{root}/status")[/^Uid:\s+\d+\s+(\d+)/, 1]
       return :unknown unless uid
 
-      return :matching if nginx_executable && command == title && uid.to_i == Process.euid
+      return nginx_role(command, uid.to_i) if nginx_executable
 
-      # An upgraded/deleted nginx binary or unexpected nginx title is ambiguous.
-      return :unknown if nginx_executable || command.start_with?('nginx:')
+      return :unknown if command.start_with?('nginx:')
 
       :foreign
+    end
+
+    def master_title(user)
+      "#{MASTER_PREFIX}(#{user}) #{NginxStage.nginx_args(user: user).join(' ')}"
+    end
+
+    def nginx_role(command, uid)
+      return :foreign if WORKER_TITLES.include?(command)
+      return :unknown unless uid == Process.euid
+      return :matching if command == master_title(@user)
+
+      other_user = command[%r{\Anginx: master process \(([^()/\s]+)\) }, 1]
+      return :foreign if other_user && other_user != @user.to_s && command == master_title(other_user)
+
+      :unknown
     end
 
     def nginx_executable?(root)

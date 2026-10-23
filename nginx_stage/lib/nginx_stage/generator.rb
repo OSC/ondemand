@@ -175,7 +175,7 @@ module NginxStage
       # A dead master can leave listening orphaned workers or a stale socket.
       # Only cleanup may probe and remove stale socket state under this lock.
       raise Error, "Startup blocked: PUN PID is dead or unrelated but its socket path is occupied for #{user}; " \
-                   "run nginx_stage nginx_clean --user=#{user} before retrying"
+                   'retry after scheduled cleanup or contact an administrator'
     rescue MissingPidFile, InvalidPidFile, Errno::ENOENT => e
       raise Error, "PUN PID state is unusable for #{user}: #{e.message}"
     end
