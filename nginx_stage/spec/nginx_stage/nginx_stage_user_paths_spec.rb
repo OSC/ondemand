@@ -60,7 +60,10 @@ RSpec.describe NginxStage do
     end
   end
 
-  ['run[1]', 'run{1,2}', 'run\\state', 'run*state', 'run?state', 'run.normal'].each do |component|
+  [
+    'run[1]', 'run{1,2}', 'run\\state', 'run*state', 'run?state', 'run.normal',
+    '__OOD_CLEANUP_USER__', '__OOD_CLEANUP_USER___[1]'
+  ].each do |component|
     context "with a literal directory named #{component.inspect}" do
       before do
         allow(described_class).to receive(:pun_pid_path) do |user:|
@@ -88,6 +91,7 @@ RSpec.describe NginxStage do
 
         expect(File.exist?(described_class.pun_pid_path(user: user))).to be(false)
         expect(described_class.inactive_users).to eq([user])
+        expect(described_class.pending_cleanup_users).to eq([user])
       end
     end
   end

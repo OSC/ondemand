@@ -57,6 +57,8 @@ Disabled-user cleanup candidates come from **PID files and explicit
 directories alone are not candidates. Historical metadata purging is not a
 feature of this cleanup policy. Configured discovery paths support literal glob
 characters and identical repeated `%{user}` fields, including numeric suffixes.
+Literal directory text matching the internal username placeholder is supported;
+discovery chooses a placeholder absent from each configured path's literal text.
 
 A private pending record is created beside the stable lifecycle lock before
 shutdown can remove the PID. It remains until shutdown, secret/config deletion

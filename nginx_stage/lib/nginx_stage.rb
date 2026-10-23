@@ -184,7 +184,7 @@ module NginxStage
   # List of users with nginx processes running
   # @return [Array<User>] the list of users with running nginx processes
   def self.active_users
-    marker = '__OOD_CLEANUP_USER__'
+    marker = pun_user_path_marker(:pun_pid_path)
     pun_users_from_paths([pun_pid_path(user: marker)], marker: marker).map do |name|
       User.new(name)
     rescue ArgumentError => e
@@ -215,18 +215,27 @@ module NginxStage
 
   # Include resolvable accounts so obsolete retry records can be cancelled.
   def self.pending_cleanup_users
-    marker = '__OOD_CLEANUP_USER__'
+    marker = pun_user_path_marker(:pun_cleanup_path)
     pun_users_from_paths([pun_cleanup_path(user: marker)], marker: marker)
   end
 
   # Do not resolve historical configs, secrets or empty runtime directories.
   # Only PID files and recorded cleanup attempts authorize disabled-user cleanup.
   def self.staged_pun_users
-    marker = '__OOD_CLEANUP_USER__'
+    marker = pun_user_path_marker(:pun_pid_path, :pun_cleanup_path)
     pid_template = pun_pid_path(user: marker)
     pun_users_from_paths([pid_template, pun_cleanup_path(user: marker)], marker: marker)
   end
   private_class_method :staged_pun_users
+
+  # Choose a placeholder absent from the literal portions of configured paths.
+  def self.pun_user_path_marker(*path_methods)
+    literal_paths = path_methods.map { |method| public_send(method, user: '') }
+    marker = '__OOD_CLEANUP_USER__'
+    marker += '_' while literal_paths.any? { |path| path.include?(marker) }
+    marker
+  end
+  private_class_method :pun_user_path_marker
 
   # Match the complete path, including identical repeated username fields.
   def self.pun_users_from_paths(templates, marker:)
