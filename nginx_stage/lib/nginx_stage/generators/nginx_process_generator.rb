@@ -11,6 +11,16 @@ module NginxStage
 
         which sends a `stop` signal to Bob's per-user NGINX process.
 
+        After successful stop/quit signaling, wait up to 30 seconds for both
+        the socket and PID paths to disappear. A timeout returns an error;
+        it does not force shutdown. Startup stays blocked while the old
+        master is alive, even if its socket has already disappeared.
+
+        Retry startup after shutdown completes. To interrupt a verified
+        draining PUN, an administrator can explicitly use --signal=stop.
+        Signals reject unusable PID files, including files over 22 bytes.
+        Never delete a PID or socket path merely to bypass a startup error.
+
         If `--skip-nginx` is supplied it returns the system-level command
         that would have been called.
     EOF

@@ -14,33 +14,50 @@ module NginxStage
 
             nginx_stage nginx_clean
 
-        this displays the users who had their PUNs shutdown.
+        this lists selected users; inspect diagnostics for cleanup errors.
 
-        To clean up ALL running per-user nginx processes whether it has an
-        active connection or not:
+        To clean up running per-user nginx processes regardless of active
+        connections, subject to the safety checks below:
 
             nginx_stage nginx_clean --force
 
-        this also displays the users who had their PUNs shutdown.
+        this also lists selected users; inspect diagnostics for cleanup errors.
 
-        To clean up ALL running per-user nginx processes belonging to a specific user
-        whether it has an active connection or not:
+        To clean up one user regardless of active connections, subject to
+        the same safety checks:
 
             nginx_stage nginx_clean --force --user exampleuser
 
-        this also displays the users who had their PUNs shutdown.
+        this also lists selected users; inspect diagnostics for cleanup errors.
 
         To ONLY display the users with inactive PUNs:
 
             nginx_stage nginx_clean --skip-nginx
 
-        this won't terminate their per-user nginx process.
+        this won't terminate their per-user nginx process, probe sockets,
+        or remove files.
+
+        Cleanup holds the user's lifecycle lock through shutdown and cleanup.
+        Successful signaling waits up to 30 seconds for both the socket and
+        PID paths to disappear. --force ignores connection counts; it does
+        not bypass PID validation or stale-state safety checks.
+
+        For dead or invalid PID state, refused stale sockets can be recovered.
+        Listening sockets, symlinks, and inconclusive probes are preserved.
+        Disabled-user cleanup is
+        discovered from PID files and .cleanup_pending retry records beside
+        PUN configs; old configs, secrets, and empty runtime directories alone
+        are not cleanup candidates. Partial failures keep the retry record.
+
+        Check user and primary-group lookup health before disabled-user
+        cleanup: a directory-service outage can be mistaken for deletion.
+        Resolve uncertain process ownership before repairing PID/socket paths.
     EOF
 
     # Whether we forcefully kill all PUNs even if they have connections
     add_option :force do
       {
-        opt_args: ["-f", "--[no-]force", "# Force clean ALL per-user nginx processes", "# Default: false"],
+        opt_args: ["-f", "--[no-]force", "# Ignore active connections; retain safety checks", "# Default: false"],
         default: false
       }
     end
