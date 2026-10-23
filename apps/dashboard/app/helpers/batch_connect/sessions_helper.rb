@@ -13,6 +13,8 @@ module BatchConnect::SessionsHelper
           views = []
           views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect, app_title: session.title } }
           views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]
+        elsif session.selkies?
+          views = { partial: "selkies", locals: { connect: session.connect, app_title: session.title } }
         else
           views = { partial: "missing_connection" }
         end
@@ -175,6 +177,12 @@ module BatchConnect::SessionsHelper
       skip_pipeline: true
     )
     "#{base}#password=#{ERB::Util.url_encode(password)}"
+  end
+
+  # The Selkies client behind the portal's reverse proxy, with the session token
+  # in the fragment, as noVNC's password is, so no request line carries it
+  def selkies_link(connect)
+    "/rnode/#{connect.host}/#{connect.port}/#token=#{ERB::Util.url_encode(connect.password)}"
   end
 
   def connection_tabs(id, tabs)
