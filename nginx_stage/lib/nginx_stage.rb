@@ -183,11 +183,12 @@ module NginxStage
   # List of users with nginx processes running
   # @return [Array<User>] the list of users with running nginx processes
   def self.active_users
-    Dir[pun_pid_path(user: '*')].map do |v|
-      User.new v[/#{pun_pid_path(user: '(.+)')}/, 1]
+    marker = '__OOD_CLEANUP_USER__'
+    pun_users_from_paths([pun_pid_path(user: marker)], marker: marker).map do |name|
+      User.new(name)
     rescue ArgumentError => e
       log = Syslog::Logger.new 'ood_nginx_stage'
-      log.error "cannot create user #{v} because of error '#{e.message}'"
+      log.error "cannot create user #{name} because of error '#{e.message}'"
       nil
     end.compact
   end
@@ -213,15 +214,21 @@ module NginxStage
     pid_template = pun_pid_path(user: marker)
     templates = [pid_template, pun_config_path(user: marker), pun_secret_key_base_path(user: marker),
                  File.dirname(pid_template)]
+    pun_users_from_paths(templates, marker: marker)
+  end
+  private_class_method :staged_pun_users
+
+  # Match the complete path, including identical repeated username fields.
+  def self.pun_users_from_paths(templates, marker:)
     templates.flat_map do |template|
       next [] unless template.include?(marker)
 
       parts = Regexp.escape(template).split(marker, -1)
-      pattern = Regexp.new("\\A#{parts.shift}([^/]+)#{parts.join('\\1')}\\z")
+      pattern = Regexp.new("\\A#{parts.shift}(?<user>[^/]+)#{parts.join('\\k<user>')}\\z")
       Dir[template.gsub(marker, '*')].map { |path| path[pattern, 1] }
     end.compact.uniq
   end
-  private_class_method :staged_pun_users
+  private_class_method :pun_users_from_paths
 
   # Get a hash of all the staged app configs
   # @example List of all staged app configs
