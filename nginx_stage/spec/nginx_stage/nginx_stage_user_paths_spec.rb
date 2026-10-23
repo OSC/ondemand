@@ -59,4 +59,36 @@ RSpec.describe NginxStage do
       end
     end
   end
+
+  ['run[1]', 'run{1,2}', 'run\\state', 'run*state', 'run?state', 'run.normal'].each do |component|
+    context "with a literal directory named #{component.inspect}" do
+      before do
+        allow(described_class).to receive(:pun_pid_path) do |user:|
+          File.join(directory, component, user.to_s, "#{user}10.pid")
+        end
+        allow(described_class).to receive(:pun_config_path) do |user:|
+          File.join(directory, component, user.to_s, "#{user}2.conf")
+        end
+      end
+
+      it 'discovers active PIDs while expanding only username placeholders' do
+        path = described_class.pun_pid_path(user: user)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, '12345')
+        account = instance_double(NginxStage::User)
+        allow(NginxStage::User).to receive(:new).with(user).and_return(account)
+
+        expect(described_class.active_users).to eq([account])
+      end
+
+      it 'rediscovers pending cleanup when the PID is already gone' do
+        path = described_class.pun_cleanup_path(user: user)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, '')
+
+        expect(File.exist?(described_class.pun_pid_path(user: user))).to be(false)
+        expect(described_class.inactive_users).to eq([user])
+      end
+    end
+  end
 end

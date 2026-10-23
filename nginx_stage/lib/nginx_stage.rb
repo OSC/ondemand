@@ -229,7 +229,9 @@ module NginxStage
 
       parts = Regexp.escape(template).split(marker, -1)
       pattern = Regexp.new("\\A#{parts.shift}(?<user>[^/]+)#{parts.join('\\k<user>')}\\z")
-      Dir[template.gsub(marker, '*')].map { |path| path[pattern, 1] }
+      # Escape configured glob characters before adding username wildcards.
+      glob = template.gsub(/[\\*?\[\]{}]/) { |character| "\\#{character}" }.gsub(marker, '*')
+      Dir[glob].map { |path| path[pattern, 1] }
     end.compact.uniq
   end
   private_class_method :pun_users_from_paths
