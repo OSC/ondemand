@@ -295,8 +295,6 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
-  # similar to the test above, but the symlink is outside of the
-  # allowlist. it gets copied, but does not show in the ui.
   test 'copying symlinked files outside of allowlist' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
@@ -368,6 +366,34 @@ class FilesTest < ApplicationSystemTestCase
       assert(sym_dir.symlink?)
       assert_equal('real_file', sym_file.readlink.to_s)
       assert_equal('real_dir', sym_dir.readlink.to_s)
+    end
+  end
+
+  test 'copying directories skips nested symlinks when allow_symlink_ops is false' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOW_SYMLINK_OPS: 'false' }) do
+        FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+        `touch #{dir}/src/real_file`
+        `ln -s #{dir}/src/real_file #{dir}/src/link`
+        `ln -s #{Rails.root} #{dir}/src/linked_dir`
+
+        visit files_url(dir)
+        find('a', exact_text: 'src').ancestor('tr').find('input[type="checkbox"]').click
+        find('#copy-move-btn').click
+
+        visit files_url("#{dir}/dest")
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('#clipboard-copy-to-dir').click
+
+        find('tbody a', exact_text: 'src', wait: MAX_WAIT)
+
+        visit files_url("#{dir}/dest/src")
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+        assert(Pathname.new("#{dir}/dest/src/real_file").file?)
+        refute(Pathname.new("#{dir}/dest/src/link").exist?)
+        refute(Pathname.new("#{dir}/dest/src/linked_dir").exist?)
+      end
     end
   end
 
