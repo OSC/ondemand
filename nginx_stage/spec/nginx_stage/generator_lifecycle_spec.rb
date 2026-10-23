@@ -40,6 +40,7 @@ describe NginxStage::Generator do
     allow(File).to receive(:file?).with('/tmp/pun-lifecycle-spec.pid').and_return(true)
     allow(NginxStage::PidFile).to receive(:new)
       .with('/tmp/pun-lifecycle-spec.pid').and_return(instance_double(NginxStage::PidFile))
+    allow(app).to receive(:pun_running?).and_return(true, false)
     allow(NginxStage).to receive(:clean_nginx_env)
     allow(NginxStage).to receive(:nginx_args)
       .with(user: app.user, signal: :stop).and_return(['stop'])

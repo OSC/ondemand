@@ -133,4 +133,15 @@ RSpec.describe NginxStage::PunProcess, :native do
     expect(Kernel).not_to receive(:syscall)
     expect(described_class.new(pid: thread.to_i, user: user).state).to eq(:foreign)
   end
+
+  it 'signals the original process during a real hard-link backup and replacement' do
+    pid = start_native_child(master_title(user))
+    File.link(binary, "#{binary}.dpkg-tmp")
+    File.unlink(binary)
+    FileUtils.cp(source, binary)
+    File.chmod(0o755, binary)
+    expect(pun.state).to eq(:matching)
+    pun.signal(:stop)
+    expect(Signal.signame(await_child(pid).termsig)).to eq('TERM')
+  end
 end

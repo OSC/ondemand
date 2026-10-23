@@ -67,7 +67,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
         end
         if state == :pending_without_pid
           File.unlink(pid_path)
-          File.write(NginxStage.pun_cleanup_path(user: user), '')
+          File.write(NginxStage.pun_cleanup_path(user: user), '', perm: 0o600)
         end
       end
 

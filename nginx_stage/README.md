@@ -18,8 +18,8 @@ nginx_stage waits for **both the socket and PID paths to disappear**. This
 includes disabled-user SIGTERM cleanup. Dangling symlinks count as occupied.
 
 The wait polls every 0.1 second against a **30-second monotonic deadline**.
-This deadline starts after signaling succeeds; it does not bound lock acquisition
-or the nginx command itself. It is currently fixed, not a configuration option.
+This deadline starts after signaling succeeds. It does not bound blocking
+startup/replacement lock acquisition or the nginx command itself. It is currently fixed, not a configuration option.
 
 A timeout returns an error without forcing termination or starting a replacement.
 A graceful `quit` may have removed its socket while its master is still draining
@@ -82,7 +82,9 @@ at the exact configured canonical executable path, or is retained at its exact
 `.old` or `.dpkg-tmp` backup path. Retired and replacement files must have the
 same owner and exclude group/other writes. The process must still have the exact
 expected master command/configuration and effective UID. A deleted marker or a
-matching basename alone never authorizes a signal. Unexpected binary locations,
+matching basename alone never authorizes a signal. During dpkg hard-link
+backup replacement, the exact regular `.dpkg-tmp` file must match the retired
+executable by device/inode and meet the ownership and permission checks. Unexpected binary locations,
 changed symlink targets or unexpected nginx launch commands remain uncertain.
 A process name or UID alone is not accepted as identity.
 `nginx --skip-nginx --signal=...` describes the requested
@@ -133,15 +135,25 @@ the remaining PUN state. This also applies to accounts restored before the
 cleaner starts. Dry runs retain the record. Do not remove a pending record to
 suppress an error; resolve the reported failure and rerun cleanup.
 
-`--skip-nginx` reports candidates without signaling, probing sockets or deleting
-files. With `--user`, only that selected user's state is modified. Candidate
-account lookup still occurs during enumeration.
+Cleanup attempts each lifecycle lock without blocking. A busy user is preserved
+with a diagnostic, and cleanup continues with subsequent users. Startup and app
+replacement continue to use blocking locks. This avoids queuing scheduled
+cleanup and package-maintenance cleanup behind a stuck lifecycle operation.
+
+Session detection checks command status and stderr. A clean procps status-1
+result containing only its `CMD` header represents no selected processes;
+other unsuccessful results preserve the PUN. `--force` bypasses session detection.
+
+`--skip-nginx` reports a snapshot without signaling, probing sockets, deleting
+files, or creating/acquiring lifecycle locks. With `--user`, only that selected
+user's state is modified. Candidate account lookup still occurs during enumeration.
 
 ## Operator recovery
 
 1. Check user **and primary-group lookup** health first. Cleanup currently treats
-   `User.new` raising `ArgumentError` as a disabled account, even when LDAP/SSSD
-   or group lookup is failing. Stop scheduled cleanup while investigating a
+   an unresolved account as disabled. It preserves state when a passwd record
+   still exists but full user/group lookup fails. A complete LDAP/SSSD outage
+   can still be mistaken for deletion. Stop scheduled cleanup while investigating a
    directory-service outage; a dry run does not make the classification reliable.
 2. Record the warning and configured PID, socket, config, lock and pending-record
    paths. Inspect ownership, permissions and symlinks without following unknown

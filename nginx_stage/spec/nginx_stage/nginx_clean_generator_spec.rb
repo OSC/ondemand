@@ -30,7 +30,7 @@ describe NginxStage::NginxCleanGenerator do
     allow(generator).to receive(:session_count).with(active_user).and_return(0)
     allow(generator).to receive(:puts)
     allow(generator).to receive(:with_pun_lifecycle_lock)
-      .with(user: active_user).and_yield
+      .with(user: active_user, nonblock: true).and_yield
     allow(NginxStage).to receive(:clean_nginx_env).with(user: active_user)
     allow(NginxStage).to receive(:nginx_args)
       .with(user: active_user, signal: :stop).and_return(['stop'])
@@ -40,7 +40,7 @@ describe NginxStage::NginxCleanGenerator do
 
   it 'keeps active-user cleanup serialized through socket removal' do
     expect(generator).to receive(:with_pun_lifecycle_lock)
-      .with(user: active_user).ordered.and_yield
+      .with(user: active_user, nonblock: true).ordered.and_yield
     expect(NginxStage::PunProcess).to receive(:signal)
       .with(pid_file: anything, user: anything, signal: :stop).ordered.and_return(['', status])
     expect(generator).to receive(:wait_for_pun_shutdown)
@@ -117,7 +117,7 @@ describe NginxStage::NginxCleanGenerator do
       allow(NginxStage::PidFile).to receive(:new)
         .with('/tmp/deleted_user/passenger.pid').and_return(disabled_pid_path)
       allow(generator).to receive(:with_pun_lifecycle_lock)
-        .with(user: disabled_user).and_yield
+        .with(user: disabled_user, nonblock: true).and_yield
       allow(NginxStage::PunProcess).to receive(:signal)
         .with(pid_file: have_attributes(pid: 1234), user: anything, signal: :stop).and_return(1)
       allow(NginxStage).to receive(:pun_secret_key_base_path)
@@ -131,7 +131,7 @@ describe NginxStage::NginxCleanGenerator do
 
     it 'holds the lifecycle lock through SIGTERM socket cleanup' do
       expect(generator).to receive(:with_pun_lifecycle_lock)
-        .with(user: disabled_user).ordered.and_yield
+        .with(user: disabled_user, nonblock: true).ordered.and_yield
       expect(NginxStage::PunProcess).to receive(:signal)
         .with(pid_file: disabled_pid_path, user: disabled_user, signal: :stop).ordered
       expect(generator).to receive(:wait_for_pun_shutdown)

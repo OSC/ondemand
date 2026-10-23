@@ -14,10 +14,16 @@ RSpec.describe NginxStage::PunProcess do
   let(:retired_binaries) { [] }
   let(:title) { 'nginx: master process (spec) -c /trusted/spec.conf' }
 
+  # Identity checks reject group/other-writable binaries, so never inherit the caller's umask.
+  def write_executable(path, contents)
+    File.write(path, contents)
+    File.chmod(0o755, path)
+  end
+
   before do
     FileUtils.mkdir_p(process_root)
-    File.write(binary, 'nginx executable')
-    File.write(other_binary, 'unrelated executable')
+    write_executable(binary, 'nginx executable')
+    write_executable(other_binary, 'unrelated executable')
     File.symlink(binary, File.join(process_root, 'exe'))
     File.write(File.join(process_root, 'cmdline'), "#{title}\0\0")
     File.write(File.join(process_root, 'stat'), "12345 (nginx) S #{'0 ' * 25}")
@@ -158,7 +164,7 @@ RSpec.describe NginxStage::PunProcess do
     File.rename(binary, "#{binary}.old")
     File.unlink(File.join(process_root, 'exe'))
     File.symlink("#{binary}.old", File.join(process_root, 'exe'))
-    File.write(binary, 'new nginx executable')
+    write_executable(binary, 'new nginx executable')
 
     expect(process.state).to eq(:matching)
     expect(Kernel).to receive(:syscall).with(424, handle.fileno, Signal.list.fetch('QUIT'), 0, 0)
@@ -170,7 +176,7 @@ RSpec.describe NginxStage::PunProcess do
   def replace_running_binary(path = binary)
     retired_binaries << File.open(binary, File::RDONLY)
     File.unlink(binary)
-    File.write(binary, 'new nginx executable')
+    write_executable(binary, 'new nginx executable')
     File.unlink(File.join(process_root, 'exe'))
     File.symlink("/proc/self/fd/#{retired_binaries.last.fileno}", File.join(process_root, 'exe'))
     allow(File).to receive(:readlink).and_call_original
@@ -209,7 +215,7 @@ RSpec.describe NginxStage::PunProcess do
     File.rename(binary, old)
     File.unlink(File.join(process_root, 'exe'))
     File.symlink(old, File.join(process_root, 'exe'))
-    File.write(binary, 'new nginx executable')
+    write_executable(binary, 'new nginx executable')
 
     expect(process.state).to eq(:unknown)
   end
@@ -562,6 +568,46 @@ RSpec.describe NginxStage::PunProcess do
       expect(paths.values.none? { |path| File.exist?(path) }).to be(true)
       expect(File.exist?("#{paths[:config]}.cleanup_pending")).to be(false)
       expect(File.directory?(File.dirname(paths[:pid]))).to be(false)
+    end
+  end
+
+  context 'with a dpkg hard-link backup' do
+    let(:backup) { "#{binary}.dpkg-tmp" }
+
+    before do
+      File.link(binary, backup)
+      replace_running_binary
+    end
+
+    it 'verifies and signals the old inode while its hard-link backup still exists' do
+      expect(File.stat(backup).nlink).to eq(1)
+      expect(process.state).to eq(:matching)
+      expect(Kernel).to receive(:syscall).with(424, handle.fileno, Signal.list.fetch('TERM'), 0, 0)
+      process.signal(:stop)
+    end
+
+    it 'rejects an unrelated inode at the backup path' do
+      File.rename(backup, "#{backup}.unrelated")
+      write_executable(backup, 'another inode')
+      expect(process.state).to eq(:unknown)
+      expect(Kernel).not_to receive(:syscall)
+      expect { process.signal(:stop) }.to raise_error(NginxStage::Error, /unknown/)
+    end
+
+    it 'rejects a symlink used in place of the backup record' do
+      File.rename(backup, "#{backup}.retained")
+      File.symlink("#{backup}.retained", backup)
+      expect(process.state).to eq(:unknown)
+    end
+
+    it 'rejects a group-writable backup inode' do
+      File.chmod(0o775, backup)
+      expect(process.state).to eq(:unknown)
+    end
+
+    it 'continues matching after the backup is unlinked' do
+      File.unlink(backup)
+      expect(process.state).to eq(:matching)
     end
   end
 end

@@ -96,12 +96,14 @@ procedure; it is not evidence that a run occurred.
 ## Automated real-nginx checks and deployment gate
 
 The unit-test CI job installs nginx and sets `OOD_TEST_NGINX_BIN` to run
-`spec/nginx_stage/pun_nginx_integration_spec.rb`. Unlike the controlled-process
+`spec/nginx_stage/generator_nginx_integration_spec.rb`. Unlike the controlled-process
 native tests, these checks launch a real foreground nginx with private paths.
 They verify reload acceptance, invalid reload rejection with continued service,
 log reopening after rotation, and stop/quit followed by a manageable replacement.
 A rate-limited static request also exercises graceful-drain timeout, startup
-rejection and recovery after the client closes. These checks do not load Passenger.
+rejection and recovery after the client closes. Private executable copies exercise
+unlink, rename and dpkg hard-link upgrades. A surviving-worker case verifies
+listener preservation and later stale-state recovery. These checks do not load Passenger.
 
 Run the same checks on each supported deployment kernel and architecture, as
 the administrator/service identity used for nginx_stage:
@@ -111,7 +113,7 @@ cd nginx_stage
 bundle exec ruby test/native/check_pun_signal_support.rb
 OOD_REQUIRE_NATIVE_PUN_TESTS=1 OOD_TEST_NGINX_BIN=/absolute/path/to/nginx \
   bundle exec rspec spec/nginx_stage/pun_process_native_spec.rb \
-  spec/nginx_stage/pun_nginx_integration_spec.rb
+  spec/nginx_stage/generator_nginx_integration_spec.rb
 ```
 
 Use a native VM or host for EL8 validation. An EL8 container sharing an Ubuntu
@@ -128,7 +130,27 @@ scenarios complete.
 ## Failed session detection
 
 Ordinary cleanup preserves a live PUN when the process-listing command times out,
-exits unsuccessfully, or cannot execute. Partial output from a failed command is
+exits unsuccessfully, or cannot execute. A clean procps status-1 result
+containing only its `CMD` header is accepted as an empty selection. Partial output from a failed command is
 not evidence of inactivity. The diagnostic identifies the affected user, and
 cleanup continues with subsequent users. `--force` bypasses session detection,
 including its failures, while retaining process identity and runtime safety checks.
+
+## Busy cleanup locks and dry runs
+
+Hold a dedicated test user's lifecycle lock, then run cleanup with that user and
+another eligible candidate. Cleanup must promptly report the busy user, preserve
+all of its state, and process the later candidate. Repeat for active, disabled,
+and pending-record discovery. An explicit `--force` must not bypass a busy lock.
+Dry runs inspect a snapshot without creating or acquiring lifecycle locks.
+Startup and replacement retain blocking lock acquisition.
+
+With a confirmed passwd record and a temporarily unavailable primary group,
+disabled-user cleanup must preserve all state and any existing retry record.
+This safeguard does not distinguish complete directory-service outages from
+confirmed deletion; verify the account provider before disabled-user cleanup.
+
+Before release, run the native capability and lifecycle checks with SELinux
+enforcing and the deployed `ondemand-selinux` policy. Inspect audit diagnostics
+for process metadata reads, descriptor signaling, and Unix socket probing. CI
+containers sharing a host kernel do not establish these deployment results.

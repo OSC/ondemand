@@ -12,8 +12,8 @@ module NginxStage
     # Linux and macOS use a signed 32-bit pid_t for process IDs.
     MAX_PID = (2**31) - 1
 
-    # nginx's signal reader uses NGX_INT64_LEN + 2 bytes. Never validate a
-    # longer record whose prefix nginx could interpret as a different PID.
+    # Keep PID records within nginx's NGX_INT64_LEN + 2 byte buffer size.
+    # Bound reads and reject oversized records before interpreting their contents.
     MAX_FILE_BYTES = 22
 
     # @param pid [Integer] the pid describing a process

@@ -102,7 +102,7 @@ describe NginxStage::Generator do
     expect(Open3).not_to receive(:capture2e)
     expect(NginxStage).not_to receive(:clean_nginx_env)
 
-    expect { app.invoke }.to raise_error(NginxStage::InvalidPidFile)
+    expect { app.invoke }.to raise_error(NginxStage::Error, /PID state is unusable/)
     expect(File.read(pid_path)).to eq('0')
     File.open("#{config_path}.lock", File::RDWR) do |competitor|
       expect(competitor.flock(File::LOCK_EX | File::LOCK_NB)).to eq(0)
@@ -115,7 +115,7 @@ describe NginxStage::Generator do
     expect(Open3).not_to receive(:capture2e)
     expect(NginxStage::PidFile).not_to receive(:new)
 
-    expect { controller.invoke }.to output("Verified process signal: stop for spec; no signal sent\n").to_stdout
+    expect { controller.invoke }.to output("Requested process signal: stop for spec; no signal sent\n").to_stdout
     expect(File.read(pid_path)).to eq('0')
   end
 

@@ -37,7 +37,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   end
 
   [false, true].each do |disabled|
-    it "serializes two real cleanup invocations through the same flock, disabled=#{disabled}" do
+    it "skips a competing cleaner while the same flock is held, disabled=#{disabled}" do
       expect(Process).not_to receive(:kill)
       expect(Open3).not_to receive(:capture2e)
       allow(NginxStage).to receive_messages(
@@ -62,6 +62,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
         second_attempted << true
         original.call(**args, &block)
       end
+      expect(cleaners.last).to receive(:warn).with(/lifecycle lock is busy/)
       threads = []
 
       begin
@@ -69,7 +70,9 @@ RSpec.describe NginxStage::NginxCleanGenerator do
         Timeout.timeout(5) { signal_entered.pop }
         threads << Thread.new { cleaners.last.invoke }
         Timeout.timeout(5) { second_attempted.pop }
-        expect(threads.last.join(0.05)).to be_nil
+        expect(threads.last.join(1)).not_to be_nil
+        threads.last.value
+        expect(File.exist?(paths[:pid])).to be(true)
         release_signal << true
         threads.each do |thread|
           expect(thread.join(5)).not_to be_nil

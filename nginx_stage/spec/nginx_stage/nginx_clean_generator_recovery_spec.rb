@@ -141,7 +141,7 @@ RSpec.describe NginxStage::NginxCleanGenerator do
   [:ordinary_file, :dangling_symlink].each do |entry|
     it "preserves residual files beside an occupied socket #{entry} without a PID" do
       File.unlink(pid_path)
-      File.write(NginxStage.pun_cleanup_path(user: user), '')
+      File.write(NginxStage.pun_cleanup_path(user: user), '', perm: 0o600)
       if entry == :ordinary_file
         File.write(socket_path, 'unknown owner')
       else

@@ -31,6 +31,7 @@ describe NginxStage::AppConfigGenerator do
     allow(NginxStage::PidFile).to receive(:new)
       .with(pid_path).and_return(instance_double(NginxStage::PidFile))
     allow(NginxStage).to receive(:pun_socket_path).with(user: generator.user).and_return(socket_path)
+    allow(generator).to receive(:pun_running?).and_return(true, false)
     allow(NginxStage).to receive(:nginx_bin).and_return('/usr/sbin/nginx')
     allow(NginxStage).to receive(:nginx_args)
       .with(user: generator.user, signal: :stop).and_return(['stop'])
@@ -65,6 +66,7 @@ describe NginxStage::AppConfigGenerator do
   end
 
   it 'does not wait when there was no PUN process to stop' do
+    allow(generator).to receive(:pun_running?).and_return(false)
     allow(File).to receive(:file?).with(pid_path).and_return(false)
 
     expect(generator).not_to receive(:wait_for_pun_shutdown)

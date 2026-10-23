@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'erb'
 require 'fileutils'
 require 'open3'
 
-require_relative "generator_helpers"
+require_relative 'generator_helpers'
 
 module NginxStage
   # Base class for objects that add new sub-commands to NginxStage. {Generator}
@@ -24,14 +26,14 @@ module NginxStage
     # @yield The body of the generator's callback
     # @return [void]
     def self.add_hook(name, &block)
-      self.hooks[name] = block
+      hooks[name] = block
     end
 
     # Removes a hook method from the callback chain
     # @param name [Symbol] unique key defining callback method
     # @return [void]
     def self.rem_hook(name)
-      self.hooks.delete(name)
+      hooks.delete(name)
     end
 
     # Returns a hash of callback methods in the order they will be invoked
@@ -46,7 +48,8 @@ module NginxStage
     # @return [void]
     def self.add_option(name, &block)
       attr_reader name
-      self._options[name] = block
+
+      _options[name] = block
     end
 
     # Removes an option expected from the CLI and removes attribute method
@@ -54,7 +57,7 @@ module NginxStage
     # @return [void]
     def self.rem_option(name)
       undef name
-      self._options.delete(name)
+      _options.delete(name)
     end
 
     # Returns a hash of options with callbacks that return a hash of their
@@ -67,7 +70,7 @@ module NginxStage
     # Returns a hash of options that point to a hash of their attributes
     # @return [Hash] a hash of options with the corresponding hash of attributes
     def self.options
-      Hash[self._options.map { |k,v| [k, v.call] }]
+      Hash[_options.map { |k, v| [k, v.call] }]
     end
 
     # Returns the description of generator
@@ -84,9 +87,10 @@ module NginxStage
 
     # @param opts [Hash] various options for controlling the behavior of the generator
     def initialize(opts = {})
-      self.class.options.each do |k,v|
+      self.class.options.each do |k, v|
         value = opts.fetch(k) do
           raise MissingOption, "missing option: #{k}" if v[:required]
+
           v[:default]
         end
         value = v[:before_init].call(value) if v[:before_init]
@@ -98,7 +102,7 @@ module NginxStage
     # hash
     # @return [void]
     def invoke
-      self.class.hooks.each {|k,v| self.instance_eval(&v)}
+      self.class.hooks.each_value { |hook| instance_eval(&hook) }
     end
 
     # Gets an ERB template at the relative source, executes it and makes a copy
@@ -115,16 +119,16 @@ module NginxStage
     # @param destination [String] the relative path to the destination file
     # @param data [String] the given data
     # @return [void]
-    def create_file(destination, data = "", mode: 0644)
+    def create_file(destination, data = '', mode: 0o644)
       empty_directory File.dirname(destination)
-      File.open(destination, "wb", mode) { |f| f.write data }
+      File.open(destination, 'wb', mode) { |f| f.write data }
     end
 
     # Create an empty directory if it doesn't already exist
     # @param destination [String] the directory path
     # @param mode [Integer] the mode to set the directory as
     # @return [void]
-    def empty_directory(destination, mode: 0755)
+    def empty_directory(destination, mode: 0o755)
       FileUtils.mkdir_p destination, mode: mode
     end
 
@@ -132,12 +136,14 @@ module NginxStage
 
     # Use one stable file for startup, app restart, shutdown, and cleanup.
     # Replacing or removing the PUN config must not replace this lock.
-    def with_pun_lifecycle_lock(user:)
+    def with_pun_lifecycle_lock(user:, nonblock: false)
       lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
       FileUtils.mkdir_p File.dirname(lock_path)
 
       File.open(lock_path, File::RDWR | File::CREAT, 0o644) do |lock|
-        lock.flock(File::LOCK_EX)
+        operation = nonblock ? File::LOCK_EX | File::LOCK_NB : File::LOCK_EX
+        raise Error, "PUN lifecycle lock is busy for #{user}; retry cleanup later" unless lock.flock(operation)
+
         yield
       end
     end
@@ -210,6 +216,8 @@ module NginxStage
         superclass.send(method).dup
       end
     end
+
+    private_class_method :from_superclass
 
     # Use ERB to render templates
     def render(data)

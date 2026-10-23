@@ -13,6 +13,18 @@ module PunNativeEnvironment
     native_requirement!(false, "descriptor signaling unavailable: #{e.message}")
   end
 
+  def require_native_nginx!
+    binary = ENV['OOD_TEST_NGINX_BIN']
+    return native_requirement!(false, 'set OOD_TEST_NGINX_BIN to run real nginx integration') unless binary
+
+    unless binary.start_with?('/') && File.executable?(binary)
+      raise ArgumentError, 'OOD_TEST_NGINX_BIN must be an absolute executable path'
+    end
+
+    require_native_signaling!
+    binary
+  end
+
   def require_native_sockets!(directory)
     native_requirement!(defined?(UNIXServer), 'requires Unix domain sockets')
     path = File.join(directory, 'capability.sock')

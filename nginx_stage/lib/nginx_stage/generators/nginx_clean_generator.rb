@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 module NginxStage
   # This generator cleans all running per-user NGINX processes that are
   # inactive (i.e., not active connections).
   class NginxCleanGenerator < Generator
-
     include NginxStage::SessionFinder
 
     desc 'Clean all user running PUNs with no active connections'
 
-    footer <<-EOF.gsub(/^ {4}/, '')
+    footer <<-HELP.gsub(/^ {4}/, '')
     Examples:
         To clean up any running per-user nginx process with no active
         connections:
@@ -35,9 +36,10 @@ module NginxStage
             nginx_stage nginx_clean --skip-nginx
 
         this won't terminate their per-user nginx process, probe sockets,
-        or remove files.
+        remove files, or create/acquire lifecycle locks.
 
-        Cleanup holds the user's lifecycle lock through shutdown and cleanup.
+        Cleanup skips a busy lifecycle lock with a warning and continues with
+        later users. Once acquired, it holds the lock through shutdown and cleanup.
         Successful signaling waits up to 30 seconds for both the socket and
         PID paths to disappear. --force ignores connection counts; it does
         not bypass PID validation or stale-state safety checks.
@@ -51,23 +53,24 @@ module NginxStage
         If an account becomes resolvable again, cleanup cancels its safe retry
         record under the lifecycle lock and preserves its remaining PUN state.
 
-        Check user and primary-group lookup health before disabled-user
-        cleanup: a directory-service outage can be mistaken for deletion.
+        Existing passwd records with failed full user/group lookup are preserved.
+        Check lookup health: a complete directory-service outage can still be
+        mistaken for deletion.
         Resolve uncertain process ownership before repairing PID/socket paths.
-    EOF
+    HELP
 
     # Whether we forcefully kill all PUNs even if they have connections
     add_option :force do
       {
         opt_args: ['-f', '--[no-]force', '# Ignore active connections; retain safety checks', '# Default: false'],
-        default: false
+        default:  false
       }
     end
 
     add_option :user do
       {
-        opt_args: ["-u", "--user=USER", "# Operate on specific user", "# Default: nil (all users)"],
-        default: nil,
+        opt_args: ['-u', '--user=USER', '# Operate on specific user', '# Default: nil (all users)'],
+        default:  nil
       }
     end
 
@@ -77,79 +80,84 @@ module NginxStage
     # Find users with PUNs that have no active sessions and kill the process
     add_hook :delete_puns_of_users_with_no_sessions do
       NginxStage.active_users(include_sockets: true).each do |u|
-        begin
-          next if (user && user != u.to_s)
-          with_pun_lifecycle_lock(user: u) do
-            begin
-              pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
-            rescue MissingPidFile, Errno::ENOENT
-              # Enumeration precedes lock acquisition; shutdown may have finished.
-              cleanup_socket_without_pid(user: u)
-              next
-            rescue InvalidPidFile => e
-              cleanup_invalid_pid(user: u, error: e)
-              next
-            end
-            socket_path = NginxStage.pun_socket_path(user: u)
-            identity = PunProcess.state(pid_file: pid_path, user: u)
-            if [:dead, :foreign].include?(identity)
-              cleanup_stale_pid(user: u, pid_path: pid_path, socket_path: socket_path)
-              next
-            end
-            if identity == :unknown
-              warn "Skipping cleanup for #{u}: PUN process identity is uncertain"
-              next
-            end
+        next if user && user != u.to_s
 
-            begin
-              SocketFile.new(socket_path)
-            rescue MissingSocketFile
-              # A live master may already have unlinked its socket while draining.
-              warn "Skipping cleanup for #{u}: verified PUN master is alive without its socket (possibly draining)"
-              next
-            end
-            if force || session_count(u).zero?
-              puts u
-              run_nginx(user: u, signal: :stop) unless skip_nginx
-            end
+        with_cleanup_lock(user: u) do
+          begin
+            pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+          rescue MissingPidFile, Errno::ENOENT
+            # Enumeration precedes lock acquisition; shutdown may have finished.
+            cleanup_socket_without_pid(user: u)
+            next
+          rescue InvalidPidFile => e
+            cleanup_invalid_pid(user: u, error: e)
+            next
           end
-        rescue StandardError => e
-          warn "Error trying to clean up active user #{u}: #{e.message}"
+          socket_path = NginxStage.pun_socket_path(user: u)
+          identity = PunProcess.state(pid_file: pid_path, user: u)
+          if [:dead, :foreign].include?(identity)
+            cleanup_stale_pid(user: u, pid_path: pid_path, socket_path: socket_path)
+            next
+          end
+          if identity == :unknown
+            warn "Skipping cleanup for #{u}: PUN process identity is uncertain"
+            next
+          end
+
+          begin
+            SocketFile.new(socket_path)
+          rescue MissingSocketFile
+            # A live master may already have unlinked its socket while draining.
+            warn "Skipping cleanup for #{u}: verified PUN master is alive without its socket (possibly draining)"
+            next
+          end
+          if force || session_count(u).zero?
+            puts u
+            run_nginx(user: u, signal: :stop) unless skip_nginx
+          end
         end
+      rescue StandardError => e
+        warn "Error trying to clean up active user #{u}: #{e.message}"
       end
 
       cleanup_users = NginxStage.inactive_users | NginxStage.pending_cleanup_users
       cleanup_users.each do |u|
-        begin
-          next if user && user != u.to_s
+        next if user && user != u.to_s
 
-          if skip_nginx
-            puts "#{u} (disabled)" if disabled_user?(u)
+        if skip_nginx
+          puts "#{u} (disabled)" if disabled_user?(u)
+          next
+        end
+
+        with_cleanup_lock(user: u) do
+          # Recheck restored accounts as well as disabled cleanup candidates.
+          unless disabled_user?(u)
+            cancel_pending_cleanup(user: u)
             next
           end
 
-          with_pun_lifecycle_lock(user: u) do
-            # Recheck restored accounts as well as disabled cleanup candidates.
-            unless disabled_user?(u)
-              cancel_pending_cleanup(user: u)
-              next
-            end
+          puts "#{u} (disabled)"
+          record_pending_cleanup(user: u)
+          next unless stop_disabled_pun(user: u)
 
-            puts "#{u} (disabled)"
-            record_pending_cleanup(user: u)
-            next unless stop_disabled_pun(user: u)
-
-            remove_if_present(NginxStage.pun_secret_key_base_path(user: u))
-            remove_if_present(NginxStage.pun_config_path(user: u))
-            remove_if_present(NginxStage.pun_cleanup_path(user: u)) if cleanup_disabled_pid_root(user: u)
-          end
-        rescue StandardError => e
-          warn "Error trying to clean up disabled user #{u}: #{e.message}"
+          remove_if_present(NginxStage.pun_secret_key_base_path(user: u))
+          remove_if_present(NginxStage.pun_config_path(user: u))
+          remove_if_present(NginxStage.pun_cleanup_path(user: u)) if cleanup_disabled_pid_root(user: u)
         end
+      rescue StandardError => e
+        warn "Error trying to clean up disabled user #{u}: #{e.message}"
       end
     end
 
     private
+
+    # Cleanup must not queue all later users behind a busy lifecycle operation.
+    # Dry runs inspect a snapshot and never create or acquire lifecycle locks.
+    def with_cleanup_lock(user:, &block)
+      return block.call if skip_nginx
+
+      with_pun_lifecycle_lock(user: user, nonblock: true, &block)
+    end
 
     # Socket-only crashes must remain discoverable without inventing a PID.
     # Use the normal conservative probe and leave configuration and secrets alone.
@@ -226,7 +234,27 @@ module NginxStage
       User.new(user)
       false
     rescue ArgumentError
+      # A missing primary group must not authorize disabled-user cleanup.
+      return true unless passwd_record_exists?(user)
+
+      raise Error, "Account #{user} still exists but full user lookup failed; preserving PUN state"
+    end
+
+    # Match User's numeric-UID lookup before falling back to a literal name.
+    # A complete NSS outage remains indistinguishable from account deletion.
+    def passwd_record_exists?(user)
+      if /\A\d+\z/.match?(user.to_s)
+        begin
+          Etc.getpwuid(user.to_s.to_i)
+          return true
+        rescue ArgumentError
+          # The literal numeric account name may still resolve below.
+        end
+      end
+      Etc.getpwnam(user.to_s)
       true
+    rescue ArgumentError
+      false
     end
 
     # A prior shutdown may already have removed the PID, leaving only metadata.

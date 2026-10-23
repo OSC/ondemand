@@ -179,8 +179,21 @@ module NginxStage
         path = path.delete_suffix(' (deleted)')
       end
       canonical = File.realpath(NginxStage.nginx_bin)
+      if path == "#{canonical} (deleted)" && executable.nlink.positive?
+        return trusted_dpkg_backup?(canonical, executable)
+      end
+
       paths = [canonical, "#{canonical}.old", "#{canonical}.dpkg-tmp"]
       paths.include?(path) && (executable.nlink.zero? || path != canonical)
+    end
+
+    # dpkg hard-links the old inode before renaming the new binary over it.
+    # procfs retains the deleted original dentry name while nlink is still one.
+    def trusted_dpkg_backup?(canonical, executable)
+      backup = File.lstat("#{canonical}.dpkg-tmp")
+      secure_binary?(backup, executable.uid) && backup.dev == executable.dev && backup.ino == executable.ino
+    rescue Errno::ENOENT
+      false
     end
 
     def secure_binary?(stat, owner)
