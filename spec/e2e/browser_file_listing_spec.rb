@@ -46,17 +46,8 @@ RSpec.describe 'OnDemand directory listings', type: :system do
   end
 
   def open_directory(name)
-    Watir::Wait.until(timeout: 30, interval: 0.25, message: "Could not click directory #{name}") do
-      link = browser.link(class: 'name', text: name)
-      # Smooth scrolling can move the target during a native click.
-      browser.execute_script(<<~JS, link)
-        arguments[0].scrollIntoView({block: "center", inline: "center", behavior: "instant"});
-      JS
-      link.click
-      true
-    rescue Selenium::WebDriver::Error::ElementClickInterceptedError
-      false
-    end
+    # Exercise the directory link without depending on headless pointer positioning.
+    browser.table(id: 'directory-contents').link(class: 'name', text: name).send_keys(:enter)
   end
 
   before do
