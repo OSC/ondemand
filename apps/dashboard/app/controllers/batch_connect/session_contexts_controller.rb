@@ -15,7 +15,6 @@ module BatchConnect
       set_render_format
       set_session_context
       set_prefill_templates
-      @app_announcements = @app.app_announcements
 
       session_id = params[:session_id]
       valid_session = session_id && BatchConnect::Session.exist?(session_id)
