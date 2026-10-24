@@ -29,6 +29,23 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector '.selected', count: 2
   end
 
+  test 'select all checkbox responds to enter key' do
+    Dir.mktmpdir do |dir|
+      %w[a.txt b.txt c.txt].each { |f| FileUtils.touch(File.join(dir, f)) }
+
+      visit files_url(dir)
+      assert_selector '#directory-contents tbody tr', count: 3
+
+      find('#select_all').send_keys(:return)
+      assert find('#select_all').checked?
+      assert_selector '.selected', count: 3
+
+      find('#select_all').send_keys(:return)
+      refute find('#select_all').checked?
+      assert_selector '.selected', count: 0
+    end
+  end
+  
   test 'visiting files app with bad directory does not duplicate errors' do
     bad_path = Rails.root / "nonexistent"
     visit files_url(bad_path.to_s)
