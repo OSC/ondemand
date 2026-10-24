@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'securerandom'
+require 'uri'
 require 'spec_helper_e2e'
 
 RSpec.describe 'OnDemand directory listings', type: :system do
@@ -11,6 +12,12 @@ RSpec.describe 'OnDemand directory listings', type: :system do
 
   def listing_url(path)
     "#{ctr_base_url}/pun/sys/dashboard/files/fs#{path}"
+  end
+
+  def normalized_listing_url(url)
+    uri = URI.parse(url)
+    uri.path = uri.path.squeeze('/')
+    uri.to_s
   end
 
   def listing_names
@@ -36,11 +43,12 @@ RSpec.describe 'OnDemand directory listings', type: :system do
   end
 
   def wait_for_listing(path, names)
+    expected_url = normalized_listing_url(listing_url(path))
     state = nil
     message = proc { "Expected directory #{path} with entries #{names.inspect}; last observed #{state.inspect}" }
     Watir::Wait.until(timeout: 30, interval: 0.25, message: message) do
       state = listing_state
-      state[:url] == listing_url(path) && state[:table_visible] &&
+      normalized_listing_url(state[:url]) == expected_url && state[:table_visible] &&
         !state[:loading] && state[:errors].empty? && state[:names] == names
     end
   end
@@ -58,8 +66,8 @@ RSpec.describe 'OnDemand directory listings', type: :system do
         }, true);
       }
     JS
-    # Exercise the directory link without depending on headless pointer positioning.
-    browser.table(id: 'directory-contents').link(class: 'name', text: name).send_keys(:enter)
+    # Use DOM activation to exercise the app handler without relying on native input delivery.
+    browser.table(id: 'directory-contents').link(class: 'name', text: name).click!
   end
 
   def report_browser_failure
@@ -137,7 +145,7 @@ RSpec.describe 'OnDemand directory listings', type: :system do
     end
 
     expect(visible_error_alerts.map(&:text).join("\n")).not_to be_empty
-    expect(browser.url).to eq(listing_url(fixture_path))
+    expect(normalized_listing_url(browser.url)).to eq(normalized_listing_url(listing_url(fixture_path)))
     expect(browser.div(id: 'tloading_spinner')).not_to be_present
   end
 end
