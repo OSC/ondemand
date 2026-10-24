@@ -93,6 +93,24 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  # Regression test for #5628: long favorite paths overflow the sidebar column
+  # because the anchor elements lack a width/overflow constraint. The fix adds
+  # Bootstrap's `text-break` utility class to the favorites anchors so long
+  # paths wrap within the container instead of pushing it wider.
+  test 'favorite anchors carry text-break class to contain long paths (regression #5628)' do
+    Dir.mktmpdir do |dir|
+      long_subdir = 'a' * 100
+      `mkdir -p #{dir}/#{long_subdir}`
+      favorites = [FavoritePath.new("#{dir}/#{long_subdir}")]
+      OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
+
+      visit files_url(dir)
+
+      # Home dir anchor + favorite anchor must both carry text-break.
+      assert_selector '#favorites a.text-break', minimum: 2
+    end
+  end
+
   test 'copying files' do
     visit files_url(Rails.root.to_s)
     ['app', 'config', 'manifest.yml'].each do |f|
