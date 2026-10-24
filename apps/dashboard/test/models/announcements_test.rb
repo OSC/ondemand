@@ -13,6 +13,57 @@ class AnnouncementsTest < ActiveSupport::TestCase
     assert_equal 0, announcements.count
   end
 
+  test 'loads app announcements from the matching app token directory' do
+    Dir.mktmpdir('announcements') do |dir|
+      app_dir = Pathname.new(dir).join('apps/sys/jupyter')
+      other_app_dir = Pathname.new(dir).join('apps/sys/rstudio')
+      FileUtils.mkdir_p(app_dir)
+      FileUtils.mkdir_p(other_app_dir)
+      File.write(app_dir.join('maintenance.md'), 'Jupyter maintenance')
+      File.write(other_app_dir.join('maintenance.md'), 'RStudio maintenance')
+
+      announcements = Announcements.for_app(dir, 'sys/jupyter')
+
+      assert_equal ['Jupyter maintenance'], announcements.map(&:message)
+    end
+  end
+
+  test 'sub-app announcements take precedence over app announcements' do
+    Dir.mktmpdir('announcements') do |dir|
+      app_dir = Pathname.new(dir).join('apps/sys/jupyter')
+      sub_app_dir = app_dir.join('lab')
+      FileUtils.mkdir_p(sub_app_dir)
+      File.write(app_dir.join('maintenance.md'), 'App maintenance')
+      File.write(sub_app_dir.join('maintenance.md'), 'Lab maintenance')
+
+      announcements = Announcements.for_app(dir, 'sys/jupyter/lab')
+
+      assert_equal ['Lab maintenance'], announcements.map(&:message)
+    end
+  end
+
+  test 'uses app announcements when no sub-app directory exists' do
+    Dir.mktmpdir('announcements') do |dir|
+      app_dir = Pathname.new(dir).join('apps/usr/alice/jupyter')
+      FileUtils.mkdir_p(app_dir)
+      File.write(app_dir.join('maintenance.md'), 'Jupyter maintenance')
+
+      announcements = Announcements.for_app(dir, 'usr/alice/jupyter/lab')
+
+      assert_equal ['Jupyter maintenance'], announcements.map(&:message)
+    end
+  end
+
+  test 'does not accept invalid app tokens' do
+    Dir.mktmpdir('announcements') do |dir|
+      app_dir = Pathname.new(dir).join('apps/sys')
+      FileUtils.mkdir_p(app_dir)
+      File.write(app_dir.join('notice.md'), 'Not an app announcement')
+
+      assert_equal 0, Announcements.for_app(dir, 'sys/../notice').count
+    end
+  end
+
   test "should not create announcements for a file that doesn't exist" do
     f = Tempfile.open(['announcement', '.md'])
     path = f.path
