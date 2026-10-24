@@ -15,7 +15,7 @@ module BatchConnect
       set_render_format
       set_session_context
       set_prefill_templates
-      set_app_announcements
+      @app_announcements = @app.app_announcements
 
       session_id = params[:session_id]
       valid_session = session_id && BatchConnect::Session.exist?(session_id)
@@ -65,7 +65,6 @@ module BatchConnect
         else
           set_prefill_templates
           format.html do
-            set_app_announcements
             set_app_groups
             set_saved_settings
             render :new
@@ -81,7 +80,6 @@ module BatchConnect
       set_render_format
       set_session_context
       set_prefill_templates
-      set_app_announcements
 
       @template_name = params[:id].to_sym
       settings = @prefill_templates[@template_name]
@@ -125,10 +123,6 @@ module BatchConnect
     # Set the app from the token
     def set_app
       @app = BatchConnect::App.from_token params[:token]
-    end
-
-    def set_app_announcements
-      @app_announcements = @app.app_announcements
     end
 
     # Set list of app lists for navigation
