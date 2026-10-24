@@ -78,12 +78,6 @@ locals: {
       <% end %>
     </h3>
     <div class="ood-appkit markdown">
-      <% @app_announcements.select(&:valid?).reject(&:completed?).each do |announcement| %>
-        <div id="announcement-<%= announcement.id %>" class="alert alert-<%= announcement.type %> announcement" role="alert">
-          <div class="announcement-body"><%= raw OodAppkit.markdown.render(announcement.msg) %></div>
-        </div>
-      <% end %>
-
       <%= OodAppkit.markdown.render(@app.description).html_safe %>
 
       <%- if @session_context -%>
