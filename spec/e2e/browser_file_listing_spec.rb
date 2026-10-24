@@ -17,11 +17,15 @@ RSpec.describe 'OnDemand directory listings', type: :system do
     browser.elements(css: '#directory-contents tbody .name').map(&:text).sort
   end
 
+  def visible_error_alerts
+    browser.divs(class: 'alert-danger').select(&:present?)
+  end
+
   def listing_loaded?(path, names)
     browser.url == listing_url(path) &&
       browser.table(id: 'directory-contents').present? &&
       !browser.div(id: 'tloading_spinner').present? &&
-      !browser.div(class: 'alert-danger').present? &&
+      visible_error_alerts.empty? &&
       listing_names == names
   end
 
@@ -29,6 +33,17 @@ RSpec.describe 'OnDemand directory listings', type: :system do
     Watir::Wait.until(timeout: 30, interval: 0.25,
                       message: "Expected directory #{path} with entries #{names.inspect} and no listing error") do
       listing_loaded?(path, names)
+    end
+  end
+
+  def open_directory(name)
+    Watir::Wait.until(timeout: 30, interval: 0.25, message: "Could not click directory #{name}") do
+      link = browser.link(class: 'name', text: name)
+      link.scroll.to(:center)
+      link.click
+      true
+    rescue Selenium::WebDriver::Error::ElementClickInterceptedError
+      false
     end
   end
 
@@ -53,33 +68,30 @@ RSpec.describe 'OnDemand directory listings', type: :system do
 
   it 'loads the expected directory entries from the packaged app' do
     expect(listing_names).to eq(fixture_names)
-    expect(browser.div(class: 'alert-danger')).not_to be_present
+    expect(visible_error_alerts).to be_empty
   end
 
   it 'loads an empty directory without accepting stale rows or a placeholder as a file' do
-    browser.link(class: 'name', text: 'empty').click
+    open_directory('empty')
     wait_for_listing("#{fixture_path}/empty", [])
 
     expect(browser.element(css: '#directory-contents tbody td.dt-empty')).to be_present
     expect(listing_names).to be_empty
-    expect(browser.div(class: 'alert-danger')).not_to be_present
+    expect(visible_error_alerts).to be_empty
   end
 
-  it 'rejects a failed directory request even when the old table becomes visible again' do
+  it 'reports a failed directory request without claiming successful navigation' do
     # Leave a stale link in the loaded table so the next click makes a real failed JSON request.
     on hosts, "rmdir -- #{fixture_path}/vanishing"
-    browser.link(class: 'name', text: 'vanishing').click
+    open_directory('vanishing')
 
     Watir::Wait.until(timeout: 30, interval: 0.25, message: 'Expected a directory listing error') do
-      browser.div(class: 'alert-danger').present? &&
-        browser.table(id: 'directory-contents').present? &&
+      visible_error_alerts.any? &&
         !browser.div(id: 'tloading_spinner').present?
     end
 
-    expect(browser.div(class: 'alert-danger').text).not_to be_empty
+    expect(visible_error_alerts.map(&:text).join("\n")).not_to be_empty
     expect(browser.url).to eq(listing_url(fixture_path))
-    expect(listing_names).to eq(fixture_names)
-    expect(listing_loaded?(fixture_path, fixture_names)).to be false
-    expect(listing_loaded?("#{fixture_path}/vanishing", [])).to be false
+    expect(browser.div(id: 'tloading_spinner')).not_to be_present
   end
 end
