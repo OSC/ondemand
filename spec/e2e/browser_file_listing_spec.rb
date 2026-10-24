@@ -14,32 +14,44 @@ RSpec.describe 'OnDemand directory listings', type: :system do
   end
 
   def listing_names
-    browser.elements(css: '#directory-contents tbody .name').map(&:text).sort
+    browser.execute_script(<<~JS)
+      const entries = Array.from(document.querySelectorAll('#directory-contents tbody .name'));
+      return entries.filter(element => element.getClientRects().length > 0 &&
+        getComputedStyle(element).visibility !== 'hidden').map(element => element.innerText).sort();
+    JS
   end
 
   def visible_error_alerts
     browser.divs(class: 'alert-danger').select(&:present?)
   end
 
-  def listing_loaded?(path, names)
-    browser.url == listing_url(path) &&
-      browser.table(id: 'directory-contents').present? &&
-      !browser.div(id: 'tloading_spinner').present? &&
-      visible_error_alerts.empty? &&
-      listing_names == names
+  def listing_state
+    {
+      url:           browser.url,
+      names:         listing_names,
+      table_visible: browser.table(id: 'directory-contents').present?,
+      loading:       browser.div(id: 'tloading_spinner').present?,
+      errors:        visible_error_alerts.map(&:text)
+    }
   end
 
   def wait_for_listing(path, names)
-    Watir::Wait.until(timeout: 30, interval: 0.25,
-                      message: "Expected directory #{path} with entries #{names.inspect} and no listing error") do
-      listing_loaded?(path, names)
+    state = nil
+    message = proc { "Expected directory #{path} with entries #{names.inspect}; last observed #{state.inspect}" }
+    Watir::Wait.until(timeout: 30, interval: 0.25, message: message) do
+      state = listing_state
+      state[:url] == listing_url(path) && state[:table_visible] &&
+        !state[:loading] && state[:errors].empty? && state[:names] == names
     end
   end
 
   def open_directory(name)
     Watir::Wait.until(timeout: 30, interval: 0.25, message: "Could not click directory #{name}") do
       link = browser.link(class: 'name', text: name)
-      link.scroll.to(:center)
+      # Smooth scrolling can move the target during a native click.
+      browser.execute_script(<<~JS, link)
+        arguments[0].scrollIntoView({block: "center", inline: "center", behavior: "instant"});
+      JS
       link.click
       true
     rescue Selenium::WebDriver::Error::ElementClickInterceptedError
@@ -85,9 +97,11 @@ RSpec.describe 'OnDemand directory listings', type: :system do
     on hosts, "rmdir -- #{fixture_path}/vanishing"
     open_directory('vanishing')
 
-    Watir::Wait.until(timeout: 30, interval: 0.25, message: 'Expected a directory listing error') do
-      visible_error_alerts.any? &&
-        !browser.div(id: 'tloading_spinner').present?
+    state = nil
+    message = proc { "Expected a directory listing error; last observed #{state.inspect}" }
+    Watir::Wait.until(timeout: 30, interval: 0.25, message: message) do
+      state = listing_state
+      state[:errors].any? && !state[:loading]
     end
 
     expect(visible_error_alerts.map(&:text).join("\n")).not_to be_empty
