@@ -322,24 +322,6 @@ module BatchConnect
       file.read if file.file?
     end
 
-    # Announcements associated with this app, preferring the sub app if present
-    # @return [Announcements] the app announcements
-    def app_announcements
-      sub_paths = []
-      if sub_app
-        sub_paths << sub_app_root.join(sub_app)
-        sub_paths << sub_app_root
-      end
-
-      sub_path = sub_paths.map { |p| p.join('announcements.d') }.find(&:directory?)
-      return Announcements.all(sub_path) if sub_path
-
-      root_path = root.join('announcements.d')
-      return Announcements.all(root_path) if root_path.directory?
-
-      Announcements.new([])
-    end
-
     # View used for session info if it exists
     # @return [String, nil] session info
     def session_info_view
