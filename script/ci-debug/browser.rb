@@ -12,8 +12,8 @@ require 'application_system_test_case'
 
 service = Selenium::WebDriver::Chrome::Service.new(
   path: ENV.fetch('CI_DEBUG_CHROMEDRIVER'),
-  log:  File.join(directory, 'chromedriver-stderr.log'),
-  args: ['--verbose', "--log-path=#{directory}/chromedriver-protocol.log"]
+  log:  File.open(File.join(directory, 'chromedriver-stderr.log'), 'a'),
+  args: ['--verbose', '--append-log', "--log-path=#{directory}/chromedriver-protocol.log"]
 )
 ApplicationSystemTestCase.driven_by :selenium, using: :headless_chrome,
                                              screen_size: [1400, 1400], options: { service: service } do |options|

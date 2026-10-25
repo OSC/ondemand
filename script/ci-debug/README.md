@@ -12,6 +12,10 @@ The workflow also declares workflow_dispatch inputs: subject_ref, suite (both/br
 
 Use a full commit SHA for exact reproduction. A branch or refs/pull/.../merge tests whatever that ref resolves to at checkout; each job records the actual SHA.
 
+The package subject is checked out into `ondemand`, because ood_packaging derives the source tarball name from the checkout basename and the RPM spec expects `ondemand-<version>.tar.gz`. Browser source remains under `subject`.
+
+On Ubuntu 24.04, the downloaded Chrome binary needs permission to create user namespaces. The debug job installs an AppArmor profile attached to that exact validated binary path, using Chromium's [path-scoped guidance](https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md). This keeps Chrome's sandbox enabled and leaves the host's global user-namespace restriction unchanged. The policy exists only for this disposable runner.
+
 Browser execution uses the original 1400x1400 headless Chrome settings, browser log collection and download profile, with the explicit Chrome/ChromeDriver 155.0.8059.39 pair. Ruby tracks the same 3.4 line as the original job; its exact resolved version is recorded. No no-sandbox flag, sandbox identity fixture, assertion retry or invalid-session rescue is added.
 
 ## Artifacts
@@ -38,17 +42,20 @@ The workflow has job time limits of 30 minutes for browser diagnostics and 50 mi
 
 ## Validate helper behavior
 
-From a Ruby environment with Minitest 5:
+From `apps/dashboard` with the Dashboard bundle installed:
 
 ```bash
-ruby script/ci-debug/test/diagnostics_test.rb
+bundle exec ruby -e 'Dir.glob(ARGV.fetch(0)).sort.each { |path| require path }' "$(git rev-parse --show-toplevel)/script/ci-debug/test/*_test.rb"
+cd ../..
 bash -n script/ci-debug/run.sh
 bash -n script/ci-debug/collect.sh
 shellcheck script/ci-debug/*.sh
 actionlint .github/workflows/ci-debug.yml
 ```
 
-The unit tests run real child commands through the wrapper and actual Minitest example lifecycles. The test fixture replaces only the collector with a tiny deterministic helper, so it does not invoke Docker or sudo while testing wrapper exit-status behavior.
+Twelve tests also check the RPM/checkout naming contract, execute the actual AppArmor workflow command with a fake privilege boundary, reject policy metacharacters, and exercise real Selenium child-process logging without a browser. AppArmor kernel loading and Docker/Beaker execution still require a suitable host.
+
+The unit tests run real child commands through the wrapper and actual Minitest example lifecycles. The wrapper fixture replaces the collector with a tiny deterministic helper, and policy tests substitute a local `sudo` command that only captures the generated policy. Tests do not change host policy or invoke Docker. Selenium stderr uses an append-opened IO so Selenium 4.26 does not turn it into a second `--log-path`; ChromeDriver protocol logging uses `--append-log` so later service starts preserve earlier evidence.
 
 ## Investigation targets
 
