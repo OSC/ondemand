@@ -40,7 +40,7 @@ class TransferTest < ActiveSupport::TestCase
   end
 
   test 'copying a files is 1:1 files:steps' do
-    files = Dir['bin/*'].map { |f| File.basename(f) }
+    files = Dir['bin/*']
     new_files = files.map { |f| "#{f}.2" }
     all_files = files.zip(new_files).to_h
 
