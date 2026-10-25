@@ -177,17 +177,17 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'running sessions with 1 nodes and 0 cores' do
+  test 'running sessions with 1 node and 0 cores' do
     with_browser_fixture_directory do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
-      stub_scheduler(:running, nodes: 0, cores: 1)
+      stub_scheduler(:running, nodes: 1, cores: 0)
       visit(batch_connect_sessions_path)
 
       card = find("#id_#{get_test_bc_id}")
       assert_not_nil(card)
 
       header_text = card.find('.h5').text
-      assert_equal("Jupyter (#{get_test_job_id})\n1 core | Starting", header_text)
+      assert_equal("Jupyter (#{get_test_job_id})\n1 node | Starting", header_text)
     end
   end
 
