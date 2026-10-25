@@ -12,7 +12,7 @@ class PosixTransferProgressTest < ActiveSupport::TestCase
     end
   end
 
-  def perform_copy(source, destination)
+  def perform_copy(source, destination, expected_percentages: nil)
     transfer = PosixTransfer.build(action: 'cp', files: { source.to_s => destination.to_s })
     percentages = []
     transfer.define_singleton_method(:percent=) do |value|
@@ -22,6 +22,7 @@ class PosixTransferProgressTest < ActiveSupport::TestCase
     transfer.perform
     assert transfer.success?, transfer.errors.full_messages.inspect
     assert percentages.all? { |value| (0..100).cover?(value) }, percentages.inspect
+    assert_equal expected_percentages, percentages if expected_percentages
     assert_equal 100, transfer.percent
     transfer
   end
@@ -29,7 +30,7 @@ class PosixTransferProgressTest < ActiveSupport::TestCase
   test 'creating a destination parent is not an extra copy item' do
     with_copy do |source, destination|
       source.join('one').write('payload')
-      perform_copy(source, destination)
+      perform_copy(source, destination, expected_percentages: [100])
       assert_equal 'payload', destination.join('one').read
     end
   end
