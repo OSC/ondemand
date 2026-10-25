@@ -3,8 +3,11 @@
 require 'test_helper'
 require 'accessibility_helper'
 require_relative 'support/chrome_stale_visibility'
+require_relative 'support/browser_session_cleanup'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  include BrowserSessionCleanup
+
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
 
   driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
