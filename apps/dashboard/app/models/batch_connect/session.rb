@@ -317,6 +317,8 @@ module BatchConnect
     # @param opts [#to_h] app-specific submit hash
     # @return [Boolean] whether submitted successfully
     def submit(opts = {})
+      store = record_store
+      store.prepare!
       opts = opts.to_h.compact.deep_symbolize_keys
       content = script_content opts.fetch(:batch_connect, {})
       options = script_options opts.fetch(:script, {})
@@ -329,13 +331,26 @@ module BatchConnect
       ClimateControl.modify(sanitized_env) do
         self.job_id = adapter.submit script(content: content, options: options)
       end
-      record_store.write(id, to_json, create: true)
+      persist_submission(store)
       true
     rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:submit, e.message)
       Rails.logger.error("ERROR: #{e.class} - #{e.message}")
       false
     end
+
+    def persist_submission(store)
+      store.write(id, to_json, create: true)
+    rescue StandardError => e
+      begin
+        adapter.delete(job_id)
+      rescue StandardError => cancellation_error
+        raise StandardError, "Job #{job_id} was submitted but its session could not be saved: #{e.message}. " \
+                             "Cancellation failed: #{cancellation_error.message}. Cancel this job manually."
+      end
+      raise StandardError, "Job #{job_id} was cancelled because its session could not be saved: #{e.message}"
+    end
+    private :persist_submission
 
     # The session's script
     # @param opts [#to_h] script options
@@ -406,10 +421,12 @@ module BatchConnect
     # Terminate this session's job and delete its database record
     # @return [Boolean] whether successfully deleted
     def destroy
+      store = record_store
+      store.prepare!
       adapter.delete(job_id) unless completed?
-      record_store.delete(id)
+      store.delete(id)
       true
-    rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
+    rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError, SessionStore::LockUnavailable => e
       errors.add(:delete, e.message)
       Rails.logger.error(e.message)
       false
@@ -443,10 +460,16 @@ module BatchConnect
 
     def update_cache_completed!
       if (! cache_completed) && completed?
+        previous_completed_at = completed_at
         self.cache_completed = true
         self.completed_at = Time.now.to_i
         record_store.write(id, to_json)
       end
+    rescue SessionStore::LockUnavailable => e
+      self.cache_completed = false
+      self.completed_at = previous_completed_at
+      Rails.logger.warn("Cannot cache completion of session #{id}: #{e.message}")
+      false
     end
 
     # Whether this session is persisted to the database

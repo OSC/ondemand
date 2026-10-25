@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'minitest/mock'
+require 'timeout'
 
 module BatchConnect
   # Exercise real record files and deterministic reader/writer interleavings.
@@ -79,26 +79,20 @@ module BatchConnect
     end
 
     test 'failed replacement preserves the record and cleans temporary files' do
-      failure = ->(_source, _target) { raise Errno::ENOSPC }
-      File.stub(:rename, failure) do
-        assert_raises(Errno::ENOSPC) { completed_session.update_cache_completed! }
-      end
+      File.stubs(:rename).raises(Errno::ENOSPC)
+      assert_raises(Errno::ENOSPC) { completed_session.update_cache_completed! }
       assert_equal @json, @record.read
       assert_equal ['lock'], @root.join('.session-store').children.map(&:basename).map(&:to_s)
     end
 
     test 'replacement holds the stable store lock' do
-      original_rename = File.method(:rename)
-      called = false
-      inspect_rename = lambda do |source, target|
+      File.expects(:rename).with do |_source, _target|
         File.open(@root.join('.session-store/lock'), File::RDWR) do |probe|
           refute probe.flock(File::LOCK_EX | File::LOCK_NB), 'replacement must hold the store lock'
         end
-        called = true
-        original_rename.call(source, target)
+        true
       end
-      File.stub(:rename, inspect_rename) { completed_session.update_cache_completed! }
-      assert called, 'expected an atomic replacement'
+      assert completed_session.update_cache_completed!
     end
 
     test 'repeated deletion is successful without recreating the record' do
@@ -115,6 +109,35 @@ module BatchConnect
       assert_equal ['A'], Session.all.map(&:id)
       assert metadata.join('unfinished').exist?
       assert_equal 0o700, metadata.stat.mode & 0o777
+    end
+
+    test 'the store creates private metadata and record files' do
+      store = SessionStore.new(@root)
+      assert store.write('B', @json, create: true)
+      assert_equal 0o700, @root.join('.session-store').stat.mode & 0o777
+      assert_equal 0o600, @root.join('B').stat.mode & 0o777
+    end
+
+    test 'a writer waiting for the lock does not recreate a deleted record' do
+      store = SessionStore.new(@root)
+      store.prepare!
+      waiting = Queue.new
+      store.define_singleton_method(:acquire_lock) do |*args, **options|
+        waiting << true
+        super(*args, **options)
+      end
+      writer = nil
+      File.open(@root.join('.session-store/lock'), File::RDWR) do |lock|
+        lock.flock(File::LOCK_EX)
+        writer = Thread.new { store.write('A', @json) }
+        Timeout.timeout(5) { waiting.pop }
+        @record.delete
+      end
+      assert_equal false, Timeout.timeout(5) { writer.value }
+      refute @record.exist?
+    ensure
+      writer&.kill
+      writer&.join
     end
   end
 end
