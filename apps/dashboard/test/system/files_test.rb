@@ -37,11 +37,11 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector '#directory-contents tbody tr', count: 3
 
       find('#select_all').send_keys(:return)
-      assert find('#select_all').checked?
+      assert_selector '#select_all:checked'
       assert_selector '.selected', count: 3
 
       find('#select_all').send_keys(:return)
-      refute find('#select_all').checked?
+      assert_selector '#select_all:not(:checked)'
       assert_selector '.selected', count: 0
     end
   end
