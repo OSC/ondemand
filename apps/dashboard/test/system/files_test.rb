@@ -10,7 +10,7 @@ class FilesTest < ApplicationSystemTestCase
     FileUtils.mkdir_p(DOWNLOAD_DIRECTORY.to_s)
 
     # we want to clear the console logs from any previous test.
-    clear_browser_logs
+    Capybara.current_session.quit
   end
 
   test "visiting files app doesn't raise js errors" do

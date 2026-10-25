@@ -1,51 +1,51 @@
 # frozen_string_literal: true
 
-require 'English'
 require 'capybara'
 require 'selenium-webdriver'
 
 # Preserve teardown failures while releasing unusable Selenium sessions.
 module BrowserSessionCleanup
-  DEAD_CONNECTION_ERRORS = [Errno::ECONNREFUSED, Errno::ECONNRESET, EOFError].freeze
-  DISCONNECTED_CHROME = /\A(?:unknown error: )?(?:disconnected:|chrome not reachable\b)/.freeze
+  DISCONNECTED_CHROME = /\A(?:unknown[ ]error:[ ])?(?:disconnected:|chrome[ ]not[ ]reachable\b|tab[ ]crashed\b|
+    session[ ]deleted[ ]because[ ]of[ ]page[ ]crash\b)/x.freeze
 
-  # Reading Chrome's console log drains it without restarting a healthy browser.
-  def clear_browser_logs
-    page.driver.browser.logs.get(:browser)
-  end
-
+  # A failed reset cannot establish isolation, regardless of its exception type.
   def after_teardown
+    reset_completed = false
     super
+    reset_completed = true
   ensure
-    recover_dead_browser($ERROR_INFO)
+    recover_browser(reset_completed)
   end
 
   private
 
-  def recover_dead_browser(teardown_error)
+  def recover_browser(reset_completed)
+    return discard_browser('session teardown did not complete') unless reset_completed
+
     recorded_errors = failures.filter_map { |failure| failure.error if failure.respond_to?(:error) }
-    error = [teardown_error, *recorded_errors].compact.find { |candidate| dead_browser_error?(candidate) }
-    discard_dead_browser(error) if error
+    error = recorded_errors.find { |candidate| dead_browser_error?(candidate) }
+    discard_browser("unusable browser context: #{error.class}: #{error.message.lines.first.to_s.strip}") if error
   rescue StandardError => e
     warn("Session cleanup failed: #{e.class}: #{e.message.lines.first.to_s.strip}")
   end
 
   def dead_browser_error?(error)
     error.is_a?(Selenium::WebDriver::Error::InvalidSessionIdError) ||
-      DEAD_CONNECTION_ERRORS.any? { |type| error.is_a?(type) } ||
+      error.is_a?(Selenium::WebDriver::Error::NoSuchWindowError) ||
       (error.is_a?(Selenium::WebDriver::Error::UnknownError) && DISCONNECTED_CHROME.match?(error.message))
   end
 
-  def discard_dead_browser(error)
+  # Only the current session is released; these tests do not use named sessions.
+  def discard_browser(reason)
     session = Capybara.current_session
-    warn("#{self.class}##{name}: discarding dead browser (#{error.class}: #{error.message.lines.first.to_s.strip})")
+    warn("#{self.class}##{name}: discarding browser session (#{reason})")
     begin
       session.driver.quit
     rescue StandardError => e
       warn("Browser shutdown failed: #{e.class}: #{e.message.lines.first.to_s.strip}")
     ensure
-      # Selenium clears its native browser in ensure, even if quit fails. Finish
-      # Capybara's document, driver and touched-state cleanup after that release.
+      # Native quit can raise before Session#quit clears its state. Selenium's
+      # ensure clears its browser, so this second quit completes session cleanup.
       session.quit
     end
   rescue StandardError => e
