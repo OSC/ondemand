@@ -160,19 +160,7 @@ module BatchConnect
       # Find all active session jobs
       # @return [Array<Session>] list of sessions
       def all
-        db_root.children.select(&:file?).reject do |p| 
-          p.extname == ".bak"
-        end.map do |f|
-          begin
-            new.from_json(f.read)
-          rescue => e
-            Rails.logger.error("ERROR: Error parsing file '#{f}' --- #{e.class} - #{e.message}")
-            f.rename("#{f}.bak")
-            nil
-          end
-        end.compact.select do |s| 
-          s.valid_session_fields? 
-        end.map do |s|
+        store.read_all { |json| new.from_json(json) }.select(&:valid_session_fields?).map do |s|
           (s.completed? && s.old? && s.destroy) ? nil : s
         end.compact.sort_by do |s|
           # sort by completed status, then created_at date
@@ -183,7 +171,11 @@ module BatchConnect
       # Find requested session job
       # @return [Session] the session
       def find(id)
-        new.from_json(db_root.join(id).read)
+        new.from_json(store.read(id))
+      end
+
+      def store
+        SessionStore.new(db_root)
       end
 
       # Checks if a session exists
@@ -203,6 +195,11 @@ module BatchConnect
     def db_file
       self.class.db_root.join(id) if id
     end
+
+    def record_store
+      self.class.store
+    end
+    private :record_store
 
     # The last time the session was updated
     # (which in this case is the database file modified timestamp)
@@ -332,7 +329,7 @@ module BatchConnect
       ClimateControl.modify(sanitized_env) do
         self.job_id = adapter.submit script(content: content, options: options)
       end
-      db_file.write(to_json, perm: 0o0600)
+      record_store.write(id, to_json, create: true)
       true
     rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:submit, e.message)
@@ -410,7 +407,7 @@ module BatchConnect
     # @return [Boolean] whether successfully deleted
     def destroy
       adapter.delete(job_id) unless completed?
-      db_file.delete
+      record_store.delete(id)
       true
     rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
       errors.add(:delete, e.message)
@@ -448,7 +445,7 @@ module BatchConnect
       if (! cache_completed) && completed?
         self.cache_completed = true
         self.completed_at = Time.now.to_i
-        db_file.write(to_json)
+        record_store.write(id, to_json)
       end
     end
 

@@ -99,10 +99,10 @@ module BatchConnect
         ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
         Timecop.freeze((BatchConnect::Session.old_in_days + 1).days.from_now) do
-          assert_equal ['A', 'OLD'], dir.children.map(&:basename).map(&:to_s).sort
+          assert_equal ['A', 'OLD'], dir.children.select(&:file?).map(&:basename).map(&:to_s).sort
           sessions = double_session.all
           assert_equal ['A'], sessions.map(&:id)
-          assert_equal ['A'], dir.children.map(&:basename).map(&:to_s).sort
+          assert_equal ['A'], dir.children.select(&:file?).map(&:basename).map(&:to_s).sort
         end
       end
     end
@@ -162,10 +162,10 @@ module BatchConnect
         File.write dir.join('bad1'), ''
         File.write dir.join('bad2'), '{)'
 
-        assert_equal ['A', 'bad1', 'bad2'], dir.children.map(&:basename).map(&:to_s).sort
+        assert_equal ['A', 'bad1', 'bad2'], dir.children.select(&:file?).map(&:basename).map(&:to_s).sort
         sessions = double_session.all
         assert_equal ['A'], sessions.map(&:id)
-        assert_equal ['A', 'bad1.bak', 'bad2.bak'], dir.children.map(&:basename).map(&:to_s).sort
+        assert_equal ['A', 'bad1.bak', 'bad2.bak'], dir.children.select(&:file?).map(&:basename).map(&:to_s).sort
       end
     end
 
@@ -188,9 +188,9 @@ module BatchConnect
           f.write({ id: 'D', created_at: 400 }.to_json)
         end
 
-        assert_equal ['A', 'B', 'C', 'D.bak'], dir.children.map(&:basename).map(&:to_s).sort
+        assert_equal ['A', 'B', 'C', 'D.bak'], dir.children.select(&:file?).map(&:basename).map(&:to_s).sort
         assert_equal ['A', 'C', 'B'], BatchConnect::Session.all.map(&:id)
-        assert_equal ['A', 'B', 'C', 'D.bak'], dir.children.map(&:basename).map(&:to_s).sort
+        assert_equal ['A', 'B', 'C', 'D.bak'], dir.children.select(&:file?).map(&:basename).map(&:to_s).sort
       end
     end
 
@@ -559,8 +559,8 @@ module BatchConnect
 
           db_dir = Pathname.new("#{dir}/batch_connect/db")
           assert db_dir.directory?
-          assert_equal 1, db_dir.children.size
-          assert_equal ["#{db_dir}/test_id"], db_dir.children.map(&:to_s)
+          assert_equal 1, db_dir.children.select(&:file?).size
+          assert_equal ["#{db_dir}/test_id"], db_dir.children.select(&:file?).map(&:to_s)
           assert_equal(expected_file, JSON.parse(File.read("#{db_dir}/test_id")).to_h)
           assert_equal('100600', File.stat("#{db_dir}/test_id").mode.to_s(8))
         end
@@ -746,7 +746,7 @@ module BatchConnect
                                              id: job_id, status: status.to_sym
                                            )))
       session.stubs(:connect_file).returns(stub(file?: connect_file))
-      session.stubs(:db_file).returns(stub(write: nil))
+      BatchConnect::Session.stubs(:store).returns(stub(write: false))
       session
     end
   end
