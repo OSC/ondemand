@@ -242,6 +242,7 @@ jobs:
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
             bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+            # Re-enabling E2E also requires test/e2e gems and a supported Ruby.
             # e2e tests fail with issues accessing chorium
             # bundle exec rake test:e2e
           env: |
