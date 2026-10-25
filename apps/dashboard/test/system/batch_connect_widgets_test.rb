@@ -66,120 +66,50 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  # Keep file fixtures isolated and alive until each browser assertion finishes.
+  def with_path_selector_app(file_pattern: nil)
+    Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
+      files_dir = File.join(dir, 'files')
+      FileUtils.mkdir_p(files_dir)
+      ['test.py', 'test.rb'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
+      attributes = { 'widget' => 'path_selector', 'directory' => files_dir, 'show_files' => true }
+      attributes['file_pattern'] = file_pattern unless file_pattern.nil?
+      form = { 'cluster' => ['owens'], 'form' => ['path'], 'attributes' => { 'path' => attributes } }
+      make_bc_app(dir, form.to_yaml)
+
+      # Exercise the GC that used to unlink unreferenced Tempfile fixtures.
+      GC.start
+      yield
+    end
+  end
+
   test 'path_selector can filter by file type matching an expression' do
-    Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol
-      stub_sacctmgr
-      stub_git("#{dir}/app")
-      
-      ['test.py', 'test.rbpy'].each do |file|
-        FileUtils.touch("#{Rails.root}/tmp/#{file}")
-      end
-
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - path
-        attributes:
-          path:
-            widget: 'path_selector'
-            directory: "#{Rails.root}/tmp"
-            show_files: true
-            file_pattern: \\.py
-      HEREDOC
-
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
-      base_id = 'batch_connect_session_context_path'
-
+    with_path_selector_app(file_pattern: '\.py$') do
       visit new_batch_connect_session_context_url('sys/app')
-
       click_on 'Select Path'
-      sleep 0.5
 
-      table_id = "batch_connect_session_context_path_path_selector_table"
-      shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
-
-      assert(shown_dirs_and_files.any? { |file| file.match("test.py") })
-      refute(shown_dirs_and_files.any? { |file| file.match("test.rb") })
+      table = '#batch_connect_session_context_path_path_selector_table tbody'
+      assert_selector "#{table} td", exact_text: 'test.py'
+      assert_no_selector "#{table} td", exact_text: 'test.rb'
     end
   end
 
   test 'path_selector handles invalid regular expressions' do
-    Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol
-      stub_sacctmgr
-      stub_git("#{dir}/app")
-      
-      Tempfile.new("test.py", "#{Rails.root}/tmp")
-      Tempfile.new("test.rb", "#{Rails.root}/tmp")
-
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - path
-        attributes:
-          path:
-            widget: 'path_selector'
-            directory: "#{Rails.root}/tmp"
-            show_files: true
-            file_pattern: \.doesn't(compile
-      HEREDOC
-
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
-      base_id = 'batch_connect_session_context_path'
-
+    with_path_selector_app(file_pattern: ".doesn't(compile") do
       visit new_batch_connect_session_context_url('sys/app')
-
-      assert_selector('.alert-danger')
+      assert_selector '.alert-danger'
     end
   end
 
   test 'path_selector handles no provided file pattern' do
-    Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol
-      stub_sacctmgr
-      stub_git("#{dir}/app")
-      
-      Tempfile.new("test.py", "#{Rails.root}/tmp")
-      Tempfile.new("test.rb", "#{Rails.root}/tmp")
-
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - path
-        attributes:
-          path:
-            widget: 'path_selector'
-            directory: "#{Rails.root}/tmp"
-            show_files: true
-      HEREDOC
-
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
-      base_id = 'batch_connect_session_context_path'
-
+    with_path_selector_app do
       visit new_batch_connect_session_context_url('sys/app')
-
       click_on 'Select Path'
 
-      sleep 1
-
-      table_id = "batch_connect_session_context_path_path_selector_table"
-      shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
-
-      assert shown_dirs_and_files.any? { |file| file.match("test.py") }
-      assert shown_dirs_and_files.any? { |file| file.match("test.rb") } 
+      table = '#batch_connect_session_context_path_path_selector_table tbody'
+      assert_selector "#{table} tr", count: 2
+      assert_selector "#{table} td", exact_text: 'test.py'
+      assert_selector "#{table} td", exact_text: 'test.rb'
     end
   end
 
