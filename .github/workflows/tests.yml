@@ -245,6 +245,7 @@ jobs:
             # e2e tests fail with issues accessing chorium
             # bundle exec rake test:e2e
           env: |
+            BUNDLE_WITHOUT: 'e2e:test'
             VERSION: "${{ matrix.version }}.0"
             OOD_PACKAGING_DEBUG: 'true'
             BEAKER_set: ${{ matrix.dist }}-${{ matrix.arch }}
