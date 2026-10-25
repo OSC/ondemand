@@ -1,0 +1,156 @@
+name: CI diagnostics (temporary)
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/ci-debug.yml
+      - script/ci-debug/**
+  workflow_dispatch:
+    inputs:
+      subject_ref:
+        description: OSC/ondemand ref to test
+        default: da1b000b0a25e4883fd8d94ae83dc6fccac630e4
+        required: true
+      suite:
+        type: choice
+        options: [both, browser, package]
+        default: both
+      browser_scope:
+        type: choice
+        options: [full, files]
+        default: full
+      package_dist:
+        type: choice
+        options: [el10, el8]
+        default: el10
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    if: github.event_name == 'pull_request' || inputs.suite != 'package'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI_DEBUG_DIR: ${{ github.workspace }}/diagnostics/browser
+      BUNDLE_WITHOUT: doc
+      RAILS_ENV: test
+      RAILS_SYSTEM_TESTING_SCREENSHOT_HTML: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: instrumentation
+          persist-credentials: false
+      - uses: actions/checkout@v6
+        with:
+          repository: OSC/ondemand
+          ref: ${{ inputs.subject_ref || 'da1b000b0a25e4883fd8d94ae83dc6fccac630e4' }}
+          path: subject
+          persist-credentials: false
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler: 2.5.23
+          working-directory: subject/apps/dashboard
+          bundler-cache: true
+      - name: Verify diagnostic helpers
+        working-directory: subject/apps/dashboard
+        run: bundle exec ruby "$GITHUB_WORKSPACE/instrumentation/script/ci-debug/test/diagnostics_test.rb"
+      - name: Install OS dependencies
+        run: sudo apt-get update && sudo apt-get install -y rclone libsqlite3-dev
+      - uses: browser-actions/setup-chrome@v2
+        id: chrome
+        with:
+          chrome-version: 155.0.8059.39
+          install-chromedriver: true
+      - name: Prepare Dashboard assets
+        working-directory: subject/apps/dashboard
+        run: |
+          npm install --prefix tmp yarn@1.22.22
+          bin/yarn install --frozen-lockfile
+          bundle exec rake assets:clobber javascript:build css:build
+      - name: Run browser tests with diagnostics
+        working-directory: subject/apps/dashboard
+        env:
+          CI_DEBUG_CHROME: ${{ steps.chrome.outputs.chrome-path }}
+          CI_DEBUG_CHROMEDRIVER: ${{ steps.chrome.outputs.chromedriver-path }}
+          CI_DEBUG_SCOPE: ${{ inputs.browser_scope || 'full' }}
+        run: |
+          bash "$GITHUB_WORKSPACE/instrumentation/script/ci-debug/run.sh" browser \
+            bundle exec ruby -Itest \
+            -r "$GITHUB_WORKSPACE/instrumentation/script/ci-debug/browser.rb" \
+            -e 'paths = ENV.fetch("CI_DEBUG_SCOPE") == "files" ? ["test/system/files_test.rb"] : Dir.glob("test/system/**/*_test.rb").sort; paths.each { |path| require "./#{path}" }' \
+            -- --seed 51445
+      - name: Collect final diagnostics
+        if: always()
+        working-directory: subject/apps/dashboard
+        run: bash "$GITHUB_WORKSPACE/instrumentation/script/ci-debug/collect.sh" final
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: browser-diagnostics
+          retention-days: 3
+          path: |
+            diagnostics/browser
+            subject/apps/dashboard/log/test.log
+            subject/apps/dashboard/tmp/screenshots
+
+  package:
+    if: github.event_name == 'pull_request' || inputs.suite != 'browser'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 50
+    env:
+      CI_DEBUG_DIR: ${{ github.workspace }}/diagnostics/package
+      CI_DEBUG_DIST: ${{ inputs.package_dist || 'el10' }}
+      VERSION: '4.2.0'
+      OOD_BUILD_REPO: '4.2'
+      OOD_PACKAGING_DEBUG: 'true'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: instrumentation
+          persist-credentials: false
+      - uses: actions/checkout@v6
+        with:
+          repository: OSC/ondemand
+          ref: ${{ inputs.subject_ref || 'da1b000b0a25e4883fd8d94ae83dc6fccac630e4' }}
+          fetch-depth: 0
+          path: subject
+          persist-credentials: false
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler: 2.5.23
+          working-directory: subject
+          bundler-cache: true
+      - name: Build package
+        working-directory: subject
+        run: |
+          case "$CI_DEBUG_DIST" in
+            el10) export CONTAINER_RT=podman ;;
+            el8) unset CONTAINER_RT ;;
+            *) exit 2 ;;
+          esac
+          bash "$GITHUB_WORKSPACE/instrumentation/script/ci-debug/run.sh" build \
+            bundle exec rake "package:build[$CI_DEBUG_DIST,x86_64]"
+      - name: Run package tests
+        working-directory: subject
+        env:
+          BEAKER_set: ${{ inputs.package_dist || 'el10' }}
+        run: |
+          bash "$GITHUB_WORKSPACE/instrumentation/script/ci-debug/run.sh" package \
+            bundle exec rake test:e2e
+      - name: Collect final diagnostics
+        if: always()
+        working-directory: subject
+        run: bash "$GITHUB_WORKSPACE/instrumentation/script/ci-debug/collect.sh" final
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: package-diagnostics
+          retention-days: 3
+          path: |
+            diagnostics/package
+            subject/log
+            subject/tmp/e2e_ctr
