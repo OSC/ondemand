@@ -130,6 +130,41 @@ class BrowserSessionCleanupTest < Minitest::Test
     end
   end
 
+  {
+    'disconnect'  => "unknown error: renderer command failed\nfrom disconnected: not connected to DevTools",
+    'unreachable' => "unknown error: renderer command failed\r\nfrom unknown error: chrome not reachable"
+  }.each do |label, message|
+    define_method("test_chained_#{label}_releases_an_untouched_session") do
+      activate_browser(touched: false)
+      driver = @session.driver
+      error = Selenium::WebDriver::Error::UnknownError.new(message)
+
+      result, = run_example(setup: -> { raise error })
+
+      assert_equal 1, result.failures.size
+      assert_same error, result.failures.first.error
+      refute_same driver, @session.driver
+    end
+  end
+
+  [
+    'unknown error: script output mentioned disconnected: not connected to DevTools',
+    "unknown error: script failed\nscript output: from disconnected: not connected to DevTools"
+  ].each_with_index do |message, index|
+    define_method("test_disconnect_prose_#{index}_does_not_release_a_healthy_session") do
+      browser = activate_browser(touched: false)
+      driver = @session.driver
+      browser.expects(:quit).never
+      error = Selenium::WebDriver::Error::UnknownError.new(message)
+
+      result, output = run_example(setup: -> { raise error })
+
+      assert_same error, result.failures.first.error
+      assert_same driver, @session.driver
+      assert_empty output
+    end
+  end
+
   [Selenium::WebDriver::Error::ElementNotInteractableError, EOFError].each do |type|
     define_method("test_body_#{type.name.split('::').last}_with_successful_reset_keeps_browser") do
       browser = activate_browser
