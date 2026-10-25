@@ -67,37 +67,36 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
   end
 
   # Keep file fixtures isolated and alive until each browser assertion finishes.
-  def with_path_selector_app(file_pattern: nil)
+  def with_path_selector_app(file_pattern: nil, files: ['test.py', 'test.rb'])
     Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
+      apps_dir = File.join(dir, 'apps')
       files_dir = File.join(dir, 'files')
-      FileUtils.mkdir_p(files_dir)
-      ['test.py', 'test.rb'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
+      FileUtils.mkdir_p([apps_dir, files_dir])
+      files.each { |name| FileUtils.touch(File.join(files_dir, name)) }
       attributes = { 'widget' => 'path_selector', 'directory' => files_dir, 'show_files' => true }
       attributes['file_pattern'] = file_pattern unless file_pattern.nil?
       form = { 'cluster' => ['owens'], 'form' => ['path'], 'attributes' => { 'path' => attributes } }
-      make_bc_app(dir, form.to_yaml)
-
-      # Exercise the GC that used to unlink unreferenced Tempfile fixtures.
-      GC.start
+      make_bc_app(apps_dir, form.to_yaml)
       yield
     end
   end
 
   test 'path_selector can filter by file type matching an expression' do
-    with_path_selector_app(file_pattern: '\.py$') do
+    with_path_selector_app(file_pattern: '\.py$', files: ['test.py', 'test.rb', 'test.pyc']) do
       visit new_batch_connect_session_context_url('sys/app')
       click_on 'Select Path'
 
       table = '#batch_connect_session_context_path_path_selector_table tbody'
       assert_selector "#{table} td", exact_text: 'test.py'
       assert_no_selector "#{table} td", exact_text: 'test.rb'
+      assert_no_selector "#{table} td", exact_text: 'test.pyc'
     end
   end
 
   test 'path_selector handles invalid regular expressions' do
     with_path_selector_app(file_pattern: ".doesn't(compile") do
       visit new_batch_connect_session_context_url('sys/app')
-      assert_selector '.alert-danger'
+      assert_selector '.alert-danger', text: 'did not compile'
     end
   end
 
