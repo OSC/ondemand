@@ -1,7 +1,13 @@
 require 'test_helper'
 
 class TransferLocalJobTest < ActiveJob::TestCase
-  # include ActiveJob::TestHelper
+  def queue_adapter_for_test
+    ActiveJob::QueueAdapters::TestAdapter.new
+  end
+
+  teardown do
+    Transfer.transfers.clear
+  end
 
   test "copy job copies a file" do
     Dir.mktmpdir do |dir|
@@ -94,12 +100,13 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
       transfer.save
-      job = TransferLocalJob.perform_later(transfer)
-      assert job.job_id != nil
+      assert_enqueued_with(job: TransferLocalJob, args: [transfer]) do
+        job = TransferLocalJob.perform_later(transfer)
+        assert_not_nil job.job_id
+      end
       assert transfer.status.queued?
+      refute File.exist?(destfile), 'a queued job must not copy files during this example'
     end
-
-    Transfer.transfers.clear
   end
 
 
