@@ -1,12 +1,15 @@
 require 'application_system_test_case'
 require 'rclone_helper'
+require_relative '../support/browser_console_logs'
 
 class RemoteFilesTest < ApplicationSystemTestCase
+  include BrowserConsoleLogs
+
   MAX_WAIT = 120
 
   def setup
     # we want to clear the console logs from any previous test.
-    page.driver.browser.logs.get(:browser)
+    clear_browser_logs
   end
 
   test "visiting files app doesn't raise js errors" do
