@@ -16,6 +16,22 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Refactor xdmod_host into string_configs for ondemand.d support (#5948)\
+Refactor shared_projects_root to support ondemand.d configuration (#5977)\
+Fix file browser navigation with Select All clicked (#5971)\
+lint a random file (#5976)\
+Fix launcher test cluster fixtures and simplify Slurm expectations (#5953)\
+Refactor bc_config_root to support ondemand.d configuration (#5938)\
+Refactor open_apps_in_new_window into boolean_configs for ondemand.d support (#5968)\
+Refactor `ood_bc_card_time` to support ondemand.d configuration (#5969)\
+Wait to load config until all environment files have been ingested (#5970)\
+Handle stale Chrome visibility errors in Dashboard system tests (#5957)\
+update dependencies (#5966)\
+Update Changelog (#5964)\
+Guard E2E log collection when the directory is absent (#5958)\
+Refactor balance configs to support ondemand.d configuration (#5941)\
+update localizations (#5965)\
+update localizations (#5965)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
