@@ -54,45 +54,12 @@ RSpec.describe 'OnDemand directory listings', type: :system do
   end
 
   def open_directory(name)
-    browser.execute_script(<<~JS)
-      window.oodListingEvents = [];
-      for (const type of ['keydown', 'keyup', 'click']) {
-        document.addEventListener(type, event => {
-          const link = event.target.closest?.('#directory-contents a.name');
-          if (!link) return;
-          const entry = {type, key: event.key, trusted: event.isTrusted, href: link.href};
-          window.oodListingEvents.push(entry);
-          setTimeout(() => { entry.defaultPrevented = event.defaultPrevented; }, 0);
-        }, true);
-      }
-    JS
-    # Use DOM activation to exercise the app handler without relying on native input delivery.
+    # Exercise request handling through DOM activation; this does not test native input delivery.
     browser.table(id: 'directory-contents').link(class: 'name', text: name).click!
   end
 
   def report_browser_failure
-    details = browser.execute_script(<<~JS)
-      const table = document.getElementById('directory-contents');
-      const body = table?.querySelector('tbody');
-      const listeners = element => {
-        if (!element || !window.jQuery?._data) return null;
-        const events = window.jQuery._data(element, 'events') || {};
-        return Object.fromEntries(Object.entries(events)
-          .filter(([type]) => ['click', 'keydown', 'keyup', 'goto'].includes(type))
-          .map(([type, handlers]) => [type, handlers.map(handler => handler.selector || '(direct)')]));
-      };
-      return {
-        readyState: document.readyState,
-        url: location.href,
-        activeElement: document.activeElement?.tagName,
-        events: window.oodListingEvents || [],
-        links: Array.from(table?.querySelectorAll('a.name') || [], link =>
-          ({text: link.innerText, href: link.href, class: link.className, type: link.dataset.type})),
-        tableListeners: listeners(table),
-        bodyListeners: listeners(body)
-      };
-    JS
-    warn "Directory listing browser diagnostics: #{details.inspect}"
+    warn "Directory listing browser state: #{listing_state.inspect}"
     warn "Directory listing browser console: #{browser.driver.logs.get(:browser).map(&:to_s).inspect}"
   rescue StandardError => e
     warn "Could not collect directory listing browser diagnostics: #{e.class}: #{e.message}"
