@@ -2,6 +2,7 @@
 
 require 'tempfile'
 require_relative 'session_store_diagnostics'
+require_relative 'session_store_cleanup'
 
 module BatchConnect
   # Replace records atomically, with optional coordination across PUN workers.
@@ -54,6 +55,20 @@ module BatchConnect
         # Concurrent deletion already achieved the requested state.
       end
       true
+    end
+
+    # Explicit housekeeping: previews are safe snapshots; unlocked deletion needs quiescence.
+    def cleanup_temporary_files(older_than: 3600, dry_run: true, quiescent: false)
+      raise ArgumentError, 'dry_run must be true or false' unless [true, false].include?(dry_run)
+
+      if !dry_run && !@locking && quiescent != true
+        raise LockUnavailable, 'Unlocked cleanup requires quiescent: true after stopping all session-store writers'
+      end
+
+      cleaner = SessionStoreCleanup.new(@root)
+      return [] unless cleaner.available?
+
+      synchronize { cleaner.call(older_than: older_than, dry_run: dry_run) }
     end
 
     private

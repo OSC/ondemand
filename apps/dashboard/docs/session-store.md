@@ -78,4 +78,50 @@ cannot identify or recover that job.
 
 Atomic visibility is not a power-loss durability guarantee. No file or directory
 `fsync` is added here. Process death can also leave private temporary files.
-Durability and abandoned-file cleanup require separate design and validation.
+Power-loss durability remains separate work.
+
+## Temporary-file housekeeping
+
+Cleanup is an explicit maintenance operation, with a preview by default and a
+one-hour minimum age by default. Run it as the affected user from the installed
+Dashboard directory, using the deployment's Ruby/Bundler and the same environment,
+configuration and data root as that user's Dashboard:
+
+```bash
+RAILS_ENV=production bundle exec rails runner \
+  'puts BatchConnect::Session.store.cleanup_temporary_files'
+```
+
+The output lists candidate paths. With coordinated mode enabled consistently
+across all workers and validated filesystem locking, perform deletion with:
+
+```bash
+RAILS_ENV=production bundle exec rails runner \
+  'puts BatchConnect::Session.store.cleanup_temporary_files(dry_run: false)'
+```
+
+Cleanup holds the same exclusive lock as writers until its scan and deletions
+finish. An aged temporary file belonging to a suspended cooperating writer
+cannot be removed while that writer holds the lock. There is no automatic scan
+on every session write; schedule this maintenance only after validating its
+cost and coordination on the deployment filesystem.
+
+In the default unlocked mode, deletion refuses to proceed unless the operator
+explicitly supplies `quiescent: true`. First stop all Dashboard processes and
+other writers for the affected database, prevent requests from starting new
+ones, and keep them stopped through cleanup. Then run:
+
+```bash
+RAILS_ENV=production bundle exec rails runner \
+  'puts BatchConnect::Session.store.cleanup_temporary_files(dry_run: false, quiescent: true)'
+```
+
+The quiescent flag is an operator assertion, not a process detector. File age
+alone does not establish abandonment. In both modes cleanup selects only old,
+owned, single-link regular files with recognized Ruby `session-` temporary
+names. It preserves the `lock` inode, symlinks, directories, hardlinks and
+unrecognized entries. It rejects unsafe metadata directories and rechecks each
+candidate's identity before unlinking. External writers that ignore the lock
+must also be stopped; the identity recheck does not make unlink atomic against
+arbitrary external replacement. The operation can leave older or unexpected
+temporary naming formats for manual inspection.
