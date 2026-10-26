@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'tempfile'
+require_relative 'session_store_diagnostics'
 
 module BatchConnect
   # Replace records atomically, with optional coordination across PUN workers.
@@ -91,11 +92,15 @@ module BatchConnect
     end
 
     def read_record(path, quarantine:)
-      yield path.read
+      contents = path.read
+      record = yield contents
+      SessionStoreDiagnostics.forget(path)
+      record
     rescue Errno::ENOENT
+      SessionStoreDiagnostics.forget(path)
       nil
     rescue StandardError => e
-      Rails.logger.error("ERROR: Error parsing file '#{path}' --- #{e.class} - #{e.message}")
+      SessionStoreDiagnostics.report(path, e, contents)
       return nil unless quarantine
 
       begin

@@ -20,6 +20,14 @@ Invalid records are logged and skipped, but left in place for manual inspection.
 They are not renamed to `.bak`, because an unlocked quarantine could move a
 newer valid replacement. Existing `.bak` files are still ignored.
 
+Repeated errors for the same path, record contents and exception are suppressed
+for five minutes within each Dashboard process, across store instances. Changed
+failures are reported immediately; a successful read or an observed missing
+record clears the path's history. The diagnostic cache holds at most 256 paths,
+so eviction or process restart can cause earlier reporting. Other processes
+maintain their own histories. This limits log repetition without moving records
+or retaining their JSON contents in the diagnostic cache.
+
 ## Optional coordinated mode
 
 After validating the filesystem and worker topology, enable coordination in
