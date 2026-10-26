@@ -6,12 +6,13 @@ module BatchConnect
   # Lock compatibility and recovery after scheduler acceptance are separate guarantees.
   class SessionStoreFailureTest < ActiveSupport::TestCase
     setup do
+      Configuration.stubs(:bc_session_store_locking?).returns(true)
       @directory = Dir.mktmpdir('session-store-failures')
       @root = Pathname.new(@directory)
       Session.stubs(:db_root).returns(@root)
       @json = { id: 'A', cluster_id: 'owens', job_id: '123', created_at: Time.now.to_i }.to_json
       @root.join('A').write(@json)
-      @store = SessionStore.new(@root)
+      @store = Session.store
     end
 
     teardown do
@@ -72,40 +73,42 @@ module BatchConnect
       assert_raises(Errno::EACCES) { @store.read_all { |json| JSON.parse(json) } }
     end
 
-    test 'failed persistence cancels the accepted job and preserves its diagnostic ID' do
+    test 'failed persistence preserves the accepted job and reports its diagnostic ID' do
       session = submission
       @adapter.expects(:submit).returns('job-123')
-      @adapter.expects(:delete).with('job-123')
+      @adapter.expects(:delete).never
       File.stubs(:rename).raises(Errno::ENOSPC)
       refute session.submit
       assert_equal 'job-123', session.job_id
-      assert_match(/job-123 was cancelled/, session.errors.full_messages.join)
+      assert_match(/Job job-123 was submitted/, session.errors.full_messages.join)
+      assert_match(/Check this job in the scheduler before submitting again/, session.errors.full_messages.join)
       assert_match(/No space left/, session.errors.full_messages.join)
       refute @root.join('B').exist?
       assert_equal ['lock'], @root.join('.session-store').children.map(&:basename).map(&:to_s)
     end
 
-    test 'a lock lost after preflight also cancels the accepted job' do
+    test 'a lock lost after preflight does not cancel the accepted job' do
       session = submission
       fail_lock(after: 1)
       @adapter.expects(:submit).returns('job-123')
-      @adapter.expects(:delete).with('job-123')
+      @adapter.expects(:delete).never
       refute session.submit
-      assert_match(/job-123 was cancelled/, session.errors.full_messages.join)
+      assert_match(/Job job-123 was submitted/, session.errors.full_messages.join)
+      assert_match(/locking unavailable/, session.errors.full_messages.join)
       refute @root.join('B').exist?
     end
 
-    test 'failed compensation reports both errors and the job requiring recovery' do
+    test 'failed serialization reports the accepted job without cancelling it' do
       session = submission
       @adapter.expects(:submit).returns('job-123')
-      @adapter.expects(:delete).with('job-123').raises(StandardError, 'scheduler unavailable')
-      File.stubs(:rename).raises(Errno::ENOSPC)
+      @adapter.expects(:delete).never
+      session.stubs(:to_json).raises(StandardError, 'serialization failed')
       refute session.submit
       message = session.errors.full_messages.join
       assert_match(/Job job-123 was submitted/, message)
-      assert_match(/No space left/, message)
-      assert_match(/scheduler unavailable/, message)
-      assert_match(/Cancel this job manually/, message)
+      assert_match(/serialization failed/, message)
+      assert_match(/cancel it manually if needed/, message)
+      refute @root.join('B').exist?
     end
 
     test 'read-only mode retains expired sessions and skips completion cache updates' do

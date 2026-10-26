@@ -146,7 +146,8 @@ module BatchConnect
       end
     end
 
-    test 'Session.all should rename and ignore corrupt session files' do
+    test 'Session.all should rename and ignore corrupt session files when locking is enabled' do
+      Configuration.stubs(:bc_session_store_locking?).returns(true)
       # FIXME: this is a test to confirm how it currently works - but how is wrong
       # Session.all is a "getter" method - **it should not change state as it does**
 

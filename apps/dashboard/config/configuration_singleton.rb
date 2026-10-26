@@ -92,6 +92,11 @@ class ConfigurationSingleton
     }.freeze
   end
 
+  # Opt in only after validating advisory locks on the session-record filesystem.
+  def bc_session_store_locking?
+    read_bool(ENV.fetch('OOD_BC_SESSION_STORE_LOCKING') { config.fetch(:bc_session_store_locking, false) })
+  end
+
   # All the string configurations that can be read through
   # environment variables or through the config file.
   #

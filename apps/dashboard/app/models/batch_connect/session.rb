@@ -175,7 +175,7 @@ module BatchConnect
       end
 
       def store
-        SessionStore.new(db_root)
+        SessionStore.new(db_root, locking: Configuration.bc_session_store_locking?)
       end
 
       # Checks if a session exists
@@ -342,13 +342,8 @@ module BatchConnect
     def persist_submission(store)
       store.write(id, to_json, create: true)
     rescue StandardError => e
-      begin
-        adapter.delete(job_id)
-      rescue StandardError => cancellation_error
-        raise StandardError, "Job #{job_id} was submitted but its session could not be saved: #{e.message}. " \
-                             "Cancellation failed: #{cancellation_error.message}. Cancel this job manually."
-      end
-      raise StandardError, "Job #{job_id} was cancelled because its session could not be saved: #{e.message}"
+      raise StandardError, "Job #{job_id} was submitted but its session could not be saved: #{e.message}. " \
+                           'Check this job in the scheduler before submitting again; cancel it manually if needed.'
     end
     private :persist_submission
 

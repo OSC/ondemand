@@ -3,14 +3,15 @@
 require 'tempfile'
 
 module BatchConnect
-  # Coordinate record replacement, quarantine and deletion across PUN workers.
+  # Replace records atomically, with optional coordination across PUN workers.
   class SessionStore
     class LockUnavailable < StandardError; end
 
     UNSUPPORTED_LOCK_ERRORS = [Errno::ENOLCK, Errno::ENOSYS, Errno::EOPNOTSUPP].freeze
 
-    def initialize(root)
+    def initialize(root, locking: false)
       @root = root
+      @locking = locking
     end
 
     def read_all(&parser)
@@ -25,8 +26,9 @@ module BatchConnect
       synchronize(read_only: true) { @root.join(id).read }
     end
 
-    # Check coordination support before a scheduler operation with side effects.
+    # Check the temporary directory and optional lock before scheduler side effects.
     def prepare!
+      metadata_directory
       synchronize { true }
     end
 
@@ -66,6 +68,9 @@ module BatchConnect
     end
 
     def synchronize(read_only: false)
+      # Without coordination, never quarantine a pathname another writer may replace.
+      return yield(false) unless @locking
+
       # Keep this lock inode stable: replacing/unlinking it breaks coordination.
       File.open(metadata_directory.join('lock'), File::RDWR | File::CREAT, 0o600) do |lock|
         locked = acquire_lock(lock, read_only: read_only)

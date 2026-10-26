@@ -1,32 +1,73 @@
-# Batch Connect session-store coordination
+# Batch Connect session-store persistence
 
-The session database uses a stable `.session-store/lock` inode and exclusive
-`flock` locks to coordinate readers, atomic record replacement, quarantine and
-deletion. All cooperating processes accessing one database must observe the
-same lock. Local locks on separate hosts do not coordinate a shared database.
-Keep `.session-store` on the record filesystem so replacement uses an atomic
-rename. Do not remove or replace the lock inode while workers are using it.
+Session records are always written to a private temporary file, flushed, and
+renamed over the destination on the same filesystem. Readers see a complete
+old or new record rather than partially written replacement JSON. Temporary
+files live in the private `.session-store` directory and are not enumerated as
+session records. The JSON schema is unchanged; no migration is needed.
 
-If `flock` reports `ENOLCK`, `ENOSYS` or `EOPNOTSUPP`, existing records remain
-readable and a warning is logged. Invalid records are skipped without being
-quarantined, because quarantine is a mutation requiring the lock. Completion
-cache updates are skipped, and expired records remain listed until locking is
-restored. Other I/O and permission errors continue to propagate normally.
+## Default: atomic replacement without advisory locking
 
-This is a read-only degraded mode: session creation, replacement and deletion
-require working locking. Repair the filesystem's locking support before using
-those operations. Cancellation of an existing scheduler job can still succeed
-without updating its completion cache. No mutation silently runs unlocked.
+`bc_session_store_locking` defaults to `false`. Creating, updating and deleting
+records does not call `flock`, so deploying this change does not introduce an
+advisory-locking requirement on users' home filesystems. Completion updates
+skip a record that is already absent when checked; repeated deletion succeeds.
 
-Submission checks locking before calling the scheduler. This preflight cannot
-make a scheduler call and a filesystem write transactional. If saving a newly
-accepted job's record fails, submission attempts to cancel the accepted job and
-reports its ID and the save error. If cancellation also fails, the error includes
-both failures and the accepted ID so an operator can cancel the job manually.
-Review that ID in the cluster scheduler before retrying submission.
+Without coordination, checking existence and renaming are separate operations:
+a completion update can recreate a record deleted between those operations.
+There is no cross-process snapshot or deletion-ordering guarantee in this mode.
+Invalid records are logged and skipped, but left in place for manual inspection.
+They are not renamed to `.bak`, because an unlocked quarantine could move a
+newer valid replacement. Existing `.bak` files are still ignored.
 
-The store protects concurrent record operations and avoids exposing partially
-written replacement JSON. It does not promise recovery after process death,
-power-loss durability, or compensation when a scheduler accepts a job but raises
-before returning its ID. Deployments must validate locking semantics on their
-actual shared filesystem and process topology.
+## Optional coordinated mode
+
+After validating the filesystem and worker topology, enable coordination in
+the Dashboard configuration:
+
+```yaml
+bc_session_store_locking: true
+```
+
+Alternatively set `OOD_BC_SESSION_STORE_LOCKING=true`. The environment setting
+takes precedence over the configuration file. All workers accessing a database
+must use the same setting. Stop the affected Dashboard processes before changing
+the setting, then restart them with the consistent configuration; mixed modes
+do not coordinate safely.
+
+Coordinated mode uses a stable `.session-store/lock` inode and exclusive `flock`
+locks for reading/quarantine, replacement and deletion. Completion updates
+recheck record existence under the lock, preventing recreation after a
+cooperating deletion. Scheduler calls remain outside the lock. Reads can
+quarantine invalid records, so their critical section also needs exclusive
+access. Do not remove or replace the lock inode while workers are using it.
+
+All cooperating processes accessing a database must observe the same lock.
+Local-only locks on separate hosts do not coordinate a shared database. Test
+both lock exclusion and atomic rename on the actual shared filesystem and
+process topology before enabling this option. A successful local `flock` call
+alone does not establish cross-host exclusion. Direct external edits and older
+OnDemand processes do not participate in this coordination.
+
+If enabled locking reports `ENOLCK`, `ENOSYS` or `EOPNOTSUPP`, existing records
+remain readable with a warning; invalid records are skipped without quarantine.
+Completion cache updates are skipped, and expired records remain listed.
+Creation and deletion fail before scheduler side effects when preflight detects
+the lock failure. There is no automatic switch to unlocked writes. Restore
+locking or stop and consistently reconfigure all workers to disable it.
+Other I/O and permission errors continue to propagate normally.
+
+## Failure recovery and durability
+
+Submission prepares the temporary directory and, when enabled, checks locking
+before contacting the scheduler. A scheduler call and a filesystem write are
+not one transaction. If saving an accepted job's record fails, submission
+returns an error containing the accepted job ID and save failure. The job is
+not automatically cancelled, preserving the previous scheduler policy. Review
+that ID in the scheduler before retrying; cancel it manually if appropriate.
+If the scheduler accepts a job but raises before returning its ID, this store
+cannot identify or recover that job.
+
+Atomic visibility is not a power-loss durability guarantee. No file or directory
+`fsync` is added here. Process death can also leave private temporary files.
+Durability and abandoned-file cleanup require separate design and validation.

@@ -7,6 +7,7 @@ module BatchConnect
   # Exercise real record files and deterministic reader/writer interleavings.
   class SessionStoreTest < ActiveSupport::TestCase
     setup do
+      Configuration.stubs(:bc_session_store_locking?).returns(true)
       @directory = Dir.mktmpdir('session-store')
       @root = Pathname.new(@directory)
       Session.stubs(:db_root).returns(@root)
@@ -112,14 +113,14 @@ module BatchConnect
     end
 
     test 'the store creates private metadata and record files' do
-      store = SessionStore.new(@root)
+      store = SessionStore.new(@root, locking: true)
       assert store.write('B', @json, create: true)
       assert_equal 0o700, @root.join('.session-store').stat.mode & 0o777
       assert_equal 0o600, @root.join('B').stat.mode & 0o777
     end
 
     test 'a writer waiting for the lock does not recreate a deleted record' do
-      store = SessionStore.new(@root)
+      store = SessionStore.new(@root, locking: true)
       store.prepare!
       waiting = Queue.new
       store.define_singleton_method(:acquire_lock) do |*args, **options|
