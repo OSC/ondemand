@@ -49,6 +49,8 @@ which can make a test appear to hang after the command itself has completed.
 | Concurrent startup | With no existing test PUN, issue two `nginx_stage pun --user=...` commands concurrently. Inspect both results and the process tree. | Only one master becomes the active PUN. The second request must not overwrite runtime state belonging to that master. |
 | App replacement | Exercise an actual staging app-config regeneration while another startup or replacement request is queued. Use a real installed app rather than an invented app path. | Stop, shutdown waiting and replacement are serialized. The new PID remains present after the old master exits, and the new PUN can subsequently be stopped normally. |
 | Immediate stop | Start the test PUN, then run `nginx_stage nginx --user=... --signal=stop`. | Success is reported only after both socket and PID entries disappear. A failed nginx command must not launch a replacement. |
+| Browser restart with Passenger | Use the actual Restart Web Server action while a dedicated staging account has active Passenger requests. Capture browser redirects and correlate Apache/nginx logs with the old and replacement masters. | Record actual stop (SIGTERM) latency and request interruption. The replacement starts only after the prior shutdown completes. A redirect alone is not evidence that stop succeeded. |
+| Contended browser restart | Hold the dedicated user's lifecycle lock, start a browser restart or app replacement, then release the lock after a measured interval. | Record lock-queue time separately from the shutdown wait. The complete request can exceed 30 seconds; the shutdown deadline starts only after successful signaling. Requests remain serialized. |
 | Passenger graceful drain | Open a real long-lived Passenger request or websocket, run `--signal=quit`, and observe both paths and the master. Repeat with the client closing before and after 30 seconds. | A socket disappearing first does not release startup while the master remains alive. A drain beyond 30 seconds produces a timeout, preserves the PID and releases the lifecycle lock. |
 | Startup after timeout | While the preceding master still drains, try both normal `pun` startup and direct `nginx` startup. Then close the client, wait for the old master to finish, and retry startup and stop. | Both entry points reject replacement while the old master lives. After shutdown completes, startup and a later stop succeed; the old master never removes the replacement's PID. |
 | Whole-PUN crash | Identify the dedicated master and all workers. Kill only those verified test processes, leaving PID/socket entries. Run targeted cleanup. | The refused stale socket and dead PID are removed. A subsequent normal startup succeeds. |
@@ -58,6 +60,14 @@ which can make a test appear to hang after the command itself has completed.
 | Runtime-directory failure | Leave one unrelated test file in the per-user PID directory so both rmdir attempts fail. Remove that test file and run a fresh cleaner. | The file is preserved, the directory failure is reported, and the pending record permits a later retry. Directory removal remains serialized with competing startup. |
 | Missing/invalid PID | In separate disposable fixtures, exercise malformed PID contents, an absent PID beside a live socket, and dangling symlinks. Do not place arbitrary process IDs in a live control file. | Signals reject invalid files before nginx execution. Live or uncertain sockets and symlinked malformed PID entries are preserved. Startup does not bypass ambiguous state. |
 | Selection and dry run | Repeat representative cases with `--user=...` and `--skip-nginx`; snapshot runtime paths and metadata before and after. | Other users' state is unchanged. Dry runs signal nothing, make no probe connection and delete nothing. |
+| Configuration migration | Preserve the staging configuration, then change the config path or executable setting while its test PUN is running. Follow the README's configuration recovery procedure with competing lifecycle callers paused. | New settings refuse the uncertain master without signaling it. A fresh invocation using the preserved settings stops it only if full identity checks still pass. Resume callers only after completing the migration. |
+
+The Apache stop handler ignores the stop error when a `redir` parameter is
+supplied and redirects the browser. A later startup may then report the
+unresolved runtime state. Record command diagnostics and process/path state as
+well as the HTTP response; an HTTP redirect does not establish successful
+shutdown or recovery. App replacement and browser restart use `stop`, so the
+graceful `quit` scenario must be reported separately.
 
 Typical control commands, after verifying the dedicated test account and paths:
 
@@ -104,6 +114,20 @@ A rate-limited static request also exercises graceful-drain timeout, startup
 rejection and recovery after the client closes. Private executable copies exercise
 unlink, rename and dpkg hard-link upgrades. A surviving-worker case verifies
 listener preservation and later stale-state recovery. These checks do not load Passenger.
+
+The saved-configuration integration cases also launch a fresh Ruby CLI process
+with `NGINX_STAGE_CONFIG_FILE` after rejecting changed paths. They check that
+restoring the original settings permits a verified shutdown of a still-serving
+master. The isolated fixture permits the invoking account with `min_uid: 0`;
+that fixture setting is not a deployment recommendation.
+
+Inspect the executed steps in each hosted job before reporting platform
+coverage. In the current workflow, x86_64 jobs run package builds and package
+tests; aarch64/ppc64le build steps run only for scheduled events, and their e2e
+test command is commented out. A green matrix job with skipped build/test steps
+does not establish validation of that target. The lint command uses `|| true`,
+so report a separate lint result and compare existing offenses against the
+same base and tool versions instead of treating the green job as lint proof.
 
 Run the same checks on each supported deployment kernel and architecture, as
 the administrator/service identity used for nginx_stage:

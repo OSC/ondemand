@@ -21,6 +21,14 @@ The wait polls every 0.1 second against a **30-second monotonic deadline**.
 This deadline starts after signaling succeeds. It does not bound blocking
 startup/replacement lock acquisition or the nginx command itself. It is currently fixed, not a configuration option.
 
+Apache invokes PUN stop and app replacement synchronously, so their shutdown
+wait can delay the corresponding web request. Time queued for the lifecycle
+lock is additional; the 30-second shutdown deadline is not an overall HTTP
+request deadline. Restart/app replacement uses `stop` (SIGTERM), whereas
+`quit` (SIGQUIT) requests a graceful drain. Measure both with the deployed
+Passenger configuration rather than inferring stop latency from a long-lived
+request alone.
+
 A timeout returns an error without forcing termination or starting a replacement.
 A graceful `quit` may have removed its socket while its master is still draining
 websockets or Passenger requests. Startup stays blocked while that recorded
