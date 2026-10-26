@@ -66,23 +66,29 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
-  # Keep file fixtures isolated and alive until each browser assertion finishes.
-  def with_path_selector_app(file_pattern: nil, files: ['test.py', 'test.rb'])
+  test 'path_selector can filter by file type matching an expression' do
     Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
       apps_dir = File.join(dir, 'apps')
       files_dir = File.join(dir, 'files')
       FileUtils.mkdir_p([apps_dir, files_dir])
-      files.each { |name| FileUtils.touch(File.join(files_dir, name)) }
-      attributes = { 'widget' => 'path_selector', 'directory' => files_dir, 'show_files' => true }
-      attributes['file_pattern'] = file_pattern unless file_pattern.nil?
-      form = { 'cluster' => ['owens'], 'form' => ['path'], 'attributes' => { 'path' => attributes } }
-      make_bc_app(apps_dir, form.to_yaml)
-      yield
-    end
-  end
+      # Keep exact filenames alive until the browser assertions finish.
+      ['test.py', 'test.rb', 'test.pyc'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
 
-  test 'path_selector can filter by file type matching an expression' do
-    with_path_selector_app(file_pattern: '\.py$', files: ['test.py', 'test.rb', 'test.pyc']) do
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{files_dir}"
+            show_files: true
+            file_pattern: \\.py$
+      HEREDOC
+
+      make_bc_app(apps_dir, form)
       visit new_batch_connect_session_context_url('sys/app')
       click_on 'Select Path'
 
@@ -94,14 +100,53 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
   end
 
   test 'path_selector handles invalid regular expressions' do
-    with_path_selector_app(file_pattern: ".doesn't(compile") do
+    Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
+      apps_dir = File.join(dir, 'apps')
+      files_dir = File.join(dir, 'files')
+      FileUtils.mkdir_p([apps_dir, files_dir])
+      ['test.py', 'test.rb'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{files_dir}"
+            show_files: true
+            file_pattern: .doesn't(compile
+      HEREDOC
+
+      make_bc_app(apps_dir, form)
       visit new_batch_connect_session_context_url('sys/app')
       assert_selector '.alert-danger', text: 'did not compile'
     end
   end
 
   test 'path_selector handles no provided file pattern' do
-    with_path_selector_app do
+    Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
+      apps_dir = File.join(dir, 'apps')
+      files_dir = File.join(dir, 'files')
+      FileUtils.mkdir_p([apps_dir, files_dir])
+      ['test.py', 'test.rb'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{files_dir}"
+            show_files: true
+      HEREDOC
+
+      make_bc_app(apps_dir, form)
       visit new_batch_connect_session_context_url('sys/app')
       click_on 'Select Path'
 
