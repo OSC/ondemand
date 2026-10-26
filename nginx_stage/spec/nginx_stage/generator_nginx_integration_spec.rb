@@ -236,4 +236,43 @@ RSpec.describe NginxStage::Generator do
     generator.send(:run_nginx, user: user, signal: :stop)
     await_child(runtime[:master])
   end
+
+  context 'when recovering with a saved nginx_stage configuration' do
+    let(:user) { Etc.getpwuid(Process.euid).name }
+
+    ['pun_config_path', 'nginx_bin'].each do |changed|
+      it "refuses #{changed} drift and stops the original master through a fresh CLI invocation" do
+        saved_config = File.join(directory, 'before-migration.yml')
+        settings = {
+          'nginx_bin' => binary, 'pun_config_path' => config,
+          'pun_pid_path' => pid_path, 'pun_socket_path' => socket_path, 'min_uid' => 0
+        }
+        File.write(saved_config, YAML.dump(settings))
+        File.chmod(0o600, saved_config)
+        if changed == 'pun_config_path'
+          allow(NginxStage).to receive(:pun_config_path).and_return(File.join(directory, 'moved.conf'))
+        else
+          replacement = File.join(directory, 'replacement-nginx')
+          FileUtils.cp(binary, replacement)
+          File.chmod(0o755, replacement)
+          allow(NginxStage).to receive(:nginx_bin).and_return(replacement)
+        end
+
+        expect { generator.send(:run_nginx, user: user, signal: :stop) }
+          .to raise_error(NginxStage::Error, /identity is unknown/)
+        expect(File.read(pid_path).to_i).to eq(runtime[:master])
+        expect(response).to end_with('before')
+
+        output, status = Open3.capture2e(
+          { 'NGINX_STAGE_CONFIG_FILE' => saved_config },
+          RbConfig.ruby, '-I', File.expand_path('../../lib', __dir__), '-rnginx_stage',
+          '-e', 'NginxStage::Application.start', '--', 'nginx', "--user=#{user}", '--signal=stop'
+        )
+        expect(status).to be_success, output
+        await_child(runtime[:master])
+        expect(File.exist?(pid_path)).to be(false)
+        expect(File.exist?(socket_path)).to be(false)
+      end
+    end
+  end
 end

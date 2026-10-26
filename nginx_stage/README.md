@@ -150,6 +150,44 @@ user's state is modified. Candidate account lookup still occurs during enumerati
 
 ## Operator recovery
 
+### Configuration path or executable changes
+
+Stop existing PUNs before changing `pun_config_path`, `nginx_bin`, or the
+symlink target used by `nginx_bin`. Verification compares the running master's
+launch configuration path and executable with the current settings. Changing
+configuration contents at the same path does not itself change that identity.
+Supported package replacement at the same executable path is handled separately
+by the upgrade checks described above.
+
+Preserve the original `nginx_stage.yml` and its executable/runtime paths before
+a migration. If the settings have already changed, a targeted invocation with
+that saved configuration can recover a master that still meets all identity
+checks:
+
+```bash
+sudo env NGINX_STAGE_CONFIG_FILE=/root/nginx_stage.before-migration.yml \
+  nginx_stage nginx --user=exampleuser --signal=stop
+```
+
+Use an administrator-owned, protected configuration file with the original
+`nginx_bin`, `pun_config_path`, `pun_pid_path`, and `pun_socket_path` settings.
+Confirm that the service profile does not replace `NGINX_STAGE_CONFIG_FILE`.
+The command still verifies the executable, complete master title and effective
+UID, then waits for shutdown. It does not authorize a process merely because
+the old configuration was supplied. If the old executable path is unavailable,
+the executable provenance is unsupported, or process metadata is unreadable,
+investigate the reported identity failure before taking further action.
+
+Coordinate migration across every cooperating startup, restart and cleanup
+caller before using the saved settings. Changing `pun_config_path` also changes
+the lifecycle lock path, so commands using the old and new settings must not run
+concurrently against the same PUN. Stop automatic cleanup and prevent new
+requests from starting PUNs during that maintenance window. After the old PUNs
+have stopped, enable the new settings and resume normal operation. Keep stable
+lock files; do not delete PID/socket files to bypass verification.
+
+### Other uncertain runtime state
+
 1. Check user **and primary-group lookup** health first. Cleanup currently treats
    an unresolved account as disabled. It preserves state when a passwd record
    still exists but full user/group lookup fails. A complete LDAP/SSSD outage
