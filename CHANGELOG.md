@@ -16,22 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Refactor xdmod_host into string_configs for ondemand.d support (#5948)\
-Refactor shared_projects_root to support ondemand.d configuration (#5977)\
-Fix file browser navigation with Select All clicked (#5971)\
-lint a random file (#5976)\
-Fix launcher test cluster fixtures and simplify Slurm expectations (#5953)\
-Refactor bc_config_root to support ondemand.d configuration (#5938)\
-Refactor open_apps_in_new_window into boolean_configs for ondemand.d support (#5968)\
-Refactor `ood_bc_card_time` to support ondemand.d configuration (#5969)\
-Wait to load config until all environment files have been ingested (#5970)\
-Handle stale Chrome visibility errors in Dashboard system tests (#5957)\
-update dependencies (#5966)\
-Update Changelog (#5964)\
-Guard E2E log collection when the directory is absent (#5958)\
-Refactor balance configs to support ondemand.d configuration (#5941)\
-update localizations (#5965)\
-update localizations (#5965)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -60,7 +44,13 @@ update localizations (#5965)
 - Pun initialization now locks to serialize itself in [5872](https://github.com/OSC/ondemand/pull/5872).
 - The timezone now shows in Active jobs extended details in [5838](https://github.com/OSC/ondemand/pull/5838).
 - Job Composer now shows a deprecation warning in [5858](https://github.com/OSC/ondemand/pull/5858).
-- OOD_APP_CONFIG_ROOT now has ondemand.d support in [5937](https://github.com/OSC/ondemand/pull/5937).
+- Several environment variables now have ondemand.d support.
+  - OOD_APP_CONFIG_ROOT in [5937](https://github.com/OSC/ondemand/pull/5937).
+  - OOD_BALANCE_PATH and OOD_BALANCE_THRESHOLD in [5941](https://github.com/OSC/ondemand/pull/5941).
+  - OOD_BC_CARD_TIME in [5969](https://github.com/OSC/ondemand/pull/5969).
+  - OOD_OPEN_APPS_IN_NEW_WINDOW in [5968](https://github.com/OSC/ondemand/pull/5968).
+  - XDMOD_HOST in [5948](https://github.com/OSC/ondemand/pull/5948).
+  - OOD_SHARED_PROJECT_PATH [5977](https://github.com/OSC/ondemand/pull/5948).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -100,6 +90,7 @@ update localizations (#5965)
 - The file editor now chooses the minimum value between file_editor_max_size and download_file_max in [5857](https://github.com/OSC/ondemand/pull/5857).
 - Fix mobile Shell keyboard focus and viewport sizing in [5804](https://github.com/OSC/ondemand/pull/5804).
 - The Project Manager Launchers now work for HTCondor in [5944](https://github.com/OSC/ondemand/pull/5944).
+- Fix file browser navigation with Select All clicked in [5971](https://github.com/OSC/ondemand/pull/5971).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
