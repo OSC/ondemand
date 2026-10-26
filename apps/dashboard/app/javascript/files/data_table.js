@@ -68,7 +68,13 @@ jQuery(function () {
         } else {
             table.getTable().rows().deselect();
         }
-    })
+    });
+    $('#select_all').on('keypress', function(event) {
+        if (event.which === 13) {
+          this.checked = !this.checked;
+          this.dispatchEvent(new Event('click'));
+        }
+    });
 
     /* END TABLE ACTIONS */
 
@@ -303,7 +309,7 @@ class DataTable {
             $('#open-in-terminal-btn').removeClass('disabled');
 
             if ($('#select_all').is(':checked')) {
-                $('#select_all').trigger();
+                $('#select_all').click();
             }
 
             $(`${CONTENTID}_caption`).text(`Contents of directory ${data.path}`);
@@ -330,10 +336,10 @@ class DataTable {
             return result;
         } catch (e) {
             OODAlertError(e.message);
+            console.error(e);
 
             $('#open-in-terminal-btn').addClass('disabled');
-
-            this.toggleSpinner()
+            this.toggleSpinner();
             
             // Removed this as it was causing a JS Error and there is no reprocution from removing it.
             // return await Promise.reject(e);
