@@ -71,7 +71,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       apps_dir = File.join(dir, 'apps')
       files_dir = File.join(dir, 'files')
       FileUtils.mkdir_p([apps_dir, files_dir])
-      # Keep exact filenames alive until the browser assertions finish.
+      # Plain files avoid Tempfile's GC cleanup before browser assertions finish.
       ['test.py', 'test.rb', 'test.pyc'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
 
       form = <<~HEREDOC
