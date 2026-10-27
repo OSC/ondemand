@@ -421,6 +421,10 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
         assert_equal 'host.from.file', ConfigurationSingleton.new.native_vnc_login_host
+      end
+    end
+  end
+
   test "xdmod_host is nil by default" do
     with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: nil)) do
       assert_nil ConfigurationSingleton.new.xdmod_host
@@ -454,6 +458,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_NATIVE_VNC_LOGIN_HOST: 'host.from.env') do
         assert_equal 'host.from.env', ConfigurationSingleton.new.native_vnc_login_host
       end
+    end
+  end
+  
   test "xdmod_host environment variable has precedence over ondemand.d" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
