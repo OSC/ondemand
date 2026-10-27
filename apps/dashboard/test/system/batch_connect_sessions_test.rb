@@ -205,42 +205,40 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
   test 'session cards hold focus when replaced' do 
     Dir.mktmpdir do |dir|
-      with_modified_env({OOD_BC_SESSIONS_POLL_DELAY: '10'}) do
-        create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
-        stub_scheduler(:running, nodes: 2, cores: 2)
-        # The production configuration clamps environment values to at least 10s.
-        Configuration.stubs(:bc_sessions_poll_delay).returns(10)
-        visit(batch_connect_sessions_path)
-  
-        card_id = "id_#{get_test_bc_id}"
-        assert_selector("##{card_id}")
-        identities = evaluate_script <<~JS
-          (() => {
-            #{session_focus_dom(card_id)}
-            return controls.filter(element =>
-              element.getClientRects().length > 0 && !element.disabled &&
-              getComputedStyle(element).visibility !== 'hidden').map(describe);
-          })()
-        JS
-        assert_not_empty identities
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 2, cores: 2)
+      # The production configuration clamps environment values to at least 10s.
+      Configuration.stubs(:bc_sessions_poll_delay).returns(10)
+      visit(batch_connect_sessions_path)
 
-        identities.each do |identity|
-          # A second replacement also proves that polling continues after restoration.
-          2.times do
-            focus_session_control(card_id, identity)
-            assert_replaced_session_focus(card_id, identity)
-          end
+      card_id = "id_#{get_test_bc_id}"
+      assert_selector("##{card_id}")
+      identities = evaluate_script <<~JS
+        (() => {
+          #{session_focus_dom(card_id)}
+          return controls.filter(element =>
+            element.getClientRects().length > 0 && !element.disabled &&
+            getComputedStyle(element).visibility !== 'hidden').map(describe);
+        })()
+      JS
+      assert_not_empty identities
+
+      identities.each do |identity|
+        # A second replacement also proves that polling continues after restoration.
+        2.times do
+          focus_session_control(card_id, identity)
+          assert_replaced_session_focus(card_id, identity)
         end
-
-        classless = identities.find do |identity|
-          identity['tag'] == 'button' && identity['id'].empty? && !identity['text'].strip.empty?
-        end
-        assert_not_nil classless
-        focus_session_control(card_id, classless, classless: true)
-        assert_replaced_session_focus(card_id, classless)
-
-        visit root_path
       end
+
+      classless = identities.find do |identity|
+        identity['tag'] == 'button' && identity['id'].empty? && !identity['text'].strip.empty?
+      end
+      assert_not_nil classless
+      focus_session_control(card_id, classless, classless: true)
+      assert_replaced_session_focus(card_id, classless)
+
+      visit root_path
     end
   end
 
