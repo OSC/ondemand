@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
+require_relative '../support/browser_fixture_directory'
 
 # unclear why this is needed, but it is.
 require 'ood_core/job/adapters/slurm'
 
 class BatchConnectSessionsTest < ApplicationSystemTestCase
+  include BrowserFixtureDirectory
 
   def setup
     stub_sys_apps
@@ -204,7 +206,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'session cards hold focus when replaced' do 
-    Dir.mktmpdir do |dir|
+    with_browser_fixture_directory do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 2, cores: 2)
       # The production configuration clamps environment values to at least 10s.
@@ -234,16 +236,14 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       classless = identities.find do |identity|
         identity['tag'] == 'button' && identity['id'].empty? && !identity['text'].strip.empty?
       end
-      assert_not_nil classless
+      assert_not_nil classless, 'Expected the Jupyter card to contain a visible, enabled, ID-less button with text'
       focus_session_control(card_id, classless, classless: true)
       assert_replaced_session_focus(card_id, classless)
-
-      visit root_path
     end
   end
 
   test 'session card connection tabs remain selected when replaced' do
-    Dir.mktmpdir do |dir|
+    with_browser_fixture_directory do |dir|
       with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
         Configuration.stubs(:bc_sessions_poll_delay).returns(100)
         create_vnc_running_session(dir)
@@ -268,8 +268,6 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
           assert_selector('.nav-link.active', text: 'Native Instructions')
           assert_text('establish the SSH tunnel')
         end
-
-        visit root_path
       end
     end
   end

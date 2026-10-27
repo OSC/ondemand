@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
+require_relative '../support/browser_fixture_directory'
 
 # Tests /projects URL and the associated code paths
 class ProjectManagerTest < ApplicationSystemTestCase
+  include BrowserFixtureDirectory
+
   def setup
     stub_clusters
     stub_user
@@ -1664,51 +1667,35 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   test 'importing a shared project' do
-    # Keep the source and lookup alive through failure screenshots and browser reset.
-    @shared_import_root = Pathname.new(Dir.mktmpdir('shared-project-import-'))
-    source = @shared_import_root.join('chemistry-5533')
-    lookup_root = @shared_import_root.join('lookup')
-    lookup_root.mkpath
-    FileUtils.cp_r(Rails.root.join('test/fixtures/projects/chemistry-5533'), source)
-    Project.stubs(:dataroot).returns(lookup_root)
+    # Keep the source and lookup until browser reset completes, including on failure.
+    with_browser_fixture_directory do |dir|
+      root = Pathname.new(dir)
+      source = root.join('chemistry-5533')
+      lookup_root = root.join('lookup')
+      lookup_root.mkpath
+      FileUtils.cp_r(Rails.root.join('test/fixtures/projects/chemistry-5533'), source)
+      Project.stubs(:dataroot).returns(lookup_root)
+      assert_nil Project.find('abc123')
 
-    manifest = YAML.safe_load(source.join('.ondemand/manifest.yml').read)
-    assert_equal 'abc123', manifest.fetch('id')
-    assert_equal 'Chemistry 5533', manifest.fetch('name')
-    assert_nil Project.find('abc123')
-
-    visit(projects_root_path)
-    find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
-    assert_selector('#load-import-pane.collapse.show:not(.collapsing)')
-    within('#load-import-pane') do
-      assert_selector('#project_directory:enabled')
-      assert_selector('#import_project:enabled')
-      fill_in('project_directory', with: source.to_s)
-      assert_field('project_directory', with: source.to_s)
-      find('#import_project').click
-    end
-
-    assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
-    assert_current_path(projects_root_path)
-    assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
-    assert_equal({ 'abc123' => source.to_s }, YAML.safe_load(lookup_root.join('.project_lookup').read))
-    imported = Project.find('abc123')
-    assert_not_nil imported
-    assert_equal source, imported.directory
-    assert_equal 'Chemistry 5533', imported.name
-  rescue Minitest::Assertion
-    lookup = lookup_root.join('.project_lookup')
-    warn "Shared import source: #{source}; lookup: #{lookup.file? ? lookup.read : '(missing)'}"
-    raise
-  end
-
-  teardown do
-    if @shared_import_root
-      begin
-        page.reset!
-      ensure
-        FileUtils.remove_entry(@shared_import_root)
+      visit(projects_root_path)
+      find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
+      assert_selector('#load-import-pane.collapse.show:not(.collapsing)')
+      within('#load-import-pane') do
+        assert_selector('#project_directory:enabled')
+        assert_selector('#import_project:enabled')
+        fill_in('project_directory', with: source.to_s)
+        assert_field('project_directory', with: source.to_s)
+        find('#import_project').click
       end
+
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
+      assert_current_path(projects_root_path)
+      assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
+      assert_equal({ 'abc123' => source.to_s }, YAML.safe_load(lookup_root.join('.project_lookup').read))
+      imported = Project.find('abc123')
+      assert_not_nil imported
+      assert_equal source, imported.directory
+      assert_equal 'Chemistry 5533', imported.name
     end
   end
 end
