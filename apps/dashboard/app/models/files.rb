@@ -23,8 +23,7 @@ class Files
     # view the yaml files inline with the browser.
     # Would like to have a pattern match for the  yaml mime-types; something like application/*yml and application/*yaml
     # but couldn't find one that worked. Therefore, for now we're using full mime-type names for yaml mime-types.
-
-    plain_cast_array = ['text/*', 'application/x-yml', 'application/x-yaml', 'application/yml', 'application/yaml']
+    plain_cast_array = ['text/*', 'application/(x-)?y(a)?ml', 'application/xml']
 
     type = 'text/plain; charset=utf-8' if plain_cast_array.any? { |mime| /#{mime}/.match?(type) }
 

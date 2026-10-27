@@ -275,4 +275,16 @@ class FilesTest < ActiveSupport::TestCase
       assert_equal(4, new_result)
     end
   end
+
+  test 'plain cast for preview' do
+    plain_text = 'text/plain; charset=utf-8'
+
+    assert_equal(plain_text, Files.mime_type_for_preview('text/html'))
+    assert_equal(plain_text, Files.mime_type_for_preview('text/asdfasdfas'))
+    assert_equal(plain_text, Files.mime_type_for_preview('application/x-yml'))
+    assert_equal(plain_text, Files.mime_type_for_preview('application/x-yaml'))
+    assert_equal(plain_text, Files.mime_type_for_preview('application/yml'))
+    assert_equal(plain_text, Files.mime_type_for_preview('application/yamlasdf'))
+    assert_equal(plain_text, Files.mime_type_for_preview('application/xml; foo=bar'))
+  end
 end
