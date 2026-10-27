@@ -29,6 +29,23 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector '.selected', count: 2
   end
 
+  test 'select all checkbox responds to enter key' do
+    Dir.mktmpdir do |dir|
+      %w[a.txt b.txt c.txt].each { |f| FileUtils.touch(File.join(dir, f)) }
+
+      visit files_url(dir)
+      assert_selector '#directory-contents tbody tr', count: 3
+
+      find('#select_all').send_keys(:return)
+      assert_selector '#select_all:checked'
+      assert_selector '.selected', count: 3
+
+      find('#select_all').send_keys(:return)
+      assert_selector '#select_all:not(:checked)'
+      assert_selector '.selected', count: 0
+    end
+  end
+  
   test 'visiting files app with bad directory does not duplicate errors' do
     bad_path = Rails.root / "nonexistent"
     visit files_url(bad_path.to_s)
@@ -218,6 +235,42 @@ class FilesTest < ApplicationSystemTestCase
 
       assert File.file?(File.join(dir, 'dest', 'foo.txt'))
       assert File.file?(File.join(dir, 'src', 'foo.txt'))
+    end
+  end
+
+  test 'copying directory contents with select all' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src/app", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/app/contents.txt")
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('#select_all').click
+
+      assert_selector '.selected', count: 3
+
+      find('#copy-move-btn').click
+
+      assert_selector '#clipboard li', count: 3
+      assert_selector '#clipboard li', text: 'app'
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      find('li.breadcrumb-item', text: File.basename(dir)).click
+      find('a.name', text: 'dest').click
+
+      assert_selector '#clipboard li', count: 3
+
+      find('#clipboard-copy-to-dir').click
+
+      assert_selector('tbody a', exact_text: 'app')
+      assert_selector('tbody a', exact_text: 'foo.txt')
+      assert_selector('tbody a', exact_text: 'bar.txt')
+
+      assert File.file?(File.join(dir, 'dest', 'app', 'contents.txt'))
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
     end
   end
 

@@ -43,6 +43,14 @@ Changes are grouped by type:
 - The file browser now shows timezones in the modified date field in [5839](https://github.com/OSC/ondemand/pull/5839).
 - Pun initialization now locks to serialize itself in [5872](https://github.com/OSC/ondemand/pull/5872).
 - The timezone now shows in Active jobs extended details in [5838](https://github.com/OSC/ondemand/pull/5838).
+- Job Composer now shows a deprecation warning in [5858](https://github.com/OSC/ondemand/pull/5858).
+- Several environment variables now have ondemand.d support.
+  - OOD_APP_CONFIG_ROOT in [5937](https://github.com/OSC/ondemand/pull/5937).
+  - OOD_BALANCE_PATH and OOD_BALANCE_THRESHOLD in [5941](https://github.com/OSC/ondemand/pull/5941).
+  - OOD_BC_CARD_TIME in [5969](https://github.com/OSC/ondemand/pull/5969).
+  - OOD_OPEN_APPS_IN_NEW_WINDOW in [5968](https://github.com/OSC/ondemand/pull/5968).
+  - XDMOD_HOST in [5948](https://github.com/OSC/ondemand/pull/5948).
+  - OOD_SHARED_PROJECT_PATH [5977](https://github.com/OSC/ondemand/pull/5948).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -81,6 +89,8 @@ Changes are grouped by type:
 - Rclone remotes are sorted fixing an issue with newer rclone versions in [5860](https://github.com/OSC/ondemand/pull/5860).
 - The file editor now chooses the minimum value between file_editor_max_size and download_file_max in [5857](https://github.com/OSC/ondemand/pull/5857).
 - Fix mobile Shell keyboard focus and viewport sizing in [5804](https://github.com/OSC/ondemand/pull/5804).
+- The Project Manager Launchers now work for HTCondor in [5944](https://github.com/OSC/ondemand/pull/5944).
+- Fix file browser navigation with Select All clicked in [5971](https://github.com/OSC/ondemand/pull/5971).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
