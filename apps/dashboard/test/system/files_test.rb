@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
+require_relative '../support/browser_fixture_directory'
 
 class FilesTest < ApplicationSystemTestCase
+  include BrowserFixtureDirectory
+
   MAX_WAIT = 120
 
   def setup
@@ -545,15 +548,35 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector('.uppy-StatusBar-actions span', text: 'Duplicate files identified. Uploading these files will overwrite existing content.')
   end
 
+  # Wait for the whole upload dialog and the destination contents to finish updating.
+  def assert_upload_complete(path, expected_content)
+    assert_no_selector('.uppy-Dashboard--modal', wait: MAX_WAIT)
+    observed = nil
+    page.document.synchronize(MAX_WAIT, errors: [Capybara::ExpectationNotMet]) do
+      observed = File.file?(path) ? File.read(path) : nil
+      unless observed == expected_content
+        raise Capybara::ExpectationNotMet,
+              "Expected #{path}: #{expected_content.inspect}; observed #{observed.inspect}"
+      end
+    end
+    assert_equal expected_content, observed
+  rescue Capybara::ExpectationNotMet => e
+    flunk e.message
+  end
+
   test 'uploading duplicate files' do
-    Dir.mktmpdir do |dir|
+    with_browser_fixture_directory do |dir|
       File.stubs(:umask).returns(18) # ensure default umask is 644
       upload_dir = File.join(dir, 'upload')
-      FileUtils.mkpath(upload_dir)
 
-      src_file = "#{dir}/testfile.sh"
+      src_file = "#{dir}/original/testfile.sh"
+      replacement_file = "#{dir}/replacement/testfile.sh"
       upload_file = "#{upload_dir}/testfile.sh"
-      `echo 'here some initial content' > #{src_file}`
+      FileUtils.mkdir_p([upload_dir, File.dirname(src_file), File.dirname(replacement_file)])
+      initial_content = "here some initial content\n"
+      replacement_content = "#{initial_content}and some more content\n"
+      File.write(src_file, initial_content)
+      File.write(replacement_file, replacement_content)
 
       visit files_url(upload_dir)
       find('#upload-btn').click
@@ -561,34 +584,28 @@ class FilesTest < ApplicationSystemTestCase
 
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_upload_complete(upload_file, initial_content)
       assert_selector('tbody a', exact_text: File.basename(src_file))
-      assert File.exist?(upload_file)
-      assert_equal File.read(src_file), File.read(upload_file)
       assert_equal(33_188, File.stat(upload_file).mode) # default 644
 
       # now change the permissions and verify
-      `chmod 755 #{upload_file}`
+      File.chmod(0o755, upload_file)
       assert_equal(33_261, File.stat(upload_file).mode) # now 755
 
-      # add something more to the original file
-      `echo 'and some more content' >> #{src_file}`
-
-      # upload the file again
+      # Use a fresh file with the same name so the browser selects new contents.
       find('#upload-btn').click
       assert_selector('.uppy-Dashboard-AddFiles')
-      attach_file 'files[]', src_file, visible: false, match: :first
+      attach_file 'files[]', replacement_file, visible: false, match: :first
       assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2")
       assert_overwrite_buttons
 
       click_on('Upload and Overwrite')
-      refute_selector('.uppy-Dashboard-AddFiles')
+      assert_upload_complete(upload_file, replacement_content)
       assert_selector('tbody a', exact_text: File.basename(src_file))
 
       # and it's still there, now with new content and it keeps the 755 permissions
-      assert File.exist?(upload_file)
-      assert_equal File.read(src_file), File.read(upload_file)
-      assert_equal File.stat(upload_file).mode, 33_261 # still 755
+      assert_equal 33_261, File.stat(upload_file).mode # still 755
     end
   end
 
