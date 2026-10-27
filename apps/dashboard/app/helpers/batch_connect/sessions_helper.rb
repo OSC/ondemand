@@ -1,13 +1,13 @@
 # Helper for active batch connect sessions.
 #
-# Note that this module programatically generates the cards for
+# Note that this module programmatically generates the cards for
 # active batch connect sessions.
 module BatchConnect::SessionsHelper
 
   def render_connection(session)
     if session.running?
       if session.view
-        views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
+        views = { partial: "custom", locals: { view: session.view, connect: session.connect, session: session } }
       else
         if session.vnc?
           views = []
@@ -24,7 +24,7 @@ module BatchConnect::SessionsHelper
     elsif session.completed?
       views = { partial: "completed", locals: { session: session } }
     else
-      views = { partial: "bad" }
+      views = { partial: "bad", locals: { session: session } }
     end
 
     connection_tabs(session.id, views)
@@ -38,16 +38,23 @@ module BatchConnect::SessionsHelper
     time_limit = session.info.wallclock_limit
     time_used  = session.info.wallclock_time
     if session.starting? || session.running?
-      if time_limit && time_used
+      if time_limit.to_i.positive? && time_used
         [t('dashboard.batch_connect_sessions_stats_time_remaining'), distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
       elsif time_used
         [t('dashboard.batch_connect_sessions_stats_time_used'), distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
       end
-    else
-      if time_limit
-        [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
-      end
+    elsif time_limit.to_i.positive?
+      [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
     end
+  end
+
+  def minutes_remaining(session)
+    time_limit = session.info.wallclock_limit
+    time_used  = session.info.wallclock_time
+    return nil if time_limit.nil? || time_used.nil?
+
+    seconds_remaining = time_limit - time_used
+    (seconds_remaining / 60.0).floor
   end
 
   def status(session)
@@ -92,7 +99,7 @@ module BatchConnect::SessionsHelper
 
     user_context = session.user_context
     params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, nil)]}.to_h.compact
-    title = "#{t('dashboard.batch_connect_sessions_relaunch_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_relaunch_full_title', title: session.title)
     button_to(
       batch_connect_session_contexts_path(token: batch_connect_app.token),
       method: :post,
@@ -112,7 +119,7 @@ module BatchConnect::SessionsHelper
     button_to(
       new_batch_connect_session_context_path(token: session.token),
       method: :get,
-      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner],
+      class: %w[btn px-1 py-0 btn-outline-dark full-page-spinner edit-session],
       form_class: %w[d-inline edit-session],
       title: title,
       'aria-label': title,
@@ -132,7 +139,7 @@ module BatchConnect::SessionsHelper
   end
 
   def delete(session)
-    title = "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_delete_full_title', title: session.title)
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
@@ -146,7 +153,7 @@ module BatchConnect::SessionsHelper
   end
 
   def cancel(session)
-    title = "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    title = t('dashboard.batch_connect_sessions_cancel_full_title', title: session.title)
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
@@ -163,7 +170,11 @@ module BatchConnect::SessionsHelper
     version  = "1.3.0"
     password = view_only ? connect.spassword : connect.password
     resize   = view_only ? "downscale" : "remote"
-    asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
+    base = asset_path(
+      "noVNC-#{version}/vnc.html?autoconnect=true&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}",
+      skip_pipeline: true
+    )
+    "#{base}#password=#{ERB::Util.url_encode(password)}"
   end
 
   def connection_tabs(id, tabs)
@@ -186,8 +197,10 @@ module BatchConnect::SessionsHelper
         concat(
           content_tag(:ul, class: "nav nav-tabs") do
             tabs.map { |t| t[:title] }.map.with_index do |title, idx|
+              tab_data = { 'bs-toggle': "tab" }
+              tab_data[:default_tab] = true if idx.zero?
               content_tag(:li, class: "nav-item #{"active" if idx.zero?}") do
-                link_to title, "#c_#{id}_#{idx}", data: { 'bs-toggle': "tab" }, aria: { selected: (true if idx.zero?) }, class: "nav-link #{"active" if idx.zero?}"
+                link_to title, "#c_#{id}_#{idx}", data: tab_data, aria: { selected: (true if idx.zero?) }, class: "nav-link #{"active" if idx.zero?}"
               end
             end.join("\n").html_safe
           end
@@ -204,5 +217,9 @@ module BatchConnect::SessionsHelper
         )
       end
     end
+  end
+
+  def should_poll?(sessions)
+    sessions.any? { |s| !s.completed? }
   end
 end

@@ -6,12 +6,15 @@ on:
   workflow_dispatch:
   pull_request_target:
 
+permissions:
+  pull-requests: read
+
 jobs:
   triage:
     name: Add labels to PR
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/labeler@v4.3.0
+    - uses: actions/labeler@v6
       with:
         repo-token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
         configuration-path: .github/labeler.yml

@@ -138,7 +138,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       visit new_batch_connect_session_context_url('sys/app')
 
-      find('.alert-danger')
+      assert_selector('.alert-danger')
     end
   end
 
@@ -217,6 +217,46 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       find("##{base_id}_path_selector_button").click
 
       assert_equal(filename, find("##{base_id}").value)
+    end
+  end
+
+  test 'path_selector handles filenames with # and +' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+      base_id = 'batch_connect_session_context_path'
+      Dir.mktmpdir do |tmpdir|
+        name = '#foo+bar.txt#'
+        filename = "#{tmpdir}/#{name}"
+        FileUtils.touch(filename)
+
+        form = <<~HEREDOC
+          ---
+          cluster:
+            - owens
+          form:
+            - path
+          attributes:
+            path:
+              widget: 'path_selector'
+              directory: "#{tmpdir}"
+        HEREDOC
+
+        Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+        sleep 0.5
+
+        find('span', exact_text: name).click
+        find("##{base_id}_path_selector_button").click
+
+        assert_equal(filename, find("##{base_id}").value)
+      end
     end
   end
 
@@ -302,6 +342,89 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-label restores default label when option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small', data-label-cores: 'Number of Cores (1-4)']
+              - ['medium', 'medium']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-4)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+
+      select('large', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-16)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+
+  test 'data-label keeps default when initially selected option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small']
+              - ['medium', 'medium', data-label-cores: 'Number of Cores (1-8)']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+      refute_equal 'undefined', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-8)', label.text
+
+      select('small', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+  
   test 'global_bc_form_items work correctly' do
     Dir.mktmpdir do |dir|
       app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }
@@ -470,6 +593,48 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'radio_buttons accept html options among other attributes' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_radio
+        attributes:
+          test_radio:
+            widget: radio_button
+            options:
+              - one
+              - two
+            html_options:
+              class: 'text-danger'
+              data:
+                special: 'yes'
+            help: 'my cool help'
+            label: 'my even cooler label'
+            required: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      help = find("##{bc_ele_id('test_radio')}_wrapper > div > small")
+      group_wrapper = find("##{bc_ele_id('test_radio')}_wrapper > div")
+      label = find("##{bc_ele_id('test_radio')}_label")
+
+      # html_options overrides default class mb-3
+      assert_equal('text-danger', group_wrapper['class'])
+      assert_text(help, 'my cool help')
+      assert_text(label, 'my even cooler label')
+      ['one', 'two'].each do |option|
+        ele = find("##{bc_ele_id('test_radio')}_#{option}")
+        assert(ele['required'])
+        assert_equal('yes', ele['data-special'])
+      end
+    end
+  end
+
   test 'auto modules are case sensitive' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
@@ -634,10 +799,104 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-option-for-cluster with dashed cluster names' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - ['Next Gen Ascend', 'next-gen_ascend']
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-next-gen-ascend: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # owens is selected, standard and gpu are both visible
+      select('owens', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      # select gpu, to test that it's deselected properly when nextgen-ascend is selected
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      # Next Gen Ascend is selected, gpu is not visible
+      select('Next Gen Ascend', from: 'batch_connect_session_context_cluster')
+      options = find_all("#batch_connect_session_context_node_type option")
+
+      assert_equal "standard", options[0]["innerHTML"]
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+
+      # value of node_type has gone back to standard
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+
+  test 'data-option-for-cluster with underscore cluster id uses hyphenated attribute name' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        form:
+          - cluster
+          - node_type
+        attributes:
+          cluster:
+            widget: "select"
+            options:
+              - owens
+              - ['Ascend Nextgen', 'ascend_nextgen']
+          node_type:
+            widget: "select"
+            options:
+              - standard
+              - ['gpu', 'gpu', data-option-for-cluster-ascend-nextgen: false]
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      select('owens', from: 'batch_connect_session_context_cluster')
+      assert_equal '', find_option_style('node_type', 'gpu')
+
+      select('gpu', from: 'batch_connect_session_context_node_type')
+
+      select('Ascend Nextgen', from: 'batch_connect_session_context_cluster')
+      assert_equal 'display: none;', find_option_style('node_type', 'gpu')
+      assert_equal 'standard', find('#batch_connect_session_context_node_type').value
+    end
+  end
+  
   test 'form element headers support markdown and html' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # Span exists (HTML works).
+    assert_selector(class: 'test_form_element_header', text: 'Some text in a span')
     header_span = find(class: 'test_form_element_header', text: 'Some text in a span')
     # Markdown element exists (## => h2).
     markdown_header = header_span.find(:xpath, './/../../h2', text: 'Header using Markdown')
@@ -831,6 +1090,328 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       # but label is from the global setting.
       assert_equal(label.text, 'New Label')
+    end
+  end
+
+  test 'empty string values in select widgets hide' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - select_that_hides
+          - thing_to_hide_or_show
+        attributes:
+          select_that_hides:
+            widget: select
+            options:
+              - ["None", "", data-hide-thing-to-hide-or-show: true]
+              - ["Some", "some"]
+          thing_to_hide_or_show:
+            header: |
+              ## Hidden field header
+              This header should always remain visible.
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # None is selected by default and 'thing_to_hide_or_show' is hidden
+      assert_equal('', find_value('select_that_hides'))
+      header = find('h2', text: 'Hidden field header')
+      assert header.visible?, 'Header should remain visible while the field is hidden'
+      refute(find("##{bc_ele_id('thing_to_hide_or_show')}", visible: :hidden).visible?)
+
+      # now choose 'some' and 'thing_to_hide_or_show' is visible
+      select('Some', from: bc_ele_id('select_that_hides'))
+      assert header.visible?, 'Header should remain visible after the field is shown'
+      assert(find("##{bc_ele_id('thing_to_hide_or_show')}").visible?)
+    end
+  end
+
+  test 'batch connect app list popover renders markdown formatting' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    app_link.hover
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}")
+
+    # assert markdown html
+    expected_html = <<~HEREDOC
+    <h1>Header 1</h1>
+
+    <h2>Header 2</h2>
+
+    <h3>Header 3</h3>
+
+    <p><strong>Bold text</strong> <em>Italic text</em> plain text <a href=\"www.example.com\">link text</a>
+    1. Numbered
+    2. Lists</p>
+
+    <ul>
+    <li>Bullets</li>
+    <li>Like</li>
+    <li>These</li>
+    <li>Items</li>
+    </ul>
+    
+    <p><!-- we omit images since they are not recommended in popops -->
+    <code>code-font</code></p>
+
+    <pre><code>code block
+    </code></pre>
+    HEREDOC
+    
+    assert_equal expected_html, find("div##{popover_id} div.ood-appkit.markdown")['innerHTML']
+  end
+
+  test 'interactive app popovers meet wcag guidelines' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    app_link = find('a.list-group-item', text: /[Jj]upyter/, visible: :all)
+    app_link.hover
+
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}", visible: true)
+
+    # hoverable
+    find("div##{popover_id}").hover
+    assert_selector("div##{popover_id}", visible: true)
+
+    app_link.hover
+    assert_selector("div##{popover_id}", visible: true)
+
+    #dismissable
+    app_link.send_keys(:escape)
+    refute_selector("div##{popover_id}")
+
+    # removes when hover leaves
+    find('form').hover
+    app_link.hover
+    popover_id = app_link['aria-describedby']
+    assert_selector("div##{popover_id}", visible: true)
+
+    # send pointer and focus somewhere else
+    all('form select').first.hover.click
+    refute_selector("div##{popover_id}")
+  end
+
+  test 'app that needs escape sequences' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:  
+      - oakley
+      form:
+        - software
+        - node_type
+        - gpu_type
+      attributes:
+        software:
+          widget: select
+          options:
+            - ruby
+            - python
+        node_type:
+          widget: select
+          options:
+            - regular
+            - [ "broken option '", broken, data-exclusive-option-for-software-python: true ]
+        gpu_type:
+          widget: select
+          options:
+            - good
+            - [ better, better, data-exclusive-option-for-node-type-broken: true ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+
+      # select python and broken node type is available
+      select('python', from: bc_ele_id('software'))
+      assert_equal('', find_option_style('node_type', 'broken'))
+
+      # select broken node and better gpu type is available
+      select('broken option \'', from: bc_ele_id('node_type'))
+      assert_equal('', find_option_style('gpu_type', 'better'))
+
+      # flip back to ruby and get defaults back
+      select('ruby', from: bc_ele_id('software'))
+      assert_equal('ruby', find_value('software'))
+      assert_equal('regular', find_value('node_type'))
+      assert_equal('good', find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('node_type', 'broken'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'better'))
+    end
+  end
+
+  test 'enumerable overrides display correctly as text fields' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # previously these would be something like '#<Enumerator:0x00007f0ea4430788>'
+      assert_equal('', find_value('partition'))
+      assert_equal('', find_value('filter'))
+    end
+  end
+
+  test 'enumerable overrides can be checkboxes and select' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+      ---
+      cluster:
+      - oakley
+      form:
+        - partition
+        - filter
+      attributes:
+        partition:
+          widget: select
+          options:
+            - 'a'
+            - 'b'
+        filter:
+          widget: check_box
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      filter = find("##{bc_ele_id('filter')}")
+      partition = find("##{bc_ele_id('partition')}")
+
+      assert_equal('1', filter.value)
+      assert_equal('input', filter.tag_name)
+      assert_equal('checkbox', filter[:type])
+      assert_equal('a', partition.value)
+      assert_equal('select', partition.tag_name)
+    end
+  end
+
+  test 'grouped form items work' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - [
+              first_group_item,
+              second_group_item
+            ]
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # wrappers are columns in a row.
+      ['first_group_item', 'second_group_item'].each do |item|
+        wrapper = find("##{bc_ele_id(item)}_wrapper")
+        parent = wrapper.find(:xpath, '..')
+
+        assert_equal('col', wrapper[:class])
+        assert_equal('row', parent[:class])
+      end
+    end
+  end
+
+  test 'grouped form items can be hidden' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - hide_items
+          - [
+              first_group_item,
+              second_group_item
+            ]
+        attributes:
+          hide_items:
+            widget: check_box
+            html_options:
+              data-hide-first-group-item-when-checked: true
+              data-hide-second-group-item-when-un-checked: true
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_unchecked_field('Hide Items')
+      refute(find("##{bc_ele_id('second_group_item')}", visible: :hidden).visible?)
+      assert(find("##{bc_ele_id('first_group_item')}").visible?)
+
+      # check to hide and they flip
+      check('Hide Items')
+      assert(find("##{bc_ele_id('second_group_item')}").visible?)
+      refute(find("##{bc_ele_id('first_group_item')}", visible: :hidden).visible?)
+    end
+  end
+
+  test 'help does not include dangerous tags while preserving safe tags' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - test_item
+        attributes:
+          test_item:
+            help: |
+              # A header
+              <script>window.alert('hello');</script>
+              <a href="https://github.com/OSC/ondemand">an html anchor</a>
+              [a markdown anchor](https://github.com/OSC/ondemand)
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # note there's no <script> tag here.
+      expected_html = <<~HEREDOC
+        <h1>A header</h1>
+
+        window.alert('hello');
+
+        <p><a href="https://github.com/OSC/ondemand">an html anchor</a>
+        <a href="https://github.com/OSC/ondemand">a markdown anchor</a></p>
+      HEREDOC
+
+      help_html = find("##{bc_ele_id('test_item')}_wrapper small")['innerHTML']
+      assert_equal(expected_html, help_html)
     end
   end
 end

@@ -9,7 +9,7 @@
       <option value="">All Clusters</option>
       <% Configuration.job_clusters.each do |cluster| %>
         <option value="<%= cluster.id %>">
-          <%= cluster.metadata.title.presence || cluster.id.titleize %>
+          <%= cluster.title %>
         </option>
       <% end %>
     </select>

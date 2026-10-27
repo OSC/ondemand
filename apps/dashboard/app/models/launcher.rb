@@ -3,10 +3,11 @@
 class Launcher
   include ActiveModel::Model
   include JobLogger
+  include ProjectPermissions
 
   class ClusterNotFound < StandardError; end
 
-  attr_reader :title, :id, :created_at, :project_dir, :smart_attributes
+  attr_reader :title, :id, :created_at, :project_dir, :cacheless_attributes, :smart_attributes
 
   class << self
     def launchers_dir(project_dir)
@@ -20,11 +21,9 @@ class Launcher
     end
 
     def all(project_dir)
-      Dir.glob("#{launchers_dir(project_dir).to_s}/*/form.yml").map do |file|
+      Dir.glob("#{launchers_dir(project_dir)}/*/form.yml").map do |file|
         Launcher.from_yaml(file, project_dir)
-      end.compact.sort_by do |s|
-        s.created_at
-      end
+      end.compact.sort_by(&:created_at)
     end
 
     def from_yaml(file, project_dir)
@@ -57,16 +56,19 @@ class Launcher
   end
 
   ID_REX = /\A\w{8}\Z/.freeze
+  DEPENDENCY_KEYS = [ :after, :afterok, :afternotok, :afterany ].freeze
 
   validates(:id, format: { with: ID_REX, message: "ID does not match #{Launcher::ID_REX.inspect}" }, on: [:save])
+  validates(:title, presence: true)
 
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
 
-    @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
+    @project_dir = (opts[:project_dir] || raise(StandardError, 'You must set the project directory')).to_s
     @id = opts[:id].to_s.match?(ID_REX) ? opts[:id].to_s : Launcher.next_id
     @title = opts[:title].to_s
     @created_at = opts[:created_at]
+    @source_path = opts[:source_path]
     sm_opts = {
       form:       opts[:form] || [],
       attributes: opts[:attributes] || {}
@@ -75,14 +77,20 @@ class Launcher
     add_required_fields(**sm_opts)
     # add defaults if it's a brand new launcher with only title and directory.
     add_default_fields(**sm_opts) if opts.size <= 2
+
+    # we generate two sets of attributes here depending on whether we want the initial
+    # form values to come from the form defaults or from the cache.
+    @cacheless_attributes = build_smart_attributes(**sm_opts, use_cache: false)
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
-  def build_smart_attributes(form: [], attributes: {})
+  def build_smart_attributes(form: [], attributes: {}, use_cache: true)
     form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
-      cache_value = cached_values[form_item_id]
-      attrs[:value] = cache_value if cache_value.present?
+      if use_cache
+        cache_value = cached_values[form_item_id]
+        attrs[:value] = cache_value if cache_value.present?
+      end
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
@@ -116,12 +124,10 @@ class Launcher
   # @param method_name the method name called
   # @param arguments the arguments to the call
   # @param block an optional block for the call
-  def method_missing(method_name, *arguments, &block)
+  def method_missing(method_name, *_arguments)
     # not a bug here, we want =, not ==
     if /^(?<id>[^=]+)$/ =~ method_name.to_s && (attribute = self[id])
       attribute.value
-    else
-      nil
     end
   end
 
@@ -149,9 +155,14 @@ class Launcher
     return false unless valid?(:save)
 
     @created_at = Time.now.to_i if @created_at.nil?
-    path = Launcher.path(project_dir, id)
 
-    path.mkpath unless path.exist?
+    if File.readable?(@source_path.to_s)
+      @smart_attributes = Launcher.from_yaml(@source_path, project_dir).smart_attributes
+    end
+
+    make_launcher_dir
+
+    path = Launcher.path(project_dir, id)
     File.write(Launcher.launcher_form_file(path), to_yaml)
 
     true
@@ -163,6 +174,7 @@ class Launcher
 
   def destroy
     return true unless id
+
     path = Launcher.path(project_dir, id)
     FileUtils.remove_dir(Launcher.path(project_dir, id)) if path.exist?
     true
@@ -173,7 +185,7 @@ class Launcher
   end
 
   def update(params)
-    # reset smart attributes becuase the user could have removed some fields
+    # reset smart attributes because the user could have removed some fields
     @smart_attributes = []
 
     # deal with things that would be in the 'form' section first to initialize
@@ -182,12 +194,12 @@ class Launcher
     update_attributes(params)
   end
 
-  def submit(options)
-    cluster_id =  if options.has_key?(:auto_batch_clusters)
-                    options[:auto_batch_clusters]
-                  else
-                    smart_attributes.find { |sm| sm.id == 'auto_batch_clusters' }.value.to_sym
-                  end
+  def submit(options, write_cache: true)
+    cluster_id = if options.key?(:auto_batch_clusters)
+                   options[:auto_batch_clusters]
+                 else
+                   smart_attributes.find { |sm| sm.id == 'auto_batch_clusters' }.value.to_sym
+                 end
     adapter = adapter(cluster_id).job_adapter
 
     render_format = adapter.class.name.split('::').last.downcase
@@ -198,22 +210,19 @@ class Launcher
       adapter.submit(job_script, **dependency_helper(options))
     end
     update_job_log(job_id, cluster_id.to_s)
-    write_job_options_to_cache(options)
+    write_job_options_to_cache(options) if write_cache
 
     job_id
   rescue StandardError => e
     errors.add(:submit, e.message)
-    Rails.logger.error("ERROR: #{e.class} - #{e.message}")
+    Rails.logger.error("ERROR: #{e.class} - #{e.message} \n #{e.backtrace.join("\n")}")
     nil
   end
 
   def dependency_helper(options)
-    {
-      after: Array(options[:after]),
-      afterok: Array(options[:afterok]),
-      afternotok: Array(options[:afternotok]),
-      afterany: Array(options[:afterany])
-    }
+    DEPENDENCY_KEYS.each_with_object({}) do |key, hash|
+      hash[key] = Array(options[key]) if options.keys.include?(key)
+    end
   end
 
   def create_default_script
@@ -226,6 +235,11 @@ class Launcher
     DEFAULT_SCRIPT
     File.open(default_script_path, 'w+') { |file| file.write(script_content) }
     true
+  end
+
+  def editable?
+    form_path = Launcher.launcher_form_file(Launcher.path(project_dir, id))
+    File.writable?(form_path) || !shared?(form_path)
   end
 
   private
@@ -243,13 +257,20 @@ class Launcher
   end
 
   def self.launcher_form_file(path)
-    File.join(path, "form.yml")
+    File.join(path, 'form.yml')
+  end
+
+  def make_launcher_dir
+    with_proper_umask(project_dir) do
+      dir_path = Launcher.path(project_dir, id)
+      dir_path.mkpath unless dir_path.exist?
+    end
   end
 
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
-    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") }
+    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name&.end_with?("_#{postfix}") }
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
@@ -293,7 +314,7 @@ class Launcher
   end
 
   def cache_file_path
-    Pathname.new(File.join(Launcher.path(project_dir, id), "cache.json"))
+    Pathname.new(File.join(Launcher.path(project_dir, id), "#{CurrentUser.name}-cache.json"))
   end
 
   def cache_file_exists?
@@ -302,12 +323,11 @@ class Launcher
 
   def cached_values
     @cached_values ||= begin
-      cache_file_path = OodAppkit.dataroot.join(Launcher.launchers_dir("#{project_dir}"), "#{id}_opts.json")
       cache_file_content = File.read(cache_file_path) if cache_file_path.exist?
-      
+
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
-    rescue => exception
-      Rails.logger.error("Error reading cache file: #{exception.message}")
+    rescue StandardError => e
+      Rails.logger.error("Error reading cache file: #{e.message}")
       {}
     end
   end
@@ -332,7 +352,12 @@ class Launcher
       {
         workdir: project_dir.to_s
       }
-    )
+    ).tap do |opts|
+      if options[:ood_workflow_sync_key]
+        opts[:job_environment] =
+          (opts[:job_environment] || {}).merge('OOD_WORKFLOW_SYNC_KEY' => options[:ood_workflow_sync_key])
+      end
+    end
   end
 
   def adapter(cluster_id)

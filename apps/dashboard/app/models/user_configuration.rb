@@ -66,7 +66,7 @@ class UserConfiguration
     ConfigurationProperty.property(name: :dashboard_title, default_value: 'Open OnDemand', read_from_env: true),
 
     # Navigation properties
-    ConfigurationProperty.with_boolean_mapper(name: :show_all_apps_link, default_value: false, read_from_env: true,
+    ConfigurationProperty.with_boolean_mapper(name: :show_all_apps_link, default_value: true, read_from_env: true,
                                               env_names: ['SHOW_ALL_APPS_LINK']),
     # New navigation definition properties
     ConfigurationProperty.property(name: :nav_bar, default_value: []),
@@ -80,7 +80,10 @@ class UserConfiguration
     ConfigurationProperty.property(name: :support_ticket, default_value: {}),
 
     # Datatables configuration for the apps pages
-    ConfigurationProperty.property(name: :apps_datatable, default_value: { page_length: 10 })
+    ConfigurationProperty.property(name: :apps_datatable, default_value: { page_length: 10 }),
+
+    # Files app integration button configuration
+    ConfigurationProperty.property(name: :files_select_target)
   ].freeze
 
   def initialize(request_hostname: nil)

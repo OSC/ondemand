@@ -2,12 +2,14 @@
 
 import oboe from 'oboe';
 import { supportPath } from './config.js';
-import { cssBadgeForState, capitalizeFirstLetter } from './utils.js'
+import { cssBadgeForState, capitalizeFirstLetter, ariaNotify, customizeTableHeaders } from './utils.js'
+import { OODAlertError } from './alert.js';
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
 window.set_cluster_id = set_cluster_id;
 window.set_filter_id = set_filter_id;
+window.closeExtendedDetails = closeExtendedDetails;
 
 var entityMap = {
   '&': '&amp;',
@@ -39,22 +41,43 @@ function human_time(seconds_total) {
   return hours_str + ":" + minutes_str + ":" + seconds_str;
 }
 
+function clean_options(options) {
+  if (!options) options = {};
+  if (!options.doneCallback) options.doneCallback = null;
+  if (!options.base_uri) options.base_uri = window.location.pathname.replace('/activejobs','');
+  return options;
+}
+
+function resetExtendedDataButtons() {
+  $('button.fa-minus').each((_i, button) => {
+    button.classList.replace('fa-minus', 'fa-plus');
+    button.ariaExpanded = false;
+  });
+}
+
+function closeExtendedDetails() {
+  resetExtendedDataButtons();
+  const ele = document.getElementById('job_details');
+  ele.innerHTML = null;
+}
+
 function fetch_job_data(tr, row, options) {
-  let btn = tr.find('button.details-control');
-  if (row.child.isShown()) {
-    // This row is already open - close it
-    row.child.hide();
-    tr.removeClass("shown");
+  const btn = tr.find('button.details-control')[0];
 
-    btn.removeClass("fa-chevron-down");
-    btn.addClass("fa-chevron-right");
-    btn.attr("aria-expanded", false);
-  } else {
-    tr.addClass("shown");
+  // just clearing out the previous selection.
+  if(btn.classList.contains('fa-minus')) {
+    btn.classList.replace('fa-minus', 'fa-plus');
+    btn.ariaExpanded = false;
+    const details = document.getElementById('job_details');
+    details.innerHTML = null;
 
-    btn.removeClass("fa-chevron-right");
-    btn.addClass("fa-chevron-down");
-    btn.attr("aria-expanded", true);
+    return;
+  }
+
+  resetExtendedDataButtons();
+
+  btn.classList.replace('fa-plus', 'fa-minus');
+  btn.ariaExpanded = true;
 
     let data = {
       pbsid: row.data().pbsid,
@@ -62,36 +85,21 @@ function fetch_job_data(tr, row, options) {
     };
     let jobDataUrl = `${options.base_uri}/activejobs/json?${new URLSearchParams(data)}`;
 
-    $.getJSON(jobDataUrl, function (data) {
-      // Open this row
-      row.child(data.html_ganglia_graphs_table).show();
-      // Add the data panel to the view
-      $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
-        .hide()
-        .html(data.html_extended_panel)
-        .fadeIn(250);
-      // Update the status label in the parent row
-      tr.find(".status-label").html(data.status);
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-      let error_panel = `
-        <div class="alert alert-danger" role="alert">
-          <strong>Error:</strong> The information could not be displayed.
-          <em>${jqXHR.status} (${errorThrown})</em>
-        </div>
-      `;
-
-      $(`div[data-jobid="${row.data().pbsid}]"`)
-        .hide()
-        .html(error_panel)
-        .fadeIn(250);
-    });
-  }
+    fetch(jobDataUrl, { headers: {
+        'Accpet': 'application/json',
+      }})
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error('Failed to load job details.')))
+      .then(response => response.json())
+      .then(response => {
+        const ele = document.getElementById('job_details');
+        ele.innerHTML = response.html_extended_data_table;
+        ariaNotify("Job details list loaded.");
+      })
+      .catch(error => OODAlertError(error));
 }
 
 function fetch_table_data(table, options){
-  if (!options) options = {};
-  if (!options.doneCallback) options.doneCallback = null;
-  if (!options.base_uri) options.base_uri = window.location.pathname;
+  options = clean_options(options);
 
   oboe({
     url: options.base_uri + '/activejobs.json?'+get_request_params(),
@@ -123,7 +131,7 @@ function fetch_table_data(table, options){
     }
     else{
       //FIXME: this error appears even when the above 404 occurs, for example
-      // that is because a 404 responce for json request returns a plain text response
+      // that is because a 404 response for json request returns a plain text response
       // and parsing that as json fails
        show_errors(["Request for jobs failed due to body parsing error."])
     }
@@ -147,9 +155,7 @@ function status_label(status){
 }
 
 function create_datatable(options){
-    if (!options) options = {};
-    if (!options.drawCallback) options.drawCallback = null;
-    if (!options.base_uri) options.base_uri = window.location.pathname;
+    options = clean_options(options)
 
     $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
     $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());
@@ -179,6 +185,9 @@ function create_datatable(options){
             options.drawCallback(settings);
           }
         },
+        headerCallback: (thead, _data, _start, _end, _display) => {
+          customizeTableHeaders(thead);
+        },
         columns: [
             {
                 "orderable":        false,
@@ -188,7 +197,7 @@ function create_datatable(options){
                 "searchable":       false,
                 render: function (data, type, row, meta) {
                   let { cluster_title, jobname, } = row
-                  return `<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details for job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
+                  return `<button class="details-control fa fa-plus btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
                 },
             },
             {
@@ -257,8 +266,10 @@ function create_datatable(options){
                 "autoWidth":        true
             },
             {
+                orderable:         false,
                 data:               null,
                 "autoWidth":        true,
+                searchable:        false,
                 render: function(data, type, row, meta) {
                   let { jobname, pbsid, cluster, delete_path } = data;
                   let support_ticket = "";

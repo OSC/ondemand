@@ -3,14 +3,19 @@
 require 'test_helper'
 
 class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
-
   def setup
     @target = SupportTicketServiceNowService.new({})
   end
 
   test 'deliver_support_ticket should generate default payload' do
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = {username: 'username', email: 'email@example.com', cc: 'cc@example.com', subject: 'Subject', description: 'Description'}
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      cc:          'cc@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       payload[:caller_id] == support_ticket.email &&
@@ -37,7 +42,12 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
     }
     target = SupportTicketServiceNowService.new(config)
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = {username: 'username', email: 'email@example.com', subject: 'Subject', description: 'Description'}
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       payload[:caller_id] == support_ticket.username &&
@@ -53,13 +63,18 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
     config = {
       servicenow_api: {
         map: {
-          watch_list: ['username', 'email', 'cc'],
+          watch_list: ['username', 'email', 'cc']
         }
       }
     }
     target = SupportTicketServiceNowService.new(config)
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = {username: 'username', email: 'email@example.com', subject: 'Subject', description: 'Description'}
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       # cc is nil, so it should only be username and email
@@ -84,7 +99,12 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
     }
     target = SupportTicketServiceNowService.new(config)
     support_ticket = SupportTicket.from_config({})
-    support_ticket.attributes = {username: 'username', email: 'email@example.com', subject: 'Subject', description: 'Description'}
+    support_ticket.attributes = {
+      username:    'username',
+      email:       'email@example.com',
+      subject:     'Subject',
+      description: 'Description'
+    }
     mock_client = mock('servicenow_client')
     mock_client.expects(:create).with do |payload|
       payload[:caller_id] == 'custom_caller_id' &&
@@ -96,6 +116,23 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
 
     ServiceNowClient.expects(:new).returns(mock_client)
     target.deliver_support_ticket(support_ticket)
+  end
+
+  test 'deliver_support_ticket should support template override' do
+    config = {
+      servicenow_api: {
+        template: 'snow_override'
+      }
+    }
+    target = SupportTicketServiceNowService.new(config)
+    mock_client = mock('servicenow_client')
+    mock_client.expects(:create).with do |payload|
+      payload[:description] == 'ServiceNow content template override'
+    end
+               .returns(create_response('incident_number', true))
+
+    ServiceNowClient.expects(:new).returns(mock_client)
+    target.deliver_support_ticket(SupportTicket.from_config({}))
   end
 
   test 'deliver_support_ticket should delegate to ServiceNowClient class and return success message' do
@@ -113,12 +150,12 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
   end
 
   test 'deliver_support_ticket should delegate to ServiceNowClient class and return success message override when provided' do
-    rt_config = {
+    config = {
       servicenow_api: {
         success_message: 'success message override'
       }
     }
-    target = SupportTicketServiceNowService.new(rt_config)
+    target = SupportTicketServiceNowService.new(config)
     ServiceNowClient.expects(:new).returns(stub(:create => create_response('123')))
     result = target.deliver_support_ticket(SupportTicket.new)
 
@@ -127,9 +164,9 @@ class SupportTicketServiceNowServiceTest < ActiveSupport::TestCase
 
   def create_response(number, attachments_success = true)
     OpenStruct.new({
-     number:              number,
-     attachments:         1,
-     attachments_success: attachments_success
-   })
+      number:              number,
+      attachments:         1,
+      attachments_success: attachments_success
+    })
   end
 end

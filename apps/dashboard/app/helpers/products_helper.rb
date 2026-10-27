@@ -60,8 +60,8 @@ module ProductsHelper
   end
 
   def ssh_key
-    target = Pathname.new("~/.ssh/id_rsa.pub").expand_path
-    File.read(target) if target.file?
+    keys = Pathname.glob("#{CurrentUser.home}/.ssh/id_*.pub")
+    File.read(keys.first) unless keys.empty?
   end
 
   # A custom button helper for command line tools

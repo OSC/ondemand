@@ -1,4 +1,3 @@
-
 /*
   While we want Turbo enabled at some point,
   it doesn't really work well yet. So, we'll provide
@@ -6,7 +5,7 @@
 */
 
 import { setInnerHTML } from './utils';
-import { OODAlert } from './alert';
+import { OODAlertError } from './alert';
 
 export function replaceHTML(id, html) {
   const ele = document.getElementById(id);
@@ -21,7 +20,24 @@ export function replaceHTML(id, html) {
   setInnerHTML(ele, newHTML);
 }
 
-export function pollAndReplace(url, delay, id, callback) {
+export function pollAndReplace(url, delay, id, callback, continuePolling = () => true) {
+
+  if (document.visibilityState === 'hidden') {
+    if (continuePolling()) {
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          pollAndReplace(url, delay, id, callback, continuePolling);
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      
+    }
+    return;
+  }
+
+  var focusedId = null;
+  var focusedSelector = null;
   fetch(url, { headers: { Accept: "text/vnd.turbo-stream.html" } })
     .then((response) => {
       if(response.status == 200) {
@@ -33,18 +49,46 @@ export function pollAndReplace(url, delay, id, callback) {
       }
     })
     .then((r) => r.text())
-    .then((html) => replaceHTML(id, html))
+    .then((html) => {
+      const focusedElement = document.activeElement
+      if (jQuery.contains(document.getElementById(id), focusedElement)) {
+        // system status ensures that focusable elements have ids
+        focusedId = focusedElement.id;
+
+        // batch connect sessions use user-provided views, so use a weaker but more general approach
+
+        const parentId = $(focusedElement).closest('.session-panel').attr('id');
+        const ele = focusedElement.tagName.toLowerCase();
+        const classArray = Array.from(focusedElement.classList);
+        const text = $(focusedElement).text();
+        let classes = "";
+        if (classArray.length > 0) { // adds the leading . if classes are present
+          classes = `.${classArray.join('.')}`;
+        }
+        focusedSelector = `#${parentId} ${ele}${classes}:contains("${text}")`;
+      }
+      replaceHTML(id, html);
+      const newFocus = document.getElementById(focusedId);
+      if (newFocus) {
+        newFocus.focus();
+      } else {
+        $(focusedSelector).focus();
+      }
+    })
     .then(() => {
-      setTimeout(pollAndReplace, delay, url, delay, id, callback);
+      if (continuePolling()) {
+        setTimeout(pollAndReplace, delay, url, delay, id, callback, continuePolling);
+      }
+
       if (typeof callback == 'function') {
         callback();
       }
     })
     .catch((err) => {
       if (typeof err == 'string') {
-        OODAlert(err);
+        OODAlertError(err);
       } else {
-        OODAlert('This page has encountered an unexpected error. Please refresh the page.');
+        OODAlertError('This page has encountered an unexpected error. Please refresh the page.');
       }
       console.log(err);
     });

@@ -1,0 +1,8 @@
+<span data-bs-toggle="tooltip" title="<%= @user_configuration.files_select_target[:title] || t('dashboard.files_send_to_target_title_default') %>">
+  <button id="send_to_target_btn" type="button" class="btn btn-primary btn-sm align-middle"
+          data-files-select-target-endpoint="<%= @user_configuration.files_select_target[:endpoint] %>"
+          data-token-expiration="<%= @user_configuration.files_select_target[:expiration] || 10 %>">
+    <%= icon_tag(@user_configuration.files_select_target[:icon] || 'fas://paper-plane', classes: nil) %>
+    <%= @user_configuration.files_select_target[:label] %>
+  </button>
+</span>

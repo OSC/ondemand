@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module BatchConnect
-  # The context of a given batch connect session. It encapsulates all the paramters
+  # The context of a given batch connect session. It encapsulates all the parameters
   # available from the app and the choices made by the user.
   class SessionContext
     include Enumerable
+    include BoolReader
 
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
@@ -21,6 +22,12 @@ module BatchConnect
       params&.each do |attr, value|
         public_send("#{attr}=", value) if respond_to?("#{attr}=")
       end
+    end
+
+    # Return smart attribute value for serialization instead of raw attribute object
+    def read_attribute_for_serialization(name)
+      attribute = self[name]
+      attribute ? attribute.value : super
     end
 
     # @param attributes [Array<Attribute>] list of attribute objects
@@ -48,7 +55,7 @@ module BatchConnect
     # @param arguments the arguments to the call
     # @param block an optional block for the call
     def method_missing(method_name, *arguments, &block)
-      if /^(?<id>[^=]+)(?<assign>=)?$/ =~ method_name.to_s && attribute = self[id]
+      if /^(?<id>[^=]+)(?<assign>=)?$/ =~ method_name.to_s && (attribute = self[id])
         assign ? attribute.send('value=', *arguments) : attribute.value
       else
         super
@@ -62,9 +69,9 @@ module BatchConnect
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
     end
 
-    def update_with_cache(cache)
+    def update_with_cache(cache, ignore_cacheable: false)
       self.attributes = cache.select do |k, _v|
-        self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)
+        self[k.to_sym] && (ignore_cacheable || self[k.to_sym].cacheable?(app_specific_cache_enabled?))
       end
     end
 
@@ -84,23 +91,34 @@ module BatchConnect
       OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
     end
 
-    private
-
-    FALSE_VALUES = [false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO'].freeze
-
-    # Returns false if value is among the FALSE_VALUES set
-    # @param value the value to check
-    # @return [Boolean]
-    def to_bool(value)
-      !FALSE_VALUES.include?(value)
+    # Redefine 'partition' from Enumerable so that sites can use it in a form.
+    def partition(&block)
+      if block_given?
+        @attributes.partition(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['partition'].value
+      end
     end
+
+    # Redefine 'filter' from Enumerable so that sites can use it in a form.
+    def filter(&block)
+      if block_given?
+        @attributes.filter(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['filter'].value
+      end
+    end
+
+    private
 
     # @return [Boolean]
     def app_specific_cache_enabled?
       if @app_specific_cache_setting.nil?
         global_cache_enabled?
       else
-        to_bool(@app_specific_cache_setting)
+        read_bool(@app_specific_cache_setting)
       end
     end
 

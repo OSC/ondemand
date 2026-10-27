@@ -1,6 +1,6 @@
 module ActiveJobs
   # Utility class for responding to json activejobs requests. This class generates
-  # the resulting json body that the controller will ultimately repond with.
+  # the resulting json body that the controller will ultimately respond with.
   class JobsJsonRequestHandler
     attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
@@ -56,7 +56,7 @@ module ActiveJobs
             count += 1;
           end
         rescue => e
-          msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
+          msg = "#{cluster.title}: #{e.message}"
           controller.logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
           errors << msg
         end
@@ -74,7 +74,7 @@ module ActiveJobs
 
       info_all.map { |j|
         {
-          cluster_title: cluster.metadata.title || cluster.id.to_s.titleize,
+          cluster_title: cluster.title,
           status: j.status.state.to_s,
           cluster: cluster.id.to_s,
           pbsid: j.id,
@@ -90,7 +90,7 @@ module ActiveJobs
       }
     end
 
-    # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefuly
+    # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefully
     def convert_info_filtered(info_all, cluster)
       if cluster.job_adapter.supports_job_arrays?
         convert_info(info_all, cluster)

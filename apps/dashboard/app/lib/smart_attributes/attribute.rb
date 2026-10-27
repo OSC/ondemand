@@ -4,6 +4,9 @@ module SmartAttributes
   # This is the base class that all other, more specific, Attributes
   # should subclass.
   class Attribute
+    include BoolReader
+    include ActionView::Helpers::SanitizeHelper
+
     # Unique identifier of attribute
     # @return [String] attribute id
     attr_reader :id
@@ -58,7 +61,7 @@ module SmartAttributes
       if opts[:cacheable].nil?
         default_value
       else
-        to_bool(opts[:cacheable])
+        read_bool(opts[:cacheable])
       end
     end
 
@@ -89,9 +92,13 @@ module SmartAttributes
     end
 
     def help_html(fmt: nil)
-      OodAppkit.markdown.render(help(fmt: fmt)).html_safe
+      content = OodAppkit.markdown.render(help(fmt: fmt))
+      sanitize(content)
     end
 
+    def hide_by_default?
+      !!opts[:hide_by_default]
+    end
     # Whether this attribute is required
     # @return [Boolean] is required
     def required
@@ -99,7 +106,7 @@ module SmartAttributes
     end
 
     def display?
-      !!opts[:display]
+      !!opts[:display] && widget != 'password_field'
     end
 
     # Submission hash describing how to submit this attribute
@@ -231,15 +238,6 @@ module SmartAttributes
         :widget, :fixed, :hide_when_empty, :options, :html_options, :checked_value, :unchecked_value,
         :required, :label, :help, :cacheable
       ]
-    end
-
-    FALSE_VALUES = [false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO'].freeze
-
-    # Returns false if value is included among False_Values set
-    # @param value the value to be checked
-    # @return [Boolean]
-    def to_bool(value)
-      !FALSE_VALUES.include?(value)
     end
   end
 end

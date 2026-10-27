@@ -1,16 +1,19 @@
 # Table of Contents
 
-1. [Contributing](#Contributing)
-    1. [Issues](#issues)
-    2. [Other repositories](#other-repositories)
-    3. [Branches and Tags](#branches-and-tags)
-    4. [Pull Request Process](#pull-request-process)
+1. [Contributing](#contributing) 
+    1. [AI Agent Generated Content](#ai-agent-generated-content)
+    2. [Issues](#issues)
+    3. [Other repositories](#other-repositories)
+    4. [Branches and Tags](#branches-and-tags)
+    5. [Pull Request Process](#pull-request-process)
 2. [Branch Naming and Issue Tagging](#branch-naming-and-issue-tagging)
     1. [Adding a Feature](#adding-a-feature)
     2. [Fixing a Bug](#fixing-a-bug)
     3. [Tagging Your Issue](#tagging-your-issue)
     4. [Pull Request Comments](#pull-request-comments)
-3. [Project Style Guide](#project-styleguide)
+    5. [Tests in Pull Requests](#tests-in-pull-requests)
+    6. [Updating Locales](#update-locales)
+3. [Project Style Guide](#project-style-guide)
     1. [Project Conventions](#project-conventions)
     2. [Linters](#linters)
     3. [Ruby Style](#ruby-style)
@@ -29,29 +32,39 @@
 
 # Contributing
 
-First off - Thank you for your interest in contributing to the Open OnDemand project!
+Thank you for your interest in contributing to the Open OnDemand project!
 
-There is no pull request too small! Everything from simple misspellings to very
-large feature requests are welcome. If you're not quite sure where to get started
-you can search our list of [good first issues].
+There is no pull request (PR) too small! Everything from simple misspellings to very
+large feature requests are welcome. If you're not quite sure where to start,
+take a look at our list of [good first issues].
 
-Please note we have a [code of conduct], please follow it in all your
+Please note we have a [code of conduct]. We ask that you please follow it in all your
 interactions with the project.
+
+## AI Agent Generated Content
+
+AI tools can be used to help with code, documentation, review or other contributions,
+but a person must understand, review, answer questions and take responsibility for
+anything they submit to this repository. 
+
+AI agents or bots may not submit contributions or interact with the community on
+someone's behalf. Content submitted without meaningful human involvement will be
+rejected and closed. Additionally, accounts that repeatedly do this may be blocked
+or reported.
 
 ## Issues
 
 Issues, bug reports, questions and feature requests are always welcome. Feel
 free to open an issue and use any [issue labels] as appropriate.
 
-We mostly use [Discourse] for general questions or help. If you're unsure
-of where to route your question, Discourse may be the best forum for it.
+We use [Discourse] for general questions or for getting help. If you're unsure
+of where to route your question, Discourse may be the best option.
 
 ## Other Repositories
 
 There are other repositories to Open OnDemand that are important as well. You may want to check
 these out too.
 
-* [repository for the Open OnDemand website](https://github.com/OSC/openondemand.org)
 * [repository for the Open OnDemand documentation](https://github.com/OSC/ood-documentation)
 * [repository for the Open OnDemand core library](https://github.com/OSC/ood_core)
 
@@ -59,20 +72,14 @@ these out too.
 
 All development work happens in the `master` branch.
 
-Once the software reaches a state the maintainers feel is good enough to release,
-they tag the `v<version>` tag from the `master` branch. At this time, on the same
-commit as the tag, a `release_<version>` branch is made.
+Once the software reaches a state to release, they tag the `v<version>` tag from the
+`master` branch. At this time, on the same commit as the tag, a `release_<version>` branch is made.
 
 Once the release branch is made maintainers will need to backport any bugfixes
 to the release branch for that version. They will also make tag off of the release
 branch for patch releases of that version.
 
-## Pull Request Process
-
-If you have a large feature it may be preferential to open an issue and discuss
-it first before putting a lot of work into coding something that may not be accepted. Don't
-let this discourage you though! Feel free to open tickets and engage with the development
-team on proposed changes.
+Below is the basic pull request workflow for mechanics and expactations:
 
 1.  [Fork this repo].
 2.  Branch off of the master branch.
@@ -80,6 +87,23 @@ team on proposed changes.
     and will start reviewing it.
 4.  If changes are being requested, don't let this discourage you! This is a
     natural part of getting changes right and ensuring quality in what we're building.
+
+## Pull Request Process
+
+If you have a large feature it may be preferential to open an issue and discuss
+it first in case the pull requests isn't ultimately merged.
+
+All contributor pull requests are reviewed by maintainers before merging.
+
+Reviews may include:
+* Providing documentation for any new features or enhancements
+* Questions to clarify intent, scope, or edge cases
+* Suggestions for follow-up issues or splitting the work into smaller PRs
+* Requests for tests or manual testing findings
+* Feedback on style or maintainability
+
+We aim to keep reviews collaborative and constructive.  As discussion in PRs is normal and encouraged, 
+we are open to answering questions and hearing proposed alternatives.
 
 ## Branch Naming and Issue Tagging
 
@@ -101,16 +125,37 @@ A best guess is encouraged.
 
 All new issues are reviewed weekly by the OOD team to categorize correctly regardless.
 
-## Pull Request Comments
+## Pull Request Notes
 
-Ensure to include what issue this fixes in the **PR comment** to help with automated issue closing:
+Ensure to include what issue this fixes in the **PR comment** to help with automated issue closing. Please do not
+put the issue number in the title of the PR since this can make things more difficult to track for the maintainers.
 
-* "fixes #1234"
+## Tests in Pull Requests
 
-## Project StyleGuide
+Our project style guide includes the follow items about testing:
 
 * **Any new code *must* also include testing.**
-* If you need help with writing tests please include the `test help` tag.
+* If you need help with writing tests or are unsure how to test your PR, please include the `test help`
+tag.
+
+Including tests with pull requests is increasingly expected due to the growing backlog of untested 
+behavior and merging changes without tests increases risk for the project.
+
+When tests may not be needed: 
+* Documentation only changes
+* Minor refactors with no behavior changes
+
+If you do not include tests, add a short note in the PR description that explains:
+* Why tests were not added
+* What manual testing was performed
+* Any areas reviewers should pay close attention to
+
+## Updating Locales
+
+You may be adding new translatable text in your pull request. If so, please only add the English (en)
+locale as we have automation in place to update the other locales when they have missing keys.
+
+## Project Style Guide 
 
 ### Project Conventions
 
@@ -118,6 +163,8 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
   This means that `attr_writer` or `attr_accessor` are to be avoided and only `attr_reader` should be used.
   It follows then, that most objects should accept a large number of parameters in their initializers
   and set the attributes accordingly.
+* Simpler is better — if 30 lines of code can be written in 8, we prefer 8. Maintaining a large codebase
+  like Open OnDemand introduces complexity, so concise code makes life easier for maintainers.
 
 ### Linters
 
@@ -128,9 +175,11 @@ will remove them!
 
 ### Ruby Style
 
-In addition to the [RuboCop] styles configured described above, we follow common Ruby style
-and idioms. For example `snake_case` methods and variable names and favoring functional style
-methods.
+In addition to the [RuboCop] rules described above, we follow common Ruby style and idioms:
+
+* Use snake_case for method and variable names.
+* Favor a functional style for methods where appropriate.
+* Use parentheses more often than not, especially when it improves clarity.  
 
 ## Syntax and Layout
 
@@ -292,11 +341,10 @@ methods.
 
 ### Comments
 
-* We require comments in the code.
-* Use proper grammar and punctuation.
-* Focus on *why* the code is the way it is if it is not obvious.
-* Focus less on *how* the code works, that should be evident from the code.
-* At the top of each class and method please add a description of the intent of the Class or Method
+* Comments in the code are required.
+* Please use clear language with proper grammar and punctuation.
+* When the intent is not obvious, explain *why* the code is written this way.
+* Each class and method must include a brief description at the top explaining its purpose and intent.
 ```javascript
 /**
  * Format passed string to snake_case. All characters become lowercase. Existing
@@ -425,10 +473,9 @@ we'll follow this style.
   which we use quite extensively.
 * classes should mostly use relative sizes (`em` and `rem`), rarely pixel values (`px`).
 
-[Discourse]: https://discourse.osc.edu
-[yardoc]: https://yardoc.org/
+[Discourse]: https://discourse.openondemand.org/
 [Fork this repo]: https://help.github.com/articles/fork-a-repo/
-[code of conduct]: CODE_OF_CONDUCT.md
+[code of conduct]: https://github.com/OSC/ondemand/blob/master/CODE_OF_CONDUCT.md
 [issue labels]: https://github.com/OSC/ondemand/labels
 [good first issues]: https://github.com/OSC/ondemand/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+
 [RuboCop]: https://docs.rubocop.org/

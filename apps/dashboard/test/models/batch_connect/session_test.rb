@@ -45,11 +45,13 @@ module BatchConnect
       assert_equal 0, BatchConnect::Session.new.days_till_old, 'should be 0 since no id is set'
       assert_equal 0, BatchConnect::Session.new(id: 'A').days_till_old, 'should be 0 since no db file exists'
 
-      File.stubs(:stat).returns(OpenStruct.new(mtime: Time.now))
-      assert_equal BatchConnect::Session.old_in_days, BatchConnect::Session.new(id: 'A').days_till_old
+      Timecop.freeze do
+        File.stubs(:stat).returns(OpenStruct.new(mtime: Time.now))
+        assert_equal BatchConnect::Session.old_in_days, BatchConnect::Session.new(id: 'A').days_till_old
 
-      File.stubs(:stat).returns(OpenStruct.new(mtime: 1.day.ago))
-      assert_equal BatchConnect::Session.old_in_days - 1, BatchConnect::Session.new(id: 'A').days_till_old
+        File.stubs(:stat).returns(OpenStruct.new(mtime: 1.day.ago))
+        assert_equal BatchConnect::Session.old_in_days - 1, BatchConnect::Session.new(id: 'A').days_till_old
+      end
     end
 
     test 'Session.all should fail if valid session fields are not present' do
@@ -431,7 +433,7 @@ module BatchConnect
       session = BatchConnect::Session.new
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: false } }))
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(true)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(true)
       refute session.ssh_to_compute_node?
     end
 
@@ -439,7 +441,7 @@ module BatchConnect
       session = BatchConnect::Session.new
       session.stubs(:token).returns('rstudio')
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' } }))
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 
@@ -449,7 +451,7 @@ module BatchConnect
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: true } }))
       session.stubs(:app_ssh_to_compute_node).returns(true)
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       assert session.ssh_to_compute_node?
     end
 
@@ -459,7 +461,7 @@ module BatchConnect
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: true } }))
       session.stubs(:app_ssh_to_compute_node).returns(false)
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 
@@ -469,15 +471,15 @@ module BatchConnect
       session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
   batch_connect: { ssh_allow: false } }))
       session.stubs(:app_ssh_to_compute_node).returns(true)
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 
-    test 'ssh_to_compute_node? handles non-existant cluster and disabled globally' do
+    test 'ssh_to_compute_node? handles non-existent cluster and disabled globally' do
       session = BatchConnect::Session.new
       session.stubs(:token).returns('rstudio')
       session.stubs(:cluster).raises(BatchConnect::Session::ClusterNotFound, 'Session specifies nonexistent')
-      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      Configuration.stubs(:bc_ssh_to_compute_node).returns(false)
       refute session.ssh_to_compute_node?
     end
 
@@ -718,7 +720,7 @@ module BatchConnect
       end
     end
 
-    test 'return correct values if bc days old cant be converted to integer' do
+    test 'return correct values if bc days old cannot be converted to integer' do
       with_modified_env({ OOD_BC_CARD_TIME: 'three' }) do
         assert_equal 7, BatchConnect::Session.old_in_days
       end

@@ -7,6 +7,8 @@ module BatchConnect
     include UserSettingStore
     include EncryptedCache
 
+    before_action :set_no_cache_headers, only: [:new]
+
     # GET /batch_connect/<app_token>/session_contexts/new
     def new
       set_app
@@ -86,7 +88,7 @@ module BatchConnect
         return
       end
 
-      @session_context.update_with_cache(settings)
+      @session_context.update_with_cache(settings, ignore_cacheable: true)
 
       set_app_groups
       set_saved_settings
@@ -112,6 +114,10 @@ module BatchConnect
     end
 
     private
+
+    def set_no_cache_headers
+      response.headers['Cache-Control'] = 'private, no-store'
+    end
 
     # Set the app from the token
     def set_app
@@ -152,11 +158,11 @@ module BatchConnect
       save_bc_template(@app, params[:template_name], @session_context.to_h)
     end
 
-    # Only permit certian parameters
+    # Only permit certain parameters
     def session_contexts_param
-      if params[:batch_connect_session_context].present?
-        params.require(:batch_connect_session_context).permit(@session_context.attributes.keys)
-      end
+      return unless params[:batch_connect_session_context].present?
+
+      params.require(:batch_connect_session_context).permit(@session_context.attributes.keys)
     end
 
     # Store session context into a cache file

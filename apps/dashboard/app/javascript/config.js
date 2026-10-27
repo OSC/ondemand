@@ -68,6 +68,12 @@ export function xdmodUrl(){
   return url == "" ? null : url;
 }
 
+export function nsfAccessEventsUrl() {
+  const cfgData = configData();
+  const url = cfgData['nsfAccessEventsUrl'];
+  return url == "" ? null : url;
+}
+
 export function analyticsPath(type){
   const cfgData = configData();
   const basePath = cfgData['baseAnalyticsPath']
@@ -104,4 +110,9 @@ export function supportPath() {
 export function appsDatatablePageLength() {
   const cfgData = configData();
   return parseInt(cfgData['appsDatatablePageLength']);
+}
+
+export function userHome() {
+  const cfgData = configData();
+  return cfgData['userHome'];
 }

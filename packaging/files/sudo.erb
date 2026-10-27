@@ -1,5 +1,11 @@
+<% if sudo_rs? -%>
+Defaults:<%= apache_user %> !pwfeedback, !use_pty
+<% else -%>
 Defaults:<%= apache_user %> !requiretty, !authenticate
+<% end -%>
 Defaults:<%= apache_user %> env_keep += "NGINX_STAGE_* OOD_*"
 <%= apache_user %> ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
 Cmnd_Alias KUBECTL = /usr/local/bin/kubectl, /usr/bin/kubectl, /bin/kubectl
+<% if !sudo_rs? -%>
 Defaults!KUBECTL !syslog
+<% end %>

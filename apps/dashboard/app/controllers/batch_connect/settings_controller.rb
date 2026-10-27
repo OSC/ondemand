@@ -23,9 +23,9 @@ module BatchConnect
       end
 
       @settings = BatchConnect::Settings.new(app_token, settings_name, settings_values)
-      if @settings.outdated?
-        flash.now[:alert] = t('dashboard.bc_saved_settings.outdated_message', app_title: @settings.app.title)
-      end
+      return unless @settings.outdated?
+
+      flash.now[:alert] = t('dashboard.bc_saved_settings.outdated_message', app_title: @settings.app.title)
     end
 
     # DELETE /batch_connect/<app_token>/settings/<settings_name>

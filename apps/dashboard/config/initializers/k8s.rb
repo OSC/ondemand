@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# bootstrap all the kuberenetes clusters if there are any
+# bootstrap all the kubernetes clusters if there are any
 OodAppkit.clusters.select(&:kubernetes?).each do |cluster|
   require 'ood_core/job/adapters/kubernetes'
   require 'ood_core/job/adapters/kubernetes/batch'

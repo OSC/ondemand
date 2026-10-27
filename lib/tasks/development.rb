@@ -33,6 +33,7 @@ namespace :dev do
         'port'                   => 8080,
         'listen_addr_port'       => 8080,
         'oidc_remote_user_claim' => 'email',
+        'oidc_crypto_passphrase' => SecureRandom.uuid,
         'dex'                    => {
           'static_passwords' => [{
             'email'    => "#{user.name}@localhost",
@@ -58,8 +59,8 @@ namespace :dev do
       '--security-opt', 'label=disable',
       "--uidmap=#{user.uid}:0:1", "--uidmap=0:1:#{user.uid}",
       "--gidmap=#{user.gid}:0:1", "--gidmap=0:1:#{user.gid}",
-      user.uid < 1000 ? "--uidmap=#{user.uid+1}:#{user.uid+1}:1000" : nil,
-      user.gid < 1000 ? "--gidmap=#{user.gid+1}:#{user.gid+1}:1000" : nil,
+      user.uid < 1000 ? "--uidmap=#{user.uid + 1}:#{user.uid + 1}:1000" : nil,
+      user.gid < 1000 ? "--gidmap=#{user.gid + 1}:#{user.gid + 1}:1000" : nil
     ].compact.tap do |arr|
       arr.concat ['--cap-add', 'sys_ptrace'] unless additional_caps.include?('--privileged')
     end.freeze
@@ -72,10 +73,27 @@ namespace :dev do
     end
   end
 
+  def ondemand_directory
+    pwd = FileUtils.pwd
+    target = Pathname.new(pwd).ascend do |path|
+      break path if path.basename.to_s == 'ondemand'
+    end
+
+    return target.nil? ? container_ondemand_directory : target
+  end
+
+  def linux_home
+    "/home/#{user.name}"
+  end
+
+  def container_ondemand_directory
+    "#{linux_home}/ondemand"
+  end
+
   def dev_mounts
     [
       '-v', "#{config_directory}:/etc/ood/config",
-      '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand"
+      '-v', "#{ondemand_directory}:#{container_ondemand_directory}"
     ].tap do |mnts|
       unless ENV['OOD_MNT_PORTAL'].nil?
         mnts.concat(['-v',
@@ -130,9 +148,9 @@ namespace :dev do
   task :exec do
     ctr_args = [container_runtime, 'exec', '-it']
     # home is set to /root? could be bug for me
-    ctr_args.concat ['-e', "HOME=#{user.dir}"]
+    ctr_args.concat ['-e', "HOME=#{linux_home}"]
     ctr_args.concat term_container_args
-    ctr_args.concat ['--workdir', user.dir.to_s]
+    ctr_args.concat ['--workdir', linux_home.to_s]
     ctr_args.concat [dev_container_name, '/bin/bash']
 
     sh ctr_args.join(' ')

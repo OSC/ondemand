@@ -1,6 +1,6 @@
 # Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
-  def create_widget(form, attrib, format: nil, hide_excludable: true, hide_fixed: true)
+  def create_widget(form, attrib, format: nil, hide_excludable: true, hide_fixed: true, grouped: false)
     return '' if hide_fixed && attrib.fixed?
     return '' if attrib.hide_when_empty? && attrib.value.blank?
 
@@ -22,12 +22,14 @@ module BatchConnect::SessionContextsHelper
                     form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
                   end
                 when 'radio', 'radio_button'
-                  form.form_group attrib.id, help: field_options[:help] do
+                  form.form_group(attrib.id, help: field_options[:help], class: all_options[:class]) do
                     opts = {
-                      label:   label_tag(attrib.id, attrib.label),
                       checked: (attrib.value.presence || attrib.field_options[:checked])
-                    }
-                    form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)
+                      # need to reject help here or it's duplicated
+                    }.merge(attrib.all_options.reject { |key, _v| key == :help } )
+                    content_tag(:div, id: [form.object_name, attrib.id].join('_')) do
+                      form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)                  
+                    end
                   end
                 when 'path_selector'
                   form.form_group(attrib.id) do
@@ -38,25 +40,57 @@ module BatchConnect::SessionContextsHelper
                 else
                   form.send widget, attrib.id, all_options
                 end
-    header = sanitize(OodAppkit.markdown.render(attrib.header))
-    "#{header}#{rendered}".html_safe
+                
+    # Append a wrapper div to hold additional info
+    wrapped = content_tag(
+      :div, 
+      id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
+      class: wrapper_class(attrib.hide_by_default?, grouped),
+      data: {
+        widget_type: widget,
+        hide_by_default: attrib.hide_by_default?
+      }
+    ) do
+      rendered
+    end
 
+    header = sanitize(OodAppkit.markdown.render(attrib.header))
+    safe_join([header, wrapped])
+  end
+
+  def wrapper_class(hidden, grouped)
+    classes = []
+    classes.push('d-none') if hidden
+    classes.push('col') if grouped
+
+    classes.empty? ? nil : classes.join(' ')
+  end
+
+  def format_bc_id(id)
+    # global bc_ options strip global_ prefix from their id.
+    ga_bc_rex = /\Aglobal_bc_([\w-]+)\z/.freeze
+    if id.match?(ga_bc_rex)
+      "bc_#{id.match(ga_bc_rex)[1]}"
+    else
+      # auto_modules cast - and / to _
+      id.to_s.downcase.gsub(/[-\/]/, '_')
+    end
   end
 
   def resolution_field(form, id, opts = {})
-    content_tag(:div, id: "#{id}_group", class: "mb3") do
-      concat form.label(id, opts[:label])
+    content_tag(:div, id: "#{id}_group", class: "mb-3") do
       concat form.hidden_field(id, id: "#{id}_field")
+      concat form.label(id, opts[:label], class: 'form-label')
       concat(
-        content_tag(:div, class: "row mb-3") do
+        content_tag(:div, id: [form.object_name, id].join('_'), class: "row mb-3") do
           concat (
             content_tag(:div, class: "col-sm-6") do
               concat (
                 content_tag(:div, class: "input-group") do
                   concat (content_tag(:div, class: "input-group-prepend") do
-                    content_tag(:div, "width", class: "input-group-text")
+                    content_tag(:div, 'width', class: "input-group-text")
                   end)
-                  concat number_field_tag("#{id}_x_field", nil, class: "form-control", min: 100, required: opts[:required])
+                  concat number_field_tag("#{id}_x_field", nil, class: "form-control", min: 100, aria:{ label:I18n.t('dashboard.batch_connect_form_resolution_width') }, required: opts[:required])
                   concat (content_tag(:div, class: "input-group-append") do
                     content_tag(:div, "px", class: "input-group-text")
                   end)
@@ -71,7 +105,7 @@ module BatchConnect::SessionContextsHelper
                   concat (content_tag(:div, class: "input-group-prepend") do
                     content_tag(:div, "height", class: "input-group-text")
                   end)
-                  concat number_field_tag("#{id}_y_field", nil, class: "form-control", min: 100, required: opts[:required])
+                  concat number_field_tag("#{id}_y_field", nil, class: "form-control", min: 100, aria:{ label:I18n.t('dashboard.batch_connect_form_resolution_height') }, required: opts[:required])
                   concat (content_tag(:div, class: "input-group-append") do
                     content_tag(:div, "px", class: "input-group-text")
                   end)
@@ -79,62 +113,12 @@ module BatchConnect::SessionContextsHelper
               )
             end
           )
-        end
-      )
-      concat content_tag(:span, opts[:help], class: "help-block") if opts[:help]
-      concat button_tag(t('dashboard.batch_connect_form_reset_resolution'), id: "#{id}_reset", type: "button", class: "btn btn-light")
-      concat(
-        content_tag(:script) do
-          <<-EOT.html_safe
-            (function() {
-              // Target elements
-              var $target  = $('##{id}_field');
-              var $targetX = $('##{id}_x_field');
-              var $targetY = $('##{id}_y_field');
-              var $targetR = $('##{id}_reset');
-
-              // Helper methods
-              var setX = function(x) {
-                y = getY();
-                $target.val(x + 'x' + y);
-                $targetX.val(x);
-              };
-              var setY = function(y) {
-                x = getX();
-                $target.val(x + 'x' + y);
-                $targetY.val(y);
-              };
-              var getX = function() {
-                return $target.val().split('x')[0];
-              };
-              var getY = function() {
-                return $target.val().split('x')[1];
-              };
-              var resetXY = function() {
-                setX(window.screen.width  * 0.8 | 0);
-                setY(window.screen.height * 0.8 | 0);
-              };
-
-              // Set defaults if not already set
-              if ( !$target.val() ) {
-                resetXY();
-              } else {
-                setX(getX());
-                setY(getY());
-              }
-
-              // Event listeners
-              $targetX.change(function() {
-                setX($(this).val());
-              });
-              $targetY.change(function() {
-                setY($(this).val());
-              });
-              $targetR.click(function() {
-                resetXY();
-              });
-            })();
-          EOT
+          concat content_tag(:small, opts[:help], id:"#{id}_help", class: 'form-text text-muted') if opts[:help]
+          concat (
+            content_tag(:div) do 
+              button_tag(t('dashboard.batch_connect_form_reset_resolution'), id: "#{id}_reset", type: "button", class: "btn btn-light")
+            end
+          )
         end
       )
     end

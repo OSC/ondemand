@@ -1,5 +1,5 @@
 'use strict';
-
+import { ariaNotify } from './utils'
 // these are initialized in makeChangeHandlers
 var idPrefix = undefined;
 var shortNameRex = undefined;
@@ -20,13 +20,19 @@ const setHandlerCache = [];
 // hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
 const hideHandlerCache = {};
 const labelHandlerCache = {};
-
+const helpHandlerCache = [];
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 const labelLookup = {};
+const helpLookup = {};
+
+// aliasLookup is a nested hash of the form
+// {optionId: {value: alias}}
+// Note that values can have special characters so you must access with [] operator
+const aliasLookup = {};
 
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
@@ -54,8 +60,8 @@ function shortId(elementId) {
  * Mountain case the words from a string, by tokenizing on [-_].  In the
  * simplest case it just capitalizes.
  *
- * There is a special case where seperators are followed numbers. In this case
- * The seperator is kept as a hyphen because that's how jQuery expects it.
+ * There is a special case where separators are followed numbers. In this case
+ * The separator is kept as a hyphen because that's how jQuery expects it.
  *
  * @param      {string}  str     The word string to mountain case
  *
@@ -92,14 +98,18 @@ function mountainCaseWords(str) {
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
 function snakeCaseWords(str) {
-  if(str === undefined) return undefined;
+  if(str === undefined) {
+    return undefined;
+  } else if(str === "") {
+    return "";
+  }
 
-  // find all the captial case words and if none are found, we'll just bascially
+  // find all the capital case words and if none are found, we'll just basically
   // return the same string.
   const rex = /([A-Z]{1}[a-z]*[0-9]*)|([^-_]+)/g;
   const words = str.match(rex);
 
-  // filter out emtpy matches to avoid having a _ at the end.
+  // filter out empty matches to avoid having a _ at the end.
   return words.filter(word => word != '').map(word => word.toLowerCase()).join('_');
 }
 
@@ -130,8 +140,10 @@ function makeChangeHandlers(prefix){
           // the variable 'opt' is just a data structure, not a jQuery result. 
           // it has no attr, data, show or hide methods so we have to query
           // for it again
-          let data = $(`${optionSearch}[value='${opt.value}']`).data();
-          let keys = Object.keys(data);
+          let data = $(`${optionSearch}`).filter(function() {
+            return (this.value === opt.value);
+          }).data();
+          let keys = Object.keys(data).sort();
           if(keys.length !== 0) {
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
@@ -148,6 +160,10 @@ function makeChangeHandlers(prefix){
                 addHideHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('label')) {
                 addLabelHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('alias')) {
+                cacheAliases(element['id']);
+              } else if(key.startsWith('help')) {
+                addHelpHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -167,7 +183,6 @@ function makeChangeHandlers(prefix){
       }
     }
   });
-
   initializing = false;
 };
 
@@ -199,8 +214,24 @@ function newLabel(changeElement, key) {
   return selectedOptionLabel.dataset[key];
 };
 
+function captureDefaultLabel(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultLabel') !== undefined) return;
+
+  const label = $(`label[for="${changeId}"]`);
+  wrapper.data('defaultLabel', label.length ? label[0].innerHTML : '');
+}
+
 function updateLabel(changeId, changeElement, key) {
-  $(`label[for="${changeId}"]`)[0].innerHTML = newLabel(changeElement, key);
+  if (changeId === undefined) return;
+
+  captureDefaultLabel(changeId);
+  const labelContent = newLabel(changeElement, key);
+  const defaultLabel = $(`#${changeId}_wrapper`).data('defaultLabel');
+  const contentToSet = labelContent === undefined ? defaultLabel : labelContent;
+  const originalInfo = getWidgetInfo(changeId);
+  $(`label[for="${changeId}"]`)[0].innerHTML = contentToSet;
+  ariaStream(`Changed label on ${originalInfo} to new label ${contentToSet}`);
 }
 
 function addLabelHandler(optionId, option, key, configValue) {
@@ -221,6 +252,127 @@ function addLabelHandler(optionId, option, key, configValue) {
 
   updateLabel(changeId, changeElement, key);
 };
+
+/**
+ *
+ * @param {*} subjectId batch_connect_session_context_node_type
+ * @param {*} option gpu
+ * @param {*} key helpNodeTypeForClusterAscend
+ * @param {*} configValue 'GPU nodes on Ascend ...'
+ *
+ * node_type:
+ *   widget: select
+ *   options:
+ *    - [
+ *        'gpu',
+ *        data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend ...'
+ *      ]
+ */
+function addHelpHandler(subjectId, option, key, configValue) {
+  subjectId = String(subjectId || '');
+
+  const configObj = parseHelpFor(key);
+  const objectId = configObj['subjectId'];
+  // this is the id of the target object we're setting the help for.
+  // if it's undefined - there's nothing to do, it was likely configured wrong.
+  if(objectId === undefined) return;
+
+  const secondDimId = configObj['predicateId'];
+  const secondDimValue = configObj['predicateValue'];
+
+  // several subjects can try to change the object, so the table lookup key has to have both
+  const lookupKey = `${subjectId}_${objectId}`;
+  if(helpLookup[lookupKey] === undefined) helpLookup[lookupKey] = new Table(subjectId, secondDimId);
+  const table = helpLookup[lookupKey];
+  table.put(option, secondDimValue, configValue);
+
+  let cacheKey = `${objectId}_${subjectId}_${secondDimId}`;
+  if(!helpHandlerCache.includes(cacheKey)) {
+    const changeElement = $(`#${subjectId}`);
+
+    changeElement.on('change', (event) => {
+      toggleHelp(event, objectId, secondDimId);
+    });
+
+    helpHandlerCache.push(cacheKey);
+  }
+
+  cacheKey = `${objectId}_${secondDimId}_${subjectId}`;
+  if(secondDimId !== undefined && !helpHandlerCache.includes(cacheKey)){
+    const secondEle = $(`#${secondDimId}`);
+
+    secondEle.on('change', (event) => {
+      toggleHelp(event, objectId, subjectId);
+    });
+
+    helpHandlerCache.push(cacheKey);
+  }
+
+  toggleHelp({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
+};
+
+function captureDefaultHelp(changeId) {
+  const wrapper = $(`#${changeId}_wrapper`);
+  if (wrapper.data('defaultHelp') !== undefined) return;
+
+  const helpSmall = wrapper.find('small').first();
+  wrapper.data('defaultHelp', helpSmall.length > 0 ? helpSmall.text() : '');
+}
+
+/**
+ * Resolve a value from a two-dimensional lookup table given a change event.
+ * Either dimension can fire the event; this finds the correct table and axes.
+ */
+ function valueFromLookupTable(event, changeId, otherId, lookup) {
+  // many subjects can change the object, so we have to find the correct table
+  // in the form <subject>_<object>
+  let lookupKey = `${event.target['id']}_${changeId}`;
+  if(lookup[lookupKey] === undefined) {
+    lookupKey = `${otherId}_${changeId}`;
+  }
+
+  const table = lookup[lookupKey];
+  let x = undefined, y = undefined;
+
+  // in the example of cluster & node_type, either element can trigger a change
+  // so let's figure out the axis' based on the change element's id.
+  if(event.target['id'] == table.x) {
+    x = snakeCaseWords(event.target.value);
+    y = snakeCaseWords($(`#${otherId}`).val());
+  } else {
+    y = snakeCaseWords(event.target.value);
+    x = snakeCaseWords($(`#${otherId}`).val());
+  }
+
+  return table.get(x, y);
+}
+
+/**
+ * Update the help text of `changeId` based on the
+ * event, the `otherId` and the settings in helpLookup table.
+ */
+ function toggleHelp(event, changeId, otherId) {
+  if (changeId === undefined) return;
+
+  captureDefaultHelp(changeId);
+
+  const helpContent = valueFromLookupTable(event, changeId, otherId, helpLookup);
+  const wrapper_id = `#${changeId}_wrapper`;
+  const defaultHelp = $(wrapper_id).data('defaultHelp');
+  const contentToSet = helpContent === undefined ? defaultHelp : helpContent;
+  var helpElement = $(`${wrapper_id} small p`);
+
+  if (contentToSet === '' && helpElement.length === 0) return;
+
+  if (helpElement.length == 0) {
+    const small = document.createElement('small');
+    small.classList.add('form-text', 'text-muted');
+    helpElement = document.createElement('p');
+    $(helpElement).appendTo($(small).appendTo($(wrapper_id).children()[0]));
+  }
+  $(helpElement).text(contentToSet);
+  ariaStream(`Changed help text on ${getWidgetInfo(changeId)} to ${contentToSet}`);
+}
 
 /**
  *
@@ -326,24 +478,31 @@ function setValue(event, changeId) {
   const table = setValueLookup[cacheKey];
   if (table === undefined) return;
 
-  const changeVal = table.get(chosenVal, undefined);
+  var changeVal = table.get(chosenVal, undefined);
+  if (changeVal === undefined) return;
 
-  if(changeVal !== undefined) {
-    const element = document.getElementById(changeId);
-    if(element['type'] == 'checkbox') {
-      setCheckboxValue(element, changeVal);
+  const element = document.getElementById(changeId);
+  const isCheckbox = element.type === "checkbox";
+
+  // checkboxes needs to cast number values from the table
+  // to strings because element.value will be a string type.
+  if(isCheckbox) {
+    changeVal = String(changeVal);
+  }
+
+  const matches = element.value === changeVal;
+  const needUpdate = isCheckbox ? element.checked !== matches : !matches;
+
+  if (needUpdate) {
+    if (isCheckbox) {
+      element.checked = matches;
     } else {
       element.value = changeVal;
     }
-  }
-}
 
-function setCheckboxValue(checkbox, value) {
-  const positiveValue = checkbox.value;
-  if(value == positiveValue) {
-    checkbox.checked = true;
-  } else {
-    checkbox.checked = false;
+    const elementInfo = getWidgetInfo(changeId);
+    ariaStream(`Set ${elementInfo} to value ${changeVal}`);
+    element.dispatchEvent(new Event('change', { bubbles: true }));
   }
 }
 
@@ -379,7 +538,7 @@ class Table {
     y = snakeCaseWords(y);
 
     if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
-    if(y && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
+    if((y || y === "") && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
 
     const xIdx = this.xIdxLookup[x];
     const yIdx = this.yIdxLookup[y];
@@ -437,29 +596,25 @@ class Table {
 function updateVisibility(event, changeId) {
   const val = valueFromEvent(event);
   const id = event.target['id'];
-  let changeElement = undefined;
-  
-  $(`#${changeId}`).parents().each(function(_i, parent) {
-    var classListValues = parent.classList.values();
-    for (const val of classListValues) {
-      // TODO: Using 'mb-3' here because 'form-group' was removed
-      // from Bootstrap 5 and replaced with 'mb-3' - however, this
-      // is a grid class which could (??) apply to parent elements
-      // in unpredictable parts of the chain - test for & resolve
-      if (val.match('mb-3')) {
-        changeElement = $(parent);
-      }
-    }
-  });
-
-  if (changeElement === undefined || changeElement.length <= 0) return;
-
-  // safe to access directly?
+  const elementInfo = getWidgetInfo(changeId);
+  const defaultHidden = $(`#${changeId}_wrapper`).data('hideByDefault')
   const hide = hideLookup[id].get(changeId, val);
-  if((hide === false) || (hide === undefined && !initializing)) {
-    changeElement.show();
-  }else if(hide === true) {
-    changeElement.hide();
+  
+  if((hide === false) || (hide === undefined && !initializing && !defaultHidden)) {
+    toggleItemVisible(changeId, true);
+    ariaStream(`Revealed form item ${elementInfo}`);
+  } else if ((hide === true) || (hide === undefined && !initializing && defaultHidden)) {
+    toggleItemVisible(changeId, false);
+    ariaStream(`Hid form item ${elementInfo}`);
+  }
+}
+
+function toggleItemVisible(id, makeVisible) {
+  const wrapper = $(`#${id}_wrapper`);
+  if (makeVisible) {
+    wrapper.removeClass('d-none')
+  } else {
+    wrapper.addClass('d-none')
   }
 }
 
@@ -476,38 +631,23 @@ function valueFromEvent(event) {
  * Update the min & max values of `changeId` based on the
  * event, the `otherId` and the settings in minMaxLookup table.
  */
-function toggleMinMax(event, changeId, otherId) {
-  let x = undefined, y = undefined;
-
-  // many subjects can change the object, so we have to find the correct table
-  // in the form <subject>_<object>
-  let lookupKey = `${event.target['id']}_${changeId}`;
-  if(minMaxLookup[lookupKey] === undefined) {
-    lookupKey = `${otherId}_${changeId}`;
-  }
-
-  const table = minMaxLookup[lookupKey];
-
-  // in the example of cluster & node_type, either element can trigger a change
-  // so let's figure out the axis' based on the change element's id.
-  if(event.target['id'] == table.x) {
-    x = snakeCaseWords(event.target.value);
-    y = snakeCaseWords($(`#${otherId}`).val());
-  } else {
-    y = snakeCaseWords(event.target.value);
-    x = snakeCaseWords($(`#${otherId}`).val());
-  }
-
+ function toggleMinMax(event, changeId, otherId) {
   const changeElement = $(`#${changeId}`);
-  const mm = table.get(x, y);
+  const mm = valueFromLookupTable(event, changeId, otherId, minMaxLookup);
   const prev = {
     min: parseInt(changeElement.attr('min')),
     max: parseInt(changeElement.attr('max')),
   };
 
+  var ariaMsg = 'Set ';
+  var ariaMsgLength = ariaMsg.length;
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
+      if (ariaMsg.length > ariaMsgLength){
+        ariaMsg += ' and ';
+      }
+      ariaMsg += `${dim}imum limit to ${mm[dim]}`;
     }
   });
 
@@ -515,6 +655,12 @@ function toggleMinMax(event, changeId, otherId) {
   if (val !== undefined) {
     changeElement.attr('value', val);
     changeElement.val(val);
+    ariaMsg += ` and set current value to ${val}`;
+  }
+
+  if (ariaMsg.length > ariaMsgLength){
+    ariaMsg += ` for ${getWidgetInfo(changeId)}`;
+    ariaStream(ariaMsg);
   }
 }
 
@@ -668,6 +814,22 @@ function parseMinMaxFor(key) {
   }
 }
 
+/**
+ *
+ * @param {*} key helpNodeTypeForClusterAscend
+ * @returns
+ *
+ *  {
+ *    'subjectId': 'batch_connect_session_context_node_type',
+ *    'predicateId': 'batch_connect_session_context_cluster',
+ *    'predicateValue': 'ascend'
+ *  }
+ */
+ function parseHelpFor(key) {
+  // reuse the same For-clause parser as min/max
+  return parseMinMaxFor(key.replace(/^help/, 'min'));
+}
+
 function minOrMax(key) {
   if(key.startsWith('min')){
     return 'min';
@@ -679,10 +841,14 @@ function minOrMax(key) {
 }
 
 /**
- * Turn a MountainCase token into a form element id
+ * Turn a MountainCase token into a form element id.
+ * If the input MountainCase string *starts with* one of our memorized form tokens,
+ * this will return the form element ID for that token.
  *
  * @example
  *  NodeType -> batch_connect_session_context_node_type
+ *  NodeTypewriter -> batch_connect_session_context_node_typewriter
+ *  NodeTypeForClusterFooBar -> batch_connect_session_context_node_type
  *
  * @param {*} str
  * @returns
@@ -715,6 +881,24 @@ function idFromToken(str) {
   }
 }
 
+function cacheAliases(elementId) {
+  // This should only run once on each select with an alias defined
+  if (aliasLookup[elementId] === undefined) {
+    aliasLookup[elementId] = {};
+    const options = [...document.querySelectorAll(`#${elementId} option`)];
+    options.forEach(option => {
+      const data = option.dataset;
+      Object.keys(data).forEach(key => {
+        if (key.startsWith('alias')){
+          const alias = key.replace(/^alias/, '');
+          const value = data[key];
+          aliasLookup[elementId][value] = alias;
+        }
+      })
+    })
+  }
+}
+
 /**
  * Extract the option for out of an option for directive.
  *
@@ -737,66 +921,68 @@ function sharedOptionForFromToken(str, optionForType) {
   })[0];
 }
 
-function optionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'optionFor');
-}
-
-function exclusiveOptionForFromToken(str) {
-  return sharedOptionForFromToken(str, 'exclusiveOptionFor');
-}
-
-function sharedToggleOptionsFor(_event, elementId, contextStr) {
-  const options = [...document.querySelectorAll(`#${elementId} option`)];
+function sharedToggleOptionsFor(_event, targetId, optionForType) {
+  const options = [...document.querySelectorAll(`#${targetId} option`)];
   let hideSelectedValue = undefined;
 
   options.forEach(option => {
     let hide = false;
 
-    // even though an event occured - an option may be hidden based on the value of
+    // even though an event occurred - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (let key of Object.keys(option.dataset)) {
       let optionFor = '';
 
-      if (contextStr == 'optionFor') {
-        optionFor = optionForFromToken(key);
-      } else if (contextStr == 'exclusiveOptionFor') {
-        optionFor = exclusiveOptionForFromToken(key);
-      }
-      let optionForId = idFromToken(key.replace(new RegExp(`^${contextStr}`),''));
+      optionFor = sharedOptionForFromToken(key, optionForType);
+      let optionForId = idFromToken(key.replace(new RegExp(`^${optionForType}`),''));
 
       // it's some other directive type, so just keep going and/or not real
-      if(!key.startsWith(contextStr) || optionForId === undefined) {
+      if(!key.startsWith(optionForType) || optionForId === undefined) {
         continue;
       }
+      const value = document.getElementById(optionForId).value;
+      let optionForValue = mountainCaseWords(value);
 
-      let optionForValue = mountainCaseWords(document.getElementById(optionForId).value);
+      let optionForAlias = '';
+      if ((targetId in aliasLookup) && (value in aliasLookup[targetId])) {
+        optionForAlias = aliasLookup[targetId][value];
+      }
       // handle special case where the very first token here is a number.
       // browsers expect a prefix of hyphens as if it's the next token.
       if (optionForValue.match(/^\d/)) {
         optionForValue = `-${optionForValue}`;
       }
-
-      if (contextStr == 'optionFor') {
-        hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
-      } else if (contextStr == 'exclusiveOptionFor') {
-        hide = !(option.dataset[`exclusiveOptionFor${optionFor}${optionForValue}`] === 'true')
+      if (optionForType == 'optionFor') {
+        let key = `optionFor${optionFor}${optionForValue}`;
+        if (!(key in option.dataset)) {
+          key = `optionFor${optionFor}${optionForAlias}`;
+        }
+        hide = option.dataset[key] === 'false';
+      } else if (optionForType == 'exclusiveOptionFor') {
+        let key = `exclusiveOptionFor${optionFor}${optionForValue}`;
+        if (!(key in option.dataset)){
+          key = `exclusiveOptionFor${optionFor}${optionForAlias}`;
+        }
+        hide = !(option.dataset[key] === 'true');
       }
-
       if (hide) {
         break;
       }
     };
 
+    const targetInfo = getWidgetInfo(targetId);
     if(hide) {
       if(option.selected) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
-
+      var prefix = option.selected ? 'Selected' : '';
+      ariaStream(`${prefix} option ${option.value} disabled for ${targetInfo}`);
       option.style.display = 'none';
       option.disabled = true;
     } else {
+      ariaStream(`Option ${option.value} enabled for ${targetInfo}`);
       option.style.display = '';
       option.disabled = false;
     }
@@ -806,7 +992,7 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
   // be the current selected value.
   // if you've hidden what _was_ selected.
   if(hideSelectedValue !== undefined) {
-    let others = [...document.querySelectorAll(`#${elementId} option[value='${hideSelectedValue}']`)];
+    let others = [...document.querySelectorAll(`#${targetId} option[value='${CSS.escape(hideSelectedValue)}']`)];
     let newSelectedOption = undefined;
 
     // You have hidden what _was_ selected, so try to find a duplicate option that is visible
@@ -819,9 +1005,9 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
       });
     }
 
-    // no duplciates are visible, so just pick the first visible option
+    // no duplicates are visible, so just pick the first visible option
     if (newSelectedOption === undefined) {
-      others = document.querySelectorAll(`#${elementId} option`);
+      others = document.querySelectorAll(`#${targetId} option`);
       others.forEach(ele => {
         if(newSelectedOption === undefined && ele.style.display === '') {
           newSelectedOption = ele;
@@ -832,10 +1018,28 @@ function sharedToggleOptionsFor(_event, elementId, contextStr) {
     if (newSelectedOption !== undefined) {
       newSelectedOption.selected = true;
     }
+    
+    // now that we're done, propagate this change to data-set or data-hide handlers
+    document.getElementById(targetId).dispatchEvent((new Event('change', { bubbles: true })));
   }
+}
 
-  // now that we're done, propogate this change to data-set or data-hide handlers
-  document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
+// get attributes based on widget id
+function getWidgetInfo(id){
+  const type = getWidgetType(id);
+  const label = $(`label[for="${id}"]`);
+  const labelText = label.length ? label.text().trim() : null;
+
+  return `${type} with ${labelText ? ` label ${labelText}` : 'no label'}`;
+}
+
+function getWidgetType(id){
+  return $(`#${id}_wrapper`).data('widgetType')
+}
+
+// sends a message that is immediately read by screenreaders
+function ariaStream(message) {
+  initializing ? null : ariaNotify(`${message}.`, false);
 }
 
 function toggleOptionsFor(_event, elementId) {

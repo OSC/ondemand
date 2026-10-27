@@ -1,11 +1,9 @@
-import { OODAlert } from '../alert';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import { pageSpin, stopPageSpin } from '../utils';
 
 export {EVENTNAME};
 
 const EVENTNAME = {
-  showError: 'showError',
   showInput: 'showInput',
   showLoading: 'showLoading',
   closeSwal: 'closeSwal',
@@ -64,7 +62,7 @@ function attachOKHandler(options) {
     }
 
     if(error) {
-      OODAlert(error);
+      OODAlertError(error);
     } else {
       $(CONTENTID).trigger(options.action, eventData);
     }
@@ -76,13 +74,10 @@ function attachOKHandler(options) {
 
 jQuery(function() {
 
-  $(CONTENTID).on(EVENTNAME.showError, function(e,options) {
-    OODAlert(options.message);
-  });
-
   $(CONTENTID).on(EVENTNAME.showInput, function(e, options) {
     modifyInput(options);
     $('#files_input_modal').modal('show');
+    $('#files_input_modal_input').focus();
   });
 
   $(CONTENTID).on(EVENTNAME.showLoading, function(e,options) {

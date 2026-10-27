@@ -1,10 +1,19 @@
 require 'securerandom'
 require 'syslog/logger'
+require 'uri'
 
 module NginxStage
   # This generator stages and generates the per-user NGINX environment.
   class PunConfigGenerator < Generator
     desc 'Generate a new per-user nginx config and process'
+
+    # Serialize PUN initialization for one user. A second request that queued
+    # behind another startup re-checks PUN state before running setup hooks.
+    def invoke
+      with_pun_start_lock do
+        super
+      end
+    end
 
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
@@ -29,23 +38,34 @@ module NginxStage
 
     # Block starting up PUNs for users with disabled shells
     add_hook :block_user_with_disabled_shell do
-      raise InvalidUser, "user has disabled shell: #{user}" if user.shell == NginxStage.disabled_shell
+      raise InvalidUser, NginxStage.disabled_shell_message % user if user.shell == NginxStage.disabled_shell
     end
 
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
 
+    # Keep validation ahead of the running-PUN shortcut. Configuration-only
+    # generation still runs even when the PUN is already active.
+    add_hook :skip_running_pun do
+      raise Error, 'Startup blocked because a PUN is already running' if !skip_nginx && pun_running?
+    end
+
     # @!method app_init_url
     #   The app initialization URL the user is redirected to if can't find the
     #   app in the per-user NGINX config
-    #   @return [String] app init redirect url
+    #   @return [String] app init redirect path. Historically has been a URL, but is now just the path.
     add_option :app_init_url do
       {
         opt_args: ["-a", "--app-init-url=APP_INIT_URL", "# The user is redirected to the APP_INIT_URL if app doesn't exist"],
         default: nil,
         before_init: -> (uri) do
-          raise InvalidAppInitUri, "invalid app-init-url syntax: #{uri}" if uri =~ /[^-\w\/?$=&.:]/
-          uri
+          # can throw an error here for malformed URIs
+          parsed = URI(uri.to_s)
+          path = parsed.path
+          path = "#{path}?#{parsed.query}" unless parsed.query.nil?
+          path = "#{path}##{parsed.fragment}" unless parsed.fragment.nil?
+
+          path.empty? ? nil : path
         end
       }
     end
@@ -149,6 +169,24 @@ module NginxStage
 
 
     private
+      def with_pun_start_lock
+        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
+        FileUtils.mkdir_p File.dirname(lock_path)
+
+        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
+          lock.flock(File::LOCK_EX)
+          yield
+        end
+      end
+
+      def pun_running?
+        return false unless File.socket?(NginxStage.pun_socket_path(user: user))
+
+        PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
+      rescue MissingPidFile, InvalidPidFile
+        false
+      end
+
       # per-user NGINX config path
       def config_path
         NginxStage.pun_config_path(user: user)

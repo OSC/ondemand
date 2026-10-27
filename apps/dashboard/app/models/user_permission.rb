@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Utility class for setting FACL user permissions.
 class UserPermission < Permission
   class << self
@@ -14,6 +16,7 @@ class UserPermission < Permission
         (e.user_entry? && e.principle.to_s == name) || (e.user_owner_entry? && owner_name == name)
       end
       raise Permission::NotFound unless entry
+
       new(product: product, name: name, owner: entry.user_owner_entry?)
     end
   end

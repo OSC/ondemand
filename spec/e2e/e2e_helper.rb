@@ -27,6 +27,27 @@ def browser_login(browser)
   browser.text_field(id: 'username').set 'ood@localhost'
   browser.text_field(id: 'password').set 'password'
   browser.button(id: 'submit-login').click
+  # The submit click is asynchronous. Do not let callers race the Dex
+  # and authenticated dashboard navigation.
+  Watir::Wait.until(timeout: 60, interval: 0.25) do
+    browser.title == 'Dashboard - Open OnDemand'
+  end
+end
+
+def clean_nginx
+  on hosts, <<~SH
+    set -e
+    socket=/var/run/ondemand-nginx/ood/passenger.sock
+    /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force
+    for _ in $(seq 1 30); do
+      if [ ! -e "$socket" ] && [ ! -L "$socket" ]; then
+        exit 0
+      fi
+      sleep 1
+    done
+    echo "PUN socket still exists after nginx cleanup: $socket" >&2
+    exit 1
+  SH
 end
 
 def hook_fixture(file)
@@ -71,10 +92,12 @@ def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
   when 'ubuntu-24.04'
     'noble'
-  when 'ubuntu-22.04'
-    'jammy'
+  when 'ubuntu-26.04'
+    'resolute'
   when 'debian-12'
     'bookworm'
+  when 'debian-13'
+    'trixie'
   end
 end
 
@@ -103,6 +126,15 @@ def apache_log_dir
   "/var/log/#{apache_service.split('-').first}"
 end
 
+def ood_gems_path
+  case host_inventory['platform']
+  when 'redhat'
+    '/opt/ood/ondemand/root/usr/share/gems'
+  when 'ubuntu', 'debian'
+    '/opt/ood/gems'
+  end
+end
+
 def install_packages(packages)
   on hosts, "#{packager} install -y #{packages.join(' ')}"
 end
@@ -119,8 +151,11 @@ def bootstrap_repos
   case host_inventory['platform']
   when 'redhat'
     repos << 'epel-release'
-    on hosts, 'dnf -y module enable ruby:3.3'
-    on hosts, 'dnf -y module enable nodejs:20'
+    # Avoid DNF modules for el10 until Ruby and NodeJS use modules
+    if host_inventory['platform_version'] !~ /^10/
+      on hosts, 'dnf -y module enable ruby:3.3'
+      on hosts, 'dnf -y module enable nodejs:22'
+    end
   when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
   end
@@ -161,7 +196,7 @@ def ondemand_repo
 end
 
 def build_repo_version
-  ENV['OOD_BUILD_REPO'] || '4.0'
+  ENV['OOD_BUILD_REPO'] || '4.2'
 end
 
 def install_ondemand
@@ -169,7 +204,7 @@ def install_ondemand
     release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     on hosts, "dnf config-manager --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
@@ -177,13 +212,13 @@ def install_ondemand
     on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end
   if host_inventory['platform'] == 'amazon'
-    on hosts, 'alternatives --install /usr/bin/node node /usr/bin/node-20 1'
-    on hosts, 'alternatives --install /usr/bin/npm npm /usr/bin/npm-20 1'
+    on hosts, 'alternatives --install /usr/bin/node node /usr/bin/node-22 1'
+    on hosts, 'alternatives --install /usr/bin/npm npm /usr/bin/npm-22 1'
   end
   # Avoid 'update_ood_portal --rpm' so that --insecure can be used
   on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
@@ -230,7 +265,7 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  if host_inventory['platform'] == 'debian' || host_inventory['platform_version'] == '24.04'
+  if host_inventory['platform'] == 'debian' || host_inventory['platform'] == 'ubuntu'
     install_packages(['python3', 'python3-flask'])
   else
     install_packages(['python3', 'python3-pip'])
@@ -239,6 +274,7 @@ def bootstrap_flask
 end
 
 def dl_ctr_logs
+  on hosts, 'journalctl -xe'
   dir = File.join(proj_root, 'tmp/e2e_ctr').tap { |d| `mkdir -p #{d}` }
 
   hosts.each do |host|

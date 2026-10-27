@@ -36,16 +36,16 @@ class TransfersController < ApplicationController
 
     if !@transfer.valid?
       # error
-      render json: { error_message: @transfer.errors.full_messages.join('. ') }
+      render json: { error_message: @transfer.errors.map(&:message).join('. ') }
     elsif @transfer.synchronous?
-      logger.info "files: executing synchronous commmand in directory #{@transfer.from}: #{@transfer.command_str}"
+      logger.info "files: executing synchronous command in directory #{@transfer.from}: #{@transfer.command_str}"
       @transfer.perform
 
       respond_to do |format|
         format.json { render :show }
       end
     else
-      logger.info "files: initiating asynchronous commmand in directory #{@transfer.from}: #{@transfer.command_str}"
+      logger.info "files: initiating asynchronous command in directory #{@transfer.from}: #{@transfer.command_str}"
       @transfer.perform_later
 
       respond_to do |format|

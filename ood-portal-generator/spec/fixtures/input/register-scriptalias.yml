@@ -1,0 +1,10 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+map_fail_uri: "/register"
+register_uri: "/register"
+register_root: "/var/www/flask-apps/register"
+register_path: "/var/www/flask-apps/register/register"
+register_method: "ScriptAlias"

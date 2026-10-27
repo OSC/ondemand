@@ -3,7 +3,7 @@
 Rails.application.config.after_initialize do
   next unless Configuration.bc_clean_old_dirs?
 
-  config_days = Configuration.bc_clean_old_dirs_days.to_i
+  config_days = Configuration.bc_clean_old_dirs_days
   config_days = 30 if config_days.zero? || config_days.negative?
 
   thirty_day_seconds = config_days * 24 * 60 * 60

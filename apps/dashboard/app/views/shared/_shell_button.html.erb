@@ -8,11 +8,11 @@
 <% if Configuration.can_access_shell? %>
   <%- if icon.nil? -%>
     <%= link_to(label, OodAppkit.shell.url(host: host, path: path).to_s, 
-                target: '_blank', class: classes, id: id)
+                class: classes, id: id)
     %>
   <%- else -%>
     <%= link_to(OodAppkit.shell.url(host: host, path: path).to_s, 
-                target: '_blank', class: classes, id: id) do %>
+                class: classes, id: id) do %>
       <i class="<%= icon %>" aria-hidden="true"></i><%= label %>
     <%- end -%>
   <%- end -%>
