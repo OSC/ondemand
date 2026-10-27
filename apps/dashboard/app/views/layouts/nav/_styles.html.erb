@@ -7,9 +7,11 @@
   background-color: <%= bg_color || 'rgb(248, 248, 248)' %>;
 }
 
-/* always round so the corners don't flicker while the background color transitions in */
+/* set on every link, not just highlighted ones, and in the collapsed menu too */
 .navbar .navbar-nav .nav-link {
   border-radius: 0.25em;
+  padding-left: var(--bs-navbar-nav-link-padding-x);
+  padding-right: var(--bs-navbar-nav-link-padding-x);
 }
 
 .navbar-dark .navbar-nav .nav-link:focus-visible, .navbar-dark .navbar-nav .nav-link.dropdown-toggle.show {
