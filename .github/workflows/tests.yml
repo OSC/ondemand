@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
   pull_request:
+  workflow_dispatch:
   schedule:
     - cron: '0 2 * * *'
 
@@ -35,7 +36,7 @@ jobs:
     name: Unit tests
 
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout ${{ github.sha }}
         uses: actions/checkout@v6
 
       - name: Setup Ruby ${{ matrix.ruby }}
@@ -66,6 +67,9 @@ jobs:
 
       - name: Run unit tests
         run: bundle exec rake test:unit
+
+      - name: Test E2E helpers
+        run: bundle exec rspec spec/e2e_helper_spec.rb
 
       - name: Run ShellCheck
         run: bundle exec rake test:shellcheck
@@ -98,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Kubernetes tests
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout ${{ github.sha }}
         uses: actions/checkout@v6
       - name: Create kind cluster
         uses: helm/kind-action@v1
@@ -112,7 +116,7 @@ jobs:
         id: token
         run: |
            TOKEN=$(kubectl create token ondemand --namespace=ondemand)
-           echo "ondemand=${TOKEN}" >> $GITHUB_OUTPUT
+           echo "ondemand=${TOKEN}" >> "$GITHUB_OUTPUT"
       - name: Setup kubectl
         run: |
           kubectl config set-credentials ondemand --token="${{ steps.token.outputs.ondemand }}"
@@ -126,7 +130,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
         dist:
           - el8
           - el9
@@ -136,22 +139,19 @@ jobs:
           - ubuntu-26.04
           - debian-12
           - debian-13
-        arch:
-          - x86_64
-          - aarch64
-          - ppc64le
+        # PowerPC still needs emulation; run it nightly or on manual dispatch.
+        arch: ${{ fromJSON((github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '["x86_64","aarch64","ppc64le"]' || '["x86_64","aarch64"]') }}
         version: ["4.2"]
         exclude:
-          # el10 on aarch64 times out
+          # These ARM repos do not yet publish ondemand-nginx or ondemand-passenger.
           - dist: el10
             arch: aarch64
-          # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023
             arch: aarch64
           # Amazon 2023 doesn't have ppc64le containers
           - dist: amzn2023
             arch: ppc64le
-          # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
+          # PowerPC DEB targets need separate build-box and Node.js 22 validation.
           - dist: ubuntu-24.04
             arch: ppc64le
           - dist: ubuntu-26.04
@@ -160,14 +160,17 @@ jobs:
             arch: ppc64le
           - dist: debian-13
             arch: ppc64le
-    runs-on: ${{ matrix.os }}
+    # Keep Ruby and the browser native. Only the PowerPC target is emulated.
+    runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-22.04' }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
+    timeout-minutes: 240
 
     env:
       OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
       HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
+      OOD_E2E_BROWSER: ${{ matrix.arch == 'aarch64' && 'firefox' || 'chrome' }}
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout ${{ github.sha }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -183,73 +186,47 @@ jobs:
         if: env.HAS_DOCKERHUB_CREDENTIALS == 'true'
         run: docker login -u ${{ secrets.ONDEMAND_DOCKERHUB_USER }} -p ${{ secrets.ONDEMAND_DOCKERHUB_PASSWORD }}
 
-      - name: Build package
-        if: matrix.arch == 'x86_64'
+      - name: Set up PowerPC emulation
+        if: matrix.arch == 'ppc64le'
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: ppc64le
+
+      - name: Check browser and driver
         run: |
-          # have to use docker for el8 packaging.
-          if [[ "${{ matrix.dist }}" == "el8" ]]; then
+          if [[ "$OOD_E2E_BROWSER" == 'firefox' ]]; then
+            firefox --version
+            geckodriver --version
+            # The locked Selenium Manager binary is x86; use the native driver directly.
+            echo "SE_GECKODRIVER=$(command -v geckodriver)" >> "$GITHUB_ENV"
+          else
+            google-chrome --version
+            chromedriver --version
+          fi
+
+      - name: Build package
+        run: |
+          # Docker supports the PowerPC binfmt registration and EL8 packaging.
+          if [[ "${{ matrix.arch }}" == 'ppc64le' || "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
           if [[ "${{ matrix.dist }}" == "debian-13" || "${{ matrix.dist }}" == "ubuntu-26.04" ]]; then
-             unset CONTAINER_RT
-           fi
-          bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
-        timeout-minutes: 20
+            unset CONTAINER_RT
+          fi
+          bundle exec rake 'package:build[${{ matrix.dist }},${{ matrix.arch }}]'
+        timeout-minutes: ${{ matrix.arch == 'ppc64le' && 150 || (matrix.arch == 'aarch64' && 60 || 20) }}
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
           CONTAINER_RT: 'podman'
 
       - name: Run package tests
-        if: matrix.arch == 'x86_64'
         run: bundle exec rake test:e2e
+        timeout-minutes: ${{ matrix.arch == 'ppc64le' && 60 || 30 }}
         env:
-          BEAKER_set: ${{ matrix.dist }}
+          BEAKER_set: ${{ matrix.arch == 'x86_64' && matrix.dist || format('{0}-{1}', matrix.dist, matrix.arch) }}
           OOD_BUILD_REPO: ${{ matrix.version }}
-
-      - name: arch distro
-        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
-        run: |
-          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
-          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
-          if [ "${{ matrix.arch }}" == "aarch64" ]; then
-            echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
-          fi
-          if [ "${{ matrix.arch }}" == "ppc64le" ]; then
-            echo "PLATFORM=linux/ppc64le" >> $GITHUB_ENV
-          fi
-
-      - name: Test OnDemand
-        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
-        uses: uraimo/run-on-arch-action@v3
-        with:
-          arch: ${{ matrix.arch }}
-          distro: ${{ env.DISTRO }}
-          githubToken: ${{ github.token }}
-          install: |
-            apt update -y
-            apt install -y ruby-bundler ruby-dev build-essential git \
-              apt-transport-https ca-certificates curl software-properties-common
-            # Not available for ppc64le
-            # apt install -y chromium-chromedriver
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-            apt update -y
-            apt install -y docker-ce
-          dockerRunArgs: |
-            --platform ${{ env.PLATFORM }}
-          run: |
-            git config --global --add safe.directory $GITHUB_WORKSPACE
-            bundle install
-            bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
-            # e2e tests fail with issues accessing chorium
-            # bundle exec rake test:e2e
-          env: |
-            VERSION: "${{ matrix.version }}.0"
-            OOD_PACKAGING_DEBUG: 'true'
-            BEAKER_set: ${{ matrix.dist }}-${{ matrix.arch }}
-            OOD_BUILD_REPO: ${{ matrix.version }}
-            DOCKER_IN_DOCKER: 'true'
+          OOD_E2E_EXPECTED_ARCH: ${{ matrix.arch }}
 
       - name: Debug failure
         if: failure()

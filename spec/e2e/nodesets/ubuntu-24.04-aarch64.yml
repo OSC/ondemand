@@ -2,7 +2,7 @@ HOSTS:
   ubuntu2404:
     roles:
       - agent
-    platform: ubuntu-24.04-amd64
+    platform: ubuntu-24.04-arm64
     hypervisor : docker
     image: arm64v8/ubuntu:24.04
     docker_preserve_image: true
