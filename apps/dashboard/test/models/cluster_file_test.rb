@@ -162,4 +162,38 @@ class ClusterFileTest < ActiveSupport::TestCase
     end
     assert_equal ['aaaAAA', 'ccc'], contents
   end
+
+  test 'touch creates the file on the cluster' do
+    @adapter.expects(:touch).with(Pathname.new('/home/me/dir/new.txt'))
+
+    cluster_file('/home/me/dir/new.txt').touch
+  end
+
+  test 'mkdir creates the directory on the cluster' do
+    @adapter.expects(:mkdir).with(Pathname.new('/home/me/dir/new'))
+
+    cluster_file('/home/me/dir/new').mkdir
+  end
+
+  test 'write writes the content to the file on the cluster' do
+    @adapter.expects(:write).with(Pathname.new('/home/me/dir/a.txt'), 'content')
+
+    cluster_file('/home/me/dir/a.txt').write('content')
+  end
+
+  test 'handle_upload moves the tempfile to the cluster' do
+    tempfile = Tempfile.new('upload')
+    ClusterTransfer.any_instance.expects(:perform_later)
+
+    transfer = cluster_file('/home/me/dir/upload.txt').handle_upload(tempfile)
+
+    assert_equal 'mv', transfer.action
+    assert_equal({ tempfile.path => '/home/me/dir/upload.txt' }, transfer.files)
+    assert_equal 'fs', transfer.src_fs
+    assert_equal @cluster, transfer.dest_fs
+    assert_equal @adapter, transfer.adapter
+    assert_equal tempfile, transfer.tempfile
+  ensure
+    tempfile&.close(true)
+  end
 end

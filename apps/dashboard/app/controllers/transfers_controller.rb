@@ -27,6 +27,17 @@ class TransfersController < ApplicationController
 
     if from_fs == RcloneUtil::LOCAL_FS_NAME && to_fs == RcloneUtil::LOCAL_FS_NAME
       @transfer = PosixTransfer.build(action: body_params[:command], files: body_params[:files])
+    elsif OODClusters[from_fs.to_sym]&.file_adapter? || OODClusters[to_fs.to_sym]&.file_adapter?
+      if from_fs == to_fs || (from_fs == RcloneUtil::LOCAL_FS_NAME || to_fs == RcloneUtil::LOCAL_FS_NAME)
+        # local <-> cluster or within the same cluster
+        @transfer = ClusterTransfer.build(action: body_params[:command], files: body_params[:files], src_fs: from_fs,
+                                          dest_fs: to_fs)
+      elsif OODClusters[from_fs.to_sym]&.file_adapter? && OODClusters[to_fs.to_sym]&.file_adapter?
+        # different clusters
+        return render json: { error_message: 'Transfers between different clusters are not supported' }
+      else
+        return render json: { error_message: 'Remote file transfers from or to clusters are not supported' }
+      end
     elsif ::Configuration.remote_files_enabled?
       @transfer = RemoteTransfer.build(action: body_params[:command], files: body_params[:files], src_remote: from_fs,
                                        dest_remote: to_fs)

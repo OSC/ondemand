@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rclone_util'
+
 # ClusterFile is a class representing a file on a file system belonging to a cluster.
 class ClusterFile
   attr_reader :path, :cluster, :file_adapter
@@ -97,6 +99,30 @@ class ClusterFile
 
   def read(&block)
     file_adapter.read(path, &block)
+  end
+
+  def touch
+    file_adapter.touch(path)
+  end
+
+  def mkdir
+    file_adapter.mkdir(path)
+  end
+
+  def write(content)
+    file_adapter.write(path, content)
+  end
+
+  def handle_upload(tempfile)
+    # Start a transfer that moves the Rack tempfile to the cluster.
+    transfer = ClusterTransfer.build(
+      action:   'mv',
+      files:    { tempfile.path => path.to_s },
+      src_fs:   RcloneUtil::LOCAL_FS_NAME,
+      dest_fs:  cluster.id.to_s,
+      tempfile: tempfile
+    )
+    transfer.tap(&:perform_later)
   end
 
   def size
