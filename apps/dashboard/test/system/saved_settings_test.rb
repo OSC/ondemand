@@ -163,4 +163,55 @@ class SavedSettingsTest < ApplicationSystemTestCase
       find('p', text: 'Some Password Field: **********')
     end
   end
+
+  test 'saved settings with periods in the name can be shown, edited and deleted' do
+    with_modified_env({ ENABLE_NATIVE_VNC: '1' }) do
+      Dir.mktmpdir do |dir|
+        name = 'test.v1.2'
+        user_settings_file = "#{dir}/user_settings.yml"
+        File.write(user_settings_file, {
+          'batch_connect_templates' => {
+            'sys/bc_paraview' => {
+              name => {
+                'cluster' => 'quick', 'bc_num_hours' => '4',
+                'bc_account' => 'abc123', 'bc_vnc_resolution' => '500x600'
+              }
+            }
+          }
+        }.to_yaml)
+        stub_user_settings(user_settings_file)
+
+        # show:
+        visit(batch_connect_setting_path('sys/bc_paraview', name))
+        assert_equal(batch_connect_setting_path('sys/bc_paraview', name), current_path)
+        find('.card-header', text: name)
+        find('p', text: 'Account: abc123')
+
+        # edit_settings:
+        find("a[aria-label=\"Edit #{name} saved settings\"]").click
+        sleep 1
+        assert_equal(batch_connect_edit_settings_path('sys/bc_paraview', name), current_path)
+        assert_equal('abc123', find_field(bc_ele_id('bc_account')).value)
+
+        fill_in(bc_ele_id('bc_account'), with: '')
+        fill_in(bc_ele_id('bc_account'), with: 'def456')
+        click_button('Save settings and close')
+        sleep 1
+
+        assert_equal(batch_connect_setting_path('sys/bc_paraview', name), current_path)
+        settings = YAML.safe_load(File.read(user_settings_file)).to_h
+        assert_equal('def456', settings['batch_connect_templates']['sys/bc_paraview'][name]['bc_account'])
+
+        # destroy:
+        page.accept_alert 'Are you sure?' do
+          find("button[aria-label=\"Delete #{name} saved settings\"]").click
+        end
+        sleep 1
+
+        assert_equal(new_batch_connect_session_context_path('sys/bc_paraview'), current_path)
+        settings = YAML.safe_load(File.read(user_settings_file)).to_h
+        assert_equal({ 'batch_connect_templates' => {} }, settings)
+      end
+    end
+  end
 end
