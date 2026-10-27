@@ -6,6 +6,7 @@ HOSTS:
     # https://github.com/voxpupuli/beaker-docker/blob/dd4395368a4b14857602128ab7443ee42073a936/lib/beaker/hypervisor/docker.rb#L374
     platform: el-9-ppc64le
     hypervisor: docker
+    # AlmaLinux's PowerPC namespace prevents Beaker from selecting an x86 image.
     image: ppc64le/almalinux:10
     docker_preserve_image: true
     docker_cmd: '/usr/sbin/init'

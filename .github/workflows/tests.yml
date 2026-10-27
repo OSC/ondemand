@@ -206,7 +206,7 @@ jobs:
 
       - name: Build package
         run: |
-          # Docker supports the PowerPC binfmt registration and EL8 packaging.
+          # Use Docker for emulated PowerPC builds and EL8 packaging.
           if [[ "${{ matrix.arch }}" == 'ppc64le' || "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
