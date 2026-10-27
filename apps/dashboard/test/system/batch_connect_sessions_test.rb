@@ -208,25 +208,38 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       with_modified_env({OOD_BC_SESSIONS_POLL_DELAY: '10'}) do
         create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
         stub_scheduler(:running, nodes: 2, cores: 2)
+        # The production configuration clamps environment values to at least 10s.
+        Configuration.stubs(:bc_sessions_poll_delay).returns(10)
         visit(batch_connect_sessions_path)
   
-        card_selector = "#id_#{get_test_bc_id}"
+        card_id = "id_#{get_test_bc_id}"
+        assert_selector("##{card_id}")
+        identities = evaluate_script <<~JS
+          (() => {
+            #{session_focus_dom(card_id)}
+            return controls.filter(element =>
+              element.getClientRects().length > 0 && !element.disabled &&
+              getComputedStyle(element).visibility !== 'hidden').map(describe);
+          })()
+        JS
+        assert_not_empty identities
 
-        assert_selector(card_selector)
-        within(card_selector) do 
-          focusable_elements = all('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
-          # since these elements are repeated on every card, they must have a unique classlist within a card
-          focusable_selectors = focusable_elements.map{ |el| "#{el.tag_name}.#{el[:class].split(' ').join('.')}" }
-
-          focusable_selectors.each do |selector|
-            assert_selector(selector)
-            execute_script("$('#{card_selector}').attr('data-original-marker', 'true')")
-            execute_script("$('#{card_selector} #{selector}').focus()")
-
-            assert_no_selector("#{card_selector}[data-original-marker='true']")
-            assert_equal(selector.split('.')[1..], evaluate_script('document.activeElement.classList'))
+        identities.each do |identity|
+          # A second replacement also proves that polling continues after restoration.
+          2.times do
+            focus_session_control(card_id, identity)
+            assert_replaced_session_focus(card_id, identity)
           end
         end
+
+        classless = identities.find do |identity|
+          identity['tag'] == 'button' && identity['id'].empty? && !identity['text'].strip.empty?
+        end
+        assert_not_nil classless
+        focus_session_control(card_id, classless, classless: true)
+        assert_replaced_session_focus(card_id, classless)
+
+        visit root_path
       end
     end
   end
@@ -261,5 +274,72 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
         visit root_path
       end
     end
+  end
+
+  private
+
+  # Share a primitive identity description; never retain nodes across replacements.
+  def session_focus_dom(card_id)
+    <<~JS
+      const card = document.getElementById(#{card_id.to_json});
+      const controls = card ? Array.from(card.querySelectorAll(
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')) : [];
+      const describe = element => ({
+        tag: element.tagName.toLowerCase(),
+        id: element.id,
+        classes: Array.from(element.classList).sort(),
+        text: element.textContent,
+        name: element.getAttribute('name'),
+        type: element.getAttribute('type'),
+        href: element.getAttribute('href')
+      });
+    JS
+  end
+
+  # Mark the card and focus the uniquely identified control in the same browser turn.
+  def focus_session_control(card_id, identity, classless: false)
+    result = evaluate_script <<~JS
+      (() => {
+        #{session_focus_dom(card_id)}
+        const identity = #{identity.to_json};
+        const matches = controls.filter(element => {
+          const candidate = describe(element);
+          return Object.keys(identity).every(key =>
+            JSON.stringify(candidate[key]) === JSON.stringify(identity[key]));
+        });
+        if (matches.length !== 1) return { matches: matches.length, focused: false };
+        card.dataset.focusTestMarker = 'original';
+        const target = matches[0];
+        if (#{classless}) target.removeAttribute('class');
+        target.focus();
+        return { matches: matches.length, focused: document.activeElement === target };
+      })()
+    JS
+    assert_equal({ 'matches' => 1, 'focused' => true }, result)
+  end
+
+  # Replacement and the active element's card/identity must agree in one snapshot.
+  def assert_replaced_session_focus(card_id, identity)
+    expected = { 'marker' => nil, 'card' => card_id, 'identity' => identity }
+    snapshot = nil
+    page.document.synchronize(errors: [Capybara::ExpectationNotMet]) do
+      snapshot = evaluate_script <<~JS
+        (() => {
+          #{session_focus_dom(card_id)}
+          const active = document.activeElement;
+          return {
+            marker: card ? card.getAttribute('data-focus-test-marker') : 'missing',
+            card: active.closest('.session-panel')?.id || null,
+            identity: describe(active)
+          };
+        })()
+      JS
+      unless snapshot == expected
+        raise Capybara::ExpectationNotMet, "Expected #{expected.inspect}; observed #{snapshot.inspect}"
+      end
+    end
+    assert_equal expected, snapshot
+  rescue Capybara::ExpectationNotMet => e
+    flunk e.message
   end
 end
