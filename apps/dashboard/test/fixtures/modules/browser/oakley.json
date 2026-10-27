@@ -1,0 +1,16 @@
+{
+  "gcc": {
+    "gcc/11.3": {
+      "Version": "11.3",
+      "parentAA": [],
+      "hidden": false
+    }
+  },
+  "openmpi": {
+    "openmpi/4.1": {
+      "Version": "4.1",
+      "parentAA": [],
+      "hidden": false
+    }
+  }
+}
