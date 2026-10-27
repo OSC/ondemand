@@ -5,31 +5,33 @@
   What we get from the user mapping script can be an actual
   alphanumeric username, UID, or numeric username.
   This helper distinguishes between numeric values that are usernames
-  and numeric values that are infact UIDs.
+  and numeric values that are in fact UIDs.
 --]]
 function actual_username(username)
+  if not username or username == "" then
+    return nil
+  end
 
+  local pwd = require "posix.pwd"
+
+  -- Check if the string AS-IS (preserving leading zeros) is a valid username
+  local data = pwd.getpwnam(username)
+  if data then
+    return data.pw_name
+  end
+
+  -- If it wasn't a valid username, check if it's a numeric string evaluating to a valid UID
   local num = tonumber(username)
   if num then
-    local pwd = require "posix.pwd"
-    local data = pwd.getpwnam(num)
-
-    -- it's a numeric username.
+    data = pwd.getpwuid(num)
     if data then
       return data.pw_name
-
-    -- not a numeric username, so must be a UID.
-    else
-      data = pwd.getpwuid(num)
-      return data.pw_name
     end
-
-  -- it's not numeric, so just return the string.
-  else
-    return username
   end
-end
 
+  -- Fallback: Return the raw string if POSIX resolution relies on lower levels or non-standard lookups
+  return username
+end
 --[[
   map
 
@@ -41,7 +43,14 @@ function map(r, user_map_match, user_map_cmd, remote_user)
   local sys_user = ""
   -- match string
   if user_map_match ~= nil then
-    sys_user = string.match(remote_user, user_map_match)
+    -- if match string ends in :lower, lowercase the username
+    local pat = string.match(user_map_match, "^(.*):lower$")
+    if pat then
+        sys_user = string.match(remote_user, pat)
+        sys_user = string.lower(sys_user)
+    else
+        sys_user = string.match(remote_user, user_map_match)
+    end
   -- run user_map_cmd and read in stdout
   elseif user_map_cmd ~= nil then
     local handle = io.popen(user_map_cmd .. " '" .. r:escape(remote_user) .. "'")

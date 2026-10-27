@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'English'
-require 'English'
 require 'digest'
 require 'fileutils'
 require 'optparse'
@@ -131,7 +130,6 @@ module OodPortalGenerator
         checksum_str = File.readlines(sum_path)[0]
         checksum = checksum_str.split(' ')[0]
 
-        str = read_file_omitting_comments(input)
         new_checksum = checksum(input)
 
         checksum == new_checksum
@@ -141,7 +139,7 @@ module OodPortalGenerator
         return false unless File.exist?(sum_path)
         return false if File.zero?(sum_path)
 
-        File.readlines(sum_path).grep(apache).size.zero?
+        File.readlines(sum_path).grep(apache).empty?
       end
 
       def update_replace?
@@ -182,9 +180,10 @@ module OodPortalGenerator
         dex = Dex.new(context, view, insecure)
         dex_enabled = Dex.installed? && dex.enabled?
 
-        # convienence defaults for folks who are using dex or OIDC
+        # convenience defaults for folks who are using dex or OIDC
         view.auth = Dex.default_auth if dex_enabled && !view.auth?
         content = view.auth? ? view.render(template.read) : view.render(no_auth_template.read)
+        @auth_set = view.auth?
 
         output.write(content)
         dex_output.write(dex.render) if dex_enabled
@@ -236,6 +235,10 @@ module OodPortalGenerator
           end
         else
           puts 'No change in Apache config.'
+          unless @auth_set
+            puts "'auth' section in ood_portal.yml is still missing."
+            puts 'See https://osc.github.io/ood-documentation/latest/authentication/overview/configure-authentication.html'
+          end
         end
 
         unless File.zero?(new_dex_config.path)
@@ -294,7 +297,7 @@ module OodPortalGenerator
 
           parser.separator ''
           parser.separator 'Default:'
-          parser.separator "  #{mode} -c #{config} -t #{template}"
+          parser.separator "  #{mode} -c #{config}"
         end.parse!(argv)
 
         # Render Apache portal config
@@ -340,10 +343,6 @@ module OodPortalGenerator
       def add_shared_opt_parser_attrs(parser)
         parser.on('-c', '--config CONFIG', String, 'YAML config file used to render template') do |v|
           @config = v
-        end
-
-        parser.on('-t', '--template TEMPLATE', String, 'ERB template that is rendered') do |v|
-          @template = v
         end
 
         parser.on('-i', '--insecure', TrueClass, 'Generate insecure configs if configured') do |v|

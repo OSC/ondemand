@@ -25,19 +25,21 @@ module BatchConnect
       # @param token [String] the token
       # @return [App] generated object
       def from_token(token)
-        type, *app = token.split('/')
-        case type
-        when 'dev'
-          name, sub_app = app
-          router = DevRouter.new(name)
-        when 'usr'
-          owner, name, sub_app = app
-          router = UsrRouter.new(name, owner)
-        else # "sys"
-          name, sub_app = app
-          router = SysRouter.new(name)
+        Rails.cache.fetch(["batch_connect_app", token].join("/"), expires_in: 6.hours) do
+          type, *app = token.split('/')
+          case type
+          when 'dev'
+            name, sub_app = app
+            router = DevRouter.new(name)
+          when 'usr'
+            owner, name, sub_app = app
+            router = UsrRouter.new(name, owner)
+          else # "sys"
+            name, sub_app = app
+            router = SysRouter.new(name)
+          end
+          new(router: router, sub_app: sub_app)
         end
-        new(router: router, sub_app: sub_app)
       end
     end
 
@@ -242,12 +244,20 @@ module BatchConnect
       end
     end
 
+    def form_layout
+      @form_layout ||= begin
+        # FIXME: duplicate logic in add_cluster_widget
+        form = form_config.fetch(:form, [])
+        form.exclude?('cluster') && clusters.any? ? form.prepend('cluster') : form
+      end
+    end
+
     def attributes
       @attributes ||= begin
         return [] unless valid?
 
         local_attribs = form_config.fetch(:attributes, {})
-        attrib_list   = form_config.fetch(:form, [])
+        attrib_list   = form_layout.flatten
         add_cluster_widget(local_attribs, attrib_list)
 
         attrib_list.map do |attribute_id|
@@ -304,7 +314,11 @@ module BatchConnect
     # View used for session if it exists
     # @return [String, nil] session view
     def session_view
-      file = root.join('view.html.erb')
+      file = if sub_app && (path = form_config.fetch(:view, nil))
+               view_file(root: sub_app_root, path: path)
+             else
+               view_file(root: root)
+             end
       file.read if file.file?
     end
 
@@ -406,6 +420,11 @@ module BatchConnect
       Array.wrap(paths).compact.map { |f| root.join(f) }.select(&:file?).first
     end
 
+    # Path to file for custom session view
+    def view_file(root:, path: 'view.html.erb')
+      root.join(path)
+    end
+
     # Parse an ERB and Yaml file
     def read_yaml_erb(path:, binding: nil)
       contents = path.read
@@ -469,17 +488,21 @@ module BatchConnect
 
       attribute_list.prepend('cluster') unless attribute_list.include?('cluster')
 
+      defined_cluster_attr = attributes[:cluster] || {}
+
       attributes[:cluster] = if clusters.size > 1
                                {
                                  widget:  'select',
                                  label:   'Cluster',
-                                 options: clusters.map(&:id)
-                               }
+                                 options: clusters.map do |c|
+                                            [c.title, c.id]                         
+                                          end
+                               }.merge(defined_cluster_attr)
                              else
                                {
                                  value:  clusters.first.id.to_s,
                                  widget: 'hidden_field'
-                               }
+                               }.merge(defined_cluster_attr)
                              end
     end
   end

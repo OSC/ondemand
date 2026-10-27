@@ -17,11 +17,11 @@ class BatchConnectTest < ApplicationSystemTestCase
          .returns(['1.2.3', '', exit_success])
   end
 
-  def make_bc_app(dir, form)
+  def make_bc_app(dir, form, scontrol: true, sacctmgr: true)
     SysRouter.stubs(:base_path).returns(Pathname.new(dir))
     app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-    stub_scontrol
-    stub_sacctmgr
+    stub_scontrol if scontrol
+    stub_sacctmgr if sacctmgr
     stub_git(app_dir)
     Pathname.new(app_dir).join('form.yml').write(form)
   end
@@ -40,14 +40,29 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # select oakley and 2 node types should be hidden
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
 
     # FIXME: no idea why .visible? doesn't work here. Selenium/chrome native still shows element as visible?
     assert_equal 'display: none;', find_option_style('node_type', 'advanced')
     assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
 
     # select owens and now they're available
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
+    assert_equal '', find_option_style('node_type', 'advanced')
+    assert_equal '', find_option_style('node_type', 'hugemem')
+  end
+
+  test 'cluster names with dashes and underscores work with data-option-for attributes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # select Next Gen Ascend and hugemem/advanced node types should be hidden
+    select('X Nextgen Ascend', from: bc_ele_id('cluster'))
+
+    assert_equal 'display: none;', find_option_style('node_type', 'advanced')
+    assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
+
+    # select owens and now they're available
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal '', find_option_style('node_type', 'advanced')
     assert_equal '', find_option_style('node_type', 'hugemem')
   end
@@ -56,7 +71,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # select python 2.7 to initialize things
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('any', from: bc_ele_id('node_type'))
     select('2.7', from: bc_ele_id('python_version'))
     assert_equal '', find_option_style('python_version', '2.7')
@@ -74,7 +89,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
 
     # change the node type and we should have some new min/max & value
     select('gpu', from: bc_ele_id('node_type'))
@@ -160,14 +175,37 @@ class BatchConnectTest < ApplicationSystemTestCase
     # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 7, find_max('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
 
     select('gpu', from: bc_ele_id('node_type'))
     assert_equal 28, find_max('bc_num_slots')
 
     # changing the cluster changes the max
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 40, find_max('bc_num_slots')
+  end
+
+  test 'cluster names with dashes and underscores work with min/max attributes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # select Next Gen Ascend cluster
+    select('X Nextgen Ascend', from: bc_ele_id('cluster'))
+
+    select('any', from: bc_ele_id('node_type'))
+    assert_equal 5, find_min('bc_num_slots')
+    assert_equal 10, find_max('bc_num_slots')
+
+    # with 'gpu' node type, check min/max for Next Gen Ascend
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 4, find_min('bc_num_slots')
+    assert_equal 32, find_max('bc_num_slots')
+    assert_equal 85, find_min('bc_num_hours')
+    assert_equal 96, find_max('bc_num_hours')
+
+    # verify that switching back to a non-dashed cluster still works
+    select('Owens', from: bc_ele_id('cluster'))
+    assert_equal 2, find_min('bc_num_slots')
+    assert_equal 28, find_max('bc_num_slots')
   end
 
   test 'using same node sets min/max' do
@@ -181,13 +219,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '100', find_value('bc_num_slots')
 
     # toggle the cluster back and forth and it's still the same
-    select('oakley', from: bc_ele_id('cluster'))
-    select('owens', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
 
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
@@ -250,7 +288,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 88, find_max('bc_num_hours')
 
     # change the cluster and these change again (the for clause)
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 3, find_min('bc_num_slots')
     assert_equal 40, find_max('bc_num_slots')
     assert_equal 90, find_min('bc_num_hours')
@@ -265,12 +303,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('broken', from: bc_ele_id('node_type'))
 
     # changing clusters does nothing.
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
     assert_equal '3', find_value('bc_num_slots')
 
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 7, find_max('bc_num_slots')
     assert_equal 3, find_min('bc_num_slots')
     assert_equal '3', find_value('bc_num_slots')
@@ -292,20 +330,20 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal '3', find_value('bc_num_slots')
 
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
     # value gets set to the new min
     assert_equal '2', find_value('bc_num_slots')
 
     # change clusters and it bumps up again
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal '3', find_value('bc_num_slots')
 
     # edit the values, then change the cluster to ensure
     # the change overwrites the edit
     fill_in bc_ele_id('bc_num_slots'), with: 1
     assert_equal '1', find_value('bc_num_slots')
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     assert_equal '2', find_value('bc_num_slots')
   end
 
@@ -316,13 +354,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     fill_in bc_ele_id('bc_num_slots'), with: 1000
     assert_equal '1000', find_value('bc_num_slots')
 
-    select('owens', from: bc_ele_id('cluster'))
+    select('Owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
     # value gets set to the new max
     assert_equal '28', find_value('bc_num_slots')
 
     # change clusters and it bumps up again
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal '40', find_value('bc_num_slots')
   end
 
@@ -442,6 +480,45 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python4nightly', find_value('hidden_change_thing', visible: false)
   end
 
+  test 'session responds to cluster in cache that no longer exists' do
+    Dir.mktmpdir('bc_old_cluster_removed_test') do |tmpdir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
+
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'old' }.to_json)
+      end
+
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
+
+      # Only new cluster exists
+      BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
+      OodAppkit.stubs(:clusters).returns([new_cluster])
+
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'new', find_value('cluster')
+    end
+  end
+
+  test 'session responds to cluster in cache that exists but is not wanted' do
+    Dir.mktmpdir('bc_old_cluster_not_configured_test') do |tmpdir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
+
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'old' }.to_json)
+      end
+
+      new_cluster = OodCore::Cluster.new({ id: :new, job: { some: 'job config' } })
+      old_cluster = OodCore::Cluster.new({ id: :old, job: { some: 'job config ' } })
+
+      # Both clusters exist, but only new one is valid
+      BatchConnect::App.any_instance.stubs(:cfg_to_clusters).returns(new_cluster)
+      OodAppkit.stubs(:clusters).returns([new_cluster, old_cluster])
+
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'new', find_value('cluster')
+    end
+  end
+
   test 'sessions respond to cache file' do
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
@@ -451,9 +528,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'any', find_value('node_type')
       assert_equal '2.7', find_value('python_version')
 
-      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
-      cache_json.write({ cluster: 'oakley', node_type: 'gpu', python_version: '3.2' }.to_json)
-      cache_json.close
+      File.open("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+') do |cache_json|
+        cache_json.write({ cluster: 'oakley', node_type: 'gpu', python_version: '3.2' }.to_json)
+      end
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'oakley', find_value('cluster')
@@ -503,7 +580,8 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert find("##{bc_ele_id('advanced_options')}").visible?
   end
 
-  test 'hiding using check boxes based on when checked' do
+  # Helper function allowing us to easily test all of the possible hideable elements
+  def data_hide_checkbox_test(form, checkbox_id, hidden_id, default_is_hidden)
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
@@ -511,41 +589,361 @@ class BatchConnectTest < ApplicationSystemTestCase
       stub_sacctmgr
       stub_git("#{dir}/app")
 
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - gpus
-          - checkbox_test
-        attributes:
-          gpus:
-            widget: 'number_field'
-          checkbox_test:
-            widget: 'check_box'
-            html_options:
-              data:
-                hide-gpus-when-checked: true
-      HEREDOC
-
       Pathname.new("#{dir}/app/").join('form.yml').write(form)
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      refute(find("##{bc_ele_id('checkbox_test')}").checked?)
-      assert(find("##{bc_ele_id('gpus')}").visible?)
+      refute(find("##{bc_ele_id(checkbox_id)}").checked?)
+      check_visibility(hidden_id, default_is_hidden)
 
-      # check the checkbox, and 'gpus' is hidden
-      check(bc_ele_id('checkbox_test'))
-      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+      # check the checkbox, and 'gpus' is visible
+      check(bc_ele_id(checkbox_id))
+      check_visibility(hidden_id, !default_is_hidden)
 
-      # un-check the checkbox, and 'gpus' is back
-      uncheck(bc_ele_id('checkbox_test'))
-      assert(find("##{bc_ele_id('gpus')}").visible?)
+      # un-check the checkbox, and 'gpus' is back to being hidden
+      uncheck(bc_ele_id(checkbox_id))
+      check_visibility(hidden_id, default_is_hidden)
     end
   end
 
-  test 'hiding using check boxes based on when unchecked' do
+  def check_visibility(hidden_id, expect_hidden)
+    if expect_hidden
+      refute(find("##{bc_ele_id(hidden_id)}", visible: :hidden).visible?)
+    else
+      assert(find("##{bc_ele_id(hidden_id)}").visible?)
+    end
+  end
+
+  test 'hiding number field using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'number_field'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding number field using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'number_field'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding text area using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'text_area'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding text area using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'text_area'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding select using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'select'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding select using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'select'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding check box using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'check_box'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding check box using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'check_box'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding radio button using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'radio'
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+    # check each radio button separately
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_0', false)
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_1', false)
+  end
+
+  test 'hiding radio button using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'radio_button'
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+    # check each radio button separately
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_0', true)
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus_1', true)
+  end
+
+  test 'hiding file attachments using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - seeds
+        - checkbox_test
+      attributes:
+        seeds:
+          widget: 'file_attachments'
+          label: 'Seed Files'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-seeds-when-checked: true
+    HEREDOC
+    data_hide_checkbox_test(form, 'checkbox_test', 'seeds', false)
+  end
+
+  test 'hiding file attachments using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - seeds
+        - checkbox_test
+      attributes:
+        seeds:
+          widget: 'file_attachments'
+          label: 'Seed Files'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-seeds-when-not-checked: true
+    HEREDOC
+    data_hide_checkbox_test(form, 'checkbox_test', 'seeds', true)
+  end
+
+  test 'hiding path selector using check boxes based on when checked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'path_selector'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', false)
+  end
+
+  test 'hiding path selector using check boxes based on when unchecked' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - checkbox_test
+      attributes:
+        gpus:
+          widget: 'path_selector'
+        checkbox_test:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-gpus-when-not-checked: true
+    HEREDOC
+
+    data_hide_checkbox_test(form, 'checkbox_test', 'gpus', true)
+  end
+
+  test 'hiding when form element names have a shared prefix' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - cluster
+        - cluster_file_system
+        - checkbox_hide_cluster
+        - checkbox_hide_cluster_file_system
+      attributes:
+        cluster:
+          widget: 'text_area'
+        cluster_file_system:
+          widget: 'text_area'
+        checkbox_hide_cluster:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-cluster-when-checked: true
+        checkbox_hide_cluster_file_system:
+          widget: 'check_box'
+          html_options:
+            data:
+              hide-cluster-file-system-when-checked: true
+    HEREDOC
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
@@ -553,37 +951,905 @@ class BatchConnectTest < ApplicationSystemTestCase
       stub_sacctmgr
       stub_git("#{dir}/app")
 
-      form = <<~HEREDOC
-        ---
-        cluster:
-          - owens
-        form:
-          - gpus
-          - checkbox_test
-        attributes:
-          gpus:
-            widget: 'number_field'
-          checkbox_test:
-            widget: 'check_box'
-            html_options:
-              data:
-                hide-gpus-when-not-checked: true
-      HEREDOC
-
       Pathname.new("#{dir}/app/").join('form.yml').write(form)
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      refute(find("##{bc_ele_id('checkbox_test')}").checked?)
-      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+      refute(find("##{bc_ele_id("checkbox_hide_cluster")}").checked?)
+      refute(find("##{bc_ele_id("checkbox_hide_cluster_file_system")}").checked?)
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
 
-      # check the checkbox, and 'gpus' is visible
-      check(bc_ele_id('checkbox_test'))
-      assert(find("##{bc_ele_id('gpus')}").visible?)
+      # check the checkbox, and 'cluster' is hidden
+      check(bc_ele_id("checkbox_hide_cluster"))
+      check_visibility("cluster", true)
+      check_visibility("cluster_file_system", false)
 
-      # un-check the checkbox, and 'gpus' is back to being hidden
-      uncheck(bc_ele_id('checkbox_test'))
-      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+      # un-check the checkbox, and 'cluster' is back to being visible
+      uncheck(bc_ele_id("checkbox_hide_cluster"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
+
+      # check the checkbox, and 'cluster_file_system' is hidden
+      check(bc_ele_id("checkbox_hide_cluster_file_system"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", true)
+
+      # un-check the checkbox, and 'cluster_file_system' is back to being visible
+      uncheck(bc_ele_id("checkbox_hide_cluster_file_system"))
+      check_visibility("cluster", false)
+      check_visibility("cluster_file_system", false)
+    end
+  end
+
+  def basic_default_hide_check_hidden(invert = false)
+    if invert
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_text('refute this')
+    else
+      assert_selector("##{bc_ele_id('gpus')}", visible: :hidden)
+      refute_text('refute this')
+    end
+  end
+
+  def basic_hide_by_default_test(form, invert: false)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      basic_default_hide_check_hidden(invert)
+
+      select 'Account2', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(!invert)
+
+      select 'Account3', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(invert)
+
+      select 'Account4', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(!invert)
+
+      select 'Account1', from: bc_ele_id('account')
+      basic_default_hide_check_hidden(invert)
+    end
+  end
+
+  test 'hide_by_default changes default behavior on check box' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: check_box
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on check box' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: check_box
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on number field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: number_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on number field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: check_box
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on radio button' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: 'radio'
+          hide_by_default: true
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_selector("##{bc_ele_id('gpus')}",   visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_0')}", visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_1')}", visible: :hidden)
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_selector("##{bc_ele_id('gpus_0')}")
+      assert_selector("##{bc_ele_id('gpus_1')}")
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}",   visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_0')}", visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_1')}", visible: :hidden)
+    end
+  end
+
+  test 'data-hide false overrides hide_by_default on radio button' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: 'radio'
+          hide_by_default: true
+          label: 'GPU type'
+          options:
+            - ["Type 1", "0"]
+            - ["Type 2", "1"]
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_selector("##{bc_ele_id('gpus_0')}")
+      assert_selector("##{bc_ele_id('gpus_1')}")
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}",   visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_0')}", visible: :hidden)
+      assert_selector("##{bc_ele_id('gpus_1')}", visible: :hidden)
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_selector("##{bc_ele_id('gpus')}")
+      assert_selector("##{bc_ele_id('gpus_0')}")
+      assert_selector("##{bc_ele_id('gpus_1')}")
+    end
+  end
+
+  def assert_resolution_field_visibility(field, visible:)
+    opts = (visible ? {} : { visible: :hidden })
+
+    assert_selector("##{field}_group",      **opts)
+    assert_selector("##{bc_ele_id(field)}", **opts)
+    assert_selector("##{field}_x_field",    **opts)
+    assert_selector("##{field}_y_field",    **opts)
+  end
+
+  test 'hide_by_default changes default behavior on resolution field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: resolution_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    # Test help and label first, then specific resolution_field structure
+    basic_hide_by_default_test(form)
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account3', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account4', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+    end
+  end
+
+  test 'data-hide false overrides hide_by_default on resolution field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: resolution_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+          - ['Account1', 'account1', data-hide-gpus: false]
+          - ['Account2', 'account2']
+          - ['Account3', 'account3', data-hide-gpus: false]
+          - ['Account4', 'account4']
+    HEREDOC
+    # Test help and label first, then specific resolution_field structure
+    basic_hide_by_default_test(form, invert: true)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account3', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+
+      select 'Account4', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: false)
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_resolution_field_visibility('gpus', visible: true)
+    end
+  end
+
+  test 'hide_by_default changes default behavior on select' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: select
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+          options:
+            - ['Type 1']
+            - ['Type 2']
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on select' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: select
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+          options:
+            - ['Type 1']
+            - ['Type 2']
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on text field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: text_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+          - ['Account1', 'account1']
+          - ['Account2', 'account2', data-hide-gpus: false]
+          - ['Account3', 'account3']
+          - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    basic_hide_by_default_test(form)
+  end
+
+  test 'data-hide false overrides hide_by_default on text field' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: text_field
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+          - ['Account1', 'account1', data-hide-gpus: false]
+          - ['Account2', 'account2']
+          - ['Account3', 'account3', data-hide-gpus: false]
+          - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+  end
+
+  test 'hide_by_default changes default behavior on path selector' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: path_selector
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1']
+            - ['Account2', 'account2', data-hide-gpus: false]
+            - ['Account3', 'account3']
+            - ['Account4', 'account4', data-hide-gpus: false]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      refute_text('Select Path')
+
+      select 'Account2', from: bc_ele_id('account')
+      assert_text('Select Path')
+
+      select 'Account3', from: bc_ele_id('account')
+      refute_text('Select Path')
+
+      select 'Account4', from: bc_ele_id('account')
+      assert_text('Select Path')
+
+      select 'Account1', from: bc_ele_id('account')
+      refute_text('Select Path')
+    end
+  end
+
+  test 'data-hide false overrides hide_by_default on path selector' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: path_selector
+          hide_by_default: true
+          label: 'GPU type'
+          help: 'refute this'
+        account:
+          widget: 'select'
+          options:
+            - ['Account1', 'account1', data-hide-gpus: false]
+            - ['Account2', 'account2']
+            - ['Account3', 'account3', data-hide-gpus: false]
+            - ['Account4', 'account4']
+    HEREDOC
+    basic_hide_by_default_test(form, invert: true)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      assert_text('Select Path')
+
+      select 'Account2', from: bc_ele_id('account')
+      refute_text('Select Path')
+
+      select 'Account3', from: bc_ele_id('account')
+      assert_text('Select Path')
+
+      select 'Account4', from: bc_ele_id('account')
+      refute_text('Select Path')
+
+      select 'Account1', from: bc_ele_id('account')
+      assert_text('Select Path')
+    end
+  end
+
+  def data_help_basic_test(form)
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
+
+      help = parent.find(':scope > small')
+
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose whatever')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+    end
+  end
+
+  test 'data-help sets number field help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'number_field'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets text area help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'text_area'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets select help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'select'
+          options:
+          - ["Yes"]
+          - ["No"]
+          - ["Maybe"]
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets check-box area help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'check_box'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets radio button help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'radio_button'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  test 'data-help sets path selector help field when unset' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'path_selector'
+    HEREDOC
+    data_help_basic_test(form)
+  end
+
+  # We may want to change this behavior later, but this records current state
+  test 'data-help overrides initial setting for all options' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose anything')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose anything')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+
+      select 'First', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose anything')
+    end
+  end
+
+  test 'data-help restores default help when option has no directive' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First',  data-help-hard-choice: 'Choose yes']
+            - ['Second']
+            - ['Third',  data-help-hard-choice: 'Choose whatever']
+        hard_choice:
+          widget: 'number_field'
+          help: 'Default help text'
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.all(:xpath, 'ancestor::div[contains(@class,"mb-3")]').first
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose yes')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose whatever')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Default help text')
+    end
+  end
+
+  test 'data-help skips over malformed options' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - group
+        - hard_choice
+      attributes:
+        group:
+          widget: 'select'
+          label: Membership group
+          help: 'you can find your group in your personal page'
+          options:
+            - ['First']
+            - ['Second', data-help-hard-choice: 'Choose no']
+            - ['Broken', data-help-bad-widget: 'oops']
+            - ['Third',  data-help-hard-choice: 'Choose yes']
+        hard_choice:
+          widget: 'radio_button'
+          label: 'Make your choice'
+          help: 'Choose anything'
+          options:
+            - ["Yes",   "1"]
+            - ["No",    "0"]
+            - ["Maybe", "i"]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      widget_selector = '#batch_connect_session_context_hard_choice'
+      assert_selector(widget_selector)
+      widget = find(widget_selector)
+      parent = widget.find(:xpath, '..')
+
+      help = parent.find(':scope > small')
+      help.assert_text('Choose anything')
+
+      select 'Third', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose yes')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose anything')
+
+      select 'Second', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose no')
+
+      select 'Broken', from: 'batch_connect_session_context_group'
+      help.assert_text('Choose anything')
+    end
+  end
+
+  test 'data-help responds to for-cluster value' do
+    form = <<~HEREDOC
+      ---
+      form:
+        - cluster
+        - node_type
+      attributes:
+        cluster:
+          widget: select
+          options:
+            - owens
+            - ascend
+        node_type:
+          widget: select
+          options:
+            - [
+                'gpu', 'gpu',
+                data-help-node-type-for-cluster-owens: 'GPU nodes on Owens',
+                data-help-node-type-for-cluster-ascend: 'GPU nodes on Ascend',
+              ]
+            - [
+                'standard', 'standard',
+                data-help-node-type-for-cluster-owens: 'Standard nodes on Owens',
+                data-help-node-type-for-cluster-ascend: 'Standard nodes on Ascend',
+              ]
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      help = find("##{bc_ele_id('node_type')}_wrapper small")
+
+      # defaults: owens + gpu
+      assert_text(help, 'GPU nodes on Owens')
+
+      select('ascend', from: bc_ele_id('cluster'))
+      assert_text(help, 'GPU nodes on Ascend')
+
+      select('standard', from: bc_ele_id('node_type'))
+      assert_text(help, 'Standard nodes on Ascend')
+
+      select('owens', from: bc_ele_id('cluster'))
+      assert_text(help, 'Standard nodes on Owens')
+
+      select('gpu', from: bc_ele_id('node_type'))
+      assert_text(help, 'GPU nodes on Owens')
     end
   end
 
@@ -599,7 +1865,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 40, find_max('bc_num_slots')
 
     # now change the cluster and the max changes
-    select('oakley', from: bc_ele_id('cluster'))
+    select('Oakley', from: bc_ele_id('cluster'))
     assert_equal 48, find_max('bc_num_slots')
   end
 
@@ -641,7 +1907,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal('small', find_value('classroom_size'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the classroom and see large dissappear
+    # now change the classroom and see large disappear
     select('123ABC', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
 
@@ -649,7 +1915,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('Physics 1234', from: bc_ele_id('classroom'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
-    # now change the lowercase classroom and see large dissappear again.
+    # now change the lowercase classroom and see large disappear again.
     select('456def', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
   end
@@ -720,7 +1986,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     Open3.stubs(:capture2e).raises(StandardError.new(err_msg))
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), err_msg)
   end
 
@@ -731,20 +1997,331 @@ class BatchConnectTest < ApplicationSystemTestCase
     BatchConnect::Session.any_instance.stubs(:adapter).returns(BrokenAdapter.new)
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_submission'), err_msg)
   end
 
   test 'save errors are shown' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     err_msg = 'this is a just a test for staging error messages'
-    # Open3.stubs(:capture2e).returns(['', exit_failure])
     BatchConnect::Session.any_instance.stubs(:stage).raises(StandardError.new(err_msg))
 
     # defaults
-    click_on('Launch')
+    find('#batch_connect_session_context_launch').click
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
+
+  test 'option for allows cyclical chains of causality' do 
+    form = <<~HEREDOC
+      ---
+      cluster: 
+        - owens
+      form: 
+        - node_type
+        - memory
+        - gpu_type
+      attributes:
+        node_type:
+          widget: select
+          options:
+            - ['Advanced']
+            - ['Basic', data-option-for-memory-high: false, data-option-for-gpu-type-advanced: false]
+        memory:
+          widget: select
+          options:
+            - ['High', data-option-for-node-type-basic: false, data-option-for-gpu-type-advanced: false]
+            - ['Medium']
+        gpu_type:
+          widget: select
+          options:
+            - ['Advanced', data-option-for-node-type-basic: false, data-option-for-memory-high: false]
+            - ['None']
+      HEREDOC
+    
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('display: none;', find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('display: none;', find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('Advanced',       find_value('gpu_type'))
+      assert_equal('',               find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+      
+      select('None', from: bc_ele_id('gpu_type'))
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('',               find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('',               find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('',               find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+
+      select('High', from: bc_ele_id('memory'))
+      assert_equal('Advanced',       find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('display: none;', find_option_style('node_type', 'Basic'))
+      assert_equal('High',           find_value('memory'))
+      assert_equal('',               find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+      
+      select('Medium', from: bc_ele_id('memory'))
+      select('Basic', from: bc_ele_id('node_type'))
+      assert_equal('Basic',          find_value('node_type'))
+      assert_equal('',               find_option_style('node_type', 'Advanced'))
+      assert_equal('',               find_option_style('node_type', 'Basic'))
+      assert_equal('Medium',         find_value('memory'))
+      assert_equal('display: none;', find_option_style('memory', 'High'))
+      assert_equal('',               find_option_style('memory', 'Medium'))
+      assert_equal('None',           find_value('gpu_type'))
+      assert_equal('display: none;', find_option_style('gpu_type', 'Advanced'))
+      assert_equal('',               find_option_style('gpu_type', 'None'))
+    end
+  end
+
+
+  test 'option for allows special characters with alias' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - python_version
+        - gpu_size
+      attributes:
+        python_version:
+          widget: 'select'
+          options:
+            - ['3.3@2025_|b|']
+            - ['3.4@2-&3']
+            - ['4.0@#$%*()^!']
+            - ['<>?/\\:;']
+            - ['control']
+        gpu_size:
+          widget: 'select'
+          options:
+            - ['tiny',  
+               data-alias-default: '3.3@2025_|b|',
+               data-option-for-python-version-default: false, 
+              ]
+            - ['small', 
+               data-alias-other-name: '3.4@2-&3',
+               data-option-for-python-version-control: false, 
+               data-option-for-python-version-other-name: false, 
+              ]
+            - ['medium',
+               data-alias-strange: '<>?/\\:;',
+               data-option-for-python-version-strange: false,
+               data-option-for-python-version-default: false
+              ]
+            - ['large',
+               data-alias-four: '4.0@#$%*()^!',
+               data-option-for-python-version-four: false,
+              ]
+            - ['super',
+               data-option-for-python-version-default: false,
+               data-option-for-python-version-strange: false
+              ]
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # Assert defaults
+      assert_selector("##{bc_ele_id('python_version')}")
+      assert_equal('3.3@2025_|b|', find_value('python_version'))
+      assert_equal('small', find_value('gpu_size'))
+
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('<>?/\\:;', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('control', from: "#{bc_ele_id('python_version')}")
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('3.3@2025_|b|', from: "#{bc_ele_id('python_version')}")
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+    end
+  end
+
+  test 'exclusive option for allows special characters with alias' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - account
+        - python_version
+        - gpu_size
+      attributes:
+        account:
+          widget: 'select'
+          options:
+            - ['name_lastname@school.edu']
+            - ['namelastname_school']
+        python_version:
+          widget: 'select'
+          options:
+            - ['3.3@2025_|b|']
+            - ['3.4@2-&3']
+            - ['4.0@#$%*()^!']
+            - ['<>?/\\:;']
+            - ['control']
+        gpu_size:
+          widget: 'select'
+          options:
+            - ['tiny',
+                data-alias-default: '3.3@2025_|b|',
+                data-exclusive-option-for-python-version-default: true 
+              ]
+            - ['small',
+                data-alias-other-name: '3.4@2-&3',
+                data-alias-shared: 'namelastname_school',
+                data-exclusive-option-for-account-shared: true, 
+                data-exclusive-option-for-python-version-other-name: true, 
+              ]
+            - ['medium',
+                data-alias-strange: '<>?/\\:;',
+                data-exclusive-option-for-python-version-strange: true,
+              ]
+            - ['large',
+                data-alias-four: '4.0@#$%*()^!',
+                data-exclusive-option-for-account-shared: true,
+                data-exclusive-option-for-python-version-four: true,
+              ]
+            - ['super',
+                data-alias-personal: 'name_lastname@school.edu',
+                data-exclusive-option-for-account-personal: true,
+                data-exclusive-option-for-python-version-default: true
+              ]
+    HEREDOC
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # Assert defaults
+      assert_equal('name_lastname@school.edu', find_value('account'))
+      assert_equal('3.3@2025_|b|', find_value('python_version'))
+      assert_equal('tiny', find_value('gpu_size'))
+
+      # Check things hidden by default
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('',               find_option_style('gpu_size', 'super'))
+
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+
+      # This is a weird situation, as it currently leaves the last selected option as the 
+      # value despite it being hidden, so we will have to reset after these two cases.
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('<>?/\\:;', from: "#{bc_ele_id('python_version')}")
+
+      # reset so that an option is selected
+      select('medium', from: "#{bc_ele_id('gpu_size')}")
+
+      assert_equal('medium', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+
+      select('namelastname_school', from: "#{bc_ele_id('account')}")
+      select('3.3@2025_|b|', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('tiny', find_value('gpu_size'))
+      assert_equal('',               find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('3.4@2-&3', from: "#{bc_ele_id('python_version')}")
+
+      assert_equal('small', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('',               find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('4.0@#$%*()^!', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('large', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'medium'))
+      assert_equal('',               find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+      
+      select('<>?/\\:;', from: "#{bc_ele_id('python_version')}")
+      
+      assert_equal('medium', find_value('gpu_size'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'tiny'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'small'))
+      assert_equal('',               find_option_style('gpu_size', 'medium'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'large'))
+      assert_equal('display: none;', find_option_style('gpu_size', 'super'))
+    end
+  end
+
+  # NEED TO TEST MIN/MAX FOR WITH ALIASES
 
   test 'auto generated modules are dynamic' do
     with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
@@ -760,7 +2337,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.4')
 
       # select oakley and now they're available
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
@@ -788,7 +2365,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # the script.sh.erb raises the message 'context.auto_modules_netcdf_serial' (note the _ in the name)
       # which should be 'netcdf-serial/4.3.3.1'
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
       verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
     end
   end
@@ -803,7 +2380,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens', find_value('cluster')
 
       # oakley has the hidden intel module 'intel/2021.4.0'
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
 
       actual_options = find_all_options('auto_modules_intel', nil).map(&:text)
 
@@ -837,7 +2414,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens', find_value('cluster')
 
       # these accounts are only on owens
@@ -847,9 +2424,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       # pzs1124 exists on both, so it's available
       assert_equal '', find_option_style('auto_accounts', 'pzs1124')
 
-      # pzs0715 is available on oakely, so switching clusters should keep the same value.
-      select('oakley', from: bc_ele_id('cluster'))
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      # pzs1124 is available on oakely, so switching clusters should keep the same value.
+      select('Oakley', from: bc_ele_id('cluster'))
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
       # now these are hidden when oakley is chosen
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1754')
@@ -881,15 +2458,15 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         visit new_batch_connect_session_context_url('sys/app')
 
-        assert_equal 'pzs0715', find_value('auto_accounts')
+        assert_equal 'pzs1124', find_value('auto_accounts')
         assert_equal 'owens', find_value('cluster')
 
         # notice that there are no duplicates. These accounts are not cluster aware
-        expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                             'pzs1117', 'pzs1118', 'pzs1124'].to_set
+        expected_accounts = ['foo-bar', 'pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
+                             'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'p_s1345'].sort
 
         id = bc_ele_id('auto_accounts')
-        actual_accounts = page.all("##{id} option").map(&:value).to_set
+        actual_accounts = page.all("##{id} option").map(&:value).sort
 
         assert_equal expected_accounts, actual_accounts
       end
@@ -931,13 +2508,56 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_selector("##{bc_ele_id('auto_queues')} option[value='systems']", count: 0)
 
       # batch exists on both clusters, so switching clusters does nothing
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'batch', find_value('auto_queues')
 
       # now those oakley queues are available
       assert_equal '', find_option_style('auto_queues', 'serial-40core')
       assert_equal '', find_option_style('auto_queues', 'serial-48core')
       assert_equal '', find_option_style('auto_queues', 'gpudebug-48core')
+    end
+  end
+
+  test 'check for account alias clashes between clusters when using auto_queues auto_accounts' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+      accounts = find_all_options("auto_accounts", nil)
+      queues = find_all_options("auto_queues", nil)
+      aliases = []
+      for queue in queues
+        (0..accounts.size).each do |i|
+          if !queue["data-alias-account#{i}"].nil?
+            aliases.append([queue.value, "account#{i}", queue["data-alias-account#{i}"]])
+          end
+        end
+      end
+      err_msg_lines = []
+      aliases_groupby_acct = aliases.group_by { |x| x[2] }
+      aliases_groupby_acct.each do |acct, aliases_this_acct|
+        pseudonyms = aliases_this_acct.map { |x| x[1] }.uniq
+        if pseudonyms.size > 1
+          err_msg_lines.append("account '#{acct}' has multiple different aliases: #{pseudonyms}")
+        end
+      end
+      aliases_groupby_pseudonym = aliases.group_by { |x| x[1] }
+      aliases_groupby_pseudonym.each do |pseudonym, aliases_this_pseudonym|
+        accts = aliases_this_pseudonym.map { |x| x[2] }.uniq
+        if accts.size > 1
+          err_msg_lines.append("alias '#{pseudonym}' has multiple different accounts: #{accts}")
+        end
+      end
+      # $stderr.puts aliases.inspect
+      assert(err_msg_lines.size == 0, err_msg_lines.join("\n"))
     end
   end
 
@@ -959,9 +2579,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       # defaults
       assert_equal 'batch', find_value('auto_queues')
       assert_equal 'owens', find_value('cluster')
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
 
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
 
       # condo-osumed queues are disabled, but the backfill-serial variants are.
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
@@ -972,7 +2592,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
 
       # change the account to pas2051 and now it's flipped.
-      # this is becuase pas2051 is on the condo-osumed queues' allow list and
+      # this is because pas2051 is on the condo-osumed queues' allow list and
       # on the backfill variants' deny list
       select('pas2051', from: bc_ele_id('auto_accounts'))
       assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
@@ -981,6 +2601,75 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
       assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
+
+      # Special character accounts should function the same as pas2051
+
+      ['p_s1.71', 'p-s1.71', 'p.s1.71'].each do |acct|
+        # We start by resetting back to the starting point
+        select('Owens', from: bc_ele_id('cluster'))
+        select('Oakley', from: bc_ele_id('cluster'))
+        select(acct, from: bc_ele_id('auto_accounts'))
+
+
+        
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-48core'))
+        assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
+        assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
+      end
+    end
+  end
+
+  test 'auto queues qos aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+
+      make_bc_app(dir, form, sacctmgr: false, scontrol: false)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:accounts)
+                                   .returns(accounts)
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:queues)
+                                   .returns(queues)
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([owens_cluster]))
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal('owens', find_value('cluster'))
+
+      select('no-qos', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos1', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos2', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("display: none;", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
+
+      select('has-qos12', from: bc_ele_id('auto_accounts'))
+      assert_equal("", find_option_style('auto_queues', 'allow-all-deny-none'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1'))
+      assert_equal("", find_option_style('auto_queues', 'deny-qos2'))
+      assert_equal("", find_option_style('auto_queues', 'allow-qos1-deny-qos2'))
     end
   end
 
@@ -1007,7 +2696,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       visit new_batch_connect_session_context_url('sys/app')
 
       # defaults
-      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'pzs1124', find_value('auto_accounts')
       assert_equal 'owens-default', find_value('auto_qos')
       assert_equal 'owens', find_value('cluster')
 
@@ -1020,6 +2709,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       # qos' available on owens cluster, but not with the selected account
+      select('pzs0715', from: bc_ele_id('auto_accounts'))
       assert_equal 'display: none;', find_option_style('auto_qos', 'staff')
       assert_equal 'display: none;', find_option_style('auto_qos', 'phoenix')
       assert_equal 'display: none;', find_option_style('auto_qos', 'geophys')
@@ -1038,9 +2728,105 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens-default', find_value('auto_qos')
 
       # change the cluster, and qos changes but account stays the same
-      select('oakley', from: bc_ele_id('cluster'))
+      select('Oakley', from: bc_ele_id('cluster'))
       assert_equal 'oakley-default', find_value('auto_qos')
       assert_equal 'pzs1124', find_value('auto_accounts')
+    end
+  end
+
+  test 'auto fields respond to default values' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: geophys
+          auto_accounts:
+            value: pzs1118
+          auto_queues:
+            value: quick
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults that are different than regular defaults.
+      # account would be 'pzs1124', qos would be 'owens-default'
+      # and auto_queues would be 'batch'.
+      assert_equal('pzs1118', find_value('auto_accounts'))
+      assert_equal('geophys', find_value('auto_qos'))
+      assert_equal('quick', find_value('auto_queues'))
+    end
+  end
+
+  test 'auto fields with incorrect values fallback to correct defaults' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+          - auto_queues
+        attributes:
+          auto_qos:
+            value: wontexist
+          auto_accounts:
+            value: wontexist
+          auto_queues:
+            value: wontexist
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # regular defaults
+      assert_equal('pzs1124', find_value('auto_accounts'))
+      assert_equal('owens-default', find_value('auto_qos'))
+      assert_equal('batch', find_value('auto_queues'))
+    end
+  end
+
+  test 'auto_cores are cluster aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        form:
+          - auto_batch_clusters
+          - auto_cores
+      HEREDOC
+      make_bc_app(dir, form, scontrol: false, sacctmgr: false)
+      stub_sinfo
+      
+      visit new_batch_connect_session_context_url('sys/app')
+      
+      assert_equal('oakley', find_value('auto_batch_clusters'))
+      assert_equal(80, find_max('auto_cores'))
+
+      select('owens', from: bc_ele_id('auto_batch_clusters'))
+      assert_equal(48, find_max('auto_cores'))
     end
   end
 
@@ -1080,7 +2866,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       find('span', text: 'test').click
-      sleep 3 # make sure the table has time to refresh
+      assert_selector("##{base_id}_path_selector_button:not(:disabled)")
+      assert_no_selector("##{base_id}_path_selector_table_spinner", visible: true)
+
       find("##{base_id}_path_selector_button").click
 
       text_field = find("##{base_id}")
@@ -1214,7 +3002,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       find('span', text: 'test').click
-      find("##{base_id}_path_selector_button").click
+      find("##{base_id}_path_selector_button:not(:disabled)").click
 
       text_field = find("##{base_id}")
       assert_equal("#{Rails.root}/test", text_field.value)
@@ -1268,7 +3056,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # and we can select the hidden directory just for good measure.
       find('span', text: '.hidden_dir').click
-      find("##{base_id}_path_selector_button").click
+      find("##{base_id}_path_selector_button:not(:disabled)").click
 
       text_field = find("##{base_id}")
       assert_equal("#{dir}/app/.hidden_dir", text_field.value)
@@ -1383,9 +3171,10 @@ class BatchConnectTest < ApplicationSystemTestCase
       # shows the OodFilesApp.candidate_favorite_paths favorites
       sleep 3
       favorites = get_favorites
-      assert_equal(2, favorites.size)
-      assert_equal('/tmp', favorites[0].text.strip)
-      assert_equal('/var', favorites[1].text.strip)
+      assert_equal(3, favorites.size)
+      assert_equal(I18n.t('dashboard.home_directory'), favorites[0].text.strip)
+      assert_equal('/tmp', favorites[1].text.strip)
+      assert_equal('/var', favorites[2].text.strip)
     end
   end
 
@@ -1419,9 +3208,10 @@ class BatchConnectTest < ApplicationSystemTestCase
       # favorites that have been configured in yml
       sleep 3
       favorites = get_favorites
-      assert_equal(2, favorites.size)
-      assert_equal('/fs/ess', favorites[0].text.strip)
-      assert_equal('/fs/scratch', favorites[1].text.strip)
+      assert_equal(3, favorites.size)
+      assert_equal(I18n.t('dashboard.home_directory'), favorites[0].text.strip)
+      assert_equal('/fs/ess', favorites[1].text.strip)
+      assert_equal('/fs/scratch', favorites[2].text.strip)
     end
   end
 
@@ -1463,9 +3253,62 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   def get_favorites
     # For debugging flaky tests
-    all('#favorites li', wait: 30)
+    all('#favorites a', wait: 30)
     # puts "FAVORITES: "
     # puts favorites.map{|i| i['innerHTML']}.join('')
+  end
+
+  test 'path_selector respects allowlist' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({ OOD_ALLOWLIST_PATH: allowed_dir }) do
+        `mkdir -p #{allowed_dir}/real_directory`
+        `touch #{allowed_dir}/real_file`
+        `touch #{allowed_dir}/real_directory/other_real_file`
+        `mkdir -p #{dir}/not_allowed`
+        `touch #{dir}/not_allowed/bad_file`
+
+        form = <<~HEREDOC
+          ---
+          cluster:
+            - owens
+          form:
+            - path
+          attributes:
+            path:
+              widget: 'path_selector'
+              directory: '#{allowed_dir}/real_directory'
+        HEREDOC
+
+        make_bc_app(dir, form)
+        visit new_batch_connect_session_context_url('sys/app')
+
+        click_on 'Select Path'
+
+        # await load
+        assert_selector("##{bc_ele_id('path_path_selector_table_wrapper')}")
+        # verify location
+        assert_text('other_real_file')
+
+        assert_selector('.fa-arrow-up')
+        find('.fa-arrow-up').click
+        assert_text('real_file')
+        assert_text('real_directory')
+
+        find('.fa-arrow-up').click
+        error_text = "Permission denied: #{dir} does not have an ancestor directory specified in ALLOWLIST_PATH"
+        assert_selector('#forbidden-warning', text: error_text)
+
+        # reset
+        find('tr.clickable td span', text: 'real_directory').click
+        assert_text('other_real_file')
+        assert_selector('#forbidden-warning', visible: :hidden)
+
+        find_all('a', text: '/').first.click
+        error_text_root = 'Permission denied: / does not have an ancestor directory specified in ALLOWLIST_PATH'
+        assert_selector('#forbidden-warning', text: error_text_root)
+      end
+    end
   end
 
   test 'launches and saves settings as a template' do
@@ -1485,8 +3328,9 @@ class BatchConnectTest < ApplicationSystemTestCase
         sleep 5 # modal needs to sleep?
         click_on('Save')
 
-        click_on('Launch', wait: 30)
-        sleep 3
+        sleep 1
+        find('#batch_connect_session_context_launch').click
+        sleep 1
         expected = output_fixture('user_settings/simple_bc_test.yml')
         actual = File.read("#{dir}/settings.yml")
 
@@ -1586,7 +3430,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       value = find("##{id}").value
       assert_equal('A', value)
 
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
       visit(new_batch_connect_session_context_url('sys/app'))
       cache_data = YAML.safe_load(File.read(cache_file.to_s)).to_h
       assert_equal('A', value)
@@ -1620,7 +3464,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       raw_password = 'abc123'
       fill_in(bc_ele_id('some_field'), with: 42)
       fill_in(bc_ele_id('some_password_field'), with: raw_password)
-      click_on('Launch')
+      find('#batch_connect_session_context_launch').click
 
       sleep 3
       visit new_batch_connect_session_context_url('sys/app')

@@ -17,7 +17,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     Router.instance_variable_set('@pinned_apps', nil)
   end
 
-  def test_env
+  def get_test_env
     {
       MOTD_FORMAT:    'osc',
       MOTD_PATH:      Rails.root.join('test/fixtures/files/motd_valid').to_s,
@@ -35,7 +35,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row', 0
   end
 
-  test 'nil MOTD and pinned apps render empty elements' do
+  test 'default MOTD renders when MOTD_PATH is unset' do
     stub_user_configuration({
                               dashboard_layout: {
                                 rows: [
@@ -61,11 +61,48 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-8', 1
     assert_select 'div.row > div.col-md-4', 1
 
+    assert_select 'div.row > div.col-md-8 h2', 1
+    assert_equal(I18n.t('dashboard.motd_title'), css_select('div.row > div.col-md-8 h2').text)
+    assert_select 'div.row > div.col-md-8 [data-motd-md]', 1
+
+    pinned_apps = css_select('div.row > div.col-md-4')
+    assert_equal pinned_apps.children.size, 1
+    assert_equal pinned_apps.children.first.to_s.gsub(/[\s\n]/, ''), ''
+  end
+
+  test 'empty MOTD_PATH and pinned apps render empty elements' do
+    stub_user_configuration({
+                              dashboard_layout: {
+                                rows: [
+                                  {
+                                    columns: [
+                                      {
+                                        width:   8,
+                                        widgets: 'motd'
+                                      },
+                                      {
+                                        width:   4,
+                                        widgets: 'pinned_apps'
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            })
+
+    with_modified_env({ MOTD_PATH: '' }) do
+      get '/'
+    end
+
+    assert_select 'div.row', 1
+    assert_select 'div.row > div.col-md-8', 1
+    assert_select 'div.row > div.col-md-4', 1
+    assert_select 'div.row > div.col-md-8 h2', 0
+    assert_select '[data-motd-md]', 0
+
     motd = css_select('div.row > div.col-md-8')
     pinned_apps = css_select('div.row > div.col-md-4')
 
-    # they exist, but they're empty. No errors because you've configured to show them,
-    # but not configured to create them
     assert_equal motd.children.size, 1
     assert_equal motd.children.first.to_s.gsub(/[\s\n]/, ''), ''
     assert_equal pinned_apps.children.size, 1
@@ -88,7 +125,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -121,7 +158,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -215,7 +252,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -265,7 +302,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 
@@ -275,7 +312,8 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     error_widgets = css_select('div.row > div.col-md-4 > div.alert.alert-danger.card > div.card-body')
     assert_equal 3, error_widgets.size
     assert_equal true, %r{Missing partial widgets/_this_widget_doesnt_exist}.match?(error_widgets[0].text)
-    assert_equal true, /undefined method `woops!'/.match?(error_widgets[1].text)
+    puts error_widgets[1].text
+    assert_equal true, /undefined method [`']woops!'/.match?(error_widgets[1].text)
     assert_equal true, /cannot load such file -- the_missing_gem/.match?(error_widgets[2].text)
   end
 
@@ -299,7 +337,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
                               }
                             })
 
-    with_modified_env(test_env) do
+    with_modified_env(get_test_env) do
       get '/'
     end
 

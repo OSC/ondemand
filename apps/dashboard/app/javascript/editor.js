@@ -72,6 +72,9 @@ jQuery(function () {
 
       // Set the caret at inside the editor on load.
       editor.focus();
+
+      // Force Unix-style newlines to fix Windows copy-paste issues.
+      editor.getSession().setNewLineMode('unix'); 
     };
 
     function setSaveButtonState() {
@@ -105,6 +108,7 @@ jQuery(function () {
     function toggleSaveConfirmed() {
       $("#save-icon").toggleClass("glyphicon-save");
       $("#save-icon").toggleClass("glyphicon-saved");
+      $("#save-button").toggleClass("file-saved")
     };
 
     // Sets the key binding to the selected option
@@ -146,6 +150,12 @@ jQuery(function () {
       setUserPreference('wordwrap', $("#wordwrap").is(':checked'));
     });
 
+    // Change the soft tab setting
+    $("#soft_tabs").on('change', function () {
+      editor.getSession().setUseSoftTabs(this.checked);
+      setUserPreference('soft_tabs', this.checked);
+    });
+
     // Save button onclick handler
     // sends the content to the cloudcmd api via PUT request
     $("#save-button").on('click', function () {
@@ -160,7 +170,7 @@ jQuery(function () {
             'Content-Type': 'text/plain',
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
           },
-          success: function (data) {
+          success: function (_data) {
             toggleSaveSpinner();
             toggleSaveConfirmed();
             setTimeout(function () {
@@ -171,8 +181,12 @@ jQuery(function () {
             $("#save-button").prop("disabled", editor.session.getUndoManager().isClean());
             setBeforeUnloadState();
           },
-          error: function (request, status, error) {
-            alert("An error occured attempting to save this file!\n" + error);
+          error: function (request, _status) {
+            var error = request.responseJSON?.error_message;
+            if (error === undefined) {
+              error = '';
+            }
+            alert(`An error occurred attempting to save this file!\n${error}`);
             toggleSaveSpinner();
           }
         });
@@ -200,6 +214,14 @@ jQuery(function () {
       editor.setTheme($("#theme option:selected").val());
       $("#wordwrap").prop("checked", getUserPreference('wordwrap') === "true");
       editor.getSession().setUseWrapMode($("#wordwrap").is(':checked'));
+
+      // default to use soft tabs for backward compatibility.
+      let tabs = getUserPreference('soft_tabs');
+      if(tabs === null) {
+        tabs = "true";
+      }
+      $("#soft_tabs").prop("checked", tabs === "true");
+      editor.getSession().setUseSoftTabs($("#soft_tabs").is(':checked'));
     };
 
     initializeEditor();

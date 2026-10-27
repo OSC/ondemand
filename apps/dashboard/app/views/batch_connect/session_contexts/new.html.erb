@@ -18,8 +18,7 @@ locals: {
 %>
 
 <%- if @session && @session.errors.any? -%>
-  <div class="alert alert-danger alert-dismissible" role="alert">
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <div class="alert alert-danger alert-dismissible d-none" role="alert" data-notice="true">
 
     <% @session.errors.each do |error| %>
       <% if error.attribute == :submit %>
@@ -42,21 +41,21 @@ locals: {
       <% end %>
       <li>
         <%= t('dashboard.batch_connect_sessions_data_html',
-            title: @app.title,
-            data_link_tag: link_to(
-              t('dashboard.batch_connect_sessions_staged_root'),
-              OodAppkit.files.url(path: @session.staged_root).to_s,
-              target: "_blank")
+              title: @app.title,
+              data_link_tag: link_to(
+                t('dashboard.batch_connect_sessions_staged_root'),
+                OodAppkit.files.url(path: @session.staged_root).to_s
+	      )
             )
-            %>
+	 %>
       </li>
     </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" title="<%= t('dashboard.close_alert') %>"></button>
   </div>
 <%- end -%>
 
 <div class="row">
   <div class="col-md-3">
-    <%= render partial: 'batch_connect/shared/saved_settings_menu' %>
     <%=
       render(
         partial: "batch_connect/shared/app_menu",
@@ -72,12 +71,7 @@ locals: {
   </div>
 
   <div class="col-md-6">
-    <h3>
-      <%= @app.title %>
-      <% unless @app.version.nil? %>
-        <small>version: <%= @app.version %></small>
-      <% end %>
-    </h3>
+    <h3><%= @app.title %></h3>
     <div class="ood-appkit markdown">
       <%= OodAppkit.markdown.render(@app.description).html_safe %>
 
@@ -85,17 +79,20 @@ locals: {
         <%= render "form" %>
         <p>
           <%= t('dashboard.batch_connect_form_session_data_html',
-                title: @app.title,
-                data_link_tag: link_to(
-                  t('dashboard.batch_connect_form_data_root'),
-                  OodAppkit.files.url(
-                    path: BatchConnect::Session.dataroot(@app.token)
-                  ).to_s,
-                  target: "_blank")
+                  title: @app.title,
+                  data_link_tag: link_to(
+                    t('dashboard.batch_connect_form_data_root'),
+                    OodAppkit.files.url(
+                      path: BatchConnect::Session.dataroot(@app.token)
+                    ).to_s,
+                  )
                 )
           %>
         </p>
       <%- end -%>
     </div>
+    <% unless @app.version.nil? %>
+      <p id="app_version" class="text-muted mt-3 mb-0"><small>version: <%= @app.version %></small></p>
+    <% end %>
   </div><!-- /.col-md-6 -->
 </div><!-- /.row -->

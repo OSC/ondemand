@@ -84,7 +84,7 @@ class OodApp
       # assumes Home Directory is primary...
       [
         OodAppLink.new(
-          title: "Home Directory",
+          title: I18n.t('dashboard.home_directory'),
           description: manifest.description,
           url: OodAppkit::Urls::Files.new(base_url: url).url(path: Dir.home),
           icon_uri: "fas://home",
@@ -128,7 +128,7 @@ class OodApp
       else
         login_clusters.map do |cluster|
           OodAppLink.new(
-            title: I18n.t('dashboard.shell_app_title', cluster_title: cluster.metadata.title || cluster.id.to_s.titleize),
+            title: I18n.t('dashboard.shell_app_title', cluster_title: cluster.title),
             description: manifest.description,
             url: OodAppkit::Urls::Shell.new(base_url: url).url(host: cluster.login.host),
             icon_uri: "fas://terminal",
@@ -221,7 +221,11 @@ class OodApp
   end
 
   def manifest_path
-    path.join("manifest.yml")
+    potentials = Pathname.glob(path.join("manifest.{yml,yaml}"))
+    mp = potentials.select { |p| p.file? }.first
+
+    # if mp is nil here, just return this path and let another layer deal with the error.
+    mp.nil? ? path.join("manifest.yml") : mp
   end
 
   def svg_icon?
@@ -287,6 +291,9 @@ class OodApp
             msg += "for user #{Etc.getpwuid.name} with output: #{output}"
             raise SetupScriptFailed, msg
           end
+        elsif File.exist?(setup) && !File.executable(setup)
+          msg = "Per user setup failed: file 'bin/setup-production' is not executable. Ensure the user has access to this file."
+          raise SetupScriptFailed, msg
         end
       end
     end

@@ -276,8 +276,9 @@ class RemoteFilesTest < ApplicationSystemTestCase
         visit files_url('alias_remote', '/bucket')
         find('a', exact_text: 'app').ancestor('tr').find('input[type="checkbox"]').click
         find('a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
-        find('#delete-btn').click
-        find('#files_input_modal_ok_button').click
+        accept_alert do
+          find('#delete-btn').click
+        end
 
         # Allow time for file to be removed
         sleep 1
@@ -329,20 +330,20 @@ class RemoteFilesTest < ApplicationSystemTestCase
     with_rclone_conf(Rails.root.to_s) do
       visit files_url('alias_remote', '/')
 
-      find('tbody a', exact_text: 'app')
-      find('tbody a', exact_text: 'config')
+      assert_selector('tbody a', text: 'app')
+      assert_selector('tbody a', text: 'config')
 
       find('#goto-btn').click
       find('#files_input_modal_input').set('/app')
       find('#files_input_modal_ok_button').click
-      find('tbody a', exact_text: 'helpers')
-      find('tbody a', exact_text: 'controllers')
+      assert_selector('tbody a', text: 'helpers')
+      assert_selector('tbody a', text: 'controllers')
 
       find('#goto-btn').click
       find('#files_input_modal_input').set('/')
       find('#files_input_modal_ok_button').click
-      find('tbody a', exact_text: 'app')
-      find('tbody a', exact_text: 'config')
+      assert_selector('tbody a', text: 'app')
+      assert_selector('tbody a', text: 'config')
     end
   end
 
@@ -359,14 +360,11 @@ class RemoteFilesTest < ApplicationSystemTestCase
 
         tr = find('a', exact_text: File.basename(file)).ancestor('tr')
         tr.find('button.dropdown-toggle').click
-        edit_window = window_opened_by { tr.find('.edit-file').click }
+        tr.find('.edit-file').click
+        find('#editor').click
+        find('textarea.ace_text-input', visible: false).send_keys 'foobar'
 
-        within_window edit_window do
-          find('#editor').click
-          find('textarea.ace_text-input', visible: false).send_keys 'foobar'
-
-          find('#save-button').click
-        end
+        find('#save-button').click
 
         sleep 1 # FIXME: should avoid using sleep here
         assert_equal 'foobar', File.read(file)

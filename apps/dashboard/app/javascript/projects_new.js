@@ -1,10 +1,17 @@
 'use strict';
 
 import { attachPathSelectors }  from './path_selector/path_selector';
+import { userHome } from './config';
+
+// cache this just so we don't have to keep parsing the DOM to retrieve it.
+const home = userHome();
 
 jQuery(function() {
   $("#project_template").on('change', (event) => templateChange(event));
+  $("#project_directory").on('input', (event) => toggleSharedSettings(event.target.value));
   attachPathSelectors();
+
+  toggleSharedSettings(document.getElementById('project_directory').value);
 });
 
 function templateChange(event) {
@@ -21,4 +28,15 @@ function templateChange(event) {
   $("#project_description").val(description);
   $("#product_icon_select").val(icon);
   $("#product_icon_select").trigger('change');
+}
+
+function toggleSharedSettings(value) {
+  const owner = document.getElementById('project_group_owner');
+  const setgid = document.getElementById('project_setgid');
+  const setgidHelp = $('label[for="project_setgid"]').find('i')  
+  const isDisabled = value.startsWith(home) || value === "";
+
+  owner.disabled = isDisabled;
+  setgid.disabled = isDisabled;
+  setgidHelp.attr('tabindex', isDisabled ? '-1' : '0');
 }

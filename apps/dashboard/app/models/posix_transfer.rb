@@ -1,4 +1,4 @@
-# PosixTransfer is a class for transfering local files.
+# PosixTransfer is a class for transferring local files.
 class PosixTransfer < Transfer
 
   validates_each :files do |record, _attr, files|
@@ -54,7 +54,6 @@ class PosixTransfer < Transfer
     elsif remove?
       @steps = names.size
     else
-      # TODO: num_files issues 'find' command. so likely needs optimized
       @steps = PosixFile.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end

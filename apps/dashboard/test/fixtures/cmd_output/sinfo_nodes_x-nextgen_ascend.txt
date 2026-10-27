@@ -1,0 +1,10 @@
+32n0001c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s01,ib-i1,1,1-c01
+32n0002c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s01,ib-i1,1,1-c02
+32n0003c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s01,ib-i1,1,1-c03
+32n0004c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s01,ib-i1,1,1-c04
+32n0005c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s02,ib-i1,1,1-c05
+32n0006c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s02,ib-i1,1,1-c06
+32n0007c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s02,ib-i1,1,1-c07
+32n0008c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s02,ib-i1,1,1-c08
+32n0009c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s03,ib-i1,1,1-c09
+32n0010c6320,cpu,eth-nextgen-rack01h1,ib-i1l1s03,ib-i1,1,1-c10

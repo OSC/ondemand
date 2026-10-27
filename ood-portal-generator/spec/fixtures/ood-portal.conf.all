@@ -27,15 +27,11 @@
 #
 # 3. Finally, restart Apache to have the changes take effect:
 #
-#      # For CentOS 6
-#      sudo service httpd24-httpd condrestart
-#      sudo service httpd24-htcacheclean condrestart
-#
-#      # For CentOS 7
-#      sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service
-#
 #      # For CentOS 8
 #      sudo systemctl try-restart httpd.service htcacheclean.service
+#
+#      # For Ubuntu 24.04
+#      sudo systemctl try-restart apache2.service
 #
 
 # Listen should always be one of:
@@ -80,6 +76,10 @@ Listen 8080
   RewriteCond %{REMOTE_ADDR} !^192\.168\.1\..*
   RewriteRule ^.*$ /assets/maintenance/index.html [R=302,L]
 
+  <FilesMatch "/var/www/ood/public/maintenance/.*">
+    Header Set Cache-Control "max-age=0, no-store"
+  </FilesMatch>
+
   TraceEnable off
 
   Header always set Content-Security-Policy "frame-ancestors https://test.proxy.name;"
@@ -88,6 +88,9 @@ Listen 8080
   SSLEngine On
   SSLCertificateFile "/etc/pki/tls/certs/www.example.com.crt"
   SSLCertificateKeyFile "/etc/pki/tls/private/www.example.com.key"
+
+  # Enable SSL Proxying
+  SSLProxyEngine On
 
   # Lua configuration
   #
@@ -142,15 +145,40 @@ Listen 8080
     Require valid-user
 
 
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
+
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.proxy.name/configured-node/%{MATCH_HOST}e/%{MATCH_PORT}e/ wss://test.proxy.name/configured-node/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.proxy.name/configured-node/%{MATCH_HOST}e/%{MATCH_PORT}e/"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
@@ -165,15 +193,140 @@ Listen 8080
     Require valid-user
 
 
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
+
     # ProxyPassReverse implementation
     Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
-    # ProxyPassReverseCookieDomain implemenation
+    # ProxyPassReverseCookieDomain implementation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation
     Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
     Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.proxy.name/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/ wss://test.proxy.name/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.proxy.name/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+
+    LuaHookFixups node_proxy.lua node_proxy_handler
+  </LocationMatch>
+
+  # Reverse proxy SSL traffic to backend webserver through IP sockets:
+  #
+  #     https://test.server.name:8080/configured-secure-node/HOST/PORT/index.html
+  #     #=> https://HOST:PORT/configured-secure-node/HOST/PORT/index.html
+  #
+  <LocationMatch "^/configured-secure-node/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
+    AuthType openid-connect
+    Require valid-user
+
+
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
+
+    # ProxyPassReverse implementation
+    Header edit Location "^[^/]+//[^/]+" ""
+
+    # ProxyPassReverseCookieDomain implementation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
+
+    # ProxyPassReverseCookiePath implementation
+    Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.proxy.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/ wss://test.proxy.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.proxy.name/configured-secure-node/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+
+    LuaHookFixups node_proxy.lua node_proxy_handler
+  </LocationMatch>
+
+  #  Reverse "relative" proxy SSL traffic to backend webserver through IP sockets:
+  #
+  #     https://test.server.name:8080/configured-secure-rnode/HOST/PORT/index.html
+  #     #=> https://HOST:PORT/index.html
+  #
+  <LocationMatch "^/configured-secure-rnode/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)(?<uri>/.*|)">
+    SetEnv OOD_SECURE_UPSTREAM 1
+
+    AuthType openid-connect
+    Require valid-user
+
+
+    RequestHeader edit* Cookie "mod_auth_openidc_session_\d+=[^;]+;" ""
+    RequestHeader edit* Cookie "mod_auth_openidc_session=[^;]+;" ""
+    RequestHeader unset Authorization
+    RequestHeader unset OIDC_CLAIM_sub
+    RequestHeader unset OIDC_CLAIM_preferred_username
+    RequestHeader unset OIDC_CLAIM_given_name
+    RequestHeader unset OIDC_CLAIM_zoneinfo
+    RequestHeader unset OIDC_CLAIM_locale
+    RequestHeader unset OIDC_CLAIM_email
+    RequestHeader unset OIDC_CLAIM_email_verified
+    RequestHeader unset OIDC_CLAIM_iss
+    RequestHeader unset OIDC_CLAIM_nonce
+    RequestHeader unset OIDC_CLAIM_aud
+    RequestHeader unset OIDC_CLAIM_acr
+    RequestHeader unset OIDC_CLAIM_azp
+    RequestHeader unset OIDC_CLAIM_auth_time
+    RequestHeader unset OIDC_CLAIM_exp
+    RequestHeader unset OIDC_CLAIM_iat
+    RequestHeader unset OIDC_CLAIM_jti
+    RequestHeader unset OIDC_access_token
+    RequestHeader unset OIDC_access_token_expires
+
+    # ProxyPassReverse implementation
+    Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # ProxyPassReverseCookieDomain implementation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
+
+    # ProxyPassReverseCookiePath implementation
+    Header edit* Set-Cookie ";\s*(?i)Path[^;]*" ""
+    Header edit  Set-Cookie "^([^;]+)" "$1; Path=/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # Restrict this app's scripts/forms to only call back to itself, not the OnDemand backend
+    Header always set Content-Security-Policy "connect-src https://test.proxy.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/ wss://test.proxy.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/; form-action https://test.proxy.name/configured-secure-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e/"
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>

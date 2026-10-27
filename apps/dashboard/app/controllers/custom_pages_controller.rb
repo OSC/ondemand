@@ -10,6 +10,7 @@ class CustomPagesController < ApplicationController
   def index
     page_code = params[:page_code]
     set_motd
+    set_my_quotas
     @page_layout = @user_configuration.custom_pages.fetch(page_code.to_sym, {})
     flash.now[:alert] = t('dashboard.custom_pages.invalid', page: page_code) if @page_layout.empty?
   end

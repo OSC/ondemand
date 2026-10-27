@@ -8,7 +8,7 @@ class FilesController < ApplicationController
   before_action :strip_sendfile_headers, only: [:fs, :directory_frame]
 
   def fs
-    request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
+    request.format = 'json' if json_request?
     parse_path(fs_params[:filepath], fs_params[:fs])
     validate_path!
 
@@ -66,8 +66,13 @@ class FilesController < ApplicationController
                   next unless File.readable?(file.realpath)
 
                   if File.file?(file.realpath)
-                    zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                      IO.copy_stream(file.realpath, zip_file)
+                    File.open(file.realpath, 'rb') do |opened_file|
+                      real_path = File.readlink("/proc/self/fd/#{opened_file.fileno}")
+                      next unless AllowlistPolicy.default.permitted?(real_path)
+
+                      zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                        IO.copy_stream(opened_file, zip_file)
+                      end
                     end
                   else
                     zip.add_empty_directory(dirname: file.relative_path.to_s)
@@ -150,7 +155,7 @@ class FilesController < ApplicationController
 
     render json: {}
   rescue StandardError => e
-    render json: { error_message: e.message }
+    render json: { error_message: e.message }, status: :internal_server_error
   end
 
   # POST
@@ -192,10 +197,12 @@ class FilesController < ApplicationController
     parse_path(filepath, fs)
     validate_path!
 
+    editor_max = [::Configuration.file_editor_max_size, ::Configuration.download_file_max].min
+
     if !@path.editable?
       redirect_back(fallback_location: root_path, alert: "#{@path} is not an editable file")
-    elsif @path.size > ::Configuration.file_editor_max_size
-      redirect_back(fallback_location: root_path, alert: "#{@path} exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max_size)}. Please download the file to edit or view it locally.")
+    elsif @path.size > editor_max
+      redirect_back(fallback_location: root_path, alert: "#{@path} exceeds editor limit of #{number_to_human_size(editor_max)}. Please download the file to edit or view it locally.")
     else
       @content = @path.read
       render :edit, status: status, layout: 'editor'
@@ -206,6 +213,17 @@ class FilesController < ApplicationController
 
   private
 
+  # Whether the incoming request explicitly accepts application/json.
+  #
+  # Coerces the Accept header to a string because some user agents
+  # (notably Chrome on `<a download>` links for files linked from
+  # Interactive App session views) omit the header entirely, which
+  # would otherwise raise NoMethodError on nil.split and leave the
+  # global rescue_action handler to redirect users to $HOME.
+  def json_request?
+    request.headers['HTTP_ACCEPT'].to_s.split(',').include?('application/json')
+  end
+
   def rescue_action(exception)
     @files = []
     flash.now[:alert] = exception.message.to_s
@@ -215,7 +233,7 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        render :index
+        redirect_to(files_path(next_valid), alert: exception.message.to_s)
       end
       format.json do
         @files = []
@@ -251,9 +269,17 @@ class FilesController < ApplicationController
     end
   end
 
+  def ensure_exists!
+    if ['fs', 'edit', 'directory_frame'].include?(action_name)
+      raise(StandardError, t('dashboard.files_doesnt_exist', path: @path.to_s)) unless @path.exist?
+      raise(StandardError, t('dashboard.files_not_readable', path: @path.to_s)) unless @path.readable?
+    end
+  end
+
   def validate_path!
     if posix_file?
       AllowlistPolicy.default.validate!(@path)
+      ensure_exists!
     elsif @path.remote_type.nil?
       raise StandardError, "Remote #{@path.remote} does not exist"
     elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == 'local' || @path.remote_type == 'alias')
@@ -269,6 +295,12 @@ class FilesController < ApplicationController
 
   def download?
     fs_params[:download]
+  end
+
+  def next_valid
+    next_valid = @path.parent.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
+    present_path = next_valid.nil? ? Dir.home : next_valid
+    AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home
   end
 
   def uppy_upload_path
@@ -287,6 +319,8 @@ class FilesController < ApplicationController
 
   def show_file
     raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
+    can_download, error = @path.can_download_file?
+    raise(StandardError, error) unless can_download
 
     if html_file? && ::Configuration.unsafe_render_html
       render(file: @path.realpath, layout: false)

@@ -31,6 +31,8 @@
 
 en:
   jobcomposer:
+    skip_navigation: "Skip Navigation"
+    deprecation_warning_html: The Job Composer is deprecated and will be removed in Open OnDemand 5.0. Please transfer your jobs and templates to the <a href="%{projects_path}">Project Manager</a>.
     # Site specific translations
     options_account_help:  "Account is an optional field. If not set, the account may be auto-set by the submit filter."
 

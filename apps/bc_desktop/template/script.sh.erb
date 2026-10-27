@@ -12,7 +12,7 @@ export SHELL="$(getent passwd $USER | cut -d: -f7)"
 # use a safe PATH to boot the desktop because dbus-launch can be
 # in another location from a python/conda installation and that will
 # conflict and cause issues. See https://github.com/OSC/ondemand/issues/700 for more.
-SAFE_PATH="/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin"
+SAFE_PATH=$(echo -n "$PATH" | tr : '\0' | grep -zvE ^"$HOME"'($|/)' | tr '\0' : | head -c -1)
 
 # Start up desktop
 echo "Launching desktop '<%= context.desktop %>'..."

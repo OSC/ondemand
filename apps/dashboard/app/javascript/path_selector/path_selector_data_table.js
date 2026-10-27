@@ -1,8 +1,10 @@
-import { OODAlert } from '../alert';
-import { hide, show } from "../utils";
+import { OODAlertError } from '../alert';
+import { ariaNotify, customizeTableHeaders, hide, show } from "../utils";
 
 export class PathSelectorTable {
   _table = null;
+  _currentListPath = undefined;
+  _reloadRequestId = 0;
 
   // input data that should be passed into the constructor
   tableId             = undefined;
@@ -32,7 +34,7 @@ export class PathSelectorTable {
       this.reloadTable(this.initialUrl());
 
       $(`#${this.tableId} tbody`).on('click', 'tr', (event) => { this.clickRow(event) });
-      $('#favorites').on('click', 'li', (event) => { this.clickRow(event) });
+      $('#favorites').on('click', 'a', (event) => { this.clickRow(event) });
       $(`#${this.breadcrumbId}`).on('click', 'li', (event) => { this.clickBreadcrumb(event) });
       $(`#${this.selectButtonId}`).on('click', (event) => { this.selectPath(event) });
   }
@@ -55,13 +57,19 @@ export class PathSelectorTable {
           // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
           selector: 'td:not(:first-child)'
       },
+      headerCallback: (thead, _data, _start, _end, _display) => {
+        customizeTableHeaders(thead);
+      },
       // https://datatables.net/reference/option/dom
       // dom: '', dataTables_info nowrap
       //
       // put breadcrumbs below filter!!!
-      dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-          "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-end'><'transfers-status'>>>>" +
-          "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
+      layout: {
+        topStart: null,
+        topEnd: 'search',
+	bottomStart: null,
+	bottomEnd: null
+      },
       columns: [
         {
           data: 'type',
@@ -88,24 +96,48 @@ export class PathSelectorTable {
   }
 
   async reloadTable(url) {
+    const requestId = ++this._reloadRequestId;
+    $(`#${this.selectButtonId}`).prop('disabled', true);
+
     try {
       $(this.tableWrapper()).hide();
       show(`${this.tableId}_spinner`);
+      ariaNotify('Loading directory contents');
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
+      if (requestId !== this._reloadRequestId) {
+        return;
+      }
+
+      this._currentListPath = data.path;
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
       this._table.clear();
       this._table.rows.add(data.files);
       this.setLastVisited(data.path);
       this._table.draw();
       this.resetTable();
+      ariaNotify('Directory loaded with ' + data.files.length + ' items');
     } catch (err) {
+      if (requestId !== this._reloadRequestId) {
+        return;
+      }
+
       this.resetTable();
-      if (err.message.match("Permission denied")) {
+      if (err.message) {
+        const msg = err.message;	    
+        var prefix = '';
+        if (msg.match('ALLOWLIST_PATH')) {
+          prefix = 'Permission denied: ';
+        }
         $('#forbidden-warning').removeClass('d-none')
-        $('#forbidden-warning').trigger('focus');
+          .text(`${prefix}${msg}`)
+          .trigger('focus');
       }
       console.log(err);
+    } finally {
+      if (requestId === this._reloadRequestId) {
+        $(`#${this.selectButtonId}`).prop('disabled', false);
+      }
     }
   }
 
@@ -129,14 +161,27 @@ export class PathSelectorTable {
   clickRow(event) {
     const row = $(event.target).closest('tr').get(0) || event.target;
     const url = row.dataset['apiUrl'];
+    if (url === undefined) {
+      return;
+    }
     const pathType = row.dataset['pathType'];
     this.activateFavorite(row);
 
     // only reload table for directories. and correct last visited
     // if it's a file.
     if(pathType == 'f') {
-      const path = url.replace(this.filesPath, '').replaceAll('//','/');
-      this.setLastVisited(path, pathType);
+      // Use JSON path + name instead of URL since URLs are encoded and can break filenames like + or #
+      const $tr = $(event.target).closest('tr');
+      const inMainTable = $tr.length && $tr.closest(`#${this.tableId}`).length > 0;
+      const rowData = inMainTable ? this._table.row($tr).data() : null;
+      let fsPath;
+      if (this._currentListPath && rowData && rowData.name) {
+        const base = this._currentListPath.replace(/\/$/, '');
+        fsPath = `${base}/${rowData.name}`;
+      } else {
+        fsPath = url.replace(this.filesPath, '').replaceAll('//','/');
+      }
+      this.setLastVisited(fsPath, pathType);
     } else {
       this.reloadTable(url);
     }
@@ -153,7 +198,10 @@ export class PathSelectorTable {
   }
 
   clickBreadcrumb(event) {
-    const path = event.target.id;
+    const path = event.target.id || undefined;
+    if (path === undefined) {
+      return;
+    }
     this.activateFavorite(event.target);
     this.reloadTable(path);
   }
@@ -162,6 +210,7 @@ export class PathSelectorTable {
     const last = this.getLastVisited();
     const inputField = document.getElementById(this.inputFieldId);
     inputField.value = last.path;
+    inputField.dispatchEvent(new Event('input', { bubbles: true }));
     $(`#${this.modalId}`).modal('hide');
   }
 
@@ -220,7 +269,7 @@ export class PathSelectorTable {
         regex = RegExp(this.filePattern);
       }
     } catch {
-      OODAlert("The regular expression provided for this path selector did not compile");
+      OODAlertError("The regular expression provided for this path selector did not compile");
     }
 
     const filteredFiles = data.files.filter((file) => {

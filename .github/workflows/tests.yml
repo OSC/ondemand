@@ -7,6 +7,9 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+permissions:
+  contents: read
+
 env:
   ACTIONS_STEP_DEBUG: true
   ACTIONS_RUNNER_DEBUG: true
@@ -17,35 +20,33 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["3.3.5"]
+        ruby: ["3.4"]
         include:
-          # Test versions from Ubuntu 22.04
-          - os: ubuntu-latest
-            ruby: "3.0.2"
           # Test versions from Debian 12
           - os: ubuntu-latest
-            ruby: "3.1.2"
+            ruby: "3.1"
           # Test versions from Amazon Linux 2023 and Ubuntu 24.04
           - os: ubuntu-latest
-            ruby: "3.2.2"
-          # Test versions from RHEL8 & RHEL9
+            ruby: "3.2"
+          # Test versions from RHEL8 & RHEL9 & RHEL10 && Ubuntu 26.04
           - os: ubuntu-latest
-            ruby: "3.3.5"
+            ruby: "3.3"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Setup Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler: 2.5.23
+          rubygems: 'latest'
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-1
@@ -60,7 +61,7 @@ jobs:
           # try to update gems - this can fail on ruby 3.0
           gem update --system || true
           bundle config path ~/vendor/bundle
-          bundle install
+          bundle install --without e2e
           gem install rake
 
       - name: Run unit tests
@@ -86,7 +87,7 @@ jobs:
 
       - name: Upload system test failures.
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: system-test-failures-${{ matrix.ruby }}
           path: |
@@ -98,9 +99,13 @@ jobs:
     name: Kubernetes tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Create kind cluster
-        uses: container-tools/kind-action@v2
+        uses: helm/kind-action@v1
+        with:
+          version: v0.31.0
+          cluster_name: kind
+          node_image: kindest/node:v1.32.11@sha256:5fc52d52a7b9574015299724bd68f183702956aa4a2116ae75a63cb574b35af8
       - name: Apply ondemand RBAC
         run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
       - name: Get ondemand token
@@ -125,16 +130,21 @@ jobs:
         dist:
           - el8
           - el9
+          - el10
           - amzn2023
-          - ubuntu-22.04
           - ubuntu-24.04
+          - ubuntu-26.04
           - debian-12
+          - debian-13
         arch:
           - x86_64
           - aarch64
           - ppc64le
-        version: ["4.0"]
+        version: ["4.2"]
         exclude:
+          # el10 on aarch64 times out
+          - dist: el10
+            arch: aarch64
           # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023
             arch: aarch64
@@ -142,18 +152,23 @@ jobs:
           - dist: amzn2023
             arch: ppc64le
           # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
-          - dist: ubuntu-22.04
-            arch: ppc64le
           - dist: ubuntu-24.04
             arch: ppc64le
+          - dist: ubuntu-26.04
+            arch: ppc64le
           - dist: debian-12
+            arch: ppc64le
+          - dist: debian-13
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
+    env:
+      OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
+      HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -164,6 +179,10 @@ jobs:
           bundler: "2.5.23"
           bundler-cache: true
 
+      - name: Login to Docker Hub
+        if: env.HAS_DOCKERHUB_CREDENTIALS == 'true'
+        run: docker login -u ${{ secrets.ONDEMAND_DOCKERHUB_USER }} -p ${{ secrets.ONDEMAND_DOCKERHUB_PASSWORD }}
+
       - name: Build package
         if: matrix.arch == 'x86_64'
         run: |
@@ -171,8 +190,11 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
+          if [[ "${{ matrix.dist }}" == "debian-13" || "${{ matrix.dist }}" == "ubuntu-26.04" ]]; then
+             unset CONTAINER_RT
+           fi
           bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
-        timeout-minutes: 10
+        timeout-minutes: 20
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
@@ -199,7 +221,7 @@ jobs:
 
       - name: Test OnDemand
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
-        uses: uraimo/run-on-arch-action@v2
+        uses: uraimo/run-on-arch-action@v3
         with:
           arch: ${{ matrix.arch }}
           distro: ${{ env.DISTRO }}
@@ -232,4 +254,8 @@ jobs:
       - name: Debug failure
         if: failure()
         run: |
-          find tmp/e2e_ctr/ -type f -name *.log -exec cat {} +
+          if [ -d tmp/e2e_ctr/ ]; then
+            find tmp/e2e_ctr/ -type f -name '*.log' -exec cat {} +
+          else
+            echo "No E2E container log directory found at tmp/e2e_ctr/."
+          fi

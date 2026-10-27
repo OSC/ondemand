@@ -7,7 +7,7 @@ module ActiveJobs
   # @author Brian L. McMichael
   # @version 0.0.1
   class Jobstatusdata
-    attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
+    attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :gpus, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
 
     Attribute = Struct.new(:name, :value)
 
@@ -29,9 +29,10 @@ module ActiveJobs
       self.account = info.accounting_id || ''
       self.status = info.status.state.to_s
       self.cluster = cluster.id.to_s
-      self.cluster_title = cluster.metadata.title ||  cluster.id.to_s.titleize
+      self.cluster_title = cluster.title
       self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
       self.queue = info.queue_name
+      self.gpus = info.gpus
       if info.status == :running || info.status == :completed
         self.nodes = node_array(info.allocated_nodes).reject(&:blank?)
         self.starttime = info.dispatch_time.to_i
@@ -71,7 +72,8 @@ module ActiveJobs
       attributes.push Attribute.new "Job Name", self.jobname
       attributes.push Attribute.new "User", self.username
       attributes.push Attribute.new "Account", self.account
-      attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
+      attributes.push Attribute.new "Submission Time", safe_parse_time(info.submission_time) if info.submission_time
+      attributes.push Attribute.new "Walltime", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       attributes.push Attribute.new "Walltime Used", self.walltime_used
       node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
       attributes.push Attribute.new "Node Count", node_count
@@ -117,12 +119,13 @@ module ActiveJobs
       attributes.push Attribute.new "Total Nodes", info.native[:nodes]
       attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
       attributes.push Attribute.new "Total CPUs", info.native[:cpus]
-      attributes.push Attribute.new "Time Limit", info.native[:time_limit]
+      attributes.push Attribute.new "Time Limit", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       attributes.push Attribute.new "Time Used", self.walltime_used
+      attributes.push Attribute.new "Submission Time", safe_parse_time(info.submission_time) if info.submission_time
       attributes.push Attribute.new "Start Time", safe_parse_time(info.native[:start_time])
       attributes.push Attribute.new "End Time", safe_parse_time(info.native[:end_time])
       attributes.push Attribute.new "Memory", info.native[:min_memory]
-      attributes.push Attribute.new "GRES", info.native[:gres].gsub(/gres:/, "") unless info.native[:gres] == "N/A"
+      attributes.push Attribute.new "GRES", info.native[:gres].gsub(/gres:/, "") unless ['', 'N/A'].include?(info.native[:gres].to_s)
       self.native_attribs = attributes
 
       self.submit_args = nil
@@ -151,8 +154,9 @@ module ActiveJobs
       attributes.push Attribute.new "From Host", info.native[:from_host]
       attributes.push Attribute.new "Exec Host", info.native[:exec_host]
       attributes.push Attribute.new "Job Name", self.jobname
-      attributes.push Attribute.new "Submit Time", info.native[:submit_time]
+      attributes.push Attribute.new "Submission Time", safe_parse_time(info.submission_time) if info.submission_time
       attributes.push Attribute.new "Project Name", info.native[:project]
+      attributes.push Attribute.new "Walltime", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       attributes.push Attribute.new "CPU Used", info.native[:cpu_used]
       attributes.push Attribute.new "Mem", info.native[:mem]
       attributes.push Attribute.new "Swap", info.native[:swap]
@@ -182,8 +186,9 @@ module ActiveJobs
       attributes.push Attribute.new "Job Name", self.jobname
       attributes.push Attribute.new "User", self.username
       attributes.push Attribute.new "Account", self.account if info.accounting_id
+      attributes.push Attribute.new "Submission Time", safe_parse_time(info.submission_time) if info.submission_time
       attributes.push Attribute.new "Group List", info.native[:group_list] if info.native[:group_list]
-      attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
+      attributes.push Attribute.new "Walltime", (info.wallclock_limit ? pretty_time(info.wallclock_limit) : "00:00:00")
       walltime_used = info.wallclock_time || 0
       attributes.push Attribute.new "Walltime Used", self.walltime_used
       node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
@@ -275,7 +280,7 @@ module ActiveJobs
       attributes = []
       attributes.push Attribute.new "Nodes", info.native[:NODES]
       attributes.push Attribute.new "Time Limit", pretty_time(info.wallclock_limit)
-      attributes.push Attribute.new "Submission Time", info.native[:ACCEPT]
+      attributes.push Attribute.new "Submission Time", safe_parse_time(info.submission_time) if info.submission_time
       attributes.push Attribute.new "Start Time", info.native[:START_DATE]
       self.native_attribs = attributes
 
@@ -304,16 +309,23 @@ module ActiveJobs
 
     private
 
+      # Format a time in the server's local timezone, including the zone name.
+      # Strings with a UTC offset (e.g. Slurm with SLURM_TIME_FORMAT) are
+      # converted, strings without one are assumed to already be local time.
+      # Anything else that does not respond to #to_time is blank.
       def safe_parse_time(time)
-        if ['N/A', 'NONE'].include?(time.to_s)
-          ''
-        else
-          begin
-            DateTime.parse(time.to_s).strftime('%Y-%m-%d %H:%M:%S')
-          rescue Date::Error
-            ''
-          end
-        end
+        return '' if time.blank? || ['N/A', 'NONE'].include?(time.to_s)
+
+        time = if time.is_a?(String)
+                 Time.parse(time)
+               elsif time.respond_to?(:to_time)
+                 time.to_time
+               else
+                 return ''
+               end
+        time.getlocal.strftime('%Y-%m-%d %H:%M:%S %Z')
+      rescue ArgumentError
+        ''
       end
 
       def build_file_explorer_url(path)
@@ -355,7 +367,7 @@ module ActiveJobs
         node_info_array.map { |n| n.name }
       end
 
-      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
+      attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :gpus, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
 
   end
 end

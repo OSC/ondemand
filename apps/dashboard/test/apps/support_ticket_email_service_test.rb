@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SupportTicketEmailServiceTest < ActiveSupport::TestCase
-
   def setup
     config = {
       email: {
@@ -14,7 +15,8 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
   test 'deliver_support_ticket should delegate to SupportTicketMailer class and return success message' do
     SupportTicketMailer.expects(:support_email).returns(stub(:deliver_now => nil))
     I18n.stubs(:t).returns('validation message for all support ticket fields')
-    I18n.expects(:t).with('dashboard.support_ticket.creation_success', to: 'to_address@support.ticket.com').returns('success message')
+    I18n.expects(:t).with('dashboard.support_ticket.creation_success',
+                          to: 'to_address@support.ticket.com').returns('success message')
     result = @target.deliver_support_ticket(SupportTicket.new)
 
     assert_equal 'success message', result
@@ -23,7 +25,7 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
   test 'deliver_support_ticket should delegate to SupportTicketMailer class and return success message override when provided' do
     config = {
       email: {
-        to: 'to_address@support.ticket.com',
+        to:              'to_address@support.ticket.com',
         success_message: 'success message override'
       }
     }
@@ -33,5 +35,4 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
 
     assert_equal 'success message override', result
   end
-
 end

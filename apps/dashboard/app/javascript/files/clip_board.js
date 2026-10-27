@@ -3,6 +3,7 @@ import {CONTENTID} from './data_table.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
 import { csrfToken } from '../config.js';
+import { OODAlertError } from '../alert.js';
 
 export {EVENTNAME};
 
@@ -17,6 +18,9 @@ jQuery(function () {
   var clipBoard = new ClipBoard();
 
   $("#copy-move-btn").on("click", function () {
+    // Default to copy unless a cut overrides this.
+    localStorage.setItem('filesClipboardAction', 'copy');
+    
     let table = $(CONTENTID).DataTable();
     let selection = table.rows({ selected: true }).data();
 
@@ -28,6 +32,37 @@ jQuery(function () {
 
   });
 
+  $(document).on('keydown', function (e) {
+    if (!(e.ctrlKey || e.metaKey)) {
+      return;
+    }
+
+    // Keep browser copy/paste in text fields; allow shortcuts on file-selection checkboxes.
+    const tag = e.target.tagName ? e.target.tagName.toLowerCase() : '';
+    const type = e.target.type ? e.target.type.toLowerCase() : '';
+    if (e.target.isContentEditable || tag === 'textarea' || tag === 'select' ||
+        (tag === 'input' && type !== 'checkbox')) {
+      return;
+    }
+
+    const key = e.key.toLowerCase();
+    if (key === 'c' || key === 'x') {
+      const selection = $(CONTENTID).DataTable().rows({ selected: true }).data();
+      if (selection.length > 0) {
+        e.preventDefault();
+        $("#copy-move-btn").trigger('click');
+        localStorage.setItem('filesClipboardAction', key === 'x' ? 'move' : 'copy');
+      }
+    } else if (key === 'v') {
+      const action = localStorage.getItem('filesClipboardAction') || 'copy';
+      const buttonId = action === 'move' ? 'clipboard-move-to-dir' : 'clipboard-copy-to-dir';
+      const button = document.getElementById(buttonId);
+      if (button) {
+        e.preventDefault();
+        button.click();
+      }
+    }
+  });
 
   $(CONTENTID).on('success', function (e) {
     $(e.trigger).tooltip({ title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom' }).tooltip('show');
@@ -46,13 +81,8 @@ jQuery(function () {
 
   $(CONTENTID).on(EVENTNAME.updateClipboard, function (e, options) {
     if (options.selection.length == 0) {
-      const eventData = {
-        'title': 'Select a file, files, or directory to copy or move.',
-        'message': 'You have selected none.',
-      };
-
-      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
-      $(CONTENTID).trigger(EVENTNAME.clearClipboard, eventData);
+      OODAlertError('Select a file, files, or directory to copy or move. You have selected none.');
+      $(CONTENTID).trigger(EVENTNAME.clearClipboard);
 
     } else {
       clipBoard.updateClipboardFromSelection(options.selection);
@@ -81,6 +111,7 @@ class ClipBoard {
 
   clearClipboard() {
     localStorage.removeItem('filesClipboard');
+    localStorage.removeItem('filesClipboardAction');
   }
 
   updateClipboardFromSelection(selection) {
@@ -137,11 +168,18 @@ class ClipBoard {
         listItem.className = 'list-group-item';
 
         const icon = document.createElement('span');
-        icon.title = file.directory ? 'directory' : 'file';
+        const typeLabel = file.directory ? 'directory' : 'file';
+        icon.title = typeLabel;
         icon.className = file.directory
           ? 'fa fa-folder color-gold'
           : 'fa fa-file color-lightgrey';
+        icon.setAttribute('aria-hidden', 'true');
         listItem.appendChild(icon);
+
+        const srOnly = document.createElement('span');
+        srOnly.className = 'sr-only';
+        srOnly.textContent = typeLabel;
+        listItem.appendChild(srOnly);
 
         const fileName = document.createTextNode(` ${file.name}`);
         listItem.appendChild(fileName);

@@ -1,6 +1,7 @@
 const fs        = require('fs');
 const http      = require('http');
 const path      = require('path');
+const crypto    = require('crypto');
 const WebSocket = require('ws');
 const express   = require('express');
 const pty       = require('node-pty');
@@ -10,10 +11,12 @@ const Tokens    = require('csrf');
 const url       = require('url');
 const yaml      = require('js-yaml');
 const glob      = require('glob');
+const os        = require('os');
 const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 const helpers   = require('./utils/helpers');
 
+const username  = os.userInfo().username;
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -26,6 +29,23 @@ if (fs.existsSync('.env')) {
   console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
   dotenv.config({path: '.env'});
 }
+
+hbs.registerHelper('json', function (content) {
+    return JSON.stringify(content);
+});
+
+const assetHashCache = new Map();
+hbs.registerHelper('assetHash', function (relativePath) {
+  if (assetHashCache.has(relativePath)) return assetHashCache.get(relativePath);
+  try {
+    const content = fs.readFileSync(path.join(__dirname, 'public', relativePath));
+    const hash = crypto.createHash('md5').update(content).digest('hex').slice(0, 8);
+    assetHashCache.set(relativePath, hash);
+    return hash;
+  } catch (err) {
+    return '';
+  }
+});
 
 // Load color themes
 var color_themes = {dark: [], light: []};
@@ -43,7 +63,7 @@ router.get(['/', '/ssh'], function (req, res) {
   res.redirect(req.baseUrl + '/ssh/default');
 });
 
-router.get('/ssh*', function (req, res) {
+router.get('/ssh{*splat}', function (req, res) {
   var theHost, theDir;
   [theHost, theDir] = host_and_dir_from_url(req.url);
   res.render('index',
@@ -53,6 +73,7 @@ router.get('/ssh*', function (req, res) {
       host: theHost,
       dir: theDir,
       colorThemes: color_themes,
+      userCSS: helpers.userCSS(req.baseUrl),
       siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
     });
 });
@@ -81,6 +102,7 @@ if (process.env.OOD_SSHHOST_ALLOWLIST){
 const inactiveTimeout = (process.env.OOD_SHELL_INACTIVE_TIMEOUT_MS || 300000);
 const maxShellTime = (process.env.OOD_SHELL_MAX_DURATION_MS || 3600000);
 const pingPongEnabled = process.env.OOD_SHELL_PING_PONG ? true : false;
+const termName = (process.env.OOD_SHELL_TERM || 'xterm-16color');
 
 let hosts = helpers.definedHosts();
 let default_sshhost = hosts['default'];
@@ -143,11 +165,17 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
 }
 
 // Combines duplicated lines into a single message (log message + number of skipped messages)
-function createLogger() {
+// The host and pid parameters will be included in the msgPrefix before each logged message.
+function createLogger(host, pid) {
   // Combine logs for logInterval ms duration
   const logInterval = 5000;
   const messages = [];
   let lastLog = 0;
+  // Prefix to each message from the given ws connection logger.
+  // One user might have multiple connections to the Shell app,
+  // and connect to many different hosts. The prefix is meant to
+  // identify these connections uniquely while they log something.
+  const msgPrefix = `[User = ${username}; Host = ${host}; PID = ${pid}]`;
   let timer;
 
   const logQueuedMessages = (immediate = false) => {
@@ -156,9 +184,9 @@ function createLogger() {
     // Nothing logged since logInterval, log immediately
     if (now - lastLog > logInterval || immediate) {
       for (const { message, count } of messages) {
-        console.log(message);
+        console.log(`${msgPrefix} ${message}`);
         if (count > 1) {
-          console.log(`Skipped ${count-1} previous duplicated messages`);
+          console.log(`${msgPrefix} Skipped ${count-1} previous duplicated messages`);
         }
       }
       messages.length = 0;
@@ -190,14 +218,17 @@ wss.on('connection', function connection (ws, req) {
       host,
       cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   
+  [host, dir] = host_and_dir_from_url(req.url);
+
   ws.isAlive = true;
   ws.startedAt = Date.now();
   ws.lastActivity = Date.now();
-  ws.logger = createLogger();
 
-  console.log('Connection established');
+  // Cannot use ws.logger here, as we don't know the pty-term PID.
+  // So do a one-off console.log(), with the info we have in the prefix.
+  console.log(`[User = ${username}; Host = ${host}] Web socket connection established from the user`);
 
-  [host, dir] = host_and_dir_from_url(req.url);
+
 
   // Verify authentication
   token = req.url.match(/csrf=([^&]*)/)[1];
@@ -211,13 +242,16 @@ wss.on('connection', function connection (ws, req) {
     process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
     term = pty.spawn(cmd, args, {
-      name: 'xterm-16color',
+      name: termName,
       cols: 80,
       rows: 30
     });
-    
 
-    console.log('Opened terminal: ' + term.pid);
+    // Now that the PID is known, we can initialize our logger.
+    ws.logger = createLogger(host, term.pid);
+
+    ws.logger.log('Opened terminal');
+    ws.logger.flush();
 
     term.onData(function (data) {
       ws.send(data, function (error) {
@@ -239,20 +273,20 @@ wss.on('connection', function connection (ws, req) {
       msg = JSON.parse(msg);
       if (msg.input)  {
         term.write(msg.input);
-        this.lastActivity = Date.now();
+        ws.lastActivity = Date.now();
       }
       if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
     });
 
     ws.on('close', function () {
       term.end();
-      this.isAlive = false;
-      console.log('Closed terminal: ' + term.pid);
+      ws.isAlive = false;
+      ws.logger.log('Closed terminal');
       ws.logger.flush();
     });
 
     ws.on('pong', function () {
-      this.isAlive = true;
+      ws.isAlive = true;
     });
   }
 });
@@ -283,5 +317,5 @@ server.on('upgrade', function upgrade(request, socket, head) {
 });
 
 server.listen(port, function () {
-  console.log('Listening on ' + port);
+  console.log(`Shell app for user '${username}' listening on port ${port}`);
 });

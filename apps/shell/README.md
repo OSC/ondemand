@@ -7,7 +7,7 @@ This documentation assumes you have [development enabled](https://osc.github.io/
 for yourself.  Containers built in [the development documentation](../../DEVELOPMENT.md)
 have development enabled automatically.
 
-This is a guide for developing this aplication and assumes you have nodejs available on the system.
+This is a guide for developing this application and assumes you have nodejs available on the system.
 
 You can refer to the [documentation on customizing](https://osc.github.io/ood-documentation/latest/customization.html)
 if you're looking to update your installation.
@@ -110,8 +110,9 @@ So you've updated hterm and now something is broken.  Maybe only on one platform
 changes. If you're lucky you may be able to cherry pick them, if not, hopefully we've made an issue where you can reference and you can at least see the commit. 
 
 * 0cbc84e3d53386064e278a0495c940a217f4f18b - that fixed [issue 64](https://github.com/OSC/ood-shell/issues/64)
+* <commit needed> - that fixed [issue 5101](https://github.com/OSC/ondemand/issues/5101)
 
 This commit seems to have been fixed upstream, so no need to add it. We're just leaving it here
-in the documentation for historical purposes. For completness, this was fixed upstream in
+in the documentation for historical purposes. For completeness, this was fixed upstream in
 https://chromium.googlesource.com/apps/libapps/+/ed10144155cc3abbc68b2ff94bfeda23c94159cf
 * a9e2e3980b0f491d0478a20e21aad022285b64ee - that fixed [issue 1214](https://github.com/OSC/ondemand/issues/1214)

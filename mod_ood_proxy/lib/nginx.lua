@@ -11,6 +11,8 @@ local nginx_stage = require 'ood.nginx_stage'
     2. 'stop'  = send `stop` signal to PUN process
 --]]
 function nginx_handler(r)
+  -- Always set the Strict Transport Security
+  r.err_headers_out['Strict-Transport-Security'] = "max-age=31536000"
   -- read in OOD specific settings defined in Apache config
   local user_map_match = r.subprocess_env['OOD_USER_MAP_MATCH']
   local user_map_cmd   = r.subprocess_env['OOD_USER_MAP_CMD']

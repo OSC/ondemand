@@ -1,28 +1,102 @@
 'use strict';
 
 import { bcIndexUrl, bcPollDelay } from './config';
-import { bindFullPageSpinnerEvent } from './utils';
+import { bindFullPageSpinnerEvent, ariaNotify, pushNotify } from './utils';
 import { pollAndReplace } from './turbo_shim';
-import { ariaNotify } from './aria_live_notify';
+import { 
+  notificationsEnabled, getNotifiedSessionIds, storeNotifiedSessionIds, 
+  pruneNotifiedSessionIds, setupNotificationToggle,
+} from './batch_connect/bc_notifications';
 
-const sessionStatusMap = new Map();
+const selectedConnectionTabs = new Map();
 
-function checkStatusChanges() {
-  const sessionCards = document.querySelectorAll('[data-bc-card]');
+function trackConnectionTabSelection(container) {
+  container.addEventListener('shown.bs.tab', (event) => {
+    const tabLink = event.target.closest('.nav-tabs .nav-link');
+    const card = tabLink?.closest('[data-bc-card]');
+    const href = tabLink?.getAttribute('href');
+
+    if (!tabLink || !card || !href?.startsWith('#')) {
+      return;
+    }
+
+    if (tabLink.hasAttribute('data-default-tab')) {
+      selectedConnectionTabs.delete(card.dataset.id);
+    } else {
+      selectedConnectionTabs.set(card.dataset.id, href);
+    }
+  });
+}
+
+function restoreConnectionTabs() {
+  if (!document.querySelector('[data-bc-card]')) {
+    selectedConnectionTabs.clear();
+    return;
+  }
   
-  sessionCards.forEach((card) => {
-    const sessionId = card.dataset.id;
-    const newStatus = card.dataset.status;
+  selectedConnectionTabs.forEach((tabTarget, sessionId) => {
+    const tabLink = document.querySelector(`#id_${CSS.escape(sessionId)} .nav-tabs .nav-link[href="${tabTarget}"]`);
 
-    if(sessionStatusMap.has(sessionId)) {
-      const oldStatus = sessionStatusMap.get(sessionId);
-      if(oldStatus !== newStatus) {
-        sessionStatusMap.set(sessionId, newStatus);
-        const sessionTitle = card.dataset.title;
-        ariaNotify(`${sessionTitle} is now ${newStatus}.`);
+    if (tabLink) {
+      if (!tabLink.classList.contains('active')) {
+        tabLink.click();
       }
     } else {
-      sessionStatusMap.set(sessionId, newStatus);
+      selectedConnectionTabs.delete(sessionId);
+    }
+  });
+}
+
+function continuePolling() {
+  const bcSessionsContainer = document.getElementById('bc_sessions_content');
+  const shouldPoll = bcSessionsContainer?.dataset.shouldPoll ?? 'true';
+  return shouldPoll === 'true';
+}
+
+function withinWarnLimit(minutesRemaining, threshold) {
+  return minutesRemaining <= threshold && minutesRemaining > 0;
+}
+
+function checkStatusChanges(sessions, notifiedSessionIds) {
+  const sessionCards = document.querySelectorAll('[data-bc-card]');
+  const notificationsOn = notificationsEnabled();
+
+  sessionCards.forEach((card) => {
+    const sessionTitle = card.dataset.title;
+    const sessionId = card.dataset.id;
+    const jobId = card.dataset.jobId;
+    const currentStatus = card.dataset.status;
+
+    if (!sessions.has(sessionId)) {
+      sessions.set(sessionId, {
+        status: currentStatus, 
+        expNotified: notifiedSessionIds.has(sessionId)
+      });
+    }
+
+    const session = sessions.get(sessionId);
+
+    if (session.status !== currentStatus) {
+      session.status = currentStatus;
+      ariaNotify(`${sessionTitle} is now ${currentStatus}.`);
+      if (notificationsOn) {
+        pushNotify(`${sessionTitle} (${jobId}) is now ${currentStatus}.`, {
+          tag: `session-${sessionId}`,
+        });
+      }
+    }
+
+    // TODO: Add config option
+    const expWarnThreshold = 15;
+
+    const minutesRemaining = parseInt(card.dataset.minutesRemaining, 10) || 0;
+    if (notificationsOn && withinWarnLimit(minutesRemaining, expWarnThreshold) && !session.expNotified) {
+      pushNotify(`Warning: ${sessionTitle} (${jobId}) expires in ~${minutesRemaining} minutes!`, {
+        tag: `session-${sessionId}`,
+      });
+      session.expNotified = true;
+      notifiedSessionIds.add(sessionId);
+      storeNotifiedSessionIds([...notifiedSessionIds]);
     }
   });
 }
@@ -57,11 +131,20 @@ function installSettingHandlers(name) {
 window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
 
-jQuery(function (){
-  if ($('#batch_connect_sessions').length) {
+document.addEventListener('DOMContentLoaded', function () {
+  setupNotificationToggle('notification_toggle');
+  const sessions = new Map();
+  const notifiedSessionIds = new Set(getNotifiedSessionIds());
+  
+  const bcSessionsContainer = document.getElementById('batch_connect_sessions');
+  if (bcSessionsContainer) {
+    trackConnectionTabSelection(bcSessionsContainer);
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
+      restoreConnectionTabs();
       bindFullPageSpinnerEvent();
-      checkStatusChanges();
-    });
+      checkStatusChanges(sessions, notifiedSessionIds);
+    }, continuePolling);
   }
+
+  pruneNotifiedSessionIds(sessions, notifiedSessionIds);
 });

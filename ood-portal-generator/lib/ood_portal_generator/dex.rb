@@ -45,8 +45,9 @@ module OodPortalGenerator
         @dex_config[:enablePasswordDB] = false
       end
       @dex_config[:frontend] = frontend
-      # Pass values back to main ood-portal.conf view
-      view.update_oidc_attributes(oidc_attributes) if enabled? && self.class.installed?
+      # Pass values back to main ood-portal.conf view, ensuring oidc_crypto_passphrase is sent back
+      passphrase_cfg = { :oidc_crypto_passphrase => opts[:oidc_crypto_passphrase] }
+      view.update_oidc_attributes(oidc_attributes.merge(passphrase_cfg)) if enabled? && self.class.installed?
     end
 
     # Render the config as a YAML string
