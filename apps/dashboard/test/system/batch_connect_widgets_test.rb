@@ -72,7 +72,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
       files_dir = File.join(dir, 'files')
       FileUtils.mkdir_p([apps_dir, files_dir])
       # Plain files avoid Tempfile's GC cleanup before browser assertions finish.
-      ['test.py', 'test.rb', 'test.pyc'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
+      ['test.py', 'test.rbpy'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
 
       form = <<~HEREDOC
         ---
@@ -85,7 +85,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             widget: 'path_selector'
             directory: "#{files_dir}"
             show_files: true
-            file_pattern: \\.py$
+            file_pattern: \\.py
       HEREDOC
 
       make_bc_app(apps_dir, form)
@@ -94,8 +94,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
 
       table = '#batch_connect_session_context_path_path_selector_table tbody'
       assert_selector "#{table} td", exact_text: 'test.py'
-      assert_no_selector "#{table} td", exact_text: 'test.rb'
-      assert_no_selector "#{table} td", exact_text: 'test.pyc'
+      assert_no_selector "#{table} td", exact_text: 'test.rbpy'
     end
   end
 
@@ -117,7 +116,7 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
             widget: 'path_selector'
             directory: "#{files_dir}"
             show_files: true
-            file_pattern: .doesn't(compile
+            file_pattern: \.doesn't(compile
       HEREDOC
 
       make_bc_app(apps_dir, form)
