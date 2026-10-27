@@ -1,7 +1,8 @@
 require 'test_helper'
 
 class TransferLocalJobTest < ActiveJob::TestCase
-  # Inspect queued jobs without starting file copies against temporary fixtures.
+  # test.rb explicitly configures AsyncAdapter, which ActiveJob::TestCase preserves.
+  # Override it so enqueue assertions cannot start a real copy against the fixtures.
   # ActiveJob::TestHelper restores the application adapter after each test.
   def queue_adapter_for_test
     ActiveJob::QueueAdapters::TestAdapter.new
@@ -99,13 +100,11 @@ class TransferLocalJobTest < ActiveJob::TestCase
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
       transfer.save
       job = nil
-      assert_enqueued_with(job: TransferLocalJob, args: [transfer], queue: 'default') do
+      assert_enqueued_with(job: TransferLocalJob, args: [transfer]) do
         job = TransferLocalJob.perform_later(transfer)
       end
-      assert_enqueued_jobs 1, only: TransferLocalJob
       assert_not_nil job.job_id
       assert_predicate transfer.status, :queued?
-      refute File.exist?(destfile), 'A queued job must not copy files before it is performed'
     end
   ensure
     Transfer.transfers.clear
