@@ -14,8 +14,9 @@ class ActiveSupport::TestCase
     'nav a.nav-link.dropdown-toggle[title]'
   end
 
+  # the nth dropdown toggle across all navbar lists (1 based)
   def dropdown_link(order)
-    "nav #navbar li.dropdown:nth-of-type(#{order}) a[title]"
+    css_select(dropdown_links)[order - 1]
   end
 
   # given a dropdown list, return the list items as an array of strings
