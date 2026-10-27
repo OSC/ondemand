@@ -751,5 +751,170 @@ module BatchConnect
       session.stubs(:db_file).returns(stub(write: nil))
       session
     end
+
+    # Sessions on clusters with a file adapter (see ood_core's OodCore::Files), whose files are on the cluster.
+
+    CLUSTER_DATAROOT = Pathname.new('/cluster/home/me/ondemand/data/sys/dashboard')
+    # One of the clusters in bc_jupyter's form, which only takes those.
+    REMOTE_CLUSTER = 'owens'
+
+    def stub_remote_cluster
+      # Rendering the bc_jupyter templates needs the module data and apps of stub_sys_apps.
+      stub_sys_apps
+      @adapter = stub('file_adapter')
+      @adapter.stubs(:dataroot).returns(CLUSTER_DATAROOT)
+      remote = OodCore::Cluster.new({ id: REMOTE_CLUSTER, job: { adapter: 'slurm' },
+                                      file: { adapter: 'ssh', host: 'login' } })
+      remote.stubs(:file_adapter).returns(@adapter)
+      local = OodCore::Cluster.new({ id: 'local', job: { adapter: 'slurm' } })
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([remote, local]))
+      remote
+    end
+
+    def remote_session(**attributes)
+      BatchConnect::Session.new.from_json({ id: 'session-id', token: 'sys/bc_jupyter', cluster_id: REMOTE_CLUSTER,
+                                            job_id: 'job-id', created_at: 100 }.merge(attributes).to_json)
+    end
+
+    def running_info
+      OodCore::Job::Info.new(id: 'job-id', status: :running, native: {})
+    end
+
+    test 'sessions are remote on clusters with a file adapter' do
+      stub_remote_cluster
+
+      assert remote_session.remote?
+      refute remote_session(cluster_id: 'local').remote?
+      refute remote_session(cluster_id: 'removed').remote?, 'sessions of clusters that are not configured are local'
+    end
+
+    test 'staged_root of a remote session is under the dataroot on the cluster' do
+      stub_remote_cluster
+
+      assert_equal CLUSTER_DATAROOT.join('batch_connect/sys/bc_jupyter/output/session-id'), remote_session.staged_root
+      with_modified_env({ OOD_PER_CLUSTER_DATAROOT: 'true' }) do
+        assert_equal CLUSTER_DATAROOT.join("batch_connect/#{REMOTE_CLUSTER}/sys/bc_jupyter/output/session-id"),
+                     remote_session.staged_root
+      end
+    end
+
+    test 'staged_root is nil with an error when the dataroot on the cluster cannot be determined' do
+      stub_remote_cluster
+      @adapter.stubs(:dataroot).raises(OodCore::FilesAdapterError, 'Could not determine the home directory')
+      session = remote_session
+
+      assert_nil session.staged_root
+      assert_nil session.staged_root
+      assert_equal ['Could not determine the home directory'], session.errors[:stage]
+    end
+
+    test 'Session.all leaves out sessions whose staged_root cannot be determined' do
+      stub_remote_cluster
+      @adapter.stubs(:dataroot).raises(OodCore::FilesAdapterError, 'Could not determine the home directory')
+      double_session = create_double_session
+
+      Dir.mktmpdir('dbroot') do |dir|
+        dir = Pathname.new(dir)
+        double_session.stubs(:db_root).returns(dir)
+        OodAppkit.stubs(:dataroot).returns(dir)
+        [
+          { id: 'local-session', job_id: 'COMPLETED', created_at: 100, cluster_id: 'local' },
+          { id: 'remote-session', job_id: 'COMPLETED', created_at: 100, cluster_id: REMOTE_CLUSTER }
+        ].each { |v| File.write(dir.join(v[:id]), v.to_json) }
+
+        assert_equal ['local-session'], double_session.all.map(&:id)
+      end
+    end
+
+    test 'remote session is starting until connection.yml exists on the cluster' do
+      stub_remote_cluster
+      connect_file = CLUSTER_DATAROOT.join('batch_connect/sys/bc_jupyter/output/session-id/connection.yml')
+      @adapter.stubs(:exist?).with(connect_file).returns(false)
+      session = remote_session
+      session.stubs(:info).returns(running_info)
+
+      assert session.starting?
+      refute session.running?
+    end
+
+    test 'remote session is running and reads connection.yml from the cluster' do
+      stub_remote_cluster
+      connect_file = CLUSTER_DATAROOT.join('batch_connect/sys/bc_jupyter/output/session-id/connection.yml')
+      @adapter.stubs(:exist?).with(connect_file).returns(true)
+      @adapter.stubs(:read).with(connect_file).returns({ 'host' => 'node1', 'port' => 8080 }.to_yaml)
+      session = remote_session
+      session.stubs(:info).returns(running_info)
+
+      refute session.starting?
+      assert session.running?
+      assert_equal({ host: 'node1', port: 8080 }, session.connect.to_h)
+    end
+
+    test 'remote session takes the connection from the job info when the job adapter has it' do
+      stub_remote_cluster
+      info = running_info
+      info.define_singleton_method(:ood_connection_info) { { host: 'pod1', port: 8080 } }
+      @adapter.expects(:read).never
+      session = remote_session
+      session.stubs(:info).returns(info)
+
+      assert_equal({ host: 'pod1', port: 8080 }, session.connect.to_h)
+    end
+
+    test 'stage copies the rendered templates and the user defined context to the cluster' do
+      cluster = stub_remote_cluster
+      session = remote_session
+      staged_root = CLUSTER_DATAROOT.join('batch_connect/sys/bc_jupyter/output/session-id')
+      context = bc_jupyter_app.build_session_context
+      staged_files = nil
+      # The staged root is created before anything is written into it.
+      staging = sequence('staging')
+
+      @adapter.expects(:mkdir).with(staged_root.to_s).in_sequence(staging)
+      @adapter.expects(:write).with(staged_root.join('user_defined_context.json'),
+                                    JSON.pretty_generate(context.as_json)).in_sequence(staging)
+      @adapter.expects(:copy_with_progress).with do |src_fs, dest_fs, src, dst|
+        staged_files = Dir.children(src).sort
+        src_fs.nil? && dest_fs == cluster && dst == staged_root.to_s
+      end.in_sequence(staging)
+
+      assert session.stage(bc_jupyter_app.root.join('template'), context: context), session.errors.full_messages.to_s
+      assert_equal ['.keep', 'script.sh'], staged_files
+    end
+
+    test 'stage fails with an error when copying to the cluster fails' do
+      stub_remote_cluster
+      session = remote_session
+      @adapter.stubs(:mkdir)
+      @adapter.stubs(:write)
+      @adapter.stubs(:copy_with_progress).raises(StandardError, 'rsync exited with status 23')
+
+      refute session.stage(bc_jupyter_app.root.join('template'), context: bc_jupyter_app.build_session_context)
+      assert_equal ['rsync exited with status 23'], session.errors[:stage]
+    end
+
+    test 'save stages and submits a remote session, recording the job script on the cluster' do
+      stub_remote_cluster
+      Open3.stubs(:capture3).returns(['the-job-id', '', exit_success])
+      written = {}
+      @adapter.stubs(:mkdir)
+      @adapter.stubs(:copy_with_progress)
+      @adapter.stubs(:write).with { |path, content| written[path.basename.to_s] = content }
+
+      Dir.mktmpdir('dataroot') do |dir|
+        OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+        session = BatchConnect::Session.new
+        context = bc_jupyter_app.build_session_context
+        context.attributes = { 'cluster' => REMOTE_CLUSTER }
+
+        assert session.save(app: bc_jupyter_app, context: context), session.errors.full_messages.to_s
+        assert_equal 'the-job-id', session.job_id
+        assert_equal ['job_script_content.sh', 'job_script_options.json', 'user_defined_context.json'],
+                     written.keys.sort
+        assert_match(/script\.sh/, written['job_script_content.sh'])
+        # Only the session database stays on the local file system.
+        assert_equal ['db'], Pathname.new(dir).join('batch_connect').children.map { |c| c.basename.to_s }
+      end
+    end
   end
 end
