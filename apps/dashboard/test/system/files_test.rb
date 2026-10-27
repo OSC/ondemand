@@ -93,21 +93,21 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
-  # Regression test for #5628: long favorite paths overflow the sidebar column
-  # because the anchor elements lack a width/overflow constraint. The fix adds
-  # Bootstrap's `text-break` utility class to the favorites anchors so long
-  # paths wrap within the container instead of pushing it wider.
-  test 'favorite anchors carry text-break class to contain long paths (regression #5628)' do
+  # Regression test for #5628: long favorite paths used to overflow the
+  # sidebar container because the anchor elements had no width constraint.
+  test 'long favorite path stays within the sidebar container (regression #5628)' do
     Dir.mktmpdir do |dir|
       long_subdir = 'a' * 100
-      `mkdir -p #{dir}/#{long_subdir}`
-      favorites = [FavoritePath.new("#{dir}/#{long_subdir}")]
-      OodFilesApp.stubs(:candidate_favorite_paths).returns(favorites)
+      long_path = "#{dir}/#{long_subdir}"
+      `mkdir -p #{long_path}`
+      OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(long_path)])
 
       visit files_url(dir)
 
-      # Home dir anchor + favorite anchor must both carry text-break.
-      assert_selector '#favorites a.text-break', minimum: 2
+      container_width = find('#favorites').rect.width
+      anchor_width = find('#favorites a', text: long_subdir).rect.width
+      assert anchor_width <= container_width,
+             "favorite anchor (#{anchor_width}px) exceeds sidebar container (#{container_width}px)"
     end
   end
 
