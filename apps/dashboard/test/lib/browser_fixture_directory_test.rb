@@ -46,7 +46,7 @@ class BrowserFixtureDirectoryTest < ActiveSupport::TestCase
       raise screenshot_error if screenshot_error
     end
 
-    # The fixture helper exercises reset; no real Capybara session exists here.
+    # Isolate the helper's early reset; these examples omit Rails' later reset_sessions!.
     def after_teardown; end
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Retain fixtures through Rails' failure screenshot, then reset before removal.
+# Retain fixtures until browser reset waits for pending app-server requests.
 module BrowserFixtureDirectory
   # Fixtures intentionally live until teardown, rather than just this block.
   def with_browser_fixture_directory
@@ -22,6 +22,7 @@ module BrowserFixtureDirectory
     return if directories.nil? || directories.empty?
 
     begin
+      # Rails resets sessions again in after_teardown; reset early while fixtures exist.
       page.reset!
     ensure
       directories.each { |directory| FileUtils.remove_entry(directory) }

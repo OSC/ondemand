@@ -548,18 +548,23 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector('.uppy-StatusBar-actions span', text: 'Duplicate files identified. Uploading these files will overwrite existing content.')
   end
 
-  # Wait for the whole upload dialog and the destination contents to finish updating.
-  def assert_upload_complete(path, expected_content)
-    assert_no_selector('.uppy-Dashboard--modal', wait: MAX_WAIT)
+  # Share one timeout between modal closure and checking every destination file.
+  def assert_upload_complete(expected_contents, wait: MAX_WAIT)
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + wait
+    assert_no_selector('.uppy-Dashboard--modal', visible: true, wait: wait)
     observed = nil
-    page.document.synchronize(MAX_WAIT, errors: [Capybara::ExpectationNotMet]) do
-      observed = File.file?(path) ? File.read(path) : nil
-      unless observed == expected_content
+    remaining_wait = [deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC), 0].max
+    page.document.synchronize(remaining_wait, errors: [Capybara::ExpectationNotMet]) do
+      observed = expected_contents.keys.to_h do |path|
+        [path, File.file?(path) ? File.read(path) : nil]
+      end
+      unless observed == expected_contents
         raise Capybara::ExpectationNotMet,
-              "Expected #{path}: #{expected_content.inspect}; observed #{observed.inspect}"
+              "Expected uploaded contents #{expected_contents.inspect}; observed #{observed.inspect}"
       end
     end
-    assert_equal expected_content, observed
+    # Synchronization guarantees equality; record the successful Minitest assertion.
+    assert_equal expected_contents, observed
   rescue Capybara::ExpectationNotMet => e
     flunk e.message
   end
@@ -583,8 +588,9 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector('.uppy-Dashboard-AddFiles')
 
       attach_file 'files[]', src_file, visible: false, match: :first
+      assert_selector('.uppy-Dashboard--modal', visible: true)
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-      assert_upload_complete(upload_file, initial_content)
+      assert_upload_complete({ upload_file => initial_content })
       assert_selector('tbody a', exact_text: File.basename(src_file))
       assert_equal(33_188, File.stat(upload_file).mode) # default 644
 
@@ -600,8 +606,9 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2")
       assert_overwrite_buttons
 
+      assert_selector('.uppy-Dashboard--modal', visible: true)
       click_on('Upload and Overwrite')
-      assert_upload_complete(upload_file, replacement_content)
+      assert_upload_complete({ upload_file => replacement_content })
       assert_selector('tbody a', exact_text: File.basename(src_file))
 
       # and it's still there, now with new content and it keeps the 755 permissions
@@ -754,7 +761,7 @@ class FilesTest < ApplicationSystemTestCase
   HEREDOC
 
   test 'uploading duplicate files within directories' do
-    Dir.mktmpdir do |dir|
+    with_browser_fixture_directory do |dir|
       upload_dir = File.join(dir, 'upload')
       FileUtils.mkpath(upload_dir)
 
@@ -773,6 +780,7 @@ class FilesTest < ApplicationSystemTestCase
       src_files.each_with_index do |file, index|
         `echo 'some content in file #{index + 1}' > #{file}`
       end
+      initial_contents = src_files.to_h { |file| [File.join(target_dir, File.basename(file)), File.read(file)] }
 
       visit files_url(upload_dir)
       find('#upload-btn').click
@@ -782,15 +790,14 @@ class FilesTest < ApplicationSystemTestCase
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
       assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
+      assert_selector('.uppy-Dashboard--modal', visible: true)
       click_on('Upload 5 files')
+      assert_upload_complete(initial_contents)
 
       assert_selector('tbody a', exact_text: File.basename(src_dir))
       click_on(File.basename(src_dir))
       src_files.each do |file|
         assert_selector('tbody a', exact_text: File.basename(file))
-        target_path = File.join(target_dir, File.basename(file))
-        assert File.exist?(target_path)
-        assert_equal File.read(file), File.read(target_path)
       end
 
       # Delete one file so we can re-upload it later
@@ -808,6 +815,10 @@ class FilesTest < ApplicationSystemTestCase
       src_files.each do |file|
         `echo ' and some new content too!' >> #{file}`
       end
+      # Existing files must retain their exact original contents during a safe upload.
+      new_contents = initial_contents.merge(
+        File.join(target_dir, File.basename(deleted_file)) => File.read(deleted_file)
+      )
 
       # upload the directory again
       find('#upload-btn').click
@@ -819,23 +830,16 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector(".uppy-Dashboard-Item:not(.bg-danger)", count: 1)
       assert_overwrite_buttons
 
+      assert_selector('.uppy-Dashboard--modal', visible: true)
       click_on('Upload New Files')
+      assert_upload_complete(new_contents)
       assert_selector('tbody a', exact_text: File.basename(src_dir))
-      # only the file we deleted has updated content
-      src_files.each do |file|
-        target_path = File.join(target_dir, File.basename(file))
-        assert File.exist?(target_path)
-        if file == deleted_file
-          assert_equal File.read(file), File.read(target_path)
-        else
-          assert File.read(file) != File.read(target_path), message: "expected #{File.read(file)} to have more content than #{File.read(target_path)}"
-        end
-      end
 
       # repeat the process but overwrite this time
       src_files.each do |file|
         `echo ' and some even newer content!' >> #{file}`
       end
+      overwrite_contents = src_files.to_h { |file| [File.join(target_dir, File.basename(file)), File.read(file)] }
 
       find('#upload-btn').click
       assert_selector('.uppy-Dashboard-AddFiles')
@@ -844,14 +848,13 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 5)
       assert_overwrite_buttons
 
+      assert_selector('.uppy-Dashboard--modal', visible: true)
       click_on('Upload and Overwrite')
+      assert_upload_complete(overwrite_contents)
       assert_selector('tbody a', exact_text: File.basename(src_dir))
       click_on(File.basename(src_dir))
       src_files.each do |file|
         assert_selector('tbody a', exact_text: File.basename(file))
-        target_path = File.join(target_dir, File.basename(file))
-        assert File.exist?(target_path)
-        assert_equal File.read(file), File.read(target_path)
       end
     end
   end
