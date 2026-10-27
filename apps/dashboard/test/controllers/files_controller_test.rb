@@ -184,4 +184,48 @@ class FilesControllerTest < ActionController::TestCase
     @request.env['HTTP_ACCEPT'] = 'text/html'
     refute @controller.send(:json_request?)
   end
+
+  # Clusters with a file adapter (see ood_core's OodCore::Files)
+  def stub_cluster(config)
+    cluster = OodCore::Cluster.new({ id: 'cluster1', job: { adapter: 'slurm' } }.merge(config))
+    OODClusters.stubs(:[]).returns(nil)
+    OODClusters.stubs(:[]).with(any_of(:cluster1, 'cluster1')).returns(cluster)
+    cluster
+  end
+
+  test 'cluster path is parsed' do
+    cluster = stub_cluster(file: { adapter: 'ssh', host: 'login.example' })
+
+    @controller.send(:parse_path, 'foo/bar', 'cluster1')
+    path = @controller.instance_variable_get(:@path)
+    assert_kind_of ClusterFile, path
+    assert_equal '/foo/bar', path.to_s
+    assert_equal cluster, path.cluster
+    assert_equal 'cluster1', @controller.instance_variable_get(:@filesystem)
+  end
+
+  test 'cluster with a misconfigured file adapter raises and falls back to the local file system' do
+    stub_cluster(file: { adapter: 'nonexistent' })
+
+    error = assert_raises(StandardError) { @controller.send(:parse_path, '/foo/bar', 'cluster1') }
+    assert_match(/\AMisconfigured file adapter for cluster cluster1: Could not load 'nonexistent'/, error.message)
+    assert_kind_of PosixFile, @controller.instance_variable_get(:@path)
+    assert_equal 'fs', @controller.instance_variable_get(:@filesystem)
+  end
+
+  test 'cluster without a file adapter is parsed as a remote' do
+    stub_cluster({})
+
+    @controller.send(:parse_path, '/foo/bar', 'cluster1')
+    assert_kind_of RemoteFile, @controller.instance_variable_get(:@path)
+    assert_equal 'cluster1', @controller.instance_variable_get(:@filesystem)
+  end
+
+  test 'validate_path! does not check cluster paths against the allowlist' do
+    stub_cluster(file: { adapter: 'ssh', host: 'login.example' })
+    Configuration.stubs(:allowlist_paths).returns(['/some/path'])
+    @controller.send(:parse_path, '/not/allowed', 'cluster1')
+
+    assert_nothing_raised { @controller.send(:validate_path!) }
+  end
 end
