@@ -159,9 +159,9 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     get root_path
     assert_response :success
     assert_select dropdown_links, 4 # +1 here is 'Help'
-    assert_select  dropdown_link(1), text: 'Files'
-    assert_select  dropdown_link(2), text: 'Interactive Apps'
-    assert_select  dropdown_link(3), text: 'Clusters'
+    assert_equal 'Files', dropdown_link(1).text.strip
+    assert_equal 'Interactive Apps', dropdown_link(2).text.strip
+    assert_equal 'Clusters', dropdown_link(3).text.strip
   end
 
   test 'should not create app menus if UserConfiguration.categories is empty' do
@@ -175,7 +175,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     get root_path
     assert_response :success
     assert_select dropdown_links, 1 # +1 here is 'Help'
-    assert_select dropdown_link(1), text: 'Help' # ensure is Help
+    assert_equal 'Help', dropdown_link(1).text.strip # ensure is Help
   end
 
   test 'apps with no category should not appear in menu' do
@@ -184,7 +184,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
 
-    assert_select ".navbar-expand-md > #navbar li.dropdown[title='System Installed Apps']", 0,
+    assert_select "#navbar li.dropdown[title='System Installed Apps']", 0,
                   'Apps with no category should not appear in menus (thus System Installed Apps)'
   end
 
