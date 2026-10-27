@@ -7,7 +7,7 @@ module ActiveJobs
     attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
     # additional attrs to request when calling info_all
-    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time, :dispatch_time, :submit_time]
+    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time, :dispatch_time, :submission_time]
     
     def initialize(filter_id:, cluster_id:, controller:, params:, response:)
       @filter_id = filter_id
@@ -96,11 +96,9 @@ module ActiveJobs
     private
 
     def grafana_link_for(cluster, j)
-      return "" if j.allocated_nodes.empty?
-
       build_grafana_link(
         cluster.id.to_s,
-        (j.dispatch_time || j.submit_time)&.to_i,
+        (j.dispatch_time || j.submission_time)&.to_i,
         nil,
         j.allocated_nodes.first&.name.to_s,
         j.id.to_s
