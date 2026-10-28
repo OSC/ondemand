@@ -5,7 +5,7 @@ require 'action_dispatch/system_testing/test_helpers/setup_and_teardown'
 require 'action_dispatch/system_testing/test_helpers/screenshot_helper'
 require_relative '../support/browser_fixture_directory'
 
-# Exercise real Rails/Minitest teardown ordering without starting a browser.
+# Exercise Rails/Minitest teardown ordering with a fake page, without a browser.
 class BrowserFixtureDirectoryTest < ActiveSupport::TestCase
   # Run an isolated example through Minitest's real exception-collection lifecycle.
   class Example < Minitest::Test
@@ -32,8 +32,8 @@ class BrowserFixtureDirectoryTest < ActiveSupport::TestCase
     end
 
     def exercise
-      with_browser_fixture_directory do |directory|
-        @directory = directory
+      with_browser_fixture_directory_until_teardown do |fixture_directory|
+        @directory = fixture_directory
         raise body_error if body_error
       end
       events << [:after_block, File.directory?(directory)]
@@ -50,7 +50,7 @@ class BrowserFixtureDirectoryTest < ActiveSupport::TestCase
     def after_teardown; end
   end
 
-  test 'fixtures remain through the body and reset runs before removal' do
+  test 'fixtures remain after the block exits and reset runs before removal' do
     example = Example.new
     result = example.run
     assert result.passed?

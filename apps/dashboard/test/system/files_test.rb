@@ -548,7 +548,9 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector('.uppy-StatusBar-actions span', text: 'Duplicate files identified. Uploading these files will overwrite existing content.')
   end
 
-  # Share one timeout between modal closure and checking every destination file.
+  # Wait for the upload result using one timeout for modal closure and file contents.
+  # This does not wait for the asynchronous table reload; teardown resets the browser
+  # while the fixture directories still exist to protect any pending server requests.
   def assert_upload_complete(expected_contents, wait: MAX_WAIT)
     deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + wait
     assert_no_selector('.uppy-Dashboard--modal', visible: true, wait: wait)
@@ -570,7 +572,7 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   test 'uploading duplicate files' do
-    with_browser_fixture_directory do |dir|
+    with_browser_fixture_directory_until_teardown do |dir|
       File.stubs(:umask).returns(18) # ensure default umask is 644
       upload_dir = File.join(dir, 'upload')
 
@@ -761,7 +763,7 @@ class FilesTest < ApplicationSystemTestCase
   HEREDOC
 
   test 'uploading duplicate files within directories' do
-    with_browser_fixture_directory do |dir|
+    with_browser_fixture_directory_until_teardown do |dir|
       upload_dir = File.join(dir, 'upload')
       FileUtils.mkpath(upload_dir)
 
@@ -815,8 +817,8 @@ class FilesTest < ApplicationSystemTestCase
       src_files.each do |file|
         `echo ' and some new content too!' >> #{file}`
       end
-      # Existing files must retain their exact original contents during a safe upload.
-      new_contents = initial_contents.merge(
+      # Only the missing file gets new contents; existing files must stay unchanged.
+      safe_upload_contents = initial_contents.merge(
         File.join(target_dir, File.basename(deleted_file)) => File.read(deleted_file)
       )
 
@@ -832,7 +834,7 @@ class FilesTest < ApplicationSystemTestCase
 
       assert_selector('.uppy-Dashboard--modal', visible: true)
       click_on('Upload New Files')
-      assert_upload_complete(new_contents)
+      assert_upload_complete(safe_upload_contents)
       assert_selector('tbody a', exact_text: File.basename(src_dir))
 
       # repeat the process but overwrite this time
