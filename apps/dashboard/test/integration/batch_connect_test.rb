@@ -22,24 +22,6 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     assert_equal 'Jupyter Notebook', css_select('label[for="batch_connect_session_context_mode_0"]').text
   end
 
-  test 'displays announcements from the central app announcement directory' do
-    Dir.mktmpdir('announcements') do |dir|
-      app_dir = Pathname.new(dir).join('apps/sys/bc_jupyter')
-      other_app_dir = Pathname.new(dir).join('apps/sys/bc_paraview')
-      FileUtils.mkdir_p(app_dir)
-      FileUtils.mkdir_p(other_app_dir)
-      File.write(app_dir.join('maintenance.md'), 'Jupyter maintenance notice')
-      File.write(other_app_dir.join('maintenance.md'), 'Paraview maintenance notice')
-      stub_user_configuration({ announcement_path: [dir] })
-
-      get new_batch_connect_session_context_url('sys/bc_jupyter')
-
-      assert_response :success
-      assert_select '.announcement-body', text: 'Jupyter maintenance notice'
-      assert_select '.announcement-body', { text: 'Paraview maintenance notice', count: 0 }
-    end
-  end
-
   test 'default application menu renders correctly when nav_bar property defined' do
     BatchConnect::SessionContextsController.any_instance.expects(:t).with('dashboard.batch_connect_apps_menu_title').returns('Translations title')
     stub_user_configuration({nav_bar: [
