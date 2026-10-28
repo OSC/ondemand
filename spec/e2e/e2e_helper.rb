@@ -204,7 +204,7 @@ def install_ondemand
     release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     on hosts, "dnf config-manager --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
@@ -212,7 +212,7 @@ def install_ondemand
     on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end
