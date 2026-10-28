@@ -8,7 +8,7 @@
   <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, 'dropdown-menu-end') %>" role="menu">
     <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, new_tab: true) %>
     <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, new_tab: true) %>
-    <%= nav_link(t('dashboard.nav_help_appverse'), "cubes", appverse_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_appverse'), "cubes", Configuration.appverse_url, new_tab: true) %>
     <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, new_tab: true) %>
     <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, new_tab: true) %>
     <% if help_custom_url %>
