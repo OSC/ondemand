@@ -10,9 +10,9 @@ function listEvents() {
     .then(events => {
       mountNsfAccessAccordion({
         elementId: 'nsf_access_events',
-        containerId: 'nsf_access_events_container',
+        getContainerId: () => 'nsf_access_events_container',
         items: filterEvents(events),
-        idPrefix: 'nsf_access_event',
+        getIdPrefix: () => 'nsf_access_event',
         getItemId: (event) => event['id'],
         getTitle: (event) => event['title'],
         getDate: (event) => event['date'],

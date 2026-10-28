@@ -10,9 +10,9 @@ function listAnnouncements() {
     .then(announcements => {
       mountNsfAccessAccordion({
         elementId: 'nsf_access_announcements',
-        containerId: 'nsf_access_announcements_container',
+        getContainerId: () => 'nsf_access_announcements_container',
         items: filterAnnouncements(announcements),
-        idPrefix: 'nsf_access_announcement',
+        getIdPrefix: () => 'nsf_access_announcement',
         getItemId: (announcement) => announcement['uuid'],
         getTitle: (announcement) => announcement['title'],
         getDate: (announcement) => announcement['published_date'],
