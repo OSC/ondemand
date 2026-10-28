@@ -316,15 +316,81 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "quota_paths correctly parses OOD_QUOTA_PATH" do
-    with_modified_env(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json') do
+    with_modified_env(no_config_env.merge(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json')) do
       assert_equal ['/path_a/quota.json', '/path_b/quota.json'], ConfigurationSingleton.new.quota_paths
     end
 
-    with_modified_env(OOD_QUOTA_PATH: 'https://example.com/quota.json:ftp://path_b/quota.json') do
+    with_modified_env(no_config_env.merge(OOD_QUOTA_PATH: 'https://example.com/quota.json:ftp://path_b/quota.json')) do
       assert_equal ['https://example.com/quota.json', 'ftp://path_b/quota.json'], ConfigurationSingleton.new.quota_paths
     end
   end
 
+  test "quota_paths can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal ['/path_from/file_a.json', '/path_from/file_b.json'], ConfigurationSingleton.new.quota_paths
+      end
+    end
+  end
+
+  test "quota_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => '/path_from/file_a.json:https://example.com/quota.json' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal ['/path_from/file_a.json', 'https://example.com/quota.json'], ConfigurationSingleton.new.quota_paths
+      end
+    end
+  end
+
+  test "quota_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => ['/path_from/file.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_QUOTA_PATH: '/path_from/env.json') do
+        assert_equal ['/path_from/env.json'], ConfigurationSingleton.new.quota_paths
+      end
+    end
+  end
+
+  test "quota_threshold can be configured through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_QUOTA_THRESHOLD: '0.80')) do
+      assert_equal 0.80, ConfigurationSingleton.new.quota_threshold
+    end
+  end
+
+  test "quota_threshold can be configured through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 0.75, ConfigurationSingleton.new.quota_threshold
+      end
+    end
+  end
+
+  test "quota_threshold environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_QUOTA_THRESHOLD: '0.50') do
+        assert_equal 0.50, ConfigurationSingleton.new.quota_threshold
+      end
+    end
+  end
+  
   test "balance_paths correctly parses OOD_BALANCE_PATH" do
     with_modified_env(no_config_env.merge(OOD_BALANCE_PATH: '/path_a/balance.json:/path_b/balance.json')) do
       assert_equal ['/path_a/balance.json', '/path_b/balance.json'], ConfigurationSingleton.new.balance_paths
@@ -335,6 +401,42 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "xdmod_host is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: nil)) do
+      assert_nil ConfigurationSingleton.new.xdmod_host
+    end
+  end
+
+  test "can configure xdmod_host through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: 'https://xdmod.example.com')) do
+      assert_equal 'https://xdmod.example.com', ConfigurationSingleton.new.xdmod_host
+    end
+  end
+
+  test "can configure xdmod_host through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://xdmod.from.file', ConfigurationSingleton.new.xdmod_host
+      end
+    end
+  end
+
+  test "xdmod_host environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
+      end
+      
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_XDMOD_HOST: 'https://xdmod.from.env') do
+        assert_equal 'https://xdmod.from.env', ConfigurationSingleton.new.xdmod_host
+      end
+    end
+  end
+  
   test "balance_paths can be configured through ondemand.d as an array" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
@@ -397,6 +499,54 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: '0.50') do
         assert_equal 0.50, ConfigurationSingleton.new.balance_threshold
+      end
+    end
+  end
+  
+  test "shared_projects_root defaults to an empty list" do
+    with_modified_env(no_config_env.merge(OOD_SHARED_PROJECT_PATH: nil)) do
+      assert_equal [], ConfigurationSingleton.new.shared_projects_root
+    end
+  end
+
+  test "shared_projects_root correctly parses OOD_SHARED_PROJECT_PATH" do
+    with_modified_env(no_config_env.merge(OOD_SHARED_PROJECT_PATH: '/path_a:/path_b')) do
+      assert_equal [Pathname.new('/path_a'), Pathname.new('/path_b')], ConfigurationSingleton.new.shared_projects_root
+    end
+  end
+
+  test "shared_projects_root can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => ['/path_from/file_a', '/path_from/file_b'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+
+  test "shared_projects_root can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => '/path_from/file_a:/path_from/file_b' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+
+  test "shared_projects_root environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => ['/path_from/file'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: '/path_from/env') do
+        assert_equal [Pathname.new('/path_from/env')], ConfigurationSingleton.new.shared_projects_root
       end
     end
   end
