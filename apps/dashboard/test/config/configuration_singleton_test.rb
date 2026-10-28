@@ -400,42 +400,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       assert_equal ['https://example.com/balance.json', 'ftp://path_b/balance.json'], ConfigurationSingleton.new.balance_paths
     end
   end
-
-  test "xdmod_host is nil by default" do
-    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: nil)) do
-      assert_nil ConfigurationSingleton.new.xdmod_host
-    end
-  end
-
-  test "can configure xdmod_host through environment variable" do
-    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: 'https://xdmod.example.com')) do
-      assert_equal 'https://xdmod.example.com', ConfigurationSingleton.new.xdmod_host
-    end
-  end
-
-  test "can configure xdmod_host through ondemand.d" do
-    Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
-      end
-
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
-        assert_equal 'https://xdmod.from.file', ConfigurationSingleton.new.xdmod_host
-      end
-    end
-  end
-  
-  test "xdmod_host environment variable has precedence over ondemand.d" do
-    Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
-      end
-      
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_XDMOD_HOST: 'https://xdmod.from.env') do
-        assert_equal 'https://xdmod.from.env', ConfigurationSingleton.new.xdmod_host
-      end
-    end
-  end
   
   test "balance_paths can be configured through ondemand.d as an array" do
     Dir.mktmpdir do |dir|
@@ -499,6 +463,42 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: '0.50') do
         assert_equal 0.50, ConfigurationSingleton.new.balance_threshold
+      end
+    end
+  end
+  
+  test "xdmod_host is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: nil)) do
+      assert_nil ConfigurationSingleton.new.xdmod_host
+    end
+  end
+
+  test "can configure xdmod_host through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: 'https://xdmod.example.com')) do
+      assert_equal 'https://xdmod.example.com', ConfigurationSingleton.new.xdmod_host
+    end
+  end
+
+  test "can configure xdmod_host through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://xdmod.from.file', ConfigurationSingleton.new.xdmod_host
+      end
+    end
+  end
+  
+  test "xdmod_host environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
+      end
+      
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_XDMOD_HOST: 'https://xdmod.from.env') do
+        assert_equal 'https://xdmod.from.env', ConfigurationSingleton.new.xdmod_host
       end
     end
   end
@@ -586,7 +586,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   test "open_apps_in_new_window is true by default" do
     with_modified_env(no_config_env.merge(OOD_OPEN_APPS_IN_NEW_WINDOW: nil)) do
       c = ConfigurationSingleton.new
