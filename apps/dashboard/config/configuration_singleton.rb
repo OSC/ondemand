@@ -107,6 +107,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
       :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
@@ -346,11 +347,6 @@ class ConfigurationSingleton
 
   def locales_root
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
-  end
-
-  # Set the login host in the Native Instructions VNC session partial
-  def native_vnc_login_host
-    ENV['OOD_NATIVE_VNC_LOGIN_HOST']
   end
 
   # Set the global configuration directory
