@@ -108,6 +108,24 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  # Regression test for #5628: long favorite paths used to overflow the
+  # sidebar container because the anchor elements had no width constraint.
+  test 'long favorite path stays within the sidebar container (regression #5628)' do
+    Dir.mktmpdir do |dir|
+      long_subdir = 'a' * 100
+      long_path = "#{dir}/#{long_subdir}"
+      `mkdir -p #{long_path}`
+      OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(long_path)])
+
+      visit files_url(dir)
+
+      container_width = find('#favorites').rect.width
+      anchor_width = find('#favorites a', text: long_subdir).rect.width
+      assert anchor_width <= container_width,
+             "favorite anchor (#{anchor_width}px) exceeds sidebar container (#{container_width}px)"
+    end
+  end
+
   test 'copying files' do
     visit files_url(Rails.root.to_s)
     ['app', 'config', 'manifest.yml'].each do |f|
