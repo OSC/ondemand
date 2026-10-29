@@ -35,6 +35,7 @@ html, body {
   align-items: center;
   gap: 2px 8px;
   width: max-content;
+  max-width: 100%;
 }
 
 .terminal-options > div {
@@ -48,12 +49,20 @@ html, body {
   min-width: 4rem;
 }
 
-@media screen and (max-width: 350px) {
-  .navbar {
+@media screen and (max-width: 767px) {
+  .navbar > .container-fluid {
     flex-wrap: wrap;
   }
   .terminal-options {
+    width: 100%;
     justify-content: flex-start;
+  }
+  .terminal-options > div {
+    max-width: 100%;
+  }
+  #colors, #fonts {
+    min-width: 0;
+    max-width: 100%;
   }
 }
 
