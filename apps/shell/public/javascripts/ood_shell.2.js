@@ -39,6 +39,9 @@ OodShell.prototype.runTerminal = function () {
 
     // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
+
+    // Pinching with two fingers changes the font size.
+    that.installPinchZoom(this);
   };
 
   // Patch cursor setting
@@ -130,6 +133,110 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   screen.addEventListener('touchcancel', function () {
     touchStart = null;
   }, touchOptions);
+};
+
+/**
+ * Lets a two-finger pinch change the terminal's font size, like ctrl-plus and
+ * ctrl-minus do on a desktop. hterm turns every active touch into one scroll
+ * movement and calls preventDefault() on it, which also stops the browser's own
+ * pinch zoom, so there was no way to resize the text on a phone. hterm's touch
+ * handler returns early for events that are already defaultPrevented, so
+ * claiming two-finger moves here keeps hterm from scrolling during a pinch
+ * without modifying the vendored bundle. One-finger touches are left alone.
+ */
+OodShell.prototype.installPinchZoom = function (term) {
+  const screen = term.getDocument().querySelector('x-screen');
+  if (!screen) {
+    return;
+  }
+
+  const minFontSize = 8;
+  const maxFontSize = 40;
+  // Not passive, because the pinch has to call preventDefault().
+  const touchOptions = { passive: false, capture: true };
+
+  let startDistance = null;
+  let startFontSize = null;
+  let latestTouches = null;
+  let pendingFrame = null;
+
+  /** Pixel distance between two touches. */
+  const distanceBetween = function (touchA, touchB) {
+    const dx = touchA.clientX - touchB.clientX;
+    const dy = touchA.clientY - touchB.clientY;
+    return Math.sqrt((dx * dx) + (dy * dy));
+  };
+
+  /** Sets the font size from how far the fingers have moved since the start. */
+  const applyPinch = function () {
+    pendingFrame = null;
+    if (startDistance === null || latestTouches === null) {
+      return;
+    }
+    const distance = distanceBetween(latestTouches[0], latestTouches[1]);
+    if (distance <= 0) {
+      return;
+    }
+    const size = Math.min(maxFontSize, Math.max(minFontSize,
+        Math.round(startFontSize * (distance / startDistance))));
+    if (size !== term.getFontSize()) {
+      term.setFontSize(size);
+    }
+  };
+
+  /**
+   * Starts a pinch when exactly two fingers are down. The event is not
+   * prevented, so hterm still records both fingers' starting positions.
+   */
+  screen.addEventListener('touchstart', function (ev) {
+    if (ev.touches.length !== 2) {
+      startDistance = null;
+      return;
+    }
+    startDistance = distanceBetween(ev.touches[0], ev.touches[1]);
+    startFontSize = term.getFontSize();
+  }, touchOptions);
+
+  screen.addEventListener('touchmove', function (ev) {
+    if (startDistance === null || ev.touches.length !== 2) {
+      return;
+    }
+    // Marks the event defaultPrevented so hterm's own handler skips it.
+    ev.preventDefault();
+    latestTouches = [ev.touches[0], ev.touches[1]];
+    if (pendingFrame === null) {
+      pendingFrame = window.requestAnimationFrame(applyPinch);
+    }
+  }, touchOptions);
+
+  /** Ends the pinch when a finger lifts or the touch is cancelled. */
+  const endPinch = function (ev) {
+    if (startDistance === null) {
+      return;
+    }
+    if (ev.touches.length === 1) {
+      // One finger lifted mid-pinch. hterm skipped every move during the pinch,
+      // so its cache of finger positions (lastTouch_) is stale, and the
+      // remaining finger's next move would scroll by the distance from its
+      // position before the pinch. Resync the cache to where it is now. This
+      // reaches into a private hterm field; re-test it when hterm is updated.
+      const remaining = ev.touches[0];
+      const lastTouch = term.scrollPort_ && term.scrollPort_.lastTouch_;
+      if (lastTouch) {
+        lastTouch[remaining.identifier] = {
+          id: remaining.identifier,
+          x: remaining.clientX,
+          y: remaining.clientY
+        };
+      }
+    }
+    if (ev.touches.length < 2) {
+      startDistance = null;
+      latestTouches = null;
+    }
+  };
+  screen.addEventListener('touchend', endPinch, touchOptions);
+  screen.addEventListener('touchcancel', endPinch, touchOptions);
 };
 
 OodShell.prototype.installVisualViewportSizing = function () {
