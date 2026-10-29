@@ -165,7 +165,6 @@ class SavedSettingsTest < ApplicationSystemTestCase
   end
 
   test 'saved settings with periods in the name can be shown, edited and deleted' do
-    with_modified_env({ ENABLE_NATIVE_VNC: '1' }) do
       Dir.mktmpdir do |dir|
         name = 'test.v1.2'
         user_settings_file = "#{dir}/user_settings.yml"
@@ -183,14 +182,14 @@ class SavedSettingsTest < ApplicationSystemTestCase
 
         # show:
         visit(batch_connect_setting_path('sys/bc_paraview', name))
-        assert_equal(batch_connect_setting_path('sys/bc_paraview', name), current_path)
+        assert_current_path(batch_connect_setting_path('sys/bc_paraview', name))
         find('.card-header', text: name)
         find('p', text: 'Account: abc123')
 
         # edit_settings:
         find("a[aria-label=\"Edit #{name} saved settings\"]").click
-        sleep 1
-        assert_equal(batch_connect_edit_settings_path('sys/bc_paraview', name), current_path)
+        assert_current_path(batch_connect_edit_settings_path('sys/bc_paraview', name))
+        assert_selector('h3', text: 'Paraview')
         assert_equal('abc123', find_field(bc_ele_id('bc_account')).value)
 
         fill_in(bc_ele_id('bc_account'), with: '')
@@ -212,6 +211,5 @@ class SavedSettingsTest < ApplicationSystemTestCase
         settings = YAML.safe_load(File.read(user_settings_file)).to_h
         assert_equal({ 'batch_connect_templates' => {} }, settings)
       end
-    end
   end
 end
