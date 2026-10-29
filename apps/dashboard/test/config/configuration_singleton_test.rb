@@ -718,6 +718,27 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test 'dashboard support URL defaults to nil' do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_SUPPORT_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_support_url
+    end
+  end
+
+  test 'dashboard support URL reads ondemand.d configuration and honors environment override' do
+    Dir.mktmpdir do |dir|
+      File.write("#{dir}/support.yml", { 'dashboard_support_url' => '/configured-support' }.to_yaml)
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir, OOD_DASHBOARD_SUPPORT_URL: nil) do
+        config = ConfigurationSingleton.new
+        assert_equal '/configured-support', config.dashboard_support_url
+
+        with_modified_env(OOD_DASHBOARD_SUPPORT_URL: '/environment-support') do
+          assert_equal '/environment-support', config.dashboard_support_url
+        end
+      end
+    end
+  end
+
   test 'string configs have correct default' do
     c = ConfigurationSingleton.new
 

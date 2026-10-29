@@ -98,6 +98,7 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def string_configs
     {
+      :dashboard_support_url          => nil,
       :module_file_dir                => nil,
       :user_settings_file             => Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s,
       :facl_domain                    => nil,
