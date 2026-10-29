@@ -129,7 +129,7 @@ GEM
     erb (6.0.4)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
-    excon (1.4.2)
+    excon (1.5.0)
       logger
     execjs (2.10.1)
     faraday (2.14.3)
