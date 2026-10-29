@@ -34,6 +34,9 @@ OodShell.prototype.runTerminal = function () {
     io.sendString       = that.sendString.bind(that);
     io.onTerminalResize = that.onTerminalResize.bind(that);
 
+    // Show a Copy/Paste toolbar for text selected with a finger.
+    that.installMobileSelection(this);
+
     // Capture all keyboard input
     this.installKeyboard();
 
@@ -57,6 +60,7 @@ OodShell.prototype.runTerminal = function () {
 // This depends on hterm using a contenteditable x-screen with non-capture
 // touch handlers that call preventDefault(). Re-test after hterm touch changes.
 OodShell.prototype.installTouchKeyboard = function (term) {
+  const that = this;
   const screen = term.getDocument().querySelector('x-screen');
   let touchStart = null;
   // Capture observes the gesture before hterm's non-capture handler calls
@@ -117,6 +121,12 @@ OodShell.prototype.installTouchKeyboard = function (term) {
     const duration = ev.timeStamp - touchStart.time;
     // Safari requires focus to remain synchronous with the user gesture.
     if ((dx * dx + dy * dy) <= 100 && duration < 500) {
+      // A tap while text is selected (for example to dismiss the selection
+      // toolbar) must not pop the on-screen keyboard open.
+      if (that.hasActiveSelection(term)) {
+        touchStart = null;
+        return;
+      }
       // WebKit may need a fresh focus transition after keyboard dismissal.
       if (needsTouchFocusRefresh &&
           term.getDocument().activeElement === screen) {
@@ -164,6 +174,147 @@ OodShell.prototype.installVisualViewportSizing = function () {
   viewport.addEventListener('resize', resize);
   viewport.addEventListener('scroll', resize);
   window.addEventListener('resize', resize);
+};
+
+/**
+ * Returns true when text inside the terminal is selected. hterm renders into
+ * an iframe, so the selection is read from the terminal's own document rather
+ * than from the page.
+ */
+OodShell.prototype.hasActiveSelection = function (term) {
+  const termDocument = term.getDocument();
+  const screen = termDocument.querySelector('x-screen');
+  const selection = termDocument.getSelection();
+  if (!screen || !selection || selection.isCollapsed ||
+      selection.rangeCount === 0) {
+    return false;
+  }
+  return screen.contains(selection.getRangeAt(0).commonAncestorContainer);
+};
+
+/**
+ * Shows a Copy/Paste toolbar next to text selected with a finger. hterm calls
+ * preventDefault() on touch events, which makes the browser's own selection
+ * menu unreliable inside the terminal. The toolbar lives in the page while the
+ * selection lives in hterm's iframe, so its position is translated through the
+ * iframe's offset. It only appears when the primary pointer is coarse (a touch
+ * screen), so selecting text with a mouse behaves as before.
+ */
+OodShell.prototype.installMobileSelection = function (term) {
+  const that = this;
+  const termDocument = term.getDocument();
+  const coarsePointer = window.matchMedia ?
+      window.matchMedia('(pointer: coarse)') : null;
+  let pendingFrame = null;
+  let selectedText = null;
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'ood-selection-toolbar';
+  toolbar.hidden = true;
+
+  const copyButton = document.createElement('button');
+  copyButton.type = 'button';
+  copyButton.className = 'ood-selection-toolbar-btn';
+  copyButton.textContent = 'Copy';
+
+  // Pasting needs the async Clipboard API; don't offer a button that can't work.
+  const pasteButton = document.createElement('button');
+  pasteButton.type = 'button';
+  pasteButton.className = 'ood-selection-toolbar-btn';
+  pasteButton.textContent = 'Paste';
+  pasteButton.hidden = !(navigator.clipboard && navigator.clipboard.readText);
+
+  toolbar.appendChild(copyButton);
+  toolbar.appendChild(pasteButton);
+  document.body.appendChild(toolbar);
+
+  /** Hides the toolbar. */
+  const hideToolbar = function () {
+    toolbar.hidden = true;
+  };
+
+  /**
+   * Places the toolbar above the selection, or below it when there is no
+   * room, and keeps it inside the viewport. Runs in an animation frame
+   * because selectionchange fires on every pointer move while dragging.
+   */
+  const placeToolbar = function () {
+    pendingFrame = null;
+    // The selection can change while the frame is pending.
+    if (!that.hasActiveSelection(term)) {
+      hideToolbar();
+      return;
+    }
+
+    const rect = termDocument.getSelection().getRangeAt(0)
+      .getBoundingClientRect();
+    const iframe = termDocument.defaultView.frameElement;
+    const iframeRect = iframe ?
+        iframe.getBoundingClientRect() : { top: 0, left: 0 };
+
+    toolbar.hidden = false;
+    const toolbarRect = toolbar.getBoundingClientRect();
+
+    let top = iframeRect.top + rect.top - toolbarRect.height - 8;
+    if (top < 0) {
+      top = iframeRect.top + rect.bottom + 8;
+    }
+    const centered = iframeRect.left + rect.left +
+        (rect.width / 2) - (toolbarRect.width / 2);
+    const left = Math.max(4,
+        Math.min(centered, window.innerWidth - toolbarRect.width - 4));
+
+    toolbar.style.top = `${Math.round(top)}px`;
+    toolbar.style.left = `${Math.round(left)}px`;
+
+    // Remember the text now: the browser may drop the selection when a
+    // button outside the iframe is tapped.
+    selectedText = term.getSelectionText();
+  };
+
+  /** Queues a single toolbar placement for the next animation frame. */
+  const scheduleToolbar = function () {
+    if (pendingFrame === null) {
+      pendingFrame = window.requestAnimationFrame(placeToolbar);
+    }
+  };
+
+  termDocument.addEventListener('selectionchange', function () {
+    if (coarsePointer && coarsePointer.matches &&
+        that.hasActiveSelection(term)) {
+      scheduleToolbar();
+    } else {
+      hideToolbar();
+    }
+  });
+
+  // Buttons use click rather than touch handlers: preventDefault() on a touch
+  // event also suppresses the click that follows it.
+  copyButton.addEventListener('click', function () {
+    if (selectedText) {
+      // hterm tries the async Clipboard API first, then execCommand('copy').
+      term.copyStringToClipboard(selectedText);
+    }
+    const selection = termDocument.getSelection();
+    if (selection) {
+      selection.collapseToEnd();
+    }
+    hideToolbar();
+  });
+
+  pasteButton.addEventListener('click', function () {
+    term.paste();
+    hideToolbar();
+  });
+
+  // The on-screen keyboard and pinch zoom move the selection on screen.
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      if (!toolbar.hidden) {
+        scheduleToolbar();
+      }
+    });
+  }
 };
 
 OodShell.prototype.getMessage = function (ev) {
