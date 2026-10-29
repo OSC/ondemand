@@ -72,7 +72,45 @@ html, body {
 
 iframe {
    flex-grow: 1;
+   /* Shrink to leave room for the on-screen keys */
+   min-height: 0;
    height: auto !important;
    position: static !important;
    width: auto !important;
-} 
+}
+
+/* On-screen keys: one row that scrolls sideways when it doesn't fit */
+#terminal_keys {
+  display: flex;
+  flex: none;
+  gap: 4px;
+  padding: 4px;
+  overflow-x: auto;
+  background: #222;
+  touch-action: pan-x;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#terminal_keys button {
+  flex: 1 0 auto;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.5rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #3c3c3c;
+  color: #fff;
+  font: 0.875rem monospace;
+}
+
+#terminal_keys button:active {
+  background: #5a5a5a;
+}
+
+/* Ctrl or Alt armed for the next key */
+#terminal_keys button[aria-pressed="true"] {
+  background: #0d6efd;
+  border-color: #0d6efd;
+}
