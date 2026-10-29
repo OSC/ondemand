@@ -284,7 +284,8 @@ class FilesTest < ActiveSupport::TestCase
     assert_equal(plain_text, Files.mime_type_for_preview('application/x-yml'))
     assert_equal(plain_text, Files.mime_type_for_preview('application/x-yaml'))
     assert_equal(plain_text, Files.mime_type_for_preview('application/yml'))
-    assert_equal(plain_text, Files.mime_type_for_preview('application/yamlasdf'))
+    assert_equal(plain_text, Files.mime_type_for_preview('application/yaml'))
     assert_equal(plain_text, Files.mime_type_for_preview('application/xml; foo=bar'))
+    assert_equal(plain_text, Files.mime_type_for_preview('image/svg+xml'))
   end
 end
