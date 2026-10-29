@@ -196,11 +196,6 @@ module BatchConnect
       self.class.db_root.join(id) if id
     end
 
-    def record_store
-      self.class.store
-    end
-    private :record_store
-
     # The last time the session was updated
     # (which in this case is the database file modified timestamp)
     # @return [Integer] unix timestamp
@@ -317,7 +312,7 @@ module BatchConnect
     # @param opts [#to_h] app-specific submit hash
     # @return [Boolean] whether submitted successfully
     def submit(opts = {})
-      store = record_store
+      store = self.class.store
       store.prepare!
       opts = opts.to_h.compact.deep_symbolize_keys
       content = script_content opts.fetch(:batch_connect, {})
@@ -416,7 +411,7 @@ module BatchConnect
     # Terminate this session's job and delete its database record
     # @return [Boolean] whether successfully deleted
     def destroy
-      store = record_store
+      store = self.class.store
       store.prepare!
       adapter.delete(job_id) unless completed?
       store.delete(id)
@@ -458,7 +453,7 @@ module BatchConnect
         previous_completed_at = completed_at
         self.cache_completed = true
         self.completed_at = Time.now.to_i
-        record_store.write(id, to_json)
+        self.class.store.write(id, to_json)
       end
     rescue SessionStore::LockUnavailable => e
       self.cache_completed = false
