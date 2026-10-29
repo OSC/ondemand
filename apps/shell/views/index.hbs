@@ -58,9 +58,9 @@
       </div>
     </nav>
 
-    {{!-- On-screen keys; enabled once the terminal is ready.
-          hterm adds its iframe after this, so style.css uses `order` to keep
-          the keys below the terminal. --}}
+    <div id="terminal_screen"></div>
+
+    {{!-- On-screen keys; enabled once the terminal is ready. --}}
     <div id="mobile_keys" class="mobile-keys" role="group" aria-label="Terminal keys" hidden>
       <button type="button" disabled data-key="esc" aria-label="Escape">Esc</button>
       <button type="button" disabled data-key="tab" aria-label="Tab">Tab</button>
@@ -72,7 +72,7 @@
       <button type="button" disabled data-key="up" data-repeat aria-label="Up arrow">&uarr;</button>
       <button type="button" disabled data-key="down" data-repeat aria-label="Down arrow">&darr;</button>
       <button type="button" disabled data-key="right" data-repeat aria-label="Right arrow">&rarr;</button>
-      <button type="button" disabled hidden data-action="more" aria-label="Additional terminal keys"
+      <button type="button" disabled hidden data-action="more"
               aria-controls="mobile_keys_extra" aria-expanded="false">More</button>
       <div id="mobile_keys_extra" class="mobile-keys-extra">
         <button type="button" disabled data-ctrl="c" aria-label="Control C, interrupt">^C</button>
@@ -89,9 +89,10 @@
         <button type="button" disabled data-key="pagedown" data-repeat aria-label="Page down">PgDn</button>
         <button type="button" disabled data-key="backtab" aria-label="Shift Tab">S-Tab</button>
       </div>
-      <span id="mobile_modifier_help" class="visually-hidden">Activate once for the next key, twice to lock, and a third time to turn off.</span>
-      <span id="mobile_ctrl_state" class="visually-hidden">Off.</span>
-      <span id="mobile_alt_state" class="visually-hidden">Off.</span>
+      <span id="mobile_modifier_help" hidden>Activate once for the next key, twice to lock, and a third time to turn off.</span>
+      <span id="mobile_ctrl_state" hidden>Off.</span>
+      <span id="mobile_alt_state" hidden>Off.</span>
+      <span id="mobile_modifier_status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></span>
     </div>
   </div>
 </body>

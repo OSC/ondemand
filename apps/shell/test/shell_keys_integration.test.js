@@ -53,6 +53,7 @@ function fixture(options = {}) {
   window.PointerEvent = options.legacy ? undefined : MouseEvent;
   Object.defineProperty(navigator, 'maxTouchPoints', { configurable: true, value: 1 });
   Object.defineProperty(document, 'hidden', { configurable: true, value: false });
+  jest.spyOn(document, 'hasFocus').mockReturnValue(true);
   Object.defineProperty(window, 'innerHeight', { configurable: true, value: options.height || 800 });
   const viewport = new EventTarget();
   viewport.height = options.height || 800;
@@ -68,6 +69,10 @@ function fixture(options = {}) {
   }
 
   const toolbar = document.getElementById('mobile_keys');
+  if (options.scrollable) {
+    Object.defineProperty(toolbar, 'scrollHeight', { configurable: true, value: 200 });
+    Object.defineProperty(toolbar, 'clientHeight', { configurable: true, value: 100 });
+  }
   const toggle = document.getElementById('mobile_keys_toggle');
   const more = toolbar.querySelector('[data-action="more"]');
   const extra = document.getElementById('mobile_keys_extra');
@@ -125,6 +130,7 @@ function fixture(options = {}) {
         screen.focus();
       };
       this.getDocument = () => frame.contentDocument;
+      this.getFontSize = () => 16;
       this.focus = counts.focus;
       this.scrollOnKeystroke_ = true;
       this.scrollPort_ = { scrollRowToBottom: counts.scroll };
@@ -148,11 +154,28 @@ function fixture(options = {}) {
 }
 
 describe('mobile keys and the shell', () => {
+  test('the terminal is between the menu and keypad in DOM order', () => {
+    const f = fixture();
+    const host = document.getElementById('terminal_screen');
+    expect(host.previousElementSibling.tagName).toBe('NAV');
+    expect(host.nextElementSibling).toBe(f.toolbar);
+    expect(host.querySelector('iframe').contentDocument).toBe(f.term().getDocument());
+  });
+
+  test('terminal font changes update the layout minimum', () => {
+    const f = fixture();
+    f.term().getFontSize = () => 32;
+    f.shell.onTerminalResize(30, 2);
+    expect(document.getElementById('terminal').style.getPropertyValue('--terminal-font-size')).toBe('32px');
+    expect(f.sent).toEqual([{ resize: { cols: 30, rows: 2 } }]);
+  });
+
   test('buttons stay disabled until both the socket and terminal are ready', () => {
     const f = fixture({ ready: false });
     f.press(f.button('mod', 'ctrl'));
     expect(f.keys.state.ctrl).toBe('off');
     expect(f.toggle.disabled).toBe(true);
+    expect(f.keys.terminalWindow).toBeNull();
     expect(f.buttons.every((button) => button.disabled)).toBe(true);
     f.open();
     expect(f.keys.enabled).toBe(false);
@@ -292,6 +315,7 @@ describe('pointer lifecycle', () => {
     const f = fixture();
     const left = f.button('key', 'left');
     f.press(left);
+    if (type === 'blur') document.hasFocus.mockReturnValue(false);
     fire(type === 'lostpointercapture' ? left : window, type, { pointerId: 1 });
     jest.advanceTimersByTime(1000);
     expect(f.sent).toHaveLength(1);
@@ -357,7 +381,9 @@ describe('pointer lifecycle', () => {
     const f = fixture();
     const button = f.button('ctrl', 'd');
     f.press(button);
+    if (type === 'blur') document.hasFocus.mockReturnValue(false);
     fire(type === 'lostpointercapture' ? button : window, type, { pointerId: 1 });
+    jest.advanceTimersByTime(0);
     f.release(button);
     fire(button, 'click');
     expect(f.sent).toEqual([]);
@@ -420,6 +446,114 @@ describe('pointer lifecycle', () => {
     fire(window, 'mouseup');
     fire(shortcut, 'click');
     expect(f.sent).toEqual([{ input: '\x04' }]);
+  });
+
+  test.each([100, 520])('legacy mouse leaving after %sms stops repetition over the iframe', (elapsed) => {
+    const f = fixture({ legacy: true });
+    fire(f.button('key', 'left'), 'mousedown');
+    jest.advanceTimersByTime(elapsed);
+    fire(f.toolbar, 'mouseleave');
+    const count = f.sent.length;
+    fire(f.term().getDocument().defaultView, 'mouseup');
+    jest.advanceTimersByTime(1000);
+    expect(f.sent).toHaveLength(count);
+  });
+
+  test('legacy mouse leaving and returning cannot release a cancelled shortcut', () => {
+    const f = fixture({ legacy: true });
+    const shortcut = f.button('ctrl', 'd');
+    fire(shortcut, 'mousedown');
+    fire(f.toolbar, 'mouseleave');
+    fire(f.toolbar, 'mouseenter');
+    jest.advanceTimersByTime(1500);
+    f.hit(shortcut);
+    fire(window, 'mouseup');
+    fire(shortcut, 'click');
+    expect(f.sent).toEqual([]);
+  });
+
+  test('legacy mouseleave does not cancel a touch hold', () => {
+    const f = fixture({ legacy: true });
+    const left = f.button('key', 'left');
+    fire(left, 'touchstart', { changedTouches: [{ identifier: 7, target: left }] });
+    fire(f.toolbar, 'mouseleave');
+    jest.advanceTimersByTime(400);
+    expect(f.sent).toHaveLength(2);
+  });
+
+  test('internal parent and iframe blur preserve pending shortcuts and repeat', () => {
+    const f = fixture();
+    const shortcut = f.button('ctrl', 'd');
+    f.press(f.button('key', 'left'), 1);
+    f.press(shortcut, 2);
+    fire(window, 'blur');
+    fire(f.term().getDocument().defaultView, 'blur');
+    jest.advanceTimersByTime(400);
+    expect(f.sent).toHaveLength(2);
+    f.release(shortcut, 2);
+    expect(f.sent[2]).toEqual({ input: '\x04' });
+  });
+
+  test('iframe blur on actual page focus loss cancels all pending input', () => {
+    const f = fixture();
+    const shortcut = f.button('ctrl', 'd');
+    f.press(f.button('key', 'left'), 1);
+    f.press(shortcut, 2);
+    document.hasFocus.mockReturnValue(false);
+    fire(f.term().getDocument().defaultView, 'blur');
+    jest.advanceTimersByTime(1000);
+    f.release(shortcut, 2);
+    expect(f.sent).toHaveLength(1);
+    f.keys.disable();
+    expect(f.keys.terminalWindow).toBeNull();
+  });
+
+  test.each([false, true])('scrollable keypad taps still activate once (legacy: %s)', (legacy) => {
+    const f = fixture({ legacy, scrollable: true });
+    const shortcut = f.button('ctrl', 'd');
+    const touch = { identifier: 7, target: shortcut, clientX: 10, clientY: 10 };
+    const start = fire(shortcut, 'touchstart', { changedTouches: [touch] });
+    expect(start.defaultPrevented).toBe(false);
+    f.hit(shortcut);
+    if (legacy) {
+      fire(window, 'touchend', { changedTouches: [touch] });
+      fire(shortcut, 'mousedown');
+      fire(window, 'mouseup');
+    } else {
+      f.press(shortcut);
+      f.release(shortcut);
+    }
+    fire(shortcut, 'click');
+    expect(f.sent).toEqual([{ input: '\x04' }]);
+  });
+
+  test.each([false, true])('scroll gestures cannot send Ctrl-D (legacy: %s)', (legacy) => {
+    const f = fixture({ legacy, scrollable: true });
+    const shortcut = f.button('ctrl', 'd');
+    if (legacy) {
+      const touch = { identifier: 7, target: shortcut, clientX: 10, clientY: 10 };
+      fire(shortcut, 'touchstart', { changedTouches: [touch] });
+      fire(window, 'touchmove', { changedTouches: [{ ...touch, clientY: 40 }] });
+      f.hit(shortcut);
+      fire(window, 'touchend', { changedTouches: [touch] });
+    } else {
+      fire(shortcut, 'pointerdown', { pointerId: 7, pointerType: 'touch' });
+      fire(window, 'pointermove', { pointerId: 7, clientY: 40 });
+      f.release(shortcut, 7);
+    }
+    fire(shortcut, 'click');
+    expect(f.sent).toEqual([]);
+  });
+
+  test('scrolling cancels pending shortcuts and stops repetition', () => {
+    const f = fixture({ scrollable: true });
+    f.press(f.button('key', 'left'), 1);
+    const shortcut = f.button('ctrl', 'd');
+    f.press(shortcut, 2);
+    fire(f.toolbar, 'scroll');
+    f.release(shortcut, 2);
+    jest.advanceTimersByTime(1000);
+    expect(f.sent).toHaveLength(1);
   });
 
   test('hiding the toolbar abandons a pending shortcut', () => {
@@ -500,7 +634,10 @@ describe('visibility, compact layout and accessible state', () => {
     f.tap(f.more);
     expect(f.extra.hidden).toBe(false);
     expect(f.more.getAttribute('aria-expanded')).toBe('true');
+    expect(f.more.textContent).toBe('Less');
+    expect(f.more.hasAttribute('aria-label')).toBe(false);
     f.tap(f.more);
+    expect(f.more.textContent).toBe('More');
     expect(f.extra.hidden).toBe(true);
     expect(f.sent).toEqual([]);
   });
@@ -546,5 +683,29 @@ describe('visibility, compact layout and accessible state', () => {
     f.keys.toggleModifier('ctrl');
     expect(ctrl.getAttribute('aria-pressed')).toBe('false');
     expect(state.textContent).toBe('Off.');
+  });
+
+  test('modifier cycling announces named states without announcing each render', () => {
+    const f = fixture();
+    const status = document.getElementById('mobile_modifier_status');
+    expect(status.getAttribute('role')).toBe('status');
+    expect(status.textContent).toBe('');
+    f.keys.toggleModifier('ctrl');
+    expect(status.textContent).toBe('Control applies to the next key.');
+    f.keys.toggleModifier('ctrl');
+    expect(status.textContent).toBe('Control locked on.');
+    const observer = jest.fn();
+    const mutations = new MutationObserver(observer);
+    mutations.observe(status, { childList: true });
+    f.keys.pressKey('left');
+    f.keys.render();
+    expect(mutations.takeRecords()).toHaveLength(0);
+    mutations.disconnect();
+    f.keys.toggleModifier('ctrl');
+    expect(status.textContent).toBe('Control off.');
+    expect(document.getElementById('mobile_ctrl_state').hidden).toBe(true);
+    expect(status.hidden).toBe(false);
+    f.keys.resetModifiers();
+    expect(status.textContent).toBe('');
   });
 });

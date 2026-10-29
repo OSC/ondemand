@@ -23,6 +23,7 @@
   const REPEAT_INTERVAL_MS = 60;
   // Ignore the click that follows a pointer press we've already handled.
   const CLICK_DEDUPE_MS = 1000;
+  const SCROLL_GESTURE_PX = 8;
 
   // Cursor-style keys: final byte of the CSI/SS3 sequence.
   const CURSOR_KEYS = {
@@ -221,6 +222,9 @@
     this.repeatButton = null;
     this.lastPresses = new Map();
     this.pendingPresses = new Map();
+    this.scrollGestures = new Map();
+    this.terminalWindow = null;
+    this.blurTimer = null;
     this.compact = null;
     this.expanded = false;
     this.extra = this.toolbar && this.toolbar.querySelector('.mobile-keys-extra');
@@ -293,6 +297,11 @@
     }
     this.state.cycle(name);
     this.render();
+    const status = this.toolbar && this.toolbar.querySelector('#mobile_modifier_status');
+    if (status && (name === 'ctrl' || name === 'alt')) {
+      const states = { off: 'off.', once: 'applies to the next key.', lock: 'locked on.' };
+      status.textContent = (name === 'ctrl' ? 'Control ' : 'Alt ') + states[this.state[name]];
+    }
   };
 
   OodShellKeys.prototype.activate = function (button) {
@@ -353,6 +362,7 @@
 
   // Abandon release-activated keys when the page or controls become inactive.
   OodShellKeys.prototype.cancelPresses = function () {
+    this.scrollGestures.clear();
     const presses = Array.from(this.pendingPresses);
     this.pendingPresses.clear();
     presses.forEach(function (press) { releasePointer(press[1], press[0]); });
@@ -366,9 +376,25 @@
     return button && (this.toolbar.contains(button) || button === this.toggle) ? button : null;
   };
 
+  // The terminal iframe has its own focus events; bind only its current window.
+  OodShellKeys.prototype.setTerminalWindow = function (view) {
+    if (this.terminalWindow === view) {
+      return;
+    }
+    if (this.terminalWindow) {
+      this.terminalWindow.removeEventListener('blur', this.onWindowBlur);
+    }
+    this.terminalWindow = view;
+    if (view) {
+      view.addEventListener('blur', this.onWindowBlur);
+    }
+  };
+
   OodShellKeys.prototype.bind = function () {
     const that = this;
     const toolbar = this.toolbar;
+    const gestures = this.scrollGestures;
+    let lastTouch = -Infinity;
     const surfaces = this.toggle ? [toolbar, this.toggle] : [toolbar];
     const listen = function (type, handler, options) {
       surfaces.forEach(function (element) {
@@ -398,6 +424,10 @@
 
       ev.preventDefault();
       that.lastPresses.set(button, { pointerId: ev.pointerId, time: Date.now() });
+      if (ev.pointerType === 'touch' && toolbar.contains(button) &&
+          toolbar.scrollHeight > toolbar.clientHeight) {
+        gestures.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+      }
       if (button.dataset.mod || button.hasAttribute('data-repeat')) {
         that.activate(button);
         if (that.enabled && button.hasAttribute('data-repeat')) {
@@ -410,6 +440,7 @@
     };
 
     const release = function (ev) {
+      gestures.delete(ev.pointerId);
       that.lastPresses.forEach(function (press) {
         if (press.pointerId === ev.pointerId) {
           press.time = Date.now();
@@ -427,9 +458,30 @@
       }
     };
 
+    // A scroll gesture must not become a shortcut if it ends over its button.
+    const move = function (ev) {
+      const start = gestures.get(ev.pointerId);
+      if (start && (Math.abs(ev.clientX - start.x) > SCROLL_GESTURE_PX ||
+                    Math.abs(ev.clientY - start.y) > SCROLL_GESTURE_PX)) {
+        release({ pointerId: ev.pointerId, cancelled: true });
+      }
+    };
+    const preserveTapFocus = function (ev) {
+      if (!toolbar.contains(ev.target) || toolbar.scrollHeight <= toolbar.clientHeight) {
+        ev.preventDefault();
+      }
+    };
+    toolbar.addEventListener('scroll', function () {
+      that.stopRepeat();
+      that.cancelPresses();
+    });
+
     if (typeof window.PointerEvent === 'function') {
-      listen('touchstart', keepFocus, { passive: false });
+      // Pointer cancellation handles native panning. Do not block the scroll
+      // default when the keypad overflows; pointerdown still preserves focus.
+      listen('touchstart', preserveTapFocus, { passive: false });
       listen('pointerdown', press);
+      window.addEventListener('pointermove', move);
       window.addEventListener('pointerup', release);
       const cancel = function (ev) {
         release({ pointerId: ev.pointerId, cancelled: true });
@@ -440,15 +492,25 @@
         this.toggle.addEventListener('lostpointercapture', cancel);
       }
     } else {
-      // Preventing touchstart suppresses compatibility clicks. Handle the
-      // touch itself when Pointer Events are unavailable.
+      // Allow native scrolling on an overflowing keypad, and explicitly ignore
+      // the compatibility mouse events that can follow these touch events.
       listen('touchstart', function (ev) {
-        ev.preventDefault();
+        preserveTapFocus(ev);
+        lastTouch = Date.now();
         Array.from(ev.changedTouches).forEach(function (touch) {
-          press({ target: touch.target, pointerId: touch.identifier, preventDefault: function () {} });
+          press({
+            target: touch.target, pointerId: touch.identifier, pointerType: 'touch',
+            clientX: touch.clientX, clientY: touch.clientY, preventDefault: function () {}
+          });
         });
       }, { passive: false });
+      window.addEventListener('touchmove', function (ev) {
+        Array.from(ev.changedTouches).forEach(function (touch) {
+          move({ pointerId: touch.identifier, clientX: touch.clientX, clientY: touch.clientY });
+        });
+      }, { passive: true });
       const releaseTouches = function (ev) {
+        lastTouch = Date.now();
         Array.from(ev.changedTouches).forEach(function (touch) {
           release({
             pointerId: touch.identifier,
@@ -461,17 +523,35 @@
       window.addEventListener('touchend', releaseTouches);
       window.addEventListener('touchcancel', releaseTouches);
       listen('mousedown', function (ev) {
+        if (Date.now() - lastTouch < CLICK_DEDUPE_MS) {
+          return;
+        }
         press({ target: ev.target, button: ev.button, pointerId: 'mouse', preventDefault: function () {} });
       });
       window.addEventListener('mouseup', function (ev) {
         release({ pointerId: 'mouse', clientX: ev.clientX, clientY: ev.clientY });
       });
+      // Mouseup inside hterm's iframe never reaches the parent window.
+      listen('mouseleave', function () {
+        release({ pointerId: 'mouse', cancelled: true });
+      });
     }
 
-    window.addEventListener('blur', function () {
-      that.stopRepeat();
-      that.cancelPresses();
-    });
+    this.onWindowBlur = function () {
+      if (that.blurTimer !== null) {
+        return;
+      }
+      // Moving focus into the iframe also blurs the parent. Check the whole
+      // page after the transition rather than discarding another finger's key.
+      that.blurTimer = setTimeout(function () {
+        that.blurTimer = null;
+        if (!document.hasFocus()) {
+          that.stopRepeat();
+          that.cancelPresses();
+        }
+      }, 0);
+    };
+    window.addEventListener('blur', this.onWindowBlur);
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) {
         that.stopRepeat();
@@ -500,6 +580,10 @@
   OodShellKeys.prototype.resetModifiers = function () {
     this.state = new ModifierState();
     this.render();
+    const status = this.toolbar && this.toolbar.querySelector('#mobile_modifier_status');
+    if (status) {
+      status.textContent = '';
+    }
   };
 
   OodShellKeys.prototype.setEnabled = function (enabled) {
@@ -580,6 +664,9 @@
 
   // Hide the toolbar, e.g. once the connection is closed.
   OodShellKeys.prototype.disable = function () {
+    clearTimeout(this.blurTimer);
+    this.blurTimer = null;
+    this.setTerminalWindow(null);
     this.setEnabled(false);
     this.setVisible(false);
   };

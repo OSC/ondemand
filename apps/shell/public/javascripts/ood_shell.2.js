@@ -27,6 +27,7 @@ OodShell.prototype.runTerminal = function () {
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
+    that.element.style.setProperty('--terminal-font-size', this.getFontSize() + 'px');
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
@@ -43,6 +44,7 @@ OodShell.prototype.runTerminal = function () {
     // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
     if (that.keys !== null && that.socket.readyState === WebSocket.OPEN) {
+      that.keys.setTerminalWindow(this.getDocument().defaultView);
       that.keys.setEnabled(true);
     }
   };
@@ -51,7 +53,7 @@ OodShell.prototype.runTerminal = function () {
   this.term.options_.cursorVisible = true;
 
   // Connect terminal to sacrificial DOM node
-  this.term.decorate(this.element);
+  this.term.decorate(this.element.querySelector('#terminal_screen'));
   this.term.setAccessibilityEnabled(true);
 
   // Warn user if he/she unloads page
@@ -173,6 +175,9 @@ OodShell.prototype.installMobileKeys = function () {
       }
     },
     focus: function () {
+      if (that.term === null) {
+        return;
+      }
       const doc = that.term.getDocument();
       if (document.activeElement !== doc.defaultView.frameElement ||
           doc.activeElement !== doc.querySelector('x-screen')) {
@@ -310,6 +315,8 @@ OodShell.prototype.changeTheme = function (theme) {
 }
 
 OodShell.prototype.onTerminalResize = function (columns, rows) {
+  // Keep the terminal minimum useful when hterm's keyboard shortcuts resize text.
+  this.element.style.setProperty('--terminal-font-size', this.term.getFontSize() + 'px');
   // React to size changes here.
   // Secure Shell pokes at NaCl, which eventually results in
   // some ioctls on the host.
