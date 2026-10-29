@@ -12,6 +12,7 @@
 
   <script src="{{baseURI}}/javascripts/lodash-4.17.21/lodash.min.js"></script>
   <script src="{{baseURI}}/javascripts/hterm_all_1.92.1.mod_1.js"></script>
+  <script src="{{baseURI}}/javascripts/ood_shell_keys.js?v={{assetHash 'javascripts/ood_shell_keys.js'}}"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.2.js?v={{assetHash 'javascripts/ood_shell.2.js'}}"></script>
 </head>
 
@@ -49,9 +50,40 @@
             <label for="fonts" class="badge">Fonts:</label>
             <select id="fonts" class="form-select form-select-sm"></select>
           </div>
+          <div>
+            <button id="mobile_keys_toggle" type="button" class="btn btn-outline-light btn-sm"
+                    aria-controls="mobile_keys" aria-expanded="false" disabled>Keys</button>
+          </div>
         </div>
       </div>
     </nav>
+
+    {{!-- On-screen keys; enabled once the terminal is ready.
+          hterm adds its iframe after this, so style.css uses `order` to keep
+          the keys below the terminal. --}}
+    <div id="mobile_keys" class="mobile-keys" role="group" aria-label="Terminal keys" hidden>
+      <button type="button" disabled data-key="esc" aria-label="Escape">Esc</button>
+      <button type="button" disabled data-key="tab" aria-label="Tab">Tab</button>
+      <button type="button" disabled data-mod="ctrl" aria-pressed="false" aria-label="Ctrl, off. Tap once for the next key, twice to lock">Ctrl</button>
+      <button type="button" disabled data-mod="alt" aria-pressed="false" aria-label="Alt, off. Tap once for the next key, twice to lock">Alt</button>
+      <button type="button" disabled data-key="left" data-repeat aria-label="Left arrow">&larr;</button>
+      <button type="button" disabled data-key="down" data-repeat aria-label="Down arrow">&darr;</button>
+      <button type="button" disabled data-key="up" data-repeat aria-label="Up arrow">&uarr;</button>
+      <button type="button" disabled data-key="right" data-repeat aria-label="Right arrow">&rarr;</button>
+
+      <button type="button" disabled data-ctrl="c" aria-label="Control C, interrupt">^C</button>
+      <button type="button" disabled data-ctrl="z" aria-label="Control Z, suspend">^Z</button>
+      <button type="button" disabled data-ctrl="d" aria-label="Control D, end of input">^D</button>
+      <button type="button" disabled data-ctrl="x" aria-label="Control X">^X</button>
+      <button type="button" disabled data-text="|" aria-label="Pipe">|</button>
+      <button type="button" disabled data-text="~" aria-label="Tilde">~</button>
+      <button type="button" disabled data-text="/" aria-label="Slash">/</button>
+      <button type="button" disabled data-text="-" aria-label="Hyphen">-</button>
+      <button type="button" disabled data-key="home" aria-label="Home">Home</button>
+      <button type="button" disabled data-key="end" aria-label="End">End</button>
+      <button type="button" disabled data-key="pageup" data-repeat aria-label="Page up">PgUp</button>
+      <button type="button" disabled data-key="pagedown" data-repeat aria-label="Page down">PgDn</button>
+    </div>
   </div>
 </body>
 

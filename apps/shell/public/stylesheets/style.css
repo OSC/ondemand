@@ -26,6 +26,7 @@ html, body {
 
 .navbar {
   padding: 3px;
+  flex: 0 0 auto;
 }
 
 .terminal-options {
@@ -35,6 +36,8 @@ html, body {
   align-items: center;
   gap: 2px 8px;
   width: max-content;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .terminal-options > div {
@@ -71,8 +74,69 @@ html, body {
 }
 
 iframe {
-   flex-grow: 1;
+   flex: 1 1 0;
+   min-height: 0;
+   min-width: 0;
    height: auto !important;
    position: static !important;
    width: auto !important;
-} 
+}
+
+/* JavaScript sets the initial visibility using any coarse pointer, then
+   honors the user's Keys toggle. The HTML stays hidden until initialized. */
+.mobile-keys {
+  display: grid;
+  /* hterm appends its iframe after this element; order keeps the keys last. */
+  order: 1;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+  gap: 0.2rem;
+  padding: 0.2rem;
+  padding-bottom: calc(0.2rem + env(safe-area-inset-bottom, 0px));
+  padding-left: max(0.2rem, env(safe-area-inset-left, 0px));
+  padding-right: max(0.2rem, env(safe-area-inset-right, 0px));
+  background: #222;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.mobile-keys[hidden] {
+  display: none;
+}
+
+.mobile-keys button {
+  min-height: 2.75rem;
+  padding: 0;
+  border: 1px solid #555;
+  border-radius: 0.25rem;
+  background: #3c3c3c;
+  color: #fff;
+  font: 0.875rem/1 monospace;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-keys button:disabled {
+  opacity: 0.5;
+}
+
+.mobile-keys button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -3px;
+}
+
+.mobile-keys button:active {
+  background: #5a5a5a;
+}
+
+/* Ctrl/Alt armed for the next key */
+.mobile-keys button[aria-pressed="true"] {
+  background: #0d6efd;
+  border-color: #0d6efd;
+}
+
+/* Ctrl/Alt locked on until tapped again */
+.mobile-keys button[data-state="lock"] {
+  box-shadow: inset 0 -0.2rem 0 #fff;
+}
