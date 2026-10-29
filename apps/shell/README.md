@@ -12,6 +12,65 @@ This is a guide for developing this application and assumes you have nodejs avai
 You can refer to the [documentation on customizing](https://osc.github.io/ood-documentation/latest/customization.html)
 if you're looking to update your installation.
 
+## On-screen terminal keys
+
+Use **Keys** in the Shell menu to show or hide the terminal keypad. It appears
+initially when the browser reports a coarse pointing device, including touch
+screens on computers with hardware keyboards. Your visibility choice is saved
+when browser storage is available; the default does not detect a keyboard.
+
+On short viewports, including when a software keyboard reduces the visible
+height, **More** reveals the control shortcuts, symbols, Home, End, page
+navigation and Shift Tab. **Less** collapses them again. Esc, Tab, Ctrl, Alt
+and the arrows remain available in the compact layout. Larger viewports show
+all keys. Touch targets keep their normal size in either layout.
+
+Activate Ctrl or Alt once to apply it to the next key, twice to lock it, and a
+third time to turn it off. The underline identifies a locked modifier. Hiding
+the keypad or hiding the page clears armed modifiers. Arrows and page-navigation
+keys repeat while held; releasing the key, cancelling the pointer, leaving the
+window or disconnecting stops repetition.
+
+Other keypad buttons activate on release. To cancel a pressed shortcut such as
+Ctrl-D, move away from the button before releasing. Keyboard and assistive
+technology activation also work through the buttons' normal click actions.
+
+Modifier rules:
+
+- A one-shot modifier is consumed by the next accepted input even when it does
+  not change the bytes, as with Ctrl+Tab or Ctrl+Esc.
+- Dedicated Ctrl-C, Ctrl-Z, Ctrl-D and Ctrl-X buttons send those shortcuts
+  directly. They ignore armed modifiers and consume one-shots; locks remain on.
+- Sticky modifiers transform single-character keyboard input. Longer strings,
+  including composition, autocomplete and hardware arrow sequences, pass through
+  unchanged and consume one-shots. Paste and terminal-generated responses bypass
+  sticky modifiers and do not consume them.
+- Keypad Alt uses an ESC prefix for text (Meta), independently of hterm's
+  `alt-sends-what` preference. Navigation keys use xterm modifier parameters and
+  respect application cursor mode.
+- Shift Tab sends `ESC [ Z`, with xterm modifier parameters when Ctrl or Alt is
+  armed.
+
+### Testing the keypad
+
+With development dependencies installed, run all Shell tests with:
+
+```sh
+npm test -- --runInBand
+```
+
+The keypad integration suite renders the actual Handlebars view in jsdom and
+loads the complete bundled hterm library. It checks DOM events, focus, modifier
+state, input routing, pointer cancellation, repeat timing and viewport changes.
+It does not emulate a browser's layout engine or software keyboard.
+
+Before release, check iOS Safari and an Android browser with the software
+keyboard open in portrait and landscape. Confirm that the terminal remains
+usable, More exposes all secondary keys, modifiers affect typed input, and
+sliding away cancels shortcuts. Also check repeat release over the terminal
+iframe, simultaneous touches, keyboard dismissal and reopening, and screen
+reader announcements for the one-shot and locked states.
+
 ## Development
 
 First, you'll need to clone this repo and make a symlink if you haven't don so already.

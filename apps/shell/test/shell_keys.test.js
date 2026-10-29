@@ -51,9 +51,16 @@ describe('ctrlChar()', () => {
     expect(ctrlChar('8')).toBe('\x7f');
   });
 
+  test('maps shifted punctuation aliases, including the toolbar symbols', () => {
+    expect(ctrlChar('|')).toBe('\x1c');
+    expect(ctrlChar('~')).toBe('\x1e');
+    expect(ctrlChar('{')).toBe(ESC);
+    expect(ctrlChar('}')).toBe('\x1d');
+    expect(ctrlChar('`')).toBe('\x00');
+  });
+
   test('is null for characters with no control equivalent', () => {
     expect(ctrlChar('1')).toBeNull();
-    expect(ctrlChar('|')).toBeNull();
     expect(ctrlChar('é')).toBeNull();
   });
 
@@ -102,6 +109,12 @@ describe('encodeKey()', () => {
     expect(encodeKey('tab')).toBe('\t');
     expect(encodeKey('esc', { alt: true })).toBe(ESC + ESC);
     expect(encodeKey('tab', { alt: true })).toBe(ESC + '\t');
+  });
+
+  test('Shift Tab includes Shift in modified sequences', () => {
+    expect(encodeKey('backtab')).toBe(ESC + '[Z');
+    expect(encodeKey('backtab', { ctrl: true })).toBe(ESC + '[1;6Z');
+    expect(encodeKey('backtab', { alt: true })).toBe(ESC + '[1;4Z');
   });
 
   test('arrows use CSI in normal mode', () => {

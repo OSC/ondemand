@@ -106,6 +106,16 @@ iframe {
   display: none;
 }
 
+/* Secondary buttons share the grid on roomy screens; More reveals them on
+   short visual viewports without reducing the size of the primary keys. */
+.mobile-keys-extra {
+  display: contents;
+}
+
+.mobile-keys-extra[hidden], .mobile-keys button[hidden] {
+  display: none;
+}
+
 .mobile-keys button {
   min-height: 2.75rem;
   padding: 0;

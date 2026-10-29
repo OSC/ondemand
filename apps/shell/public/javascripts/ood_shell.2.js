@@ -162,6 +162,8 @@ OodShell.prototype.installMobileKeys = function () {
   this.keys = new OodShellKeys(toolbar, {
     enabled: false,
     visible: visible,
+    compact: (window.visualViewport ?
+      window.visualViewport.height * window.visualViewport.scale : window.innerHeight) <= 480,
     toggle: document.getElementById('mobile_keys_toggle'),
     onVisibilityChange: function (shown) {
       try {
@@ -171,7 +173,11 @@ OodShell.prototype.installMobileKeys = function () {
       }
     },
     focus: function () {
-      that.term.focus();
+      const doc = that.term.getDocument();
+      if (document.activeElement !== doc.defaultView.frameElement ||
+          doc.activeElement !== doc.querySelector('x-screen')) {
+        that.term.focus();
+      }
     },
     send: function (str) {
       return that.onMobileKeystroke(str);
@@ -204,10 +210,16 @@ OodShell.prototype.onMobileKeystroke = function (str) {
 OodShell.prototype.installVisualViewportSizing = function () {
   const viewport = window.visualViewport;
   const element = this.element;
+  const that = this;
   let resizeFrame = null;
   let lastHeight = null;
 
   if (!viewport) {
+    window.addEventListener('resize', function () {
+      if (that.keys !== null) {
+        that.keys.setCompact(window.innerHeight <= 480);
+      }
+    });
     return;
   }
 
@@ -221,6 +233,9 @@ OodShell.prototype.installVisualViewportSizing = function () {
       // introduce small precision differences in height * scale.
       const height = Math.round(viewport.height * viewport.scale);
 
+      if (height > 0 && that.keys !== null) {
+        that.keys.setCompact(height <= 480);
+      }
       if (height > 0 && height !== lastHeight) {
         element.style.height = height + 'px';
         lastHeight = height;

@@ -64,25 +64,34 @@
     <div id="mobile_keys" class="mobile-keys" role="group" aria-label="Terminal keys" hidden>
       <button type="button" disabled data-key="esc" aria-label="Escape">Esc</button>
       <button type="button" disabled data-key="tab" aria-label="Tab">Tab</button>
-      <button type="button" disabled data-mod="ctrl" aria-pressed="false" aria-label="Ctrl, off. Tap once for the next key, twice to lock">Ctrl</button>
-      <button type="button" disabled data-mod="alt" aria-pressed="false" aria-label="Alt, off. Tap once for the next key, twice to lock">Alt</button>
+      <button type="button" disabled data-mod="ctrl" aria-pressed="false" aria-label="Control"
+              aria-describedby="mobile_modifier_help mobile_ctrl_state">Ctrl</button>
+      <button type="button" disabled data-mod="alt" aria-pressed="false" aria-label="Alt"
+              aria-describedby="mobile_modifier_help mobile_alt_state">Alt</button>
       <button type="button" disabled data-key="left" data-repeat aria-label="Left arrow">&larr;</button>
-      <button type="button" disabled data-key="down" data-repeat aria-label="Down arrow">&darr;</button>
       <button type="button" disabled data-key="up" data-repeat aria-label="Up arrow">&uarr;</button>
+      <button type="button" disabled data-key="down" data-repeat aria-label="Down arrow">&darr;</button>
       <button type="button" disabled data-key="right" data-repeat aria-label="Right arrow">&rarr;</button>
-
-      <button type="button" disabled data-ctrl="c" aria-label="Control C, interrupt">^C</button>
-      <button type="button" disabled data-ctrl="z" aria-label="Control Z, suspend">^Z</button>
-      <button type="button" disabled data-ctrl="d" aria-label="Control D, end of input">^D</button>
-      <button type="button" disabled data-ctrl="x" aria-label="Control X">^X</button>
-      <button type="button" disabled data-text="|" aria-label="Pipe">|</button>
-      <button type="button" disabled data-text="~" aria-label="Tilde">~</button>
-      <button type="button" disabled data-text="/" aria-label="Slash">/</button>
-      <button type="button" disabled data-text="-" aria-label="Hyphen">-</button>
-      <button type="button" disabled data-key="home" aria-label="Home">Home</button>
-      <button type="button" disabled data-key="end" aria-label="End">End</button>
-      <button type="button" disabled data-key="pageup" data-repeat aria-label="Page up">PgUp</button>
-      <button type="button" disabled data-key="pagedown" data-repeat aria-label="Page down">PgDn</button>
+      <button type="button" disabled hidden data-action="more" aria-label="Additional terminal keys"
+              aria-controls="mobile_keys_extra" aria-expanded="false">More</button>
+      <div id="mobile_keys_extra" class="mobile-keys-extra">
+        <button type="button" disabled data-ctrl="c" aria-label="Control C, interrupt">^C</button>
+        <button type="button" disabled data-ctrl="z" aria-label="Control Z, suspend">^Z</button>
+        <button type="button" disabled data-ctrl="d" aria-label="Control D, end of input">^D</button>
+        <button type="button" disabled data-ctrl="x" aria-label="Control X">^X</button>
+        <button type="button" disabled data-text="|" aria-label="Pipe">|</button>
+        <button type="button" disabled data-text="~" aria-label="Tilde">~</button>
+        <button type="button" disabled data-text="/" aria-label="Slash">/</button>
+        <button type="button" disabled data-text="-" aria-label="Hyphen">-</button>
+        <button type="button" disabled data-key="home" aria-label="Home">Home</button>
+        <button type="button" disabled data-key="end" aria-label="End">End</button>
+        <button type="button" disabled data-key="pageup" data-repeat aria-label="Page up">PgUp</button>
+        <button type="button" disabled data-key="pagedown" data-repeat aria-label="Page down">PgDn</button>
+        <button type="button" disabled data-key="backtab" aria-label="Shift Tab">S-Tab</button>
+      </div>
+      <span id="mobile_modifier_help" class="visually-hidden">Activate once for the next key, twice to lock, and a third time to turn off.</span>
+      <span id="mobile_ctrl_state" class="visually-hidden">Off.</span>
+      <span id="mobile_alt_state" class="visually-hidden">Off.</span>
     </div>
   </div>
 </body>

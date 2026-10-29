@@ -55,18 +55,23 @@
     switch (ch) {
       case ' ':
       case '@':
+      case '`':
       case '2':
         return '\x00';
       case '[':
+      case '{':
       case '3':
         return '\x1b';
       case '\\':
+      case '|':
       case '4':
         return '\x1c';
       case ']':
+      case '}':
       case '5':
         return '\x1d';
       case '^':
+      case '~':
       case '6':
         return '\x1e';
       case '_':
@@ -131,6 +136,10 @@
       return mods.alt ? ESC + '\t' : '\t';
     }
 
+    if (name === 'backtab') {
+      return ESC + (param > 1 ? '[1;' + (param + 1) : '[') + 'Z';
+    }
+
     return null;
   }
 
@@ -162,6 +171,27 @@
     }
   };
 
+  // Capture releases even when a pressed button's pointer leaves the toolbar.
+  function capturePointer(button, pointerId) {
+    if (typeof window.PointerEvent === 'function' &&
+        typeof button.setPointerCapture === 'function') {
+      try {
+        button.setPointerCapture(pointerId);
+      } catch (err) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Release capture only while this button still owns it.
+  function releasePointer(button, pointerId) {
+    if (button && typeof button.hasPointerCapture === 'function' &&
+        button.hasPointerCapture(pointerId)) {
+      button.releasePointerCapture(pointerId);
+    }
+  }
+
   /*
    * toolbar: the element holding the buttons, or null to run without a DOM.
    * options.send(str): sends bytes to the terminal; false rejects the key
@@ -170,6 +200,7 @@
    *   cursor key mode.
    * options.focus(): restores terminal focus before a toolbar key.
    * options.enabled / visible: initial readiness and visibility.
+   * options.compact: initially hide secondary keys behind More.
    * options.toggle: optional show/hide button.
    * options.onVisibilityChange(visible): saves a user-selected visibility.
    */
@@ -189,11 +220,17 @@
     this.repeatPointer = null;
     this.repeatButton = null;
     this.lastPresses = new Map();
+    this.pendingPresses = new Map();
+    this.compact = null;
+    this.expanded = false;
+    this.extra = this.toolbar && this.toolbar.querySelector('.mobile-keys-extra');
+    this.more = this.toolbar && this.toolbar.querySelector('[data-action="more"]');
 
     if (this.toolbar) {
       this.bind();
       this.setEnabled(this.enabled);
       this.setVisible(this.visible);
+      this.setCompact(options.compact === true);
     }
   }
 
@@ -267,6 +304,11 @@
       this.onVisibilityChange(this.visible);
       return;
     }
+    if (button === this.more) {
+      this.expanded = !this.expanded;
+      this.renderLayout();
+      return;
+    }
     this.focus();
     const data = button.dataset;
     if (data.mod) {
@@ -285,16 +327,10 @@
     this.stopRepeat();
     this.repeatPointer = pointerId;
     this.repeatButton = button;
-    if (button && typeof window.PointerEvent === 'function' &&
-        typeof button.setPointerCapture === 'function') {
-      try {
-        button.setPointerCapture(pointerId);
-      } catch (err) {
-        // A focus transition may have already ended the pointer. Do not
-        // start a timer after its release/cancel event has been delivered.
-        this.stopRepeat();
-        return;
-      }
+    if (button && !capturePointer(button, pointerId)) {
+      // A focus transition may have ended the pointer before capture.
+      this.stopRepeat();
+      return;
     }
     this.repeatDelay = setTimeout(function () {
       that.repeatDelay = null;
@@ -312,10 +348,14 @@
     const pointerId = this.repeatPointer;
     this.repeatButton = null;
     this.repeatPointer = null;
-    if (button && typeof button.hasPointerCapture === 'function' &&
-        button.hasPointerCapture(pointerId)) {
-      button.releasePointerCapture(pointerId);
-    }
+    releasePointer(button, pointerId);
+  };
+
+  // Abandon release-activated keys when the page or controls become inactive.
+  OodShellKeys.prototype.cancelPresses = function () {
+    const presses = Array.from(this.pendingPresses);
+    this.pendingPresses.clear();
+    presses.forEach(function (press) { releasePointer(press[1], press[0]); });
   };
 
   OodShellKeys.prototype.buttonFor = function (target) {
@@ -358,9 +398,14 @@
 
       ev.preventDefault();
       that.lastPresses.set(button, { pointerId: ev.pointerId, time: Date.now() });
-      that.activate(button);
-      if (that.enabled && button.hasAttribute('data-repeat')) {
-        that.startRepeat(function () { that.activate(button); }, ev.pointerId, button);
+      if (button.dataset.mod || button.hasAttribute('data-repeat')) {
+        that.activate(button);
+        if (that.enabled && button.hasAttribute('data-repeat')) {
+          that.startRepeat(function () { that.pressKey(button.dataset.key); }, ev.pointerId, button);
+        }
+      } else if (capturePointer(button, ev.pointerId)) {
+        // In particular, ^C/^Z/^D must allow sliding away to cancel.
+        that.pendingPresses.set(ev.pointerId, button);
       }
     };
 
@@ -370,6 +415,13 @@
           press.time = Date.now();
         }
       });
+      const button = that.pendingPresses.get(ev.pointerId);
+      that.pendingPresses.delete(ev.pointerId);
+      if (button && !ev.cancelled &&
+          that.buttonFor(document.elementFromPoint(ev.clientX, ev.clientY)) === button) {
+        that.activate(button);
+      }
+      releasePointer(button, ev.pointerId);
       if (that.repeatPointer === ev.pointerId) {
         that.stopRepeat();
       }
@@ -379,8 +431,14 @@
       listen('touchstart', keepFocus, { passive: false });
       listen('pointerdown', press);
       window.addEventListener('pointerup', release);
-      window.addEventListener('pointercancel', release);
-      toolbar.addEventListener('lostpointercapture', release);
+      const cancel = function (ev) {
+        release({ pointerId: ev.pointerId, cancelled: true });
+      };
+      window.addEventListener('pointercancel', cancel);
+      toolbar.addEventListener('lostpointercapture', cancel);
+      if (this.toggle) {
+        this.toggle.addEventListener('lostpointercapture', cancel);
+      }
     } else {
       // Preventing touchstart suppresses compatibility clicks. Handle the
       // touch itself when Pointer Events are unavailable.
@@ -392,7 +450,12 @@
       }, { passive: false });
       const releaseTouches = function (ev) {
         Array.from(ev.changedTouches).forEach(function (touch) {
-          release({ pointerId: touch.identifier });
+          release({
+            pointerId: touch.identifier,
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            cancelled: ev.type === 'touchcancel'
+          });
         });
       };
       window.addEventListener('touchend', releaseTouches);
@@ -400,13 +463,19 @@
       listen('mousedown', function (ev) {
         press({ target: ev.target, button: ev.button, pointerId: 'mouse', preventDefault: function () {} });
       });
-      window.addEventListener('mouseup', function () { release({ pointerId: 'mouse' }); });
+      window.addEventListener('mouseup', function (ev) {
+        release({ pointerId: 'mouse', clientX: ev.clientX, clientY: ev.clientY });
+      });
     }
 
-    window.addEventListener('blur', function () { that.stopRepeat(); });
+    window.addEventListener('blur', function () {
+      that.stopRepeat();
+      that.cancelPresses();
+    });
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) {
         that.stopRepeat();
+        that.cancelPresses();
         that.resetModifiers();
       }
     });
@@ -437,6 +506,7 @@
     this.enabled = enabled;
     if (!enabled) {
       this.stopRepeat();
+      this.cancelPresses();
       this.resetModifiers();
     }
     if (this.toolbar) {
@@ -454,6 +524,7 @@
     this.visible = visible;
     if (!visible) {
       this.stopRepeat();
+      this.cancelPresses();
       this.resetModifiers();
     }
     if (this.toolbar) {
@@ -461,6 +532,27 @@
     }
     if (this.toggle) {
       this.toggle.setAttribute('aria-expanded', String(visible));
+    }
+  };
+
+  // Collapse secondary keys when the available viewport becomes short.
+  OodShellKeys.prototype.setCompact = function (compact) {
+    if (this.compact === compact) {
+      return;
+    }
+    this.compact = compact;
+    this.expanded = false;
+    this.cancelPresses();
+    this.renderLayout();
+  };
+
+  // Keep all keys available without narrowing the primary touch targets.
+  OodShellKeys.prototype.renderLayout = function () {
+    if (this.extra && this.more) {
+      this.extra.hidden = this.compact && !this.expanded;
+      this.more.hidden = !this.compact;
+      this.more.textContent = this.expanded ? 'Less' : 'More';
+      this.more.setAttribute('aria-expanded', String(!this.extra.hidden));
     }
   };
 
@@ -476,15 +568,13 @@
         return;
       }
       const state = that.state[name];
-      const text = button.textContent.trim();
-      const labels = {
-        off: text + ', off. Tap once for the next key, twice to lock',
-        once: text + ', on for the next key. Tap to lock',
-        lock: text + ', locked on. Tap to turn off'
-      };
+      const description = that.toolbar.querySelector('#mobile_' + name + '_state');
+      const states = { off: 'Off.', once: 'Applies to the next key.', lock: 'Locked on.' };
       button.setAttribute('aria-pressed', state === 'off' ? 'false' : 'true');
-      button.setAttribute('aria-label', labels[state]);
       button.setAttribute('data-state', state);
+      if (description) {
+        description.textContent = states[state];
+      }
     });
   };
 
