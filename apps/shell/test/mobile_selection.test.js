@@ -3,335 +3,236 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const SOURCE = path.join(__dirname, '..', 'public', 'javascripts', 'ood_shell.2.js');
+const source = fs.readFileSync(path.join(__dirname, '..', 'public', 'javascripts', 'ood_shell.2.js'), 'utf8');
 
-/**
- * Evaluate ood_shell.2.js in an isolated context that only has the browser
- * globals supplied by the caller, and return its OodShell constructor. The
- * file is a plain browser script rather than a module, so this is how it is
- * exercised without a browser.
- */
-function loadOodShell(globals) {
-  const context = vm.createContext(globals);
-  vm.runInContext(fs.readFileSync(SOURCE, 'utf8'), context);
-  return context.OodShell;
-}
-
-/**
- * A synchronous stand-in for EventTarget. Node's own EventTarget reports an
- * exception thrown by a listener as an uncaught exception, which takes down
- * the whole test run; this lets it surface as a failure of the test that
- * dispatched the event.
- */
-class FakeEventTarget {
+class Target {
   constructor() {
     this.listeners = {};
+    this.children = [];
+    this.attributes = {};
+    this.disabled = false;
+    this.style = {};
   }
-
-  addEventListener(type, listener) {
-    (this.listeners[type] = this.listeners[type] || []).push(listener);
+  addEventListener(type, callback, options = {}) {
+    (this.listeners[type] ||= []).push({ callback, capture: !!options.capture });
   }
-
-  dispatchEvent(event) {
-    (this.listeners[event.type] || []).forEach((listener) => listener.call(this, event));
+  dispatch(type, fields = {}) {
+    const event = {
+      type, defaultPrevented: false, stopped: false,
+      preventDefault() { this.defaultPrevented = true; },
+      stopImmediatePropagation() { this.stopped = true; },
+      ...fields
+    };
+    const listeners = (this.listeners[type] || []).slice().sort((a, b) => Number(b.capture) - Number(a.capture));
+    for (const listener of listeners) {
+      if (event.stopped) break;
+      listener.callback(event);
+    }
+    return event;
   }
+  appendChild(child) { this.children.push(child); }
+  setAttribute(name, value) { this.attributes[name] = value; }
+  getAttribute(name) { return this.attributes[name] ?? null; }
+  removeAttribute(name) { delete this.attributes[name]; }
+  contains(node) { return node === this.textNode; }
 }
 
-/** A minimal event with the fields ood_shell.2.js reads. */
-function fakeEvent(type, fields = {}) {
-  return Object.assign({
-    type,
-    timeStamp: 0,
-    defaultPrevented: false,
-    preventDefault() { this.defaultPrevented = true; }
-  }, fields);
-}
-
-/**
- * A minimal stand-in for a DOM element: an event target that records its
- * children and has a fixed size.
- */
-function fakeElement() {
-  const element = new FakeEventTarget();
-  element.children = [];
-  element.style = {};
-  element.hidden = false;
-  element.appendChild = (child) => element.children.push(child);
-  element.getBoundingClientRect = () => ({ width: 120, height: 36 });
-  return element;
-}
-
-/** What the browser reports when nothing is selected. */
-function collapsedSelection() {
-  return { isCollapsed: true, rangeCount: 0, collapseToEnd() {} };
-}
-
-// Identity tokens for "a node inside the terminal" and "a node outside it".
-const TERMINAL_TEXT = {};
-const OUTSIDE_TEXT = {};
-
-/**
- * Build an OodShell wired to fake browser and hterm objects, with both the
- * selection toolbar and the tap-to-focus handler installed.
- */
-function setup({ coarsePointer = true, canPaste = true, frameTop = 50 } = {}) {
-  const animationFrames = [];
-  const page = { createElement: fakeElement, body: fakeElement() };
-  const viewport = new FakeEventTarget();
-  let frameOffset = frameTop;
-
-  // hterm renders into an iframe; this is that iframe's document.
-  const termDocument = new FakeEventTarget();
-  let selection = collapsedSelection();
-  const screen = new FakeEventTarget();
-  screen.contains = (node) => node === TERMINAL_TEXT;
-  termDocument.querySelector = () => screen;
-  termDocument.getSelection = () => selection;
-  termDocument.defaultView = {
-    frameElement: { getBoundingClientRect: () => ({ top: frameOffset, left: 0 }) }
+function setup({ touch = true, clipboard } = {}) {
+  const screen = new Target();
+  screen.textNode = {};
+  screen.setAttribute('contenteditable', 'true');
+  const doc = new Target();
+  let selected = false;
+  const selection = {
+    get isCollapsed() { return !selected; },
+    get rangeCount() { return selected ? 1 : 0; },
+    getRangeAt() { return { commonAncestorContainer: screen.textNode }; },
+    removeAllRanges() { selected = false; }
   };
-
+  doc.getSelection = () => selection;
+  doc.querySelector = () => screen;
+  const page = { createElement: () => new Target() };
+  const container = new Target();
+  container.insertBefore = (child) => container.appendChild(child);
+  doc.defaultView = { frameElement: {} };
+  const writes = [];
+  const pastes = [];
+  if (clipboard === undefined) {
+    clipboard = {
+      writeText: (text) => { writes.push(text); return Promise.resolve(); },
+      readText: () => Promise.resolve('paste\ntext')
+    };
+  }
   const term = {
-    getDocument: () => termDocument,
-    getSelectionText: jest.fn(() => 'ls -la'),
-    copyStringToClipboard: jest.fn(),
-    paste: jest.fn(),
+    useDefaultWindowCopy: false,
+    getDocument: () => doc,
+    getSelectionText: () => selected ? 'selected text' : null,
+    blur: jest.fn(),
     focus: jest.fn(),
-    blur: jest.fn()
+    onPasteData_: (text) => pastes.push(text)
   };
-
-  const OodShell = loadOodShell({
-    window: {
-      innerWidth: 400,
-      requestAnimationFrame: (callback) => animationFrames.push(callback),
-      matchMedia: () => ({ matches: coarsePointer }),
-      visualViewport: viewport
-    },
+  let htermTouches = 0;
+  screen.addEventListener('touchstart', (event) => { htermTouches++; event.preventDefault(); });
+  const context = vm.createContext({
+    window: { matchMedia: () => ({ matches: touch }), setTimeout, clearTimeout },
     document: page,
-    navigator: {
-      maxTouchPoints: 5,
-      clipboard: canPaste ? { readText: () => Promise.resolve('') } : undefined
-    }
+    navigator: { maxTouchPoints: touch ? 1 : 0, clipboard }
   });
-  const shell = new OodShell({}, 'ws://localhost', 'default');
+  vm.runInContext(source, context);
+  const shell = new context.OodShell(container, '', '');
   shell.installMobileSelection(term);
-  shell.installTouchKeyboard(term);
-
-  const toolbar = page.body.children[0];
-  const flushAnimationFrames = () => animationFrames.splice(0).forEach((callback) => callback());
-
+  const toolbar = container.children[0];
   return {
-    term,
-    toolbar,
-    copyButton: toolbar.children[0],
-    pasteButton: toolbar.children[1],
-    viewport,
-    moveFrame: (top) => { frameOffset = top; },
-    isTextSelected: () => !selection.isCollapsed,
-
-    // Select text inside (or outside) the terminal, as the browser would.
-    select(node, rect) {
-      selection = {
-        isCollapsed: false,
-        rangeCount: 1,
-        getRangeAt: () => ({ commonAncestorContainer: node, getBoundingClientRect: () => rect }),
-        collapseToEnd() { selection = collapsedSelection(); }
-      };
-      termDocument.dispatchEvent(fakeEvent('selectionchange'));
-      flushAnimationFrames();
-    },
-
-    // Collapse the selection, announcing it only when the browser would.
-    deselect({ announce = true } = {}) {
-      selection = collapsedSelection();
-      if (announce) {
-        termDocument.dispatchEvent(fakeEvent('selectionchange'));
-      }
-      flushAnimationFrames();
-    },
-
-    flushAnimationFrames,
-
-    // A short, stationary single-finger tap on the terminal.
-    tap() {
-      const touch = { identifier: 1, clientX: 10, clientY: 10 };
-      screen.dispatchEvent(fakeEvent('touchstart', { timeStamp: 0, touches: [touch] }));
-      screen.dispatchEvent(fakeEvent('touchend', {
-        timeStamp: 100,
-        touches: [],
-        changedTouches: [touch]
-      }));
-    }
+    shell, term, screen, doc, toolbar, writes, pastes, selection,
+    get htermTouches() { return htermTouches; },
+    select() { selected = true; doc.dispatch('selectionchange'); },
+    deselect() { selected = false; doc.dispatch('selectionchange'); },
+    ...(toolbar && { selectButton: toolbar.children[0], copy: toolbar.children[1],
+      paste: toolbar.children[2], status: toolbar.children[3] })
   };
 }
 
-const SELECTION_RECT = { top: 200, bottom: 220, left: 100, width: 80 };
+const flush = () => new Promise((resolve) => setImmediate(resolve));
 
-describe('Selection toolbar', () => {
-  test('is hidden until text is selected', () => {
-    const { toolbar } = setup();
-    expect(toolbar.hidden).toBe(true);
-  });
-
-  test('appears above a selection inside the terminal', () => {
-    const { toolbar, select } = setup();
-    select(TERMINAL_TEXT, SELECTION_RECT);
-
-    expect(toolbar.hidden).toBe(false);
-    // frame offset + selection top - toolbar height - gap
-    expect(toolbar.style.top).toBe('206px');
-    // selection centre - half the toolbar width
-    expect(toolbar.style.left).toBe('80px');
-  });
-
-  test('drops below the selection when there is no room above it', () => {
-    const { toolbar, select } = setup({ frameTop: 0 });
-    select(TERMINAL_TEXT, { top: 5, bottom: 25, left: 100, width: 80 });
-
-    // selection bottom + gap
-    expect(toolbar.style.top).toBe('33px');
-  });
-
-  test('stays inside the viewport horizontally', () => {
-    const { toolbar, select } = setup();
-    select(TERMINAL_TEXT, { top: 200, bottom: 220, left: 390, width: 10 });
-
-    // viewport width - toolbar width - margin
-    expect(toolbar.style.left).toBe('276px');
-  });
-
-  test('follows the selection when the visual viewport changes', () => {
-    const { toolbar, select, moveFrame, viewport, flushAnimationFrames } = setup();
-    select(TERMINAL_TEXT, SELECTION_RECT);
-
-    moveFrame(0);
-    viewport.dispatchEvent(fakeEvent('resize'));
-    flushAnimationFrames();
-
-    expect(toolbar.style.top).toBe('156px');
-  });
-
-  test('hides when the selection collapses', () => {
-    const { toolbar, select, deselect } = setup();
-    select(TERMINAL_TEXT, SELECTION_RECT);
-    deselect();
-
-    expect(toolbar.hidden).toBe(true);
-  });
-
-  test('ignores selections outside the terminal', () => {
-    const { toolbar, select } = setup();
-    select(OUTSIDE_TEXT, SELECTION_RECT);
-
-    expect(toolbar.hidden).toBe(true);
-  });
-
-  test('never appears when the primary pointer is not a finger', () => {
-    const { toolbar, select } = setup({ coarsePointer: false });
-    select(TERMINAL_TEXT, SELECTION_RECT);
-
-    expect(toolbar.hidden).toBe(true);
-  });
-
-  test('Copy sends the selected text to the clipboard without opening the keyboard', () => {
-    const { toolbar, copyButton, term, select, isTextSelected } = setup();
-    select(TERMINAL_TEXT, SELECTION_RECT);
-
-    copyButton.dispatchEvent(fakeEvent('click'));
-
-    expect(term.copyStringToClipboard).toHaveBeenCalledTimes(1);
-    expect(term.copyStringToClipboard).toHaveBeenCalledWith('ls -la');
-    expect(term.focus).not.toHaveBeenCalled();
-    expect(toolbar.hidden).toBe(true);
-    expect(isTextSelected()).toBe(false);
-  });
-
-  test('Copy still works if the browser drops the selection when the button is tapped', () => {
-    const { copyButton, term, select, deselect } = setup();
-    select(TERMINAL_TEXT, SELECTION_RECT);
-    deselect({ announce: false });
-
-    copyButton.dispatchEvent(fakeEvent('click'));
-
-    expect(term.copyStringToClipboard).toHaveBeenCalledWith('ls -la');
-  });
-
-  test('Paste hands off to hterm', () => {
-    const { toolbar, pasteButton, term, select } = setup();
-    select(TERMINAL_TEXT, SELECTION_RECT);
-
-    pasteButton.dispatchEvent(fakeEvent('click'));
-
-    expect(term.paste).toHaveBeenCalledTimes(1);
-    expect(toolbar.hidden).toBe(true);
-  });
-
-  test('offers Paste only when the browser can read the clipboard', () => {
-    expect(setup({ canPaste: true }).pasteButton.hidden).toBe(false);
-    expect(setup({ canPaste: false }).pasteButton.hidden).toBe(true);
-  });
+test('leaves desktop behavior alone', () => {
+  expect(setup({ touch: false }).toolbar).toBeUndefined();
 });
 
-describe('Tap to focus', () => {
-  test('still focuses the terminal on a tap', () => {
-    const { term, tap } = setup();
-    tap();
-
-    expect(term.focus).toHaveBeenCalledTimes(1);
-  });
-
-  test('leaves the keyboard closed when a tap lands during a selection', () => {
-    const { term, select, tap } = setup();
-    select(TERMINAL_TEXT, SELECTION_RECT);
-    tap();
-
-    expect(term.focus).not.toHaveBeenCalled();
-  });
+test('selection mode passes browser touch defaults and restores hterm behavior', () => {
+  const s = setup();
+  expect(s.screen.dispatch('touchstart').defaultPrevented).toBe(true);
+  s.selectButton.dispatch('click');
+  expect(s.term.blur).toHaveBeenCalledTimes(1);
+  expect(s.screen.getAttribute('contenteditable')).toBe('false');
+  expect(s.screen.style.overscrollBehavior).toBe('contain');
+  expect(s.term.useDefaultWindowCopy).toBe(true);
+  expect(s.screen.dispatch('touchstart').defaultPrevented).toBe(false);
+  expect(s.htermTouches).toBe(1);
+  s.selectButton.dispatch('click');
+  expect(s.screen.getAttribute('contenteditable')).toBe('true');
+  expect(s.screen.style.overscrollBehavior).toBeUndefined();
+  expect(s.term.useDefaultWindowCopy).toBe(false);
+  expect(s.screen.dispatch('touchstart').defaultPrevented).toBe(true);
 });
 
-/**
- * Start a terminal the way the page does (runTerminal, then hterm calling
- * onTerminalReady) against fake hterm objects, with every install* method
- * replaced by a spy. This checks that the feature is wired into start-up;
- * what each method does is tested separately.
- */
-function startTerminal() {
+test('copy keeps the selection snapshot through focus loss during a tap', async () => {
+  const s = setup();
+  s.selectButton.dispatch('click');
+  s.select();
+  expect(s.copy.disabled).toBe(false);
+  s.copy.dispatch('touchstart');
+  s.deselect();
+  expect(s.copy.disabled).toBe(false);
+  s.copy.dispatch('click');
+  await flush();
+  expect(s.writes).toEqual(['selected text']);
+  expect(s.selectButton.textContent).toBe('Select text');
+  expect(s.status.textContent).toBe('Copied.');
+});
+
+test('cancelled copy gesture and ordinary deselection discard the snapshot', () => {
+  const s = setup();
+  s.selectButton.dispatch('click');
+  s.select();
+  s.copy.dispatch('touchstart');
+  s.deselect();
+  s.copy.dispatch('touchcancel');
+  expect(s.copy.disabled).toBe(true);
+});
+
+test('copy rejection is reported without leaving selection mode', async () => {
+  const s = setup({ clipboard: { writeText: () => Promise.reject(new Error('denied')) } });
+  s.selectButton.dispatch('click');
+  s.select();
+  s.copy.dispatch('click');
+  await flush();
+  expect(s.status.textContent).toContain('Copy failed');
+  expect(s.selectButton.textContent).toBe('Done');
+});
+
+test('paste works without a selection and delegates to hterm paste processing', async () => {
+  const s = setup();
+  s.paste.dispatch('click');
+  await flush();
+  expect(s.pastes).toEqual(['paste\ntext']);
+  expect(s.status.textContent).toBe('Pasted.');
+});
+
+test('paste rejection is reported and unavailable clipboard controls are disabled', async () => {
+  const s = setup({ clipboard: { readText: () => Promise.reject(new Error('denied')) } });
+  s.paste.dispatch('click');
+  await flush();
+  expect(s.status.textContent).toContain('Paste failed');
+  const unavailable = setup({ clipboard: null });
+  unavailable.selectButton.dispatch('click');
+  unavailable.select();
+  expect(unavailable.copy.disabled).toBe(true);
+  expect(unavailable.paste.disabled).toBe(true);
+});
+
+
+test('installs mobile controls when hterm is ready', () => {
   class FakeTerminal {
-    constructor() {
-      this.options_ = {};
-      this.io = { push: () => ({}) };
-    }
+    constructor() { this.options_ = {}; this.io = { push: () => ({}) }; }
     decorate() {}
     setAccessibilityEnabled() {}
     installKeyboard() {}
-    getDocument() { return { querySelector: () => null }; }
   }
-
-  const OodShell = loadOodShell({
-    hterm: { Terminal: FakeTerminal },
-    window: {},
-    navigator: { maxTouchPoints: 0 }
-  });
-  const installers = {};
-  Object.getOwnPropertyNames(OodShell.prototype)
-    .filter((name) => name.startsWith('install'))
-    .forEach((name) => {
-      installers[name] = jest.fn();
-      OodShell.prototype[name] = installers[name];
-    });
-
-  const shell = new OodShell({}, 'ws://localhost', 'default');
+  const context = vm.createContext({ hterm: { Terminal: FakeTerminal }, window: {} });
+  vm.runInContext(source, context);
+  context.OodShell.prototype.installMobileSelection = jest.fn();
+  context.OodShell.prototype.installTouchKeyboard = jest.fn();
+  const shell = new context.OodShell({}, '', '');
   shell.runTerminal();
-  // hterm calls onTerminalReady with the terminal as `this`.
   shell.term.onTerminalReady();
-  return { shell, installers };
-}
+  expect(context.OodShell.prototype.installMobileSelection).toHaveBeenCalledTimes(1);
+});
 
-describe('Terminal start-up', () => {
-  test('installs installMobileSelection when the terminal is ready', () => {
-    const { shell, installers } = startTerminal();
 
-    expect(installers.installMobileSelection).toHaveBeenCalledTimes(1);
-    expect(installers.installMobileSelection).toHaveBeenCalledWith(shell.term);
-  });
+test('selection mode suppresses the keyboard focus gesture; ordinary taps still focus', () => {
+  const s = setup();
+  s.shell.installTouchKeyboard(s.term);
+  const touch = { clientX: 10, clientY: 10 };
+  const tap = () => {
+    s.screen.dispatch('touchstart', { touches: [touch], timeStamp: 0 });
+    s.screen.dispatch('touchend', { touches: [], changedTouches: [touch], timeStamp: 100 });
+  };
+  tap();
+  expect(s.term.focus).toHaveBeenCalledTimes(1);
+  s.selectButton.dispatch('click');
+  tap();
+  expect(s.term.focus).toHaveBeenCalledTimes(1);
+  s.selectButton.dispatch('click');
+  tap();
+  expect(s.term.focus).toHaveBeenCalledTimes(2);
+});
+
+
+test('synchronous clipboard exceptions are reported', () => {
+  const clipboard = {
+    writeText: () => { throw new Error('denied'); },
+    readText: () => { throw new Error('denied'); }
+  };
+  const s = setup({ clipboard });
+  s.selectButton.dispatch('click');
+  s.select();
+  s.copy.dispatch('click');
+  expect(s.status.textContent).toContain('Copy failed');
+  s.paste.dispatch('click');
+  expect(s.status.textContent).toContain('Paste failed');
+});
+
+test('an earlier clipboard request does not clear a newer selection', async () => {
+  let finishWrite;
+  const clipboard = { writeText: () => new Promise((resolve) => { finishWrite = resolve; }) };
+  const s = setup({ clipboard });
+  s.selectButton.dispatch('click');
+  s.select();
+  s.copy.dispatch('click');
+  s.deselect();
+  s.select();
+  finishWrite();
+  await flush();
+  expect(s.selectButton.textContent).toBe('Done');
+  expect(s.selection.rangeCount).toBe(1);
 });
