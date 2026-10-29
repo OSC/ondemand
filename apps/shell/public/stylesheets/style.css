@@ -70,6 +70,14 @@ html, body {
   padding: 0 1.75rem 0 0.25rem;
 }
 
+.predictive-text-option label {
+  min-width: 0;
+}
+
+#predictive_text {
+  margin: 0;
+}
+
 iframe {
    flex-grow: 1;
    height: auto !important;

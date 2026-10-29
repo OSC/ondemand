@@ -1,8 +1,9 @@
 // Object that defines a terminal element
-function OodShell(element, url, profile) {
+function OodShell(element, url, profile, predictiveText) {
   this.element = element;
   this.url     = url;
   this.profile   = profile || "default";
+  this.predictiveText = !!predictiveText;
   this.socket  = null;
   this.term    = null;
 }
@@ -24,6 +25,9 @@ OodShell.prototype.runTerminal = function () {
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
+    // Apply the saved predictive text preference to the terminal's input.
+    that.setPredictiveText(that.predictiveText);
+
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
@@ -211,6 +215,43 @@ OodShell.prototype.sendString = function (str) {
 OodShell.prototype.changeTheme = function (theme) {
   this.term.setProfile(theme);
 }
+
+/**
+ * Turns the on-screen keyboard's word suggestions on or off. hterm sets
+ * autocorrect="off" and autocapitalize="none" on its input element so that the
+ * operating system never rewrites shell commands, and mobile keyboards hide
+ * their suggestion bar while those are set. This puts them back only when the
+ * user opts in. Spellcheck and autocomplete stay off either way.
+ */
+OodShell.prototype.setPredictiveText = function (enabled) {
+  this.predictiveText = enabled;
+
+  // Before the terminal is ready there is no input element yet;
+  // onTerminalReady applies the setting once there is.
+  const termDocument = this.term && this.term.getDocument();
+  const screen = termDocument && termDocument.querySelector('x-screen');
+  if (!screen) {
+    return;
+  }
+
+  const autocorrect = enabled ? 'on' : 'off';
+  const autocapitalize = enabled ? 'sentences' : 'none';
+  if (screen.getAttribute('autocorrect') === autocorrect &&
+      screen.getAttribute('autocapitalize') === autocapitalize) {
+    return;
+  }
+
+  const wasFocused = termDocument.activeElement === screen;
+  screen.setAttribute('autocorrect', autocorrect);
+  screen.setAttribute('autocapitalize', autocapitalize);
+
+  // Mobile WebKit only re-reads these attributes on a fresh focus transition,
+  // the same constraint installTouchKeyboard works around.
+  if (wasFocused) {
+    this.term.blur();
+    this.term.focus();
+  }
+};
 
 OodShell.prototype.onTerminalResize = function (columns, rows) {
   // React to size changes here.
