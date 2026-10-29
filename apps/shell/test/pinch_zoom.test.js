@@ -58,7 +58,8 @@ function finger(identifier, x, y = 0) {
  * starts at a 15px font.
  */
 function setup() {
-  const animationFrames = [];
+  const animationFrames = new Map();
+  let nextFrame = 1;
   const screen = new FakeEventTarget();
   const term = {
     fontSize: 15,
@@ -70,15 +71,26 @@ function setup() {
   };
 
   const OodShell = loadOodShell({
-    window: { requestAnimationFrame: (callback) => animationFrames.push(callback) }
+    window: {
+      requestAnimationFrame: (callback) => {
+        const id = nextFrame++;
+        animationFrames.set(id, callback);
+        return id;
+      },
+      cancelAnimationFrame: (id) => animationFrames.delete(id)
+    }
   });
   new OodShell({}, 'ws://localhost', 'default').installPinchZoom(term);
 
   return {
     term,
     screen,
-    flushAnimationFrames: () => animationFrames.splice(0).forEach((callback) => callback()),
-    pendingAnimationFrames: () => animationFrames.length,
+    flushAnimationFrames: () => {
+      const callbacks = Array.from(animationFrames.values());
+      animationFrames.clear();
+      callbacks.forEach((callback) => callback());
+    },
+    pendingAnimationFrames: () => animationFrames.size,
 
     // Put two fingers down, `distance` pixels apart.
     pinchStart(distance) {
@@ -175,11 +187,55 @@ describe('Pinch zoom', () => {
     expect(term.getFontSize()).toBe(15);
   });
 
-  test('leaves movement alone once a third finger is down', () => {
-    const { term, screen, pinchStart, flushAnimationFrames } = setup();
+  test('hands a pinch to hterm with current positions when a third finger lands', () => {
+    const { term, screen, pinchStart, flushAnimationFrames, pendingAnimationFrames } = setup();
     pinchStart(100);
-    const move = touchEvent('touchmove', [finger(1, 0), finger(2, 200), finger(3, 300)]);
+    const first = finger(1, 10, 40);
+    const second = finger(2, 210, 60);
+    const third = finger(3, 300, 80);
+    screen.dispatchEvent(touchEvent('touchmove', [first, second]));
+    screen.dispatchEvent(touchEvent('touchstart', [first, second, third]));
+
+    expect(term.getFontSize()).toBe(30);
+    expect(pendingAnimationFrames()).toBe(0);
+    expect(term.scrollPort_.lastTouch_[1]).toEqual({ id: 1, x: 10, y: 40 });
+    expect(term.scrollPort_.lastTouch_[2]).toEqual({ id: 2, x: 210, y: 60 });
+    const move = touchEvent('touchmove', [first, second, third]);
     screen.dispatchEvent(move);
+    flushAnimationFrames();
+    expect(move.defaultPrevented).toBe(false);
+    expect(term.getFontSize()).toBe(30);
+  });
+
+  test('applies the last move when a finger lifts before the animation frame', () => {
+    const { term, screen, pinchStart, pinchMove, flushAnimationFrames, pendingAnimationFrames } = setup();
+    pinchStart(100);
+    pinchMove(200);
+    screen.dispatchEvent(touchEvent('touchend', [finger(2, 200)]));
+
+    expect(term.getFontSize()).toBe(30);
+    expect(pendingAnimationFrames()).toBe(0);
+    flushAnimationFrames();
+    expect(term.getFontSize()).toBe(30);
+  });
+
+  test('cancels a pending resize and resyncs the remaining finger on touchcancel', () => {
+    const { term, screen, pinchStart, pinchMove, flushAnimationFrames, pendingAnimationFrames } = setup();
+    pinchStart(100);
+    pinchMove(200);
+    screen.dispatchEvent(touchEvent('touchcancel', [finger(2, 200, 50)]));
+
+    expect(pendingAnimationFrames()).toBe(0);
+    expect(term.scrollPort_.lastTouch_[2]).toEqual({ id: 2, x: 200, y: 50 });
+    flushAnimationFrames();
+    expect(term.getFontSize()).toBe(15);
+    expect(pinchMove(300).defaultPrevented).toBe(false);
+  });
+
+  test('ignores a pinch whose starting distance is zero', () => {
+    const { term, pinchStart, pinchMove, flushAnimationFrames } = setup();
+    pinchStart(0);
+    const move = pinchMove(100);
     flushAnimationFrames();
 
     expect(move.defaultPrevented).toBe(false);

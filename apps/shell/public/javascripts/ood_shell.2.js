@@ -184,16 +184,49 @@ OodShell.prototype.installPinchZoom = function (term) {
     }
   };
 
+  /** Finish the queued resize before clearing the gesture. */
+  const finishPendingPinch = function (apply) {
+    if (pendingFrame !== null) {
+      window.cancelAnimationFrame(pendingFrame);
+      pendingFrame = null;
+      if (apply) {
+        applyPinch();
+      }
+    }
+  };
+
+  /** Synchronize hterm before it resumes processing touch moves. */
+  const syncTouches = function (touches) {
+    const lastTouch = term.scrollPort_ && term.scrollPort_.lastTouch_;
+    if (!lastTouch) {
+      return;
+    }
+    for (let i = 0; i < touches.length; i++) {
+      const touch = touches[i];
+      lastTouch[touch.identifier] = {
+        id: touch.identifier,
+        x: touch.clientX,
+        y: touch.clientY
+      };
+    }
+  };
+
   /**
    * Starts a pinch when exactly two fingers are down. The event is not
    * prevented, so hterm still records both fingers' starting positions.
    */
   screen.addEventListener('touchstart', function (ev) {
     if (ev.touches.length !== 2) {
-      startDistance = null;
+      if (startDistance !== null) {
+        finishPendingPinch(true);
+        syncTouches(ev.touches);
+        startDistance = null;
+        latestTouches = null;
+      }
       return;
     }
-    startDistance = distanceBetween(ev.touches[0], ev.touches[1]);
+    const distance = distanceBetween(ev.touches[0], ev.touches[1]);
+    startDistance = distance > 0 ? distance : null;
     startFontSize = term.getFontSize();
   }, touchOptions);
 
@@ -214,23 +247,12 @@ OodShell.prototype.installPinchZoom = function (term) {
     if (startDistance === null) {
       return;
     }
-    if (ev.touches.length === 1) {
-      // One finger lifted mid-pinch. hterm skipped every move during the pinch,
-      // so its cache of finger positions (lastTouch_) is stale, and the
-      // remaining finger's next move would scroll by the distance from its
-      // position before the pinch. Resync the cache to where it is now. This
-      // reaches into a private hterm field; re-test it when hterm is updated.
-      const remaining = ev.touches[0];
-      const lastTouch = term.scrollPort_ && term.scrollPort_.lastTouch_;
-      if (lastTouch) {
-        lastTouch[remaining.identifier] = {
-          id: remaining.identifier,
-          x: remaining.clientX,
-          y: remaining.clientY
-        };
-      }
-    }
     if (ev.touches.length < 2) {
+      // Apply the last move on a normal lift, but discard it on cancellation.
+      finishPendingPinch(ev.type === 'touchend');
+      // hterm skipped pinch moves, so its cache is stale for any remaining
+      // finger. This private field should be re-tested after hterm updates.
+      syncTouches(ev.touches);
       startDistance = null;
       latestTouches = null;
     }
