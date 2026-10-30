@@ -1,9 +1,7 @@
 require 'test_helper'
 
 class TransferLocalJobTest < ActiveJob::TestCase
-  # test.rb explicitly configures AsyncAdapter, which ActiveJob::TestCase preserves.
-  # Override it so enqueue assertions cannot start a real copy against the fixtures.
-  # ActiveJob::TestHelper restores the application adapter after each test.
+  # Override test.rb's AsyncAdapter so enqueueing cannot start a copy.
   def queue_adapter_for_test
     ActiveJob::QueueAdapters::TestAdapter.new
   end
@@ -99,12 +97,10 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
       transfer.save
-      job = nil
       assert_enqueued_with(job: TransferLocalJob, args: [transfer]) do
-        job = TransferLocalJob.perform_later(transfer)
+        assert_not_nil TransferLocalJob.perform_later(transfer).job_id
       end
-      assert_not_nil job.job_id
-      assert_predicate transfer.status, :queued?
+      assert transfer.status.queued?
     end
   ensure
     Transfer.transfers.clear
