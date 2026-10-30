@@ -24,6 +24,7 @@
         </ul>
 
         <ul class="navbar-nav" role="menubar">
+        <%= render partial: 'layouts/nav/dark_mode_toggle' if Configuration.dark_mode_enabled? %>
           <% if @help_bar.empty? %>
             <%= render partial: 'layouts/nav/develop_dropdown' %>
             <%= render partial: 'layouts/nav/help_dropdown' %>
