@@ -14,21 +14,21 @@ module NginxStage
 
             nginx_stage nginx_clean
 
-        this displays the users who had their PUNs shutdown.
+        this displays the users selected for shutdown.
 
         To clean up ALL running per-user nginx processes whether it has an
         active connection or not:
 
             nginx_stage nginx_clean --force
 
-        this also displays the users who had their PUNs shutdown.
+        this also displays the users selected for shutdown.
 
         To clean up ALL running per-user nginx processes belonging to a specific user
         whether it has an active connection or not:
 
             nginx_stage nginx_clean --force --user exampleuser
 
-        this also displays the users who had their PUNs shutdown.
+        this also displays the users selected for shutdown.
 
         To ONLY display the users with inactive PUNs:
 
@@ -60,19 +60,17 @@ module NginxStage
       NginxStage.active_users.each do |u|
         begin
           next if (user && user != u.to_s)
-          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
-          socket = SocketFile.new NginxStage.pun_socket_path(user: u)
-          sessions = session_count(u)
-          cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
-          if sessions.zero? || force
-            puts u
-            if !skip_nginx
-              NginxStage.clean_nginx_env(user: u)
-              o, s = Open3.capture2e(
-                NginxStage.nginx_bin,
-                *NginxStage.nginx_args(user: u, signal: :stop)
-              )
-              $stderr.puts o unless s.success?
+          with_pun_lock(u, nonblock: true) do
+            pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+            socket = SocketFile.new NginxStage.pun_socket_path(user: u)
+            sessions = session_count(u)
+            cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
+            if sessions.zero? || force
+              puts u
+              if !skip_nginx
+                o, s = run_nginx(u, signal: :stop)
+                $stderr.puts o unless s.success?
+              end
             end
           end
         rescue
@@ -80,38 +78,24 @@ module NginxStage
         end
       end
 
-      pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
         begin
           puts "#{u} (disabled)"
-          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
-
-          # Send a SIGTERM to the master nginx process to kill the PUN.
-          # 'nginx stop' won't work, since getpwnam(3) will cause an error.
-          `kill -s TERM #{pid_path.pid}`
-          FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
-          FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
-          pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
-          pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
-        rescue StandardError => e
-          warn "Error trying to clean up disabled user #{u}: #{e.message}"
-        end
-      end
-
-      # Remove the PID path parent directories now that the nginx processes have
-      # had time to clean up their Passenger PID file and socket.
-      pid_parent_dirs_to_remove_later.each do |dir|
-        begin
-          begin
-            FileUtils.rmdir(dir)
-          rescue Errno::ENOTEMPTY
-            # Wait for a short time, while Nginx cleans up its PID file.
-            sleep(0.5)
-            # Then try again once.
-            FileUtils.rmdir(dir)
+          with_pun_lock(u, nonblock: true) do
+            process = verified_pun_process(u)
+            # nginx -s cannot parse a deleted account's user directive.
+            begin
+              Process.kill('TERM', process.pid)
+            rescue Errno::ESRCH
+              # The verified master exited before delivery; still wait for cleanup.
+            end
+            wait_for_pun_exit(u, process: process)
+            FileUtils.rm(NginxStage.pun_secret_key_base_path(user: u).to_s)
+            FileUtils.rm(NginxStage.pun_config_path(user: u).to_s)
+            FileUtils.rmdir(File.dirname(NginxStage.pun_pid_path(user: u)))
           end
         rescue StandardError => e
-          warn "Error trying to clean up the PID file directory '#{dir}' of disabled user: #{e.message}"
+          warn "Error trying to clean up disabled user #{u}: #{e.message}"
         end
       end
     end

@@ -5,6 +5,11 @@ module NginxStage
   class AppConfigGenerator < Generator
     desc 'Generate a new nginx app config and reload process'
 
+    # Restart (stop then start) without interleaving other PUN commands
+    def invoke
+      with_pun_lock(user) { super }
+    end
+
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
         To generate an app config from a URI request and reload the nginx
@@ -78,24 +83,11 @@ module NginxStage
     # Restart the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        NginxStage.clean_nginx_env(user: user)
         if File.file? NginxStage.pun_pid_path(user: user)
-          o, s = Open3.capture2e(
-            [
-              NginxStage.nginx_bin,
-              "(#{user})"
-            ],
-            *NginxStage.nginx_args(user: user, signal: :stop)
-          )
+          o, s = run_nginx(user, signal: :stop)
           abort(o) unless s.success?
         end
-        o, s = Open3.capture2e(
-          [
-            NginxStage.nginx_bin,
-            "(#{user})"
-          ],
-          *NginxStage.nginx_args(user: user)
-        )
+        o, s = run_nginx(user)
         s.success? ? exit : abort(o)
       end
     end
