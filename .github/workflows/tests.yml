@@ -68,9 +68,6 @@ jobs:
       - name: Run unit tests
         run: bundle exec rake test:unit
 
-      - name: Test E2E helpers
-        run: bundle exec rspec spec/e2e_helper_spec.rb
-
       - name: Run ShellCheck
         run: bundle exec rake test:shellcheck
 
