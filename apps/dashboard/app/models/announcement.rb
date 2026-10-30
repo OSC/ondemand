@@ -55,11 +55,15 @@ class Announcement
     token.blank? ? nil : token.to_s
   end
 
+  # Whether this announcement should be shown for the given request
+  # @param request_token [String, nil] the app token from the current route,
+  #   e.g. "sys/bc_desktop/owens", or nil on non-app pages
+  # @return [Boolean] whether the announcement applies  
   def applies_to?(request_token)
     return true if global?
-    return false if !token
+    return false if !token || !request_token
     return true if request_token == token
-    return true if request_token.start_with(token + '/')
+    return true if request_token.start_with?("#{token}/")
     false
   end
 
