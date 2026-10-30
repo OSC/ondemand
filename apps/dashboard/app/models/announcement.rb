@@ -68,6 +68,7 @@ class Announcement
     return false if parse_error?
     return false unless message
     return false if dismissible? && !id
+    return false if !global? && !token
     true
   end
 
