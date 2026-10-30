@@ -105,14 +105,41 @@ class AnnouncementTest < ActiveSupport::TestCase
   end
 
   test 'global? defaults and can be set to true' do
-    target_default = Announcement.new({msg: 'test'})
-    target = Announcement.new({msg: 'test', global: true})
+    target_default = Announcement.new({ msg: 'test' })
+    target = Announcement.new({ msg: 'test', global: true })
+
     assert_equal(true, target_default.global?)
     assert_equal(true, target.global?)
   end
 
   test 'global can be set to false' do
-    target = Announcement.new({msg: 'test', global: false})
+    target = Announcement.new({ msg: 'test', global: false })
+
     assert_equal(false, target.global?)
+  end
+
+  test 'token returns the configured token as a string' do
+    target = Announcement.new({ msg: 'test', token: 'sys/app' })
+    assert_equal('sys/app', target.token)
+
+    target = Announcement.new({ msg: 'test', token: 123 })
+    assert_equal('123', target.token)
+  end
+
+  test 'token is returned for global announcements' do
+    target = Announcement.new({ msg: 'test', global: true, token: 'sys/app' })
+
+    assert_equal('sys/app', target.token)
+  end
+
+  test 'token is nil when missing or blank' do
+    target = Announcement.new({ msg: 'test' })
+    assert_nil(target.token)
+
+    target = Announcement.new({ msg: 'test', token: '' })
+    assert_nil(target.token)
+
+    target = Announcement.new({ msg: 'test', token: '   ' })
+    assert_nil(target.token)
   end
 end
