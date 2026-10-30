@@ -107,6 +107,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :locales_root                   => '/etc/ood/config/locales',
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
@@ -342,11 +343,7 @@ class ConfigurationSingleton
   end
 
   def locale
-    (ENV['OOD_LOCALE'] || 'en').to_sym
-  end
-
-  def locales_root
-    Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
+    (ENV['OOD_LOCALE'] || config.fetch(:locale, 'en')).to_sym
   end
 
   # Set the global configuration directory
