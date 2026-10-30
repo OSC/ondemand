@@ -158,4 +158,41 @@ class AnnouncementTest < ActiveSupport::TestCase
     target = Announcement.new({ msg: 'test', token: '   ' })
     assert_nil(target.token)
   end
+
+  test 'applies_to? is true for global announcements on any request' do
+    target = Announcement.new({ msg: 'test' })
+    assert_equal(true, target.applies_to?('sys/bc_desktop'))
+    assert_equal(true, target.applies_to?(nil))
+
+    target = Announcement.new({ msg: 'test', global: true, token: 'sys/bc_desktop' })
+    assert_equal(true, target.applies_to?('sys/other_app'))
+  end
+
+  test 'applies_to? is true for the targeted app and its sub-apps' do
+    target = Announcement.new({ msg: 'test', global: false, token: 'sys/bc_desktop' })
+
+    assert_equal(true, target.applies_to?('sys/bc_desktop'))
+    assert_equal(true, target.applies_to?('sys/bc_desktop/owens'))
+  end
+
+  test 'applies_to? is false for other apps and non-app pages' do
+    target = Announcement.new({ msg: 'test', global: false, token: 'sys/bc_desktop' })
+
+    assert_equal(false, target.applies_to?('sys/bc_desktop_gpu'))
+    assert_equal(false, target.applies_to?('sys/other_app'))
+    assert_equal(false, target.applies_to?(nil))
+  end
+
+  test 'applies_to? does not match a sub-app announcement on its base app' do
+    target = Announcement.new({ msg: 'test', global: false, token: 'sys/bc_desktop/owens' })
+
+    assert_equal(false, target.applies_to?('sys/bc_desktop'))
+  end
+
+  test 'applies_to? is false for non-global announcements without a token' do
+    target = Announcement.new({ msg: 'test', global: false })
+
+    assert_equal(false, target.applies_to?('sys/bc_desktop'))
+    assert_equal(false, target.applies_to?(nil))
+  end
 end
