@@ -19,5 +19,9 @@ class NsfAccessOutagesWidgetTest < ActionDispatch::IntegrationTest
     assert_select 'div.h2', text: I18n.t('dashboard.nsf_access_outages')
     assert_select 'div#nsf_access_outages.spinner-border[role=status]', 1
     assert_select 'div#nsf_access_outages span.visually-hidden', text: 'Loading...'
+    assert_select 'div#ood_config[data-nsf-access-current-outages-url=?]',
+                  'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/current_outages/'
+    assert_select 'div#ood_config[data-nsf-access-future-outages-url=?]',
+                  'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/future_outages/'
   end
 end
