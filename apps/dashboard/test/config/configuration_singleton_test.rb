@@ -708,6 +708,30 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     assert_equal false, cfg.files_enable_shell_button
   end
 
+  test 'session store locking is disabled by default' do
+    with_modified_env(no_config_env.merge(OOD_BC_SESSION_STORE_LOCKING: nil)) do
+      refute ConfigurationSingleton.new.bc_session_store_locking?
+    end
+  end
+
+  test 'session store locking can be enabled through the environment' do
+    with_modified_env(no_config_env.merge(OOD_BC_SESSION_STORE_LOCKING: 'true')) do
+      assert ConfigurationSingleton.new.bc_session_store_locking?
+    end
+  end
+
+  test 'session store locking supports configuration files and environment precedence' do
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, 'session-store.yml'), { 'bc_session_store_locking' => true }.to_yaml)
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir, OOD_BC_SESSION_STORE_LOCKING: nil) do
+        assert ConfigurationSingleton.new.bc_session_store_locking?
+      end
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir, OOD_BC_SESSION_STORE_LOCKING: 'false') do
+        refute ConfigurationSingleton.new.bc_session_store_locking?
+      end
+    end
+  end
+
   test 'boolean configs have correct default' do
     c = ConfigurationSingleton.new
 

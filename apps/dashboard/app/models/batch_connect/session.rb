@@ -160,19 +160,7 @@ module BatchConnect
       # Find all active session jobs
       # @return [Array<Session>] list of sessions
       def all
-        db_root.children.select(&:file?).reject do |p| 
-          p.extname == ".bak"
-        end.map do |f|
-          begin
-            new.from_json(f.read)
-          rescue => e
-            Rails.logger.error("ERROR: Error parsing file '#{f}' --- #{e.class} - #{e.message}")
-            f.rename("#{f}.bak")
-            nil
-          end
-        end.compact.select do |s| 
-          s.valid_session_fields? 
-        end.map do |s|
+        store.read_all { |json| new.from_json(json) }.select(&:valid_session_fields?).map do |s|
           (s.completed? && s.old? && s.destroy) ? nil : s
         end.compact.sort_by do |s|
           # sort by completed status, then created_at date
@@ -183,7 +171,11 @@ module BatchConnect
       # Find requested session job
       # @return [Session] the session
       def find(id)
-        new.from_json(db_root.join(id).read)
+        new.from_json(store.read(id))
+      end
+
+      def store
+        SessionStore.new(db_root, locking: Configuration.bc_session_store_locking?)
       end
 
       # Checks if a session exists
@@ -320,6 +312,8 @@ module BatchConnect
     # @param opts [#to_h] app-specific submit hash
     # @return [Boolean] whether submitted successfully
     def submit(opts = {})
+      store = self.class.store
+      store.prepare!
       opts = opts.to_h.compact.deep_symbolize_keys
       content = script_content opts.fetch(:batch_connect, {})
       options = script_options opts.fetch(:script, {})
@@ -332,13 +326,21 @@ module BatchConnect
       ClimateControl.modify(sanitized_env) do
         self.job_id = adapter.submit script(content: content, options: options)
       end
-      db_file.write(to_json, perm: 0o0600)
+      persist_submission(store)
       true
     rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:submit, e.message)
       Rails.logger.error("ERROR: #{e.class} - #{e.message}")
       false
     end
+
+    def persist_submission(store)
+      store.write(id, to_json, create: true)
+    rescue StandardError => e
+      raise StandardError, "Job #{job_id} was submitted but its session could not be saved: #{e.message}. " \
+                           'Check this job in the scheduler before submitting again; cancel it manually if needed.'
+    end
+    private :persist_submission
 
     # The session's script
     # @param opts [#to_h] script options
@@ -409,10 +411,12 @@ module BatchConnect
     # Terminate this session's job and delete its database record
     # @return [Boolean] whether successfully deleted
     def destroy
+      store = self.class.store
+      store.prepare!
       adapter.delete(job_id) unless completed?
-      db_file.delete
+      store.delete(id)
       true
-    rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
+    rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError, SessionStore::LockUnavailable => e
       errors.add(:delete, e.message)
       Rails.logger.error(e.message)
       false
@@ -446,10 +450,16 @@ module BatchConnect
 
     def update_cache_completed!
       if (! cache_completed) && completed?
+        previous_completed_at = completed_at
         self.cache_completed = true
         self.completed_at = Time.now.to_i
-        db_file.write(to_json)
+        self.class.store.write(id, to_json)
       end
+    rescue SessionStore::LockUnavailable => e
+      self.cache_completed = false
+      self.completed_at = previous_completed_at
+      Rails.logger.warn("Cannot cache completion of session #{id}: #{e.message}")
+      false
     end
 
     # Whether this session is persisted to the database
