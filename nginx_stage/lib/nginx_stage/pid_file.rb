@@ -17,7 +17,13 @@ module NginxStage
       raise MissingPidFile, "missing PID file: #{pid_path}" unless @pid_path.exist?
       raise InvalidPidFile, "invalid PID file: #{pid_path}" unless @pid_path.file?
 
-      @pid = @pid_path.read.to_i
+      # Bound the read and require a positive Linux pid_t. PID 0 and negative
+      # values would signal a process group instead of one process.
+      contents = @pid_path.read(23).to_s
+      value = contents.strip
+      @pid = value.to_i
+      valid = contents.bytesize <= 22 && value.match?(/\A\d+\z/) && @pid.between?(1, 2**31 - 1)
+      raise InvalidPidFile, "invalid PID file: #{pid_path}" unless valid
     end
 
     # Whether the corresponding pid is a running process
