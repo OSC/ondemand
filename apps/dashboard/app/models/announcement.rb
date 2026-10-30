@@ -42,6 +42,12 @@ class Announcement
     end
   end
 
+  # Whether this announcement is a global announcement or an app specific announcement
+  # @return [Boolean] whether it is global
+  def global?
+    opts.fetch(:global, true)
+  end
+
   # The announcement's button text displayed for required or dismissible announcements
   #  @return [String] the button text
   def button_text
