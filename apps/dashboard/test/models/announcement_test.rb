@@ -103,4 +103,16 @@ class AnnouncementTest < ActiveSupport::TestCase
     target = Announcement.new({ id: 'completed_id', dismissible: true })
     assert_equal(true, target.completed?)
   end
+
+  test 'global? defaults and can be set to true' do
+    target_default = Announcement.new({msg: 'test'})
+    target = Announcement.new({msg: 'test', global: true})
+    assert_equal(true, target_default.global?)
+    assert_equal(true, target.global?)
+  end
+
+  test 'global can be set to false' do
+    target = Announcement.new({msg: 'test', global: false})
+    assert_equal(false, target.global?)
+  end
 end
