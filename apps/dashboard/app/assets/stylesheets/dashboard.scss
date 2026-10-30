@@ -17,6 +17,11 @@ ul.dropdown-menu .popover {
   word-break: break-word;
 }
 
+// rendered markdown ends in a <p>, whose margin would pad the bottom of the banner
+.announcement-body > :last-child {
+  margin-bottom: 0;
+}
+
 footer {
   border-top: 1px solid #eee;
   margin: 0px 15px;
