@@ -3,6 +3,13 @@ module NginxStage
   class NginxProcessGenerator < Generator
     desc 'Generate/control a per-user nginx process'
 
+    # Don't signal or start the PUN while another command is changing it
+    def invoke
+      return super if skip_nginx
+
+      with_pun_lock(user) { super }
+    end
+
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
         To stop Bob's nginx process:
@@ -34,14 +41,7 @@ module NginxStage
     # Run the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        NginxStage.clean_nginx_env(user: user)
-        o, s = Open3.capture2e(
-          [
-            NginxStage.nginx_bin,
-            "(#{user})"
-          ],
-          *NginxStage.nginx_args(user: user, signal: signal)
-        )
+        o, s = run_nginx(user, signal: signal)
         s.success? ? exit : abort(o)
       end
     end

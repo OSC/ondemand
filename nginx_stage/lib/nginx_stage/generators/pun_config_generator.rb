@@ -10,9 +10,7 @@ module NginxStage
     # Serialize PUN initialization for one user. A second request that queued
     # behind another startup re-checks PUN state before running setup hooks.
     def invoke
-      with_pun_start_lock do
-        super
-      end
+      with_pun_lock(user) { super }
     end
 
     footer <<-EOF.gsub(/^ {4}/, '')
@@ -169,20 +167,19 @@ module NginxStage
 
 
     private
-      def with_pun_start_lock
-        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
-        FileUtils.mkdir_p File.dirname(lock_path)
-
-        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
-          lock.flock(File::LOCK_EX)
-          yield
-        end
-      end
-
       def pun_running?
-        return false unless File.socket?(NginxStage.pun_socket_path(user: user))
+        pid_file = PidFile.new(NginxStage.pun_pid_path(user: user))
+        return false unless pid_file.running_process?
 
-        PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
+        # After `quit` the master unlinks its socket at once but only deletes
+        # its PID file on exit, which would remove a replacement's PID file.
+        return true if File.socket?(NginxStage.pun_socket_path(user: user))
+
+        process = PunProcess.new(pid_file.pid, config_path)
+        return false unless process.master?(verify_executable: false)
+        raise Error, "startup blocked by unverified PUN process #{pid_file.pid}" unless process.master?
+
+        true
       rescue MissingPidFile, InvalidPidFile
         false
       end

@@ -40,7 +40,7 @@ describe NginxStage::PunConfigGenerator do
       allow(File).to receive(:open)
         .with(lock_path, File::RDWR | File::CREAT, 0644)
         .and_yield(lock)
-      expect(lock).to receive(:flock).with(File::LOCK_EX)
+      expect(lock).to receive(:flock).with(File::LOCK_EX).and_return(0)
       allow(generator).to receive(:pun_running?).and_return(true)
 
       expect { generator.invoke }.to raise_error(NginxStage::Error, 'Startup blocked because a PUN is already running')
@@ -63,7 +63,7 @@ describe NginxStage::PunConfigGenerator do
         skip_running_pun: skip_running_pun,
         setup_probe: proc { @setup_probe_ran = true }
       )
-      allow(generator).to receive(:with_pun_start_lock).and_yield
+      allow(generator).to receive(:with_pun_lock).and_yield
       allow(generator).to receive(:pun_running?).and_return(true)
 
       expect { generator.invoke }.to raise_error(NginxStage::Error, 'Startup blocked because a PUN is already running')
@@ -81,7 +81,7 @@ describe NginxStage::PunConfigGenerator do
         skip_running_pun: skip_running_pun,
         setup_probe: proc { @setup_probe_ran = true }
       )
-      allow(generator).to receive(:with_pun_start_lock).and_yield
+      allow(generator).to receive(:with_pun_lock).and_yield
       expect(generator).not_to receive(:pun_running?)
 
       generator.invoke

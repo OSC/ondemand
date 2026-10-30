@@ -11,6 +11,9 @@ module NginxStage
   class Generator
     extend GeneratorHelpers
 
+    # Seconds to wait for a stopped PUN and its PID/socket paths to disappear.
+    PUN_SHUTDOWN_TIMEOUT = 30
+
     # Adds a new hook method that is invoked in the order it is defined
     # @param name [Symbol] unique key defining callback method
     # @yield The body of the generator's callback
@@ -134,6 +137,58 @@ module NginxStage
       # Use ERB to render templates
       def render(data)
         ERB.new(data, trim_mode: '-').result(binding)
+      end
+
+      # Serialize starting, restarting, stopping and cleaning up a user's PUN.
+      # The lock file sits beside the PUN config but is never replaced with it.
+      def with_pun_lock(user, nonblock: false)
+        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
+        FileUtils.mkdir_p File.dirname(lock_path)
+
+        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
+          mode = nonblock ? File::LOCK_EX | File::LOCK_NB : File::LOCK_EX
+          raise Error, "another nginx_stage command is running for #{user}" unless lock.flock(mode)
+
+          yield
+        end
+      end
+
+      # Run the per-user nginx binary, optionally with a signal. `nginx -s
+      # stop|quit` returns as soon as the signal is sent, so wait for the old
+      # master to exit: a replacement started sooner fails to bind its socket,
+      # or has its PID file deleted when the old master finally exits.
+      def run_nginx(user, signal: nil)
+        process = verified_pun_process(user) if signal
+        NginxStage.clean_nginx_env(user: user)
+        o, s = Open3.capture2e(
+          [NginxStage.nginx_bin, "(#{user})"],
+          *NginxStage.nginx_args(user: user, signal: signal)
+        )
+        wait_for_pun_exit(user, process: process) if s.success? && ['stop', 'quit'].include?(signal.to_s)
+        [o, s]
+      end
+
+      # Reject stale or unrelated PIDs before either signalling path uses them.
+      def verified_pun_process(user)
+        process = PunProcess.new(PidFile.new(NginxStage.pun_pid_path(user: user)).pid,
+                                 NginxStage.pun_config_path(user: user))
+        return process if process.master?
+
+        raise Error, "refusing to signal unverified PUN process #{process.pid} for #{user}"
+      end
+
+      # Files may disappear before exit_master hooks finish, especially after
+      # quit. Also wait for the original process, identified by its start time.
+      def wait_for_pun_exit(user, process: nil)
+        paths = [NginxStage.pun_pid_path(user: user), NginxStage.pun_socket_path(user: user)]
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + PUN_SHUTDOWN_TIMEOUT
+        while process&.running? || paths.any? { |path| File.exist?(path) || File.symlink?(path) }
+          if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+            raise Error, "timed out waiting for the PUN of #{user} to shut down"
+          end
+
+          sleep 0.1
+        end
       end
   end
 end
