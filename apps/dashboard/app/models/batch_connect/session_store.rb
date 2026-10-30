@@ -74,13 +74,7 @@ module BatchConnect
     private
 
     def metadata_directory
-      directory = @root.join('.session-store')
-      begin
-        directory.mkdir(0o700)
-      rescue Errno::EEXIST
-        raise unless directory.directory?
-      end
-      directory
+      @root.join('.session-store').tap { |directory| directory.mkpath(mode: 0o700) }
     end
 
     def synchronize(read_only: false)

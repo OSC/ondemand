@@ -11,16 +11,13 @@ module BatchConnect
 
     def available?
       stat = @directory.lstat
-      unless stat.directory? && stat.uid == Process.euid && (stat.mode & 0o022).zero?
-        raise ArgumentError, "Unsafe session-store metadata directory: #{@directory}"
+      current = [stat.dev, stat.ino]
+      safe = stat.directory? && stat.uid == Process.euid && (stat.mode & 0o022).zero?
+      unless safe && (@directory_identity.nil? || @directory_identity == current)
+        raise ArgumentError, "Unsafe or replaced session-store metadata directory: #{@directory}"
       end
 
-      directory_identity = [stat.dev, stat.ino]
-      @directory_identity ||= directory_identity
-      unless @directory_identity == directory_identity
-        raise ArgumentError, 'Session-store metadata directory changed during cleanup'
-      end
-
+      @directory_identity = current
       true
     rescue Errno::ENOENT
       false
@@ -32,8 +29,8 @@ module BatchConnect
       return [] unless available?
 
       cutoff = Time.now - age
-      @directory.children.filter_map do |path|
-        path if clean_candidate(path, cutoff: cutoff, dry_run: dry_run)
+      @directory.children.select do |path|
+        clean_candidate(path, cutoff: cutoff, dry_run: dry_run)
       end
     end
 

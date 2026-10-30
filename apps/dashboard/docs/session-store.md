@@ -1,127 +1,55 @@
-# Batch Connect session-store persistence
+# Batch Connect session records
 
-Session records are always written to a private temporary file, flushed, and
-renamed over the destination on the same filesystem. Readers see a complete
-old or new record rather than partially written replacement JSON. Temporary
-files live in the private `.session-store` directory and are not enumerated as
-session records. The JSON schema is unchanged; no migration is needed.
+Records use private temporary files in `.session-store`, flushed and renamed on
+the same filesystem. Readers see complete old or new JSON; the schema is unchanged.
+Disappearing records are skipped and repeated deletion succeeds. Completion updates
+skip absent records. Atomic visibility does not guarantee power-loss durability:
+there is no file or directory `fsync`, and process death can leave temporary files.
 
-## Default: atomic replacement without advisory locking
+Advisory locking is **off by default**, so home filesystems need not support `flock`.
+Unlocked reads leave corrupt records for inspection, avoiding quarantine of a newer
+replacement. Completion can recreate a record deleted between its existence check
+and rename. There is no coordinated snapshot or deletion-order guarantee.
 
-`bc_session_store_locking` defaults to `false`. Creating, updating and deleting
-records does not call `flock`, so deploying this change does not introduce an
-advisory-locking requirement on users' home filesystems. Completion updates
-skip a record that is already absent when checked; repeated deletion succeeds.
+To enable coordination, set `bc_session_store_locking: true` in Dashboard config or
+`OOD_BC_SESSION_STORE_LOCKING=true` (environment takes precedence). First validate
+atomic rename and lock exclusion on the actual filesystem and worker topology;
+local `flock` success does not prove cross-host exclusion. Stop affected Dashboards
+before changing modes and restart all workers consistently. Older processes and
+external writers do not participate. Never unlink or replace `.session-store/lock`.
 
-Without coordination, checking existence and renaming are separate operations:
-a completion update can recreate a record deleted between those operations.
-There is no cross-process snapshot or deletion-ordering guarantee in this mode.
-Invalid records are logged and skipped, but left in place for manual inspection.
-They are not renamed to `.bak`, because an unlocked quarantine could move a
-newer valid replacement. Existing `.bak` files are still ignored.
+With locking enabled, reads/quarantine, writes and deletion use that stable exclusive
+lock. Completion rechecks existence under it. Scheduler calls stay outside it.
+`ENOLCK`, `ENOSYS` and `EOPNOTSUPP` permit read-only access without quarantine:
+completion updates are skipped, expired sessions remain listed, and mutations fail.
+Known failures stop submission/deletion before scheduler calls; enabled locking
+never silently falls back to unlocked writes. Other I/O errors remain visible.
 
-Repeated errors for the same path, record contents and exception are suppressed
-for five minutes within each Dashboard process, across store instances. Changed
-failures are reported immediately; a successful read or an observed missing
-record clears the path's history. The diagnostic cache holds at most 256 paths,
-so eviction or process restart can cause earlier reporting. Other processes
-maintain their own histories. This limits log repetition without moving records
-or retaining their JSON contents in the diagnostic cache.
+If saving an accepted job fails, submission reports its ID, save error and manual
+recovery guidance; it does not cancel the job. Check the scheduler before retrying.
+A job accepted without returning its ID cannot be recovered by this store.
 
-## Optional coordinated mode
+Corrupt-record diagnostics remember at most 256 paths per Dashboard process.
+Unchanged content/exception errors are logged once per five minutes across store
+instances. Changed errors log immediately; successful reads and observed missing
+records reset the history. Eviction or restart can cause earlier reporting.
 
-After validating the filesystem and worker topology, enable coordination in
-the Dashboard configuration:
-
-```yaml
-bc_session_store_locking: true
-```
-
-Alternatively set `OOD_BC_SESSION_STORE_LOCKING=true`. The environment setting
-takes precedence over the configuration file. All workers accessing a database
-must use the same setting. Stop the affected Dashboard processes before changing
-the setting, then restart them with the consistent configuration; mixed modes
-do not coordinate safely.
-
-Coordinated mode uses a stable `.session-store/lock` inode and exclusive `flock`
-locks for reading/quarantine, replacement and deletion. Completion updates
-recheck record existence under the lock, preventing recreation after a
-cooperating deletion. Scheduler calls remain outside the lock. Reads can
-quarantine invalid records, so their critical section also needs exclusive
-access. Do not remove or replace the lock inode while workers are using it.
-
-All cooperating processes accessing a database must observe the same lock.
-Local-only locks on separate hosts do not coordinate a shared database. Test
-both lock exclusion and atomic rename on the actual shared filesystem and
-process topology before enabling this option. A successful local `flock` call
-alone does not establish cross-host exclusion. Direct external edits and older
-OnDemand processes do not participate in this coordination.
-
-If enabled locking reports `ENOLCK`, `ENOSYS` or `EOPNOTSUPP`, existing records
-remain readable with a warning; invalid records are skipped without quarantine.
-Completion cache updates are skipped, and expired records remain listed.
-Creation and deletion fail before scheduler side effects when preflight detects
-the lock failure. There is no automatic switch to unlocked writes. Restore
-locking or stop and consistently reconfigure all workers to disable it.
-Other I/O and permission errors continue to propagate normally.
-
-## Failure recovery and durability
-
-Submission prepares the temporary directory and, when enabled, checks locking
-before contacting the scheduler. A scheduler call and a filesystem write are
-not one transaction. If saving an accepted job's record fails, submission
-returns an error containing the accepted job ID and save failure. The job is
-not automatically cancelled, preserving the previous scheduler policy. Review
-that ID in the scheduler before retrying; cancel it manually if appropriate.
-If the scheduler accepts a job but raises before returning its ID, this store
-cannot identify or recover that job.
-
-Atomic visibility is not a power-loss durability guarantee. No file or directory
-`fsync` is added here. Process death can also leave private temporary files.
-Power-loss durability remains separate work.
-
-## Temporary-file housekeeping
-
-Cleanup is an explicit maintenance operation, with a preview by default and a
-one-hour minimum age by default. Run it as the affected user from the installed
-Dashboard directory, using the deployment's Ruby/Bundler and the same environment,
-configuration and data root as that user's Dashboard:
+Cleanup is explicit maintenance, never an automatic scan on each write. From the
+installed Dashboard, use the affected user's Ruby/Bundler, configuration and data root:
 
 ```bash
 RAILS_ENV=production bundle exec rails runner \
   'puts BatchConnect::Session.store.cleanup_temporary_files'
 ```
 
-The output lists candidate paths. With coordinated mode enabled consistently
-across all workers and validated filesystem locking, perform deletion with:
+This previews files older than one hour. With validated, consistent locking, add
+`dry_run: false` to delete while holding the writer lock. In unlocked mode, first
+stop every writer, prevent new ones starting, and keep them stopped through cleanup;
+then pass `dry_run: false, quiescent: true`. Quiescence is an operator assertion,
+not a process detector; age alone cannot establish abandonment.
 
-```bash
-RAILS_ENV=production bundle exec rails runner \
-  'puts BatchConnect::Session.store.cleanup_temporary_files(dry_run: false)'
-```
-
-Cleanup holds the same exclusive lock as writers until its scan and deletions
-finish. An aged temporary file belonging to a suspended cooperating writer
-cannot be removed while that writer holds the lock. There is no automatic scan
-on every session write; schedule this maintenance only after validating its
-cost and coordination on the deployment filesystem.
-
-In the default unlocked mode, deletion refuses to proceed unless the operator
-explicitly supplies `quiescent: true`. First stop all Dashboard processes and
-other writers for the affected database, prevent requests from starting new
-ones, and keep them stopped through cleanup. Then run:
-
-```bash
-RAILS_ENV=production bundle exec rails runner \
-  'puts BatchConnect::Session.store.cleanup_temporary_files(dry_run: false, quiescent: true)'
-```
-
-The quiescent flag is an operator assertion, not a process detector. File age
-alone does not establish abandonment. In both modes cleanup selects only old,
-owned, single-link regular files with recognized Ruby `session-` temporary
-names. It preserves the `lock` inode, symlinks, directories, hardlinks and
-unrecognized entries. It rejects unsafe metadata directories and rechecks each
-candidate's identity before unlinking. External writers that ignore the lock
-must also be stopped; the identity recheck does not make unlink atomic against
-arbitrary external replacement. The operation can leave older or unexpected
-temporary naming formats for manual inspection.
+Cleanup rejects unsafe metadata directories and selects only old, owned, single-link
+regular files with recognized Ruby temporary names. It preserves locks, symlinks,
+directories, hardlinks, fresh files and unrelated names, rechecking identity before
+unlinking. Stop external writers too: the recheck cannot prevent arbitrary external
+replacement between checking and unlinking. Unexpected names need manual inspection.
