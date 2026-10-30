@@ -77,7 +77,7 @@ class TransferTest < ActiveSupport::TestCase
     end
   end
 
-  test 'copy of symlink is invalid when allow_symlink_ops is false' do
+  test 'copy skips symlink when allow_symlink_ops is false' do
     Configuration.stubs(:allow_symlink_ops?).returns(false)
 
     Dir.mktmpdir do |dir|
@@ -86,13 +86,25 @@ class TransferTest < ActiveSupport::TestCase
       FileUtils.touch(real_file)
       File.symlink(real_file, symlink)
 
-      transfer = PosixTransfer.build(action: 'cp', files: { symlink => "#{dir}/link.copy" })
-      refute(transfer.valid?)
-      assert_match(/cannot copy or move symlinks/, transfer.errors.full_messages.join(' '))
+      transfer = PosixTransfer.build(
+        action: 'cp',
+        files:  {
+          real_file => "#{dir}/real_file.copy",
+          symlink   => "#{dir}/link.copy"
+        }
+      )
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+      refute(transfer.files.key?(symlink))
+      assert(transfer.files.key?(real_file))
+
+      transfer.perform
+      assert(transfer.success?)
+      assert(File.exist?("#{dir}/real_file.copy"))
+      refute(File.exist?("#{dir}/link.copy"))
     end
   end
 
-  test 'move of symlink is invalid when allow_symlink_ops is false' do
+  test 'move skips symlink when allow_symlink_ops is false' do
     Configuration.stubs(:allow_symlink_ops?).returns(false)
 
     Dir.mktmpdir do |dir|
@@ -101,9 +113,22 @@ class TransferTest < ActiveSupport::TestCase
       FileUtils.touch(real_file)
       File.symlink(real_file, symlink)
 
-      transfer = PosixTransfer.build(action: 'mv', files: { symlink => "#{dir}/link.moved" })
-      refute(transfer.valid?)
-      assert_match(/cannot copy or move symlinks/, transfer.errors.full_messages.join(' '))
+      transfer = PosixTransfer.build(
+        action: 'mv',
+        files:  {
+          real_file => "#{dir}/real_file.moved",
+          symlink   => "#{dir}/link.moved"
+        }
+      )
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+      refute(transfer.files.key?(symlink))
+      assert(transfer.files.key?(real_file))
+
+      transfer.perform
+      assert(transfer.success?)
+      assert(File.exist?("#{dir}/real_file.moved"))
+      refute(File.exist?("#{dir}/link.moved"))
+      assert(File.symlink?(symlink))
     end
   end
 

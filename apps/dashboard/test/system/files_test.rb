@@ -295,6 +295,8 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  # similar to the test above, but the symlink is outside of the
+  # allowlist. it gets copied, but does not show in the ui.
   test 'copying symlinked files outside of allowlist' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do

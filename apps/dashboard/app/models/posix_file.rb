@@ -73,8 +73,13 @@ class PosixFile
     }
   end
 
+  # True when this path is a symlink and symlink operations are disabled.
+  def disallowed_symlink?
+    !Configuration.allow_symlink_ops? && !!stat&.symlink?
+  end
+
   def downloadable?
-    return false if !Configuration.allow_symlink_ops? && stat&.symlink?
+    return false if disallowed_symlink?
 
     Configuration.download_enabled? && (directory? || file?) && readable?
   end
@@ -98,7 +103,7 @@ class PosixFile
     expanded = path.expand_path
 
     expanded.glob('**/*', File::FNM_DOTMATCH).reject do |p|
-      PATHS_TO_FILTER.include?(p.basename.to_s) || (!Configuration.allow_symlink_ops? && p.symlink?)
+      PATHS_TO_FILTER.include?(p.basename.to_s) || PosixFile.new(p).disallowed_symlink?
     end.select do |path|
       AllowlistPolicy.default.permitted?(path.realpath.to_s)
     rescue StandardError
@@ -176,7 +181,7 @@ class PosixFile
     can_download = false
     error = nil
 
-    if (!Configuration.allow_symlink_ops? && stat&.symlink?) || !(directory? && path.readable? && path.executable?)
+    if disallowed_symlink? || !(directory? && path.readable? && path.executable?)
       error = I18n.t('dashboard.files_directory_download_unauthorized')
     else
       # Determine the size of the directory.
@@ -213,7 +218,7 @@ class PosixFile
   # This serves the same function as can_download_as_zip?, but for files
   def can_download_file?
     download_file_size_limit = Configuration.download_file_max
-    if !Configuration.allow_symlink_ops? && stat&.symlink?
+    if disallowed_symlink?
       return [false, I18n.t('dashboard.files_directory_download_unauthorized')]
     end
     unless file? && readable?

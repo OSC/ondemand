@@ -10,10 +10,13 @@ class PosixTransfer < Transfer
       non_existant = files.keys.reject { |f| File.exist?(f) }
       record.errors.add :files, "cannot copy or move files that do not exist: #{non_existant.join(', ')}" if non_existant.present?
 
+      # Skip symlinks when disabled so other selected files can still succeed.
       unless Configuration.allow_symlink_ops?
-        # Disallow copy/move of symlinks to avoid TOCTOU attacks.
         symlinks = files.keys.select { |f| File.symlink?(f) }
-        record.errors.add :files, "cannot copy or move symlinks: #{symlinks.join(', ')}" if symlinks.present?
+        if symlinks.present?
+          Rails.logger.warn("skipping symlink copy/move: #{symlinks.join(', ')}")
+          symlinks.each { |symlink| files.delete(symlink) }
+        end
       end
     end
 
