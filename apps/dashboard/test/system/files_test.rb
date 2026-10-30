@@ -1067,6 +1067,33 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  # Verify the larger default without overriding a user's saved font size.
+  test 'file editor defaults to 14px and preserves font size preferences' do
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |directory|
+      file_path = File.join(directory, 'foo.txt')
+      FileUtils.touch(file_path)
+
+      visit(files_url(directory))
+
+      file_row = find('a', exact_text: File.basename(file_path)).ancestor('tr')
+      file_row.find('button.dropdown-toggle').click
+      file_row.find('.edit-file').click
+
+      assert_selector(:select, 'Font Size', selected: '14px')
+      assert_selector('#editor', style: { 'font-size' => '14px' })
+
+      select('12px', from: 'Font Size')
+      assert_selector('#editor', style: { 'font-size' => '12px' })
+
+      page.refresh
+
+      assert_selector(:select, 'Font Size', selected: '12px')
+      assert_selector('#editor', style: { 'font-size' => '12px' })
+    end
+  end
+
   test 'file editor reports errors' do
     OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
