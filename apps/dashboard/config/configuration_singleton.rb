@@ -99,7 +99,7 @@ class ConfigurationSingleton
   def string_configs
     {
       :module_file_dir                => nil,
-      :user_settings_file             => Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s,
+      :user_settings_file             => Pathname.new("~/.config/#{ENV['OOD_PORTAL'] || 'ondemand'}/settings.yml").expand_path.to_s,
       :facl_domain                    => nil,
       :auto_groups_filter             => nil,
       :google_analytics_tag_id        => nil,
@@ -107,6 +107,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :portal                         => 'ondemand',
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
@@ -329,16 +330,12 @@ class ConfigurationSingleton
     #
     root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
     if rails_env == "production"
-      root ||= "~/#{ood_portal}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
+      root ||= "~/#{portal}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
     else
       root ||= app_root.join("data")
     end
 
     Pathname.new(root).expand_path
-  end
-
-  def ood_portal
-    ENV['OOD_PORTAL'] || 'ondemand'
   end
 
   def locale

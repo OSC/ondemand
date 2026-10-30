@@ -315,6 +315,42 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "should have default portal" do
+    with_modified_env(no_config_env.merge(OOD_PORTAL: nil)) do
+      assert_equal 'ondemand', ConfigurationSingleton.new.portal
+    end
+  end
+
+  test "can configure portal through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_PORTAL: 'my_portal')) do
+      assert_equal 'my_portal', ConfigurationSingleton.new.portal
+    end
+  end
+
+  test "can configure portal through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'portal' => 'portal_from_file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_PORTAL: nil) do
+        assert_equal 'portal_from_file', ConfigurationSingleton.new.portal
+      end
+    end
+  end
+
+  test "portal environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'portal' => 'portal_from_file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_PORTAL: 'portal_from_env') do
+        assert_equal 'portal_from_env', ConfigurationSingleton.new.portal
+      end
+    end
+  end
+  
   test "quota_paths correctly parses OOD_QUOTA_PATH" do
     with_modified_env(no_config_env.merge(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json')) do
       assert_equal ['/path_a/quota.json', '/path_b/quota.json'], ConfigurationSingleton.new.quota_paths
