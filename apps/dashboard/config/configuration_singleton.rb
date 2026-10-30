@@ -107,6 +107,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :dashboard_dev_docs_url         => 'https://go.osu.edu/ood-app-dev',
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
@@ -312,10 +313,6 @@ class ConfigurationSingleton
 
   def batch_connect_global_cache_enabled?
     read_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
-  end
-
-  def developer_docs_url
-    ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
   end
 
   def dataroot
