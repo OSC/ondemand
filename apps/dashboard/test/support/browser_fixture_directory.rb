@@ -9,23 +9,10 @@ module BrowserFixtureDirectory
     yield directory
   end
 
-  def before_teardown
+  # Rails takes failure screenshots and resets Capybara before fixture removal.
+  def after_teardown
     super
   ensure
-    remove_browser_fixture_directories
-  end
-
-  private
-
-  def remove_browser_fixture_directories
-    directories = @browser_fixture_directories
-    return if directories.nil? || directories.empty?
-
-    begin
-      page.reset!
-    ensure
-      directories.each { |directory| FileUtils.remove_entry(directory) }
-      directories.clear
-    end
+    Array(@browser_fixture_directories).each { |directory| FileUtils.remove_entry(directory) }
   end
 end

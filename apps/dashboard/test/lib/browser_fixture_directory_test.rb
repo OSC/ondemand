@@ -1,40 +1,33 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'capybara'
+require 'minitest/mock'
 require 'action_dispatch/system_testing/test_helpers/setup_and_teardown'
 require 'action_dispatch/system_testing/test_helpers/screenshot_helper'
 require_relative '../support/browser_fixture_directory'
 
-# Exercise real Rails/Minitest teardown ordering without starting a browser.
+# Exercise Rails/Minitest teardown ordering without starting a browser.
 class BrowserFixtureDirectoryTest < ActiveSupport::TestCase
-  # Run an isolated example through Minitest's real exception-collection lifecycle.
+  # Run an isolated example through Minitest's exception-collection lifecycle.
   class Example < Minitest::Test
     include ActionDispatch::SystemTesting::TestHelpers::ScreenshotHelper
     include ActionDispatch::SystemTesting::TestHelpers::SetupAndTeardown
     include BrowserFixtureDirectory
 
     attr_reader :directory, :events
-    attr_accessor :reset_error, :screenshot_error, :body_error
 
-    def initialize
+    def initialize(body_error, screenshot_error)
       super('exercise')
+      @body_error = body_error
+      @screenshot_error = screenshot_error
       @events = []
-    end
-
-    def page
-      example = self
-      Object.new.tap do |page|
-        page.define_singleton_method(:reset!) do
-          example.events << [:reset, File.directory?(example.directory)]
-          raise example.reset_error if example.reset_error
-        end
-      end
     end
 
     def exercise
       with_browser_fixture_directory do |directory|
         @directory = directory
-        raise body_error if body_error
+        raise Minitest::Assertion, @body_error if @body_error
       end
       events << [:after_block, File.directory?(directory)]
     end
@@ -43,59 +36,34 @@ class BrowserFixtureDirectoryTest < ActiveSupport::TestCase
       return unless failed?
 
       events << [:screenshot, File.directory?(directory)]
-      raise screenshot_error if screenshot_error
+      raise @screenshot_error if @screenshot_error
     end
-
-    # The fixture helper exercises reset; no real Capybara session exists here.
-    def after_teardown; end
   end
 
-  test 'fixtures remain through the body and reset runs before removal' do
-    example = Example.new
-    result = example.run
-    assert result.passed?
-    assert_equal [[:after_block, true], [:reset, true]], example.events
-    refute File.exist?(example.directory)
-  end
+  {
+    'success'         => [nil, nil, nil],
+    'assertion'       => ['original assertion', nil, nil],
+    'reset'           => [nil, 'reset failure', nil],
+    'assertion/reset' => ['original assertion', 'reset failure', nil],
+    'screenshot'      => ['original assertion', nil, 'screenshot failure']
+  }.each do |scenario, (body_error, reset_error, screenshot_error)|
+    test "fixtures survive screenshots and reset, then are removed: #{scenario}" do
+      example = Example.new(body_error, screenshot_error)
+      reset = lambda do
+        example.events << [:reset, File.directory?(example.directory)]
+        raise reset_error if reset_error
+      end
 
-  test 'failed screenshots precede browser reset while fixtures exist' do
-    example = Example.new
-    example.body_error = Minitest::Assertion.new('original assertion')
-    result = example.run
-    assert_equal ['original assertion'], result.failures.map(&:message)
-    assert_equal [[:screenshot, true], [:reset, true]], example.events
-    refute File.exist?(example.directory)
-  end
+      result = Capybara.stub(:reset_sessions!, reset) { example.run }
 
-  test 'reset errors do not replace the original assertion' do
-    example = Example.new
-    example.body_error = Minitest::Assertion.new('original assertion')
-    example.reset_error = RuntimeError.new('reset failure')
-    result = example.run
-    assert_equal 2, result.failures.size
-    assert_match(/original assertion/, result.failures.first.message)
-    assert_match(/reset failure/, result.failures.last.message)
-    refute File.exist?(example.directory)
-  end
-
-  test 'reset errors are reported even without an earlier failure' do
-    example = Example.new
-    example.reset_error = RuntimeError.new('reset failure')
-    result = example.run
-    assert_equal 1, result.failures.size
-    assert_match(/reset failure/, result.failures.first.message)
-    refute File.exist?(example.directory)
-  end
-
-  test 'screenshot errors still reset and remove fixtures without losing the assertion' do
-    example = Example.new
-    example.body_error = Minitest::Assertion.new('original assertion')
-    example.screenshot_error = RuntimeError.new('screenshot failure')
-    result = example.run
-    assert_equal 2, result.failures.size
-    assert_match(/original assertion/, result.failures.first.message)
-    assert_match(/screenshot failure/, result.failures.last.message)
-    assert_equal [[:screenshot, true], [:reset, true]], example.events
-    refute File.exist?(example.directory)
+      expected_events = body_error ? [[:screenshot, true]] : [[:after_block, true]]
+      assert_equal expected_events + [[:reset, true]], example.events
+      expected_errors = [body_error, screenshot_error, reset_error].compact
+      assert_equal expected_errors.size, result.failures.size
+      expected_errors.zip(result.failures).each do |message, failure|
+        assert_includes failure.message, message
+      end
+      refute File.exist?(example.directory)
+    end
   end
 end
