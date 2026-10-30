@@ -1,39 +1,16 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require 'minitest/mock'
 require 'mocha/minitest'
 require 'net/http'
 require 'capybara'
 require 'capybara/selenium/driver'
 require 'selenium-webdriver'
-require 'action_dispatch/system_testing/test_helpers/setup_and_teardown'
 require_relative '../support/browser_console_logs'
 
 # Faults occur at the native log API before Capybara marks the session touched.
 class BrowserConsoleLogsCleanupTest < Minitest::Test
-  # Keep setup's original error available without running the failed body again.
-  class Example < Minitest::Test
-    include ActionDispatch::SystemTesting::TestHelpers::SetupAndTeardown
-    include BrowserConsoleLogs
-
-    attr_reader :body_calls
-
-    def initialize
-      super('exercise')
-      @body_calls = 0
-    end
-
-    def setup
-      clear_browser_logs
-    end
-
-    def exercise
-      @body_calls += 1
-    end
-
-    def take_failed_screenshot; end
-  end
+  include BrowserConsoleLogs
 
   def setup
     Capybara.register_driver(:console_cleanup_test) do |app|
@@ -47,27 +24,13 @@ class BrowserConsoleLogsCleanupTest < Minitest::Test
     @driver.instance_variable_set(:@browser, @browser)
   end
 
-  def run_example
-    example = Example.new
-    result = nil
-    output = nil
-    Capybara.stub(:reset_sessions!, -> { @session.reset! }) do
-      _stdout, output = capture_io { result = example.run }
-    end
-    [example, result, output]
-  end
-
   def test_successful_console_read_keeps_the_browser
     @logs.expects(:get).with(:browser).once.returns(['old entry'])
     @browser.expects(:quit).never
 
-    example, result, output = run_example
-
-    assert result.passed?
-    assert_equal 1, example.body_calls
+    assert_silent { assert_equal ['old entry'], clear_browser_logs }
     assert_same @driver, @session.driver
     assert_same @browser, @session.driver.browser
-    assert_empty output
   end
 
   [EOFError, Errno::ECONNREFUSED, Errno::ECONNRESET, Net::ReadTimeout,
@@ -78,11 +41,8 @@ class BrowserConsoleLogsCleanupTest < Minitest::Test
       @browser.expects(:quit).once
       @driver.expects(:reset!).never
 
-      example, result, = run_example
-
-      assert_equal 0, example.body_calls
-      assert_equal 1, result.failures.size
-      assert_same error, result.failures.first.error
+      assert_same error, assert_raises(type) { clear_browser_logs }
+      @session.reset! # The same cleanup Rails runs after a setup failure.
       refute_same @driver, @session.driver
       assert_nil @session.driver.instance_variable_get(:@browser)
     end
@@ -94,10 +54,10 @@ class BrowserConsoleLogsCleanupTest < Minitest::Test
       @logs.expects(:get).with(:browser).once.raises(error)
       @browser.expects(:quit).once.raises(type.new('native shutdown failed'))
 
-      _example, result, output = run_example
+      _stdout, output = capture_io do
+        assert_same error, assert_raises(Net::ReadTimeout) { clear_browser_logs }
+      end
 
-      assert_equal 1, result.failures.size
-      assert_same error, result.failures.first.error
       refute_same @driver, @session.driver
       assert_nil @session.driver.instance_variable_get(:@browser)
       assert_includes output, 'Browser shutdown after console error failed'
@@ -107,12 +67,14 @@ class BrowserConsoleLogsCleanupTest < Minitest::Test
   def test_session_cleanup_failure_cannot_hide_the_console_error
     error = EOFError.new('original console read failure')
     @logs.expects(:get).with(:browser).once.raises(error)
-    @session.stubs(:quit).raises(RuntimeError, 'session cleanup failed')
+    @browser.expects(:quit).once
+    @session.expects(:quit).once.raises(RuntimeError, 'session cleanup failed')
 
-    _example, result, output = run_example
+    _stdout, output = capture_io do
+      assert_same error, assert_raises(EOFError) { clear_browser_logs }
+    end
 
-    assert_equal 1, result.failures.size
-    assert_same error, result.failures.first.error
+    assert_nil @driver.instance_variable_get(:@browser)
     assert_includes output, 'Session cleanup after console error failed'
   end
 end

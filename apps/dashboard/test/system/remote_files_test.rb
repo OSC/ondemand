@@ -18,6 +18,15 @@ class RemoteFilesTest < ApplicationSystemTestCase
       messages = page.driver.browser.logs.get(:browser)
       content = messages.join("\n")
       assert_equal 0, messages.length, "console error messages include:\n\n#{content}\n\n"
+
+      # The next setup must drain logs while keeping this browser and window.
+      browser = page.driver.browser
+      window = browser.window_handle
+      page.execute_script("console.error('previous example')")
+      setup
+      assert_same browser, page.driver.browser
+      assert_equal window, browser.window_handle
+      assert_empty browser.logs.get(:browser)
     end
   end
 
