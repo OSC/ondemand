@@ -8,7 +8,6 @@ class TransferLocalJobTest < ActiveJob::TestCase
       testfile = File.join(dir, 'test')
       destfile = File.join(dir, 'dest', 'test')
       File.write(testfile, 'this is a test file')
-      FileUtils.mkpath File.dirname(destfile)
 
       # FIXME: from, name, to does not allow for copying tot he same
       # location/same directory but with a new name
@@ -17,6 +16,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # directory
       # end
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
+      transfer.expects(:percent=).with(100).once
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}"

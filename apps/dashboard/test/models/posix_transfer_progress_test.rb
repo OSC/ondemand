@@ -12,29 +12,6 @@ class PosixTransferProgressTest < ActiveSupport::TestCase
     end
   end
 
-  def perform_copy(source, destination, expected_percentages: nil)
-    transfer = PosixTransfer.build(action: 'cp', files: { source.to_s => destination.to_s })
-    percentages = []
-    transfer.define_singleton_method(:percent=) do |value|
-      percentages << value
-      @percent = value
-    end
-    transfer.perform
-    assert transfer.success?, transfer.errors.full_messages.inspect
-    assert percentages.all? { |value| (0..100).cover?(value) }, percentages.inspect
-    assert_equal expected_percentages, percentages if expected_percentages
-    assert_equal 100, transfer.percent
-    transfer
-  end
-
-  test 'creating a destination parent is not an extra copy item' do
-    with_copy do |source, destination|
-      source.join('one').write('payload')
-      perform_copy(source, destination, expected_percentages: [100])
-      assert_equal 'payload', destination.join('one').read
-    end
-  end
-
   test 'empty directories report completion only after being created' do
     with_copy do |source, destination|
       transfer = PosixTransfer.build(action: 'cp', files: { source.to_s => destination.to_s })
@@ -55,7 +32,9 @@ class PosixTransferProgressTest < ActiveSupport::TestCase
       link.make_symlink(source)
       transfer = PosixTransfer.build(action: 'cp', files: { link.to_s => destination.to_s })
       assert_equal 1, transfer.steps
-      perform_copy(link, destination)
+      transfer.expects(:percent=).with(100).once
+      transfer.perform
+      assert transfer.success?, transfer.errors.full_messages.inspect
       assert destination.symlink?
       assert_equal source, destination.readlink
     end
@@ -67,14 +46,9 @@ class PosixTransferProgressTest < ActiveSupport::TestCase
       transfer = PosixTransfer.build(action: 'cp', files: { source.to_s => destination.to_s })
       assert_equal 1, transfer.steps
       source.join('two').write('two')
-      percentages = []
-      transfer.define_singleton_method(:percent=) do |value|
-        percentages << value
-        @percent = value
-      end
+      transfer.expects(:percent=).with(100).twice
       transfer.perform
-      assert transfer.success?
-      assert percentages.all? { |value| value <= 100 }, percentages.inspect
+      assert transfer.success?, transfer.errors.full_messages.inspect
       assert_equal 'two', destination.join('two').read
     end
   end
