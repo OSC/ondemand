@@ -62,9 +62,8 @@ module NginxStage
           next if (user && user != u.to_s)
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
           socket = SocketFile.new NginxStage.pun_socket_path(user: u)
-          sessions = session_count(u)
           cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
-          if sessions.zero? || force
+          if force || session_count(u).zero?
             puts u
             if !skip_nginx
               NginxStage.clean_nginx_env(user: u)
