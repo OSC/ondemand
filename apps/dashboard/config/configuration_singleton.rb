@@ -112,8 +112,12 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
-      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
+      :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
+      :nsf_access_current_outages_url => 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/current_outages/',
+      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events',
+      :nsf_access_future_outages_url  => 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/future_outages/'
     }.freeze
   end
 
@@ -221,13 +225,14 @@ class ConfigurationSingleton
   # @return [Array<String>] quota paths
   def quota_paths
     # regex uses negative lookahead to ignore : preceding //
-    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
+    paths = ENV['OOD_QUOTA_PATH'] || config.fetch(:quota_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(/:(?!\/\/)/) }
   end
 
   # The threshold for determining if there is sufficient quota remaining
   # @return [Float] threshold factor
   def quota_threshold
-    ENV.fetch("OOD_QUOTA_THRESHOLD", 0.95).to_f
+    (ENV['OOD_QUOTA_THRESHOLD'] || config.fetch(:quota_threshold, 0.95)).to_f
   end
 
   # The paths to the JSON files that store the balance information
@@ -351,11 +356,6 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
-  # Set the login host in the Native Instructions VNC session partial
-  def native_vnc_login_host
-    ENV['OOD_NATIVE_VNC_LOGIN_HOST']
-  end
-
   # Set the global configuration directory
   def config_directory
     Pathname.new(ENV['OOD_CONFIG_D_DIRECTORY'] || "/etc/ood/config/ondemand.d")
@@ -456,20 +456,27 @@ class ConfigurationSingleton
     sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
     sources << xdmod_host if xdmod_integration_enabled?
     sources << nsf_access_events_host if nsf_access_events_widget_enabled? && nsf_access_events_host.present?
+    sources << nsf_access_announcements_host if nsf_access_announcements_widget_enabled? && nsf_access_announcements_host.present?
+    sources << nsf_access_current_outages_host if nsf_access_outages_widget_enabled? && nsf_access_current_outages_host.present?
+    sources << nsf_access_future_outages_host if nsf_access_outages_widget_enabled? && nsf_access_future_outages_host.present?
 
     sources
   end
 
   # Whether the nsf_access_events widget is configured in any dashboard layout.
   def nsf_access_events_widget_enabled?
-    return false if nsf_access_events_url.blank?
+    nsf_access_widget_enabled?('nsf_access_events', nsf_access_events_url)
+  end
 
-    layouts = [config[:dashboard_layout]]
-    config.fetch(:profiles, {}).each_value do |profile|
-      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
-    end
+  # Whether the nsf_access_announcements widget is configured in any dashboard layout.
+  def nsf_access_announcements_widget_enabled?
+    nsf_access_widget_enabled?('nsf_access_announcements', nsf_access_announcements_url)
+  end
 
-    layouts.compact.any? { |layout| layout_includes_widget?(layout, 'nsf_access_events') }
+  # Whether the nsf_access_outages widget is configured in any dashboard layout.
+  def nsf_access_outages_widget_enabled?
+    url = nsf_access_current_outages_url.presence || nsf_access_future_outages_url
+    nsf_access_widget_enabled?('nsf_access_outages', url)
   end
 
   def rails_env_production?
@@ -488,9 +495,36 @@ class ConfigurationSingleton
     app_dir = Rails.root.realpath.parent.join(name)
     app_dir.directory? && app_dir.join('manifest.yml').readable?
   end
+  
+  def nsf_access_widget_enabled?(widget_name, url)
+    return false if url.blank?
+
+    layouts = [config[:dashboard_layout]]
+    config.fetch(:profiles, {}).each_value do |profile|
+      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
+    end
+
+    layouts.compact.any? { |layout| layout_includes_widget?(layout, widget_name) }
+  end
 
   def nsf_access_events_host
-    URI.parse(nsf_access_events_url).host
+    host_from_url(nsf_access_events_url)
+  end
+
+  def nsf_access_announcements_host
+    host_from_url(nsf_access_announcements_url)
+  end
+
+  def nsf_access_current_outages_host
+    host_from_url(nsf_access_current_outages_url)
+  end
+
+  def nsf_access_future_outages_host
+    host_from_url(nsf_access_future_outages_url)
+  end
+  
+  def host_from_url(url)
+    URI.parse(url).host
   rescue URI::InvalidURIError
     nil
   end
