@@ -42,6 +42,24 @@
             "user": "efranz"
         }
     ],
+    "quotas_other": [
+        {
+            "block_limit": 10737418240,
+            "file_limit": 1000000,
+            "group": "PZS0720",
+            "path": "/fs/project",
+            "total_block_usage": 10534483488,
+            "total_file_usage": 566201
+        },
+        {
+            "block_limit": 5368709120,
+            "file_limit": 500000,
+            "group": "efranz_group",
+            "path": "/users/PAN0014",
+            "total_block_usage": 2500000,
+            "total_file_usage": 10000
+        }
+    ],
     "timestamp": 1546455993,
     "version": 1
 }
