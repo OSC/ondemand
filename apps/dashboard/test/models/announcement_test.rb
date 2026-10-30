@@ -94,6 +94,22 @@ class AnnouncementTest < ActiveSupport::TestCase
     assert_equal(true, target.valid?)
   end
 
+  test 'valid? should be false if global is false and token is missing or blank' do
+    target = Announcement.new({ msg: 'message value', global: false })
+    assert_equal(false, target.valid?)
+
+    target = Announcement.new({ msg: 'message value', global: false, token: '  ' })
+    assert_equal(false, target.valid?)
+  end
+
+  test 'valid? should be true if global is false with a token or global is not set' do
+    target = Announcement.new({ msg: 'message value', global: false, token: 'sys/bc_desktop' })
+    assert_equal(true, target.valid?)
+
+    target = Announcement.new({ msg: 'message value' })
+    assert_equal(true, target.valid?)
+  end
+
   test 'completed? should be true if announcement is dismissible and id is stored in the user settings' do
     file = "#{Rails.root}/test/fixtures/file_output/user_settings/announcements.yml" if file.blank?
     Configuration.stubs(:user_settings_file).returns(file)
