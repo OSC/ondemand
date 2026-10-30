@@ -48,6 +48,13 @@ class Announcement
     opts.fetch(:global, true)
   end
 
+  # The token of the app this announcement targets, e.g. "sys/bc_desktop"
+  # @return [String, nil] the app token if it is set
+  def token
+    token = opts.fetch(:token, nil)
+    token.blank? ? nil : token.to_s
+  end
+
   # The announcement's button text displayed for required or dismissible announcements
   #  @return [String] the button text
   def button_text
