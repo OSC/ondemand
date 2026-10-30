@@ -89,7 +89,6 @@ class ConfigurationSingleton
       :unsafe_render_html           => false,
       :open_apps_in_new_window      => true,
       :bc_ssh_to_compute_node       => true,
-      :dashboard_docs_url           => nil,
     }.freeze
   end
 
@@ -108,6 +107,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :dashboard_docs_url             => nil,
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
