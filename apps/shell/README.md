@@ -12,9 +12,110 @@ This is a guide for developing this application and assumes you have nodejs avai
 You can refer to the [documentation on customizing](https://osc.github.io/ood-documentation/latest/customization.html)
 if you're looking to update your installation.
 
+## On-screen terminal keys
+
+Use **Keys** in the Shell menu to show or hide the terminal keypad. It appears
+initially when the browser reports a coarse pointing device, including touch
+screens on computers with hardware keyboards. Your visibility choice is saved
+when browser storage is available; the default does not detect a keyboard.
+
+On short viewports, including when a software keyboard reduces the visible
+height, **More** reveals the control shortcuts, symbols, Home, End, page
+navigation and Shift Tab. **Less** collapses them again. Esc, Tab, Ctrl, Alt
+and the arrows remain available in the compact layout. Larger viewports show
+all keys. Touch targets keep their normal size in either layout. If the expanded
+keypad would leave too little terminal space, scroll within the keypad to reach
+the remaining keys. The terminal minimum grows with its font size. On extremely
+short screens the page may also need scrolling. Starting a keypad scroll gesture
+cancels a pending shortcut.
+
+Activate Ctrl or Alt once to apply it to the next key, twice to lock it, and a
+third time to turn it off. The underline identifies a locked modifier. Hiding
+the keypad or hiding the page clears armed modifiers. Arrows and page-navigation
+keys repeat while held; releasing the key, cancelling the pointer, leaving the
+window or disconnecting stops repetition. In the legacy mouse fallback, leaving
+the keypad also cancels the press; returning while still held does not resume it.
+Moving focus between the menu and terminal does not cancel other pending keys.
+
+Other keypad buttons activate on release. To cancel a pressed shortcut such as
+Ctrl-D, move away from the button before releasing. Keyboard and assistive
+technology activation also work through the buttons' normal click actions.
+Modifier cycling updates a polite status message with the modifier name and its
+one-shot, locked or off state; ordinary key repetition does not repeat that message.
+
+Modifier rules:
+
+- A one-shot modifier is consumed by the next accepted input even when it does
+  not change the bytes, as with Ctrl+Tab or Ctrl+Esc.
+- Dedicated Ctrl-C, Ctrl-Z, Ctrl-D and Ctrl-X buttons send those shortcuts
+  directly. They ignore armed modifiers and consume one-shots; locks remain on.
+- Sticky modifiers transform single-character keyboard input. Longer strings,
+  including composition, autocomplete and hardware arrow sequences, pass through
+  unchanged and consume one-shots. Paste and terminal-generated responses bypass
+  sticky modifiers and do not consume them.
+- Keypad Alt uses an ESC prefix for text (Meta), independently of hterm's
+  `alt-sends-what` preference. Navigation keys use xterm modifier parameters and
+  respect application cursor mode.
+- Shift Tab sends `ESC [ Z`, with xterm modifier parameters when Ctrl or Alt is
+  armed.
+
+### Testing the keypad
+
+With development dependencies installed, run all Shell tests with:
+
+```sh
+npm test -- --runInBand
+```
+
+The keypad integration suite renders the actual Handlebars view in jsdom and
+loads the complete bundled hterm library. It checks DOM events, focus, modifier
+state, input routing, pointer cancellation, repeat timing and viewport changes.
+It does not emulate a browser's layout engine or software keyboard.
+
+Before release, check iOS Safari and an Android browser with the software
+keyboard open in portrait and landscape. Confirm that the terminal remains
+usable, More exposes all secondary keys, modifiers affect typed input, and
+sliding away cancels shortcuts. Also check repeat release over the terminal
+iframe, simultaneous touches, keyboard dismissal and reopening, and screen
+reader announcements for the one-shot and locked states.
+
+#### Browser regression fixture
+
+Run this local fixture with the Shell dependencies installed:
+
+```sh
+node test/browser_fixture.js
+```
+
+Open the printed loopback URL. It renders this view and the bundled hterm with a
+mocked WebSocket; no SSH session is started. `shellFixture.inputs` records input
+bytes. The fixture replaces the visual viewport with a controllable test object;
+it does not emulate a physical software keyboard.
+
+1. Set the browser width to 375px. In the console, call
+   `shellFixture.setHeight(280)`, activate More, and repeat at 270px and 240px.
+   After resizing settles, check `oodShell.term.screenSize.height >= 2`. Confirm
+   that you can scroll the keypad to expose and activate the final Shift Tab key.
+2. Clear `shellFixture.inputs`. Swipe to scroll starting on Ctrl-D, and confirm
+   no `"\u0004"` was recorded. A tap on Ctrl-D must still record that byte once.
+   Check the same interaction with `?legacy=1` in the URL.
+3. With `?legacy=1`, hold an arrow, move into the terminal, and release. Input
+   must stop when the mouse leaves the keypad. For Ctrl-D, leave, return while
+   held, and release: the cancelled shortcut must not be sent.
+4. Focus a menu select, then use the keypad to restore terminal focus. Check
+   simultaneous presses and confirm another pending shortcut is preserved.
+   Switch to another application while holding an arrow and confirm input stops.
+5. Check More/Less names and Ctrl/Alt cycling with a screen reader. Confirm that
+   locked state differs from one-shot, descriptions are available, and holding
+   an arrow does not produce repeated modifier announcements.
+
+Also check larger terminal fonts, narrow screens, orientation changes, and actual
+iOS/Android software keyboards. The fixture and jsdom cannot establish those
+physical-device or assistive-technology results.
+
 ## Development
 
-First, you'll need to clone this repo and make a symlink if you haven't don so already.
+First, you'll need to clone this repo and make a symlink if you haven't done so already.
 
 ```text
 mkdir -p ~/ondemand/dev

@@ -5,10 +5,13 @@ function OodShell(element, url, profile) {
   this.profile   = profile || "default";
   this.socket  = null;
   this.term    = null;
+  this.keys    = null;
+  this.sendingMobileKey = false;
 }
 
 OodShell.prototype.createTerminal = function () {
   this.installVisualViewportSizing();
+  this.installMobileKeys();
   this.socket = new WebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
@@ -24,6 +27,7 @@ OodShell.prototype.runTerminal = function () {
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
+    that.element.style.setProperty('--terminal-font-size', this.getFontSize() + 'px');
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
@@ -39,13 +43,17 @@ OodShell.prototype.runTerminal = function () {
 
     // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
+    if (that.keys !== null && that.socket.readyState === WebSocket.OPEN) {
+      that.keys.setTerminalWindow(this.getDocument().defaultView);
+      that.keys.setEnabled(true);
+    }
   };
 
   // Patch cursor setting
   this.term.options_.cursorVisible = true;
 
   // Connect terminal to sacrificial DOM node
-  this.term.decorate(this.element);
+  this.term.decorate(this.element.querySelector('#terminal_screen'));
   this.term.setAccessibilityEnabled(true);
 
   // Warn user if he/she unloads page
@@ -132,13 +140,91 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 };
 
+// On-screen Esc/Ctrl/Alt/arrow keys for soft keyboards (see ood_shell_keys.js).
+// Touch devices show the keys by default; the menu can override that choice.
+OodShell.prototype.installMobileKeys = function () {
+  const toolbar = document.getElementById('mobile_keys');
+  const that = this;
+
+  if (!toolbar || typeof OodShellKeys === 'undefined') {
+    return;
+  }
+
+  let visible = typeof window.matchMedia === 'function' ?
+    window.matchMedia('(any-pointer: coarse)').matches : navigator.maxTouchPoints > 0;
+  try {
+    const saved = window.localStorage.getItem('ood_shell_mobile_keys');
+    if (saved === 'true' || saved === 'false') {
+      visible = saved === 'true';
+    }
+  } catch (err) {
+    // The keys still work when storage is blocked.
+  }
+
+  this.keys = new OodShellKeys(toolbar, {
+    enabled: false,
+    visible: visible,
+    compact: (window.visualViewport ?
+      window.visualViewport.height * window.visualViewport.scale : window.innerHeight) <= 480,
+    toggle: document.getElementById('mobile_keys_toggle'),
+    onVisibilityChange: function (shown) {
+      try {
+        window.localStorage.setItem('ood_shell_mobile_keys', String(shown));
+      } catch (err) {
+        // Persistence is optional.
+      }
+    },
+    focus: function () {
+      if (that.term === null) {
+        return;
+      }
+      const doc = that.term.getDocument();
+      if (document.activeElement !== doc.defaultView.frameElement ||
+          doc.activeElement !== doc.querySelector('x-screen')) {
+        that.term.focus();
+      }
+    },
+    send: function (str) {
+      return that.onMobileKeystroke(str);
+    },
+    applicationCursor: function () {
+      // vim, emacs and less switch arrow keys to application mode (ESC O A).
+      return !!(that.term && that.term.keyboard && that.term.keyboard.applicationCursor);
+    }
+  });
+};
+
+OodShell.prototype.onMobileKeystroke = function (str) {
+  if (this.term === null || this.socket === null || this.socket.readyState !== WebSocket.OPEN) {
+    return false;
+  }
+
+  // Let hterm scroll to the live cursor, update blinking, and use its current
+  // foreground IO. Toolbar bytes are already encoded, so do not modify them
+  // again in onVTKeystroke (especially one-tap shortcuts such as ^C).
+  const previous = this.sendingMobileKey;
+  this.sendingMobileKey = true;
+  try {
+    this.term.onVTKeystroke(str);
+  } finally {
+    this.sendingMobileKey = previous;
+  }
+  return true;
+};
+
 OodShell.prototype.installVisualViewportSizing = function () {
   const viewport = window.visualViewport;
   const element = this.element;
+  const that = this;
   let resizeFrame = null;
   let lastHeight = null;
 
   if (!viewport) {
+    window.addEventListener('resize', function () {
+      if (that.keys !== null) {
+        that.keys.setCompact(window.innerHeight <= 480);
+      }
+    });
     return;
   }
 
@@ -152,6 +238,9 @@ OodShell.prototype.installVisualViewportSizing = function () {
       // introduce small precision differences in height * scale.
       const height = Math.round(viewport.height * viewport.scale);
 
+      if (height > 0 && that.keys !== null) {
+        that.keys.setCompact(height <= 480);
+      }
       if (height > 0 && height !== lastHeight) {
         element.style.height = height + 'px';
         lastHeight = height;
@@ -176,6 +265,11 @@ OodShell.prototype.closeTerminal = function (ev) {
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
 
+  // The on-screen keys have nothing to talk to anymore
+  if (this.keys !== null) {
+    this.keys.disable();
+  }
+
   // Inform user they lost connection
   if ( this.term === null ) {
     errorDiv = document.createElement('div');
@@ -193,19 +287,27 @@ OodShell.prototype.closeTerminal = function (ev) {
   }
 }
 
-OodShell.prototype.onVTKeystroke = function (str) {
-  // Do something useful with str here.
-  // For example, Secure Shell forwards the string onto the NaCl plugin.
+// Send bytes to the remote shell as-is.
+OodShell.prototype.sendInput = function (str) {
+  if (this.socket === null || this.socket.readyState !== WebSocket.OPEN) {
+    return;
+  }
+
   this.socket.send(JSON.stringify({
     input: str
   }));
 };
 
+OodShell.prototype.onVTKeystroke = function (str) {
+  // Text typed by the user. Apply any Ctrl/Alt armed on the on-screen keys.
+  this.sendInput(this.keys === null || this.sendingMobileKey ? str : this.keys.transform(str));
+};
+
 OodShell.prototype.sendString = function (str) {
-  // Just like a keystroke, except str was generated by the
-  // terminal itself.
-  // Most likely you'll do the same this as onVTKeystroke.
-  this.onVTKeystroke(str)
+  // Unlike a keystroke, str was generated by the terminal itself (focus
+  // reports, device status replies, paste, scroll-to-arrow conversion), so
+  // armed modifiers must not apply to it or be used up by it.
+  this.sendInput(str);
 };
 
 OodShell.prototype.changeTheme = function (theme) {
@@ -213,6 +315,8 @@ OodShell.prototype.changeTheme = function (theme) {
 }
 
 OodShell.prototype.onTerminalResize = function (columns, rows) {
+  // Keep the terminal minimum useful when hterm's keyboard shortcuts resize text.
+  this.element.style.setProperty('--terminal-font-size', this.term.getFontSize() + 'px');
   // React to size changes here.
   // Secure Shell pokes at NaCl, which eventually results in
   // some ioctls on the host.
