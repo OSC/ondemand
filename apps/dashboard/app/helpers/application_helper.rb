@@ -130,6 +130,22 @@ module ApplicationHelper
     end
   end
 
+  # Whether the user has Safe Viewing enabled in ~/.config/ondemand/settings.yml
+  def safe_viewing_enabled?
+    return false unless Configuration.dark_mode_enabled?
+
+    ActiveModel::Type::Boolean.new.cast(@user_configuration&.user_settings&.[](:safe_viewing))
+  end
+  
+  # Renders default OOD logos for light and safe-viewing themes
+  def safe_viewing_logo_tags(light:, dark:, alt:, height:, classes: '')
+    logo_class = ['ood-logo', classes].compact.join(' ').strip
+    safe_join([
+      image_tag(light, alt: alt, height: height, class: "#{logo_class} ood-logo--light"),
+      image_tag(dark, alt: alt, height: height, class: "#{logo_class} ood-logo--dark d-none")
+    ])
+  end
+
   # Assigns a bootstrap class corresponding to the status of a job
   def status_class(status)
     case status

@@ -73,6 +73,27 @@ div#directory_browser td a {
   outline: 0.15em solid rgb(36, 36, 36);
 }
 
+[data-bs-theme="dark"] .thin-outline {
+  outline-color: var(--bs-border-color);
+}
+
+[data-bs-theme="dark"] .project-icon {
+  color: var(--bs-emphasis-color);
+  background-color: var(--bs-body-bg);
+
+  i,
+  .fa,
+  .fas,
+  .far,
+  .fab {
+    color: var(--bs-emphasis-color);
+  }
+
+  .project-title {
+    color: var(--bs-emphasis-color);
+  }
+}
+
 .button-icon {
   font-size: 175%;
   margin-left: 2rem;
