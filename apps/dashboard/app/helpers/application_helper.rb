@@ -35,10 +35,6 @@ module ApplicationHelper
     ENV['OOD_DASHBOARD_SUPPORT_URL']
   end
 
-  def docs_url
-    ENV['OOD_DASHBOARD_DOCS_URL']
-  end
-
   def configure_2fa_url
     ENV['OOD_DASHBOARD_2FA_URL']
   end

@@ -88,7 +88,8 @@ class ConfigurationSingleton
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
       :open_apps_in_new_window      => true,
-      :bc_ssh_to_compute_node => true,
+      :bc_ssh_to_compute_node       => true,
+      :dashboard_docs_url           => nil,
     }.freeze
   end
 
