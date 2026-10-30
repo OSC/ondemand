@@ -3,7 +3,15 @@
 require 'watir'
 
 def new_browser
-  Watir::Browser.new :chrome, headless: true, options: { args: ['--disable-dev-shm-usage'] }
+  # ARM runners provide Firefox and geckodriver rather than Chrome.
+  case ENV.fetch('OOD_E2E_BROWSER', 'chrome')
+  when 'chrome'
+    Watir::Browser.new :chrome, headless: true, options: { args: ['--disable-dev-shm-usage'] }
+  when 'firefox'
+    Watir::Browser.new :firefox, headless: true
+  else
+    raise ArgumentError, "Unsupported E2E browser: #{ENV['OOD_E2E_BROWSER']}"
+  end
 end
 
 def ctr_base_url
