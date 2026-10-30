@@ -39,6 +39,9 @@ OodShell.prototype.runTerminal = function () {
 
     // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
+
+    // Pinching with two fingers changes the font size.
+    that.installPinchZoom(this);
   };
 
   // Patch cursor setting
@@ -129,6 +132,80 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
   screen.addEventListener('touchcancel', function () {
     touchStart = null;
+  }, touchOptions);
+};
+
+// Claim two-finger moves before hterm scrolls; use its normal font resize path.
+OodShell.prototype.installPinchZoom = function (term) {
+  const screen = term.getDocument().querySelector('x-screen');
+  if (!screen) {
+    return;
+  }
+
+  const touchOptions = { passive: false, capture: true };
+  let pinch = null;
+  let nextSize = null;
+  let pendingFrame = null;
+
+  const distanceBetween = function (touches) {
+    return Math.hypot(touches[0].clientX - touches[1].clientX,
+                      touches[0].clientY - touches[1].clientY);
+  };
+
+  const resize = function () {
+    pendingFrame = null;
+    if (nextSize !== term.getFontSize()) {
+      term.setFontSize(nextSize);
+    }
+  };
+
+  // Flush normal transitions, discard cancelled moves, and rebase any new pair.
+  const updatePinch = function (ev) {
+    if (pendingFrame !== null) {
+      window.cancelAnimationFrame(pendingFrame);
+      pendingFrame = null;
+      if (ev.type !== 'touchcancel') {
+        resize();
+      }
+    }
+
+    // hterm skipped pinch moves. Refresh its private cache before scrolling resumes.
+    const lastTouch = term.scrollPort_ && term.scrollPort_.lastTouch_;
+    if (pinch && lastTouch) {
+      for (const touch of ev.touches) {
+        lastTouch[touch.identifier] = {
+          id: touch.identifier, x: touch.clientX, y: touch.clientY
+        };
+      }
+    }
+
+    pinch = null;
+    if (ev.type !== 'touchcancel' && ev.touches.length === 2) {
+      const distance = distanceBetween(ev.touches);
+      if (distance > 0) {
+        pinch = { distance, size: term.getFontSize() };
+      }
+    }
+  };
+  ['touchstart', 'touchend', 'touchcancel'].forEach(function (type) {
+    screen.addEventListener(type, updatePinch, touchOptions);
+  });
+
+  screen.addEventListener('touchmove', function (ev) {
+    if (!pinch || ev.touches.length !== 2) {
+      return;
+    }
+    // hterm skips events that are already defaultPrevented.
+    ev.preventDefault();
+    const distance = distanceBetween(ev.touches);
+    if (distance <= 0) {
+      return;
+    }
+    nextSize = Math.min(40, Math.max(8,
+        Math.round(pinch.size * distance / pinch.distance)));
+    if (pendingFrame === null) {
+      pendingFrame = window.requestAnimationFrame(resize);
+    }
   }, touchOptions);
 };
 
