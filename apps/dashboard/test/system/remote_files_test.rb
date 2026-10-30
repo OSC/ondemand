@@ -1,12 +1,15 @@
 require 'application_system_test_case'
 require 'rclone_helper'
+require_relative '../support/browser_console_logs'
 
 class RemoteFilesTest < ApplicationSystemTestCase
+  include BrowserConsoleLogs
+
   MAX_WAIT = 120
 
   def setup
     # we want to clear the console logs from any previous test.
-    Capybara.current_session.quit
+    clear_browser_logs
   end
 
   test "visiting files app doesn't raise js errors" do
@@ -15,6 +18,15 @@ class RemoteFilesTest < ApplicationSystemTestCase
       messages = page.driver.browser.logs.get(:browser)
       content = messages.join("\n")
       assert_equal 0, messages.length, "console error messages include:\n\n#{content}\n\n"
+
+      # The next setup must drain logs while keeping this browser and window.
+      browser = page.driver.browser
+      window = browser.window_handle
+      page.execute_script("console.error('previous example')")
+      setup
+      assert_same browser, page.driver.browser
+      assert_equal window, browser.window_handle
+      assert_empty browser.logs.get(:browser)
     end
   end
 
