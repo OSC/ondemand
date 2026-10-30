@@ -1138,6 +1138,98 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
   
+  test "nsf_access_outages_widget_enabled? is false when widget is not in dashboard layout" do
+    with_modified_env(no_config_env) do
+      cfg = ConfigurationSingleton.new
+      refute cfg.nsf_access_outages_widget_enabled?
+    end
+  end
+
+  test "nsf_access_outages_widget_enabled? is true when widget is in dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_outages'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_outages_widget_enabled?
+      end
+    end
+  end
+
+  test "nsf_access_outages_widget_enabled? is true when widget is in a profile dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'profiles' => {
+              'team1' => {
+                'dashboard_layout' => {
+                  'rows' => [
+                    { 'columns' => [{ 'width' => 12, 'widgets' => ['motd', 'nsf_access_outages'] }] }
+                  ]
+                }
+              }
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_outages_widget_enabled?
+      end
+    end
+  end
+
+  test "connect_sources includes nsf_access_outages hostname when widget is enabled" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_outages'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, :self
+        assert_includes sources, 'operations-api.access-ci.org'
+        refute_includes sources, 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/current_outages/'
+      end
+    end
+  end
+
+  test "connect_sources uses configured nsf_access_outages hostname" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({
+        OOD_CONFIG_D_DIRECTORY:             dir.to_s,
+        OOD_NSF_ACCESS_CURRENT_OUTAGES_URL: 'https://outages.example.org/current/',
+        OOD_NSF_ACCESS_FUTURE_OUTAGES_URL:  'https://outages.example.org/future/'
+      }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_outages'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, 'outages.example.org'
+        refute_includes sources, 'operations-api.access-ci.org'
+      end
+    end
+  end
+  
   test "handles exception LoadError" do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
