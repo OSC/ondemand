@@ -246,26 +246,20 @@ OodShell.prototype.installMobileSelection = function (term) {
   let previousDefaultCopy;
   let previousOverscrollBehavior;
   let selectionVersion = 0;
-  let selectionSession = 0;
 
   const updateSelection = () => {
     selectionVersion++;
-    if (!selecting || !this.hasActiveSelection(term)) {
-      // A tap on Copy can move focus and collapse the iframe selection before
-      // its click event; keep the snapshot until that gesture finishes.
-      if (!buttonTouch) {
-        selectedText = null;
-        copyButton.disabled = true;
-      }
-      return;
+    const active = selecting && this.hasActiveSelection(term);
+    // Preserve the snapshot if tapping Copy collapses the iframe selection.
+    if (active || !buttonTouch) {
+      selectedText = active ? term.getSelectionText() : null;
+      copyButton.disabled = !selectedText || !canCopy;
     }
-    selectedText = term.getSelectionText();
-    copyButton.disabled = !selectedText || !canCopy;
   };
 
   const endSelection = () => {
     selecting = false;
-    selectionSession++;
+    selectionVersion++;
     window.clearTimeout(releaseTimer);
     buttonTouch = false;
     screen.style.overscrollBehavior = previousOverscrollBehavior;
@@ -293,7 +287,7 @@ OodShell.prototype.installMobileSelection = function (term) {
       return;
     }
     selecting = true;
-    selectionSession++;
+    selectionVersion++;
     previousOverscrollBehavior = screen.style.overscrollBehavior;
     screen.style.overscrollBehavior = 'contain';
     previousEditable = screen.getAttribute('contenteditable');
@@ -334,7 +328,7 @@ OodShell.prototype.installMobileSelection = function (term) {
     buttonTouch = false;
     updateSelection();
   }, { passive: true });
-  copyButton.addEventListener('click', () => {
+  copyButton.addEventListener('click', async () => {
     const text = selectedText;
     window.clearTimeout(releaseTimer);
     buttonTouch = false;
@@ -344,37 +338,27 @@ OodShell.prototype.installMobileSelection = function (term) {
     }
     // Call writeText directly in the click handler to retain user activation.
     // Do not clear a newer selection while the clipboard request is pending.
-    const session = selectionSession;
     const version = selectionVersion;
-    const copyFailed = () => {
+    try {
+      await clipboard.writeText(text);
+      if (selecting && version === selectionVersion) {
+        endSelection();
+      }
+      status.textContent = 'Copied.';
+    } catch (error) {
       status.textContent = 'Copy failed. Select text again and use the browser Copy menu.';
       updateSelection();
-    };
-    try {
-      clipboard.writeText(text).then(() => {
-        if (selecting && session === selectionSession && version === selectionVersion) {
-          endSelection();
-        }
-        status.textContent = 'Copied.';
-      }).catch(copyFailed);
-    } catch (error) {
-      copyFailed();
     }
   });
-  pasteButton.addEventListener('click', () => {
+  pasteButton.addEventListener('click', async () => {
     if (!canPaste) return;
     // hterm's paste() does not expose or handle readText rejection. Its paste
     // data handler preserves its newline and bracketed-paste processing.
-    const pasteFailed = () => {
-      status.textContent = 'Paste failed. Check clipboard permission.';
-    };
     try {
-      clipboard.readText().then((text) => {
-        term.onPasteData_(text);
-        status.textContent = 'Pasted.';
-      }).catch(pasteFailed);
+      term.onPasteData_(await clipboard.readText());
+      status.textContent = 'Pasted.';
     } catch (error) {
-      pasteFailed();
+      status.textContent = 'Paste failed. Check clipboard permission.';
     }
   });
 };

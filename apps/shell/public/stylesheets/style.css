@@ -81,12 +81,10 @@ iframe {
   flex: 0 0 auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
   gap: 0.25rem;
   padding: 0.25rem;
   background-color: #222;
   border: 1px solid #444;
-
 }
 
 .ood-selection-toolbar-btn {
