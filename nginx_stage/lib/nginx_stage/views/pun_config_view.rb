@@ -145,6 +145,70 @@ module NginxStage
       NginxStage.disable_bundle_user_config
     end
 
+    # Whether mTLS proxying to compute nodes is enabled
+    # @return [Boolean] mTLS proxy enabled
+    def mtls_enabled?
+      NginxStage.pun_mtls_enabled
+    end
+
+    # Path to the mTLS client certificate
+    # @return [String] path to client cert
+    def mtls_client_cert_path
+      File.join(NginxStage.mtls_pki_dir(user: user), 'client.crt')
+    end
+
+    # Path to the mTLS client private key
+    # @return [String] path to client key
+    def mtls_client_key_path
+      File.join(NginxStage.mtls_pki_dir(user: user), 'client.key')
+    end
+
+    # Path to the mTLS CA certificate
+    # @return [String] path to CA cert
+    def mtls_ca_cert_path
+      File.join(NginxStage.mtls_pki_dir(user: user), 'ca.crt')
+    end
+
+    # Regex pattern for allowed mTLS proxy target hosts
+    # @return [String] host regex
+    def mtls_host_regex
+      NginxStage.pun_mtls_host_regex
+    end
+
+    # DNS resolver for nginx variable-based proxy_pass
+    # @return [String] resolver address(es)
+    def mtls_resolver
+      NginxStage.pun_mtls_resolver
+    end
+
+    # Expected CN of the upstream server's certificate for SSL name verification
+    # Headers to strip when proxying to compute nodes
+    # @return [Array<String>] list of header names
+    def strip_proxy_headers
+      %w[
+        Authorization
+        X-Forwarded-User
+        OIDC_CLAIM_sub
+        OIDC_CLAIM_preferred_username
+        OIDC_CLAIM_given_name
+        OIDC_CLAIM_zoneinfo
+        OIDC_CLAIM_locale
+        OIDC_CLAIM_email
+        OIDC_CLAIM_email_verified
+        OIDC_CLAIM_iss
+        OIDC_CLAIM_nonce
+        OIDC_CLAIM_aud
+        OIDC_CLAIM_acr
+        OIDC_CLAIM_azp
+        OIDC_CLAIM_auth_time
+        OIDC_CLAIM_exp
+        OIDC_CLAIM_iat
+        OIDC_CLAIM_jti
+        OIDC_access_token
+        OIDC_access_token_expires
+      ]
+    end
+
     # View used to confirm whether the user wants to restart the PUN to reload
     # configuration changes
     # @return [String] restart confirmation view
