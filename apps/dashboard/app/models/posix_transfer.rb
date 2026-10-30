@@ -47,10 +47,7 @@ class PosixTransfer < Transfer
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
     elsif copy?
-      @steps = files.keys.map do |source|
-        path = Pathname.new(source)
-        path.directory? ? Dir["#{source}/**/*"].length : 1
-      end.sum
+      @steps = files.keys.sum { |source| copy_work_items(Pathname.new(source)) }
     elsif remove?
       @steps = names.size
     else
@@ -60,6 +57,19 @@ class PosixTransfer < Transfer
 
     @steps
   end
+
+  # Count the same leaves as cp_r, including hidden files and directory symlinks.
+  def copy_work_items(path)
+    return 1 if path.file? || path.symlink?
+    return 0 unless path.directory?
+
+    children = path.children
+    children.empty? ? 1 : children.sum { |child| copy_work_items(child) }
+  rescue SystemCallError
+    # The copy loop reports inaccessible sources and continues with the batch.
+    0
+  end
+  private :copy_work_items
 
   # PosixTransfer no longer issues CLI commands to transfer files.
   def commands
@@ -142,9 +152,9 @@ class PosixTransfer < Transfer
     if src.file? || src.symlink?
       cp_single(src, new_dest)
     elsif src.directory? && src.empty?
-      inc_cp_percent
       # TODO: probably need to preserve permissions here.
       FileUtils.mkdir_p(new_dest)
+      inc_cp_percent
     elsif src.directory? && !src.empty?
       src.each_child { |child| cp_r(child, dest, original_src) }
     end
@@ -153,10 +163,7 @@ class PosixTransfer < Transfer
   def cp_single(src, dest)
     dest_parent = dest.parent.to_s
     # TODO: probably need to preserve permissions here.
-    unless File.exist?(dest_parent)
-      FileUtils.mkdir_p(dest_parent)
-      inc_cp_percent
-    end
+    FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
 
     if src.symlink?
 

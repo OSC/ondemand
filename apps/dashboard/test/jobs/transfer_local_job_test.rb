@@ -8,7 +8,6 @@ class TransferLocalJobTest < ActiveJob::TestCase
       testfile = File.join(dir, 'test')
       destfile = File.join(dir, 'dest', 'test')
       File.write(testfile, 'this is a test file')
-      FileUtils.mkpath File.dirname(destfile)
 
       # FIXME: from, name, to does not allow for copying tot he same
       # location/same directory but with a new name
@@ -17,6 +16,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # directory
       # end
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
+      transfer.expects(:percent=).with(100).once
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}"
@@ -103,63 +103,26 @@ class TransferLocalJobTest < ActiveJob::TestCase
   end
 
 
-  def worst_case_update_calls(src_paths)
-    # This method computes the maximum number of update calls from the copy
-    # in the next test. There is guaranteed to be a call for each file and
-    # empty directory, but depending on filesystem order the number of mkdir_p
-    # calls can vary. This method assumes that every directory with a file child
-    # gets mkdir_p called on the file child before it gets called on a subdirectory,
-    # giving us an upper bound on how many calls we should expect.
-
-    files = 0
-    empty_dirs = 0
-    dirs_with_direct_children = Set.new
-
-    walk = ->(path) {
-      path = Pathname.new(path)
-      if path.file? || path.symlink?
-        files += 1
-      elsif path.directory?
-        if path.children.empty?
-          empty_dirs += 1
-        else
-          dirs_with_direct_children.add(path) if path.children.any? { |c| c.file? || c.symlink? }
-          path.children.each { |c| walk.call(c) }
-        end
-      end
-    }
-
-    src_paths.each { |sp| walk.call(sp) }
-    files + empty_dirs + dirs_with_direct_children.size
-  end
-
-
-  # FIXME: need to change this interface to something simpler
-  # and then use validations to limit the scope
   test "copy updates progress once per item copied" do
     Dir.mktmpdir do |dir|
-      src_paths = Rails.root.join('app').children
-      destdir = File.join(dir, 'dest').tap { |path| FileUtils.mkpath(path.to_s) }
-      dest_paths = src_paths.map { |path| "#{dir}/dest/#{File.basename(path)}" }
-      input = src_paths.zip(dest_paths).to_h
+      src = Pathname.new(dir).join('src')
+      src.mkpath
+      src.join('one').write('one')
+      src.join('.hidden').write('hidden')
+      src.join('empty').mkpath
+      dest = Pathname.new(dir).join('dest')
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
 
-
-      # this tests the number of calls to update_progress
-      # note: progress.percent is not called because this mocks the method
-      num_paths = src_paths.map do |path|
-        Dir["#{path}/**/*"].length
-      end.sum
-
-      transfer = PosixTransfer.build(action: 'cp', files: input)
-      assert_equal(num_paths, transfer.steps)
-      # The difference here depends on the file traversal order, since some mkdir_p 
-      # calls create more paths than others. See worst_case_update_calls for more info
-      transfer.expects(:percent=).times(num_paths..worst_case_update_calls(src_paths))
-
+      assert_equal 3, transfer.steps
+      transfer.expects(:percent=).with(33).once
+      transfer.expects(:percent=).with(66).once
+      transfer.expects(:percent=).with(100).once
       transfer.perform
 
-      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
-      assert_equal '', `diff -r #{destdir} #{Rails.root.join('app')}`.strip
+      assert transfer.success?, transfer.errors.full_messages.inspect
+      assert_equal 'one', dest.join('one').read
+      assert_equal 'hidden', dest.join('.hidden').read
+      assert dest.join('empty').directory?
     end
   end
 

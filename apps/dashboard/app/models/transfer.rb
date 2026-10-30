@@ -111,7 +111,8 @@ class Transfer
   end
 
   def update_percent(step)
-    self.percent = steps.zero? ? 100 : (100.0 * (step.to_f / steps)).to_i
+    percent = steps.zero? ? 100 : (100.0 * (step.to_f / steps)).to_i
+    self.percent = [percent, 100].min
   end
 
   def perform_later
