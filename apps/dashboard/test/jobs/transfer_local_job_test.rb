@@ -5,10 +5,6 @@ class TransferLocalJobTest < ActiveJob::TestCase
     ActiveJob::QueueAdapters::TestAdapter.new
   end
 
-  teardown do
-    Transfer.transfers.clear
-  end
-
   test "copy job copies a file" do
     Dir.mktmpdir do |dir|
       testfile = File.join(dir, 'test')
@@ -100,13 +96,14 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
       transfer.save
-      assert_enqueued_with(job: TransferLocalJob, args: [transfer]) do
-        job = TransferLocalJob.perform_later(transfer)
-        assert_not_nil job.job_id
-      end
+      job = TransferLocalJob.perform_later(transfer)
+      assert_not_nil job.job_id
+      assert_enqueued_with(job: TransferLocalJob, args: [transfer])
       assert transfer.status.queued?
       refute File.exist?(destfile), 'a queued job must not copy files during this example'
     end
+  ensure
+    Transfer.transfers.clear
   end
 
 
