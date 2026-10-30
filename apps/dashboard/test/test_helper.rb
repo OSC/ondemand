@@ -139,7 +139,7 @@ module ActiveSupport
     end
 
     def sys_bc_app(app: 'bc_paraview')
-      r = SysRouter.new(app)
+      r = SysRouter.new(app, prefix: :sys)
       BatchConnect::App.new(router: r)
     end
 
