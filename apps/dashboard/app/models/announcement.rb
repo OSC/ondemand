@@ -55,6 +55,14 @@ class Announcement
     token.blank? ? nil : token.to_s
   end
 
+  def applies_to?(request_token)
+    return true if global?
+    return false if !token
+    return true if request_token == token
+    return true if request_token.start_with(token + '/')
+    false
+  end
+
   # The announcement's button text displayed for required or dismissible announcements
   #  @return [String] the button text
   def button_text
