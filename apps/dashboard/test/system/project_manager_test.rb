@@ -1681,11 +1681,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
       assert_selector('#load-import-pane.collapse.show:not(.collapsing)')
       within('#load-import-pane') do
-        assert_selector('#project_directory:enabled')
-        assert_selector('#import_project:enabled')
         fill_in('project_directory', with: source.to_s)
-        assert_field('project_directory', with: source.to_s)
-        find('#import_project').click
+        find('#import_project:enabled').click
       end
 
       assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))

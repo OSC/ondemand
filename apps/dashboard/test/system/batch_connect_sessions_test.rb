@@ -228,8 +228,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       identities.each do |identity|
         # A second replacement also proves that polling continues after restoration.
         2.times do
-          focus_session_control(card_id, identity)
-          assert_replaced_session_focus(card_id, identity)
+          assert_session_focus_restored(card_id, identity)
         end
       end
 
@@ -237,8 +236,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
         identity['tag'] == 'button' && identity['id'].empty? && !identity['text'].strip.empty?
       end
       assert_not_nil classless, 'Expected the Jupyter card to contain a visible, enabled, ID-less button with text'
-      focus_session_control(card_id, classless, classless: true)
-      assert_replaced_session_focus(card_id, classless)
+      assert_session_focus_restored(card_id, classless, classless: true)
     end
   end
 
@@ -283,7 +281,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       const describe = element => ({
         tag: element.tagName.toLowerCase(),
         id: element.id,
-        classes: Array.from(element.classList).sort(),
+        classes: Array.from(element.classList).sort().join(' '),
         text: element.textContent,
         name: element.getAttribute('name'),
         type: element.getAttribute('type'),
@@ -292,17 +290,14 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     JS
   end
 
-  # Mark the card and focus the uniquely identified control in the same browser turn.
-  def focus_session_control(card_id, identity, classless: false)
+  # Focus a unique control, then observe its replacement and restored focus together.
+  def assert_session_focus_restored(card_id, identity, classless: false)
     result = evaluate_script <<~JS
       (() => {
         #{session_focus_dom(card_id)}
         const identity = #{identity.to_json};
-        const matches = controls.filter(element => {
-          const candidate = describe(element);
-          return Object.keys(identity).every(key =>
-            JSON.stringify(candidate[key]) === JSON.stringify(identity[key]));
-        });
+        const matches = controls.filter(element =>
+          Object.entries(describe(element)).every(([key, value]) => value === identity[key]));
         if (matches.length !== 1) return { matches: matches.length, focused: false };
         card.dataset.focusTestMarker = 'original';
         const target = matches[0];
@@ -312,10 +307,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       })()
     JS
     assert_equal({ 'matches' => 1, 'focused' => true }, result)
-  end
 
-  # Replacement and the active element's card/identity must agree in one snapshot.
-  def assert_replaced_session_focus(card_id, identity)
     expected = { 'marker' => nil, 'card' => card_id, 'identity' => identity }
     snapshot = nil
     page.document.synchronize(errors: [Capybara::ExpectationNotMet]) do

@@ -14,23 +14,22 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   setup do
     stub_sys_apps
     Configuration.stubs(:module_file_dir).returns(Rails.root.join('test/fixtures/modules/browser'))
+    visit module_browser_url
+    assert_module_results(MODULE_NAMES)
   end
 
   test 'searching by module name filters results' do
-    visit module_browser_url
-    assert_module_results(MODULE_NAMES)
-
     fill_in 'module_search', with: 'GCC'
     assert_module_results(['gcc', 'gcc-tools'], search: 'GCC')
+
+    fill_in 'module_search', with: 'nonexistent_module'
+    assert_module_results([], search: 'nonexistent_module')
 
     fill_in 'module_search', with: ''
     assert_module_results(MODULE_NAMES)
   end
 
   test 'filtering by cluster only shows supported modules' do
-    visit module_browser_url
-    assert_module_results(MODULE_NAMES)
-
     CLUSTER_MODULES.each do |cluster, names|
       find("#cluster_filter option[value='#{cluster}']").select_option
       assert_module_results(names, cluster: cluster)
@@ -41,9 +40,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   end
 
   test 'search and cluster filters apply together' do
-    visit module_browser_url
-    assert_module_results(MODULE_NAMES)
-
     fill_in 'module_search', with: 'gcc'
     assert_module_results(['gcc', 'gcc-tools'], search: 'gcc')
     find('#cluster_filter option[value="oakley"]').select_option
@@ -61,9 +57,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   end
 
   test 'multiple search inputs leave results matching the final value' do
-    visit module_browser_url
-    assert_module_results(MODULE_NAMES)
-
     # Check the final result after a burst of input events, without asserting debounce timing.
     execute_script <<~JS
       const search = document.getElementById('module_search');
@@ -76,9 +69,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   end
 
   test 'module button expands and collapses the module details' do
-    visit module_browser_url
-    assert_module_results(MODULE_NAMES)
-
     first_module = find(MODULE_BTN_SELECT, match: :first)
     collapse_id = first_module['data-bs-target']
 
@@ -93,9 +83,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   end
 
   test 'selecting a version updates the load command' do
-    visit module_browser_url
-    assert_module_results(MODULE_NAMES)
-
     first_module = find(MODULE_BTN_SELECT, match: :first)
     first_module.click
     assert_selector("#{MODULE_BTN_SELECT}.active")
@@ -107,17 +94,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
     version_button.click
     assert_selector('button[data-role="selectable-version"].active', text: version, exact_text: true)
     assert_selector('[data-role="module-load-command"]', exact_text: "module load #{module_name}/#{version}")
-  end
-
-  test 'updates results count when filtering' do
-    visit module_browser_url
-    assert_module_results(MODULE_NAMES)
-
-    fill_in 'module_search', with: 'nonexistent_module'
-    assert_module_results([], search: 'nonexistent_module')
-
-    fill_in 'module_search', with: ''
-    assert_module_results(MODULE_NAMES)
   end
 
   private
