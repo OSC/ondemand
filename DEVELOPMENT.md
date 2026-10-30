@@ -12,8 +12,10 @@ is the preferred method as you'll have direct access to the HPC cluster you're s
     1. [Getting started developing the dashboard](#getting-started-developing-the-dashboard)
     2. [Building the dashboard](#building-the-dashboard)
     3. [Re-compiling Javascript](#re-compiling-javascript)
-    4. [Developing ood_core](#developing-ood_core)
-    5. [Customizing the dashboard](#customizing-the-dashboard)
+    4. [Testing the dashboard](#testing-the-dashboard)
+        1. [Diagnosing browser-session recovery](#diagnosing-browser-session-recovery)
+    5. [Developing ood_core](#developing-ood_core)
+    6. [Customizing the dashboard](#customizing-the-dashboard)
 2. [Fullstack container](#fullstack-container)
     1. [Getting started with the fullstack container](#getting-started-with-the-fullstack-container)
     2. [Login to the container](#login-to-the-container)
@@ -96,6 +98,20 @@ Note that before system tests can be run this way, **you must compile the testin
 - `bin/rails test path/to/file -n 'test name'` to run an individual test
 
 Additional options and syntax for the Rails test runner can be found in the [Rails test runner guide](https://guides.rubyonrails.org/v7.2/testing.html#the-rails-test-runner).
+
+#### Diagnosing browser-session recovery
+
+After preparing the normal Dashboard test dependencies and assets, run the
+browser recovery diagnostic in its own terminal process from `apps/dashboard`:
+
+```bash
+bundle exec ruby -Itest test/diagnostics/browser_session_cleanup.rb
+```
+
+This diagnostic deliberately closes Chrome. It verifies that the failed example
+is retained and a following example can navigate using a new browser. Its filename
+does not match `*_test.rb`, so ordinary unit and system test discovery excludes it.
+Keep it separate from the normal suite to avoid disrupting other browser tests.
 
 ### Developing ood_core
 
