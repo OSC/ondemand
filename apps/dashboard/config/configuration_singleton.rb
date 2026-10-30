@@ -400,7 +400,7 @@ class ConfigurationSingleton
   end
 
   def allowlist_paths
-    paths = ENV['OOD_ALLOWLIST_PATH'] || config.fetch(:allowlist_path, [])
+    paths = ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || config.fetch(:allowlist_path, [])
     Array.wrap(paths).flat_map { |path| path.to_s.strip.split(':') }.map { |s| Pathname.new(s) }
   end
 
