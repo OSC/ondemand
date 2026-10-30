@@ -14,17 +14,6 @@ def new_browser
   end
 end
 
-# Verify the target container, which may have a different CPU from the runner.
-def verify_host_architecture
-  expected = ENV['OOD_E2E_EXPECTED_ARCH']
-  return if expected.nil? || expected.empty?
-
-  hosts.each do |host|
-    actual = on(host, 'uname -m').stdout.strip
-    raise "#{host}: expected architecture #{expected}, got #{actual}" unless actual == expected
-  end
-end
-
 def ctr_base_url
   'http://localhost:8080'
 end

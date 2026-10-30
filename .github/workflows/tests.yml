@@ -222,7 +222,6 @@ jobs:
         env:
           BEAKER_set: ${{ matrix.arch == 'x86_64' && matrix.dist || format('{0}-{1}', matrix.dist, matrix.arch) }}
           OOD_BUILD_REPO: ${{ matrix.version }}
-          OOD_E2E_EXPECTED_ARCH: ${{ matrix.arch }}
 
       - name: Debug failure
         if: failure()

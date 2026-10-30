@@ -7,7 +7,6 @@ RSpec.configure do |c|
   # Readable test descriptions
   c.formatter = :documentation
   c.before(:suite) do
-    verify_host_architecture
     bootstrap_repos
     ondemand_repo
     install_ondemand
