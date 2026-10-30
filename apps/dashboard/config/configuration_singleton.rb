@@ -400,7 +400,8 @@ class ConfigurationSingleton
   end
 
   def allowlist_paths
-    (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
+    paths = ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || config.fetch(:allowlist_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(':') }.map { |s| Pathname.new(s) }
   end
 
   # How many days before a Session record is considered old and ready to delete
