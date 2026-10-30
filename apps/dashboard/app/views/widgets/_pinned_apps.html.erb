@@ -1,11 +1,45 @@
-<%- if pinned_apps? -%>
-<h2><%= t('dashboard.pinned_apps_title') %> <small><%= t('dashboard.pinned_apps_caption_html', all_apps_url: apps_index_path) %></small></h2>
-
-<%- if @user_configuration.pinned_apps_group_by.present? -%>
-  <%= render(partial: "/widgets/pinned_apps/group", collection: OodAppGroup.groups_for(apps: @pinned_apps, group_by: @user_configuration.pinned_apps_group_by.to_sym))  %>
-<%- else -%>
-  <div class="row">
-    <%= render partial: "/widgets/pinned_apps/app", collection: @pinned_apps %>
+<%- if pinned_apps_widget_visible? -%>
+  <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+    <h2 class="mb-0">
+      <%= t('dashboard.pinned_apps_title') %>
+      <small>
+        <%= t('dashboard.pinned_apps_caption_html',
+              all_apps_url: apps_index_path) %>
+      </small>
+    </h2>
+    <%- if controller_name == 'dashboard' && action_name == 'index' -%>
+      <button type="button" class="btn btn-sm btn-outline-secondary"
+              data-bs-toggle="modal" data-bs-target="#pinnedAppsModal"
+              aria-label="<%= t('dashboard.pinned_apps_customize') %>">
+        <%= t('dashboard.edit') %>
+      </button>
+    <%- end -%>
   </div>
-<%- end -%>
+
+  <div class="overflow-auto" style="max-height: 460px;">
+    <%- if pinned_apps? -%>
+      <%- if @user_configuration.pinned_apps_group_by.present? -%>
+        <%= render(
+          partial: "/widgets/pinned_apps/group",
+          collection: OodAppGroup.groups_for(
+            apps: @pinned_apps,
+            group_by: @user_configuration.pinned_apps_group_by.to_sym
+          )
+        ) %>
+      <%- else -%>
+        <div class="row">
+          <%= render(
+            partial: "/widgets/pinned_apps/app",
+            collection: @pinned_apps
+          ) %>
+        </div>
+      <%- end -%>
+    <%- else -%>
+      <p class="text-muted mb-0"><%= t('dashboard.pinned_apps_none_yet') %></p>
+    <%- end -%>
+  </div>
+
+  <%- if controller_name == 'dashboard' && action_name == 'index' -%>
+    <%= render partial: 'widgets/pinned_apps/editor_modal' %>
+  <%- end -%>
 <%- end -%>
