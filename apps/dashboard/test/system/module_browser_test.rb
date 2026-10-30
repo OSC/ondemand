@@ -2,117 +2,133 @@
 
 require 'application_system_test_case'
 
+# Exercise real module filtering against a small, isolated spider-output fixture.
 class ModuleBrowserTest < ApplicationSystemTestCase
   MODULE_BTN_SELECT = '.module-card button[data-bs-toggle="collapse"]'
-
-  def fixture_dir
-    "#{Rails.root}/test/fixtures/modules/"
-  end
-
-  def results_text(count)
-    "Showing #{count} results"
-  end
+  MODULE_NAMES = ['gcc', 'gcc-tools', 'openmpi', 'python'].freeze
+  CLUSTER_MODULES = {
+    'owens'  => ['gcc', 'gcc-tools', 'python'],
+    'oakley' => ['gcc', 'openmpi']
+  }.freeze
 
   setup do
     stub_sys_apps
+    Configuration.stubs(:module_file_dir).returns(Rails.root.join('test/fixtures/modules/browser'))
+    visit module_browser_url
+    assert_module_results(MODULE_NAMES)
   end
 
   test 'searching by module name filters results' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      initial_count = all('.module-card').count
-      
-      fill_in 'module_search', with: 'gcc'
-      assert_selector('#module_results_count', text: results_text(2))
+    fill_in 'module_search', with: 'GCC'
+    assert_module_results(['gcc', 'gcc-tools'], search: 'GCC')
 
-      all('.module-card', visible: true).each do |card|
-        module_name = card['data-name'].downcase
-        assert module_name.include?('gcc'), "Expected #{module_name} to include 'gcc'"
-      end
-      
-      fill_in 'module_search', with: ''
-      assert_selector('#module_results_count', text: results_text(initial_count))
-      
-      final_count = all('.module-card', visible: true).count
-      assert_equal initial_count, final_count
-    end
+    fill_in 'module_search', with: 'nonexistent_module'
+    assert_module_results([], search: 'nonexistent_module')
+
+    fill_in 'module_search', with: ''
+    assert_module_results(MODULE_NAMES)
   end
 
   test 'filtering by cluster only shows supported modules' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      
-      cluster_options = all('#cluster_filter option').to_a
-      initial_count = all('.module-card', visible: true).count
-      
-      first_cluster = cluster_options[1]
-      cluster_id = first_cluster.value
-      
-      select first_cluster.text, from: 'cluster_filter'
-      
-      all('.module-card', visible: true).each do |card|
-        clusters = card['data-clusters'].split(',')
-        assert clusters.include?(cluster_id), "Module should have #{cluster_id} in its cluster list"
-      end
-
-      select 'All Clusters', from: 'cluster_filter'
-      
-      final_count = all('.module-card', visible: true).count
-      assert_equal initial_count, final_count
+    CLUSTER_MODULES.each do |cluster, names|
+      find("#cluster_filter option[value='#{cluster}']").select_option
+      assert_module_results(names, cluster: cluster)
     end
+
+    find('#cluster_filter option[value=""]').select_option
+    assert_module_results(MODULE_NAMES)
+  end
+
+  test 'search and cluster filters apply together' do
+    fill_in 'module_search', with: 'gcc'
+    assert_module_results(['gcc', 'gcc-tools'], search: 'gcc')
+    find('#cluster_filter option[value="oakley"]').select_option
+    assert_module_results(['gcc'], search: 'gcc', cluster: 'oakley')
+
+    fill_in 'module_search', with: 'python'
+    assert_module_results([], search: 'python', cluster: 'oakley')
+    find('#cluster_filter option[value="owens"]').select_option
+    assert_module_results(['python'], search: 'python', cluster: 'owens')
+
+    fill_in 'module_search', with: ''
+    assert_module_results(CLUSTER_MODULES.fetch('owens'), cluster: 'owens')
+    find('#cluster_filter option[value=""]').select_option
+    assert_module_results(MODULE_NAMES)
+  end
+
+  test 'multiple search inputs leave results matching the final value' do
+    # Check the final result after a burst of input events, without asserting debounce timing.
+    execute_script <<~JS
+      const search = document.getElementById('module_search');
+      ['gcc', 'no-such-module', 'PYTHON'].forEach(value => {
+        search.value = value;
+        search.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    JS
+    assert_module_results(['python'], search: 'PYTHON')
   end
 
   test 'module button expands and collapses the module details' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
+    first_module = find(MODULE_BTN_SELECT, match: :first)
+    collapse_id = first_module['data-bs-target']
 
-      first_module = find(MODULE_BTN_SELECT, match: :first)
-      collapse_id = first_module['data-bs-target']
-      
-      assert_selector("#{collapse_id}", visible: :hidden)
-      
-      first_module.click
-      assert_selector("#{MODULE_BTN_SELECT}.active")
-      assert_selector("#{collapse_id}", visible: :visible)
-      
-      first_module.click
-      assert_selector("#{MODULE_BTN_SELECT}.collapsed")
-      assert_selector("#{collapse_id}", visible: :hidden)
-    end
+    assert_selector(collapse_id, visible: :hidden)
+    first_module.click
+    assert_selector("#{MODULE_BTN_SELECT}.active")
+    assert_selector(collapse_id, visible: :visible)
+
+    first_module.click
+    assert_selector("#{MODULE_BTN_SELECT}.collapsed")
+    assert_selector(collapse_id, visible: :hidden)
   end
 
   test 'selecting a version updates the load command' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      
-      first_module = find(MODULE_BTN_SELECT, match: :first)
-      first_module.click
+    first_module = find(MODULE_BTN_SELECT, match: :first)
+    first_module.click
+    assert_selector("#{MODULE_BTN_SELECT}.active")
+    version_button = find('button[data-role="selectable-version"]', match: :first)
+    module_name = version_button['data-module']
+    version = version_button['data-version']
 
-      assert_selector("#{MODULE_BTN_SELECT}.active")
-      version_button = find('button[data-role="selectable-version"]', match: :first)
-      module_name = version_button['data-module']
-      version = version_button['data-version']
-      
-      refute version_button.matches_css?('.active')
-      version_button.click
-      assert version_button.matches_css?('.active')
-      
-      load_cmd = find('[data-role="module-load-command"]')
-      expected_text = "module load #{module_name}/#{version}"
-      assert_equal expected_text, load_cmd.text.strip
-    end
+    refute version_button.matches_css?('.active')
+    version_button.click
+    assert_selector('button[data-role="selectable-version"].active', text: version, exact_text: true)
+    assert_selector('[data-role="module-load-command"]', exact_text: "module load #{module_name}/#{version}")
   end
 
-  test 'updates results count when filtering' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      initial_count = all('.module-card', visible: true).count
-      initial_count_text = find('#module_results_count').text
+  private
 
-      assert_equal "Showing #{initial_count} results", initial_count_text
-      
-      fill_in 'module_search', with: 'nonexistent_module'
-      assert_selector('#module_results_count', text: results_text(0))
+  # Compare known identities and count in one observation, including initial load.
+  def assert_module_results(names, search: '', cluster: '')
+    expected = {
+      'all'     => MODULE_NAMES.sort,
+      'visible' => names.sort,
+      'count'   => "Showing #{names.size} results",
+      'search'  => search,
+      'cluster' => cluster
+    }
+    snapshot = nil
+    page.document.synchronize(errors: [Capybara::ExpectationNotMet]) do
+      snapshot = evaluate_script <<~JS
+        (() => {
+          const cards = Array.from(document.querySelectorAll('.module-card'));
+          const visible = cards.filter(card =>
+            card.getClientRects().length > 0 && getComputedStyle(card).visibility !== 'hidden');
+          return {
+            all: cards.map(card => card.dataset.name).sort(),
+            visible: visible.map(card => card.dataset.name).sort(),
+            count: document.getElementById('module_results_count').textContent.trim(),
+            search: document.getElementById('module_search').value,
+            cluster: document.getElementById('cluster_filter').value
+          };
+        })()
+      JS
+      unless snapshot == expected
+        raise Capybara::ExpectationNotMet, "Expected #{expected.inspect}; observed #{snapshot.inspect}"
+      end
     end
+    assert_equal expected, snapshot
+  rescue Capybara::ExpectationNotMet => e
+    flunk e.message
   end
 end

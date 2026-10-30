@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
+require_relative '../support/browser_fixture_directory'
 
 # Tests /projects URL and the associated code paths
 class ProjectManagerTest < ApplicationSystemTestCase
+  include BrowserFixtureDirectory
+
   def setup
     stub_clusters
     stub_user
@@ -1664,20 +1667,32 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   test 'importing a shared project' do
-    Dir.mktmpdir do |dir|
-      Project.stubs(:dataroot).returns(Pathname.new(dir))
+    # Keep the source and lookup until browser reset completes, including on failure.
+    with_browser_fixture_directory do |dir|
+      root = Pathname.new(dir)
+      source = root.join('chemistry-5533')
+      lookup_root = root.join('lookup')
+      lookup_root.mkpath
+      FileUtils.cp_r(Rails.root.join('test/fixtures/projects/chemistry-5533'), source)
+      Project.stubs(:dataroot).returns(lookup_root)
+      assert_nil Project.find('abc123')
 
       visit(projects_root_path)
-      assert_text(I18n.t('dashboard.jobs_import_shared_project'))
       find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
+      assert_selector('#load-import-pane.collapse.show:not(.collapsing)')
+      within('#load-import-pane') do
+        fill_in('project_directory', with: source.to_s)
+        find('#import_project:enabled').click
+      end
 
-      fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
-      find('#import_project').click
-
-      sleep 1 # sleep ensure the project has been imported
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
       assert_current_path(projects_root_path)
       assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
-      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
+      assert_equal({ 'abc123' => source.to_s }, YAML.safe_load(lookup_root.join('.project_lookup').read))
+      imported = Project.find('abc123')
+      assert_not_nil imported
+      assert_equal source, imported.directory
+      assert_equal 'Chemistry 5533', imported.name
     end
   end
 end
