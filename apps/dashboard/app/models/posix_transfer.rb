@@ -9,6 +9,15 @@ class PosixTransfer < Transfer
 
       non_existant = files.keys.reject { |f| File.exist?(f) }
       record.errors.add :files, "cannot copy or move files that do not exist: #{non_existant.join(', ')}" if non_existant.present?
+
+      # Skip symlinks when disabled so other selected files can still succeed.
+      unless Configuration.allow_symlink_ops?
+        symlinks = files.keys.select { |f| File.symlink?(f) }
+        if symlinks.present?
+          Rails.logger.warn("skipping symlink copy/move: #{symlinks.join(', ')}")
+          symlinks.each { |symlink| files.delete(symlink) }
+        end
+      end
     end
 
     files.each do |k, v|
@@ -139,7 +148,9 @@ class PosixTransfer < Transfer
     original_src = src if original_src.nil?
     new_dest = translate_cp_path(src, dest, original_src)
 
-    if src.file? || src.symlink?
+    if src.symlink? && !Configuration.allow_symlink_ops?
+      return
+    elsif src.file? || src.symlink?
       cp_single(src, new_dest)
     elsif src.directory? && src.empty?
       inc_cp_percent
@@ -159,7 +170,6 @@ class PosixTransfer < Transfer
     end
 
     if src.symlink?
-
       # you're symlinking a directory, but the name of the link can differ
       # from the actual directory, so we have to ensure that the name
       # of the new link we're making is the same name as the original

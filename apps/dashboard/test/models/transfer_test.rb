@@ -64,4 +64,85 @@ class TransferTest < ActiveSupport::TestCase
       assert_equal false, File.exist?(f)
     end
   end
+
+  test 'copy of symlink is valid by default' do
+    Dir.mktmpdir do |dir|
+      real_file = "#{dir}/real_file"
+      symlink = "#{dir}/link"
+      FileUtils.touch(real_file)
+      File.symlink(real_file, symlink)
+
+      transfer = PosixTransfer.build(action: 'cp', files: { symlink => "#{dir}/link.copy" })
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+    end
+  end
+
+  test 'copy skips symlink when allow_symlink_ops is false' do
+    Configuration.stubs(:allow_symlink_ops?).returns(false)
+
+    Dir.mktmpdir do |dir|
+      real_file = "#{dir}/real_file"
+      symlink = "#{dir}/link"
+      FileUtils.touch(real_file)
+      File.symlink(real_file, symlink)
+
+      transfer = PosixTransfer.build(
+        action: 'cp',
+        files:  {
+          real_file => "#{dir}/real_file.copy",
+          symlink   => "#{dir}/link.copy"
+        }
+      )
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+      refute(transfer.files.key?(symlink))
+      assert(transfer.files.key?(real_file))
+
+      transfer.perform
+      assert(transfer.success?)
+      assert(File.exist?("#{dir}/real_file.copy"))
+      refute(File.exist?("#{dir}/link.copy"))
+    end
+  end
+
+  test 'move skips symlink when allow_symlink_ops is false' do
+    Configuration.stubs(:allow_symlink_ops?).returns(false)
+
+    Dir.mktmpdir do |dir|
+      real_file = "#{dir}/real_file"
+      symlink = "#{dir}/link"
+      FileUtils.touch(real_file)
+      File.symlink(real_file, symlink)
+
+      transfer = PosixTransfer.build(
+        action: 'mv',
+        files:  {
+          real_file => "#{dir}/real_file.moved",
+          symlink   => "#{dir}/link.moved"
+        }
+      )
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+      refute(transfer.files.key?(symlink))
+      assert(transfer.files.key?(real_file))
+
+      transfer.perform
+      assert(transfer.success?)
+      assert(File.exist?("#{dir}/real_file.moved"))
+      refute(File.exist?("#{dir}/link.moved"))
+      assert(File.symlink?(symlink))
+    end
+  end
+
+  test 'rm of symlink is still valid when allow_symlink_ops is false' do
+    Configuration.stubs(:allow_symlink_ops?).returns(false)
+
+    Dir.mktmpdir do |dir|
+      real_file = "#{dir}/real_file"
+      symlink = "#{dir}/link"
+      FileUtils.touch(real_file)
+      File.symlink(real_file, symlink)
+
+      transfer = PosixTransfer.build(action: 'rm', files: [symlink])
+      assert(transfer.valid?, transfer.errors.full_messages.join('. '))
+    end
+  end
 end

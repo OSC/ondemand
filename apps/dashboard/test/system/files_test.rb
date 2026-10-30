@@ -466,6 +466,34 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'copying directories skips nested symlinks when allow_symlink_ops is false' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOW_SYMLINK_OPS: 'false' }) do
+        FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+        `touch #{dir}/src/real_file`
+        `ln -s #{dir}/src/real_file #{dir}/src/link`
+        `ln -s #{Rails.root} #{dir}/src/linked_dir`
+
+        visit files_url(dir)
+        find('a', exact_text: 'src').ancestor('tr').find('input[type="checkbox"]').click
+        find('#copy-move-btn').click
+
+        visit files_url("#{dir}/dest")
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('#clipboard-copy-to-dir').click
+
+        find('tbody a', exact_text: 'src', wait: MAX_WAIT)
+
+        visit files_url("#{dir}/dest/src")
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+        assert(Pathname.new("#{dir}/dest/src/real_file").file?)
+        refute(Pathname.new("#{dir}/dest/src/link").exist?)
+        refute(Pathname.new("#{dir}/dest/src/linked_dir").exist?)
+      end
+    end
+  end
+
   test 'rename file' do
     Dir.mktmpdir do |dir|
       FileUtils.touch File.join(dir, 'foo.txt')
