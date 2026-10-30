@@ -1,7 +1,10 @@
 require 'test_helper'
 
 class TransferLocalJobTest < ActiveJob::TestCase
-  # include ActiveJob::TestHelper
+  # Override test.rb's AsyncAdapter so enqueueing cannot start a copy.
+  def queue_adapter_for_test
+    ActiveJob::QueueAdapters::TestAdapter.new
+  end
 
   test "copy job copies a file" do
     Dir.mktmpdir do |dir|
@@ -94,11 +97,12 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
       transfer.save
-      job = TransferLocalJob.perform_later(transfer)
-      assert job.job_id != nil
+      assert_enqueued_with(job: TransferLocalJob, args: [transfer]) do
+        assert_not_nil TransferLocalJob.perform_later(transfer).job_id
+      end
       assert transfer.status.queued?
     end
-
+  ensure
     Transfer.transfers.clear
   end
 
