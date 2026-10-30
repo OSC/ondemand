@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
-require_relative '../support/browser_fixture_directory'
 
 class FilesTest < ApplicationSystemTestCase
-  include BrowserFixtureDirectory
-
   MAX_WAIT = 120
 
   def setup
@@ -14,6 +11,19 @@ class FilesTest < ApplicationSystemTestCase
 
     # we want to clear the console logs from any previous test.
     Capybara.current_session.quit
+  end
+
+  # Rails captures failure screenshots and resets browser sessions before cleanup.
+  def after_teardown
+    super
+  ensure
+    FileUtils.remove_entry(@upload_fixture_directory) if @upload_fixture_directory
+  end
+
+  # Retain upload fixtures for pending table reloads until Rails resets the browser.
+  def with_upload_fixture_directory
+    @upload_fixture_directory = Dir.mktmpdir
+    yield @upload_fixture_directory
   end
 
   test "visiting files app doesn't raise js errors" do
@@ -549,14 +559,10 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   # Wait for the upload result using one timeout for modal closure and file contents.
-  # This does not wait for the asynchronous table reload; teardown resets the browser
-  # while the fixture directories still exist to protect any pending server requests.
   def assert_upload_complete(expected_contents, wait: MAX_WAIT)
-    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + wait
-    assert_no_selector('.uppy-Dashboard--modal', visible: true, wait: wait)
     observed = nil
-    remaining_wait = [deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC), 0].max
-    page.document.synchronize(remaining_wait, errors: [Capybara::ExpectationNotMet]) do
+    page.document.synchronize(wait, errors: [Capybara::ExpectationNotMet]) do
+      page.document.assert_no_selector('.uppy-Dashboard--modal', visible: true, wait: 0)
       observed = expected_contents.keys.to_h do |path|
         [path, File.file?(path) ? File.read(path) : nil]
       end
@@ -572,7 +578,7 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   test 'uploading duplicate files' do
-    with_browser_fixture_directory_until_teardown do |dir|
+    with_upload_fixture_directory do |dir|
       File.stubs(:umask).returns(18) # ensure default umask is 644
       upload_dir = File.join(dir, 'upload')
 
@@ -763,7 +769,7 @@ class FilesTest < ApplicationSystemTestCase
   HEREDOC
 
   test 'uploading duplicate files within directories' do
-    with_browser_fixture_directory_until_teardown do |dir|
+    with_upload_fixture_directory do |dir|
       upload_dir = File.join(dir, 'upload')
       FileUtils.mkpath(upload_dir)
 
