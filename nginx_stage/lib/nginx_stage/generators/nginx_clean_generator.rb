@@ -63,7 +63,7 @@ module NginxStage
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
           socket = SocketFile.new NginxStage.pun_socket_path(user: u)
           sessions = session_count(u)
-          cleanup_stale_files(pid_path, socket) unless pid_path.running_process?
+          cleanup_stale_files(pid_path, socket) unless skip_nginx || pid_path.running_process?
           if sessions.zero? || force
             puts u
             if !skip_nginx
@@ -82,8 +82,10 @@ module NginxStage
 
       pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
+        next if user && user != u
         begin
           puts "#{u} (disabled)"
+          next if skip_nginx
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
           # Send a SIGTERM to the master nginx process to kill the PUN.
