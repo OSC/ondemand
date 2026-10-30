@@ -1,5 +1,8 @@
 require 'pathname'
 require 'dotenv'
+require 'erb'
+require 'yaml'
+require 'active_support/core_ext/hash'
 require_relative '../lib/current_user'
 require_relative '../app/models/concerns/bool_reader.rb'
 
@@ -19,6 +22,29 @@ require_relative '../app/models/concerns/bool_reader.rb'
 #
 # This is functionally equivalent to taking every instance method on
 # ConfigurationSingleton and defining it as a class method on Configuration.
+#
+# !! WARNING !!
+# Some configs below have the capacity to influence other configs, like 
+# config_root and config_d_directory. These configs must ONLY be set from
+# the environment, and must execute in a specific order to give the proper
+# configuration. The call stack is as follows:
+# ---- Before initialization ---------------------
+#   1. initialize
+#   2. load_dotenv_files      <~ initialize
+#   3. dotenv_local_files     <~ load_dotenv_files
+#   4. app_root               <~ dotenv_local_files
+#   5. rails_env              <~ dotenv_local_files
+#   6. dotenv_files           <~ load_dotenv_files
+#   7. load_external_config?  <~ dotenv_files
+#   8. config_root            <~ dotenv_files
+#   9. overload_files         <~ load_dotenv_files
+#   
+# ---- After initialization ----------------------
+#  10. config                 <~ * first time an application config is called *
+#  11. read_config            <~ config
+#  12. config_directory       <~ read_config
+# 
+# Only after all of these methods have executed is the full configuration available
 #
 class ConfigurationSingleton
   include BoolReader
@@ -61,6 +87,7 @@ class ConfigurationSingleton
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
+      :open_apps_in_new_window      => true,
       :bc_ssh_to_compute_node => true,
     }.freeze
   end
@@ -80,6 +107,9 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :native_vnc_login_host          => nil,
+      :xdmod_host                     => nil,
+      :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
       :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
     }.freeze
   end
@@ -140,6 +170,13 @@ class ConfigurationSingleton
     )
   end
 
+  # @return [Boolean, nil] configured workflow support override when set, otherwise nil to fall back to auto-detection
+  def workflows_enabled
+    return nil unless ENV.key?('OOD_WORKFLOWS_ENABLED')
+
+    read_bool(ENV['OOD_WORKFLOWS_ENABLED'])
+  end
+
   # @return [String, nil] version string from VERSION file, or nil if no file avail
   def version_from_file(dir)
     file = Pathname.new(dir).join("VERSION")
@@ -162,8 +199,9 @@ class ConfigurationSingleton
 
   # The root directory that holds configuration information for Batch Connect
   # apps (typically each app will have a sub-directory underneath this)
+  # @return [Pathname] path to Batch Connect configuration root\
   def bc_config_root
-    Pathname.new(ENV["OOD_BC_APP_CONFIG_ROOT"] || "/etc/ood/config/apps")
+    Pathname.new(ENV['OOD_BC_APP_CONFIG_ROOT'] || config.fetch(:bc_app_config_root, '/etc/ood/config/apps'))
   end
 
   def load_external_bc_config?
@@ -180,13 +218,14 @@ class ConfigurationSingleton
   # @return [Array<String>] quota paths
   def quota_paths
     # regex uses negative lookahead to ignore : preceding //
-    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
+    paths = ENV['OOD_QUOTA_PATH'] || config.fetch(:quota_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(/:(?!\/\/)/) }
   end
 
   # The threshold for determining if there is sufficient quota remaining
   # @return [Float] threshold factor
   def quota_threshold
-    ENV.fetch("OOD_QUOTA_THRESHOLD", 0.95).to_f
+    (ENV['OOD_QUOTA_THRESHOLD'] || config.fetch(:quota_threshold, 0.95)).to_f
   end
 
   # The paths to the JSON files that store the balance information
@@ -199,19 +238,14 @@ class ConfigurationSingleton
   # @return [Array<String>] balance paths
   def balance_paths
     # regex uses negative lookahead to ignore : preceding //
-    ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
+    paths = ENV['OOD_BALANCE_PATH'] || config.fetch(:balance_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(/:(?!\/\/)/) }
   end
 
   # The threshold for determining if there is sufficient balance remaining
   # @return [Float] threshold factor
   def balance_threshold
-    ENV.fetch("OOD_BALANCE_THRESHOLD", 0).to_f
-  end
-
-  # The XMoD host
-  # @return [String, null] the host, or null if not set
-  def xdmod_host
-    ENV["OOD_XDMOD_HOST"]
+    (ENV['OOD_BALANCE_THRESHOLD'] || config.fetch(:balance_threshold, 0)).to_f
   end
 
   # Whether or not XDMoD integration is enabled
@@ -315,11 +349,6 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
-  # Set the login host in the Native Instructions VNC session partial
-  def native_vnc_login_host
-    ENV['OOD_NATIVE_VNC_LOGIN_HOST']
-  end
-
   # Set the global configuration directory
   def config_directory
     Pathname.new(ENV['OOD_CONFIG_D_DIRECTORY'] || "/etc/ood/config/ondemand.d")
@@ -374,22 +403,9 @@ class ConfigurationSingleton
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
   end
 
-  # default value for opening apps in new window
-  # that is used if app's manifest doesn't specify
-  # if not set default is true
-  #
-  # @return [Boolean] true if by default open apps in new window
-  def open_apps_in_new_window?
-    if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
-      read_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
-    else
-      true
-    end
-  end
-
   # How many days before a Session record is considered old and ready to delete
   def ood_bc_card_time
-    ood_bc_card_time = ENV['OOD_BC_CARD_TIME']
+    ood_bc_card_time = ENV['OOD_BC_CARD_TIME'] || config.fetch(:bc_card_time, 7)
     return 7 if ood_bc_card_time.blank? || /^([+-]\d+|\d+)/.match(ood_bc_card_time.to_s).nil?
 
     ood_bc_card_time_int = ood_bc_card_time.to_i
@@ -433,20 +449,19 @@ class ConfigurationSingleton
     sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
     sources << xdmod_host if xdmod_integration_enabled?
     sources << nsf_access_events_host if nsf_access_events_widget_enabled? && nsf_access_events_host.present?
+    sources << nsf_access_announcements_host if nsf_access_announcements_widget_enabled? && nsf_access_announcements_host.present?
 
     sources
   end
 
   # Whether the nsf_access_events widget is configured in any dashboard layout.
   def nsf_access_events_widget_enabled?
-    return false if nsf_access_events_url.blank?
+    nsf_access_widget_enabled?('nsf_access_events', nsf_access_events_url)
+  end
 
-    layouts = [config[:dashboard_layout]]
-    config.fetch(:profiles, {}).each_value do |profile|
-      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
-    end
-
-    layouts.compact.any? { |layout| layout_includes_widget?(layout, 'nsf_access_events') }
+  # Whether the nsf_access_announcements widget is configured in any dashboard layout.
+  def nsf_access_announcements_widget_enabled?
+    nsf_access_widget_enabled?('nsf_access_announcements', nsf_access_announcements_url)
   end
 
   def rails_env_production?
@@ -454,8 +469,9 @@ class ConfigurationSingleton
   end
 
   def shared_projects_root
-    # This environment variable will support ':' colon separated paths
-    ENV['OOD_SHARED_PROJECT_PATH'].to_s.split(":").map { |p| Pathname.new(p) }
+    # Supports ':' colon separated paths (env / string) or a YAML array
+    paths = ENV['OOD_SHARED_PROJECT_PATH'] || config.fetch(:shared_project_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(':') }.map { |p| Pathname.new(p) }
   end
 
   private
@@ -464,9 +480,28 @@ class ConfigurationSingleton
     app_dir = Rails.root.realpath.parent.join(name)
     app_dir.directory? && app_dir.join('manifest.yml').readable?
   end
+  
+  def nsf_access_widget_enabled?(widget_name, url)
+    return false if url.blank?
+
+    layouts = [config[:dashboard_layout]]
+    config.fetch(:profiles, {}).each_value do |profile|
+      layouts << profile[:dashboard_layout] if profile.is_a?(Hash)
+    end
+
+    layouts.compact.any? { |layout| layout_includes_widget?(layout, widget_name) }
+  end
 
   def nsf_access_events_host
-    URI.parse(nsf_access_events_url).host
+    host_from_url(nsf_access_events_url)
+  end
+
+  def nsf_access_announcements_host
+    host_from_url(nsf_access_announcements_url)
+  end
+
+  def host_from_url(url)
+    URI.parse(url).host
   rescue URI::InvalidURIError
     nil
   end

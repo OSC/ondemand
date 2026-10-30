@@ -40,6 +40,17 @@ Changes are grouped by type:
 - The header and navbar are now in a partial for reconfiguration in [5806](https://github.com/OSC/ondemand/pull/5806).
 - The NSF events URL is now configurable in [5798](https://github.com/OSC/ondemand/pull/5798).
 - Ctrl+C and Ctrl+V (copy/paste) shortcuts now work in the FileExplorer in [5789](https://github.com/OSC/ondemand/pull/5789).
+- The file browser now shows timezones in the modified date field in [5839](https://github.com/OSC/ondemand/pull/5839).
+- Pun initialization now locks to serialize itself in [5872](https://github.com/OSC/ondemand/pull/5872).
+- The timezone now shows in Active jobs extended details in [5838](https://github.com/OSC/ondemand/pull/5838).
+- Job Composer now shows a deprecation warning in [5858](https://github.com/OSC/ondemand/pull/5858).
+- Several environment variables now have ondemand.d support.
+  - OOD_APP_CONFIG_ROOT in [5937](https://github.com/OSC/ondemand/pull/5937).
+  - OOD_BALANCE_PATH and OOD_BALANCE_THRESHOLD in [5941](https://github.com/OSC/ondemand/pull/5941).
+  - OOD_BC_CARD_TIME in [5969](https://github.com/OSC/ondemand/pull/5969).
+  - OOD_OPEN_APPS_IN_NEW_WINDOW in [5968](https://github.com/OSC/ondemand/pull/5968).
+  - XDMOD_HOST in [5948](https://github.com/OSC/ondemand/pull/5948).
+  - OOD_SHARED_PROJECT_PATH [5977](https://github.com/OSC/ondemand/pull/5948).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -75,6 +86,11 @@ Changes are grouped by type:
 - Batch connect session cards preserve the tab state in [5766](https://github.com/OSC/ondemand/pull/5766).
 - File download limits work correctly in [5835](https://github.com/OSC/ondemand/pull/5835).
 - The dashboard's configuration now rescues Exceptions when loading configs in [5827](https://github.com/OSC/ondemand/pull/5827).
+- Rclone remotes are sorted fixing an issue with newer rclone versions in [5860](https://github.com/OSC/ondemand/pull/5860).
+- The file editor now chooses the minimum value between file_editor_max_size and download_file_max in [5857](https://github.com/OSC/ondemand/pull/5857).
+- Fix mobile Shell keyboard focus and viewport sizing in [5804](https://github.com/OSC/ondemand/pull/5804).
+- The Project Manager Launchers now work for HTCondor in [5944](https://github.com/OSC/ondemand/pull/5944).
+- Fix file browser navigation with Select All clicked in [5971](https://github.com/OSC/ondemand/pull/5971).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
@@ -85,6 +101,22 @@ Changes are grouped by type:
 - There is now a default MOTD changing the default dashboard layout in [5351](https://github.com/OSC/ondemand/pull/5351).
 - Help content in batch connect forms no longer render unsafe tags in [5770](https://github.com/OSC/ondemand/pull/5770).
 - `file_download_max` has been corrected to `download_file_max` in [5810](https://github.com/OSC/ondemand/pull/5810).
+- Batch connect app versions now show at the bottom of the page in [5876](https://github.com/OSC/ondemand/pull/5876).
+- Workflows are now disabled for schedulers that don't support them in [5435](https://github.com/OSC/ondemand/pull/5435).
+
+## [4.2.5] - 2026-09-24
+
+### Fixed
+- File download max works correctly by alerting the user when files are too large to download in [5841](https://github.com/OSC/ondemand/pull/5841).
+  This also corrects the configuration item to `download_file_max` to match documentation and other similar keys
+  in [5823](https://github.com/OSC/ondemand/pull/5841). The erroneous `file_download_max` will continue to work in the 4.2 series,
+  but will be removed in future versions.
+- Saved batch connect settings now correctly override cached values in [5821](https://github.com/OSC/ondemand/pull/5821).
+- VNC Batch connect cards keep the connection tab open when updating in [5822](https://github.com/OSC/ondemand/pull/5822).
+
+### Security
+- Resolved GHSA-frjp-qp79-hc3g (no CVE yet). Fixes specially crafted transfer requests
+  that can execute commands on the web node in [5820](https://github.com/OSC/ondemand/pull/5820).
 
 ## [4.2.4] - 2026-08-24
 
@@ -2083,7 +2115,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.4...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.5...HEAD
+[4.2.5]: https://github.com/OSC/ondemand/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/OSC/ondemand/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/OSC/ondemand/compare/v4.2.1...v4.2.2
