@@ -1045,6 +1045,8 @@ class FilesTest < ApplicationSystemTestCase
 
   # Verify the larger default without overriding a user's saved font size.
   test 'file editor defaults to 14px and preserves font size preferences' do
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
     Dir.mktmpdir do |directory|
       file_path = File.join(directory, 'foo.txt')
       FileUtils.touch(file_path)
