@@ -24,8 +24,7 @@ module BrowserSessionCleanup
   def recover_browser(teardown_completed)
     return discard_browser('session teardown did not complete') unless teardown_completed
 
-    recorded_errors = failures.filter_map { |failure| failure.error if failure.respond_to?(:error) }
-    error = recorded_errors.find { |candidate| dead_browser_error?(candidate) }
+    error = failures.find { |failure| failure.respond_to?(:error) && dead_browser_error?(failure.error) }&.error
     discard_browser("unusable browser context: #{error.class}: #{error.message.lines.first.to_s.strip}") if error
   rescue StandardError => e
     warn("Session cleanup failed: #{e.class}: #{e.message.lines.first.to_s.strip}")
@@ -42,12 +41,10 @@ module BrowserSessionCleanup
     session = Capybara.current_session
     warn("#{self.class}##{name}: discarding browser session (#{reason})")
     begin
-      session.driver.quit
+      session.quit
     rescue StandardError => e
       warn("Browser shutdown failed: #{e.class}: #{e.message.lines.first.to_s.strip}")
-    ensure
-      # Native quit can raise before Session#quit clears its state. Capybara's
-      # Selenium driver clears its browser in ensure; the second quit finishes cleanup.
+      # Selenium clears its browser in ensure; retry to finish Session#quit.
       session.quit
     end
   rescue StandardError => e
