@@ -286,9 +286,9 @@
     "@uppy/utils" "^6.2.2"
 
 ace-code@^1.35.0:
-  version "1.44.0"
-  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.44.0.tgz#dd7b4fbe20bfd8c5a5401e4686678924c29034e5"
-  integrity sha512-6hmMdpJ7DTB4xGSPfZcINgwL2v5/0u6Oh5GXbcH7KZqjWkVADxSbA1IMoWmk/WvgHAsbaYmZoWh7DS2zCfVbeQ==
+  version "1.45.2"
+  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.45.2.tgz#f0f4dad78d0a6495c1860587361d71a98ce766a0"
+  integrity sha512-Se8O1BvkxW31xmFELwLJjByPe1gUfUhMOxCwhb1Bi6F7pWpLiAYb1HyMaxSGZfID+tK4aTB2BSZvXqqK0IJStw==
 
 anymatch@~3.1.2:
   version "3.1.3"

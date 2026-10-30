@@ -14,25 +14,28 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default config root" do
-    with_modified_env(no_config_env) do
-      assert_equal Pathname.new('/etc/ood/config/apps/dashboard'), ConfigurationSingleton.new.config_root
-    end
+    assert_equal Pathname.new("/etc/ood/config/apps/dashboard"), ConfigurationSingleton.new.config_root
   end
 
-  test "can configure config root through environment variable" do
-    with_modified_env(no_config_env.merge(OOD_APP_CONFIG_ROOT: '/path/to/config')) do
+  test "can configure config root" do
+    with_modified_env(OOD_APP_CONFIG_ROOT: '/path/to/config') do
       assert_equal Pathname.new('/path/to/config'), ConfigurationSingleton.new.config_root
     end
   end
 
-  test "can configure config root through ondemand.d" do
+  test "considers all .env files before reading config" do
     Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'config_root' => '/path/from/file' }.to_yaml)
-      end
+      with_modified_env(OOD_LOAD_EXTERNAL_CONFIG: 'true') do
+        dir = Pathname.new(dir)
+        app_root = dir.join('app')
+        config_d_dir = dir.join('ondemand.d')
+        [app_root, config_d_dir].each(&:mkpath)
+        app_root.join('.env').write("OOD_CONFIG_D_DIRECTORY=#{config_d_dir}")
+        config_d_dir.join('test.yml').write("download_dir_timeout_seconds: 10")
 
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
-        assert_equal Pathname.new('/path/from/file'), ConfigurationSingleton.new.config_root
+        ConfigurationSingleton.any_instance.stubs(:app_root).returns(app_root)
+
+        assert_equal 10, ConfigurationSingleton.new.download_dir_timeout_seconds
       end
     end
   end
@@ -143,12 +146,26 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default bc config root" do
-    assert_equal Pathname.new("/etc/ood/config/apps"), ConfigurationSingleton.new.bc_config_root
+    with_modified_env(no_config_env) do
+      assert_equal Pathname.new('/etc/ood/config/apps'), ConfigurationSingleton.new.bc_config_root
+    end
   end
 
-  test "can configure bc config root" do
-    with_modified_env(OOD_BC_APP_CONFIG_ROOT: '/path/to/bc_config') do
+  test "can configure bc config root through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_BC_APP_CONFIG_ROOT: '/path/to/bc_config')) do
       assert_equal Pathname.new('/path/to/bc_config'), ConfigurationSingleton.new.bc_config_root
+    end
+  end
+
+  test "can configure bc config root through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'bc_app_config_root' => '/path/from/file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal Pathname.new('/path/from/file'), ConfigurationSingleton.new.bc_config_root
+      end
     end
   end
 
@@ -335,28 +352,318 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
   
   test "quota_paths correctly parses OOD_QUOTA_PATH" do
-    with_modified_env(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json') do
+    with_modified_env(no_config_env.merge(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json')) do
       assert_equal ['/path_a/quota.json', '/path_b/quota.json'], ConfigurationSingleton.new.quota_paths
     end
 
-    with_modified_env(OOD_QUOTA_PATH: 'https://example.com/quota.json:ftp://path_b/quota.json') do
+    with_modified_env(no_config_env.merge(OOD_QUOTA_PATH: 'https://example.com/quota.json:ftp://path_b/quota.json')) do
       assert_equal ['https://example.com/quota.json', 'ftp://path_b/quota.json'], ConfigurationSingleton.new.quota_paths
     end
   end
 
-  test "balance_paths correctly parses OOD_BALANCE_PATH" do
-    with_modified_env(OOD_BALANCE_PATH: '/path_a/balance.json:/path_b/balance.json') do
-      assert_equal ['/path_a/balance.json', '/path_b/balance.json'], ConfigurationSingleton.new.balance_paths
-    end
+  test "quota_paths can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
+      end
 
-    with_modified_env(OOD_BALANCE_PATH: 'https://example.com/balance.json:ftp://path_b/balance.json') do
-      assert_equal ['https://example.com/balance.json', 'ftp://path_b/balance.json'], ConfigurationSingleton.new.balance_paths
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal ['/path_from/file_a.json', '/path_from/file_b.json'], ConfigurationSingleton.new.quota_paths
+      end
     end
   end
 
-  test "can set native vnc login host" do
-    with_modified_env(OOD_NATIVE_VNC_LOGIN_HOST: 'owens.osc.edu') do
-      assert_equal ENV['OOD_NATIVE_VNC_LOGIN_HOST'], ConfigurationSingleton.new.native_vnc_login_host
+  test "quota_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => '/path_from/file_a.json:https://example.com/quota.json' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal ['/path_from/file_a.json', 'https://example.com/quota.json'], ConfigurationSingleton.new.quota_paths
+      end
+    end
+  end
+
+  test "quota_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_path' => ['/path_from/file.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_QUOTA_PATH: '/path_from/env.json') do
+        assert_equal ['/path_from/env.json'], ConfigurationSingleton.new.quota_paths
+      end
+    end
+  end
+
+  test "quota_threshold can be configured through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_QUOTA_THRESHOLD: '0.80')) do
+      assert_equal 0.80, ConfigurationSingleton.new.quota_threshold
+    end
+  end
+
+  test "quota_threshold can be configured through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 0.75, ConfigurationSingleton.new.quota_threshold
+      end
+    end
+  end
+
+  test "quota_threshold environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'quota_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_QUOTA_THRESHOLD: '0.50') do
+        assert_equal 0.50, ConfigurationSingleton.new.quota_threshold
+      end
+    end
+  end
+  
+  test "balance_paths correctly parses OOD_BALANCE_PATH" do
+    with_modified_env(no_config_env.merge(OOD_BALANCE_PATH: '/path_a/balance.json:/path_b/balance.json')) do
+      assert_equal ['/path_a/balance.json', '/path_b/balance.json'], ConfigurationSingleton.new.balance_paths
+    end
+
+    with_modified_env(no_config_env.merge(OOD_BALANCE_PATH: 'https://example.com/balance.json:ftp://path_b/balance.json')) do
+      assert_equal ['https://example.com/balance.json', 'ftp://path_b/balance.json'], ConfigurationSingleton.new.balance_paths
+    end
+  end
+  
+  test "balance_paths can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => ['/path_from/file_a.json', '/path_from/file_b.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: nil) do
+        assert_equal ['/path_from/file_a.json', '/path_from/file_b.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
+
+  test "balance_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => '/path_from/file_a.json:https://example.com/balance.json' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: nil) do
+        assert_equal ['/path_from/file_a.json', 'https://example.com/balance.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
+
+  test "balance_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_path' => ['/path_from/file.json'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_PATH: '/path_from/env.json') do
+        assert_equal ['/path_from/env.json'], ConfigurationSingleton.new.balance_paths
+      end
+    end
+  end
+
+  test "balance_threshold can be configured through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_BALANCE_THRESHOLD: '0.80')) do
+      assert_equal 0.80, ConfigurationSingleton.new.balance_threshold
+    end
+  end
+
+  test "balance_threshold can be configured through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: nil) do
+        assert_equal 0.75, ConfigurationSingleton.new.balance_threshold
+      end
+    end
+  end
+
+  test "balance_threshold environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'balance_threshold' => 0.75 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BALANCE_THRESHOLD: '0.50') do
+        assert_equal 0.50, ConfigurationSingleton.new.balance_threshold
+      end
+    end
+  end
+  
+  test "xdmod_host is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: nil)) do
+      assert_nil ConfigurationSingleton.new.xdmod_host
+    end
+  end
+
+  test "can configure xdmod_host through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_XDMOD_HOST: 'https://xdmod.example.com')) do
+      assert_equal 'https://xdmod.example.com', ConfigurationSingleton.new.xdmod_host
+    end
+  end
+
+  test "can configure xdmod_host through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://xdmod.from.file', ConfigurationSingleton.new.xdmod_host
+      end
+    end
+  end
+  
+  test "xdmod_host environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'xdmod_host' => 'https://xdmod.from.file' }.to_yaml)
+      end
+      
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_XDMOD_HOST: 'https://xdmod.from.env') do
+        assert_equal 'https://xdmod.from.env', ConfigurationSingleton.new.xdmod_host
+      end
+    end
+  end
+  
+  test "shared_projects_root defaults to an empty list" do
+    with_modified_env(no_config_env.merge(OOD_SHARED_PROJECT_PATH: nil)) do
+      assert_equal [], ConfigurationSingleton.new.shared_projects_root
+    end
+  end
+
+  test "shared_projects_root correctly parses OOD_SHARED_PROJECT_PATH" do
+    with_modified_env(no_config_env.merge(OOD_SHARED_PROJECT_PATH: '/path_a:/path_b')) do
+      assert_equal [Pathname.new('/path_a'), Pathname.new('/path_b')], ConfigurationSingleton.new.shared_projects_root
+    end
+  end
+
+  test "shared_projects_root can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => ['/path_from/file_a', '/path_from/file_b'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+
+  test "shared_projects_root can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => '/path_from/file_a:/path_from/file_b' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+
+  test "shared_projects_root environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'shared_project_path' => ['/path_from/file'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_SHARED_PROJECT_PATH: '/path_from/env') do
+        assert_equal [Pathname.new('/path_from/env')], ConfigurationSingleton.new.shared_projects_root
+      end
+    end
+  end
+
+  test "native_vnc_login_host is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_NATIVE_VNC_LOGIN_HOST: nil)) do
+      assert_nil ConfigurationSingleton.new.native_vnc_login_host
+    end
+  end
+
+  test "can configure native_vnc_login_host through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_NATIVE_VNC_LOGIN_HOST: 'owens.osc.edu')) do
+      assert_equal 'owens.osc.edu', ConfigurationSingleton.new.native_vnc_login_host
+    end
+  end
+
+  test "can configure native_vnc_login_host through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'native_vnc_login_host' => 'host.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'host.from.file', ConfigurationSingleton.new.native_vnc_login_host
+      end
+    end
+  end
+  
+  test "native_vnc_login_host environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'native_vnc_login_host' => 'host.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_NATIVE_VNC_LOGIN_HOST: 'host.from.env') do
+        assert_equal 'host.from.env', ConfigurationSingleton.new.native_vnc_login_host
+      end
+    end
+  end
+
+  test "open_apps_in_new_window is true by default" do
+    with_modified_env(no_config_env.merge(OOD_OPEN_APPS_IN_NEW_WINDOW: nil)) do
+      c = ConfigurationSingleton.new
+      assert_equal true, c.open_apps_in_new_window
+      assert_equal true, c.open_apps_in_new_window?
+    end
+  end
+
+  test "can configure open_apps_in_new_window through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_OPEN_APPS_IN_NEW_WINDOW: 'false')) do
+      c = ConfigurationSingleton.new
+      assert_equal false, c.open_apps_in_new_window
+      assert_equal false, c.open_apps_in_new_window?
+    end
+  end
+
+  test "can configure open_apps_in_new_window through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: nil) do
+        c = ConfigurationSingleton.new
+        assert_equal false, c.open_apps_in_new_window
+        assert_equal false, c.open_apps_in_new_window?
+      end
+    end
+  end
+
+  test "open_apps_in_new_window environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: 'true') do
+        c = ConfigurationSingleton.new
+        assert_equal true, c.open_apps_in_new_window
+        assert_equal true, c.open_apps_in_new_window?
+      end
     end
   end
 
@@ -581,6 +888,54 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "ood_bc_card_time is 7 by default" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: nil)) do
+      assert_equal 7, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
+  test "can configure ood_bc_card_time through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: '14')) do
+      assert_equal 14, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
+  test "can configure ood_bc_card_time through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'bc_card_time' => 21 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BC_CARD_TIME: nil) do
+        assert_equal 21, ConfigurationSingleton.new.ood_bc_card_time
+      end
+    end
+  end
+
+  test "ood_bc_card_time environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'bc_card_time' => 21 }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_BC_CARD_TIME: '14') do
+        assert_equal 14, ConfigurationSingleton.new.ood_bc_card_time
+      end
+    end
+  end
+
+  test "ood_bc_card_time returns 7 for invalid non-numeric values" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: 'abc')) do
+      assert_equal 7, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
+  test "ood_bc_card_time returns 0 for negative values" do
+    with_modified_env(no_config_env.merge(OOD_BC_CARD_TIME: '-3')) do
+      assert_equal 0, ConfigurationSingleton.new.ood_bc_card_time
+    end
+  end
+
   test "bc_sessions_poll_delay default value" do
     assert_equal(10_000, ConfigurationSingleton.new.bc_sessions_poll_delay)
   end
@@ -728,6 +1083,97 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "nsf_access_announcements_widget_enabled? is false when widget is not in dashboard layout" do
+    with_modified_env(no_config_env) do
+      cfg = ConfigurationSingleton.new
+      refute cfg.nsf_access_announcements_widget_enabled?
+    end
+  end
+  
+  test "nsf_access_announcements_widget_enabled? is true when widget is in dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_announcements'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+  
+        assert ConfigurationSingleton.new.nsf_access_announcements_widget_enabled?
+      end
+    end
+  end
+  
+  test "nsf_access_announcements_widget_enabled? is true when widget is in a profile dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'profiles' => {
+              'team1' => {
+                'dashboard_layout' => {
+                  'rows' => [
+                    { 'columns' => [{ 'width' => 12, 'widgets' => ['motd', 'nsf_access_announcements'] }] }
+                  ]
+                }
+              }
+            }
+          }.to_yaml)
+        end
+  
+        assert ConfigurationSingleton.new.nsf_access_announcements_widget_enabled?
+      end
+    end
+  end
+  
+  test "connect_sources includes nsf_access_announcements hostname when widget is enabled" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_announcements'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+  
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, :self
+        assert_includes sources, 'support.access-ci.org'
+        refute_includes sources, 'https://support.access-ci.org/api/2.2/announcements'
+      end
+    end
+  end
+  
+  test "connect_sources uses configured nsf_access_announcements hostname" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({
+        OOD_CONFIG_D_DIRECTORY:           dir.to_s,
+        OOD_NSF_ACCESS_ANNOUNCEMENTS_URL: 'https://announcements.example.org/api/2.2/announcements'
+      }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_announcements'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+  
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, 'announcements.example.org'
+        refute_includes sources, 'support.access-ci.org'
+      end
+    end
+  end
+  
   test "handles exception LoadError" do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
