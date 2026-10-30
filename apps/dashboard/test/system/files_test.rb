@@ -77,6 +77,30 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'reports errors when creating new directories and files' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+      
+      visit files_url(unwritable_dir)
+      find('#new-file-btn').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new file: Permission denied @ rb_sysopen - #{unwritable_dir.join('bar.txt')}"
+      assert_selector('.alert-danger', text: msg)
+
+      find('.alert-danger .btn-close').click
+      refute_selector('.alert-danger')
+      find('#new-dir-btn').click
+      find('#files_input_modal_input').set('bar')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new directory: Permission denied @ dir_s_mkdir - #{unwritable_dir.join('bar')}"
+      assert_selector('.alert-danger', text: msg)
+    end
+  end
+
   test 'navigation stays on the same page' do 
     Dir.mktmpdir do |dir|
       `mkdir -p #{dir}/subdir #{dir}/fav_dir`
@@ -107,6 +131,24 @@ class FilesTest < ApplicationSystemTestCase
         find('#favorites a', exact_text: "#{dir}/fav_dir").click
         assert_selector('tbody a', exact_text: 'bar.txt')
       end
+    end
+  end
+
+  # Regression test for #5628: long favorite paths used to overflow the
+  # sidebar container because the anchor elements had no width constraint.
+  test 'long favorite path stays within the sidebar container (regression #5628)' do
+    Dir.mktmpdir do |dir|
+      long_subdir = 'a' * 100
+      long_path = "#{dir}/#{long_subdir}"
+      `mkdir -p #{long_path}`
+      OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(long_path)])
+
+      visit files_url(dir)
+
+      container_width = find('#favorites').rect.width
+      anchor_width = find('#favorites a', text: long_subdir).rect.width
+      assert anchor_width <= container_width,
+             "favorite anchor (#{anchor_width}px) exceeds sidebar container (#{container_width}px)"
     end
   end
 
