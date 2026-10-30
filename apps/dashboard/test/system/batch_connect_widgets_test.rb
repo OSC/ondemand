@@ -67,16 +67,11 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
   end
 
   test 'path_selector can filter by file type matching an expression' do
-    Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol
-      stub_sacctmgr
-      stub_git("#{dir}/app")
-      
-      ['test.py', 'test.rbpy'].each do |file|
-        FileUtils.touch("#{Rails.root}/tmp/#{file}")
-      end
+    Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
+      apps_dir = File.join(dir, 'apps')
+      files_dir = File.join(dir, 'files')
+      FileUtils.mkdir_p([apps_dir, files_dir])
+      ['test.py', 'test.rbpy'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
 
       form = <<~HEREDOC
         ---
@@ -87,37 +82,27 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
         attributes:
           path:
             widget: 'path_selector'
-            directory: "#{Rails.root}/tmp"
+            directory: "#{files_dir}"
             show_files: true
             file_pattern: \\.py
       HEREDOC
 
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
-      base_id = 'batch_connect_session_context_path'
-
+      make_bc_app(apps_dir, form)
       visit new_batch_connect_session_context_url('sys/app')
-
       click_on 'Select Path'
-      sleep 0.5
 
-      table_id = "batch_connect_session_context_path_path_selector_table"
-      shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
-
-      assert(shown_dirs_and_files.any? { |file| file.match("test.py") })
-      refute(shown_dirs_and_files.any? { |file| file.match("test.rb") })
+      table = '#batch_connect_session_context_path_path_selector_table tbody'
+      assert_selector "#{table} td", exact_text: 'test.py'
+      assert_no_selector "#{table} td", exact_text: 'test.rbpy'
     end
   end
 
   test 'path_selector handles invalid regular expressions' do
-    Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol
-      stub_sacctmgr
-      stub_git("#{dir}/app")
-      
-      Tempfile.new("test.py", "#{Rails.root}/tmp")
-      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+    Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
+      apps_dir = File.join(dir, 'apps')
+      files_dir = File.join(dir, 'files')
+      FileUtils.mkdir_p([apps_dir, files_dir])
+      ['test.py', 'test.rb'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
 
       form = <<~HEREDOC
         ---
@@ -128,30 +113,24 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
         attributes:
           path:
             widget: 'path_selector'
-            directory: "#{Rails.root}/tmp"
+            directory: "#{files_dir}"
             show_files: true
             file_pattern: \.doesn't(compile
       HEREDOC
 
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
-      base_id = 'batch_connect_session_context_path'
-
+      make_bc_app(apps_dir, form)
       visit new_batch_connect_session_context_url('sys/app')
-
-      assert_selector('.alert-danger')
+      assert_selector '.alert-danger', text: 'did not compile'
     end
   end
 
   test 'path_selector handles no provided file pattern' do
-    Dir.mktmpdir do |dir|
-      "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol
-      stub_sacctmgr
-      stub_git("#{dir}/app")
-      
-      Tempfile.new("test.py", "#{Rails.root}/tmp")
-      Tempfile.new("test.rb", "#{Rails.root}/tmp")
+    Dir.mktmpdir('path-selector-', Rails.root.join('tmp')) do |dir|
+      apps_dir = File.join(dir, 'apps')
+      files_dir = File.join(dir, 'files')
+      FileUtils.mkdir_p([apps_dir, files_dir])
+      # Plain files avoid Tempfile's GC cleanup before browser assertions finish.
+      ['test.py', 'test.rb'].each { |name| FileUtils.touch(File.join(files_dir, name)) }
 
       form = <<~HEREDOC
         ---
@@ -162,24 +141,18 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
         attributes:
           path:
             widget: 'path_selector'
-            directory: "#{Rails.root}/tmp"
+            directory: "#{files_dir}"
             show_files: true
       HEREDOC
 
-      Pathname.new("#{dir}/app/").join('form.yml').write(form)
-      base_id = 'batch_connect_session_context_path'
-
+      make_bc_app(apps_dir, form)
       visit new_batch_connect_session_context_url('sys/app')
-
       click_on 'Select Path'
 
-      sleep 1
-
-      table_id = "batch_connect_session_context_path_path_selector_table"
-      shown_dirs_and_files = find_all("##{table_id} tr td").map { |td| td["innerHTML"] }
-
-      assert shown_dirs_and_files.any? { |file| file.match("test.py") }
-      assert shown_dirs_and_files.any? { |file| file.match("test.rb") } 
+      table = '#batch_connect_session_context_path_path_selector_table tbody'
+      assert_selector "#{table} tr", count: 2
+      assert_selector "#{table} td", exact_text: 'test.py'
+      assert_selector "#{table} td", exact_text: 'test.rb'
     end
   end
 
@@ -342,6 +315,89 @@ class BatchConnectWidgetsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'data-label restores default label when option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small', data-label-cores: 'Number of Cores (1-4)']
+              - ['medium', 'medium']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-4)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+
+      select('large', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-16)', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+
+  test 'data-label keeps default when initially selected option has no directive' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - node_type
+          - cores
+        attributes:
+          node_type:
+            widget: select
+            options:
+              - ['small', 'small']
+              - ['medium', 'medium', data-label-cores: 'Number of Cores (1-8)']
+              - ['large', 'large', data-label-cores: 'Number of Cores (1-16)']
+          cores:
+            widget: "number_field"
+            label: "Number of Cores"
+            required: true
+            value: 1
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+      refute_equal 'undefined', label.text
+
+      select('medium', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores (1-8)', label.text
+
+      select('small', from: bc_ele_id('node_type'))
+      label = find("label[for='#{bc_ele_id('cores')}']")
+      assert_equal 'Number of Cores', label.text
+    end
+  end
+  
   test 'global_bc_form_items work correctly' do
     Dir.mktmpdir do |dir|
       app_dir = "#{dir}/app".tap { |d| FileUtils.mkdir(d) }

@@ -29,6 +29,23 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector '.selected', count: 2
   end
 
+  test 'select all checkbox responds to enter key' do
+    Dir.mktmpdir do |dir|
+      %w[a.txt b.txt c.txt].each { |f| FileUtils.touch(File.join(dir, f)) }
+
+      visit files_url(dir)
+      assert_selector '#directory-contents tbody tr', count: 3
+
+      find('#select_all').send_keys(:return)
+      assert_selector '#select_all:checked'
+      assert_selector '.selected', count: 3
+
+      find('#select_all').send_keys(:return)
+      assert_selector '#select_all:not(:checked)'
+      assert_selector '.selected', count: 0
+    end
+  end
+  
   test 'visiting files app with bad directory does not duplicate errors' do
     bad_path = Rails.root / "nonexistent"
     visit files_url(bad_path.to_s)
@@ -57,6 +74,30 @@ class FilesTest < ApplicationSystemTestCase
       find('#files_input_modal_ok_button').click
       assert_selector('tbody a[data-type="d"]', exact_text: 'bar')
       assert File.directory? File.join(dir, 'bar')
+    end
+  end
+
+  test 'reports errors when creating new directories and files' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+      
+      visit files_url(unwritable_dir)
+      find('#new-file-btn').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new file: Permission denied @ rb_sysopen - #{unwritable_dir.join('bar.txt')}"
+      assert_selector('.alert-danger', text: msg)
+
+      find('.alert-danger .btn-close').click
+      refute_selector('.alert-danger')
+      find('#new-dir-btn').click
+      find('#files_input_modal_input').set('bar')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new directory: Permission denied @ dir_s_mkdir - #{unwritable_dir.join('bar')}"
+      assert_selector('.alert-danger', text: msg)
     end
   end
 
@@ -90,6 +131,24 @@ class FilesTest < ApplicationSystemTestCase
         find('#favorites a', exact_text: "#{dir}/fav_dir").click
         assert_selector('tbody a', exact_text: 'bar.txt')
       end
+    end
+  end
+
+  # Regression test for #5628: long favorite paths used to overflow the
+  # sidebar container because the anchor elements had no width constraint.
+  test 'long favorite path stays within the sidebar container (regression #5628)' do
+    Dir.mktmpdir do |dir|
+      long_subdir = 'a' * 100
+      long_path = "#{dir}/#{long_subdir}"
+      `mkdir -p #{long_path}`
+      OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(long_path)])
+
+      visit files_url(dir)
+
+      container_width = find('#favorites').rect.width
+      anchor_width = find('#favorites a', text: long_subdir).rect.width
+      assert anchor_width <= container_width,
+             "favorite anchor (#{anchor_width}px) exceeds sidebar container (#{container_width}px)"
     end
   end
 
@@ -127,6 +186,133 @@ class FilesTest < ApplicationSystemTestCase
 
       sleep 6 # need to guarantee that this disappears after 5 seconds.
       assert_selector 'span', text: '100% copy files', count: 0
+    end
+  end
+
+  test 'copying files with ctrl-c and ctrl-v keyboard shortcuts' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      find('tbody a', exact_text: 'bar.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 2
+
+      # Focus remains on the checkbox after selection; shortcuts should still work.
+      page.send_keys([:control, 'c'])
+
+      assert_selector '#clipboard li', count: 2
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      visit files_url("#{dir}/dest")
+      assert_selector '#clipboard li', count: 2
+
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
+      assert File.file?(File.join(dir, 'src', 'foo.txt'))
+      assert File.file?(File.join(dir, 'src', 'bar.txt'))
+    end
+  end
+
+  test 'moving files with ctrl-x and ctrl-v keyboard shortcuts' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      find('tbody a', exact_text: 'bar.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 2
+
+      page.send_keys([:control, 'x'])
+
+      assert_selector '#clipboard li', count: 2
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      visit files_url("#{dir}/dest")
+      assert_selector '#clipboard li', count: 2
+
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
+      refute File.exist?(File.join(dir, 'src', 'foo.txt'))
+      refute File.exist?(File.join(dir, 'src', 'bar.txt'))
+    end
+  end
+
+  test 'ctrl-v defaults to copy after opening clipboard with copy-move button' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 1
+
+      # Opening via the button (not Ctrl+X) should default Ctrl+V to copy.
+      find('#copy-move-btn').click
+      assert_selector '#clipboard li', count: 1
+
+      visit files_url("#{dir}/dest")
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'src', 'foo.txt'))
+    end
+  end
+
+  test 'copying directory contents with select all' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src/app", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/app/contents.txt")
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('#select_all').click
+
+      assert_selector '.selected', count: 3
+
+      find('#copy-move-btn').click
+
+      assert_selector '#clipboard li', count: 3
+      assert_selector '#clipboard li', text: 'app'
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      find('li.breadcrumb-item', text: File.basename(dir)).click
+      find('a.name', text: 'dest').click
+
+      assert_selector '#clipboard li', count: 3
+
+      find('#clipboard-copy-to-dir').click
+
+      assert_selector('tbody a', exact_text: 'app')
+      assert_selector('tbody a', exact_text: 'foo.txt')
+      assert_selector('tbody a', exact_text: 'bar.txt')
+
+      assert File.file?(File.join(dir, 'dest', 'app', 'contents.txt'))
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
     end
   end
 
@@ -349,6 +535,16 @@ class FilesTest < ApplicationSystemTestCase
       # verify app dir deleted according to UI
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
       assert_no_selector 'tbody a', exact_text: 'single_file', wait: 10
+
+      # The completed transfer fades out after four seconds. Include hidden
+      # status so synchronization does not depend on catching that window.
+      assert_selector(
+        '.transfers-status span',
+        text: '100% remove files',
+        count: 1,
+        visible: :all,
+        wait: MAX_WAIT
+      )
 
       # verify app dir & single_file were actually deleted
       refute(File.exist?(src), Dir.children(dir))
@@ -1014,6 +1210,71 @@ class FilesTest < ApplicationSystemTestCase
       end
 
       File.delete(zip_file) if File.exist?(zip_file)
+    end
+  end
+
+  test 'cannot download directories that are too large' do
+    with_modified_env({OOD_DOWNLOAD_DIR_MAX: '100'}) do
+      zip_file = DOWNLOAD_DIRECTORY.join('dir_to_download.zip')
+      File.delete(zip_file) if File.exist?(zip_file)
+
+      Dir.mktmpdir do |dir|
+        dir_size = 101
+        PosixFile.any_instance.stubs(:calculate_directory_size)
+          .returns(dir_size)
+        Open3.stubs(:capture3).returns(["#{dir_size} #{dir} 
+          \n #{dir_size} total", "", exit_success])
+
+        dir_to_dl = "#{dir}/dir_to_download"
+        `mkdir -p #{dir_to_dl}`
+        `echo 'abc123' > #{dir_to_dl}/real_file`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'dir_to_download').ancestor('tr').click
+
+        click_on('Download')
+        alert_text = "Error while downloading: #{I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: '100')}"
+        assert_selector '.alert-danger span', text: alert_text
+        refute(File.exist?(zip_file), "#{zip_file} was downloaded despite being too large")
+      end
+    end
+  end
+
+  test 'can download files' do
+    new_file = DOWNLOAD_DIRECTORY.join('file_to_download')
+    File.delete(new_file) if File.exist?(new_file)
+
+    Dir.mktmpdir do |dir|
+      `echo 'some content' > #{dir}/file_to_download`
+
+      visit files_url(dir)
+      find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
+      click_on('Download')
+      sleep 5
+      assert(File.exist?(new_file), "#{new_file} was not downloaded")
+    end
+  end
+
+  test 'cannot open or download files that are too large' do
+    with_modified_env({OOD_DOWNLOAD_FILE_MAX: '116'}) do
+      new_file = DOWNLOAD_DIRECTORY.join('file_to_download')
+      File.delete(new_file) if File.exist?(new_file)
+
+      Dir.mktmpdir do |dir|
+        content = 'some content '*9 # produces 117 Bytes of text
+        `echo '#{content}' > #{dir}/file_to_download`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'file_to_download').click
+        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
+        find('.alert-danger button.btn-close').click
+        refute_selector('.alert-danger')
+
+        find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
+        click_on('Download')
+        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
+        refute(File.exist?(new_file), "#{new_file} was downloaded despite being too large")
+      end
     end
   end
 

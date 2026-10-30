@@ -439,13 +439,21 @@ class FileOps {
     // so this just repeats the status quo
   
     let filename = $($.parseHTML(file.name)).text(),
-        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}?download=${Date.now().toString()}`,
+        baseUrl = `${history.state.currentDirectoryUrl}/${encodeURIComponent(filename)}`,
+        downloadUrl = `${baseUrl}?download=${Date.now().toString()}`,
         iframe = document.createElement('iframe'),
         TIME = 30 * 1000;
   
     iframe.setAttribute('class', 'd-none');
     iframe.setAttribute('src', downloadUrl);
-  
+    iframe.onload = () => {
+      const finalUrl = iframe.contentWindow.location.href;
+      if (finalUrl !== downloadUrl) {
+        window.location.href = baseUrl;
+		document.body.removeChild(iframe);
+      }
+    };
+
     document.body.appendChild(iframe);
   
     setTimeout(function() {
@@ -455,8 +463,9 @@ class FileOps {
   
   dataFromJsonResponse(response) {
     return new Promise((resolve, reject) => {
+        const isJSON = response.headers.get('content-type')?.includes('application/json');
         Promise.resolve(response)
-            .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+            .then(response => isJSON ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
             .then(response => response.json())
             .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
             .catch((e) => reject(e))

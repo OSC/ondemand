@@ -13,13 +13,14 @@ assignees: ''
 - [ ] Other
 
 **Describe your request or question**
-A clear and concise description of what you need or are asking.
+<!-- A clear and concise description of what you need or are asking. -->
 
 **Why is this important to you?**
-Help us understand the use case or problem this would solve.
+<!-- Help us understand the use case or problem this would solve. -->
 
 **Your environment** 
-OS, browser, version — only if applicable to your request.
+<!-- OS, browser, version — only if applicable to your request. -->
 
 **Anything else?**
-Any additional context, links, or screenshots.
+<!-- Any additional context, links, or screenshots. -->
+ 

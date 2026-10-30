@@ -8,6 +8,45 @@ import {
   pruneNotifiedSessionIds, setupNotificationToggle,
 } from './batch_connect/bc_notifications';
 
+const selectedConnectionTabs = new Map();
+
+function trackConnectionTabSelection(container) {
+  container.addEventListener('shown.bs.tab', (event) => {
+    const tabLink = event.target.closest('.nav-tabs .nav-link');
+    const card = tabLink?.closest('[data-bc-card]');
+    const href = tabLink?.getAttribute('href');
+
+    if (!tabLink || !card || !href?.startsWith('#')) {
+      return;
+    }
+
+    if (tabLink.hasAttribute('data-default-tab')) {
+      selectedConnectionTabs.delete(card.dataset.id);
+    } else {
+      selectedConnectionTabs.set(card.dataset.id, href);
+    }
+  });
+}
+
+function restoreConnectionTabs() {
+  if (!document.querySelector('[data-bc-card]')) {
+    selectedConnectionTabs.clear();
+    return;
+  }
+  
+  selectedConnectionTabs.forEach((tabTarget, sessionId) => {
+    const tabLink = document.querySelector(`#id_${CSS.escape(sessionId)} .nav-tabs .nav-link[href="${tabTarget}"]`);
+
+    if (tabLink) {
+      if (!tabLink.classList.contains('active')) {
+        tabLink.click();
+      }
+    } else {
+      selectedConnectionTabs.delete(sessionId);
+    }
+  });
+}
+
 function continuePolling() {
   const bcSessionsContainer = document.getElementById('bc_sessions_content');
   const shouldPoll = bcSessionsContainer?.dataset.shouldPoll ?? 'true';
@@ -99,7 +138,9 @@ document.addEventListener('DOMContentLoaded', function () {
   
   const bcSessionsContainer = document.getElementById('batch_connect_sessions');
   if (bcSessionsContainer) {
+    trackConnectionTabSelection(bcSessionsContainer);
     pollAndReplace(bcIndexUrl(), bcPollDelay(), "batch_connect_sessions", () => {
+      restoreConnectionTabs();
       bindFullPageSpinnerEvent();
       checkStatusChanges(sessions, notifiedSessionIds);
     }, continuePolling);

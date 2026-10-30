@@ -197,8 +197,10 @@ module BatchConnect::SessionsHelper
         concat(
           content_tag(:ul, class: "nav nav-tabs") do
             tabs.map { |t| t[:title] }.map.with_index do |title, idx|
+              tab_data = { 'bs-toggle': "tab" }
+              tab_data[:default_tab] = true if idx.zero?
               content_tag(:li, class: "nav-item #{"active" if idx.zero?}") do
-                link_to title, "#c_#{id}_#{idx}", data: { 'bs-toggle': "tab" }, aria: { selected: (true if idx.zero?) }, class: "nav-link #{"active" if idx.zero?}"
+                link_to title, "#c_#{id}_#{idx}", data: tab_data, aria: { selected: (true if idx.zero?) }, class: "nav-link #{"active" if idx.zero?}"
               end
             end.join("\n").html_safe
           end
