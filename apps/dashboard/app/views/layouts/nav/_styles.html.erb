@@ -20,4 +20,25 @@
 .navbar-light .navbar-nav .nav-link:focus-visible, .navbar-light .navbar-nav .nav-link.dropdown-toggle.show {
   background-color: <%= link_active_color || 'rgb(231, 231, 231)' %>;
 }
+
+<% if link_color %>
+.navbar-dark, .navbar-light {
+  --bs-navbar-color: <%= link_color %>;
+  --bs-navbar-brand-color: <%= link_color %>;
+  --bs-navbar-disabled-color: <%= link_color %>;
+}
+<% end %>
+
+<% if link_hover_color %>
+.navbar-dark, .navbar-light {
+  --bs-navbar-hover-color: <%= link_hover_color %>;
+  --bs-navbar-brand-hover-color: <%= link_hover_color %>;
+}
+<% end %>
+
+<% if link_active_text_color %>
+.navbar-dark, .navbar-light {
+  --bs-navbar-active-color: <%= link_active_text_color %>;
+}
+<% end %>
 </style>
