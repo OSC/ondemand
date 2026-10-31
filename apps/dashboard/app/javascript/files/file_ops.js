@@ -463,8 +463,9 @@ class FileOps {
   
   dataFromJsonResponse(response) {
     return new Promise((resolve, reject) => {
+        const isJSON = response.headers.get('content-type')?.includes('application/json');
         Promise.resolve(response)
-            .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+            .then(response => isJSON ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
             .then(response => response.json())
             .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
             .catch((e) => reject(e))

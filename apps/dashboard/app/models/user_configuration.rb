@@ -20,7 +20,6 @@
 #       dashboard_logo: "/public/team1.png"
 #
 class UserConfiguration
-
   include UserSettingStore
 
   USER_PROPERTIES = [
@@ -118,7 +117,7 @@ class UserConfiguration
   # The file system path to the announcements
   # @return [Pathname, Array<Pathname>] announcement path or paths
   def announcement_path
-    if path = ENV['OOD_ANNOUNCEMENT_PATH']
+    if (path = ENV['OOD_ANNOUNCEMENT_PATH'])
       Pathname.new(path)
     else
       paths = fetch(:announcement_path,
@@ -128,8 +127,8 @@ class UserConfiguration
     end
   end
 
-  DEFAULT_NAV_CATEGORIES = ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"].freeze
-  
+  DEFAULT_NAV_CATEGORIES = ['Apps', 'Files', 'Jobs', 'Clusters', 'Interactive Apps'].freeze
+
   def filter_nav_categories?
     !!fetch(:nav_categories, nil)
   end
@@ -167,7 +166,7 @@ class UserConfiguration
   # First, it looks into the profile configuration as defined by current user profile.
   # If no value is defined, it looks into the root configuration.
   def fetch(key_value, default_value = nil)
-    key = key_value ? key_value.to_sym : nil
+    key = key_value&.to_sym
     profile_config = config.dig(:profiles, profile) || {}
 
     # Returns the value if they key is present in the profile, even if the value is nil
