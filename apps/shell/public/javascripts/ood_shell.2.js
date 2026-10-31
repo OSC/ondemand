@@ -10,6 +10,7 @@ function OodShell(element, url, profile, predictiveText) {
   // instead of hterm's screen (see installInputProxy).
   this.inputProxy = null;
   this.inputProxyComposing = false;
+  this.sendingInputProxyEdits = false;
   // The proxy's text as the shell received it (smart punctuation as ASCII).
   this.sentText = '';
 }
@@ -201,6 +202,13 @@ OodShell.prototype.closeTerminal = function (ev) {
 }
 
 OodShell.prototype.onVTKeystroke = function (str) {
+  // Anything the shell gets besides the input proxy's own edits (keys hterm
+  // sends, a paste, mouse or focus reports) can change its line in ways the
+  // proxy can't follow, so the proxy's typed line starts over.
+  if (!this.sendingInputProxyEdits) {
+    this.resetInputProxy();
+  }
+
   // Do something useful with str here.
   // For example, Secure Shell forwards the string onto the NaCl plugin.
   this.socket.send(JSON.stringify({
@@ -350,42 +358,33 @@ OodShell.prototype.installInputProxy = function () {
   ].join('; ');
   termDocument.body.appendChild(proxy);
 
-  // hterm's keyboard handlers sit on the document body and would see these
-  // events as they bubble. Text keys stop here and edit the textarea; every
-  // other key carries on to hterm, which sends it and prevents the default.
-  // The keypress that follows a keydown goes the same way.
-  let route = 'text';
+  // hterm's keyboard handlers sit on the document body and see these events
+  // as they bubble, so keys work as they do on hterm's screen: hterm sends
+  // Enter, arrows, Tab, Ctrl+key and the like itself, and leaves characters
+  // to keypress and textInput. Stopping those here lets the textarea take the
+  // characters instead. Backspace also stays with the textarea while it has
+  // text, so the keyboard keeps its word context, as does IME input.
   proxy.addEventListener('keydown', function (ev) {
-    route = shell.routeInputProxyKey(ev);
-    if (route === 'text') {
-      ev.stopPropagation();
-    } else if (route === 'command') {
-      // Enter, arrows, Tab, Ctrl+key and the like change the shell's line in
-      // ways the textarea can't follow, so the typed line starts over.
-      shell.resetInputProxy();
-    }
-  });
-  proxy.addEventListener('keypress', function (ev) {
-    if (route === 'text') {
+    if (ev.isComposing || ev.keyCode === 229 ||
+        (ev.key === 'Backspace' && proxy.value !== '' &&
+         !ev.ctrlKey && !ev.altKey && !ev.metaKey)) {
       ev.stopPropagation();
     }
   });
-  // hterm would send this text itself; the input listener sends it instead.
-  proxy.addEventListener('textInput', function (ev) {
-    ev.stopPropagation();
+  ['keypress', 'textInput'].forEach(function (type) {
+    proxy.addEventListener(type, function (ev) {
+      ev.stopPropagation();
+    });
   });
 
+  // For keyboards that don't send an Enter or Backspace keydown.
   proxy.addEventListener('beforeinput', function (ev) {
     if (ev.inputType === 'insertLineBreak' ||
         ev.inputType === 'insertParagraph') {
-      // Return from a keyboard that didn't send an Enter keydown.
       ev.preventDefault();
-      shell.resetInputProxy();
       term.onVTKeystroke('\r');
     } else if (ev.inputType === 'deleteContentBackward' &&
-               proxy.selectionEnd === 0) {
-      // Backspace with nothing left in the textarea deletes what the shell
-      // had before it.
+               proxy.value === '') {
       ev.preventDefault();
       term.onVTKeystroke(shell.backspaceKey());
     }
@@ -404,13 +403,12 @@ OodShell.prototype.installInputProxy = function () {
     shell.sendInputProxyEdits();
   });
 
+  // The same path as pasting onto hterm's screen, so bracketed paste still
+  // applies.
   proxy.addEventListener('paste', function (ev) {
     ev.preventDefault();
-    const text = ev.clipboardData ? ev.clipboardData.getData('text/plain') : '';
-    shell.resetInputProxy();
+    const text = ev.clipboardData.getData('text/plain');
     if (text) {
-      // The same path as pasting onto hterm's screen, so bracketed paste
-      // still applies.
       term.onPasteData_(text);
     }
   });
@@ -474,48 +472,6 @@ OodShell.prototype.installInputProxy = function () {
   return proxy;
 };
 
-OodShell.MODIFIER_KEYS = [
-  'Alt', 'AltGraph', 'CapsLock', 'Control', 'Fn', 'Meta', 'OS', 'Shift'
-];
-
-/**
- * Decides who handles a keydown on the input proxy:
- *   'text'    the textarea edits itself and sendInputProxyEdits sends the
- *             result (characters, Backspace, and anything an IME is handling);
- *   'command' hterm sends it and the typed line starts over (Enter, arrows,
- *             Tab, Escape, function keys, Ctrl/Alt/Meta combinations, keypad);
- *   'hterm'   hterm handles it and the typed line stays (modifier keys, and
- *             Backspace with nothing before the caret).
- */
-OodShell.prototype.routeInputProxyKey = function (ev) {
-  const key = ev.key || '';
-
-  if (ev.isComposing || ev.keyCode === 229 ||
-      key === 'Process' || key === 'Dead' || key === 'Unidentified') {
-    return 'text';
-  }
-  if (OodShell.MODIFIER_KEYS.indexOf(key) !== -1) {
-    return 'hterm';
-  }
-
-  const altGraph = typeof ev.getModifierState === 'function' &&
-                   ev.getModifierState('AltGraph');
-  if ((ev.ctrlKey || ev.altKey || ev.metaKey) && !altGraph) {
-    return 'command';
-  }
-  // hterm knows whether the keypad is in application mode.
-  if (ev.location === 3) {
-    return 'command';
-  }
-  if (key === 'Backspace') {
-    return this.inputProxy.selectionEnd > 0 ? 'text' : 'hterm';
-  }
-  if (Array.from(key).length === 1) {
-    return 'text';
-  }
-  return 'command';
-};
-
 /** What the shell's line editor expects for Backspace, per hterm's setting. */
 OodShell.prototype.backspaceKey = function () {
   return this.term.keyboard.backspaceSendsBackspace ? '\b' : '\x7f';
@@ -556,7 +512,9 @@ OodShell.prototype.sendInputProxyEdits = function () {
   this.sentText = text;
 
   if (keystrokes) {
+    this.sendingInputProxyEdits = true;
     this.term.onVTKeystroke(keystrokes);
+    this.sendingInputProxyEdits = false;
   }
 
   // Full-screen programs such as vim, less and top run on the alternate screen
@@ -576,8 +534,9 @@ OodShell.ASCII = {
 };
 
 OodShell.toAscii = function (text) {
-  return text.replace(/[\u2018-\u201f\u2013\u2014\u2026\u00a0]/g,
-                      function (char) { return OodShell.ASCII[char]; });
+  return Array.from(text, function (char) {
+    return OodShell.ASCII[char] || char;
+  }).join('');
 };
 
 /**

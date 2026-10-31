@@ -83,8 +83,9 @@ class FakeElement {
 }
 
 /**
- * Build an OodShell on a fake hterm terminal. `sent` collects everything the
- * terminal would send to the shell; `doc.log` records focus changes.
+ * Build an OodShell on a fake hterm terminal. Like hterm, the fake sends
+ * keystrokes and pastes through the shell's onVTKeystroke and sendString, and
+ * `sent` collects what reaches the socket; `doc.log` records focus changes.
  */
 function setup({ predictiveText = false, primaryScreen = true, focused = null } = {}) {
   const doc = { activeElement: null, listeners: {}, log: [], selection: { isCollapsed: true } };
@@ -96,6 +97,7 @@ function setup({ predictiveText = false, primaryScreen = true, focused = null } 
   doc.querySelector = (selector) => (selector === 'x-screen' ? screen : null);
 
   const sent = [];
+  let shell = null;
   const term = {
     keyboard: { backspaceSendsBackspace: false },
     findBar: { hasFocus: false },
@@ -103,15 +105,16 @@ function setup({ predictiveText = false, primaryScreen = true, focused = null } 
     getDocument: () => doc,
     focus: () => screen.focus(),
     blur: () => screen.blur(),
-    onVTKeystroke: (text) => sent.push(text),
+    onVTKeystroke: (text) => shell.onVTKeystroke(text),
     onFocusChange_: (focused) => term.focusChanges.push(focused),
-    onPasteData_: (text) => sent.push(`[paste ${text}]`),
+    onPasteData_: (text) => shell.sendString(`[paste ${text}]`),
     isPrimaryScreen: () => primaryScreen
   };
 
   const OodShell = loadOodShell({ setTimeout: (fn) => fn() });
-  const shell = new OodShell({}, 'ws://localhost', 'default', predictiveText);
+  shell = new OodShell({}, 'ws://localhost', 'default', predictiveText);
   shell.term = term;
+  shell.socket = { send: (json) => sent.push(JSON.parse(json).input) };
   if (focused === 'screen') {
     screen.focus();
   }
@@ -264,52 +267,44 @@ describe('Input proxy', () => {
     expect(proxy.value).toBe('the ');
   });
 
-  test('keeps text keys from hterm and passes the rest to it', () => {
+  test('leaves keydowns to hterm, except Backspace with text and IME input', () => {
     const { shell, proxy } = ready();
     const keydown = (props) => fire(proxy, 'keydown', props).propagationStopped;
 
-    expect(keydown({ key: 'a' })).toBe(true);
-    expect(keydown({ key: ' ' })).toBe(true);
-    expect(keydown({ key: '\u00e9' })).toBe(true);
+    expect(keydown({ key: 'a', keyCode: 65 })).toBe(false);
+    expect(keydown({ key: 'Enter', keyCode: 13 })).toBe(false);
+    expect(keydown({ key: 'c', keyCode: 67, ctrlKey: true })).toBe(false);
     expect(keydown({ key: 'Unidentified', keyCode: 229 })).toBe(true);
-    expect(keydown({ key: 'Enter', isComposing: true })).toBe(true);
-    expect(keydown({ key: 'Enter' })).toBe(false);
-    expect(keydown({ key: 'ArrowUp' })).toBe(false);
-    expect(keydown({ key: 'Tab' })).toBe(false);
-    expect(keydown({ key: 'c', ctrlKey: true })).toBe(false);
-    expect(keydown({ key: '1', location: 3 })).toBe(false);
-    expect(keydown({ key: 'Shift' })).toBe(false);
+    expect(keydown({ key: 'Enter', keyCode: 13, isComposing: true })).toBe(true);
 
+    expect(keydown({ key: 'Backspace', keyCode: 8 })).toBe(false);
     edit(proxy, 'x');
-    expect(keydown({ key: 'Backspace' })).toBe(true);
+    expect(keydown({ key: 'Backspace', keyCode: 8 })).toBe(true);
+    expect(keydown({ key: 'Backspace', keyCode: 8, altKey: true })).toBe(false);
     shell.resetInputProxy();
-    expect(keydown({ key: 'Backspace' })).toBe(false);
+    expect(keydown({ key: 'Backspace', keyCode: 8 })).toBe(false);
   });
 
-  test('a keypress follows its keydown', () => {
+  test('hterm never sees the characters, which it would send a second time', () => {
     const { proxy } = ready();
-    fire(proxy, 'keydown', { key: 'a' });
-    expect(fire(proxy, 'keypress').propagationStopped).toBe(true);
-    fire(proxy, 'keydown', { key: 'Enter' });
-    expect(fire(proxy, 'keypress').propagationStopped).toBe(false);
-  });
-
-  test('hterm never sees textInput, which would send the text twice', () => {
-    const { proxy } = ready();
+    expect(fire(proxy, 'keypress', { charCode: 97 }).propagationStopped).toBe(true);
     expect(fire(proxy, 'textInput', { data: 'a' }).propagationStopped).toBe(true);
   });
 
-  test('Enter, arrows and control keys start a new typed line', () => {
-    const { proxy } = ready();
+  test('anything else sent to the shell starts a new typed line', () => {
+    const { shell, proxy, term, sent } = ready();
     edit(proxy, 'ls');
-    fire(proxy, 'keydown', { key: 'Enter' });
+    // hterm sending Enter, as it does for the keydown.
+    term.onVTKeystroke('\r');
     expect(proxy.value).toBe('');
 
     edit(proxy, 'cd');
-    fire(proxy, 'keydown', { key: 'Shift' });
-    expect(proxy.value).toBe('cd');
-    fire(proxy, 'keydown', { key: 'Tab' });
+    // A reply hterm sends the host, such as a focus report.
+    shell.sendString('\x1b[I');
     expect(proxy.value).toBe('');
+
+    edit(proxy, 'cd');
+    expect(sent).toEqual(['ls', '\r', 'cd', '\x1b[I', 'cd']);
   });
 
   test('Return from a keyboard without an Enter keydown still submits', () => {
