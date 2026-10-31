@@ -115,7 +115,7 @@ class ApplicationController < ActionController::Base
       )
     end
 
-    @announcements ||= announcements
+    @announcements ||= announcements.select{ |a| a.applies_to?(params[:token]) }
   rescue => e
     logger.warn "Error parsing announcements: #{e.message}"
     @announcements ||= []
