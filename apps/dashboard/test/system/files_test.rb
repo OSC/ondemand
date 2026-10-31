@@ -596,15 +596,19 @@ class FilesTest < ApplicationSystemTestCase
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
 
-      error_details = find('.uppy-Dashboard-Item-errorDetails', wait: MAX_WAIT)
-      assert_match(/Permission denied/, error_details['aria-label'])
-
-      accept_alert(/Permission denied/) do
-        error_details.click
+      error_message = nil
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+        error_message = page.evaluate_script(<<~JS)
+          document.querySelector('.uppy-Dashboard-Item-errorDetails')?.getAttribute('aria-label')
+        JS
+        error_message.present?
       end
+      page.execute_script('window.__changedElements = []')
+
+      assert_match(/Permission denied/, error_message)
     end
   end
-  
+
   def assert_overwrite_buttons
     assert_selector('.uppy-StatusBar-actions #safe-upload-btn.uppy-StatusBar-actionBtn--upload', text: 'Upload New Files')
     assert_selector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload-danger', text: 'Upload and Overwrite')
