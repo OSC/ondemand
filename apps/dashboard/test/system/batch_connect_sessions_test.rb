@@ -203,10 +203,6 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     end
   end
 
-  # Teardown callbacks run after Rails' failure screenshot and browser reset, so the
-  # polling page never requests a session directory that has already been removed.
-  teardown { FileUtils.remove_entry(@session_dir) if @session_dir }
-
   # Visible, enabled controls of a card in DOM order. Every poll re-renders the same
   # card, so an index names the same control before and after a replacement.
   CARD_CONTROLS_JS = <<~JS.squish
@@ -216,30 +212,32 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   JS
 
   test 'session cards hold focus when replaced' do
-    @session_dir = Dir.mktmpdir
-    # OOD_BC_SESSIONS_POLL_DELAY is clamped to at least 10s, far beyond Capybara's wait.
-    Configuration.stubs(:bc_sessions_poll_delay).returns(100)
-    create_test_file(@session_dir, token: 'sys/bc_jupyter', title: 'Jupyter')
-    stub_scheduler(:running, nodes: 2, cores: 2)
-    visit(batch_connect_sessions_path)
+    Dir.mktmpdir do |dir|
+      # OOD_BC_SESSIONS_POLL_DELAY is clamped to at least 10s, far beyond Capybara's wait.
+      Configuration.stubs(:bc_sessions_poll_delay).returns(100)
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 2, cores: 2)
+      visit(batch_connect_sessions_path)
 
-    card = "#id_#{get_test_bc_id}"
-    assert_selector(card)
-    count = evaluate_script("(#{CARD_CONTROLS_JS})(arguments[0]).length", card)
-    assert_operator(count, :>, 0)
+      card = "#id_#{get_test_bc_id}"
+      assert_selector(card)
+      count = evaluate_script("(#{CARD_CONTROLS_JS})(arguments[0]).length", card)
+      assert_operator(count, :>, 0)
 
-    count.times do |i|
-      # Mark the card and focus the control in one script, so no poll lands in between.
-      execute_script(<<~JS, card, i)
-        document.querySelector(arguments[0]).dataset.stale = 'true';
-        (#{CARD_CONTROLS_JS})(arguments[0])[arguments[1]].focus();
-      JS
+      count.times do |i|
+        # Mark the card and focus the control in one script, so no poll lands in between.
+        execute_script(<<~JS, card, i)
+          document.querySelector(arguments[0]).dataset.stale = 'true';
+          (#{CARD_CONTROLS_JS})(arguments[0])[arguments[1]].focus();
+        JS
 
-      # The poller swaps the card and restores focus in one task, so once the
-      # marked card is gone, focus is already where it will end up.
-      assert_no_selector("#{card}[data-stale]")
-      focused = evaluate_script("(#{CARD_CONTROLS_JS})(arguments[0]).indexOf(document.activeElement)", card)
-      assert_equal(i, focused, "focus was not restored to control #{i}")
+        # The poller swaps the card and restores focus in one task, so once the
+        # marked card is gone, focus is already where it will end up.
+        # wait: 5 matches the connection-tabs test below, which polls at the same rate.
+        assert_no_selector("#{card}[data-stale]", wait: 5)
+        focused = evaluate_script("(#{CARD_CONTROLS_JS})(arguments[0]).indexOf(document.activeElement)", card)
+        assert_equal(i, focused, "focus was not restored to control #{i}")
+      end
     end
   end
 

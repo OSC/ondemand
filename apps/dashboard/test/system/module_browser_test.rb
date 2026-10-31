@@ -27,13 +27,13 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   end
 
   test 'filtering by cluster only shows supported modules' do
-    find('#cluster_filter option[value="owens"]').select_option
+    select 'Owens', from: 'cluster_filter'
     assert_modules(['gcc', 'gcc-tools', 'python'])
 
-    find('#cluster_filter option[value="oakley"]').select_option
+    select 'Oakley', from: 'cluster_filter'
     assert_modules(['gcc', 'openmpi'])
 
-    find('#cluster_filter option[value=""]').select_option
+    select 'All Clusters', from: 'cluster_filter'
     assert_modules(ALL_MODULES)
   end
 
@@ -41,7 +41,7 @@ class ModuleBrowserTest < ApplicationSystemTestCase
     fill_in 'module_search', with: 'gcc'
     assert_modules(['gcc', 'gcc-tools'])
 
-    find('#cluster_filter option[value="oakley"]').select_option
+    select 'Oakley', from: 'cluster_filter'
     assert_modules(['gcc'])
   end
 
