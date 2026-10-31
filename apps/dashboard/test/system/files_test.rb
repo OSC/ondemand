@@ -581,6 +581,30 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'failed uploads show server error message' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+
+      visit files_url(unwritable_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/hello-world.c'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+
+      error_details = find('.uppy-Dashboard-Item-errorDetails', wait: MAX_WAIT)
+      assert_match(/Permission denied/, error_details['aria-label'])
+
+      accept_alert(/Permission denied/) do
+        error_details.click
+      end
+    end
+  end
+  
   def assert_overwrite_buttons
     assert_selector('.uppy-StatusBar-actions #safe-upload-btn.uppy-StatusBar-actionBtn--upload', text: 'Upload New Files')
     assert_selector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload-danger', text: 'Upload and Overwrite')
