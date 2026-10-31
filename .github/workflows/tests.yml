@@ -139,6 +139,7 @@ jobs:
         arch: ${{ fromJSON(github.event_name == 'schedule' && '["x86_64","aarch64","ppc64le"]' || '["x86_64","aarch64"]') }}
         version: ["4.2"]
         exclude:
+          # el10 on aarch64 times out
           # These ARM repos do not yet publish ondemand-nginx or ondemand-passenger.  Done on private GitLab
           - dist: el10
             arch: aarch64
