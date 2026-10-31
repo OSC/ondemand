@@ -157,7 +157,7 @@ describe('retype', () => {
   });
 
   test('counts characters by code point, as the shell does', () => {
-    expect(retype('ok \u1f44d', 'ok ', BS)).toBe('<BS>');
+    expect(retype('ok \ud83d\udc4d', 'ok ', BS)).toBe('<BS>');
   });
 
   test('turns smart punctuation into ASCII', () => {
