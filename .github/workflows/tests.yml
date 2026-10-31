@@ -149,7 +149,6 @@ jobs:
           - dist: amzn2023
             arch: ppc64le
           # Ubuntu and Debian doesn't have way to get NodeJS 20+ on ppc64le
-          # PowerPC DEB targets need separate build-box and Node.js 22 validation.
           - dist: ubuntu-24.04
             arch: ppc64le
           - dist: ubuntu-26.04
