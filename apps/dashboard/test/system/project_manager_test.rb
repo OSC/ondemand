@@ -1668,16 +1668,18 @@ class ProjectManagerTest < ApplicationSystemTestCase
       Project.stubs(:dataroot).returns(Pathname.new(dir))
 
       visit(projects_root_path)
-      assert_text(I18n.t('dashboard.jobs_import_shared_project'))
       find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
 
-      fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
-      find('#import_project').click
+      # Bootstrap adds .show only once the collapse transition has finished.
+      within('#load-import-pane.show') do
+        fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
+        find('#import_project').click
+      end
 
-      sleep 1 # sleep ensure the project has been imported
+      # The flash exists only on the page rendered after the import's redirect.
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
       assert_current_path(projects_root_path)
       assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
-      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
     end
   end
 end

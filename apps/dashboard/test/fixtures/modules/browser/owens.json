@@ -1,0 +1,23 @@
+{
+  "gcc": {
+    "gcc/12.2": {
+      "Version": "12.2",
+      "parentAA": [],
+      "hidden": false
+    }
+  },
+  "gcc-tools": {
+    "gcc-tools/1.0": {
+      "Version": "1.0",
+      "parentAA": [],
+      "hidden": false
+    }
+  },
+  "python": {
+    "python/3.11": {
+      "Version": "3.11",
+      "parentAA": [],
+      "hidden": false
+    }
+  }
+}
