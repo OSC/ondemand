@@ -1,16 +1,26 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
-require_relative '../support/browser_fixture_directory'
 
 # unclear why this is needed, but it is.
 require 'ood_core/job/adapters/slurm'
 
 class BatchConnectSessionsTest < ApplicationSystemTestCase
-  include BrowserFixtureDirectory
 
   def setup
     stub_sys_apps
+  end
+
+  # The sessions page keeps polling until Rails takes the failure screenshot and
+  # resets Capybara in super, so remove the session database only after that.
+  def after_teardown
+    super
+  ensure
+    FileUtils.remove_entry(@session_dir) if @session_dir
+  end
+
+  def with_session_dir
+    yield(@session_dir = Dir.mktmpdir)
   end
 
   def get_test_data(token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
@@ -74,7 +84,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'queued session' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir)
       stub_scheduler(:queued)
       visit(batch_connect_sessions_path)
@@ -88,7 +98,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'completed session' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:completed)
       visit(batch_connect_sessions_path)
@@ -102,7 +112,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'completed session with completed view' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir)
       stub_scheduler(:completed)
       visit(batch_connect_sessions_path)
@@ -119,7 +129,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running session' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running)
       visit(batch_connect_sessions_path)
@@ -133,7 +143,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running session with info view' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview')
       stub_scheduler(:running)
       visit(batch_connect_sessions_path)
@@ -150,7 +160,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running sessions with 0 nodes and cores' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 0, cores: 0)
       visit(batch_connect_sessions_path)
@@ -164,7 +174,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running sessions with 0 nodes and 1 core' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 0, cores: 1)
       visit(batch_connect_sessions_path)
@@ -178,7 +188,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running sessions with 1 node and 0 cores' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 1, cores: 0)
       visit(batch_connect_sessions_path)
@@ -192,7 +202,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running sessions correctly pluralize nodes and cores' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 2, cores: 2)
       visit(batch_connect_sessions_path)
@@ -206,7 +216,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'session cards hold focus when replaced' do 
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       with_modified_env({OOD_BC_SESSIONS_POLL_DELAY: '10'}) do
         create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
         stub_scheduler(:running, nodes: 2, cores: 2)
@@ -234,7 +244,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'session card connection tabs remain selected when replaced' do
-    with_browser_fixture_directory do |dir|
+    with_session_dir do |dir|
       with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
         Configuration.stubs(:bc_sessions_poll_delay).returns(100)
         create_vnc_running_session(dir)
