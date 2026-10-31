@@ -8,8 +8,14 @@ class ModuleBrowserTest < ApplicationSystemTestCase
 
   setup do
     stub_sys_apps
-    # owens: gcc, gcc-tools, python; oakley: gcc, openmpi
-    Configuration.stubs(:module_file_dir).returns(Rails.root.join('test/fixtures/modules/browser').to_s)
+    # The JSON loader behind HpcModule.all is covered in test/models/hpc_module_test.rb.
+    HpcModule.stubs(:all).returns([
+      HpcModule.new('gcc', version: '12.2', cluster: :owens),
+      HpcModule.new('gcc-tools', version: '1.0', cluster: :owens),
+      HpcModule.new('python', version: '3.11', cluster: :owens),
+      HpcModule.new('gcc', version: '11.3', cluster: :oakley),
+      HpcModule.new('openmpi', version: '4.1', cluster: :oakley)
+    ])
     visit module_browser_url
   end
 
