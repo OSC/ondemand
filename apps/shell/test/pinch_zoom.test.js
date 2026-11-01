@@ -12,6 +12,12 @@ const SLOP = 20;
 
 // hterm's own touch handler, taken from the vendored bundle so that an hterm
 // update that changes how it treats prevented events fails these tests.
+//
+// Updating the vendored hterm bundle: expect this suite to fail if
+// ScrollPort.onTouch_ was renamed, moved or rewritten. That is deliberate.
+// Check that the new handler still skips events that are already
+// defaultPrevented and that hterm still listens for touches on x-screen
+// rather than on the document or window, then update the lookup below.
 function loadHtermOnTouch() {
   const bundle = fs.readdirSync(jsDir).find((name) => /^hterm_all_.*\.js$/.test(name));
   const text = fs.readFileSync(path.join(jsDir, bundle), 'utf8');
@@ -105,6 +111,16 @@ describe('Pinch zoom', () => {
     expect(term.setFontSize).not.toHaveBeenCalled();
   });
 
+  test('the dead zone is measured from where the fingers landed, so a pause does not reset it',
+    () => {
+      const { fire } = setup();
+      fire('touchstart', pair(100));
+      expect(fire('touchmove', pair(100 + SLOP - 1)).defaultPrevented).toBe(false);
+      expect(fire('touchmove', pair(100 + SLOP - 1)).defaultPrevented).toBe(false);
+      expect(fire('touchmove', pair(100 + 2 * (SLOP - 1))).defaultPrevented).toBe(true);
+    }
+  );
+
   test('leaving the dead zone claims the move without changing the size', () => {
     const { term, engage } = setup();
     expect(engage(100).defaultPrevented).toBe(true);
@@ -160,6 +176,18 @@ describe('Pinch zoom', () => {
     expect(fire('touchmove', [finger(3, 0, 40)]).defaultPrevented).toBe(false);
   });
 
+  // Phones send touchcancel when the system takes over a finger, such as an
+  // edge swipe, and the other finger may still be down.
+  test('a cancelled finger leaves the gesture claimed until the last finger lifts', () => {
+    const { fire, engage } = setup();
+    engage(100);
+    fire('touchcancel', [finger(2, 100)]);
+    expect(fire('touchmove', [finger(2, 100, 40)]).defaultPrevented).toBe(true);
+    fire('touchend', []);
+    fire('touchstart', [finger(3, 0)]);
+    expect(fire('touchmove', [finger(3, 0, 40)]).defaultPrevented).toBe(false);
+  });
+
   test('a third finger pauses the pinch and the remaining pair resumes from the current size',
     () => {
       const { term, fire, engage } = setup();
@@ -208,10 +236,10 @@ describe('Pinch zoom', () => {
 
 describe('Resize messages', () => {
   // Like hterm, report the new column count from a timer.
-  const reportResizes = ({ term, shell }) => {
+  const reportResizes = ({ term, shell }, delay = 0) => {
     term.setFontSize.mockImplementation((size) => {
       term.fontSize = size;
-      setTimeout(() => shell.onTerminalResize(Math.floor(600 / size), 24), 0);
+      setTimeout(() => shell.onTerminalResize(Math.floor(600 / size), 24), delay);
     });
   };
   const sentColumns = (shell) =>
@@ -250,6 +278,38 @@ describe('Resize messages', () => {
     fire('touchend', []);
     jest.runAllTimers();
     expect(sentColumns(shell)).toEqual([20]);
+  });
+
+  // This hterm reports before the release timer runs, but a slower report must
+  // still reach the server. An earlier held size may be sent first.
+  test('include a size reported after the fingers lift', () => {
+    const context = setup();
+    reportResizes(context, 50);
+    const { shell, fire, engage } = context;
+    engage(100);
+    fire('touchmove', pair(150));
+    jest.runAllTimers();
+    fire('touchmove', pair(200));
+    fire('touchend', []);
+    jest.runAllTimers();
+    expect(sentColumns(shell).at(-1)).toBe(20);
+  });
+
+  test('send the size on screen when a second pinch starts before the first is sent', () => {
+    const context = setup();
+    reportResizes(context);
+    const { shell, fire, engage } = context;
+    engage(100);
+    fire('touchmove', pair(200));
+    fire('touchend', []);
+    engage(100);
+    jest.runAllTimers();
+    fire('touchmove', pair(50));
+    jest.runAllTimers();
+    expect(shell.socket.send).not.toHaveBeenCalled();
+    fire('touchend', []);
+    jest.runAllTimers();
+    expect(sentColumns(shell)).toEqual([40]);
   });
 });
 
