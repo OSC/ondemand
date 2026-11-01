@@ -238,6 +238,9 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
         focused = evaluate_script("(#{CARD_CONTROLS_JS})(arguments[0]).indexOf(document.activeElement)", card)
         assert_equal(i, focused, "focus was not restored to control #{i}")
       end
+
+      # Stop the 100ms poller before Dir.mktmpdir deletes the session database it reads.
+      visit(root_path)
     end
   end
 

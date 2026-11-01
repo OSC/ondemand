@@ -74,8 +74,7 @@ class ModuleBrowserTest < ApplicationSystemTestCase
     module_name = version_button['data-module']
     version = version_button['data-version']
 
-    # not_matches_css? returns at once; refute matches_css? waits out the full timeout.
-    assert version_button.not_matches_css?('.active')
+    assert_no_selector('button[data-role="selectable-version"].active')
     version_button.click
     assert_selector('button[data-role="selectable-version"].active', exact_text: version)
     assert_selector('[data-role="module-load-command"]', exact_text: "module load #{module_name}/#{version}")
@@ -88,6 +87,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   def assert_modules(names)
     assert_selector('#module_results_count', exact_text: "Showing #{names.size} results")
     shown = all('.module-card', count: names.size).map { |card| card['data-name'] }
-    assert_equal(names, shown.sort)
+    assert_equal(names.sort, shown.sort)
   end
 end
