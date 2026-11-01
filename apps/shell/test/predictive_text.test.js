@@ -307,16 +307,6 @@ describe('Input proxy', () => {
     expect(sent).toEqual(['ls', '\r', 'cd', '\x1b[I', 'cd']);
   });
 
-  test('Return from a keyboard without an Enter keydown still submits', () => {
-    const { proxy, sent } = ready();
-    edit(proxy, 'ls');
-    const ev = fire(proxy, 'beforeinput', { inputType: 'insertLineBreak' });
-
-    expect(ev.defaultPrevented).toBe(true);
-    expect(sent).toEqual(['ls', '\r']);
-    expect(proxy.value).toBe('');
-  });
-
   test('Backspace at the start of the textarea deletes what the shell had before it', () => {
     const { proxy, sent } = ready();
     const ev = fire(proxy, 'beforeinput', { inputType: 'deleteContentBackward' });
@@ -332,6 +322,11 @@ describe('Input proxy', () => {
 
     expect(sent.join('')).toBe('make\rls');
     expect(proxy.value).toBe('ls');
+
+    // A Return that came as text rather than a key.
+    edit(proxy, 'ls\n');
+    expect(sent.join('')).toBe('make\rls\r');
+    expect(proxy.value).toBe('');
   });
 
   test('waits for an IME to commit', () => {

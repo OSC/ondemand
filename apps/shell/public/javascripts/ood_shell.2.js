@@ -377,14 +377,10 @@ OodShell.prototype.installInputProxy = function () {
     });
   });
 
-  // For keyboards that don't send an Enter or Backspace keydown.
+  // Backspace from a keyboard that doesn't send a Backspace keydown, with
+  // nothing left in the textarea to delete.
   proxy.addEventListener('beforeinput', function (ev) {
-    if (ev.inputType === 'insertLineBreak' ||
-        ev.inputType === 'insertParagraph') {
-      ev.preventDefault();
-      term.onVTKeystroke('\r');
-    } else if (ev.inputType === 'deleteContentBackward' &&
-               proxy.value === '') {
+    if (ev.inputType === 'deleteContentBackward' && proxy.value === '') {
       ev.preventDefault();
       term.onVTKeystroke(shell.backspaceKey());
     }
@@ -496,8 +492,9 @@ OodShell.prototype.sendInputProxyEdits = function () {
   const last = lines.pop();
   let keystrokes = '';
 
-  // A line break that got in (dictating "new line", say) submits the text
-  // before it, and what follows it starts the next line.
+  // A line break that got in (a Return that came as text rather than a key,
+  // or dictating "new line") submits the text before it, and what follows it
+  // starts the next line.
   lines.forEach(function (line) {
     keystrokes += OodShell.retype(this.sentText, OodShell.toAscii(line),
                                   backspace) + '\r';
