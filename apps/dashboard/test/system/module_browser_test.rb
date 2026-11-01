@@ -4,6 +4,7 @@ require 'application_system_test_case'
 
 class ModuleBrowserTest < ApplicationSystemTestCase
   MODULE_BTN_SELECT = '.module-card button[data-bs-toggle="collapse"]'
+  VERSION_BTN_SELECT = 'button[data-role="selectable-version"]'
   ALL_MODULES = ['gcc', 'gcc-tools', 'openmpi', 'python'].freeze
 
   setup do
@@ -70,13 +71,13 @@ class ModuleBrowserTest < ApplicationSystemTestCase
     find(MODULE_BTN_SELECT, match: :first).click
     assert_selector("#{MODULE_BTN_SELECT}.active")
 
-    version_button = find('button[data-role="selectable-version"]', match: :first)
+    version_button = find(VERSION_BTN_SELECT, match: :first)
     module_name = version_button['data-module']
     version = version_button['data-version']
 
-    assert_no_selector('button[data-role="selectable-version"].active')
+    assert_no_selector("#{VERSION_BTN_SELECT}.active")
     version_button.click
-    assert_selector('button[data-role="selectable-version"].active', exact_text: version)
+    assert_selector("#{VERSION_BTN_SELECT}.active", exact_text: version)
     assert_selector('[data-role="module-load-command"]', exact_text: "module load #{module_name}/#{version}")
   end
 
