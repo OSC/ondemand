@@ -67,7 +67,8 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
         err_message = transfer.errors.full_messages[0]
 
-        assert_equal("Copy Permission denied @ rb_dir_s_empty_p - #{dir}/foo/bar", err_message)
+        assert_equal("Copy Permission denied @ dir_initialize - #{dir}/foo/bar", err_message)
+        refute File.exist?(File.join(dir, 'dest/foo/bar')), 'an unreadable directory should not be created'
       ensure
         FileUtils.chmod 0755, File.join(dir, 'foo/bar')
 
@@ -103,10 +104,12 @@ class TransferLocalJobTest < ActiveJob::TestCase
   end
 
 
-  test "copy progress never exceeds 100 and ticks once per file or empty dir" do
+  test "copy progress ticks once per entry and finishes at 100" do
     Dir.mktmpdir do |dir|
       src = Pathname.new(dir).join('src')
       src.join('empty').mkpath
+      src.join('nested', 'deep').mkpath
+      src.join('nested', 'deep', 'file').write('file')
       src.join('one').write('one')
       src.join('.hidden').write('hidden')
       dest = Pathname.new(dir).join('new', 'dest')
@@ -116,11 +119,76 @@ class TransferLocalJobTest < ActiveJob::TestCase
       transfer.define_singleton_method(:percent=) { |pct| seen << pct }
       transfer.perform
 
+      # empty, nested, nested/deep, nested/deep/file, one, .hidden
       assert transfer.success?, transfer.errors.full_messages.inspect
-      assert_equal 3, seen.size
-      assert seen.all? { |pct| pct <= 100 }, seen.inspect
+      assert_equal 6, transfer.steps
+      assert_equal 6, seen.size
+      assert_equal seen.sort, seen, "progress went backwards: #{seen.inspect}"
+      assert_equal 100, seen.last, seen.inspect
       assert_equal '', `diff -r #{src} #{dest}`.strip
     end
+  end
+
+  test "copy keeps directory permissions like cp -r" do
+    old_umask = File.umask(0o022)
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('src')
+      src.join('sub', 'empty').mkpath
+      src.join('readonly').mkpath
+      src.join('notes.txt').write('notes')
+      src.join('readonly', 'file').write('file')
+      src.join('notes.txt').chmod(0o644)
+      src.join('sub', 'empty').chmod(0o700)
+      src.join('sub').chmod(0o750)
+      src.join('readonly').chmod(0o555)
+      src.chmod(0o700)
+      dest = Pathname.new(dir).join('dest')
+
+      begin
+        transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+        transfer.perform
+
+        assert transfer.success?, transfer.errors.full_messages.inspect
+        mode = ->(path) { format('%o', path.stat.mode & 0o7777) }
+
+        assert_equal '700', mode.call(dest), 'a private directory became readable by others'
+        assert_equal '750', mode.call(dest.join('sub'))
+        assert_equal '700', mode.call(dest.join('sub', 'empty'))
+        assert_equal '555', mode.call(dest.join('readonly'))
+        assert_equal '644', mode.call(dest.join('notes.txt'))
+        assert_equal 'file', dest.join('readonly', 'file').read
+      ensure
+        [src, dest].each { |d| d.join('readonly').chmod(0o755) if d.join('readonly').exist? }
+      end
+    end
+  ensure
+    File.umask(old_umask)
+  end
+
+  test "copy into a setgid directory keeps the inherited setgid bit" do
+    skip 'setgid inheritance on directories is Linux behavior' unless RUBY_PLATFORM.include?('linux')
+
+    old_umask = File.umask(0o022)
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('src')
+      src.join('inner').mkpath
+      src.join('inner', 'file').write('file')
+      src.join('inner').chmod(0o750)
+      src.chmod(0o700)
+      project = Pathname.new(dir).join('project')
+      project.mkpath
+      project.chmod(0o2775)
+      dest = project.join('copy')
+
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      transfer.perform
+
+      assert transfer.success?, transfer.errors.full_messages.inspect
+      assert_equal '2700', format('%o', dest.stat.mode & 0o7777)
+      assert_equal '2750', format('%o', dest.join('inner').stat.mode & 0o7777)
+    end
+  ensure
+    File.umask(old_umask)
   end
 
   # lots of things are covered in test/system/files_test.rb

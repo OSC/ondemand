@@ -49,7 +49,9 @@ class PosixTransfer < Transfer
     elsif copy?
       @steps = files.keys.map do |source|
         path = Pathname.new(source)
-        path.directory? ? Dir.glob('**/*', File::FNM_DOTMATCH, base: source).length : 1
+        # every entry under the source, dotfiles included; cp_r ticks once for each.
+        # FNM_DOTMATCH also returns '.' (the source directory itself), which isn't copied as a step.
+        path.directory? ? Dir.glob('**/*', File::FNM_DOTMATCH, base: source).count { |p| p != '.' } : 1
       end.sum
     elsif remove?
       @steps = names.size
@@ -141,18 +143,32 @@ class PosixTransfer < Transfer
 
     if src.file? || src.symlink?
       cp_single(src, new_dest)
-    elsif src.directory? && src.empty?
-      inc_cp_percent
-      # TODO: probably need to preserve permissions here.
+    elsif src.directory?
+      # read the children first so an unreadable source raises before we create anything.
+      children = src.children
+
+      # the source directory itself isn't counted in steps, everything under it is.
+      inc_cp_percent unless src == original_src
       FileUtils.mkdir_p(new_dest)
-    elsif src.directory? && !src.empty?
-      src.each_child { |child| cp_r(child, dest, original_src) }
+      children.each { |child| cp_r(child, dest, original_src) }
+      # set the mode after the children are copied, so a read-only
+      # source directory doesn't stop us from writing into the copy.
+      copy_dir_mode(src, new_dest)
     end
+  end
+
+  # Give a copied directory the same mode `cp -r` would: the source's
+  # permission bits filtered by the umask. setuid and sticky bits are not
+  # copied, and a setgid bit the new directory inherited from its parent
+  # (e.g. a group project directory) is kept.
+  def copy_dir_mode(src, dest)
+    inherited_setgid = File.stat(dest).mode & 0o2000
+    File.chmod((src.stat.mode & 0o777 & ~File.umask) | inherited_setgid, dest)
   end
 
   def cp_single(src, dest)
     dest_parent = dest.parent.to_s
-    # TODO: probably need to preserve permissions here.
+    # only needed when copying a single file; cp_r creates directories itself.
     FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
 
     if src.symlink?
