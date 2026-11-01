@@ -61,7 +61,8 @@ jobs:
           # try to update gems - this can fail on ruby 3.0
           gem update --system || true
           bundle config path ~/vendor/bundle
-          bundle install --without e2e
+          bundle config set without 'e2e'
+          bundle install
           gem install rake
 
       - name: Run unit tests
