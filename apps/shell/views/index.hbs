@@ -49,7 +49,7 @@
             <label for="fonts" class="badge">Fonts:</label>
             <select id="fonts" class="form-select form-select-sm"></select>
           </div>
-          <div>
+          <div hidden>
             <input type="checkbox" id="predictive_text" class="form-check-input mt-0" title="Allow the on-screen keyboard to show word suggestions. May autocorrect commands.">
             <label for="predictive_text" class="badge">Predictive text</label>
           </div>
@@ -171,8 +171,11 @@
   themeSelect = document.getElementById("colors");
 
   // Word suggestions on the on-screen keyboard are off unless the user opts in.
+  // Only touch screens have an on-screen keyboard, so only they get the option.
   const predictiveTextCheckbox = document.getElementById("predictive_text");
-  predictiveTextCheckbox.checked = storage.getItem('ood_shell_predictive_text') === 'true';
+  const touchScreen = navigator.maxTouchPoints > 0;
+  predictiveTextCheckbox.parentElement.hidden = !touchScreen;
+  predictiveTextCheckbox.checked = touchScreen && storage.getItem('ood_shell_predictive_text') === 'true';
 
   var profile = "default";
 
