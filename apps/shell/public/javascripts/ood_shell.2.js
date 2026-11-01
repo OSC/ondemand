@@ -5,6 +5,8 @@ function OodShell(element, url, profile) {
   this.profile   = profile || "default";
   this.socket  = null;
   this.term    = null;
+  this.resizeHeld    = false;
+  this.pendingResize = null;
 }
 
 OodShell.prototype.createTerminal = function () {
@@ -135,15 +137,33 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 };
 
-// Claim two-finger moves before hterm scrolls; use its normal font resize path.
+// Pinching with two fingers changes the font size, like ctrl-plus and
+// ctrl-minus do on a desktop.
+//
+// hterm's ScrollPort.onTouch_ scrolls on every touchmove, but returns early for
+// events that are already defaultPrevented. These listeners are on the frame's
+// document in the capture phase, so they run before hterm's listeners on
+// x-screen wherever the touch lands, and claim a move by preventing it.
+//
+// Two fingers scroll as before until the distance between them changes by
+// PINCH_SLOP_PX. From then until every finger has lifted, every move is
+// claimed. hterm skips every move after the pinch starts, so its cached
+// finger positions are never read while stale and no private hterm state is
+// touched. pinch_zoom.test.js checks this against hterm's own handler.
 OodShell.prototype.installPinchZoom = function (term) {
   const screen = term.getDocument().querySelector('x-screen');
   if (!screen) {
     return;
   }
 
-  const touchOptions = { passive: false, capture: true };
-  let pinch = null;
+  const shell = this;
+  const doc = screen.ownerDocument;
+  const PINCH_SLOP_PX = 20;
+  const MIN_FONT_SIZE = 8;
+  const MAX_FONT_SIZE = 40;
+
+  let claimed = false; // A pinch started; claim moves until every finger lifts.
+  let pinch = null;    // { distance, size, engaged } for the current two fingers.
   let nextSize = null;
   let pendingFrame = null;
 
@@ -152,61 +172,80 @@ OodShell.prototype.installPinchZoom = function (term) {
                       touches[0].clientY - touches[1].clientY);
   };
 
-  const resize = function () {
+  const applySize = function () {
     pendingFrame = null;
     if (nextSize !== term.getFontSize()) {
       term.setFontSize(nextSize);
     }
   };
 
-  // Flush normal transitions, discard cancelled moves, and rebase any new pair.
-  const updatePinch = function (ev) {
+  // A finger landed, lifted or was cancelled. Apply any pending size, end the
+  // gesture once no fingers remain, and start measuring a new pair if any.
+  const onTouchesChanged = function (ev) {
     if (pendingFrame !== null) {
       window.cancelAnimationFrame(pendingFrame);
-      pendingFrame = null;
-      if (ev.type !== 'touchcancel') {
-        resize();
-      }
+      applySize();
     }
 
-    // hterm skipped pinch moves. Refresh its private cache before scrolling resumes.
-    const lastTouch = term.scrollPort_ && term.scrollPort_.lastTouch_;
-    if (pinch && lastTouch) {
-      for (const touch of ev.touches) {
-        lastTouch[touch.identifier] = {
-          id: touch.identifier, x: touch.clientX, y: touch.clientY
-        };
-      }
+    if (claimed && ev.touches.length === 0) {
+      claimed = false;
+      shell.releaseResize();
     }
 
     pinch = null;
-    if (ev.type !== 'touchcancel' && ev.touches.length === 2) {
+    if (ev.touches.length === 2) {
       const distance = distanceBetween(ev.touches);
       if (distance > 0) {
-        pinch = { distance, size: term.getFontSize() };
+        pinch = { distance: distance, size: term.getFontSize(), engaged: false };
       }
     }
   };
-  ['touchstart', 'touchend', 'touchcancel'].forEach(function (type) {
-    screen.addEventListener(type, updatePinch, touchOptions);
-  });
 
-  screen.addEventListener('touchmove', function (ev) {
+  const onTouchMove = function (ev) {
+    if (claimed) {
+      ev.preventDefault();
+    }
     if (!pinch || ev.touches.length !== 2) {
       return;
     }
-    // hterm skips events that are already defaultPrevented.
-    ev.preventDefault();
+
     const distance = distanceBetween(ev.touches);
     if (distance <= 0) {
       return;
     }
-    nextSize = Math.min(40, Math.max(8,
+
+    if (!pinch.engaged) {
+      if (Math.abs(distance - pinch.distance) < PINCH_SLOP_PX) {
+        return;
+      }
+      // Measure from here so the size does not jump by the slop.
+      pinch.engaged = true;
+      pinch.distance = distance;
+      if (!claimed) {
+        claimed = true;
+        ev.preventDefault();
+        // Tell the server the new terminal size once, when the fingers lift.
+        shell.holdResize();
+      }
+      return;
+    }
+
+    // A size outside 8-40px (set with ctrl-plus or ctrl-minus) can move toward
+    // that range but never jumps into it.
+    const min = Math.min(MIN_FONT_SIZE, pinch.size);
+    const max = Math.max(MAX_FONT_SIZE, pinch.size);
+    nextSize = Math.min(max, Math.max(min,
         Math.round(pinch.size * distance / pinch.distance)));
     if (pendingFrame === null) {
-      pendingFrame = window.requestAnimationFrame(resize);
+      pendingFrame = window.requestAnimationFrame(applySize);
     }
-  }, touchOptions);
+  };
+
+  ['touchstart', 'touchend', 'touchcancel'].forEach(function (type) {
+    doc.addEventListener(type, onTouchesChanged, { capture: true, passive: true });
+  });
+  // Not passive, because claiming a move means calling preventDefault().
+  doc.addEventListener('touchmove', onTouchMove, { capture: true, passive: false });
 };
 
 OodShell.prototype.installVisualViewportSizing = function () {
@@ -293,10 +332,40 @@ OodShell.prototype.onTerminalResize = function (columns, rows) {
   // React to size changes here.
   // Secure Shell pokes at NaCl, which eventually results in
   // some ioctls on the host.
-  this.socket.send(JSON.stringify({
-    resize: {
-      cols: columns,
-      rows: rows
+  this.pendingResize = {
+    cols: columns,
+    rows: rows
+  };
+  if (!this.resizeHeld) {
+    this.sendPendingResize();
+  }
+};
+
+// A pinch can change the font size, and with it the column count, on every
+// frame. While one is in progress, keep only the latest terminal size so the
+// remote program gets one resize (SIGWINCH) per pinch instead of one per step.
+OodShell.prototype.holdResize = function () {
+  this.resizeHeld = true;
+};
+
+// hterm reports size changes to onTerminalResize from a timer, so the report
+// for the last step may arrive after this; it is then sent directly. The timer
+// sends anything still held.
+OodShell.prototype.releaseResize = function () {
+  const that = this;
+  this.resizeHeld = false;
+  window.setTimeout(function () {
+    if (!that.resizeHeld) {
+      that.sendPendingResize();
     }
-  }));
+  }, 0);
+};
+
+OodShell.prototype.sendPendingResize = function () {
+  const size = this.pendingResize;
+  if (size === null) {
+    return;
+  }
+  this.pendingResize = null;
+  this.socket.send(JSON.stringify({ resize: size }));
 };
