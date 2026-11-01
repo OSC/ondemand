@@ -4,115 +4,91 @@ require 'application_system_test_case'
 
 class ModuleBrowserTest < ApplicationSystemTestCase
   MODULE_BTN_SELECT = '.module-card button[data-bs-toggle="collapse"]'
-
-  def fixture_dir
-    "#{Rails.root}/test/fixtures/modules/"
-  end
-
-  def results_text(count)
-    "Showing #{count} results"
-  end
+  VERSION_BTN_SELECT = 'button[data-role="selectable-version"]'
+  ALL_MODULES = ['gcc', 'gcc-tools', 'openmpi', 'python'].freeze
 
   setup do
     stub_sys_apps
+    # The JSON loader behind HpcModule.all is covered in test/models/hpc_module_test.rb.
+    HpcModule.stubs(:all).returns([
+      HpcModule.new('gcc', version: '12.2', cluster: :owens),
+      HpcModule.new('gcc-tools', version: '1.0', cluster: :owens),
+      HpcModule.new('python', version: '3.11', cluster: :owens),
+      HpcModule.new('gcc', version: '11.3', cluster: :oakley),
+      HpcModule.new('openmpi', version: '4.1', cluster: :oakley)
+    ])
+    visit module_browser_url
   end
 
   test 'searching by module name filters results' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      initial_count = all('.module-card').count
-      
-      fill_in 'module_search', with: 'gcc'
-      assert_selector('#module_results_count', text: results_text(2))
+    assert_modules(ALL_MODULES)
 
-      all('.module-card', visible: true).each do |card|
-        module_name = card['data-name'].downcase
-        assert module_name.include?('gcc'), "Expected #{module_name} to include 'gcc'"
-      end
-      
-      fill_in 'module_search', with: ''
-      assert_selector('#module_results_count', text: results_text(initial_count))
-      
-      final_count = all('.module-card', visible: true).count
-      assert_equal initial_count, final_count
-    end
+    fill_in 'module_search', with: 'GCC'
+    assert_modules(['gcc', 'gcc-tools'])
+
+    fill_in 'module_search', with: 'nonexistent_module'
+    assert_modules([])
+
+    fill_in 'module_search', with: ''
+    assert_modules(ALL_MODULES)
   end
 
   test 'filtering by cluster only shows supported modules' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      
-      cluster_options = all('#cluster_filter option').to_a
-      initial_count = all('.module-card', visible: true).count
-      
-      first_cluster = cluster_options[1]
-      cluster_id = first_cluster.value
-      
-      select first_cluster.text, from: 'cluster_filter'
-      
-      all('.module-card', visible: true).each do |card|
-        clusters = card['data-clusters'].split(',')
-        assert clusters.include?(cluster_id), "Module should have #{cluster_id} in its cluster list"
-      end
+    select 'Owens', from: 'cluster_filter'
+    assert_modules(['gcc', 'gcc-tools', 'python'])
 
-      select 'All Clusters', from: 'cluster_filter'
-      
-      final_count = all('.module-card', visible: true).count
-      assert_equal initial_count, final_count
-    end
+    select 'Oakley', from: 'cluster_filter'
+    assert_modules(['gcc', 'openmpi'])
+
+    select 'All Clusters', from: 'cluster_filter'
+    assert_modules(ALL_MODULES)
+  end
+
+  test 'search and cluster filters apply together' do
+    fill_in 'module_search', with: 'gcc'
+    assert_modules(['gcc', 'gcc-tools'])
+
+    select 'Oakley', from: 'cluster_filter'
+    assert_modules(['gcc'])
   end
 
   test 'module button expands and collapses the module details' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
+    first_module = find(MODULE_BTN_SELECT, match: :first)
+    collapse_id = first_module['data-bs-target']
 
-      first_module = find(MODULE_BTN_SELECT, match: :first)
-      collapse_id = first_module['data-bs-target']
-      
-      assert_selector("#{collapse_id}", visible: :hidden)
-      
-      first_module.click
-      assert_selector("#{MODULE_BTN_SELECT}.active")
-      assert_selector("#{collapse_id}", visible: :visible)
-      
-      first_module.click
-      assert_selector("#{MODULE_BTN_SELECT}.collapsed")
-      assert_selector("#{collapse_id}", visible: :hidden)
-    end
+    assert_selector(collapse_id, visible: :hidden)
+
+    first_module.click
+    assert_selector("#{MODULE_BTN_SELECT}.active")
+    assert_selector(collapse_id, visible: :visible)
+
+    first_module.click
+    assert_selector("#{MODULE_BTN_SELECT}.collapsed")
+    assert_selector(collapse_id, visible: :hidden)
   end
 
   test 'selecting a version updates the load command' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      
-      first_module = find(MODULE_BTN_SELECT, match: :first)
-      first_module.click
+    find(MODULE_BTN_SELECT, match: :first).click
+    assert_selector("#{MODULE_BTN_SELECT}.active")
 
-      assert_selector("#{MODULE_BTN_SELECT}.active")
-      version_button = find('button[data-role="selectable-version"]', match: :first)
-      module_name = version_button['data-module']
-      version = version_button['data-version']
-      
-      refute version_button.matches_css?('.active')
-      version_button.click
-      assert version_button.matches_css?('.active')
-      
-      load_cmd = find('[data-role="module-load-command"]')
-      expected_text = "module load #{module_name}/#{version}"
-      assert_equal expected_text, load_cmd.text.strip
-    end
+    version_button = find(VERSION_BTN_SELECT, match: :first)
+    module_name = version_button['data-module']
+    version = version_button['data-version']
+
+    assert_no_selector("#{VERSION_BTN_SELECT}.active")
+    version_button.click
+    assert_selector("#{VERSION_BTN_SELECT}.active", exact_text: version)
+    assert_selector('[data-role="module-load-command"]', exact_text: "module load #{module_name}/#{version}")
   end
 
-  test 'updates results count when filtering' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      visit module_browser_url
-      initial_count = all('.module-card', visible: true).count
-      initial_count_text = find('#module_results_count').text
+  private
 
-      assert_equal "Showing #{initial_count} results", initial_count_text
-      
-      fill_in 'module_search', with: 'nonexistent_module'
-      assert_selector('#module_results_count', text: results_text(0))
-    end
+  # Asserts that exactly the modules in +names+ are shown, in any order. Filtering
+  # updates the count and card visibility in the same synchronous pass, so once the
+  # count text matches, the visible cards are final.
+  def assert_modules(names)
+    assert_selector('#module_results_count', exact_text: "Showing #{names.size} results")
+    shown = all('.module-card', count: names.size).map { |card| card['data-name'] }
+    assert_equal(names.sort, shown.sort)
   end
 end
