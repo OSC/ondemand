@@ -141,62 +141,79 @@ OodShell.prototype.installTouchKeyboard = function (term) {
 // ctrl-minus do on a desktop.
 //
 // hterm's ScrollPort.onTouch_ scrolls on every touchmove, but returns early for
-// events that are already defaultPrevented. These listeners are on the frame's
-// document in the capture phase, so they run before hterm's listeners on
-// x-screen wherever the touch lands, and claim a move by preventing it.
+// events that are already defaultPrevented. A move is claimed by preventing it
+// before hterm's listener on x-screen runs.
 //
 // Two fingers scroll as before until the distance between them changes by
 // PINCH_SLOP_PX. From then until every finger has lifted, every move is
-// claimed. hterm skips every move after the pinch starts, so its cached
-// finger positions are never read while stale and no private hterm state is
-// touched. pinch_zoom.test.js checks this against hterm's own handler.
+// claimed. hterm skips them all, so its cached finger positions are never read
+// while stale and no private hterm state is touched. pinch_zoom.test.js checks
+// this against hterm's own handler.
+//
+// A touch keeps sending its events to the element it landed on, and hterm
+// replaces its row elements when the font size changes. Once the touched row
+// is gone, the touch's events no longer reach x-screen or the document, so the
+// listeners for moves and for the end of a touch go on the touched elements.
 OodShell.prototype.installPinchZoom = function (term) {
-  const screen = term.getDocument().querySelector('x-screen');
-  if (!screen) {
-    return;
-  }
-
   const shell = this;
-  const doc = screen.ownerDocument;
+  const doc = term.getDocument();
   const PINCH_SLOP_PX = 20;
   const MIN_FONT_SIZE = 8;
   const MAX_FONT_SIZE = 40;
+  const passive = { capture: true, passive: true };
+  // Not passive, because claiming a move means calling preventDefault().
+  const active = { capture: true, passive: false };
 
   let claimed = false; // A pinch started; claim moves until every finger lifts.
   let pinch = null;    // { distance, size, engaged } for the current two fingers.
-  let nextSize = null;
-  let pendingFrame = null;
+  const touched = new Set(); // Elements that touches landed on.
 
   const distanceBetween = function (touches) {
     return Math.hypot(touches[0].clientX - touches[1].clientX,
                       touches[0].clientY - touches[1].clientY);
   };
 
-  const applySize = function () {
-    pendingFrame = null;
-    if (nextSize !== term.getFontSize()) {
-      term.setFontSize(nextSize);
+  const follow = function (element) {
+    if (!touched.has(element)) {
+      touched.add(element);
+      element.addEventListener('touchmove', onTouchMove, active);
+      element.addEventListener('touchend', onTouchesChanged, passive);
+      element.addEventListener('touchcancel', onTouchesChanged, passive);
     }
   };
 
-  // A finger landed, lifted or was cancelled. Apply any pending size, end the
-  // gesture once no fingers remain, and start measuring a new pair if any.
+  const unfollowAll = function () {
+    touched.forEach(function (element) {
+      element.removeEventListener('touchmove', onTouchMove, active);
+      element.removeEventListener('touchend', onTouchesChanged, passive);
+      element.removeEventListener('touchcancel', onTouchesChanged, passive);
+    });
+    touched.clear();
+  };
+
+  // A finger landed, lifted or was cancelled. End the gesture once no fingers
+  // remain, and start measuring a new pair if exactly two are down.
   const onTouchesChanged = function (ev) {
-    if (pendingFrame !== null) {
-      window.cancelAnimationFrame(pendingFrame);
-      applySize();
+    if (ev.type === 'touchstart') {
+      for (let i = 0; i < ev.changedTouches.length; i++) {
+        follow(ev.changedTouches[i].target);
+      }
     }
 
-    if (claimed && ev.touches.length === 0) {
-      claimed = false;
-      shell.releaseResize();
+    if (ev.touches.length === 0) {
+      unfollowAll();
+      if (claimed) {
+        claimed = false;
+        shell.releaseResize();
+      }
     }
 
     pinch = null;
     if (ev.touches.length === 2) {
       const distance = distanceBetween(ev.touches);
       if (distance > 0) {
-        pinch = { distance: distance, size: term.getFontSize(), engaged: false };
+        // A pair that forms during a pinch carries on zooming right away.
+        pinch = { distance: distance, size: term.getFontSize(), engaged: claimed };
       }
     }
   };
@@ -221,12 +238,10 @@ OodShell.prototype.installPinchZoom = function (term) {
       // Measure from here so the size does not jump by the slop.
       pinch.engaged = true;
       pinch.distance = distance;
-      if (!claimed) {
-        claimed = true;
-        ev.preventDefault();
-        // Tell the server the new terminal size once, when the fingers lift.
-        shell.holdResize();
-      }
+      claimed = true;
+      ev.preventDefault();
+      // Tell the server the new terminal size once, when the fingers lift.
+      shell.holdResize();
       return;
     }
 
@@ -234,18 +249,14 @@ OodShell.prototype.installPinchZoom = function (term) {
     // that range but never jumps into it.
     const min = Math.min(MIN_FONT_SIZE, pinch.size);
     const max = Math.max(MAX_FONT_SIZE, pinch.size);
-    nextSize = Math.min(max, Math.max(min,
+    const size = Math.min(max, Math.max(min,
         Math.round(pinch.size * distance / pinch.distance)));
-    if (pendingFrame === null) {
-      pendingFrame = window.requestAnimationFrame(applySize);
+    if (size !== term.getFontSize()) {
+      term.setFontSize(size);
     }
   };
 
-  ['touchstart', 'touchend', 'touchcancel'].forEach(function (type) {
-    doc.addEventListener(type, onTouchesChanged, { capture: true, passive: true });
-  });
-  // Not passive, because claiming a move means calling preventDefault().
-  doc.addEventListener('touchmove', onTouchMove, { capture: true, passive: false });
+  doc.addEventListener('touchstart', onTouchesChanged, passive);
 };
 
 OodShell.prototype.installVisualViewportSizing = function () {
@@ -341,24 +352,16 @@ OodShell.prototype.onTerminalResize = function (columns, rows) {
   }
 };
 
-// A pinch can change the font size, and with it the column count, on every
-// frame. While one is in progress, keep only the latest terminal size so the
-// remote program gets one resize (SIGWINCH) per pinch instead of one per step.
+// A pinch can change the font size, and with it the column count, many times.
+// While one is in progress, keep only the latest terminal size so the remote
+// program gets one resize (SIGWINCH) per pinch instead of one per step.
 OodShell.prototype.holdResize = function () {
   this.resizeHeld = true;
 };
 
-// hterm reports size changes to onTerminalResize from a timer, so the report
-// for the last step may arrive after this; it is then sent directly. The timer
-// sends anything still held.
 OodShell.prototype.releaseResize = function () {
-  const that = this;
   this.resizeHeld = false;
-  window.setTimeout(function () {
-    if (!that.resizeHeld) {
-      that.sendPendingResize();
-    }
-  }, 0);
+  this.sendPendingResize();
 };
 
 OodShell.prototype.sendPendingResize = function () {

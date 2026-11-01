@@ -30,42 +30,70 @@ function loadHtermOnTouch() {
   return vm.runInNewContext(`(${fn})`, { hterm: { os: 'linux' }, window: {} });
 }
 
-// Dispatch synchronously so listener exceptions fail the test that caused them.
-function setup({ fontSize = 15 } = {}) {
+// An element reduced to the listeners that were added to it.
+function makeElement() {
   const listeners = {};
-  const doc = {
-    addEventListener: jest.fn((type, listener) => { listeners[type] = listener; })
+  return {
+    isConnected: true,
+    listeners,
+    addEventListener: jest.fn((type, fn, options) => {
+      (listeners[type] = listeners[type] || []).push({ fn, options });
+    }),
+    removeEventListener: jest.fn((type, fn) => {
+      listeners[type] = (listeners[type] || []).filter((l) => l.fn !== fn);
+    })
   };
-  const screen = { ownerDocument: doc };
+}
+
+// Dispatch synchronously so listener exceptions fail the test that caused them.
+//
+// Events are routed like a browser routes touches: the document's capture
+// listeners, then the listeners on the element the touch landed on, then
+// hterm's on x-screen. A touch keeps sending events to the element it landed
+// on, but once that element has left the document, the document and x-screen
+// no longer see them.
+function setup({ fontSize = 15, hterm = null } = {}) {
+  const doc = makeElement();
+  const rows = [makeElement(), makeElement()];
   const term = {
     fontSize,
     getFontSize() { return this.fontSize; },
     setFontSize: jest.fn((size) => { term.fontSize = size; }),
-    getDocument: () => ({ querySelector: () => screen })
+    getDocument: () => doc
   };
-  const OodShell = loadOodShell({
-    window: {
-      requestAnimationFrame: (callback) => setTimeout(callback, 16),
-      cancelAnimationFrame: (id) => clearTimeout(id),
-      setTimeout: (callback, delay) => setTimeout(callback, delay)
-    }
-  });
+  const OodShell = loadOodShell({});
   const shell = new OodShell({}, 'ws://localhost', 'default');
   shell.socket = { send: jest.fn() };
   shell.installPinchZoom(term);
-  const fire = (type, touches) => {
-    const event = { type, touches, changedTouches: [], defaultPrevented: false,
-      preventDefault() { this.defaultPrevented = true; } };
-    listeners[type](event);
+
+  const fire = (type, touches, { target = rows[0], changed } = {}) => {
+    const event = {
+      type, touches, target, defaultPrevented: false, cancelable: true,
+      changedTouches: changed ||
+        (type === 'touchstart' ? [{ ...touches[touches.length - 1], target }] : []),
+      preventDefault() { this.defaultPrevented = true; }
+    };
+    const run = (element) => (element.listeners[type] || []).slice()
+      .forEach((listener) => listener.fn(event));
+    if (target.isConnected) {
+      run(doc);
+    }
+    run(target);
+    if (target.isConnected && hterm) {
+      hterm(event);
+    }
     return event;
   };
+  // Put fingers down one at a time, as a hand does.
+  const land = (touches, options) => touches.forEach((_, i) =>
+    fire('touchstart', touches.slice(0, i + 1), options));
   // Land two fingers SLOP further apart than `start`, then pinch through the
   // dead zone so that the size is measured from `start`.
   const engage = (start) => {
-    fire('touchstart', pair(start + SLOP));
+    land(pair(start + SLOP));
     return fire('touchmove', pair(start));
   };
-  return { term, shell, doc, listeners, fire, engage };
+  return { term, shell, doc, rows, fire, land, engage };
 }
 
 beforeEach(() => jest.useFakeTimers());
@@ -82,7 +110,6 @@ describe('Pinch zoom', () => {
     const { term, fire, engage } = setup();
     engage(start);
     fire('touchmove', pair(end));
-    jest.runOnlyPendingTimers();
     expect(term.getFontSize()).toBe(size);
   });
 
@@ -96,25 +123,23 @@ describe('Pinch zoom', () => {
       const { term, fire, engage } = setup({ fontSize });
       engage(start);
       fire('touchmove', pair(end));
-      jest.runOnlyPendingTimers();
       expect(term.getFontSize()).toBe(size);
     }
   );
 
   test('two-finger moves inside the dead zone are left to hterm', () => {
-    const { term, fire } = setup();
-    fire('touchstart', pair(100));
+    const { term, fire, land } = setup();
+    land(pair(100));
     expect(fire('touchmove', pair(100 + SLOP - 1)).defaultPrevented).toBe(false);
     expect(fire('touchmove', [finger(1, 0, 50), finger(2, 100, 50)]).defaultPrevented)
       .toBe(false);
-    expect(jest.getTimerCount()).toBe(0);
     expect(term.setFontSize).not.toHaveBeenCalled();
   });
 
   test('the dead zone is measured from where the fingers landed, so a pause does not reset it',
     () => {
-      const { fire } = setup();
-      fire('touchstart', pair(100));
+      const { fire, land } = setup();
+      land(pair(100));
       expect(fire('touchmove', pair(100 + SLOP - 1)).defaultPrevented).toBe(false);
       expect(fire('touchmove', pair(100 + SLOP - 1)).defaultPrevented).toBe(false);
       expect(fire('touchmove', pair(100 + 2 * (SLOP - 1))).defaultPrevented).toBe(true);
@@ -124,113 +149,166 @@ describe('Pinch zoom', () => {
   test('leaving the dead zone claims the move without changing the size', () => {
     const { term, engage } = setup();
     expect(engage(100).defaultPrevented).toBe(true);
-    expect(jest.getTimerCount()).toBe(0);
     expect(term.setFontSize).not.toHaveBeenCalled();
   });
 
-  test('applies the latest size once per frame and skips unchanged sizes', () => {
+  test('sets the size only when the rounded size changes', () => {
     const { term, fire, engage } = setup();
     engage(100);
-    [120, 140, 200].forEach((distance) => fire('touchmove', pair(distance)));
-    expect(jest.getTimerCount()).toBe(1);
-    jest.runOnlyPendingTimers();
+    fire('touchmove', pair(120));
     expect(term.setFontSize).toHaveBeenCalledTimes(1);
-    expect(term.setFontSize).toHaveBeenCalledWith(30);
-    fire('touchmove', pair(201));
-    jest.runOnlyPendingTimers();
+    expect(term.setFontSize).toHaveBeenCalledWith(18);
+    fire('touchmove', pair(121));
     expect(term.setFontSize).toHaveBeenCalledTimes(1);
+    fire('touchmove', pair(200));
+    expect(term.setFontSize).toHaveBeenCalledTimes(2);
+    expect(term.setFontSize).toHaveBeenLastCalledWith(30);
   });
 
-  test('listens on the frame document in the capture phase', () => {
-    const { doc } = setup();
-    expect(doc.addEventListener).toHaveBeenCalledWith('touchmove',
-      expect.any(Function), { capture: true, passive: false });
-    ['touchstart', 'touchend', 'touchcancel'].forEach((type) => {
-      expect(doc.addEventListener).toHaveBeenCalledWith(type,
-        expect.any(Function), { capture: true, passive: true });
-    });
-  });
-
-  test.each([[[]], [[finger(1, 0)]], [[...pair(100), finger(3, 300)]]])(
+  test.each([[[finger(1, 0)]], [[...pair(100), finger(3, 300)]]])(
     'leaves a non-pinch touch list alone: %j', (touches) => {
-      const { term, fire } = setup();
-      fire('touchstart', touches);
+      const { term, fire, land } = setup();
+      land(touches);
       expect(fire('touchmove', touches).defaultPrevented).toBe(false);
-      expect(jest.getTimerCount()).toBe(0);
       expect(term.getFontSize()).toBe(15);
     }
   );
 
-  test('ignores two-finger moves without a pinch start', () => {
-    const { fire } = setup();
-    expect(fire('touchmove', pair(200)).defaultPrevented).toBe(false);
-  });
-
   test('keeps claiming moves until every finger lifts', () => {
-    const { fire, engage } = setup();
+    const { fire, land, engage } = setup();
     engage(100);
     fire('touchend', [finger(2, 100)]);
     expect(fire('touchmove', [finger(2, 100, 40)]).defaultPrevented).toBe(true);
     fire('touchend', []);
-    fire('touchstart', [finger(3, 0)]);
+    land([finger(3, 0)]);
     expect(fire('touchmove', [finger(3, 0, 40)]).defaultPrevented).toBe(false);
   });
 
   // Phones send touchcancel when the system takes over a finger, such as an
   // edge swipe, and the other finger may still be down.
   test('a cancelled finger leaves the gesture claimed until the last finger lifts', () => {
-    const { fire, engage } = setup();
+    const { fire, land, engage } = setup();
     engage(100);
     fire('touchcancel', [finger(2, 100)]);
     expect(fire('touchmove', [finger(2, 100, 40)]).defaultPrevented).toBe(true);
     fire('touchend', []);
-    fire('touchstart', [finger(3, 0)]);
+    land([finger(3, 0)]);
     expect(fire('touchmove', [finger(3, 0, 40)]).defaultPrevented).toBe(false);
   });
 
-  test('a third finger pauses the pinch and the remaining pair resumes from the current size',
+  test('a third finger pauses the pinch and the remaining pair carries on from the current size',
     () => {
       const { term, fire, engage } = setup();
       engage(100);
       fire('touchmove', pair(200));
       fire('touchstart', [...pair(200), finger(3, 300)]);
       expect(term.getFontSize()).toBe(30);
+      const sets = term.setFontSize.mock.calls.length;
       expect(fire('touchmove', [finger(1, 0), finger(2, 400), finger(3, 300)]).defaultPrevented)
         .toBe(true);
-      expect(jest.getTimerCount()).toBe(0);
+      expect(term.setFontSize).toHaveBeenCalledTimes(sets);
       fire('touchend', pair(400));
-      expect(fire('touchmove', pair(400 + SLOP)).defaultPrevented).toBe(true);
-      expect(term.getFontSize()).toBe(30);
-      fire('touchmove', pair(210));
-      jest.runOnlyPendingTimers();
+      // No second dead zone: the pair measures from where it is.
+      expect(fire('touchmove', pair(200)).defaultPrevented).toBe(true);
       expect(term.getFontSize()).toBe(15);
     }
   );
 
-  test.each(['touchend', 'touchcancel'])('%s applies the pending size', (type) => {
-    const { term, fire, engage } = setup();
-    engage(100);
-    fire('touchmove', pair(200));
-    fire(type, []);
-    expect(term.getFontSize()).toBe(30);
-    expect(fire('touchmove', pair(300)).defaultPrevented).toBe(false);
-  });
-
   test('ignores coincident fingers', () => {
-    const { term, fire, engage } = setup();
-    fire('touchstart', pair(0));
+    const { term, fire, land, engage } = setup();
+    land(pair(0));
     expect(fire('touchmove', pair(100)).defaultPrevented).toBe(false);
     fire('touchend', []);
     engage(100);
     fire('touchmove', pair(0));
-    jest.runOnlyPendingTimers();
-    expect(term.setFontSize).not.toHaveBeenCalled();
+    expect(term.setFontSize).toHaveBeenCalledTimes(0);
   });
 
-  test('ignores a missing terminal screen', () => {
-    const { term, shell } = setup();
-    term.getDocument = () => ({ querySelector: () => null });
-    expect(() => shell.installPinchZoom(term)).not.toThrow();
+  describe('listeners', () => {
+    test('the document gets only touchstart', () => {
+      const { doc } = setup();
+      expect(doc.addEventListener).toHaveBeenCalledTimes(1);
+      expect(doc.addEventListener).toHaveBeenCalledWith('touchstart',
+        expect.any(Function), { capture: true, passive: true });
+    });
+
+    test('the rest go on the touched element, and only touchmove is non-passive', () => {
+      const { rows, land } = setup();
+      land(pair(100));
+      expect(rows[0].addEventListener).toHaveBeenCalledTimes(3);
+      expect(rows[0].addEventListener).toHaveBeenCalledWith('touchmove',
+        expect.any(Function), { capture: true, passive: false });
+      ['touchend', 'touchcancel'].forEach((type) => {
+        expect(rows[0].addEventListener).toHaveBeenCalledWith(type,
+          expect.any(Function), { capture: true, passive: true });
+      });
+      expect(rows[1].addEventListener).not.toHaveBeenCalled();
+    });
+
+    test('fingers on different rows are each followed', () => {
+      const { term, rows, fire } = setup();
+      fire('touchstart', [finger(1, 0)], { target: rows[0] });
+      fire('touchstart', pair(100 + SLOP), { target: rows[1] });
+      expect(rows[0].addEventListener).toHaveBeenCalledTimes(3);
+      expect(rows[1].addEventListener).toHaveBeenCalledTimes(3);
+      fire('touchmove', pair(100), { target: rows[1] });
+      fire('touchmove', pair(200), { target: rows[0] });
+      expect(term.getFontSize()).toBe(30);
+    });
+
+    test('are removed when the last finger lifts', () => {
+      const { rows, fire, land, engage } = setup();
+      engage(100);
+      fire('touchend', [finger(2, 100)]);
+      expect(rows[0].removeEventListener).not.toHaveBeenCalled();
+      fire('touchend', []);
+      expect(rows[0].removeEventListener).toHaveBeenCalledTimes(3);
+      expect(Object.values(rows[0].listeners).flat()).toEqual([]);
+      land([finger(3, 0)]);
+      expect(rows[0].addEventListener).toHaveBeenCalledTimes(6);
+    });
+  });
+
+  // hterm rebuilds its rows when the font size changes, so the row a finger
+  // landed on can leave the document mid-pinch. Its events then stop reaching
+  // the document and x-screen, and only listeners on the row itself see them.
+  describe('when hterm removes the touched row', () => {
+    const sentColumns = (shell) =>
+      shell.socket.send.mock.calls.map(([json]) => JSON.parse(json).resize.cols);
+
+    test('the pinch carries on and ends cleanly', () => {
+      const { term, shell, rows, fire, land, engage } = setup();
+      engage(100);
+      fire('touchmove', pair(150));
+      rows[0].isConnected = false;
+      fire('touchmove', pair(200));
+      expect(term.getFontSize()).toBe(30);
+      fire('touchend', [finger(2, 200)]);
+      expect(fire('touchmove', [finger(2, 200, 40)]).defaultPrevented).toBe(true);
+      fire('touchend', []);
+      expect(shell.resizeHeld).toBe(false);
+
+      rows[0].isConnected = true;
+      land([finger(3, 0)]);
+      expect(fire('touchmove', [finger(3, 0, 40)]).defaultPrevented).toBe(false);
+    });
+
+    test('the terminal size is still sent once, when the fingers lift', () => {
+      const { term, shell, rows, fire, engage } = setup();
+      term.setFontSize.mockImplementation((size) => {
+        term.fontSize = size;
+        setTimeout(() => shell.onTerminalResize(Math.floor(600 / size), 24), 0);
+      });
+      engage(100);
+      fire('touchmove', pair(150));
+      jest.runAllTimers();
+      rows[0].isConnected = false;
+      fire('touchmove', pair(200));
+      jest.runAllTimers();
+      expect(shell.socket.send).not.toHaveBeenCalled();
+      fire('touchend', []);
+      expect(sentColumns(shell)).toEqual([20]);
+    });
   });
 });
 
@@ -263,25 +341,11 @@ describe('Resize messages', () => {
     });
     expect(shell.socket.send).not.toHaveBeenCalled();
     fire('touchend', []);
-    jest.runAllTimers();
     expect(sentColumns(shell)).toEqual([20]);
   });
 
-  test('include a step still pending when the fingers lift', () => {
-    const context = setup();
-    reportResizes(context);
-    const { shell, fire, engage } = context;
-    engage(100);
-    fire('touchmove', pair(150));
-    jest.runAllTimers();
-    fire('touchmove', pair(200));
-    fire('touchend', []);
-    jest.runAllTimers();
-    expect(sentColumns(shell)).toEqual([20]);
-  });
-
-  // This hterm reports before the release timer runs, but a slower report must
-  // still reach the server. An earlier held size may be sent first.
+  // This hterm reports before the fingers lift, but a slower report must still
+  // reach the server. An earlier held size may be sent first.
   test('include a size reported after the fingers lift', () => {
     const context = setup();
     reportResizes(context, 50);
@@ -295,49 +359,43 @@ describe('Resize messages', () => {
     expect(sentColumns(shell).at(-1)).toBe(20);
   });
 
-  test('send the size on screen when a second pinch starts before the first is sent', () => {
+  test('a second pinch is held and sent on its own', () => {
     const context = setup();
     reportResizes(context);
     const { shell, fire, engage } = context;
     engage(100);
     fire('touchmove', pair(200));
-    fire('touchend', []);
-    engage(100);
     jest.runAllTimers();
+    fire('touchend', []);
+    expect(sentColumns(shell)).toEqual([20]);
+    engage(100);
     fire('touchmove', pair(50));
     jest.runAllTimers();
-    expect(shell.socket.send).not.toHaveBeenCalled();
+    expect(sentColumns(shell)).toEqual([20]);
     fire('touchend', []);
-    jest.runAllTimers();
-    expect(sentColumns(shell)).toEqual([40]);
+    expect(sentColumns(shell)).toEqual([20, 40]);
   });
 });
 
 describe('With hterm’s own touch handler', () => {
   const onTouch = loadHtermOnTouch();
 
-  // Runs the document capture listener, then hterm's listener on x-screen.
   function gesture() {
-    const context = setup();
     const scrollPort = {
       lastTouch_: {},
       screen_: { scrollTop: 500 },
       getScrollMax_: () => 1000,
       onTouch() {}
     };
+    const context = setup({ hterm: (event) => onTouch.call(scrollPort, event) });
     const down = new Map();
-    const dispatch = (type, changedTouches) => {
-      const event = { type, touches: [...down.values()], changedTouches,
-        defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } };
-      context.listeners[type](event);
-      onTouch.call(scrollPort, event);
-      return event;
-    };
     const place = (id, x, y) => {
-      const touch = finger(id, x, y);
+      const touch = { ...finger(id, x, y), target: context.rows[0] };
       down.set(id, touch);
       return touch;
     };
+    const dispatch = (type, changed) =>
+      context.fire(type, [...down.values()], { changed });
     return {
       ...context,
       scrollPort,
@@ -374,7 +432,6 @@ describe('With hterm’s own touch handler', () => {
     start(2, 100, 100);
     move({ 2: [200, 300] });
     move({ 2: [300, 400] });
-    jest.runOnlyPendingTimers();
     expect(term.getFontSize()).toBeGreaterThan(15);
     end(2);
     expect(move({ 1: [0, 160] }).defaultPrevented).toBe(true);
