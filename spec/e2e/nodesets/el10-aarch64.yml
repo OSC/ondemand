@@ -2,8 +2,8 @@ HOSTS:
   el10:
     roles:
       - agent
-    # Use el9 until this includes el10
-    # https://github.com/voxpupuli/beaker-docker/blob/dd4395368a4b14857602128ab7443ee42073a936/lib/beaker/hypervisor/docker.rb#L374
+    # Use until merged and released to support el10
+    # https://github.com/voxpupuli/beaker-docker/pull/212
     platform: el-9-aarch64
     hypervisor: docker
     image: arm64v8/almalinux:10
