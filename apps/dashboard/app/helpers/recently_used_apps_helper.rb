@@ -36,16 +36,11 @@ module RecentlyUsedAppsHelper
       next unless sys_apps_index.key?(file_path)
 
       matched_batch_connect_app = sys_apps_index.fetch(file_path)
-      begin
-        session_context = matched_batch_connect_app.build_session_context
-        # Set cacheable to true to ensure update_session_with_cache sets the cached value
-        session_context.each { |attribute| attribute.opts[:cacheable] = true }
-        cache_file = BatchConnect::Session.cache_root.join(matched_batch_connect_app.cache_file)
-        matched_batch_connect_app.tap { |app| app.update_session_with_cache(session_context, cache_file) }
-      rescue StandardError => e
-        Rails.logger.info("Skipping recently used app #{matched_batch_connect_app.token} due to error: #{e.message}")
-        nil
-      end
+      session_context = matched_batch_connect_app.build_session_context
+      # Set cacheable to true to ensure update_session_with_cache sets the cached value
+      session_context.each { |attribute| attribute.opts[:cacheable] = true }
+      cache_file = BatchConnect::Session.cache_root.join(matched_batch_connect_app.cache_file)
+      matched_batch_connect_app.tap { |app| app.update_session_with_cache(session_context, cache_file) }
     end.compact
   end
 
