@@ -357,7 +357,7 @@ class FilesController < ApplicationController
 
   def send_remote_file
     type = begin
-      Files.mime_type_by_extension(@path).presence || 'text/plain; charset=utf-8'
+      Files.mime_type_by_extension(@path).presence || @path.mime_type
     rescue StandardError => e
       logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
     end
