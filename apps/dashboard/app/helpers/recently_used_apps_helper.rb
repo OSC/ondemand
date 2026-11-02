@@ -28,7 +28,7 @@ module RecentlyUsedAppsHelper
     (@sys_apps + @dev_apps + @usr_apps).select(&:batch_connect_app?).each do |ood_app|
       ood_app.sub_app_list.each do |batch_connect_app|
         # Skip apps that are not valid (e.g., have ERB parsing errors)
-        sys_apps_index[batch_connect_app.cache_file] = batch_connect_app if valid_batch_connect_app?(batch_connect_app)
+        sys_apps_index[batch_connect_app.cache_file] = batch_connect_app if batch_connect_app.valid?
       end
     end
 
@@ -42,18 +42,5 @@ module RecentlyUsedAppsHelper
       cache_file = BatchConnect::Session.cache_root.join(matched_batch_connect_app.cache_file)
       matched_batch_connect_app.tap { |app| app.update_session_with_cache(session_context, cache_file) }
     end.compact
-  end
-
-  # Check if a batch connect app is valid and safe to use
-  # Caches the validity check to avoid re-parsing form.yml.erb on every call
-  def valid_batch_connect_app?(app)
-    return false unless app.batch_connect_app?
-
-    # Use the app's built-in valid? method which now properly memoizes
-    app.valid?
-  rescue StandardError => e
-    # If we can't determine validity (e.g., ERB error), treat as invalid
-    Rails.logger.info("Cannot determine validity of app #{app.token}: #{e.message}")
-    false
   end
 end
