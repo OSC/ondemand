@@ -487,6 +487,34 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'failed uploads show server error message' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+
+      visit files_url(unwritable_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/hello-world.c'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+
+      error_message = nil
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+        error_message = page.evaluate_script(<<~JS)
+          document.querySelector('.uppy-Dashboard-Item-errorDetails')?.getAttribute('aria-label')
+        JS
+        error_message.present?
+      end
+      page.execute_script('window.__changedElements = []')
+
+      assert_match(/Permission denied/, error_message)
+    end
+  end
+
   test 'uploading duplicate files' do
     Dir.mktmpdir do |dir|
       File.stubs(:umask).returns(18) # ensure default umask is 644
