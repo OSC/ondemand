@@ -45,9 +45,13 @@ function pun_proxy_handler(r)
   local count = 0
   while not r:stat(conn.socket) and count < pun_max_retries do
     local app_init_url = r.is_https and "https://" or "http://"
-    app_init_url = app_init_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
+    app_init_url = app_init_url .. r.hostname .. ":" .. r.port .. nginx_uri
+    app_init_url = app_init_url .. "/init?redir=$http_x_forwarded_escaped_uri"
     -- generate user config & start PUN process
-    err = nginx_stage.pun(r, pun_stage_cmd, user, app_init_url, pun_pre_hook_exports, pun_pre_hook_root_cmd, allowed_hosts)
+    err = nginx_stage.pun(
+      r, pun_stage_cmd, user, app_init_url,
+      pun_pre_hook_exports, pun_pre_hook_root_cmd, allowed_hosts
+    )
     if err then
       r.usleep(1000000) -- sleep for 1 second before trying again
     end

@@ -8,7 +8,7 @@ function set_reverse_proxy(r, conn)
   local use_ssl = r.subprocess_env['OOD_SECURE_UPSTREAM'] == '1'
 
   -- find protocol used by parsing the request headers and SSL flag
-  local protocol = "http://"
+  local protocol
   if r.headers_in['Upgrade'] then
     protocol = use_ssl and "wss://" or "ws://"
   else
