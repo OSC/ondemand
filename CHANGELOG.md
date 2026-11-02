@@ -16,23 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Add NSF Access outages widget (#5864)\
-Fix file browser error handling (#6004)\
-Refactor native_vnc_login_host into string_configs (#5961)\
-Fix long favorite path overflow in sidebar and path selector (#5986)\
-Add NSF announcements widgets (#5875)\
-lint a random file (#6018)\
-Restructure top navbar to Bootstrap's standard markup (#6007)\
-Keep path-selector fixtures alive and wait for directory contents\
-set CSP header for proxy locations (#5832)\
-Refactor quota configs to support ondemand.d configuration (#5940)\
-Wait for navigation and file-table readiness in E2E browser tests (#5984)\
-Verify directory listing results and error handling in browser E2E tests (#5985)\
-Update Changelog (#5998)\
-Toggle Select All checkbox with Enter key (#5979)\
-Freeze the clock in session age assertions (#5987)\
-lint a random file (#5993)\
-update dependencies (#5999)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -68,6 +51,11 @@ update dependencies (#5999)
   - OOD_OPEN_APPS_IN_NEW_WINDOW in [5968](https://github.com/OSC/ondemand/pull/5968).
   - XDMOD_HOST in [5948](https://github.com/OSC/ondemand/pull/5948).
   - OOD_SHARED_PROJECT_PATH [5977](https://github.com/OSC/ondemand/pull/5948).
+  - OOD_QUOTA_PATH and OOD_QUOTA_THRESHOLD in [5940](https://github.com/OSC/ondemand/pull/5940).
+  - OOD_NATIVE_VNC_LOGIN_HOST in [5961](https://github.com/OSC/ondemand/pull/5961).
+- NSF Access outages widget in [5864](https://github.com/OSC/ondemand/pull/5864).
+- NSF announcements widget in [5875](https://github.com/OSC/ondemand/pull/5875).
+- Proxy locations now set a CSP header in [5832](https://github.com/OSC/ondemand/pull/5832).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -108,6 +96,9 @@ update dependencies (#5999)
 - Fix mobile Shell keyboard focus and viewport sizing in [5804](https://github.com/OSC/ondemand/pull/5804).
 - The Project Manager Launchers now work for HTCondor in [5944](https://github.com/OSC/ondemand/pull/5944).
 - Fix file browser navigation with Select All clicked in [5971](https://github.com/OSC/ondemand/pull/5971).
+- The file browser correctly shows errors in [6004](https://github.com/OSC/ondemand/pull/6004).
+- The select all checkbox in the file browser now responds to the enter key in [5979](https://github.com/OSC/ondemand/pull/5979).
+- Long favorite paths in sidebar and path selector do not overflow in [5986](https://github.com/OSC/ondemand/pull/5986).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
