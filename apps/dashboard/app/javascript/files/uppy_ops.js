@@ -104,6 +104,16 @@ jQuery(function() {
     limit: 1,
     headers: { 'X-CSRF-Token': csrfToken() },
     timeout: 128 * 1000,
+    onAfterResponse(xhr) {
+      if (xhr.status >= 200 && xhr.status < 300) return;
+
+      let errorMessage;
+      try {
+        errorMessage = JSON.parse(xhr.responseText).error_message;
+      } catch (_) { /* ignore non-JSON responses */ }
+
+      if (errorMessage) throw new Error(errorMessage);
+    },
   });
 
   uppy.on('file-added', (file) => {
