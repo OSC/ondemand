@@ -19,7 +19,7 @@
     "express": "^5.2.1",
     "glob": "^14",
     "hbs": "^4.1.0",
-    "js-yaml": "^5.4.2",
+    "js-yaml": "^5.4.3",
     "minimatch": "^11.0.1",
     "minimist": "^1.2.6",
     "node-notifier": "^8.0.1",
