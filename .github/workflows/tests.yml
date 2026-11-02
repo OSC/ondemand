@@ -140,7 +140,7 @@ jobs:
         version: ["4.2"]
         exclude:
           # el10 on aarch64 times out
-          # These ARM repos do not yet publish ondemand-nginx or ondemand-passenger.  Done on private GitLab
+          # These ARM repos do not yet publish ondemand-nginx or ondemand-passenger.
           - dist: el10
             arch: aarch64
           # Amazon 2023 on aarch64 is very slow and will time out
