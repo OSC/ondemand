@@ -16,6 +16,23 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Add NSF Access outages widget (#5864)\
+Fix file browser error handling (#6004)\
+Refactor native_vnc_login_host into string_configs (#5961)\
+Fix long favorite path overflow in sidebar and path selector (#5986)\
+Add NSF announcements widgets (#5875)\
+lint a random file (#6018)\
+Restructure top navbar to Bootstrap's standard markup (#6007)\
+Keep path-selector fixtures alive and wait for directory contents\
+set CSP header for proxy locations (#5832)\
+Refactor quota configs to support ondemand.d configuration (#5940)\
+Wait for navigation and file-table readiness in E2E browser tests (#5984)\
+Verify directory listing results and error handling in browser E2E tests (#5985)\
+Update Changelog (#5998)\
+Toggle Select All checkbox with Enter key (#5979)\
+Freeze the clock in session age assertions (#5987)\
+lint a random file (#5993)\
+update dependencies (#5999)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
