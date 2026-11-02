@@ -2,9 +2,7 @@ HOSTS:
   el10:
     roles:
       - agent
-    # Use until merged and released to support el10
-    # https://github.com/voxpupuli/beaker-docker/pull/212
-    platform: el-9-aarch64
+    platform: el-10-x86_64
     hypervisor: docker
     image: arm64v8/almalinux:10
     docker_preserve_image: true
