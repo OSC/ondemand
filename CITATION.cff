@@ -11,11 +11,11 @@ authors:
     family-names: Dockendorf
   - given-names: Alan
     family-names: Chalker
-  - given-names: Emily Moffat
-    family-names: Sadeghi
+  - given-names: Emily
+    family-names: Moffat Sadeghi
   - given-names: Braeden
     family-names: Singleton
 repository-code: "https://github.com/OSC/ondemand"
-url: "https://openondemand.org"
+url: "https://www.openondemand.org"
 license: MIT
 doi: 10.5281/zenodo.6323791
