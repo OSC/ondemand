@@ -40,6 +40,18 @@ module SmartAttributes
       assert_equal true, target.hide_when_empty?
     end
 
+    test 'disable_when_hidden? should default to false' do
+      target = SmartAttributes::Attribute.new('test', {})
+
+      assert_equal false, target.disable_when_hidden?
+    end
+
+    test 'disable_when_hidden? should be configurable with options' do
+      target = SmartAttributes::Attribute.new('test', { disable_when_hidden: true })
+
+      assert_equal true, target.disable_when_hidden?
+    end
+    
     test 'value should return a string' do
       assert_equal 'string_value', SmartAttributes::Attribute.new('test', { value: 'string_value' }).value
       assert_equal 'true', SmartAttributes::Attribute.new('test', { value: true }).value

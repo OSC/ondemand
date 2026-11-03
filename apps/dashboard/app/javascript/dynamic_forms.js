@@ -132,6 +132,15 @@ function makeChangeHandlers(prefix){
   const allElements = $(`[id^=${idPrefix}]`);
   memorizeElements(allElements);
 
+  // Disable already-hidden disable_when_hidden fields before handlers
+  // run so their data-set / min-max bindings do not apply while hidden.
+  $(`[id^="${idPrefix}_"][id$="_wrapper"]`).each((_i, wrapper) => {
+    const $wrapper = $(wrapper);
+    if ($wrapper.data('disableWhenHidden') && $wrapper.hasClass('d-none')) {
+      $wrapper.find('input, select, textarea, button').prop('disabled', true);
+    }
+  });
+
   allElements.each((_i, element) => {
     if (element['type'] == "select-one"){
       let optionSearch = `#${element['id']} option`;
@@ -473,6 +482,8 @@ function addSetHandler(optionId, option, key, configValue) {
 }
 
 function setValue(event, changeId) {
+  if (event.target.disabled) return;
+
   const chosenVal = event.target.value;
   const cacheKey = `${changeId}_${event.target['id']}`
   const table = setValueLookup[cacheKey];
@@ -612,9 +623,13 @@ function updateVisibility(event, changeId) {
 function toggleItemVisible(id, makeVisible) {
   const wrapper = $(`#${id}_wrapper`);
   if (makeVisible) {
-    wrapper.removeClass('d-none')
+    wrapper.removeClass('d-none');
   } else {
-    wrapper.addClass('d-none')
+    wrapper.addClass('d-none');
+  }
+
+  if (wrapper.data('disableWhenHidden')) {
+    wrapper.find('input, select, textarea, button').prop('disabled', !makeVisible);
   }
 }
 
@@ -632,6 +647,8 @@ function valueFromEvent(event) {
  * event, the `otherId` and the settings in minMaxLookup table.
  */
  function toggleMinMax(event, changeId, otherId) {
+  if (event.target.disabled) return;
+
   const changeElement = $(`#${changeId}`);
   const mm = valueFromLookupTable(event, changeId, otherId, minMaxLookup);
   const prev = {
