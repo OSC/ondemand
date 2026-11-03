@@ -134,11 +134,8 @@ function makeChangeHandlers(prefix){
 
   // Disable already-hidden disable_when_hidden fields before handlers
   // run so their data-set / min-max bindings do not apply while hidden.
-  $(`[id^="${idPrefix}_"][id$="_wrapper"]`).each((_i, wrapper) => {
-    const $wrapper = $(wrapper);
-    if ($wrapper.data('disableWhenHidden') && $wrapper.hasClass('d-none')) {
-      $wrapper.find('input, select, textarea, button').prop('disabled', true);
-    }
+  $('[data-disable-when-hidden="true"].d-none').each((_i, wrapper) => {
+    $(wrapper).find('input, select, textarea, button').prop('disabled', true);
   });
 
   allElements.each((_i, element) => {
@@ -628,7 +625,7 @@ function toggleItemVisible(id, makeVisible) {
     wrapper.addClass('d-none');
   }
 
-  if (wrapper.data('disableWhenHidden')) {
+  if (wrapper.is('[data-disable-when-hidden="true"]')) {
     wrapper.find('input, select, textarea, button').prop('disabled', !makeVisible);
   }
 }
