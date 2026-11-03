@@ -7,17 +7,15 @@ authors:
     family-names: Ohrstrom
   - given-names: Travis
     family-names: Ravert
-  - given-names: Hazel
-    family-names: Randquist
   - given-names: Trey
     family-names: Dockendorf
-  - given-names: Matt
-    family-names: Walton
   - given-names: Alan
     family-names: Chalker
+  - given-names: Emily Moffat
+    family-names: Sadeghi
+  - given-names: Braeden
+    family-names: Singleton
 repository-code: "https://github.com/OSC/ondemand"
 url: "https://openondemand.org"
 license: MIT
-version: "4.2.3"
 doi: 10.5281/zenodo.6323791
-date-released: 2026-06-24
