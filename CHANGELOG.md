@@ -51,6 +51,11 @@ Changes are grouped by type:
   - OOD_OPEN_APPS_IN_NEW_WINDOW in [5968](https://github.com/OSC/ondemand/pull/5968).
   - XDMOD_HOST in [5948](https://github.com/OSC/ondemand/pull/5948).
   - OOD_SHARED_PROJECT_PATH [5977](https://github.com/OSC/ondemand/pull/5948).
+  - OOD_QUOTA_PATH and OOD_QUOTA_THRESHOLD in [5940](https://github.com/OSC/ondemand/pull/5940).
+  - OOD_NATIVE_VNC_LOGIN_HOST in [5961](https://github.com/OSC/ondemand/pull/5961).
+- NSF Access outages widget in [5864](https://github.com/OSC/ondemand/pull/5864).
+- NSF announcements widget in [5875](https://github.com/OSC/ondemand/pull/5875).
+- Proxy locations now set a CSP header in [5832](https://github.com/OSC/ondemand/pull/5832).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -91,6 +96,9 @@ Changes are grouped by type:
 - Fix mobile Shell keyboard focus and viewport sizing in [5804](https://github.com/OSC/ondemand/pull/5804).
 - The Project Manager Launchers now work for HTCondor in [5944](https://github.com/OSC/ondemand/pull/5944).
 - Fix file browser navigation with Select All clicked in [5971](https://github.com/OSC/ondemand/pull/5971).
+- The file browser correctly shows errors in [6004](https://github.com/OSC/ondemand/pull/6004).
+- The select all checkbox in the file browser now responds to the enter key in [5979](https://github.com/OSC/ondemand/pull/5979).
+- Long favorite paths in sidebar and path selector do not overflow in [5986](https://github.com/OSC/ondemand/pull/5986).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
