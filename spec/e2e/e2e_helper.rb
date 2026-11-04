@@ -206,6 +206,7 @@ def install_ondemand
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     on hosts, "dnf config-manager --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
+    on hosts, "dnf config-manager --save --setopt=ondemand-web.username=osc --setopt=ondemand-web.password=#{ENV['OOD_REPO_PASSWORD']}"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
@@ -213,6 +214,12 @@ def install_ondemand
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
+    auth = <<~EOS
+      machine apt.osc.edu
+      login osc
+      password #{ENV['OOD_REPO_PASSWORD']}
+    EOS
+    create_remote_file(hosts, '/etc/apt/auth.conf.d/ondemand-web.conf', auth)
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end
