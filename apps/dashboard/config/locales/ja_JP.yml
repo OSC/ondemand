@@ -47,7 +47,6 @@ ja_JP:
     balance_warning_prefix_html: "%{units_balance} の警告"
     batch_connect_apps_menu_title: インタラクティブアプリ
     batch_connect_form_attr_cache_error: 以前にキャッシュされた値を使用できません。代わりにデフォルトを使用します。(%{error_message})
-    batch_connect_form_choose_template_name: テンプレート名を選択してください
     batch_connect_form_data_root: データルートディレクトリ
     batch_connect_form_dynamic_disclaimer: 以下のフォームは、オプションが選択されると動的に変更される場合があります。すべての変更は通知され、元に戻すことができます。
     batch_connect_form_invalid: form.ymlに%{id}フォームフィールドのオプションが欠落しています。
@@ -58,15 +57,12 @@ ja_JP:
     batch_connect_form_resolution_height: 解像度の高さ（ピクセル）
     batch_connect_form_resolution_width: 解像度の幅（ピクセル）
     batch_connect_form_save: 設定を保存
-    batch_connect_form_save_new_template: 新しい設定を保存
     batch_connect_form_save_submit: 設定を保存して閉じる
     batch_connect_form_select_template: 保存された設定を選択
     batch_connect_form_session_data_html: |
       * このセッションの %{title} セッションデータは
         %{data_link_tag} の下でアクセスできます。
     batch_connect_form_template_name_label: 設定名
-    batch_connect_form_type_new_name: アプリ設定名
-    batch_connect_form_type_new_name_error: 続行するには有効な名前を入力してください
     batch_connect_invalid_form_array: "'form'要素はform.ymlで配列ではありません"
     batch_connect_invalid_form_attributes: "'attributes'要素はform.ymlでマップではありません"
     batch_connect_missing_cluster: |

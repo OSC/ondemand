@@ -114,7 +114,9 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       assert_equal 2, saved_template_options.size
       assert_equal '-- select saved settings --', saved_template_options[0].text.strip
       assert_equal 'edit_name', saved_template_options[1].text.strip
-      assert_select 'input#batch_connect_session_template_name'
+      assert_select 'input#batch_connect_session_template_name[list="batch_connect_session_template_names"]'
+      assert_select 'datalist#batch_connect_session_template_names option[value="edit_name"]'
+      assert_select 'div#batch_connect_session_save_template_fields[hidden]'
       assert_select 'input#batch_connect_session_save_template_submit'
     end
   end
@@ -138,6 +140,8 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       assert_equal '800x600',
                    css_select('input[name="batch_connect_session_context[bc_vnc_resolution]"]').first['value']
       assert_equal 'edit_name', css_select('input[name="template_name"]').first['value']
+      assert_select 'div#batch_connect_session_save_template_fields:not([hidden])'
+      assert_select 'input#batch_connect_session_template_name[readonly]'
     end
   end
 

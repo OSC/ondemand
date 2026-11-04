@@ -49,7 +49,6 @@ fr-CA:
     balance_warning_prefix_html: "%{units_balance} avertissement pour"
     batch_connect_apps_menu_title: Applications interactives
     batch_connect_form_attr_cache_error: Impossible d'utiliser les valeurs en cache, utilisation des valeurs par défaut. (%{error_message})
-    batch_connect_form_choose_template_name: Choisir un nom de modèle
     batch_connect_form_data_root: répertoire racine des données
     batch_connect_form_dynamic_disclaimer: Le formulaire suivant peut changer dynamiquement à mesure que des options sont sélectionnées. Tous les changements seront annoncés et sont réversibles.
     batch_connect_form_invalid: Le form.yml a des options manquantes dans le champ de formulaire %{id}.
@@ -60,15 +59,12 @@ fr-CA:
     batch_connect_form_resolution_height: Hauteur de résolution (pixels)
     batch_connect_form_resolution_width: Largeur de résolution (pixels)
     batch_connect_form_save: Enregistrer les paramètres
-    batch_connect_form_save_new_template: enregistrer de nouveaux paramètres
     batch_connect_form_save_submit: Enregistrer et fermer
     batch_connect_form_select_template: sélectionner les paramètres sauvegardés
     batch_connect_form_session_data_html: |
       * Les données de session %{title} pour cette session sont accessibles
         sous %{data_link_tag}.
     batch_connect_form_template_name_label: nom du paramètre
-    batch_connect_form_type_new_name: Nom des paramètres de l’application
-    batch_connect_form_type_new_name_error: Veuillez saisir un nom valide pour continuer
     batch_connect_invalid_form_array: "'form' dans form.yml n'est pas un tableau"
     batch_connect_invalid_form_attributes: "'attributes' dans form.yml n'est pas une carte"
     batch_connect_missing_cluster: |
