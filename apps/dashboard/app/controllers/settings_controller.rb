@@ -24,7 +24,6 @@ class SettingsController < ApplicationController
   end
 
   def update_user_customization
-    #raise params.inspect
     new_settings = user_customization_param.to_h
     alert = nil
     updated = false
