@@ -77,6 +77,30 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'reports errors when creating new directories and files' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+      
+      visit files_url(unwritable_dir)
+      find('#new-file-btn').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new file: Permission denied @ rb_sysopen - #{unwritable_dir.join('bar.txt')}"
+      assert_selector('.alert-danger', text: msg)
+
+      find('.alert-danger .btn-close').click
+      refute_selector('.alert-danger')
+      find('#new-dir-btn').click
+      find('#files_input_modal_input').set('bar')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new directory: Permission denied @ dir_s_mkdir - #{unwritable_dir.join('bar')}"
+      assert_selector('.alert-danger', text: msg)
+    end
+  end
+
   test 'navigation stays on the same page' do 
     Dir.mktmpdir do |dir|
       `mkdir -p #{dir}/subdir #{dir}/fav_dir`
@@ -554,6 +578,34 @@ class FilesTest < ApplicationSystemTestCase
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
       find('tbody a', exact_text: 'hello-world.c', wait: MAX_WAIT)
+    end
+  end
+
+  test 'failed uploads show server error message' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+
+      visit files_url(unwritable_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/hello-world.c'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+
+      error_message = nil
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+        error_message = page.evaluate_script(<<~JS)
+          document.querySelector('.uppy-Dashboard-Item-errorDetails')?.getAttribute('aria-label')
+        JS
+        error_message.present?
+      end
+      page.execute_script('window.__changedElements = []')
+
+      assert_match(/Permission denied/, error_message)
     end
   end
 

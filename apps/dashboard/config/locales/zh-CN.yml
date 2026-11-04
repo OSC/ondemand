@@ -288,7 +288,9 @@ zh-CN:
     network_report: 网络报告 + %{node}
     node: 节点
     not_grouped: 其他应用
+    nsf_access_announcements: NSF ACCESS 公告
     nsf_access_events: NSF 访问事件
+    nsf_access_outages: NSF ACCESS 服务中断
     ok: 确定
     opens_in_new_tab: 在新标签页中打开
     output_location: 输出位置：
