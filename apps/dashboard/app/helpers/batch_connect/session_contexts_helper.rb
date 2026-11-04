@@ -42,18 +42,15 @@ module BatchConnect::SessionContextsHelper
                 end
                 
     # Append a wrapper div to hold additional info
-    wrapper_data = {
-      widget_type: widget,
-      hide_by_default: attrib.hide_by_default?
-    }
-    # Only set when true so JS can select on [data-disable-when-hidden="true"].
-    wrapper_data[:disable_when_hidden] = true if attrib.disable_when_hidden?
-
     wrapped = content_tag(
       :div, 
       id: [form.object_name, attrib.id, 'wrapper'].join('_'), 
       class: wrapper_class(attrib.hide_by_default?, grouped),
-      data: wrapper_data
+      data: {
+        widget_type: widget,
+        hide_by_default: attrib.hide_by_default?,
+        disable_when_hidden: (true if attrib.disable_when_hidden?)
+      }
     ) do
       rendered
     end
