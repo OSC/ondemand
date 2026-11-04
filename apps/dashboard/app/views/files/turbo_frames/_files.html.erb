@@ -29,7 +29,7 @@
   <% full_path = "#{path}/#{file[:name]}" %>
   <% can_access_directory = file[:directory] && FilePermissions.can_access_directory?(full_path) %>
   <% can_open_file = !file[:directory] && FilePermissions.can_open_file?(full_path) %>
-  <% can_edit_file = file[:editable] %>
+  <% can_edit_file = file[:editable] && file[:downloadable] %>
   <tr>
     <td>
       <% type = I18n.t("dashboard.#{file[:directory] ? 'directory' : 'file'}") %>
