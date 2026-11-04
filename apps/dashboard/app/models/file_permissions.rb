@@ -1,18 +1,5 @@
 # frozen_string_literal: true
 
-# Central location for Files-app access questions (allowlist, POSIX mode, size limits,
-# and feature flags). Prefer these helpers over duplicating checks in controllers,
-# models, and views so UI links match what the server will actually allow.
-#
-# Call sites / candidates to migrate here (see #6025, #5866, #5854):
-# - PosixFile#downloadable?, #editable?, #can_download_file?, #valid_realpath?
-# - FilesController#show_file, #edit, #ensure_exists!, #validate_path!
-# - OodFilesApp#favorite_paths
-# - files/index.json.jbuilder and files/turbo_frames/_files.html.erb
-# - UserCustomization favorite validation (PR #5866)
-# - PosixTransfer / RemoteTransfer allowlist validation
-# - ActionDispatch::Response::FileBody (validate_send_files initializer)
-# - Symlink operation guards (PR #5854)
 class FilePermissions
   class << self
     # Whether the user can open/view this path as a file in the Files app.
