@@ -23,7 +23,7 @@ class OodFilesApp
       if p.remote?
         true
       else
-        AllowlistPolicy.default.permitted?(p.path) && p.path.directory? && p.path.readable? && p.path.executable?
+        FilePermissions.can_access_directory?(p.path)
       end
     end
   end

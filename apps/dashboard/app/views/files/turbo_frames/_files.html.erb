@@ -27,15 +27,16 @@
 </tr>
 <% files.each do |file| %>
   <% full_path = "#{path}/#{file[:name]}" %>
-  <% readable = File.readable?(full_path) %>
-  <% writable = File.writable?(full_path) %>
+  <% can_access_directory = file[:directory] && FilePermissions.can_access_directory?(full_path) %>
+  <% can_open_file = !file[:directory] && FilePermissions.can_open_file?(full_path) %>
+  <% can_edit_file = file[:editable] %>
   <tr>
     <td>
       <% type = I18n.t("dashboard.#{file[:directory] ? 'directory' : 'file'}") %>
       <i class="fa fa-<%= file[:directory] ? 'folder' : 'file' %>" title="<%= type %>" aria-hidden="true"></i>
       <span class="sr-only"> <%= type %> </span>
     </td>
-    <%- if file[:directory] && readable-%>
+    <%- if can_access_directory -%>
       <td>
         <%= link_to(
           file[:name], 
@@ -48,7 +49,7 @@
         %>
       </td>
       <td></td>
-    <%- elsif readable && file[:downloadable] -%>
+    <%- elsif can_open_file -%>
       <td>
         <%= 
           link_to(
@@ -78,7 +79,7 @@
                 View
               <% end %>
             </li>
-            <% if writable %>
+            <% if can_edit_file %>
 	            <li>
                   <%= link_to OodAppkit.editor.edit(path: full_path).to_s,
                               target: '_top',
