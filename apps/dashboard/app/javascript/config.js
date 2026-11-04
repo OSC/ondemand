@@ -80,6 +80,18 @@ export function nsfAccessAnnouncementsUrl() {
   return url == "" ? null : url;
 }
 
+export function nsfAccessCurrentOutagesUrl() {
+  const cfgData = configData();
+  const url = cfgData['nsfAccessCurrentOutagesUrl'];
+  return url == "" ? null : url;
+}
+
+export function nsfAccessFutureOutagesUrl() {
+  const cfgData = configData();
+  const url = cfgData['nsfAccessFutureOutagesUrl'];
+  return url == "" ? null : url;
+}
+
 export function analyticsPath(type){
   const cfgData = configData();
   const basePath = cfgData['baseAnalyticsPath']

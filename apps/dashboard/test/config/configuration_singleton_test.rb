@@ -264,7 +264,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
-
+  
   test "dashboard_docs_url environment variable has precedence over ondemand.d" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
@@ -273,6 +273,42 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_DOCS_URL: 'https://docs.from.env') do
         assert_equal 'https://docs.from.env', ConfigurationSingleton.new.dashboard_docs_url
+      end
+    end
+  end
+  
+  test "dashboard_2fa_url is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_2FA_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_2fa_url
+    end
+  end
+
+  test "can configure dashboard_2fa_url through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_2FA_URL: 'https://2fa.example.com')) do
+      assert_equal 'https://2fa.example.com', ConfigurationSingleton.new.dashboard_2fa_url
+    end
+  end
+
+  test "can configure dashboard_2fa_url through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_2fa_url' => 'https://2fa.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://2fa.from.file', ConfigurationSingleton.new.dashboard_2fa_url
+      end
+    end
+  end
+  
+  test "dashboard_2fa_url environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_2fa_url' => 'https://2fa.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_2FA_URL: 'https://2fa.from.env') do
+        assert_equal 'https://2fa.from.env', ConfigurationSingleton.new.dashboard_2fa_url
       end
     end
   end
@@ -623,6 +659,68 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "allowlist_paths defaults to an empty list" do
+    with_modified_env(no_config_env.merge(OOD_ALLOWLIST_PATH: nil)) do
+      assert_equal [], ConfigurationSingleton.new.allowlist_paths
+    end
+  end
+
+  test "allowlist_paths correctly parses OOD_ALLOWLIST_PATH" do
+    with_modified_env(no_config_env.merge(OOD_ALLOWLIST_PATH: '/path_a:/path_b')) do
+      assert_equal [Pathname.new('/path_a'), Pathname.new('/path_b')], ConfigurationSingleton.new.allowlist_paths
+    end
+  end
+
+  test "allowlist_paths can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'allowlist_path' => ['/path_from/file_a', '/path_from/file_b'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_ALLOWLIST_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.allowlist_paths
+      end
+    end
+  end
+
+  test "allowlist_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'allowlist_path' => '/path_from/file_a:/path_from/file_b' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_ALLOWLIST_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.allowlist_paths
+      end
+    end
+  end
+
+  test "allowlist_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'allowlist_path' => ['/path_from/file'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_ALLOWLIST_PATH: '/path_from/env') do
+        assert_equal [Pathname.new('/path_from/env')], ConfigurationSingleton.new.allowlist_paths
+      end
+    end
+  end
+  
+  test "open_apps_in_new_window environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: 'true') do
+        c = ConfigurationSingleton.new
+        assert_equal true, c.open_apps_in_new_window
+        assert_equal true, c.open_apps_in_new_window?
+      end
+    end
+  end
+  
   test "open_apps_in_new_window is true by default" do
     with_modified_env(no_config_env.merge(OOD_OPEN_APPS_IN_NEW_WINDOW: nil)) do
       c = ConfigurationSingleton.new
@@ -649,20 +747,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         c = ConfigurationSingleton.new
         assert_equal false, c.open_apps_in_new_window
         assert_equal false, c.open_apps_in_new_window?
-      end
-    end
-  end
-
-  test "open_apps_in_new_window environment variable has precedence over ondemand.d" do
-    Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
-      end
-
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: 'true') do
-        c = ConfigurationSingleton.new
-        assert_equal true, c.open_apps_in_new_window
-        assert_equal true, c.open_apps_in_new_window?
       end
     end
   end
@@ -1170,6 +1254,98 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         sources = ConfigurationSingleton.new.connect_sources
         assert_includes sources, 'announcements.example.org'
         refute_includes sources, 'support.access-ci.org'
+      end
+    end
+  end
+  
+  test "nsf_access_outages_widget_enabled? is false when widget is not in dashboard layout" do
+    with_modified_env(no_config_env) do
+      cfg = ConfigurationSingleton.new
+      refute cfg.nsf_access_outages_widget_enabled?
+    end
+  end
+
+  test "nsf_access_outages_widget_enabled? is true when widget is in dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_outages'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_outages_widget_enabled?
+      end
+    end
+  end
+
+  test "nsf_access_outages_widget_enabled? is true when widget is in a profile dashboard layout" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'profiles' => {
+              'team1' => {
+                'dashboard_layout' => {
+                  'rows' => [
+                    { 'columns' => [{ 'width' => 12, 'widgets' => ['motd', 'nsf_access_outages'] }] }
+                  ]
+                }
+              }
+            }
+          }.to_yaml)
+        end
+
+        assert ConfigurationSingleton.new.nsf_access_outages_widget_enabled?
+      end
+    end
+  end
+
+  test "connect_sources includes nsf_access_outages hostname when widget is enabled" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_outages'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, :self
+        assert_includes sources, 'operations-api.access-ci.org'
+        refute_includes sources, 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/current_outages/'
+      end
+    end
+  end
+
+  test "connect_sources uses configured nsf_access_outages hostname" do
+    Dir.mktmpdir do |dir|
+      with_modified_env({
+        OOD_CONFIG_D_DIRECTORY:             dir.to_s,
+        OOD_NSF_ACCESS_CURRENT_OUTAGES_URL: 'https://outages.example.org/current/',
+        OOD_NSF_ACCESS_FUTURE_OUTAGES_URL:  'https://outages.example.org/future/'
+      }) do
+        File.open("#{dir}/layout.yml", 'w+') do |f|
+          f.write({
+            'dashboard_layout' => {
+              'rows' => [
+                { 'columns' => [{ 'width' => 12, 'widgets' => ['nsf_access_outages'] }] }
+              ]
+            }
+          }.to_yaml)
+        end
+
+        sources = ConfigurationSingleton.new.connect_sources
+        assert_includes sources, 'outages.example.org'
+        refute_includes sources, 'operations-api.access-ci.org'
       end
     end
   end
