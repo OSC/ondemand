@@ -304,7 +304,9 @@ fa-IR:
     network_report: گزارش شبکه + %{node}
     node: گره
     not_grouped: سایر برنامه‌ها
+    nsf_access_announcements: اطلاعیه‌های دسترسی NSF
     nsf_access_events: رویدادهای NSF ACCESS
+    nsf_access_outages: قطع دسترسی NSF
     ok: تأیید
     opens_in_new_tab: در زبانه جدید باز می‌شود
     output_location: 'محل خروجی:'
