@@ -1,15 +1,21 @@
-@software{OSC_software_2022_6323791,
-  author       = {Jeff Ohrstrom and
-                  Travis Ravert and
-                  Hazel Randquist and
-                  Trey Dockendorf and
-                  Matt Walton and
-                  Alan Chalker},
-  title        = {Open OnDemand Source Code},
-  month        = mar,
-  year         = 2022,
-  publisher    = {Zenodo},
-  version      = {2.0.23},
-  doi          = {10.5281/zenodo.6323791},
-  url          = {https://doi.org/10.5281/zenodo.6323791}
-}
+cff-version: 1.2.0
+message: "If you use Open OnDemand, please cite this software."
+type: software
+title: "Open OnDemand Source Code"
+authors:
+  - given-names: Jeff
+    family-names: Ohrstrom
+  - given-names: Travis
+    family-names: Ravert
+  - given-names: Trey
+    family-names: Dockendorf
+  - given-names: Alan
+    family-names: Chalker
+  - given-names: Emily
+    family-names: Moffat Sadeghi
+  - given-names: Braeden
+    family-names: Singleton
+repository-code: "https://github.com/OSC/ondemand"
+url: "https://www.openondemand.org"
+license: MIT
+doi: 10.5281/zenodo.6323791
