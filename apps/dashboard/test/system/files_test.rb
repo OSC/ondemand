@@ -1188,8 +1188,9 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'test_dir').ancestor('tr').click
       click_on('Download')
 
-      sleep 5 # give it enough time to download
-      assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT, message: "#{zip_file} was never downloaded!").until do
+        File.exist?(zip_file)
+      end
 
       # unzip all the files you downloaded into a new tmp directory and iterate
       # though them. Verify that the file you downloaded exists in the original tmpdir 'dir'.
