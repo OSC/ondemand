@@ -69,12 +69,13 @@ class PosixFile
       owner:        PosixFile.username_from_cache(stat.uid),
       mode:         stat.mode,
       dev:          stat.dev,
-      downloadable: downloadable?
+      downloadable: downloadable?,
+      editable:     FilePermissions.can_edit_file?(self)
     }
   end
 
   def downloadable?
-    Configuration.download_enabled? && (directory? || file?) && readable?
+    FilePermissions.downloadable?(self)
   end
 
   def human_size
