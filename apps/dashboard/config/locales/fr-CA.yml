@@ -300,7 +300,9 @@ fr-CA:
     network_report: Rapport réseau + %{node}
     node: Noeud
     not_grouped: Autres applications
+    nsf_access_announcements: Annonces NSF ACCESS
     nsf_access_events: Événements d'accès NSF
+    nsf_access_outages: Pannes d'accès NSF
     ok: OK
     opens_in_new_tab: s'ouvre dans un nouvel onglet
     output_location: 'Emplacement de sortie :'
