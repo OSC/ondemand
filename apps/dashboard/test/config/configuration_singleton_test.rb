@@ -264,7 +264,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
-
+  
   test "dashboard_passwd_url environment variable has precedence over ondemand.d" do
     Dir.mktmpdir do |dir|
       File.open("#{dir}/config.yml", 'w+') do |file|
@@ -273,6 +273,42 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
       with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_PASSWD_URL: 'https://passwd.from.env') do
         assert_equal 'https://passwd.from.env', ConfigurationSingleton.new.dashboard_passwd_url
+      end
+    end
+  end
+  
+  test "dashboard_2fa_url is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_2FA_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_2fa_url
+    end
+  end
+
+  test "can configure dashboard_2fa_url through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_2FA_URL: 'https://2fa.example.com')) do
+      assert_equal 'https://2fa.example.com', ConfigurationSingleton.new.dashboard_2fa_url
+    end
+  end
+
+  test "can configure dashboard_2fa_url through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_2fa_url' => 'https://2fa.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://2fa.from.file', ConfigurationSingleton.new.dashboard_2fa_url
+      end
+    end
+  end
+  
+  test "dashboard_2fa_url environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_2fa_url' => 'https://2fa.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_2FA_URL: 'https://2fa.from.env') do
+        assert_equal 'https://2fa.from.env', ConfigurationSingleton.new.dashboard_2fa_url
       end
     end
   end
