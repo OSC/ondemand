@@ -504,6 +504,21 @@ class FileOps {
       document.body.removeChild(iframe);
     }, TIME);
   }
+
+  jsonRequestOptions(method, body = null) {
+    let basicOpts = {
+      method: method,
+      headers: {
+        'X-CSRF-Token': csrfToken(),
+        'Accept': 'application/json'
+      },
+      mode: 'same-origin'
+    };
+    if (body) {
+      basicOpts.body = body;
+    }
+    return basicOpts;
+  }
   
   dataFromJsonResponse(response) {
     return new Promise((resolve, reject) => {
@@ -519,13 +534,14 @@ class FileOps {
   addFavorite(file) {
     const formData = new FormData();
     formData.append('user_customization[add_files_favorite]', [history.state.currentDirectory, file].join('/'));
-    fetch(history.state.currentFavoritesPath, { method: 'post', headers: { 'X-CSRF-Token': csrfToken(), 'Accept': 'application/json' }, body: formData })
+    fetch(history.state.currentFavoritesPath, this.jsonRequestOptions('post', formData))
       .then(response => this.dataFromJsonResponse(response))
       .then(function() {
         window.location.reload();
       })
       .catch(function (e) {
         OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+        console.error(e);
       });
   }
 
@@ -551,13 +567,14 @@ class FileOps {
   renameFavorite(index, name) {
     const formData = new FormData();
     formData.append('user_customization[rename_files_favorite]', JSON.stringify({ index: index, name: name }));
-    fetch(history.state.currentFavoritesPath, { method: 'post', headers: { 'X-CSRF-Token': csrfToken(), 'Accept': 'application/json' }, body: formData })
+    fetch(history.state.currentFavoritesPath, this.jsonRequestOptions('post', formData))
       .then(response => getData(response))
       .then(function() {
         window.location.reload();
       })
       .catch(function (e) {
         OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+        console.error(e);
       });
   }
   
