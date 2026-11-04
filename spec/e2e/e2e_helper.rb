@@ -199,27 +199,41 @@ def build_repo_version
   ENV['OOD_BUILD_REPO'] || '4.2'
 end
 
+# The staging repo needs a password. Pull requests from forks don't get the
+# secret that holds it, so those runs use the public release repo instead.
+def staging_repo?
+  !ENV['OOD_REPO_PASSWORD'].to_s.empty?
+end
+
+def use_staging_rpm_repo
+  on hosts,
+     "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
+  on hosts, "dnf config-manager --save --setopt=ondemand-web.username=osc --setopt=ondemand-web.password=#{ENV['OOD_REPO_PASSWORD']}"
+end
+
+def use_staging_apt_repo
+  on hosts,
+     "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
+  auth = <<~EOS
+    machine apt.osc.edu
+    login osc
+    password #{ENV['OOD_REPO_PASSWORD']}
+  EOS
+  create_remote_file(hosts, '/etc/apt/auth.conf.d/ondemand-web.conf', auth)
+end
+
 def install_ondemand
   if ['redhat', 'amazon'].include?(host_inventory['platform'])
     release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
-    on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
+    use_staging_rpm_repo if staging_repo?
     on hosts, "dnf config-manager --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
-    on hosts, "dnf config-manager --save --setopt=ondemand-web.username=osc --setopt=ondemand-web.password=#{ENV['OOD_REPO_PASSWORD']}"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
     on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
-    on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
-    auth = <<~EOS
-      machine apt.osc.edu
-      login osc
-      password #{ENV['OOD_REPO_PASSWORD']}
-    EOS
-    create_remote_file(hosts, '/etc/apt/auth.conf.d/ondemand-web.conf', auth)
+    use_staging_apt_repo if staging_repo?
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end

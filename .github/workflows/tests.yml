@@ -165,6 +165,7 @@ jobs:
     env:
       OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
       HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
+      HAS_OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD != '' }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v6
@@ -181,6 +182,23 @@ jobs:
       - name: Login to Docker Hub
         if: env.HAS_DOCKERHUB_CREDENTIALS == 'true'
         run: docker login -u ${{ secrets.ONDEMAND_DOCKERHUB_USER }} -p ${{ secrets.ONDEMAND_DOCKERHUB_PASSWORD }}
+
+      # The build box image points at the password-protected staging repo. Pull requests
+      # from forks don't get secrets, so mount a repo file for the public release repo instead.
+      - name: Use the public OnDemand repo without credentials
+        if: matrix.arch == 'x86_64' && env.HAS_OOD_REPO_PASSWORD != 'true'
+        run: |
+          echo "::notice title=Public repo::No staging repo password, so this run builds and tests against the public ${{ matrix.version }} repo."
+          if [[ "${{ matrix.dist }}" == el* || "${{ matrix.dist }}" == amzn* ]]; then
+            repo_file="${RUNNER_TEMP}/ondemand-web.repo"
+            printf '%s\n' \
+              '[ondemand-web]' \
+              'name=Open OnDemand Web Repo' \
+              'baseurl=https://yum.osc.edu/ondemand/${{ matrix.version }}/web/${{ matrix.dist }}/$basearch/' \
+              'enabled=1' \
+              'gpgcheck=0' > "$repo_file"
+            echo "OOD_PACKAGING_CONTAINER_FLAGS=-v ${repo_file}:/etc/yum.repos.d/ondemand-web.repo:ro" >> "$GITHUB_ENV"
+          fi
 
       - name: Build package
         if: matrix.arch == 'x86_64'
