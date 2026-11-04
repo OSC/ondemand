@@ -43,8 +43,8 @@ class CustomHelpNavigationTest < ActionDispatch::IntegrationTest
 
     # Check nav menus
     assert_select dropdown_links, 2
-    assert_select dropdown_link(1), text: 'Help Menu'
-    assert_select dropdown_link(2), text: 'Docs Menu'
+    assert_equal 'Help Menu', dropdown_link(1).text.strip
+    assert_equal 'Docs Menu', dropdown_link(2).text.strip
 
     # Check custom 'Help Menu'
     menu_items = dropdown_list('Help Menu')
@@ -102,7 +102,7 @@ class CustomHelpNavigationTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select dropdown_links, 1
-    assert_select dropdown_link(1), text: 'Develop'
+    assert_equal 'Develop', dropdown_link(1).text.strip
 
     Configuration.stubs(:app_development_enabled?).returns(false)
     get root_path

@@ -45,11 +45,13 @@ module BatchConnect
       assert_equal 0, BatchConnect::Session.new.days_till_old, 'should be 0 since no id is set'
       assert_equal 0, BatchConnect::Session.new(id: 'A').days_till_old, 'should be 0 since no db file exists'
 
-      File.stubs(:stat).returns(OpenStruct.new(mtime: Time.now))
-      assert_equal BatchConnect::Session.old_in_days, BatchConnect::Session.new(id: 'A').days_till_old
+      Timecop.freeze do
+        File.stubs(:stat).returns(OpenStruct.new(mtime: Time.now))
+        assert_equal BatchConnect::Session.old_in_days, BatchConnect::Session.new(id: 'A').days_till_old
 
-      File.stubs(:stat).returns(OpenStruct.new(mtime: 1.day.ago))
-      assert_equal BatchConnect::Session.old_in_days - 1, BatchConnect::Session.new(id: 'A').days_till_old
+        File.stubs(:stat).returns(OpenStruct.new(mtime: 1.day.ago))
+        assert_equal BatchConnect::Session.old_in_days - 1, BatchConnect::Session.new(id: 'A').days_till_old
+      end
     end
 
     test 'Session.all should fail if valid session fields are not present' do

@@ -183,6 +183,8 @@ class ActiveJobsTest < ApplicationSystemTestCase
     exp_header_data = ['Queued', 'Sample2', '345']
     assert_equal exp_header_data, card_header_items.map(&:text)
 
+    # Fixture times have no UTC offset, so they are shown in the local timezone.
+    local_zone = Time.parse('2025-08-28T13:00:00').zone
     expected_list_details = [
       'Cluster: Oakley',
       'Job Id: 345',
@@ -198,9 +200,9 @@ class ActiveJobsTest < ApplicationSystemTestCase
       'Total CPUs: 64',
       'Time Limit: 01:00:00',
       'Time Used: 00:02:00',
-      'Submission Time: 2025-08-28 13:00:00',
-      'Start Time: 2025-08-28 14:00:00',
-      'End Time: 2025-08-28 15:00:00',
+      "Submission Time: 2025-08-28 13:00:00 #{local_zone}",
+      "Start Time: 2025-08-28 14:00:00 #{local_zone}",
+      "End Time: 2025-08-28 15:00:00 #{local_zone}",
       'Memory: 128GB',
       'GRES: gpu:2'
     ]

@@ -253,7 +253,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on I18n.t('dashboard.jobs_create_blank_project')
       find('#project_name').set(proj)
       find('#product_icon_select').set(icon)
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(projects_path)
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
@@ -261,10 +262,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'update with invalid icon' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
       click_on 'Edit'
       find('#product_icon_select').set('fas://bad&icon')
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(project_path(project_id))
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
@@ -1399,6 +1401,21 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'workflows are hidden and disabled when unsupported' do
+    Workflow.stubs(:supported?).returns(false)
+
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+
+      visit project_path(project_id)
+      assert_no_text(I18n.t('dashboard.jobs_workflows'))
+
+      visit new_project_workflow_path(project_id)
+      assert_current_path(project_path(project_id))
+      assert_selector('.alert-danger', text: I18n.t('dashboard.jobs_workflows_not_supported'))
+    end
+  end
+
   # this test:
   # creates a project & launcher with auto_accounts
   # excludes some of the accounts from auto_accounts in launcher#edit
@@ -1651,16 +1668,18 @@ class ProjectManagerTest < ApplicationSystemTestCase
       Project.stubs(:dataroot).returns(Pathname.new(dir))
 
       visit(projects_root_path)
-      assert_text(I18n.t('dashboard.jobs_import_shared_project'))
       find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
 
-      fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
-      find('#import_project').click
+      # Bootstrap adds .show only once the collapse transition has finished.
+      within('#load-import-pane.show') do
+        fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
+        find('#import_project').click
+      end
 
-      sleep 1 # sleep ensure the project has been imported
+      # The flash exists only on the page rendered after the import's redirect.
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
       assert_current_path(projects_root_path)
       assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
-      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
     end
   end
 end

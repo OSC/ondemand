@@ -157,6 +157,10 @@ describe OodPortalGenerator::Application do
       test_generate('input/http_redirect_host.yml', 'output/http_redirect_host.conf')
     end
 
+    it 'templates a vhost with a specific port and no proxy' do
+      test_generate('input/specific_port.yml', 'output/specific_port.conf')
+    end
+
     it 'rasies an error with incomplete oidc configs' do
       config = {
         oidc_uri:                   '/oidc',

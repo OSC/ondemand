@@ -13,7 +13,7 @@ data - optional, data parameter for the link_to helper
   url = local_assigns.fetch(:url)
   icon_uri = local_assigns.fetch(:icon_uri, URI("fas://cog"))
 %>
-<li role="none">
+<li class="nav-item" role="none">
 <%=
   link_to(
     url,
