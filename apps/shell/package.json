@@ -35,7 +35,8 @@
     "setprototypeof": "1.2.0",
     "toidentifier": "1.0.1",
     "encodeurl": "2.0.0",
-    "content-type": "2.0.0"
+    "content-type": "2.0.0",
+    "minimatch": "11.0.1"
   },
   "devDependencies": {
     "jest": "^30"
