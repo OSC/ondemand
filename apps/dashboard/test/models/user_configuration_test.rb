@@ -32,6 +32,9 @@ class UserConfigurationTest < ActiveSupport::TestCase
     'OOD_BRAND_LINK_ACTIVE_BG_COLOR'          => [:brand_link_active_bg_color, "setup-#{SecureRandom.uuid}"],
     'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG' => [:brand_link_active_bg_color, "setup-#{SecureRandom.uuid}"],
     'BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' => [:brand_link_active_bg_color, "setup-#{SecureRandom.uuid}"],
+    'OOD_BRAND_LINK_COLOR'                    => [:brand_link_color, "setup-#{SecureRandom.uuid}"],
+    'OOD_BRAND_LINK_HOVER_COLOR'              => [:brand_link_hover_color, "setup-#{SecureRandom.uuid}"],
+    'OOD_BRAND_LINK_ACTIVE_COLOR'             => [:brand_link_active_color, "setup-#{SecureRandom.uuid}"],
     'OOD_NAVBAR_TYPE'                         => [:navbar_type, 'light'],
     'OOD_PINNED_APPS_GROUP_BY'                => [:pinned_apps_group_by, "setup-#{SecureRandom.uuid}"],
     'OOD_PUBLIC_URL'                          => [:public_url, Pathname.new("/#{SecureRandom.uuid}")],
@@ -69,6 +72,9 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
       brand_bg_color:                    nil,
       brand_link_active_bg_color:        nil,
+      brand_link_color:                  nil,
+      brand_link_hover_color:            nil,
+      brand_link_active_color:           nil,
       navbar_type:                       'dark',
       pinned_apps_group_by:              nil,
 
