@@ -9,7 +9,7 @@
     <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, new_tab: true) %>
     <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, new_tab: true) %>
     <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, new_tab: true) %>
-    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", Configuration.dashboard_2fa_url, new_tab: true) %>
     <% if help_custom_url %>
       <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, new_tab: true) %>
     <% end %>
