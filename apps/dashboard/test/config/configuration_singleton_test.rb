@@ -629,6 +629,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "allowlist_paths ignores deprecated WHITELIST_PATH" do
+    with_modified_env(no_config_env.merge(OOD_ALLOWLIST_PATH: nil, WHITELIST_PATH: '/path_a:/path_b')) do
+      assert_equal [], ConfigurationSingleton.new.allowlist_paths
+    end
+  end
+  
   test "allowlist_paths correctly parses OOD_ALLOWLIST_PATH" do
     with_modified_env(no_config_env.merge(OOD_ALLOWLIST_PATH: '/path_a:/path_b')) do
       assert_equal [Pathname.new('/path_a'), Pathname.new('/path_b')], ConfigurationSingleton.new.allowlist_paths

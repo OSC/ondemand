@@ -107,7 +107,7 @@ class ConfigurationSingleton
   end
 
   def whitelist_paths
-    (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':')
+    (ENV['OOD_ALLOWLIST_PATH'] || "").split(':')
   end
 
   def locale
