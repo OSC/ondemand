@@ -167,14 +167,12 @@ jQuery(function() {
   $(document).on('click', '.rename-favorite', function (e) {
     e.preventDefault();
     const clicked = e.currentTarget;
-    const index = clicked.dataset.favoriteIndex;
     const path = clicked.dataset.favoritePath;
     const parent = $(clicked).closest('.input-group');
     const link = parent.find('.nav-link');
     const oldName = link.text().trim();
 
     const eventData = {
-      index: index,
       name: oldName,
       path: path
     }
@@ -251,7 +249,7 @@ jQuery(function() {
   });
 
   $(CONTENTID).on(EVENTNAME.renameFavorite, function (e, options) {
-    fileOps.renameFavorite(options.index, options.result.value);
+    fileOps.renameFavorite(options.path, options.result.value);
   });
 });
 
@@ -548,7 +546,7 @@ class FileOps {
   renameFavoritePrompt(options) {
     const eventData = {
       action: EVENTNAME.renameFavorite,
-      index: options.index,
+      path: options.path,
       'inputOptions': {
         title: `Rename favorite ${options.path}`,
         input: 'text',
@@ -564,17 +562,18 @@ class FileOps {
     $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
   }
 
-  renameFavorite(index, name) {
+  renameFavorite(path, name) {
     const formData = new FormData();
-    formData.append('user_customization[rename_files_favorite]', JSON.stringify({ index: index, name: name }));
+    formData.append('user_customization[rename_files_favorite]', JSON.stringify({ path: path, name: name }));
     this.showSwalLoading('Renaming favorite path');
     fetch(history.state.currentFavoritesPath, this.jsonRequestOptions('post', formData))
-      .then(response => getData(response))
+      .then(response => this.dataFromJsonResponse(response))
       .then(function() {
         window.location.reload();
       })
       .catch(function (e) {
-        OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+        this.doneLoading();
+        OODAlertError(`Error occurred when attempting to rename file favorite: ${e.message}`);
         console.error(e);
       });
   }

@@ -30,8 +30,7 @@ class UserCustomization
 
   def rename_files_favorite(json)
     args = JSON.parse(json)
-    index = args['index'].to_i
-    @custom_files_favorites[index][:title] = args['name']
+    find_favorite(args['path'])[:title] = args['name']
     update_favorites
   end
 

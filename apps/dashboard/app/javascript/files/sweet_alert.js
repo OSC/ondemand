@@ -48,12 +48,8 @@ function attachOKHandler(options) {
   button.onclick = () => {
     const input = document.getElementById('files_input_modal_input');
     const value = input.value;
-    const eventData = {
-      files: options.files ? options.files : null,
-      result: {
-        value: value
-      }
-    };
+    const { inputOptions, ...otherKeys} = options;
+    const eventData = { ...otherKeys, result: { value: value }};
 
     const validator = options.inputOptions.inputValidator;
     let error = undefined;
