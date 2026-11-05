@@ -76,7 +76,7 @@ module AccountCache
 
         cluster_queues.map do |queue|
           unless blocked_queue?(queue)
-            data = cluster_data.merge(queue_account_data(queue))
+            data = cluster_data.merge(queue_account_data(queue)).merge(queue_walltime_data(queue))
             [queue.name, queue.name, data]
           end
         end.compact
@@ -147,10 +147,17 @@ module AccountCache
   end
 
   def queue_account_data(queue)
-    unavailable_accounts = accounts.reject do |account| 
+    unavailable_accounts = accounts.reject do |account|
       account_allowed?(queue, account)
     end
     disabled_account_data(unavailable_accounts)
+  end
+
+  def queue_walltime_data(queue)
+    max_time = queue.respond_to?(:max_time) ? queue.max_time : nil
+    return {} if max_time.nil?
+
+    { "data-max-auto-wallclock-limit-for-auto-queues-#{queue.name}" => (max_time / 3600).floor }
   end
 
   # can _this_ account submit to this queue?
