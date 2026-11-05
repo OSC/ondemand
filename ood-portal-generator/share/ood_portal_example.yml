@@ -281,6 +281,12 @@
 # Default: null (disable this feature)
 #secure_rnode_uri: null
 
+# Optional TCP port allowlist for secure_rnode_uri. Configure this when
+# applications use a known set of service ports; unset preserves compatibility
+# by allowing any valid TCP port (1..65535).
+# Example: [443, 8443]
+#secure_rnode_ports: null
+
 # List of SSL Proxy Apache directives
 # These settings control SSL validation for the upstream connection and require
 # a secure_[r]node_uri to be defined

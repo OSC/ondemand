@@ -15,6 +15,7 @@ auth:
 host_regex: '[\w.-]+\.site\.edu'
 secure_node_uri: '/configured-secure-node'
 secure_rnode_uri: '/configured-secure-rnode'
+secure_rnode_ports: [443, 8443]
 ssl_proxy:
   - 'SSLProxyCheckPeerCN Off'
   - 'SSLProxyCheckPeerName Off'
