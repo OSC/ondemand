@@ -124,8 +124,8 @@ module BatchConnect
       # The data root directory for this namespace
       # @param token [#to_s] The data root directory for a given app token
       # @return [Pathname] data root directory
-      def dataroot(token = "", cluster: nil)
-        OodAppkit.dataroot.join('batch_connect').join(cluster.to_s).join(token.to_s)
+      def dataroot(token = "", cluster: nil, base_dataroot: OodAppkit.dataroot)
+        base_dataroot.join('batch_connect').join(cluster.to_s).join(token.to_s)
       end
 
       # Root directory for file system database
@@ -170,11 +170,13 @@ module BatchConnect
             f.rename("#{f}.bak")
             nil
           end
-        end.compact.select do |s| 
-          s.valid_session_fields? 
+        end.compact.select do |s|
+          s.valid_session_fields?
         end.map do |s|
           (s.completed? && s.old? && s.destroy) ? nil : s
-        end.compact.sort_by do |s|
+        end.compact.select do |s|
+          s.staged_root
+        end.sort_by do |s|
           # sort by completed status, then created_at date
           [s.completed? ? 0 : 1, s.created_at]
         end.reverse
@@ -294,6 +296,9 @@ module BatchConnect
     # @param context [Object] context available when rendering staged files
     # @return [Boolean] whether staged successfully
     def stage(root, context: nil)
+      if remote?
+        return stage_remote(root, context: context)
+      end
       staged_root.tap { |p| FileUtils.mkdir_p(p.to_s, mode: 0o0700) unless p.exist? }
 
       # Sync the template files over
@@ -316,6 +321,34 @@ module BatchConnect
       false
     end
 
+    def stage_remote(root, context: nil)
+      file_adapter = cluster.file_adapter
+
+      # Stage files into a temporary directory and then transfer to remote
+      Dir.mktmpdir do |tmpdir|
+        # Sync the template files over
+        oe, s = Open3.capture2e('rsync', '-rlpv', '--exclude', '.*.swp', '--exclude', '*.erb', "#{root}/", tmpdir)
+        raise oe unless s.success?
+        # Render all template files using ERB
+        render_erb_files(
+          template_files(root),
+          root_dir: root,
+          binding: TemplateBinding.new(self, context).get_binding,
+          output_dir: Pathname.new(tmpdir)
+        )
+        file_adapter.mkdir(staged_root.to_s)
+        # Output user submitted context attributes for debugging purposes
+        file_adapter.write(user_defined_context_file, JSON.pretty_generate(context.as_json))
+        file_adapter.copy_with_progress(nil, cluster, tmpdir, staged_root.to_s)
+      end
+
+      true
+    rescue StandardError => e
+      errors.add(:stage, e.message)
+      Rails.logger.info("#{e}: #{e.backtrace.join("\n")}")
+      false
+    end
+
     # Submit session's script to the cluster and record job id to database
     # @param opts [#to_h] app-specific submit hash
     # @return [Boolean] whether submitted successfully
@@ -325,8 +358,13 @@ module BatchConnect
       options = script_options opts.fetch(:script, {})
 
       # Record the job script for debugging purposes
-      job_script_content_file.write(content)
-      job_script_options_file.write(JSON.pretty_generate(options))
+      if remote?
+        cluster.file_adapter.write(job_script_content_file, content)
+        cluster.file_adapter.write(job_script_options_file, JSON.pretty_generate(options))
+      else
+        job_script_content_file.write(content)
+        job_script_options_file.write(JSON.pretty_generate(options))
+      end
 
       # Submit job script
       ClimateControl.modify(sanitized_env) do
@@ -390,6 +428,11 @@ module BatchConnect
 
     def vnc?
       script_type == "vnc" || script_type == "vnc_container" || script_type == "wayvnc"
+    end
+
+    # Whether the session's files are on the cluster instead of the local file system.
+    def remote?
+      OodAppkit.clusters[cluster_id]&.file_adapter? || false
     end
 
     # Cancel this session's job
@@ -479,8 +522,11 @@ module BatchConnect
     # Whether job is running but still hasn't generated the connection file
     # @return [Boolean] whether starting
     def starting?
-      if connection_in_info?
+      return @starting if defined? @starting
+      @starting = if connection_in_info?
         status.queued? && !connect.to_h.compact.empty?
+      elsif remote?
+        status.running? && !cluster.file_adapter.exist?(connect_file)
       else
         status.running? && !connect_file.file?
       end
@@ -502,7 +548,16 @@ module BatchConnect
     # @return [Pathname] staged root directory
     def staged_root
       c = Configuration.per_cluster_dataroot? ? cluster_id : nil
-      self.class.dataroot(token, cluster: c).join("output", id)
+      if remote?
+        cluster_dataroot = cluster.file_adapter.dataroot
+        self.class.dataroot(token, cluster: c, base_dataroot: cluster_dataroot).join("output", id)
+      else
+        self.class.dataroot(token, cluster: c).join("output", id)
+      end
+    rescue StandardError => e
+      errors.add(:stage, e.message) unless errors.added?(:stage, e.message)
+      Rails.logger.error("ERROR: #{e.class} - #{e.message}")
+      nil
     end
 
     # List of template files that need to be rendered
@@ -558,6 +613,7 @@ module BatchConnect
     # Path to file that contains the connection information
     # @return [Pathname] connection file
     def connect_file
+      return staged_root.join("connection.yml") if remote?
       # flush nfs cache when checking for this file
       staged_root.join("connection.yml").tap { |f| Dir.open(f.dirname.to_s).close }
 
@@ -581,8 +637,12 @@ module BatchConnect
     # The connection information for this session (job must be running)
     # @return [OpenStruct] connection information
     def connect
-      if connection_in_info?
+      return @connect if defined? @connect
+
+      @connect = if connection_in_info?
         OpenStruct.new(info.ood_connection_info || {})
+      elsif remote?
+        OpenStruct.new(YAML.safe_load(cluster.file_adapter.read(connect_file)))
       else
         OpenStruct.new YAML.safe_load(connect_file.read)
       end

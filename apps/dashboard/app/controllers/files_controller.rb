@@ -61,24 +61,28 @@ class FilesController < ApplicationController
             response.headers.merge!(zip_headers)
 
             send_stream(filename: zipname, disposition: 'attachment', type: :zip) do |stream|
-              ZipKit::Streamer.open(stream) do |zip|
-                @path.files_to_zip.each do |file|
-                  next unless File.readable?(file.realpath)
+              if @path.respond_to?(:download_as_zip)
+                @path.download_as_zip(stream)
+              else
+                ZipKit::Streamer.open(stream) do |zip|
+                  @path.files_to_zip.each do |file|
+                    next unless File.readable?(file.realpath)
 
-                  if File.file?(file.realpath)
-                    File.open(file.realpath, 'rb') do |opened_file|
-                      real_path = File.readlink("/proc/self/fd/#{opened_file.fileno}")
-                      next unless AllowlistPolicy.default.permitted?(real_path)
+                    if File.file?(file.realpath)
+                      File.open(file.realpath, 'rb') do |opened_file|
+                        real_path = File.readlink("/proc/self/fd/#{opened_file.fileno}")
+                        next unless AllowlistPolicy.default.permitted?(real_path)
 
-                      zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                        IO.copy_stream(opened_file, zip_file)
+                        zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                          IO.copy_stream(opened_file, zip_file)
+                        end
                       end
+                    else
+                      zip.add_empty_directory(dirname: file.relative_path.to_s)
                     end
-                  else
-                    zip.add_empty_directory(dirname: file.relative_path.to_s)
+                  rescue StandardError => e
+                    logger.warn("error writing file #{file.path} to zip: #{e.message}")
                   end
-                rescue StandardError => e
-                  logger.warn("error writing file #{file.path} to zip: #{e.message}")
                 end
               end
             end
@@ -259,6 +263,15 @@ class FilesController < ApplicationController
     if filesystem == 'fs'
       @path = PosixFile.new(normal_path)
       @filesystem = 'fs'
+    elsif OODClusters[filesystem.to_sym]&.file_adapter?
+      begin
+        @path = ClusterFile.new(normal_path, filesystem)
+        @filesystem = filesystem
+      rescue LoadError, StandardError => e
+        @path = PosixFile.new(normal_path)
+        @filesystem = 'fs'
+        raise StandardError, "Misconfigured file adapter for cluster #{filesystem}: #{e.message}"
+      end
     elsif ::Configuration.remote_files_enabled? && filesystem != 'fs'
       @path = RemoteFile.new(normal_path, filesystem)
       @filesystem = filesystem
