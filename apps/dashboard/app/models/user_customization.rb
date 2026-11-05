@@ -58,7 +58,13 @@ class UserCustomization
     end
   end
 
+  def find_favorite(path)
+    custom_files_favorites.find {|f| f[:path] == path}
+  end
+
   def validate_favorite_path!(path)
+    raise "Favorite already exists for path #{path}" unless find_favorite(path).nil?
+
     msg = "Invalid path specified: #{path}"
     raise msg unless File.absolute_path?(path) && File.directory?(path) && File.readable?(path)
   end
