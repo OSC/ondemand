@@ -32,7 +32,7 @@ module ApplicationHelper
   end
 
   def support_url
-    ENV['OOD_DASHBOARD_SUPPORT_URL']
+    Configuration.dashboard_support_url
   end
 
   def docs_url

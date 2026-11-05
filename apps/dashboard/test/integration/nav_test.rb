@@ -195,6 +195,15 @@ class NavTest < ActionDispatch::IntegrationTest
       end
   end
 
+  test 'help dropdown uses the configured support URL' do
+    Configuration.stubs(:dashboard_support_url).returns('/configured-support')
+
+    get('/')
+
+    assert_response(:success)
+    assert_select 'nav a[href="/configured-support"]', text: I18n.t('dashboard.nav_help_support')
+  end
+
   test 'user button should render' do
     CurrentUser.stubs(:name).returns('me')
     get('/')
