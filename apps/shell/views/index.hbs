@@ -49,9 +49,37 @@
             <label for="fonts" class="badge">Fonts:</label>
             <select id="fonts" class="form-select form-select-sm"></select>
           </div>
+          <div>
+            <button id="terminal_keys_toggle" type="button" class="btn btn-outline-light btn-sm"
+                    aria-controls="terminal_keys" aria-expanded="false">Keys</button>
+          </div>
         </div>
       </div>
     </nav>
+
+    {{!-- On-screen keys, set up by installKeys() in ood_shell.2.js --}}
+    <div id="terminal_keys" role="group" aria-label="Terminal keys" hidden>
+      <button type="button" data-key="Escape" aria-label="Escape">Esc</button>
+      <button type="button" data-key="Tab">Tab</button>
+      <button type="button" data-modifier="ctrl" aria-pressed="false" aria-label="Control">Ctrl</button>
+      <button type="button" data-modifier="alt" aria-pressed="false">Alt</button>
+      <button type="button" data-key="ArrowLeft" data-repeat aria-label="Left arrow">&larr;</button>
+      <button type="button" data-key="ArrowUp" data-repeat aria-label="Up arrow">&uarr;</button>
+      <button type="button" data-key="ArrowDown" data-repeat aria-label="Down arrow">&darr;</button>
+      <button type="button" data-key="ArrowRight" data-repeat aria-label="Right arrow">&rarr;</button>
+      <button type="button" data-key="^C" aria-label="Control C">^C</button>
+      <button type="button" data-key="^Z" aria-label="Control Z">^Z</button>
+      <button type="button" data-key="^D" aria-label="Control D">^D</button>
+      <button type="button" data-key="^X" aria-label="Control X">^X</button>
+      <button type="button" data-key="|">|</button>
+      <button type="button" data-key="~">~</button>
+      <button type="button" data-key="/">/</button>
+      <button type="button" data-key="-">-</button>
+      <button type="button" data-key="Home">Home</button>
+      <button type="button" data-key="End">End</button>
+      <button type="button" data-key="PageUp" data-repeat aria-label="Page up">PgUp</button>
+      <button type="button" data-key="PageDown" data-repeat aria-label="Page down">PgDn</button>
+    </div>
   </div>
 </body>
 
