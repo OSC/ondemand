@@ -1,7 +1,7 @@
 <%- unless @prefill_templates.empty? -%>
-  <div class="form-group">
-    <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
-    <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
+  <div class="mb-3">
+    <label class="form-label" for="batch_connect_session_prefill_template"><%= t('dashboard.batch_connect_form_prefill') %></label>
+    <select class="form-select selectpicker" id="batch_connect_session_prefill_template">
       <option selected value> -- <%= t('dashboard.batch_connect_form_select_template') %> -- </option>
       <% @prefill_templates.each do |name, template_data| %>
         <option value="<%= template_data.to_json %>"><%= name %></option>
@@ -30,7 +30,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('dashboard.close') %>"></button>
       </div>
       <div class="modal-body">
-        <select class="form-control selectpicker" id="modal_input_template_name">
+        <select class="form-select selectpicker" id="modal_input_template_name">
           <option selected value> -- <%= t('dashboard.batch_connect_form_save_new_template') %> -- </option>
           <% @prefill_templates.each do |name, template_data| %>
             <option value="<%= name %>"><%= name %></option>

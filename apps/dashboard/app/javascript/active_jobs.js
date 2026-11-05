@@ -283,7 +283,6 @@ function create_datatable(options){
                           href="${escapeHtml(support_url.toString())}"
                           aria-labeled-by"title"
                           aria-label="Submit support ticket for job with ID ${pbsid}"
-                          data-toggle="tooltip"
                           title="Submit Support Ticket"
                         >
                           <i class='fas fa-medkit fa-fw' aria-hidden='true'></i>
@@ -305,7 +304,6 @@ function create_datatable(options){
                           href="${escapeHtml(delete_path)}"
                           aria-labeled-by"title"
                           aria-label="Delete job ${escapeHtml(jobname)} with ID ${pbsid}"
-                          data-toggle="tooltip"
                           title="Delete Job"
                         >
                           <i class='fas fa-trash-alt fa-fw' aria-hidden='true'></i>

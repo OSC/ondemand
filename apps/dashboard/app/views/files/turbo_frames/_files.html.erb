@@ -2,7 +2,7 @@
   <td>
     <% dir_type = I18n.t('dashboard.directory') %>
     <i class="fa fa-folder" title="<%= dir_type %>" aria-hidden="true"></i>
-    <span class="sr-only"><%= dir_type %></span>
+    <span class="visually-hidden"><%= dir_type %></span>
   </td>
   <td>
     <strong>
@@ -33,7 +33,7 @@
     <td>
       <% type = I18n.t("dashboard.#{file[:directory] ? 'directory' : 'file'}") %>
       <i class="fa fa-<%= file[:directory] ? 'folder' : 'file' %>" title="<%= type %>" aria-hidden="true"></i>
-      <span class="sr-only"> <%= type %> </span>
+      <span class="visually-hidden"> <%= type %> </span>
     </td>
     <%- if file[:directory] && readable-%>
       <td>
