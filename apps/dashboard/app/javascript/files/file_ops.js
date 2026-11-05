@@ -567,6 +567,7 @@ class FileOps {
   renameFavorite(index, name) {
     const formData = new FormData();
     formData.append('user_customization[rename_files_favorite]', JSON.stringify({ index: index, name: name }));
+    this.showSwalLoading('Renaming favorite path');
     fetch(history.state.currentFavoritesPath, this.jsonRequestOptions('post', formData))
       .then(response => getData(response))
       .then(function() {
