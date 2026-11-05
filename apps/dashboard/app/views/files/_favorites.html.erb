@@ -30,7 +30,7 @@
                 method: :post,
                 class: 'btn btn-link text-light bg-danger h-100 rounded-0 rounded-end',
                 title: t('dashboard.delete_favorite_title', favorite: p.title || p.path),
-                params: { user_customization: { delete_files_favorite: custom_favorite_count }},
+                params: { user_customization: { delete_files_favorite: p.path }},
                 data: { confirm: "Are you sure you want to delete your shortcut to #{p.path}?" } 
           ) do %>
             <i class="fas fa-trash" aria-hidden="true"></i>

@@ -21,8 +21,8 @@ class UserCustomization
     update_favorites
   end
 
-  def delete_files_favorite(index)
-    removed = @custom_files_favorites.delete_at(index.to_i)
+  def delete_files_favorite(path)
+    removed = @custom_files_favorites.delete(find_favorite(path))
     raise 'Failed to delete favorite' if removed.nil?
     
     update_favorites
