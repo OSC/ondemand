@@ -2,7 +2,7 @@ HOSTS:
   debian12:
     roles:
       - agent
-    platform: debian-12-amd64
+    platform: debian-12-arm64
     hypervisor : docker
     image: arm64v8/debian:12
     docker_preserve_image: true
