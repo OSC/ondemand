@@ -112,29 +112,29 @@
 </div>
 
 <ol id="joyride" style="display: none;" data-joyride>
-  <li data-id="name-label">
+  <li data-id="name-label" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      First, select a template that will be used to create a new job.
+      <%= t('jobcomposer.joyride.workflows_new.select_template') %>
     </p>
   </li>
-  <li data-id="name-field">
+  <li data-id="name-field" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Enter a name for the job you wish to create.
+      <%= t('jobcomposer.joyride.workflows_new.job_name') %>
     </p>
   </li>
-  <li data-id="batch_host_select">
+  <li data-id="batch_host_select" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Select the cluster where the job will be submitted.
+      <%= t('jobcomposer.joyride.workflows_new.cluster') %>
     </p>
   </li>
-  <li data-id="script-path-field">
+  <li data-id="script-path-field" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Enter the name of the script that will be submitted to the batch server. (If different from default)
+      <%= t('jobcomposer.joyride.workflows_new.script') %>
     </p>
   </li>
-  <li data-id="create-job-button">
+  <li data-id="create-job-button" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Finally, click "Create Job" to add this to your list of jobs.
+      <%= t('jobcomposer.joyride.workflows_new.create_job') %>
     </p>
   </li>
 </ol>
