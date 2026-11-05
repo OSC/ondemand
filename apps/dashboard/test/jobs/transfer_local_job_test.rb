@@ -8,7 +8,6 @@ class TransferLocalJobTest < ActiveJob::TestCase
       testfile = File.join(dir, 'test')
       destfile = File.join(dir, 'dest', 'test')
       File.write(testfile, 'this is a test file')
-      FileUtils.mkpath File.dirname(destfile)
 
       # FIXME: from, name, to does not allow for copying tot he same
       # location/same directory but with a new name
@@ -17,6 +16,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # directory
       # end
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
+      transfer.expects(:percent=).with(100).once
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}"
@@ -67,7 +67,8 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
         err_message = transfer.errors.full_messages[0]
 
-        assert_equal("Copy Permission denied @ rb_dir_s_empty_p - #{dir}/foo/bar", err_message)
+        assert_equal("Copy Permission denied @ dir_initialize - #{dir}/foo/bar", err_message)
+        refute File.exist?(File.join(dir, 'dest/foo/bar')), 'an unreadable directory should not be created'
       ensure
         FileUtils.chmod 0755, File.join(dir, 'foo/bar')
 
@@ -103,64 +104,91 @@ class TransferLocalJobTest < ActiveJob::TestCase
   end
 
 
-  def worst_case_update_calls(src_paths)
-    # This method computes the maximum number of update calls from the copy
-    # in the next test. There is guaranteed to be a call for each file and
-    # empty directory, but depending on filesystem order the number of mkdir_p
-    # calls can vary. This method assumes that every directory with a file child
-    # gets mkdir_p called on the file child before it gets called on a subdirectory,
-    # giving us an upper bound on how many calls we should expect.
-
-    files = 0
-    empty_dirs = 0
-    dirs_with_direct_children = Set.new
-
-    walk = ->(path) {
-      path = Pathname.new(path)
-      if path.file? || path.symlink?
-        files += 1
-      elsif path.directory?
-        if path.children.empty?
-          empty_dirs += 1
-        else
-          dirs_with_direct_children.add(path) if path.children.any? { |c| c.file? || c.symlink? }
-          path.children.each { |c| walk.call(c) }
-        end
-      end
-    }
-
-    src_paths.each { |sp| walk.call(sp) }
-    files + empty_dirs + dirs_with_direct_children.size
-  end
-
-
-  # FIXME: need to change this interface to something simpler
-  # and then use validations to limit the scope
-  test "copy updates progress once per item copied" do
+  test "copy progress ticks once per entry and finishes at 100" do
     Dir.mktmpdir do |dir|
-      src_paths = Rails.root.join('app').children
-      destdir = File.join(dir, 'dest').tap { |path| FileUtils.mkpath(path.to_s) }
-      dest_paths = src_paths.map { |path| "#{dir}/dest/#{File.basename(path)}" }
-      input = src_paths.zip(dest_paths).to_h
+      src = Pathname.new(dir).join('src')
+      src.join('empty').mkpath
+      src.join('nested', 'deep').mkpath
+      src.join('nested', 'deep', 'file').write('file')
+      src.join('one').write('one')
+      src.join('.hidden').write('hidden')
+      dest = Pathname.new(dir).join('new', 'dest')
 
-
-      # this tests the number of calls to update_progress
-      # note: progress.percent is not called because this mocks the method
-      num_paths = src_paths.map do |path|
-        Dir["#{path}/**/*"].length
-      end.sum
-
-      transfer = PosixTransfer.build(action: 'cp', files: input)
-      assert_equal(num_paths, transfer.steps)
-      # The difference here depends on the file traversal order, since some mkdir_p 
-      # calls create more paths than others. See worst_case_update_calls for more info
-      transfer.expects(:percent=).times(num_paths..worst_case_update_calls(src_paths))
-
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      seen = []
+      transfer.define_singleton_method(:percent=) { |pct| seen << pct }
       transfer.perform
 
-      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
-      assert_equal '', `diff -r #{destdir} #{Rails.root.join('app')}`.strip
+      # empty, nested, nested/deep, nested/deep/file, one, .hidden
+      assert transfer.success?, transfer.errors.full_messages.inspect
+      assert_equal 6, transfer.steps
+      assert_equal 6, seen.size
+      assert_equal seen.sort, seen, "progress went backwards: #{seen.inspect}"
+      assert_equal 100, seen.last, seen.inspect
+      assert_equal '', `diff -r #{src} #{dest}`.strip
     end
+  end
+
+  test "copy keeps directory permissions like cp -r" do
+    old_umask = File.umask(0o022)
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('src')
+      src.join('sub', 'empty').mkpath
+      src.join('readonly').mkpath
+      src.join('notes.txt').write('notes')
+      src.join('readonly', 'file').write('file')
+      src.join('notes.txt').chmod(0o644)
+      src.join('sub', 'empty').chmod(0o700)
+      src.join('sub').chmod(0o750)
+      src.join('readonly').chmod(0o555)
+      src.chmod(0o700)
+      dest = Pathname.new(dir).join('dest')
+
+      begin
+        transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+        transfer.perform
+
+        assert transfer.success?, transfer.errors.full_messages.inspect
+        mode = ->(path) { format('%o', path.stat.mode & 0o7777) }
+
+        assert_equal '700', mode.call(dest), 'a private directory became readable by others'
+        assert_equal '750', mode.call(dest.join('sub'))
+        assert_equal '700', mode.call(dest.join('sub', 'empty'))
+        assert_equal '555', mode.call(dest.join('readonly'))
+        assert_equal '644', mode.call(dest.join('notes.txt'))
+        assert_equal 'file', dest.join('readonly', 'file').read
+      ensure
+        [src, dest].each { |d| d.join('readonly').chmod(0o755) if d.join('readonly').exist? }
+      end
+    end
+  ensure
+    File.umask(old_umask)
+  end
+
+  test "copy into a setgid directory keeps the inherited setgid bit" do
+    skip 'setgid inheritance on directories is Linux behavior' unless RUBY_PLATFORM.include?('linux')
+
+    old_umask = File.umask(0o022)
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('src')
+      src.join('inner').mkpath
+      src.join('inner', 'file').write('file')
+      src.join('inner').chmod(0o750)
+      src.chmod(0o700)
+      project = Pathname.new(dir).join('project')
+      project.mkpath
+      project.chmod(0o2775)
+      dest = project.join('copy')
+
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      transfer.perform
+
+      assert transfer.success?, transfer.errors.full_messages.inspect
+      assert_equal '2700', format('%o', dest.stat.mode & 0o7777)
+      assert_equal '2750', format('%o', dest.join('inner').stat.mode & 0o7777)
+    end
+  ensure
+    File.umask(old_umask)
   end
 
   # lots of things are covered in test/system/files_test.rb
