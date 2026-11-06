@@ -35,10 +35,6 @@ module ApplicationHelper
     ENV['OOD_DASHBOARD_SUPPORT_URL']
   end
 
-  def docs_url
-    ENV['OOD_DASHBOARD_DOCS_URL']
-  end
-
   def help_custom_url
     ENV['OOD_DASHBOARD_HELP_CUSTOM_URL']
   end
