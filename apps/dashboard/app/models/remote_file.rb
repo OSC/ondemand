@@ -27,19 +27,23 @@ class RemoteFile
 
   def ls
     files = RcloneUtil.ls(remote, path)
+    editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
     # Need to return same fields as PosixFile.
     # owner, mode and dev are not defined for remote files, leaving them empty
     files.map do |file|
+      is_dir = file['IsDir']
+      size = is_dir ? nil : file['Size']
       {
         id:           file['Path'],
         name:         file['Name'],
-        size:         file['IsDir'] ? nil : file['Size'],
-        directory:    file['IsDir'],
+        size:         size,
+        directory:    is_dir,
         date:         DateTime.parse(file['ModTime']).to_time.to_i,
         owner:        '',
         mode:         '',
         dev:          0,
-        downloadable: true
+        downloadable: Configuration.download_enabled? && (is_dir || size.to_i <= Configuration.download_file_max),
+        editable:     !is_dir && size.to_i <= editor_max
       }
     end.select do |stats|
       valid_encoding = stats[:name].to_s.valid_encoding?
