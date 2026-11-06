@@ -31,6 +31,26 @@ involving the following steps:
     if the reporter wishes. During investigation the team will ask if the reporter
     wishes the original report to be published in full 90 days after publishing.
 
+## Access to Patched Binaries
+
+By default, all compiled binary releases will be made available under the early access
+program to active support subscribers, followed by a 3-5 week delay before being made 
+available to the general public.  Source code for all releases will continue to be 
+publicly available at the time they are committed to a branch, allowing for anyone to 
+compile from source themselves, even during the early access period.
+
+For all releases that contain CVE fixes, the development team will strive to publish manual 
+mitigation details in conjunction with the source code and binary early access release, 
+but might not be able to. Such manual mitigations might require sites to completely 
+disable or restrict key features and functionalities of Open OnDemand and/or related 
+applications and are not guaranteed to be applicable to all versions or deployments of 
+Open OnDemand.
+
+For releases that contain fixes for CVEs rated as high or critical level, the development 
+team will either publish manual mitigation details in conjunction with the source code 
+and compiled binary early access release, or will make available to the public a compiled 
+binary containing at least that CVE fix at the same time as the early access release.
+
 ## Comments on this Policy
 
 If you have suggestions on how this process could be improved please submit 
