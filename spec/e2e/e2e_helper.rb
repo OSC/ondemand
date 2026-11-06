@@ -201,7 +201,7 @@ end
 
 def install_ondemand
   if ['redhat', 'amazon'].include?(host_inventory['platform'])
-    release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
+    release_rpm = "https://yum.osc.edu/ondemand/build/#{build_repo_version}/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
@@ -209,7 +209,7 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
-    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
+    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/build/#{build_repo_version}/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
