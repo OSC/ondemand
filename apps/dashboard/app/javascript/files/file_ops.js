@@ -545,7 +545,7 @@ class FileOps {
   addFavorite(file) {
     const formData = new FormData();
     formData.append('user_customization[add_files_favorite]', [history.state.currentDirectory, file].join('/'));
-    this.showSwalLoading('Renaming favorite path');
+    this.showSwalLoading('Adding favorite path');
     this.sharedFavoriteRequest(formData, 'add');
   }
 
