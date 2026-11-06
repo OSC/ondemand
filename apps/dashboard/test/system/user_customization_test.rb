@@ -55,7 +55,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
         tr.find('button.dropdown-toggle').click
         tr.find('.add-favorite').click
 
-        error_msg = "Error occurred when attempting to add file favorite: Favorite already exists for path #{Rails.root.join('config')}."
+        error_msg = "Error occurred when attempting to add file favorite: Favorite already exists for path \"#{Rails.root.join('config')}\"."
         assert_selector('.alert-danger', text: "#{error_msg} Custom favorites have not been updated")
         assert_selector('#favorites li', count: 5)
         assert_selector('#favorites a', text: Rails.root.join('config'), count: 1)
