@@ -108,6 +108,7 @@ class ConfigurationSingleton
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
       :dashboard_docs_url             => nil,
+      :dashboard_passwd_url           => nil,
       :dashboard_2fa_url              => nil,
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
