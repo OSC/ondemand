@@ -3,6 +3,10 @@
 require 'application_system_test_case'
 
 class UserCustomizationTest < ApplicationSystemTestCase
+  def teardown
+    Singleton.__init__(UserCustomization)
+  end
+
   def stub_system_favorites(dir)
     path1 = File.join(dir, 'fav_dir_1')
     path2 = File.join(dir, 'other_dir')
@@ -71,6 +75,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
       ]}.to_yaml
       File.write(settings_file, existing_yaml)
       with_modified_env({'OOD_USER_SETTINGS_FILE' => settings_file}) do
+        Singleton.__init__(UserCustomization)
         visit files_url('/')
         within(find('#favorites a', text: Rails.root.join('test').to_s).ancestor('div.input-group')) do
           find('a.rename-favorite').click
@@ -99,6 +104,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
       ]}.to_yaml
       File.write(settings_file, existing_yaml)
       with_modified_env({'OOD_USER_SETTINGS_FILE' => settings_file}) do
+        Singleton.__init__(UserCustomization)
         visit files_url('/')
 
         assert_selector("#favorites li", count: 5)
@@ -119,8 +125,6 @@ class UserCustomizationTest < ApplicationSystemTestCase
   test 'reports errors and catches them before saving' do
     Dir.mktmpdir do |dir|
       stub_system_favorites(dir)
-      # Can't find favorite error
-      UserCustomization.any_instance.stubs(:find_favorite).returns(nil)
       settings_file = File.join(dir, '.user_settings.txt')
       existing_yaml = {'files_favorites' => [
         {'title' => '', 'path' => Rails.root.join('config').to_s},
@@ -128,6 +132,9 @@ class UserCustomizationTest < ApplicationSystemTestCase
       ]}.to_yaml
       File.write(settings_file, existing_yaml)
       with_modified_env({'OOD_USER_SETTINGS_FILE' => settings_file}) do
+        Singleton.__init__(UserCustomization)
+        # Can't find favorite error
+        UserCustomization.instance.stubs(:find_favorite).returns(nil)
         visit files_url('/')
         # try rename
         within(find('#favorites a', text: Rails.root.join('test').to_s).ancestor('div.input-group')) do

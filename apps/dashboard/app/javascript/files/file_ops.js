@@ -528,19 +528,25 @@ class FileOps {
             .catch((e) => reject(e))
     });
   }
-   
-  addFavorite(file) {
-    const formData = new FormData();
-    formData.append('user_customization[add_files_favorite]', [history.state.currentDirectory, file].join('/'));
+
+  sharedFavoriteRequest(formData, action) {
     fetch(history.state.currentFavoritesPath, this.jsonRequestOptions('post', formData))
       .then(response => this.dataFromJsonResponse(response))
       .then(function() {
         window.location.reload();
       })
-      .catch(function (e) {
-        OODAlertError(`Error occurred when attempting to add file favorite: ${e.message}`);
+      .catch(e => {
+        this.doneLoading();
+        OODAlertError(`Error occurred when attempting to ${action} file favorite: ${e.message}`);
         console.error(e);
       });
+  }
+   
+  addFavorite(file) {
+    const formData = new FormData();
+    formData.append('user_customization[add_files_favorite]', [history.state.currentDirectory, file].join('/'));
+    this.showSwalLoading('Renaming favorite path');
+    this.sharedFavoriteRequest(formData, 'add');
   }
 
   renameFavoritePrompt(options) {
@@ -566,16 +572,7 @@ class FileOps {
     const formData = new FormData();
     formData.append('user_customization[rename_files_favorite]', JSON.stringify({ path: path, name: name }));
     this.showSwalLoading('Renaming favorite path');
-    fetch(history.state.currentFavoritesPath, this.jsonRequestOptions('post', formData))
-      .then(response => this.dataFromJsonResponse(response))
-      .then(function() {
-        window.location.reload();
-      })
-      .catch(e => {
-        this.doneLoading();
-        OODAlertError(`Error occurred when attempting to rename file favorite: ${e.message}`);
-        console.error(e);
-      });
+    this.sharedFavoriteRequest(formData, 'rename');
   }
   
   delete(files) {

@@ -29,7 +29,7 @@ class SettingsController < ApplicationController
     updated = false
     new_settings.each do |action, args|
       begin
-        @user_customization.send(action, args)
+        UserCustomization.instance.public_send(action, args)
         updated = true
       rescue StandardError => e
         alert = I18n.t('dashboard.favorites_not_updated', error: e)

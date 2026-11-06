@@ -1,14 +1,35 @@
 # frozen_string_literal: true
 
 class UserCustomization
-  include ActiveModel::Model
+  include Singleton
   include UserSettingStore
     
   attr_reader :custom_files_favorites
 
-  # supported actions modify customization in a clear way, and raise if they fail
-  def self.supported_actions
-    [:add_files_favorite, :delete_files_favorite, :rename_files_favorite].freeze
+  class << self
+    # supported actions modify customization in a clear way, and raise if they fail
+    def supported_actions
+      [:add_files_favorite, :delete_files_favorite, :rename_files_favorite].freeze
+    end
+    
+    def favorite_paths
+      OodFilesApp.new.favorite_paths + favorites_from_array(instance.custom_files_favorites)
+    end
+
+    def custom_favorite?(favorite)
+      instance.custom_files_favorites.any? do |custom|
+        favorite.path.to_s == custom[:path] && favorite.title.to_s == custom[:title]
+      end
+    end
+
+    private
+
+    def favorites_from_array(favorites)
+      favorites.map do |favorite|
+        title = favorite[:title].to_s.length > 0 ? favorite[:title] : nil
+        FavoritePath.new(favorite[:path], title: title)
+      end
+    end
   end
 
   def initialize
@@ -30,35 +51,17 @@ class UserCustomization
 
   def rename_files_favorite(json)
     args = JSON.parse(json)
-    find_favorite(args['path']).tap do |favorite|
-      raise "Could not find favorite with path #{args['path'].inspect}" if favorite.nil?
-      
-      favorite[:title] = args['name']
-    end
+    favorite = find_favorite(args['path'])
+    raise "Could not find favorite with path #{args['path'].inspect}" if favorite.nil?
+  
+    favorite[:title] = args['name']
     update_favorites
-  end
-
-  def favorite_paths
-    OodFilesApp.new.favorite_paths + favorites_from_array(custom_files_favorites)
-  end
-
-  def custom_favorite?(favorite)
-    custom_files_favorites.any? do |custom|
-      favorite.path.to_s == custom[:path] && favorite.title.to_s == custom[:title]
-    end
   end
 
   private
 
   def update_favorites
     update_user_settings({ files_favorites: custom_files_favorites })
-  end
-  
-  def favorites_from_array(favorites)
-    favorites.map do |favorite|
-      title = favorite[:title].to_s.length > 0 ? favorite[:title] : nil
-      FavoritePath.new(favorite[:path], title: title)
-    end
   end
 
   def find_favorite(path)

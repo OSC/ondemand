@@ -9,8 +9,7 @@
     <% end %>
   </li>
 
-  <% custom_favorite_count = 0 %>
-  <% @user_customization.favorite_paths.each do |p| %>
+  <% UserCustomization.favorite_paths.each do |p| %>
     <li class="nav-item">
       <div class="input-group flex-nowrap">
         <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light input-group-text pe-0 py-2 d-flex flex-grow-1 text-start" do %>
@@ -19,9 +18,9 @@
           <%= p.title || p.path.to_s  %>
           </span>
         <% end %>
-        <% if @user_customization.custom_favorite?(p) %>
+        <% if UserCustomization.custom_favorite?(p) %>
           <a class="btn bg-secondary text-light align-content-center rename-favorite" 
-             href="#" role="button" data-favorite-path="<%= p.path %>" data-favorite-index="<%= custom_favorite_count %>" 
+             href="#" role="button" data-favorite-path="<%= p.path %>"
              title="<%=t('dashboard.edit_favorite_title', favorite: p.title || p.path) %>">
             <i class="fas fa-pen" aria-hidden="true"></i>
           </a>
@@ -35,7 +34,6 @@
           ) do %>
             <i class="fas fa-trash" aria-hidden="true"></i>
           <% end %>
-          <% custom_favorite_count += 1 %>
         <% end %>
       </div>
     </li>
