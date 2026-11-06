@@ -69,9 +69,9 @@ class UserCustomization
   end
 
   def validate_favorite_path!(path)
-    raise "Favorite already exists for path #{path}" unless find_favorite(path).nil?
+    raise "Favorite already exists for path #{path.inspect}" unless find_favorite(path).nil?
 
-    msg = "Invalid path specified: #{path}"
-    raise msg unless File.absolute_path?(path) && File.directory?(path) && File.readable?(path)
+    msg = "Invalid path specified: #{path.inspect}"
+    raise msg unless File.absolute_path?(path) && File.directory?(path) && File.readable?(path) && AllowlistPolicy.default.permitted?(path)
   end
 end
