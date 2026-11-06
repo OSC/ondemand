@@ -13,6 +13,7 @@ export function setPageLoadState() {
     currentDirectoryUrl: data['currentDirectoryUrl'],
     currentDirectoryUpdatedAt: data['currentDirectoryUpdatedAt'],
     currentFilesPath: data['currentFilesPath'],
+    currentFavoritesPath: data['currentFavoritesPath'],
     currentFilesUploadPath: data['currentFilesUploadPath'],
     currentFilesystem: data['currentFilesystem']
   }, null);
