@@ -9,7 +9,8 @@
     <% end %>
   </li>
 
-  <% UserCustomization.favorite_paths.each do |p| %>
+  <% UserCustomization.favorite_paths_with_origin.each do |entry| %>
+    <% p = entry[:favorite] %>
     <li class="nav-item">
       <div class="input-group flex-nowrap">
         <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light input-group-text pe-0 py-2 d-flex flex-grow-1 text-start" do %>
@@ -18,7 +19,7 @@
           <%= p.title || p.path.to_s  %>
           </span>
         <% end %>
-        <% if UserCustomization.custom_favorite?(p) %>
+        <% if entry[:origin] == :custom %>
           <a class="btn bg-secondary text-light align-content-center rename-favorite" 
              href="#" role="button" data-favorite-path="<%= p.path %>"
              title="<%=t('dashboard.edit_favorite_title', favorite: p.title || p.path) %>">

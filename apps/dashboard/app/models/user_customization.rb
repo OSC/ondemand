@@ -13,13 +13,13 @@ class UserCustomization
     end
     
     def favorite_paths
-      OodFilesApp.new.favorite_paths + favorites_from_array(instance.custom_files_favorites)
+      favorite_paths_with_origin.map {|f| f[:favorite]}
     end
 
-    def custom_favorite?(favorite)
-      instance.custom_files_favorites.any? do |custom|
-        favorite.path.to_s == custom[:path] && favorite.title.to_s == custom[:title]
-      end
+    def favorite_paths_with_origin
+      OodFilesApp.new.favorite_paths.map do |system_favorite| 
+        {favorite: system_favorite, origin: :system}
+      end + favorites_from_array(instance.custom_files_favorites)
     end
 
     private
@@ -27,7 +27,7 @@ class UserCustomization
     def favorites_from_array(favorites)
       favorites.map do |favorite|
         title = favorite[:title].to_s.length > 0 ? favorite[:title] : nil
-        FavoritePath.new(favorite[:path], title: title)
+        {favorite: FavoritePath.new(favorite[:path], title: title), origin: :custom}
       end
     end
   end
