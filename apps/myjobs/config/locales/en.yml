@@ -51,3 +51,31 @@ en:
     options_copy_environment: "Copy environment"
     xdmod_url_warning_message: "This job may not appear in Open XDMoD until 24 hours after the completion of the job."
     xdmod_url_warning_message_seconds_after_job_completion: 86400
+    joyride:
+      close: "Close"
+      next: "Next"
+      workflows_index:
+        steps_heading: "Create and submit a job"
+        create_step_html: "<b>Create</b> a job by copying a template directory or the directory of a previous job."
+        edit_step_html: "<b>Edit</b> the job files in the file manager."
+        submit_step_html: "<b>Submit</b> the job, then monitor its progress on the Job Composer page."
+        create_details: "Create a job from a template, any directory on the file system, or a job you previously created in Job Composer."
+        open_directory: "Select a job, then open its directory in the file manager to edit its files."
+        job_options: "Select a job to choose its cluster and submission script."
+        open_terminal: "Select a job to open a terminal in its directory."
+        submit_job: "Select a job to submit it to the batch queue."
+        stop_job: "Select a queued or running job to stop it."
+        delete_job: "Select a job to remove it from the list."
+        create_template: "To reuse a job's files later, select it in the table and choose Create Template."
+      workflows_new:
+        select_template: "Choose the template to use for the new job."
+        job_name: "Enter a name for the new job."
+        cluster: "Choose the cluster where the job will run."
+        script: "Enter a submission script name if you don't want to use the default."
+        create_job: "Choose Create Job to add the new job to your job list."
+      templates_form:
+        path: "Enter the full system path to the directory you want to use as a template."
+        name: "Enter a name to help you identify this template later."
+        cluster: "Choose the cluster where jobs created from this template will be submitted."
+        notes: "Add notes about this template."
+        save: "Save the template."

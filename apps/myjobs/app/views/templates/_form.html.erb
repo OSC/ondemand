@@ -59,29 +59,29 @@
 
 
 <ol id="joyride" style="display: none;" data-joyride>
-  <li data-id="path_field">
+  <li data-id="path_field" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Enter the full path to the system location to be used as a template.
+      <%= t('jobcomposer.joyride.templates_form.path') %>
     </p>
   </li>
-  <li data-id="name_field">
+  <li data-id="name_field" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Name your template here. This will be used to easily identify the template in the future.
+      <%= t('jobcomposer.joyride.templates_form.name') %>
     </p>
   </li>
-  <li data-id="server_picker">
+  <li data-id="server_picker" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Select the cluster that your job will be submitted to.
+      <%= t('jobcomposer.joyride.templates_form.cluster') %>
     </p>
   </li>
-  <li data-id="notes_field">
+  <li data-id="notes_field" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Add some notes about your template.
+      <%= t('jobcomposer.joyride.templates_form.notes') %>
     </p>
   </li>
-  <li data-id="save_button">
+  <li data-id="save_button" data-button="<%= t('jobcomposer.joyride.next') %>">
     <p>
-      Finally, click here to save your template.
+      <%= t('jobcomposer.joyride.templates_form.save') %>
     </p>
   </li>
 </ol>
