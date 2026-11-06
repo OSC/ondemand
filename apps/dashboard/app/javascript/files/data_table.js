@@ -438,7 +438,7 @@ class DataTable {
       }
 
     // Shared template for actions dropdown items: <li><a class="dropdown-item ...">
-    actionsDropdownItem({ href = '#', classes = [], rowIndex, html }) {
+    actionsDropdownItem(classes, rowIndex, html, href = '#') {
         const item = document.createElement('li');
         const link = document.createElement('a');
         link.href = href;
@@ -491,50 +491,50 @@ class DataTable {
         // Check if this is a file and create View and Edit options
         if (file) {
             if (data.url && downloadEnabled()) {
-                dropdownMenu.appendChild(this.actionsDropdownItem({
-                    href: data.url,
-                    classes: ['view-file'],
+                dropdownMenu.appendChild(this.actionsDropdownItem(
+                    ['view-file'],
                     rowIndex,
-                    html: '<i class="fas fa-eye" aria-hidden="true"></i> View',
-                }));
+                    '<i class="fas fa-eye" aria-hidden="true"></i> View',
+                    data.url,
+                ));
             }
 
             if (data.edit_url) {
-                dropdownMenu.appendChild(this.actionsDropdownItem({
-                    href: data.edit_url,
-                    classes: ['edit-file'],
+                dropdownMenu.appendChild(this.actionsDropdownItem(
+                    ['edit-file'],
                     rowIndex,
-                    html: '<i class="fas fa-edit" aria-hidden="true"></i> Edit',
-                }));
+                    '<i class="fas fa-edit" aria-hidden="true"></i> Edit',
+                    data.edit_url,
+                ));
             }
         }
 
         // Create Rename option
-        dropdownMenu.appendChild(this.actionsDropdownItem({
-            classes: ['rename-file'],
+        dropdownMenu.appendChild(this.actionsDropdownItem(
+            ['rename-file'],
             rowIndex,
-            html: '<i class="fas fa-font" aria-hidden="true"></i> Rename',
-        }));
+            '<i class="fas fa-font" aria-hidden="true"></i> Rename',
+        ));
 
         // Create Download option if it's enabled and the URL exists
         if (downloadEnabled() && data.download_url) {
-            dropdownMenu.appendChild(this.actionsDropdownItem({
-                href: data.download_url,
-                classes: ['download-file'],
+            dropdownMenu.appendChild(this.actionsDropdownItem(
+                ['download-file'],
                 rowIndex,
-                html: '<i class="fas fa-download" aria-hidden="true"></i> Download',
-            }));
+                '<i class="fas fa-download" aria-hidden="true"></i> Download',
+                data.download_url,
+            ));
         }
 
         // Add a divider between options
         dropdownMenu.appendChild(this.actionsDropdownDivider());
 
         // Create the Delete option
-        dropdownMenu.appendChild(this.actionsDropdownItem({
-            classes: ['delete-file', 'text-danger'],
+        dropdownMenu.appendChild(this.actionsDropdownItem(
+            ['delete-file', 'text-danger'],
             rowIndex,
-            html: '<i class="fas fa-trash" aria-hidden="true"></i> Delete',
-        }));
+            '<i class="fas fa-trash" aria-hidden="true"></i> Delete',
+        ));
 
         // Append the dropdown menu to the button group
         btnGroup.appendChild(dropdownMenu);
