@@ -1482,6 +1482,89 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'disable_when_hidden disables select and skips data-set while hidden' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpu_count
+        - gpu_node_type
+        - node_type
+      attributes:
+        gpu_count:
+          widget: number_field
+          value: 0
+        gpu_node_type:
+          widget: select
+          hide_by_default: true
+          disable_when_hidden: true
+          options:
+            - ['Type A', 'type_a', data-set-gpu-count: 2]
+            - ['Type B', 'type_b', data-set-gpu-count: 4]
+        node_type:
+          widget: select
+          options:
+            - ['Standard', 'standard']
+            - ['GPU', 'gpu', data-hide-gpu-node-type: false]
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_selector("##{bc_ele_id('gpu_node_type')}", visible: :hidden)
+      assert find("##{bc_ele_id('gpu_node_type')}", visible: :hidden).disabled?
+      assert_equal '0', find_value('gpu_count')
+
+      select 'GPU', from: bc_ele_id('node_type')
+      assert_selector("##{bc_ele_id('gpu_node_type')}")
+      refute find("##{bc_ele_id('gpu_node_type')}").disabled?
+
+      select 'Type B', from: bc_ele_id('gpu_node_type')
+      assert_equal '4', find_value('gpu_count')
+
+      select 'Standard', from: bc_ele_id('node_type')
+      assert_selector("##{bc_ele_id('gpu_node_type')}", visible: :hidden)
+      assert find("##{bc_ele_id('gpu_node_type')}", visible: :hidden).disabled?
+      assert_equal '4', find_value('gpu_count')
+    end
+  end
+
+  test 'data-set still applies to hidden_field widgets' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - account
+        - classroom
+      attributes:
+        account:
+          widget: hidden_field
+          value: ''
+        classroom:
+          widget: select
+          options:
+            - ['Physics', 'physics', data-set-account: 'phy3005']
+            - ['Astronomy', 'astronomy', data-set-account: 'ast1001']
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      account = find("##{bc_ele_id('account')}", visible: :hidden)
+      assert_equal 'hidden', account[:type]
+      refute account.disabled?
+      assert_equal 'phy3005', find_value('account')
+
+      select 'Astronomy', from: bc_ele_id('classroom')
+      assert_equal 'ast1001', find_value('account')
+      refute find("##{bc_ele_id('account')}", visible: :hidden).disabled?
+    end
+  end
+  
   def data_help_basic_test(form)
     Dir.mktmpdir do |dir|
       make_bc_app(dir, form)

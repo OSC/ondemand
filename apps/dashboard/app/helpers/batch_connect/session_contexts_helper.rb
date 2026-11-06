@@ -48,7 +48,8 @@ module BatchConnect::SessionContextsHelper
       class: wrapper_class(attrib.hide_by_default?, grouped),
       data: {
         widget_type: widget,
-        hide_by_default: attrib.hide_by_default?
+        hide_by_default: attrib.hide_by_default?,
+        disable_when_hidden: (true if attrib.disable_when_hidden?)
       }
     ) do
       rendered
