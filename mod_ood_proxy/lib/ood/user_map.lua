@@ -60,7 +60,7 @@ function map(r, user_map_match, user_map_cmd, remote_user)
 
   sys_user = actual_username(sys_user)
 
-  time_user_map = (r:clock() - now)/1000.0
+  local time_user_map = (r:clock() - now)/1000.0
   r:debug("Mapped '" .. remote_user .. "' => '" .. (sys_user or "") .. "' [" .. time_user_map .. " ms]")
 
   -- failed to map if returns empty string
