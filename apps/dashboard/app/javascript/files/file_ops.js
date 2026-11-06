@@ -571,7 +571,7 @@ class FileOps {
       .then(function() {
         window.location.reload();
       })
-      .catch(function (e) {
+      .catch(e => {
         this.doneLoading();
         OODAlertError(`Error occurred when attempting to rename file favorite: ${e.message}`);
         console.error(e);

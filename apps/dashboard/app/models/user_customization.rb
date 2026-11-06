@@ -23,14 +23,18 @@ class UserCustomization
 
   def delete_files_favorite(path)
     removed = @custom_files_favorites.delete(find_favorite(path))
-    raise 'Failed to delete favorite' if removed.nil?
+    raise "Failed to delete favorite with path #{path.inspect}" if removed.nil?
     
     update_favorites
   end
 
   def rename_files_favorite(json)
     args = JSON.parse(json)
-    find_favorite(args['path'])[:title] = args['name']
+    find_favorite(args['path']).tap do |favorite|
+      raise "Could not find favorite with path #{args['path'].inspect}" if favorite.nil?
+      
+      favorite[:title] = args['name']
+    end
     update_favorites
   end
 
