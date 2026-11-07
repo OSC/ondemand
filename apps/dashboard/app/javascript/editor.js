@@ -31,7 +31,7 @@ function getUserPreference(key) {
 
 jQuery(function () {
 
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-bs-toggle="tooltip"]').tooltip();
 
   const editorElement = document.querySelector('#editor');
   const apiUrl = editorElement.dataset.api;

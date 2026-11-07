@@ -49,10 +49,6 @@
   padding-bottom: 0;
 }
 
-.editor-navbar .control-label {
-  font-size: 0.7em;
-}
-
 // Custom Callouts
 
 /* Base styles (regardless of theme) */
@@ -134,20 +130,6 @@
 .bs-callout-success {
   background-color: #dff0d8;
   border-color: #d6e9c6;
-}
-
-.img-responsive {
-  min-width: 100%;
-}
-
-.panel-clickable:hover {
-  background-color: #c1cdf0;
-  border-color: #6c75f0;
-}
-
-.panel-clickable:active {
-  background-color: #6c75f0;
-  border-color: #6c75f0;
 }
 
 a:-webkit-any-link{

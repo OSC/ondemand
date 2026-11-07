@@ -14,12 +14,12 @@
 <h3>Details</h3>
 
 <div class="row ood-mb-2">
-  <div class="col-md-2 col-sm-2 col-xs-12">
+  <div class="col-md-2 col-sm-2 col-12">
     <p class="text-center">
       <%= app_icon_tag(@product.app) %>
     </p>
   </div><!-- /.col-md-2 -->
-  <div class="col-md-6 col-sm-10 col-xs-12">
+  <div class="col-md-6 col-sm-10 col-12">
     <div class="btn-group-vertical">
       <%- @product.app.links_without_validation.each do |link| -%>
         <%=
@@ -64,14 +64,14 @@
       <%= manifest_markdown(@product.app.manifest.description) %>
     </p>
   </div><!-- /.col-md-6 -->
-  <div class="d-grid gap-2 col-md-2 col-xs-6 mb-auto">
+  <div class="d-grid gap-2 col-md-2 col-6 mb-auto">
     <%= link_to 'Edit Metadata', edit_product_path(@product.name, type: @type), class: 'btn btn-default' %>
     <%= command_btn(title: "Bundle Install", key: "bundle_install", display: "bundle install --path=vendor/bundle") if @product.can_run_bundle_install? %>
     <%= command_btn(title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear") if @type == :usr && @product.passenger_rails_app? %>
     <%= command_btn(title: "Restart App", key: "restart_app", display: "mkdir -p tmp && touch tmp/restart.txt") if @product.passenger_app? %>
     <%= command_btn(title: "Rebuild App", key: "rebuild_passenger_rails_app", display: "RAILS_ENV=production bundle install --path=vendor/bundle && RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt", help: "Performs Bundle Install, Precompile Assets, and Restart App", color: "primary") if @type == :usr && @product.passenger_rails_app? %>
   </div><!-- /.col-md-2 -->
-  <div class="d-grid gap-2 col-md-2 col-xs-6 mb-auto">
+  <div class="d-grid gap-2 col-md-2 col-6 mb-auto">
     <%= render(partial: 'shared/shell_button', locals: { host: ENV['OOD_DEV_SSH_HOST'],path: @product.router.path.realdirpath }) %>
     <% if Configuration.can_access_files? %>
       <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, class: 'btn btn-default' %>
@@ -82,10 +82,10 @@
 
 <% if @product.permissions? %>
 <div class="row">
-  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
+  <div class="offset-md-2 col-md-10">
     <div class="page-header"><h3>Permissions</h3></div>
   </div>
-  <div class="col-md-offset-2 col-md-5 col-sm-6 col-xs-12">
+  <div class="offset-md-2 col-md-5 col-sm-6 col-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -107,7 +107,7 @@
       <%= link_to 'New User Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :user), class: 'btn btn-default' %>
     </p>
   </div>
-  <div class="col-md-5 col-sm-6 col-xs-12">
+  <div class="col-md-5 col-sm-6 col-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -134,7 +134,7 @@
 
 <% if @product.readme.exist? %>
 <div class="row">
-  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
+  <div class="offset-md-2 col-md-10">
     <div class="page-header">
       <h3>
         <%= link_to @product.readme.title, @product.readme.edit_url.to_s, title: "Edit #{@product.readme.title}" %>
@@ -183,7 +183,7 @@ xargs -I % sh -c "echo % &amp;&amp; mv $APP_DIR % &amp;&amp; rm -rf %;"</pre>
   </div>
 </div>
 
-<div class="modal fade" id="product_cli_modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="product_cli_modal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div id="product_cli_modal_header" class="modal-header">

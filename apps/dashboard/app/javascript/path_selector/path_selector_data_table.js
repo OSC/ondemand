@@ -73,7 +73,7 @@ export class PathSelectorTable {
       columns: [
         {
           data: 'type',
-          render: (data, _type, _row, _meta) => data == 'd' ? '<span title="directory" class="fa fa-folder gold"><span class="sr-only">directory</span></span>' : '<span title="file" class="fa fa-file black"><span class="sr-only">file</span></span>'
+          render: (data, _type, _row, _meta) => data == 'd' ? '<span title="directory" class="fa fa-folder gold"><span class="visually-hidden">directory</span></span>' : '<span title="file" class="fa fa-file black"><span class="visually-hidden">file</span></span>'
         },
         {
             name: 'name',
