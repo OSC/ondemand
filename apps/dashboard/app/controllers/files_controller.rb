@@ -197,10 +197,12 @@ class FilesController < ApplicationController
     parse_path(filepath, fs)
     validate_path!
 
+    editor_max = [::Configuration.file_editor_max_size, ::Configuration.download_file_max].min
+
     if !@path.editable?
       redirect_back(fallback_location: root_path, alert: "#{@path} is not an editable file")
-    elsif @path.size > ::Configuration.file_editor_max_size
-      redirect_back(fallback_location: root_path, alert: "#{@path} exceeds editor limit of #{number_to_human_size(::Configuration.file_editor_max_size)}. Please download the file to edit or view it locally.")
+    elsif @path.size > editor_max
+      redirect_back(fallback_location: root_path, alert: "#{@path} exceeds editor limit of #{number_to_human_size(editor_max)}. Please download the file to edit or view it locally.")
     else
       @content = @path.read
       render :edit, status: status, layout: 'editor'
@@ -338,9 +340,7 @@ class FilesController < ApplicationController
 
     response.set_header 'Content-Length', @path.stat.size
 
-    # svgs aren't safe to view until we update our CSP
-    if download? || type.to_s == 'image/svg+xml'
-      type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
+    if download?
       send_file @path, type: type
     else
       send_file @path, disposition: 'inline', type: Files.mime_type_for_preview(type)
@@ -362,15 +362,11 @@ class FilesController < ApplicationController
       logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
     end
 
-    # svgs aren't safe to view until we update our CSP
-    download = download? || type.to_s == 'image/svg+xml'
-    type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
-
     response.set_header('X-Accel-Buffering', 'no')
     response.sending_file = true
     response.set_header('Last-Modified', Time.now.httpdate)
 
-    if download
+    if download?
       response.set_header('Content-Type', type) if type.present?
       response.set_header('Content-Disposition', 'attachment')
     else

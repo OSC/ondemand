@@ -35,7 +35,8 @@ class SavedSettingsWidgetTest < ActionDispatch::IntegrationTest
       saved_setting_link = css_select('div.settings-widget div.h5.card-header a.saved-settings-show')
       assert_equal 1, saved_setting_link.size
       assert_equal 'widget_name', saved_setting_link.first.text.strip
-      assert_equal batch_connect_setting_path(token: 'sys/bc_paraview', id: 'widget_name'), saved_setting_link.first['href']
+      assert_equal batch_connect_setting_path(token: 'sys/bc_paraview', id: 'widget_name'),
+                   saved_setting_link.first['href']
 
       assert_equal 'Paraview', css_select('div.settings-widget span.list-group-item.header').text.strip
     end

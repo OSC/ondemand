@@ -1,0 +1,10 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+port: 9999
+servername: specific.port.edu
+listen_addr_port: 9999
+rnode_uri: '/rnode'
+node_uri: '/node'
