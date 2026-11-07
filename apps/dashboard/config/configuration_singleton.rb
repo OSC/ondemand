@@ -108,10 +108,14 @@ class ConfigurationSingleton
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
       :appverse_url                   => nil,
+      :dashboard_passwd_url           => nil,
+      :dashboard_2fa_url              => nil,
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
-      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events'
+      :nsf_access_current_outages_url => 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/current_outages/',
+      :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events',
+      :nsf_access_future_outages_url  => 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/future_outages/'
     }.freeze
   end
 
@@ -401,7 +405,8 @@ class ConfigurationSingleton
   end
 
   def allowlist_paths
-    (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
+    paths = ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || config.fetch(:allowlist_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(':') }.map { |s| Pathname.new(s) }
   end
 
   # How many days before a Session record is considered old and ready to delete
@@ -451,6 +456,8 @@ class ConfigurationSingleton
     sources << xdmod_host if xdmod_integration_enabled?
     sources << nsf_access_events_host if nsf_access_events_widget_enabled? && nsf_access_events_host.present?
     sources << nsf_access_announcements_host if nsf_access_announcements_widget_enabled? && nsf_access_announcements_host.present?
+    sources << nsf_access_current_outages_host if nsf_access_outages_widget_enabled? && nsf_access_current_outages_host.present?
+    sources << nsf_access_future_outages_host if nsf_access_outages_widget_enabled? && nsf_access_future_outages_host.present?
 
     sources
   end
@@ -463,6 +470,12 @@ class ConfigurationSingleton
   # Whether the nsf_access_announcements widget is configured in any dashboard layout.
   def nsf_access_announcements_widget_enabled?
     nsf_access_widget_enabled?('nsf_access_announcements', nsf_access_announcements_url)
+  end
+
+  # Whether the nsf_access_outages widget is configured in any dashboard layout.
+  def nsf_access_outages_widget_enabled?
+    url = nsf_access_current_outages_url.presence || nsf_access_future_outages_url
+    nsf_access_widget_enabled?('nsf_access_outages', url)
   end
 
   def rails_env_production?
@@ -501,6 +514,14 @@ class ConfigurationSingleton
     host_from_url(nsf_access_announcements_url)
   end
 
+  def nsf_access_current_outages_host
+    host_from_url(nsf_access_current_outages_url)
+  end
+
+  def nsf_access_future_outages_host
+    host_from_url(nsf_access_future_outages_url)
+  end
+  
   def host_from_url(url)
     URI.parse(url).host
   rescue URI::InvalidURIError

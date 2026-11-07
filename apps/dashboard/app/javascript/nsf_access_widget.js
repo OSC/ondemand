@@ -1,9 +1,12 @@
-export function fetchNsfAccessJson(url) {
-  return fetch(url, {
-            headers: {
-              'Cache-Control': 'max-age=604800'
-            }
-          })
+export function fetchNsfAccessJson(url, { cacheControl = true } = {}) {
+  const fetchOptions = {};
+  if (cacheControl) {
+    fetchOptions.headers = {
+      'Cache-Control': 'max-age=604800'
+    };
+  }
+
+  return fetch(url, fetchOptions)
             .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response)))
             .then(response => { return response.json() })
             .catch((err) => {
