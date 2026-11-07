@@ -73,6 +73,36 @@
     color: var(--bs-secondary-color) !important;
   }
 
+  .text-primary {
+    color: var(--bs-primary-text-emphasis) !important;
+  }
+
+  .text-secondary {
+    color: var(--bs-secondary-text-emphasis) !important;
+  }
+
+  .text-success {
+    color: var(--bs-success-text-emphasis) !important;
+  }
+
+  .text-info {
+    color: var(--bs-info-text-emphasis) !important;
+  }
+
+  .text-warning {
+    color: var(--bs-warning-text-emphasis) !important;
+  }
+
+  .text-danger {
+    color: var(--bs-danger-text-emphasis) !important;
+  }
+
+  .uppy-Dashboard-note,
+  a.uppy-Dashboard-poweredBy,
+  .uppy-Dashboard-Item-status {
+    color: #c8c8c8;
+  }
+
   // Pinned and recently used app tiles (pinned_apps.scss sets .launcher-click { color: black }).
   .app-launcher .launcher-click {
     color: var(--bs-body-color);
