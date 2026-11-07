@@ -1,41 +1,30 @@
 // High-contrast "safe viewing" theme for users who need improved contrast.
 // Activated via data-bs-theme="dark" on <html> and the .ood-safe-viewing class.
-$ood-safe-viewing-body-bg: #1a1a1a;
-// OpenOnDemand_*_dark.svg st1 fill must match $ood-safe-viewing-body-bg (used as external <img>).
+// Core dark colors ($body-bg-dark, etc.) are set in _variables.scss so Bootstrap
+// and site admins can override them before Bootstrap is imported.
 
 [data-bs-theme="dark"] {
-  --bs-body-bg: #{$ood-safe-viewing-body-bg};
-  --bs-body-bg-rgb: 26, 26, 26;
-  --bs-body-color: #e8e8e8;
-  --bs-body-color-rgb: 232, 232, 232;
   --bs-emphasis-color: #fff;
   --bs-secondary-color: #c8c8c8;
   --bs-tertiary-color: #a8a8a8;
-  --bs-border-color: #555;
-  --bs-link-color: #7eb8f0;
-  --bs-link-hover-color: #a8d4ff;
-  --bs-card-bg: #2a2a2a;
-  --bs-card-border-color: #555;
-  --bs-table-bg: #2a2a2a;
-  --bs-table-color: #e8e8e8;
+  --bs-card-bg: #{$body-secondary-bg-dark};
+  --bs-card-border-color: #{$border-color-dark};
+  --bs-table-bg: #{$body-secondary-bg-dark};
+  --bs-table-color: #{$body-color-dark};
   --bs-table-striped-bg: #333;
   --bs-table-hover-bg: #3a3a3a;
-  --bs-dropdown-bg: #2a2a2a;
-  --bs-dropdown-link-color: #e8e8e8;
-  --bs-dropdown-link-hover-bg: #3a3a3a;
-  --bs-modal-bg: #2a2a2a;
-  --bs-popover-bg: #2a2a2a;
-  --bs-list-group-bg: #2a2a2a;
-  --bs-list-group-color: #e8e8e8;
+  --bs-dropdown-bg: #{$body-secondary-bg-dark};
+  --bs-dropdown-link-color: #{$body-color-dark};
+  --bs-dropdown-link-hover-bg: #{$body-tertiary-bg-dark};
+  --bs-modal-bg: #{$body-secondary-bg-dark};
+  --bs-popover-bg: #{$body-secondary-bg-dark};
+  --bs-list-group-bg: #{$body-secondary-bg-dark};
+  --bs-list-group-color: #{$body-color-dark};
   --bs-form-control-bg: var(--bs-body-bg);
-  --bs-form-control-color: #e8e8e8;
+  --bs-form-control-color: #{$body-color-dark};
   --bs-form-select-bg: var(--bs-body-bg);
-  --bs-form-select-color: #e8e8e8;
+  --bs-form-select-color: #{$body-color-dark};
   --bs-form-check-bg: var(--bs-body-bg);
-  --bs-secondary-bg: #2a2a2a;
-  --bs-secondary-bg-rgb: 42, 42, 42;
-  --bs-tertiary-bg: #383838;
-  --bs-tertiary-bg-rgb: 56, 56, 56;
   --bs-breadcrumb-bg: var(--bs-secondary-bg);
   --bs-light: #333;
   --bs-light-rgb: 51, 51, 51;
@@ -167,9 +156,34 @@ $ood-safe-viewing-body-bg: #1a1a1a;
       --bs-alert-link-color: #a8d4ff;
     }
 
-    .btn-close {
-      --bs-btn-close-filter: invert(1) grayscale(100%) brightness(200%);
-    }
+  }
+
+  // Close buttons (alerts, modals, module browser, etc.) need inverted glyphs on dark surfaces.
+  .btn-close {
+    --bs-btn-close-filter: invert(1) grayscale(100%) brightness(200%);
+  }
+
+  // Bootstrap .table-light stays near-white; remap for dark theme (e.g. module browser).
+  .table-light {
+    --bs-table-color: var(--bs-body-color);
+    --bs-table-bg: var(--bs-secondary-bg);
+    --bs-table-border-color: var(--bs-border-color);
+    --bs-table-striped-bg: var(--bs-tertiary-bg);
+    --bs-table-striped-color: var(--bs-body-color);
+    --bs-table-active-bg: var(--bs-tertiary-bg);
+    --bs-table-active-color: var(--bs-body-color);
+    --bs-table-hover-bg: var(--bs-tertiary-bg);
+    --bs-table-hover-color: var(--bs-body-color);
+    color: var(--bs-table-color);
+    border-color: var(--bs-table-border-color);
+  }
+
+  // Module browser: hardcoded light-mode button color on remapped .bg-light.
+  .bg-light .btn-outline-secondary {
+    --bs-btn-color: var(--bs-body-color);
+    --bs-btn-border-color: var(--bs-border-color);
+    --bs-btn-hover-bg: var(--bs-tertiary-bg);
+    --bs-btn-hover-color: var(--bs-emphasis-color);
   }
 
   // Checkboxes: only unchecked background matches the dark page (checked uses default styling).

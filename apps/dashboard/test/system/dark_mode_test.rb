@@ -9,6 +9,8 @@ class DarkModeTest < ApplicationSystemTestCase
     stub_user
     stub_clusters
     stub_sinfo
+    # Keep these tests independent of site default / CI dark-mode runs.
+    Configuration.stubs(:default_to_dark_mode?).returns(false)
   end
 
   test 'safe viewing toggle switches theme and persists in user settings' do
@@ -53,11 +55,17 @@ class DarkModeTest < ApplicationSystemTestCase
     end
   end
 
-  test 'safe viewing toggle is hidden when disabled in configuration' do
-    Configuration.stubs(:dark_mode_enabled?).returns(false)
+  test 'defaults to dark mode when default_to_dark_mode is enabled' do
+    Configuration.stubs(:default_to_dark_mode?).returns(true)
 
-    visit root_path
+    Dir.mktmpdir do |dir|
+      Configuration.stubs(:user_settings_file).returns("#{dir}/settings.yml")
 
-    assert_no_selector '#ood_dark_mode_toggle'
+      visit root_path
+
+      assert_equal 'true', find('#ood_dark_mode_toggle')['aria-pressed']
+      assert_equal 'dark', page.evaluate_script("document.documentElement.getAttribute('data-bs-theme')")
+      assert_selector 'html.ood-safe-viewing[data-bs-theme="dark"]', visible: :all
+    end
   end
 end

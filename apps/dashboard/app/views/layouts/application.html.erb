@@ -8,7 +8,7 @@
     data-bs-theme="dark" class="ood-safe-viewing"
   <%- end -%>>
 <head>
-  <%= render partial: 'layouts/dark_mode_init' if Configuration.dark_mode_enabled? %>
+  <%= render partial: 'layouts/dark_mode_init' %>
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{@user_configuration.dashboard_title}" %></title>
   <%= favicon %>
 
