@@ -108,6 +108,7 @@ class ConfigurationSingleton
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
       :locales_root                   => '/etc/ood/config/locales',
+      :dashboard_passwd_url           => nil,
       :dashboard_2fa_url              => nil,
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
@@ -400,7 +401,8 @@ class ConfigurationSingleton
   end
 
   def allowlist_paths
-    (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
+    paths = ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || config.fetch(:allowlist_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(':') }.map { |s| Pathname.new(s) }
   end
 
   # How many days before a Session record is considered old and ready to delete
