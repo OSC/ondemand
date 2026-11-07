@@ -1,6 +1,10 @@
 require 'application_system_test_case'
 
 class AccessibilityTest < ApplicationSystemTestCase
+  def setup
+    Configuration.stubs(:default_to_dark_mode?).returns(false)
+  end
+
   test 'contrast watcher detects violations on page load' do
     with_modified_env(OOD_BRAND_BG_COLOR: 'cadetblue') do 
       error = assert_raises(Selenium::WebDriver::Error::JavascriptError) do
