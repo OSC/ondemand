@@ -45,7 +45,7 @@ div.datatables-status, div.transfers-status {
 
 // Favorites sidebar (home directory, etc.): keep link blue like light mode.
 [data-bs-theme="dark"] #favorites .nav-link {
-  color: rgb(51, 122, 183);
+  color: var(--bs-link-color);
 
   &:hover,
   &:focus {
@@ -54,7 +54,7 @@ div.datatables-status, div.transfers-status {
 
   &.active {
     color: #fff;
-    background-color: rgb(51, 122, 183);
+    background-color: $ood-blue;
   }
 }
 
