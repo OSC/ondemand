@@ -49,7 +49,6 @@ en-CA:
     balance_warning_prefix_html: "%{units_balance} warning for"
     batch_connect_apps_menu_title: Interactive Apps
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
-    batch_connect_form_choose_template_name: Choose a template name
     batch_connect_form_data_root: data root directory
     batch_connect_form_dynamic_disclaimer: The following form may change dynamically as options are selected. All changes will be announced and are reversible.
     batch_connect_form_invalid: The form.yml has missing options in the %{id} form field.
@@ -60,15 +59,13 @@ en-CA:
     batch_connect_form_resolution_height: Resolution height (pixels)
     batch_connect_form_resolution_width: Resolution width (pixels)
     batch_connect_form_save: Save settings
-    batch_connect_form_save_new_template: save new settings
     batch_connect_form_save_submit: Save settings and close
     batch_connect_form_select_template: select saved settings
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
-    batch_connect_form_template_name_label: setting name
-    batch_connect_form_type_new_name: App settings name
-    batch_connect_form_type_new_name_error: Please type a valid name to continue
+    batch_connect_form_template_name_help: Type a new name, or pick an existing one to overwrite it.
+    batch_connect_form_template_name_label: Settings name
     batch_connect_invalid_form_array: "'form' element in form.yml is not an Array"
     batch_connect_invalid_form_attributes: "'attributes' element in form.yml is not a Map"
     batch_connect_missing_cluster: |
