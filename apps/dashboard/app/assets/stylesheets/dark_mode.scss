@@ -16,8 +16,12 @@
   --bs-dropdown-bg: #{$body-secondary-bg-dark};
   --bs-dropdown-link-color: #{$body-color-dark};
   --bs-dropdown-link-hover-bg: #{$body-tertiary-bg-dark};
+  --bs-dropdown-header-color: #c8c8c8;
   --bs-modal-bg: #{$body-secondary-bg-dark};
   --bs-popover-bg: #{$body-secondary-bg-dark};
+  --bs-popover-header-color: #{$body-color-dark};
+  --bs-popover-body-color: #{$body-color-dark};
+  --bs-popover-header-bg: #{$body-secondary-bg-dark};
   --bs-list-group-bg: #{$body-secondary-bg-dark};
   --bs-list-group-color: #{$body-color-dark};
   --bs-form-control-bg: var(--bs-body-bg);
@@ -28,7 +32,6 @@
   --bs-breadcrumb-bg: var(--bs-secondary-bg);
   --bs-light: #333;
   --bs-light-rgb: 51, 51, 51;
-  // Mirror pinned_apps tile shadow (2px 2px 5px black @ 50%) with a soft gray glow on dark bg.
   --ood-elevation-shadow: 2px 2px 5px rgba(180, 180, 180, 0.45);
 
   color-scheme: dark;
@@ -103,6 +106,40 @@
     color: #c8c8c8;
   }
 
+  // Component-scoped Bootstrap vars must be re-set on the components themselves.
+  .dropdown-menu {
+    --bs-dropdown-header-color: #c8c8c8;
+  }
+
+  .popover {
+    --bs-popover-bg: #{$body-secondary-bg-dark};
+    --bs-popover-header-bg: #{$body-tertiary-bg-dark};
+    --bs-popover-header-color: #{$body-color-dark};
+    --bs-popover-body-color: #{$body-color-dark};
+    color: #{$body-color-dark};
+
+    .popover-header,
+    .popover-body {
+      color: #{$body-color-dark};
+    }
+
+    // Markdown titles/body inside interactive-app popovers.
+    .ood-appkit.markdown,
+    .ood-appkit.markdown h1,
+    .ood-appkit.markdown h2,
+    .ood-appkit.markdown h3,
+    .ood-appkit.markdown h4,
+    .ood-appkit.markdown p,
+    .ood-appkit.markdown li,
+    .ood-appkit.markdown code {
+      color: #{$body-color-dark};
+    }
+
+    .ood-appkit.markdown a {
+      color: var(--bs-link-color);
+    }
+  }
+
   // Pinned and recently used app tiles (pinned_apps.scss sets .launcher-click { color: black }).
   .app-launcher .launcher-click {
     color: var(--bs-body-color);
@@ -114,6 +151,17 @@
 
     p.app-title {
       color: inherit;
+    }
+  }
+
+  // apps.scss hardcodes color: black on product/app cards.
+  .app-card {
+    color: var(--bs-body-color);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-link-color);
+      border-color: var(--bs-link-color);
     }
   }
 
