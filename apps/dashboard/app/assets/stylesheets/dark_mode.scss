@@ -106,6 +106,15 @@
     color: #c8c8c8;
   }
 
+  // Uppy dark theme uses #1c8b37 (~4.38:1 with white); match light-mode AA green.
+  .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload,
+  .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload.uppy-StatusBar-actionBtn--disabled:hover,
+  [data-uppy-theme="dark"] .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload,
+  [data-uppy-theme="dark"] .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload:hover,
+  [data-uppy-theme="dark"] .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload.uppy-StatusBar-actionBtn--disabled:hover {
+    background-color: rgb(66, 130, 66);
+  }
+
   // Component-scoped Bootstrap vars must be re-set on the components themselves.
   .dropdown-menu {
     --bs-dropdown-header-color: #c8c8c8;
@@ -123,20 +132,17 @@
       color: #{$body-color-dark};
     }
 
-    // Markdown titles/body inside interactive-app popovers.
-    .ood-appkit.markdown,
-    .ood-appkit.markdown h1,
-    .ood-appkit.markdown h2,
-    .ood-appkit.markdown h3,
-    .ood-appkit.markdown h4,
-    .ood-appkit.markdown p,
-    .ood-appkit.markdown li,
-    .ood-appkit.markdown code {
+    // Markdown body: inherit light text (strong/em/code stay black otherwise).
+    .ood-appkit.markdown {
       color: #{$body-color-dark};
-    }
 
-    .ood-appkit.markdown a {
-      color: var(--bs-link-color);
+      * {
+        color: inherit;
+      }
+
+      a {
+        color: var(--bs-link-color);
+      }
     }
   }
 
@@ -154,7 +160,6 @@
     }
   }
 
-  // apps.scss hardcodes color: black on product/app cards.
   .app-card {
     color: var(--bs-body-color);
 
