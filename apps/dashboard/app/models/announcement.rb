@@ -45,23 +45,22 @@ class Announcement
   # Whether this announcement is a global announcement or an app specific announcement
   # @return [Boolean] whether it is global
   def global?
-    opts.fetch(:global, true)
+    token.empty?
   end
 
   # The token of the app this announcement targets, e.g. "sys/bc_desktop"
-  # @return [String, nil] the app token if it is set
+  # @return [String] the app token if it is set
   def token
-    token = opts.fetch(:token, nil)
-    token.blank? ? nil : token.to_s
+    opts.fetch(:token, '').to_s.strip
   end
 
   # Whether this announcement should be shown for the given request
   # @param request_token [String, nil] the app token from the current route,
   #   e.g. "sys/bc_desktop/owens", or nil on non-app pages
-  # @return [Boolean] whether the announcement applies  
+  # @return [Boolean] whether the announcement applies
   def applies_to?(request_token)
     return true if global?
-    return false if !token || !request_token
+    return false if !request_token
     return true if request_token == token
     return true if request_token.start_with?("#{token}/")
     false
@@ -80,7 +79,6 @@ class Announcement
     return false if parse_error?
     return false unless message
     return false if dismissible? && !id
-    return false if !global? && !token
     true
   end
 
