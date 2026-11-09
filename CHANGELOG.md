@@ -16,6 +16,29 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Stabilize the transfer job enqueue test (#6115)\
+fix shellcheck (#6114)\
+Refactor dashboard_passwd_url into string_configs for ondemand.d support (#6052)\
+Wait on page state instead of sleeping in the shared project import test (#6102)\
+Refactor allowlist_paths to support ondemand.d configuration (#5962)\
+Remove duplicate Dashboard lib autoload registration (#6101)\
+Bump glob from 13.0.6 to 14.0.2 in /apps/shell (#6084)\
+Bump minimatch from 10.2.6 to 11.0.1 in /apps/shell (#6083)\
+Update CITATION.cff  (#6057)\
+Remove outdated fix (#6061)\
+Update copyright year in LICENSE file (#6091)\
+lint a random file (#6062)\
+Refactor plain cast (#6087)\
+Bump ood_core from 0.31.1 to 0.31.2 in apps/myjobs (#6089)\
+replace deprecated `bundle install --without` in unit tests (#6068)\
+Ensure e2e is logging into staging repos (#6090)\
+Update to latest beaker-docker (#6075)\
+Bump ood_core from 0.31.1 to 0.31.2 in apps/dashboard (#6082)\
+Show server error_message for failed file uploads (#6059)\
+Make the announcement banner more space efficient (#6019)\
+Refactor dashboard_2fa_url into string_configs for ondemand.d support (#6037)\
+Update Changelog (#6069)\
+update localizations (#6070)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
