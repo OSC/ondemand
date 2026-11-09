@@ -17,7 +17,8 @@ on:
   pull_request_target:
 
 permissions:
-  pull-requests: read
+  pull-requests: write
+  contents: read
 
 jobs:
   triage:
