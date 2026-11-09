@@ -61,9 +61,8 @@ class Announcement
   def applies_to?(request_token)
     return true if global?
     return false if request_token.blank?
-    return true if request_token == token
-    return true if request_token.start_with?("#{token}/")
-    false
+
+    TokenMatcher.new(token).matches_app?(OpenStruct.new(token: request_token))
   end
 
   # The announcement's button text displayed for required or dismissible announcements
