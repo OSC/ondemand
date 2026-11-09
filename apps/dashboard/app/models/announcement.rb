@@ -60,7 +60,7 @@ class Announcement
   # @return [Boolean] whether the announcement applies
   def applies_to?(request_token)
     return true if global?
-    return false if !request_token
+    return false if request_token.blank?
     return true if request_token == token
     return true if request_token.start_with?("#{token}/")
     false
