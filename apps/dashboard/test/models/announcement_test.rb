@@ -171,6 +171,19 @@ class AnnouncementTest < ActiveSupport::TestCase
     assert_equal(false, target.applies_to?(''))
   end
 
+  test 'applies_to? supports glob tokens' do
+    target = Announcement.new({ msg: 'test', token: 'sys/*' })
+
+    assert_equal(true, target.applies_to?('sys/bc_desktop'))
+    assert_equal(false, target.applies_to?('dev/my_app'))
+  end
+
+  test 'applies_to? is true for a sub-app announcement on its own page' do
+    target = Announcement.new({ msg: 'test', token: 'sys/bc_desktop/owens' })
+
+    assert_equal(true, target.applies_to?('sys/bc_desktop/owens'))
+  end
+
   test 'applies_to? does not match a sub-app announcement on its base app' do
     target = Announcement.new({ msg: 'test', token: 'sys/bc_desktop/owens' })
 
