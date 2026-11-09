@@ -107,6 +107,7 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :dashboard_help_custom_url      => nil,
       :dashboard_passwd_url           => nil,
       :dashboard_2fa_url              => nil,
       :native_vnc_login_host          => nil,
