@@ -20,6 +20,6 @@ end
 
 group :e2e do
   gem 'beaker', '~> 7.4.0'
-  gem 'beaker-docker', '~> 3.1.0'
+  gem 'beaker-docker', '~> 3.2.0'
   gem 'beaker-rspec'
 end
