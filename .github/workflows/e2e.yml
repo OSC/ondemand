@@ -3,7 +3,7 @@ name: E2E
 on:
   push:
     branches: [master]
-  pull_request:
+  pull_request_target:
   schedule:
     - cron: '0 2 * * *'
 
@@ -16,7 +16,7 @@ env:
 
 jobs:
   authorize:
-    environment: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
+    environment: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
     runs-on: ubuntu-latest
     steps:
       - name: Code Review Required
@@ -69,7 +69,10 @@ jobs:
       HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
