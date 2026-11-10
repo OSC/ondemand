@@ -241,6 +241,42 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "dashboard_help_custom_url is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_HELP_CUSTOM_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_help_custom_url
+    end
+  end
+
+  test "can configure dashboard_help_custom_url through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_HELP_CUSTOM_URL: 'https://help.example.com')) do
+      assert_equal 'https://help.example.com', ConfigurationSingleton.new.dashboard_help_custom_url
+    end
+  end
+
+  test "can configure dashboard_help_custom_url through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_help_custom_url' => 'https://help.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://help.from.file', ConfigurationSingleton.new.dashboard_help_custom_url
+      end
+    end
+  end
+
+  test "dashboard_help_custom_url environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_help_custom_url' => 'https://help.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_HELP_CUSTOM_URL: 'https://help.from.env') do
+        assert_equal 'https://help.from.env', ConfigurationSingleton.new.dashboard_help_custom_url
+      end
+    end
+  end
+  
   test "dashboard_passwd_url is nil by default" do
     with_modified_env(no_config_env.merge(OOD_DASHBOARD_PASSWD_URL: nil)) do
       assert_nil ConfigurationSingleton.new.dashboard_passwd_url
