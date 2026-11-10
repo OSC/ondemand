@@ -7,7 +7,7 @@ module ActiveJobs
     attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
     # additional attrs to request when calling info_all
-    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time, :dispatch_time, :submission_time]
+    JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time, :dispatch_time]
     
     def initialize(filter_id:, cluster_id:, controller:, params:, response:)
       @filter_id = filter_id
@@ -96,13 +96,15 @@ module ActiveJobs
     private
 
     def grafana_link_for(cluster, j)
+      return '' if j.dispatch_time.to_i.zero?
+      
       build_grafana_link(
         cluster.id.to_s,
-        (j.dispatch_time || j.submission_time)&.to_i,
+        j.dispatch_time.to_i,
         nil,
-        j.allocated_nodes.first&.name.to_s,
+        nil,
         j.id.to_s
-      ) || ""
+      ) || ''
     end
 
     # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefully
