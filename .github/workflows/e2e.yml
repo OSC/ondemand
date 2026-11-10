@@ -3,6 +3,7 @@ name: E2E
 on:
   push:
     branches: [master]
+  pull_request_target:
   schedule:
     - cron: '0 2 * * *'
 
