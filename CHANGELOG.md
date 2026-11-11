@@ -32,7 +32,6 @@ Changes are grouped by type:
 - Duplicate uploads in the Files app will now warn users in [5603](https://github.com/OSC/ondemand/pull/5603).
 - Persian Localization (fa-IR) is now available in [5669](https://github.com/OSC/ondemand/pull/5669).
 - Batch connect polling stops when the tab is hidden in [5637](https://github.com/OSC/ondemand/pull/5637).
-- bc_ssh_to_compute_node now responds to a YAML configuration in [5687](https://github.com/OSC/ondemand/pull/5687).
 - nginx_stage now has a configurable missing_user_message when users cannot be found in [5723](https://github.com/OSC/ondemand/pull/5723).
 - data-help directives now respond to data-help-for-<item> in [5743](https://github.com/OSC/ondemand/pull/5743).
 - nav_bar items can now disable sorting in [5726](https://github.com/OSC/ondemand/pull/5726).
@@ -45,6 +44,7 @@ Changes are grouped by type:
 - The timezone now shows in Active jobs extended details in [5838](https://github.com/OSC/ondemand/pull/5838).
 - Job Composer now shows a deprecation warning in [5858](https://github.com/OSC/ondemand/pull/5858).
 - Several environment variables now have ondemand.d support.
+  - OOD_BC_SSH_TO_COMPUTE_NODE in [5687](https://github.com/OSC/ondemand/pull/5687).
   - OOD_APP_CONFIG_ROOT in [5937](https://github.com/OSC/ondemand/pull/5937).
   - OOD_BALANCE_PATH and OOD_BALANCE_THRESHOLD in [5941](https://github.com/OSC/ondemand/pull/5941).
   - OOD_BC_CARD_TIME in [5969](https://github.com/OSC/ondemand/pull/5969).
@@ -53,6 +53,9 @@ Changes are grouped by type:
   - OOD_SHARED_PROJECT_PATH [5977](https://github.com/OSC/ondemand/pull/5948).
   - OOD_QUOTA_PATH and OOD_QUOTA_THRESHOLD in [5940](https://github.com/OSC/ondemand/pull/5940).
   - OOD_NATIVE_VNC_LOGIN_HOST in [5961](https://github.com/OSC/ondemand/pull/5961).
+  - OOD_DASHBOARD_PASSWD_URL in [6052](https://github.com/OSC/ondemand/pull/6052).
+  - OOD_ALLOWLIST_PATH in [5962](https://github.com/OSC/ondemand/pull/5962).
+  - OOD_DASHBOARD_2FA_URL in [6037](https://github.com/OSC/ondemand/pull/6037).
 - NSF Access outages widget in [5864](https://github.com/OSC/ondemand/pull/5864).
 - NSF announcements widget in [5875](https://github.com/OSC/ondemand/pull/5875).
 - Proxy locations now set a CSP header in [5832](https://github.com/OSC/ondemand/pull/5832).
@@ -99,6 +102,7 @@ Changes are grouped by type:
 - The file browser correctly shows errors in [6004](https://github.com/OSC/ondemand/pull/6004).
 - The select all checkbox in the file browser now responds to the enter key in [5979](https://github.com/OSC/ondemand/pull/5979).
 - Long favorite paths in sidebar and path selector do not overflow in [5986](https://github.com/OSC/ondemand/pull/5986).
+- Announcement banners use space efficiently in [6019](https://github.com/OSC/ondemand/pull/6019).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
@@ -111,6 +115,8 @@ Changes are grouped by type:
 - `file_download_max` has been corrected to `download_file_max` in [5810](https://github.com/OSC/ondemand/pull/5810).
 - Batch connect app versions now show at the bottom of the page in [5876](https://github.com/OSC/ondemand/pull/5876).
 - Workflows are now disabled for schedulers that don't support them in [5435](https://github.com/OSC/ondemand/pull/5435).
+- File uploads now show error messages in [6059](https://github.com/OSC/ondemand/pull/6059).
+- e2e tests now login to the staging repos in [6090](https://github.com/OSC/ondemand/pull/6090).
 
 ## [4.2.5] - 2026-09-24
 

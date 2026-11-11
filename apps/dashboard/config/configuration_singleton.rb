@@ -88,7 +88,7 @@ class ConfigurationSingleton
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
       :open_apps_in_new_window      => true,
-      :bc_ssh_to_compute_node => true,
+      :bc_ssh_to_compute_node       => true,
     }.freeze
   end
 
@@ -108,6 +108,7 @@ class ConfigurationSingleton
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
       :portal                         => 'ondemand',
+      :dashboard_docs_url             => nil,
       :dashboard_help_custom_url      => nil,
       :dashboard_passwd_url           => nil,
       :dashboard_2fa_url              => nil,
