@@ -262,4 +262,23 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test 'running vnc session shows internationalized novnc compression and quality labels' do
+    Dir.mktmpdir do |dir|
+      create_vnc_running_session(dir)
+      stub_scheduler(:running)
+
+      visit(batch_connect_sessions_path)
+
+      card = find("#id_#{get_test_bc_id}")
+      assert_not_nil(card)
+
+      within(card) do
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_compression'))
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_compression_help'))
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_image_quality'))
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_image_quality_help'))
+      end
+    end
+  end
 end

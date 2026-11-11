@@ -94,6 +94,10 @@ en:
       environment variable OOD_JOB_NAME_ILLEGAL_CHARS.
     batch_connect_sessions_errors_staging: 'Failed to stage the template with the following error:'
     batch_connect_sessions_errors_submission: 'Failed to submit session with the following error:'
+    batch_connect_sessions_novnc_compression: Compression
+    batch_connect_sessions_novnc_compression_help: '1 (low) to 9 (high)'
+    batch_connect_sessions_novnc_image_quality: Image Quality
+    batch_connect_sessions_novnc_image_quality_help: '0 (low) to 9 (high)'
     batch_connect_sessions_novnc_launch: Launch %{app_title}
     batch_connect_sessions_novnc_view_only: View Only (Share-able Link)
     batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.

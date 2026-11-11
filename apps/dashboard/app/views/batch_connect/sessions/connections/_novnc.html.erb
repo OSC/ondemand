@@ -7,10 +7,10 @@
 
  <div class="row">
   <div class="col-sm-6">
-   <%= f.number_field(:compression, class: 'custom-range', type: 'range', min: 1, max: 9, value: Configuration.novnc_default_compression, label: "Compression", help: "1 (low) to 9 (high)") %>
+   <%= f.number_field(:compression, class: 'custom-range', type: 'range', min: 1, max: 9, value: Configuration.novnc_default_compression, label: t('dashboard.batch_connect_sessions_novnc_compression'), help: t('dashboard.batch_connect_sessions_novnc_compression_help')) %>
   </div>
   <div class="col-sm-6">
-   <%= f.number_field(:quality, class: 'custom-range', type: 'range', min: 0, max: 9, value: Configuration.novnc_default_quality, label: "Image Quality", help: "0 (low) to 9 (high)") %>
+   <%= f.number_field(:quality, class: 'custom-range', type: 'range', min: 0, max: 9, value: Configuration.novnc_default_quality, label: t('dashboard.batch_connect_sessions_novnc_image_quality'), help: t('dashboard.batch_connect_sessions_novnc_image_quality_help')) %>
   </div>
  </div>
 
