@@ -581,6 +581,34 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'failed uploads show server error message' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+
+      visit files_url(unwritable_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/hello-world.c'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+
+      error_message = nil
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+        error_message = page.evaluate_script(<<~JS)
+          document.querySelector('.uppy-Dashboard-Item-errorDetails')?.getAttribute('aria-label')
+        JS
+        error_message.present?
+      end
+      page.execute_script('window.__changedElements = []')
+
+      assert_match(/Permission denied/, error_message)
+    end
+  end
+
   def assert_overwrite_buttons
     assert_selector('.uppy-StatusBar-actions #safe-upload-btn.uppy-StatusBar-actionBtn--upload', text: 'Upload New Files')
     assert_selector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload-danger', text: 'Upload and Overwrite')
@@ -1347,6 +1375,31 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'actions dropdown shows expected links for files and directories' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      file = 'readable.txt'
+      nested = 'subdir'
+      FileUtils.touch(File.join(dir, file))
+      FileUtils.mkdir_p(File.join(dir, nested))
+
+      visit files_url(dir)
+
+      file_row = find('tbody a', exact_text: file).ancestor('tr')
+      file_row.find('button.dropdown-toggle').click
+      file_links = file_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      dir_row = find('tbody a', exact_text: nested).ancestor('tr')
+      dir_row.find('button.dropdown-toggle').click
+      dir_links = dir_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      assert_equal(['View', 'Edit', 'Rename', 'Download', 'Delete'], file_links)
+      assert_equal(['Rename', 'Download', 'Delete'], dir_links)
+    end
+  end
+  
   test 'unreadable files and fifos are not downloadable' do
     Dir.mktmpdir do |dir|
       cant_read = 'cant_read.txt'
