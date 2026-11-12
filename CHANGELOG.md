@@ -118,6 +118,26 @@ Changes are grouped by type:
 - File uploads now show error messages in [6059](https://github.com/OSC/ondemand/pull/6059).
 - e2e tests now login to the staging repos in [6090](https://github.com/OSC/ondemand/pull/6090).
 
+## [4.2.6] - 2026-11-04
+
+### Fixed
+
+- Rclone remotes are sorted fixing an issue with newer rclone versions in [5972](https://github.com/OSC/ondemand/pull/5972).
+- The Project Manager Launchers now work for HTCondor in [6000](https://github.com/OSC/ondemand/pull/6000).
+- File browser navigation with Select All clicked works correctly in [6001](https://github.com/OSC/ondemand/pull/6001).
+- The select all checkbox in the file browser now responds to the enter key in [6002](https://github.com/OSC/ondemand/pull/6002).
+- The file browser correctly shows errors in [6026](https://github.com/OSC/ondemand/pull/6026).
+- Long favorite paths in sidebar and path selector do not overflow in [6027](https://github.com/OSC/ondemand/pull/6027).
+- The button to expand the navigation bar on mobile is better position horizontally in [6028](https://github.com/OSC/ondemand/pull/6028).
+- File uploads now show error messages in [6059](https://github.com/OSC/ondemand/pull/6059).
+
+
+### Security
+
+- Resovled GHSA-x67g-76xw-v22g (no CVE yet). Fixes conditions where certain files
+  can execute javascript in the file browser when viewed in [6095](https://github.com/OSC/ondemand/pull/6095).
+
+
 ## [4.2.5] - 2026-09-24
 
 ### Fixed
@@ -2129,7 +2149,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.6...HEAD
+[4.2.6]: https://github.com/OSC/ondemand/compare/v4.2.5...v4.2.6
 [4.2.5]: https://github.com/OSC/ondemand/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/OSC/ondemand/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
