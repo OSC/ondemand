@@ -1403,6 +1403,31 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'actions dropdown shows expected links for files and directories' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      file = 'readable.txt'
+      nested = 'subdir'
+      FileUtils.touch(File.join(dir, file))
+      FileUtils.mkdir_p(File.join(dir, nested))
+
+      visit files_url(dir)
+
+      file_row = find('tbody a', exact_text: file).ancestor('tr')
+      file_row.find('button.dropdown-toggle').click
+      file_links = file_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      dir_row = find('tbody a', exact_text: nested).ancestor('tr')
+      dir_row.find('button.dropdown-toggle').click
+      dir_links = dir_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      assert_equal(['View', 'Edit', 'Rename', 'Download', 'Delete'], file_links)
+      assert_equal(['Rename', 'Download', 'Delete'], dir_links)
+    end
+  end
+  
   test 'unreadable files and fifos are not downloadable' do
     Dir.mktmpdir do |dir|
       cant_read = 'cant_read.txt'
