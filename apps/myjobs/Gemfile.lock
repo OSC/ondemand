@@ -195,10 +195,11 @@ GEM
     nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    ood_appkit (2.2.1)
+    ood_appkit (2.2.2)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_core (~> 0.1)
+      ostruct
       rails (>= 6.0.0)
       redcarpet (~> 3.2)
     ood_core (0.31.2)
