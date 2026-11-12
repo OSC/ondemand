@@ -39,10 +39,11 @@ describe 'Nginx stage' do
       # Note there's no error here about 'deleted_user'
       on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force' do |result|
         assert_equal result.stdout, "ood\ndeleted_user (disabled)\n"
-        refute(File.exist?('/var/run/ondemand-nginx/deleted_user'))
-        refute(File.exist?('/var/lib/ondemand-nginx/config/puns/deleted_user.conf'))
-        refute(File.exist?('/var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'))
       end
+      # check on the target host, not the machine running rspec
+      on hosts, 'test ! -e /var/run/ondemand-nginx/deleted_user && ' \
+                'test ! -e /var/lib/ondemand-nginx/config/puns/deleted_user.conf && ' \
+                'test ! -e /var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'
     end
   end
 end
