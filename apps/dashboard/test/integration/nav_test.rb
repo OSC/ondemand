@@ -186,10 +186,10 @@ class NavTest < ActionDispatch::IntegrationTest
         assert_select("nav.navbar div.collapse li.nav-item") do
           assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_help_title")}']", 1)
           assert_select("ul.dropdown-menu") do
-            assert_select('a', text: I18n.t('dashboard.nav_help_support'))
-            assert_select('a', text: I18n.t('dashboard.nav_help_docs'))
-            assert_select('a', text: I18n.t('dashboard.nav_help_change_password'))
-            assert_select('a', text: I18n.t('dashboard.nav_help_two_factor'))
+            assert_select("a.dropdown-item[href='/support']", text: I18n.t('dashboard.nav_help_support'))
+            assert_select("a.dropdown-item[href='/docs']", text: I18n.t('dashboard.nav_help_docs'))
+            assert_select("a.dropdown-item[href='/password']", text: I18n.t('dashboard.nav_help_change_password'))
+            assert_select("a.dropdown-item[href='/two-factor']", text: I18n.t('dashboard.nav_help_two_factor'))
           end
         end
       end
