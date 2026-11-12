@@ -1,0 +1,42 @@
+HOSTS:
+  el8:
+    roles:
+      - agent
+    platform: el-8-ppc64le
+    hypervisor: docker
+    image: ppc64le/almalinux:8
+    # This runs under QEMU on x86_64 runners. Without an explicit platform,
+    # Docker looks for a linux/amd64 image, which this repository does not
+    # publish. See spec/e2e/beaker_docker_platform.rb.
+    docker_platform: linux/ppc64le
+    docker_preserve_image: true
+    docker_cmd: '/usr/sbin/init'
+    docker_image_commands:
+      - 'yum install -y dnf-utils'
+      - 'dnf config-manager --set-enabled powertools'
+      - 'yum install -y wget which cronie iproute initscripts langpacks-en glibc-all-langpacks'
+    docker_env:
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+    docker_container_name: 'ondemand-el8'
+    docker_port_bindings:
+      22/tcp:
+        - HostPort: '2222'
+          HostIp: '127.0.0.1'
+      8080/tcp:
+        - HostPort: '8080'
+          HostIp: '0.0.0.0'
+      5556/tcp:
+        - HostPort: '5556'
+          HostIp: '0.0.0.0'
+CONFIG:
+  # Emulated image builds can go quiet for longer than beaker-docker's
+  # 300-second API read timeout. The workflow still bounds the E2E step.
+  docker_options:
+    read_timeout: 1800
+  log_level: debug
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]

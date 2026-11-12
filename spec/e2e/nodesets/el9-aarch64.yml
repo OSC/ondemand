@@ -2,7 +2,7 @@ HOSTS:
   el9:
     roles:
       - agent
-    platform: el-9-x86_64
+    platform: el-9-aarch64
     hypervisor: docker
     image: arm64v8/rockylinux:9
     docker_preserve_image: true
@@ -27,6 +27,10 @@ HOSTS:
         - HostPort: '5556'
           HostIp: '0.0.0.0'
 CONFIG:
+  # Cold image builds can exceed beaker-docker's 300-second API read timeout.
+  # The workflow still bounds the complete E2E step to 30 minutes.
+  docker_options:
+    read_timeout: 900
   log_level: debug
   type: foss
 ssh:
