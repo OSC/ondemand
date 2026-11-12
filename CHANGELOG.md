@@ -134,7 +134,7 @@ Changes are grouped by type:
 
 ### Security
 
-- Resovled GHSA-x67g-76xw-v22g (no CVE yet). Fixes conditions where certain files
+- Resolved GHSA-x67g-76xw-v22g (no CVE yet). Fixes conditions where certain files
   can execute javascript in the file browser when viewed in [6095](https://github.com/OSC/ondemand/pull/6095).
 
 
