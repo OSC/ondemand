@@ -1,0 +1,13 @@
+pinned_apps:
+  - 'sys/*'
+
+dashboard_layout:
+  rows:
+    - columns:
+        - width: 12
+          widgets:
+            - recently_used_apps    # last used interactive apps (relaunches with prior settings)
+            - pinned_apps           # featured quick-launch tiles
+           # - nsf_access_events
+            #- nsf_access_announcements
+            #- nsf_access_outages
