@@ -66,12 +66,14 @@ jobs:
 
     env:
       OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
+      OOD_REPO_USERNAME: ${{ secrets.OOD_OSC_EARLY_ACCESS_USERNAME }}
       HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
     steps:
-      - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v6
+      - name: Checkout ${{ github.event.pull_request.head.sha	}}
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          allow-unsafe-pr-checkout: true
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Ruby using Bundler
