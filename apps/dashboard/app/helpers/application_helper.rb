@@ -35,18 +35,6 @@ module ApplicationHelper
     ENV['OOD_DASHBOARD_SUPPORT_URL']
   end
 
-  def docs_url
-    ENV['OOD_DASHBOARD_DOCS_URL']
-  end
-
-  def passwd_url
-    ENV['OOD_DASHBOARD_PASSWD_URL']
-  end
-
-  def help_custom_url
-    ENV['OOD_DASHBOARD_HELP_CUSTOM_URL']
-  end
-
   def fa_icon(icon, fa_style: 'fas', id: '', classes: 'app-icon', title: "FontAwesome icon specified: #{icon}")
     content_tag(:i, '', id: id, class: [fa_style, "fa-#{icon}", 'fa-fw'].concat(Array(classes)),
                 title: title, "aria-hidden": true)
