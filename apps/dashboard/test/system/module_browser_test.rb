@@ -2,6 +2,7 @@
 
 require 'application_system_test_case'
 
+# Exercises module filtering and version selection in the Dashboard.
 class ModuleBrowserTest < ApplicationSystemTestCase
   MODULE_BTN_SELECT = '.module-card button[data-bs-toggle="collapse"]'
   VERSION_BTN_SELECT = 'button[data-role="selectable-version"]'
@@ -10,13 +11,14 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   setup do
     stub_sys_apps
     # The JSON loader behind HpcModule.all is covered in test/models/hpc_module_test.rb.
-    HpcModule.stubs(:all).returns([
+    modules = [
       HpcModule.new('gcc', version: '12.2', cluster: :owens),
       HpcModule.new('gcc-tools', version: '1.0', cluster: :owens),
       HpcModule.new('python', version: '3.11', cluster: :owens),
       HpcModule.new('gcc', version: '11.3', cluster: :oakley),
       HpcModule.new('openmpi', version: '4.1', cluster: :oakley)
-    ])
+    ]
+    HpcModule.stubs(:all).returns(modules)
     visit module_browser_url
   end
 
