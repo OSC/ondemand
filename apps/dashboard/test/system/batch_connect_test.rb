@@ -3512,4 +3512,46 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal(raw_password, stored_password)
     end
   end
+
+  test 'auto_queues shows and constrains auto_gpus for gpu partitions' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - auto_queues
+          - auto_gpus
+          - auto_gpu_type
+      HEREDOC
+      # Stub only Owens so queue names are unique (Oakley shares names like serial).
+      make_bc_app(dir, form, scontrol: false, sacctmgr: false)
+      stub_scontrol(['owens'])
+      stub_sacctmgr(['owens'])
+      owens = OodAppkit.clusters.select { |c| c.id.to_s == 'owens' }
+      Configuration.stubs(:job_clusters).returns(owens)
+      Rails.cache.clear
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # batch is the default queue and has GPUs, so GPU fields are shown.
+      assert_equal 'batch', find_value('auto_queues')
+      assert find("##{bc_ele_id('auto_gpus')}").visible?
+      assert find("##{bc_ele_id('auto_gpu_type')}").visible?
+      assert_equal 1, find_max('auto_gpus')
+      assert_equal '1', find_value('auto_gpus')
+
+      # dedicated GPU partition keeps fields visible with the same per-node max.
+      select('gpubackfill-serial', from: bc_ele_id('auto_queues'))
+      assert find("##{bc_ele_id('auto_gpus')}").visible?
+      assert find("##{bc_ele_id('auto_gpu_type')}").visible?
+      assert_equal 1, find_max('auto_gpus')
+      assert_equal '', find_option_style('auto_gpu_type', 'p100')
+
+      # CPU-only partition hides GPU fields.
+      select('serial', from: bc_ele_id('auto_queues'))
+      check_visibility('auto_gpus', true)
+      check_visibility('auto_gpu_type', true)
+    end
+  end
 end

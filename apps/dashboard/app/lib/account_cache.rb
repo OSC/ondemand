@@ -76,7 +76,7 @@ module AccountCache
 
         cluster_queues.map do |queue|
           unless blocked_queue?(queue)
-            data = cluster_data.merge(queue_account_data(queue))
+            data = cluster_data.merge(queue_account_data(queue)).merge(queue_gpu_data(queue))
             [queue.name, queue.name, data]
           end
         end.compact
@@ -86,6 +86,43 @@ module AccountCache
 
     rescue StandardError => e
       Rails.logger.warn("Did not get queues from system with error #{e}")
+      Rails.logger.warn(e.backtrace.join("\n"))
+      []
+    end
+  end
+
+  # To be used with dynamic forms. Builds a list of GPU types discovered from
+  # queue TRES data and attaches data-option-for-auto-queues attributes so
+  # types are filtered by the selected queue.
+  #
+  # @return [Array] - the dynamic form options
+  def gpu_types
+    Rails.cache.fetch('gpu_types', expires_in: 4.hours) do
+      queue_names = []
+      types_to_queues = Hash.new { |h, k| h[k] = [] }
+
+      queues_per_cluster.each_value do |cluster_queues|
+        cluster_queues.each do |queue|
+          next if blocked_queue?(queue)
+
+          queue_names << queue.name
+          gpu_types_for(queue).each do |gpu_type|
+            types_to_queues[gpu_type] << queue.name
+          end
+        end
+      end
+
+      queue_names.uniq!
+      types_to_queues.keys.sort.map do |gpu_type|
+        unavailable_queues = queue_names - types_to_queues[gpu_type].uniq
+        data = unavailable_queues.map do |queue_name|
+          ["data-option-for-auto-queues-#{queue_name.to_s.tr('_', '-')}", false]
+        end.to_h
+
+        [gpu_type, gpu_type, data]
+      end
+    rescue StandardError => e
+      Rails.logger.warn("Did not get GPU types from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
       []
     end
@@ -153,6 +190,50 @@ module AccountCache
     disabled_account_data(unavailable_accounts)
   end
 
+  # Attach dynamic form directives so auto_gpus / auto_gpu_type show only for
+  # GPU queues, with max GPUs derived from the queue's TRES.
+  def queue_gpu_data(queue)
+    if queue.respond_to?(:gpu?) && queue.gpu?
+      {}.tap do |data|
+        max_gpus = max_gpus_for(queue)
+        data['data-min-auto-gpus'] = 1
+        data['data-max-auto-gpus'] = max_gpus if max_gpus
+        data['data-hide-auto-gpu-type'] = true if gpu_types_for(queue).empty?
+      end
+    else
+      {
+        'data-hide-auto-gpus'     => true,
+        'data-hide-auto-gpu-type' => true
+      }
+    end
+  end
+
+  # Approximate max GPUs a job can request on a node in this queue.
+  # Queue TRES reports partition-wide GPU totals, so divide by node count when
+  # available.
+  def max_gpus_for(queue)
+    total_gpus = gpu_total_for(queue)
+    return nil if total_gpus <= 0
+
+    nodes = queue.tres['node'].to_i
+    nodes.positive? ? [(total_gpus.to_f / nodes).ceil, 1].max : total_gpus
+  end
+
+  def gpu_total_for(queue)
+    tres = queue.tres || {}
+    generic = tres.find { |name, _| name.to_s.match?(%r{^gres/gpu$}i) }&.last.to_i
+    return generic if generic.positive?
+
+    tres.select { |name, _| name.to_s.match?(%r{^gres/gpu:}i) }.values.map(&:to_i).sum
+  end
+
+  def gpu_types_for(queue)
+    (queue.tres || {}).keys.filter_map do |name|
+      match = name.to_s.match(%r{^gres/gpu:(.+)$}i)
+      match[1] if match
+    end
+  end
+  
   # can _this_ account submit to this queue?
   # This is the simplest possible implementation, and may not reflect the actual behavior of any
   # given resource manager. For example, Slurm completely ignores DenyQos when AllowQos exists.
