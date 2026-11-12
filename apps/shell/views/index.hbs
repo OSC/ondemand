@@ -49,6 +49,10 @@
             <label for="fonts" class="badge">Fonts:</label>
             <select id="fonts" class="form-select form-select-sm"></select>
           </div>
+          <div hidden>
+            <input type="checkbox" id="predictive_text" class="form-check-input mt-0" title="Allow the on-screen keyboard to show word suggestions. May autocorrect commands.">
+            <label for="predictive_text" class="badge">Predictive text</label>
+          </div>
         </div>
       </div>
     </nav>
@@ -166,6 +170,12 @@
 
   themeSelect = document.getElementById("colors");
 
+  // Word suggestions on the on-screen keyboard are off unless the user opts in.
+  // Only touch screens have an on-screen keyboard, so only they get the option.
+  const predictiveTextCheckbox = document.getElementById("predictive_text");
+  const touchScreen = navigator.maxTouchPoints > 0;
+  predictiveTextCheckbox.parentElement.hidden = !touchScreen;
+  predictiveTextCheckbox.checked = touchScreen && storage.getItem('ood_shell_predictive_text') === 'true';
 
   var profile = "default";
 
@@ -179,7 +189,7 @@
       var terminalContainer = document.getElementById('terminal'),
       webSocketUrl      = urlWithToken();
 
-    window.oodShell = new OodShell(terminalContainer, webSocketUrl, profile);
+    window.oodShell = new OodShell(terminalContainer, webSocketUrl, profile, predictiveTextCheckbox.checked);
     oodShell.createTerminal();
   }
 
@@ -202,6 +212,15 @@
     var choice  = ev.target.value;
     storage.setItem('ood_shell_theme', choice);
     oodShell.changeTheme(choice);
+  })
+  // Handled on click so the focus change in setPredictiveText runs inside the
+  // user's gesture, which mobile Safari requires.
+  predictiveTextCheckbox.addEventListener("click", function(ev) {
+    const enabled = ev.target.checked;
+    storage.setItem('ood_shell_predictive_text', String(enabled));
+    if (window.oodShell) {
+      window.oodShell.setPredictiveText(enabled);
+    }
   })
   fontSelect.addEventListener("change", function(ev) {
     const choice = ev.target.value;
