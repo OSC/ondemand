@@ -8,10 +8,10 @@ class LaunchersController < ApplicationController
   SAVE_LAUNCHER_KEYS = [
     :cluster, :auto_accounts, :auto_accounts_exclude, :auto_accounts_fixed,
     :auto_cores, :auto_cores_fixed, :auto_cores_min, :auto_cores_max,
+    :auto_num_nodes, :auto_num_nodes_fixed, :auto_num_nodes_min, :auto_num_nodes_max,
     :auto_scripts, :auto_scripts_exclude, :auto_scripts_fixed,
     :auto_queues, :auto_queues_exclude, :auto_queues_fixed,
     :auto_batch_clusters, :auto_batch_clusters_exclude, :auto_batch_clusters_fixed,
-    :bc_num_nodes, :bc_num_nodes_fixed, :bc_num_nodes_min, :bc_num_nodes_max,
     :bc_num_hours, :bc_num_hours_fixed, :bc_num_hours_min, :bc_num_hours_max,
     :auto_job_name, :auto_job_name_fixed,
     :auto_log_location, :auto_log_location_fixed
