@@ -1482,6 +1482,34 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'hide_by_default data attribute is only present when true' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: text_field
+          hide_by_default: true
+        account:
+          widget: text_field
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      gpus_wrapper = find("##{bc_ele_id('gpus')}_wrapper", visible: :hidden)
+      account_wrapper = find("##{bc_ele_id('account')}_wrapper")
+
+      assert_equal 'true', gpus_wrapper['data-hide-by-default']
+      assert_nil account_wrapper['data-hide-by-default']
+    end
+  end
+  
   def data_help_basic_test(form)
     Dir.mktmpdir do |dir|
       make_bc_app(dir, form)
