@@ -7,11 +7,11 @@
 
   <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, 'dropdown-menu-end') %>" role="menu">
     <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, new_tab: true) %>
-    <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, new_tab: true) %>
-    <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, new_tab: true) %>
-    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, new_tab: true) %>
-    <% if help_custom_url %>
-      <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", Configuration.dashboard_docs_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_change_password'), "key", Configuration.dashboard_passwd_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", Configuration.dashboard_2fa_url, new_tab: true) %>
+    <% if Configuration.dashboard_help_custom_url %>
+      <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", Configuration.dashboard_help_custom_url, new_tab: true) %>
     <% end %>
     <% unless @user_configuration.support_ticket.empty? %>
       <%= nav_link(t('dashboard.nav_help_support_ticket'), "medkit", support_path, new_tab: false) %>

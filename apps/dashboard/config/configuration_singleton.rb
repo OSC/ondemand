@@ -88,7 +88,7 @@ class ConfigurationSingleton
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
       :open_apps_in_new_window      => true,
-      :bc_ssh_to_compute_node => true,
+      :bc_ssh_to_compute_node       => true,
     }.freeze
   end
 
@@ -107,6 +107,10 @@ class ConfigurationSingleton
       :rclone_extra_config            => nil,
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
+      :dashboard_docs_url             => nil,
+      :dashboard_help_custom_url      => nil,
+      :dashboard_passwd_url           => nil,
+      :dashboard_2fa_url              => nil,
       :native_vnc_login_host          => nil,
       :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
@@ -402,7 +406,8 @@ class ConfigurationSingleton
   end
 
   def allowlist_paths
-    (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
+    paths = ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || config.fetch(:allowlist_path, [])
+    Array.wrap(paths).flat_map { |path| path.to_s.strip.split(':') }.map { |s| Pathname.new(s) }
   end
 
   # How many days before a Session record is considered old and ready to delete

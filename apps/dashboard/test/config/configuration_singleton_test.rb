@@ -241,6 +241,150 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "dashboard_help_custom_url is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_HELP_CUSTOM_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_help_custom_url
+    end
+  end
+
+  test "can configure dashboard_help_custom_url through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_HELP_CUSTOM_URL: 'https://help.example.com')) do
+      assert_equal 'https://help.example.com', ConfigurationSingleton.new.dashboard_help_custom_url
+    end
+  end
+
+  test "can configure dashboard_help_custom_url through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_help_custom_url' => 'https://help.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://help.from.file', ConfigurationSingleton.new.dashboard_help_custom_url
+      end
+    end
+  end
+
+  test "dashboard_help_custom_url environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_help_custom_url' => 'https://help.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_HELP_CUSTOM_URL: 'https://help.from.env') do
+        assert_equal 'https://help.from.env', ConfigurationSingleton.new.dashboard_help_custom_url
+      end
+    end
+  end
+  
+  test "dashboard_passwd_url is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_PASSWD_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_passwd_url
+    end
+  end
+
+  test "can configure dashboard_passwd_url through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_PASSWD_URL: 'https://passwd.example.com')) do
+      assert_equal 'https://passwd.example.com', ConfigurationSingleton.new.dashboard_passwd_url
+    end
+  end
+
+  test "can configure dashboard_passwd_url through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_passwd_url' => 'https://passwd.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://passwd.from.file', ConfigurationSingleton.new.dashboard_passwd_url
+      end
+    end
+  end
+  
+  test "dashboard_passwd_url environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_passwd_url' => 'https://passwd.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_PASSWD_URL: 'https://passwd.from.env') do
+        assert_equal 'https://passwd.from.env', ConfigurationSingleton.new.dashboard_passwd_url
+      end
+    end
+  end
+
+  test "dashboard_docs_url is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_DOCS_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_docs_url
+    end
+  end
+
+  test "can configure dashboard_docs_url through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_DOCS_URL: 'https://docs.example.com')) do
+      assert_equal 'https://docs.example.com', ConfigurationSingleton.new.dashboard_docs_url
+    end
+  end
+
+  test "can configure dashboard_docs_url through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_docs_url' => 'https://docs.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://docs.from.file', ConfigurationSingleton.new.dashboard_docs_url
+      end
+    end
+  end
+  
+  test "dashboard_docs_url environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_docs_url' => 'https://docs.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_DOCS_URL: 'https://docs.from.env') do
+        assert_equal 'https://docs.from.env', ConfigurationSingleton.new.dashboard_docs_url
+      end
+    end
+  end
+  
+  test "dashboard_2fa_url is nil by default" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_2FA_URL: nil)) do
+      assert_nil ConfigurationSingleton.new.dashboard_2fa_url
+    end
+  end
+
+  test "can configure dashboard_2fa_url through environment variable" do
+    with_modified_env(no_config_env.merge(OOD_DASHBOARD_2FA_URL: 'https://2fa.example.com')) do
+      assert_equal 'https://2fa.example.com', ConfigurationSingleton.new.dashboard_2fa_url
+    end
+  end
+
+  test "can configure dashboard_2fa_url through ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_2fa_url' => 'https://2fa.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s) do
+        assert_equal 'https://2fa.from.file', ConfigurationSingleton.new.dashboard_2fa_url
+      end
+    end
+  end
+  
+  test "dashboard_2fa_url environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'dashboard_2fa_url' => 'https://2fa.from.file' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_DASHBOARD_2FA_URL: 'https://2fa.from.env') do
+        assert_equal 'https://2fa.from.env', ConfigurationSingleton.new.dashboard_2fa_url
+      end
+    end
+  end
+  
   test "workflows_enabled is nil when unset" do
     with_modified_env(OOD_WORKFLOWS_ENABLED: nil) do
       assert_nil ConfigurationSingleton.new.workflows_enabled
@@ -587,6 +731,68 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "allowlist_paths defaults to an empty list" do
+    with_modified_env(no_config_env.merge(OOD_ALLOWLIST_PATH: nil)) do
+      assert_equal [], ConfigurationSingleton.new.allowlist_paths
+    end
+  end
+
+  test "allowlist_paths correctly parses OOD_ALLOWLIST_PATH" do
+    with_modified_env(no_config_env.merge(OOD_ALLOWLIST_PATH: '/path_a:/path_b')) do
+      assert_equal [Pathname.new('/path_a'), Pathname.new('/path_b')], ConfigurationSingleton.new.allowlist_paths
+    end
+  end
+
+  test "allowlist_paths can be configured through ondemand.d as an array" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'allowlist_path' => ['/path_from/file_a', '/path_from/file_b'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_ALLOWLIST_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.allowlist_paths
+      end
+    end
+  end
+
+  test "allowlist_paths can be configured through ondemand.d as a colon delimited string" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'allowlist_path' => '/path_from/file_a:/path_from/file_b' }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_ALLOWLIST_PATH: nil) do
+        assert_equal [Pathname.new('/path_from/file_a'), Pathname.new('/path_from/file_b')], ConfigurationSingleton.new.allowlist_paths
+      end
+    end
+  end
+
+  test "allowlist_paths environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'allowlist_path' => ['/path_from/file'] }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_ALLOWLIST_PATH: '/path_from/env') do
+        assert_equal [Pathname.new('/path_from/env')], ConfigurationSingleton.new.allowlist_paths
+      end
+    end
+  end
+  
+  test "open_apps_in_new_window environment variable has precedence over ondemand.d" do
+    Dir.mktmpdir do |dir|
+      File.open("#{dir}/config.yml", 'w+') do |file|
+        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: 'true') do
+        c = ConfigurationSingleton.new
+        assert_equal true, c.open_apps_in_new_window
+        assert_equal true, c.open_apps_in_new_window?
+      end
+    end
+  end
+  
   test "open_apps_in_new_window is true by default" do
     with_modified_env(no_config_env.merge(OOD_OPEN_APPS_IN_NEW_WINDOW: nil)) do
       c = ConfigurationSingleton.new
@@ -613,20 +819,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         c = ConfigurationSingleton.new
         assert_equal false, c.open_apps_in_new_window
         assert_equal false, c.open_apps_in_new_window?
-      end
-    end
-  end
-
-  test "open_apps_in_new_window environment variable has precedence over ondemand.d" do
-    Dir.mktmpdir do |dir|
-      File.open("#{dir}/config.yml", 'w+') do |file|
-        file.write({ 'open_apps_in_new_window' => false }.to_yaml)
-      end
-
-      with_modified_env(OOD_CONFIG_D_DIRECTORY: dir.to_s, OOD_OPEN_APPS_IN_NEW_WINDOW: 'true') do
-        c = ConfigurationSingleton.new
-        assert_equal true, c.open_apps_in_new_window
-        assert_equal true, c.open_apps_in_new_window?
       end
     end
   end
