@@ -76,3 +76,37 @@ iframe {
    position: static !important;
    width: auto !important;
 } 
+
+.ood-selection-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background-color: #222;
+  border: 1px solid #444;
+}
+
+.ood-selection-toolbar-btn {
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  color: #fff;
+  background-color: #3c3c3c;
+  border: 1px solid #555;
+  border-radius: 0.25rem;
+}
+
+.ood-selection-toolbar-btn:disabled {
+  opacity: 0.55;
+}
+
+.ood-selection-toolbar-status {
+  flex-basis: 100%;
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.ood-selection-toolbar-status:empty {
+  display: none;
+}
