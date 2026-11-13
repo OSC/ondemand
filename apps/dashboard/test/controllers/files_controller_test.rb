@@ -184,4 +184,12 @@ class FilesControllerTest < ActionController::TestCase
     @request.env['HTTP_ACCEPT'] = 'text/html'
     refute @controller.send(:json_request?)
   end
+
+  # Tests for files_controller#next_valid
+  # An error on / would redirect back to / forever, so it must go to the dashboard instead.
+  test 'error on / redirects to dashboard instead of looping back to /' do
+    FilesController.any_instance.stubs(:validate_path!).raises(StandardError, 'boom')
+    get :fs, params: { fs: 'fs', filepath: '/' }
+    assert_redirected_to(root_path)
+  end
 end
