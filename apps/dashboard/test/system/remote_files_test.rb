@@ -5,8 +5,8 @@ class RemoteFilesTest < ApplicationSystemTestCase
   MAX_WAIT = 120
 
   def setup
-    # we want to clear the console logs from any previous test.
-    Capybara.current_session.quit
+    # Reading the console log empties it, so this drops messages from the previous test.
+    page.driver.browser.logs.get(:browser)
   end
 
   test "visiting files app doesn't raise js errors" do
