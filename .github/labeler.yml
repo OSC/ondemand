@@ -18,7 +18,7 @@ component/file_browser:
   - changed-files:
     - any-glob-to-any-file: apps/files/**/*
 
-component/jobcomposer:
+component/job_composer:
   - changed-files:
     - any-glob-to-any-file: apps/myjobs/**/*
 
