@@ -65,8 +65,8 @@ jobs:
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
     env:
-      OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
-      OOD_REPO_USERNAME: ${{ secrets.OOD_OSC_EARLY_ACCESS_USERNAME }}
+      OOD_REPO_PASSWORD: ${{ secrets.OSC_OOD_REPO_PASSWORD }}
+      OOD_REPO_USERNAME: ${{ secrets.OSC_OOD_REPO_USERNAME }}
       HAS_DOCKERHUB_CREDENTIALS: ${{ secrets.ONDEMAND_DOCKERHUB_USER != '' && secrets.ONDEMAND_DOCKERHUB_PASSWORD != '' }}
     steps:
       - name: Checkout ${{ github.event.pull_request.head.sha	}}
