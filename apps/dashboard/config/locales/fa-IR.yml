@@ -48,7 +48,6 @@ fa-IR:
     balance_warning_prefix_html: هشدار %{units_balance} برای
     batch_connect_apps_menu_title: برنامه‌های تعاملی
     batch_connect_form_attr_cache_error: استفاده از مقادیر ذخیره‌شده قبلی ممکن نیست؛ از مقادیر پیش‌فرض استفاده می‌شود. (%{error_message})
-    batch_connect_form_choose_template_name: یک نام برای الگو انتخاب کنید
     batch_connect_form_data_root: پوشه ریشه داده‌ها
     batch_connect_form_dynamic_disclaimer: فرم زیر ممکن است با انتخاب گزینه‌ها به‌صورت پویا تغییر کند. همه تغییرات اعلام می‌شوند و قابل بازگشت هستند.
     batch_connect_form_invalid: برخی گزینه‌ها در فیلد %{id} فایل form.yml وجود ندارند.
@@ -59,13 +58,10 @@ fa-IR:
     batch_connect_form_resolution_height: ارتفاع وضوح (پیکسل)
     batch_connect_form_resolution_width: عرض وضوح (پیکسل)
     batch_connect_form_save: ذخیره تنظیمات
-    batch_connect_form_save_new_template: ذخیره تنظیمات جدید
     batch_connect_form_save_submit: ذخیره تنظیمات و بستن
     batch_connect_form_select_template: انتخاب تنظیمات ذخیره‌شده
     batch_connect_form_session_data_html: "* داده‌های نشست %{title} از طریق %{data_link_tag} در دسترس است.\n"
     batch_connect_form_template_name_label: نام تنظیم
-    batch_connect_form_type_new_name: نام تنظیمات برنامه
-    batch_connect_form_type_new_name_error: برای ادامه، یک نام معتبر وارد کنید
     batch_connect_invalid_form_array: عنصر «form» در form.yml از نوع Array نیست
     batch_connect_invalid_form_attributes: عنصر «attributes» در form.yml از نوع Map نیست
     batch_connect_missing_cluster: 'کلاستر تنظیم نشده است. آن را در form.yml.erb با `cluster` یا `form.cluster` تنظیم کنید، یا `cluster` را در submit.yml.erb قرار دهید.

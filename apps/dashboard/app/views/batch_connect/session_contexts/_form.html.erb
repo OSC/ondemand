@@ -22,14 +22,27 @@
   <%- end -%>
 
   <%- if Configuration.bc_saved_settings? -%>
-  <div class="mb-3 form-check">
-      <input class="form-check-input align-self-center" name="save_template" type="checkbox" id="batch_connect_session_save_template" <%= @template_name ? 'checked' : '' %>>
-      <label class="form-check-label align-self-center" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
-  </div>
+  <div class="mb-3">
+    <div class="form-check">
+      <input class="form-check-input" name="save_template" type="checkbox" id="batch_connect_session_save_template" aria-controls="batch_connect_session_save_template_fields" <%= @template_name ? 'checked' : '' %>>
+      <label class="form-check-label" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
+    </div>
 
-  <div class="mb-3 d-flex">
-    <input class="form-control w-50 me-2" name="template_name" value="<%= @template_name %>" type="text" id="batch_connect_session_template_name" aria-label="<%= t('dashboard.batch_connect_form_template_name_label') %>" readonly>
-    <%= f.submit t('dashboard.batch_connect_form_save_submit'), id: 'batch_connect_session_save_template_submit', class: "ms-auto btn btn-primary", formaction: batch_connect_save_settings_path(token: @app.token), disabled: @template_name ? false : true %>
+    <div id="batch_connect_session_save_template_fields" class="mt-2" <%= @template_name ? '' : 'hidden' %>>
+      <label class="form-label" for="batch_connect_session_template_name"><%= t('dashboard.batch_connect_form_template_name_label') %></label>
+      <div class="d-flex gap-2">
+        <input class="form-control" name="template_name" value="<%= @template_name %>" type="text" id="batch_connect_session_template_name"
+               list="batch_connect_session_template_names" autocomplete="off" aria-describedby="batch_connect_session_template_name_help"
+               <%= @template_name ? 'required readonly' : '' %>>
+        <datalist id="batch_connect_session_template_names">
+          <% @prefill_templates.each_key do |name| %>
+            <option value="<%= name %>"></option>
+          <% end %>
+        </datalist>
+        <%= f.submit t('dashboard.batch_connect_form_save_submit'), id: 'batch_connect_session_save_template_submit', class: "btn btn-primary text-nowrap", formaction: batch_connect_save_settings_path(token: @app.token), disabled: @template_name ? false : true %>
+      </div>
+      <div id="batch_connect_session_template_name_help" class="form-text"><%= t('dashboard.batch_connect_form_template_name_help') %></div>
+    </div>
   </div>
   <%- end -%>
 

@@ -28,10 +28,7 @@ class SavedSettingsTest < ApplicationSystemTestCase
         fill_in('bc_vnc_resolution_y_field', with: '600')
 
         check('Save settings')
-        fill_in('modal_input_template_new_name', with: 'test')
-        sleep 1
-        # find('#batch_connect_session_template_choose_name_button').click
-        click_button('Save')
+        fill_in('batch_connect_session_template_name', with: 'test')
         sleep 1
         click_button('Save settings and close')
 
@@ -139,10 +136,7 @@ class SavedSettingsTest < ApplicationSystemTestCase
       fill_in(bc_ele_id('some_password_field'), with: 'mypassword')
 
       check('Save settings')
-      fill_in('modal_input_template_new_name', with: 'test')
-      sleep 1
-      # find('#batch_connect_session_template_choose_name_button').click
-      click_button('Save')
+      fill_in('batch_connect_session_template_name', with: 'test')
       sleep 1
       click_button('Save settings and close')
 

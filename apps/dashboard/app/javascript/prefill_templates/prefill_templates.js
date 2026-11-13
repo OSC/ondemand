@@ -15,8 +15,8 @@ export function prefillTemplatesHandler() {
     try {
       json = JSON.parse(templateOption.val());
     } catch (error) {
-      $('#batch_connect_session_template_form_error_modal').text(error.message)
-      $('#batch_connect_session_template_form_error_modal_body').modal('show');
+      $('#batch_connect_session_template_form_error_modal_body').text(error.message)
+      $('#batch_connect_session_template_form_error_modal').modal('show');
       return;
     }
 
