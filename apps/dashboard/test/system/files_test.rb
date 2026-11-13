@@ -1286,23 +1286,18 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'cannot open or download files that are too large' do
     with_modified_env({OOD_DOWNLOAD_FILE_MAX: '116'}) do
-      new_file = DOWNLOAD_DIRECTORY.join('file_to_download')
-      File.delete(new_file) if File.exist?(new_file)
-
       Dir.mktmpdir do |dir|
         content = 'some content '*9 # produces 117 Bytes of text
         `echo '#{content}' > #{dir}/file_to_download`
 
         visit files_url(dir)
-        find('tbody a', exact_text: 'file_to_download').click
-        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
-        find('.alert-danger button.btn-close').click
-        refute_selector('.alert-danger')
 
-        find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
-        click_on('Download')
-        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
-        refute(File.exist?(new_file), "#{new_file} was downloaded despite being too large")
+        # Oversized files are listed, but open/view/download/edit links are not offered.
+        file_row = find('tbody span', exact_text: 'file_to_download').ancestor('tr')
+        file_row.find('button.dropdown-toggle').click
+        links = file_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+        assert_equal(['Rename', 'Delete'], links)
       end
     end
   end
