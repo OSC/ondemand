@@ -216,7 +216,7 @@ def install_ondemand
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
     auth = <<~EOS
       machine apt.osc.edu
-      login osc
+      login #{ENV['OOD_REPO_USERNAME']}
       password #{ENV['OOD_REPO_PASSWORD']}
     EOS
     create_remote_file(hosts, '/etc/apt/auth.conf.d/ondemand-web.conf', auth)
