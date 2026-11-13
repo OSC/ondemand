@@ -206,7 +206,7 @@ def install_ondemand
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     on hosts, "dnf config-manager --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
-    on hosts, "dnf config-manager --save --setopt=ondemand-web.username=osc --setopt=ondemand-web.password=#{ENV['OOD_REPO_PASSWORD']}"
+    on hosts, "dnf config-manager --save --setopt=ondemand-web.username=#{ENV['OOD_REPO_USERNAME']} --setopt=ondemand-web.password=#{ENV['OOD_REPO_PASSWORD']}"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
