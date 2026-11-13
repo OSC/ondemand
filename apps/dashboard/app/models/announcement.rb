@@ -42,6 +42,29 @@ class Announcement
     end
   end
 
+  # Whether this announcement is a global announcement or an app specific announcement
+  # @return [Boolean] whether it is global
+  def global?
+    token.empty?
+  end
+
+  # The token of the app this announcement targets, e.g. "sys/bc_desktop"
+  # @return [String] the app token if it is set
+  def token
+    opts.fetch(:token, '').to_s.strip
+  end
+
+  # Whether this announcement should be shown for the given request
+  # @param request_token [String, nil] the app token from the current route,
+  #   e.g. "sys/bc_desktop/owens", or nil on non-app pages
+  # @return [Boolean] whether the announcement applies
+  def applies_to?(request_token)
+    return true if global?
+    return false if request_token.blank?
+
+    TokenMatcher.new(token).matches_app?(OpenStruct.new(token: request_token))
+  end
+
   # The announcement's button text displayed for required or dismissible announcements
   #  @return [String] the button text
   def button_text
