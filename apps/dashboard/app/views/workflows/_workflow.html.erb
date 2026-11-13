@@ -1,5 +1,5 @@
 <div class="list-group bg-white rounded mt-4">
-  <button class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+  <button class="list-group-item list-group-item-action bg-light fw-bold list-toggler"
       data-bs-toggle="collapse" data-bs-target="#workflow_list"
       aria-expanded="true" aria-controls="workflow_list">
     <span class="lead fw-bolder"><%= t('dashboard.jobs_workflows') %></span>
@@ -48,7 +48,7 @@
     <%- end -%>
   </div>
 
-  <a class="list-group-item list-group-item-action text-info font-weight-bold"
+  <a class="list-group-item list-group-item-action text-info fw-bold"
     href="<%= new_project_workflow_path(@project.id) %>">
     <%= t('dashboard.jobs_create_blank_workflow') %>
   </a>

@@ -108,8 +108,8 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     visit(batch_connect_sessions_path)
 
     within('nav[aria-label="Interactive Apps Menu"]') do
-      card = find('.collapsible-app-card', match: :first)
-      button = card.find('button.collapsible-app-card-toggle')
+      card = find('.card', match: :first)
+      button = card.find('button.card-header')
       target_id = button['aria-controls']
       list_group = card.find("##{target_id}", visible: :all)
 

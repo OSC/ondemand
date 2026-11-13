@@ -1,18 +1,18 @@
-<div class="field">
-  <div class="checkbox<%= " has-error" if product.errors[:reset_git].any? %>">
-    <label>
-      <%= check_box_tag :reset_git %>
+<div class="field mb-3">
+  <div class="form-check">
+    <%= check_box_tag :reset_git, '1', false, class: "form-check-input#{' is-invalid' if product.errors[:reset_git].any?}" %>
+    <label class="form-check-label" for="reset_git">
       Create a new Git Project from this?
     </label>
     <%- if product.errors[:reset_git].any? -%>
-      <span class="help-block">
+      <div class="invalid-feedback">
         <%= product.errors[:reset_git].first %>
-      </span>
+      </div>
     <%- else -%>
-      <span class="help-block">
+      <div class="form-text">
         This will reset the git history and remote of the original git repo,
         making this a newly minted git project.
-      </span>
+      </div>
     <%- end -%>
   </div>
   <%= content_tag :pre, product.errors[:reset_git_error].first, class: "text-danger" if product.errors[:reset_git_error].any? %>

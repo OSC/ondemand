@@ -48,7 +48,7 @@ module ProductsHelper
 
     version   = product.version
 
-    html = %Q(<span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Git Status" data-content="<strong>Staged:</strong> #{staged}<br><strong>Unstaged:</strong> #{unstaged}<br><strong>Untracked:</strong> #{untracked}#{"<br>Please commit any changes or add necessary files to <code>.gitignore</code>" if total != 0}" data-html="true">)
+    html = %Q(<span data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="bottom" title="Git Status" data-bs-content="<strong>Staged:</strong> #{staged}<br><strong>Unstaged:</strong> #{unstaged}<br><strong>Untracked:</strong> #{untracked}#{"<br>Please commit any changes or add necessary files to <code>.gitignore</code>" if total != 0}" data-bs-html="true">)
     html += %Q(<small>[#{version} S:#{staged} U:#{unstaged} ?:#{untracked}]</small> )
     if total == 0
       html += %Q(<span class="text-success">#{fa_icon('check')}</span>)

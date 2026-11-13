@@ -15,7 +15,7 @@ function listItem(name) {
               class="btn btn-outline-dark"
               tabindex='0'
           >
-            <span class="sr-only">${name} icon</span>
+            <span class="visually-hidden">${name} icon</span>
             <i class="fas fa-${name} fa-fw"></i>
           </li>`;
 }

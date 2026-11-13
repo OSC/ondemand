@@ -89,13 +89,13 @@ function table(context, helpers) {
   div.classList.add('table-responsive');
 
   const tableElement = document.createElement('table');
-  // <table class="table table-sm table-striped table-condensed">
-  tableElement.classList.add('table', 'table-sm', 'table-striped', 'table-condensed');
+  // <table class="table table-sm table-striped">
+  tableElement.classList.add('table', 'table-sm', 'table-striped');
 
   const thead = document.createElement('thead');
   // Empty th to accommodate for the job analytics button
   thead.innerHTML = '<tr> \
-                      <th class="sr-only">Analytics Toggle</th> \
+                      <th class="visually-hidden">Analytics Toggle</th> \
                       <th class="id">ID</th> \
                       <th class="name">Name</th> \
                       <th class="date">Date</th> \

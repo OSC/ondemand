@@ -21,7 +21,7 @@
 <div class="row mb-3">
   <div class="col-sm-4 col-lg-2 mt-3">
     <div class="list-group bg-white rounded">
-      <button class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+      <button class="list-group-item list-group-item-action bg-light fw-bold list-toggler"
           data-bs-toggle="collapse" data-bs-target="#launcher_list"
           aria-expanded="true" aria-controls="launcher_list">
         <span class="lead fw-bolder"><%= t('dashboard.jobs_launchers') %></span>
@@ -47,7 +47,7 @@
         <%- end -%>
       </div>
 
-      <a class="list-group-item list-group-item-action text-info font-weight-bold"
+      <a class="list-group-item list-group-item-action text-info fw-bold"
         href="<%= new_project_launcher_path(@project.id) %>">
         <%= t('dashboard.jobs_new_launcher') %>
       </a>
@@ -89,7 +89,7 @@
         %>
           <div class="d-flex justify-content-center">
             <div id="loading-icon" class="spinner-border rem-5" role="status">
-              <span class="sr-only">Loading...</span> 
+              <span class="visually-hidden">Loading...</span> 
             </div>
           </div>
         <%- end -%>

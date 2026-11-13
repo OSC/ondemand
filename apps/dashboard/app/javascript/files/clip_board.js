@@ -177,7 +177,7 @@ class ClipBoard {
         listItem.appendChild(icon);
 
         const srOnly = document.createElement('span');
-        srOnly.className = 'sr-only';
+        srOnly.className = 'visually-hidden';
         srOnly.textContent = typeLabel;
         listItem.appendChild(srOnly);
 
