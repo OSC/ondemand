@@ -5,6 +5,8 @@ class SmartAttributes::AttributeFactoryTest < ActiveSupport::TestCase
   test 'build should create expected attribute classes for known attribute ids' do
     expected_classes = {
       "auto_modules": "SmartAttributes::Attributes::AutoModules",
+      "auto_gpus": "SmartAttributes::Attributes::AutoGpus",
+      "auto_gpu_type": "SmartAttributes::Attributes::AutoGpuType",
       "auto_primary_group": "SmartAttributes::Attributes::AutoPrimaryGroup",
       "bc_account": "SmartAttributes::Attributes::BcAccount",
       "bc_email_on_started": "SmartAttributes::Attributes::BcEmailOnStarted",
