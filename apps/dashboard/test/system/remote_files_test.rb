@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'application_system_test_case'
 require 'rclone_helper'
 
@@ -65,7 +67,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
 
   test 'copying files' do
     visit files_url(Rails.root.to_s)
-    %w(app config manifest.yml).each do |f|
+    ['app', 'config', 'manifest.yml'].each do |f|
       find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
     end
     assert_selector '.selected', count: 3
@@ -92,8 +94,10 @@ class RemoteFilesTest < ApplicationSystemTestCase
 
         # with copying done, let's assert on the UI and the file system
         assert_selector 'span', text: '100% copy files', count: 1
-        assert_equal '', `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config')}`.strip, 'failed to recursively copy config dir'
-        assert_equal '', `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip, 'failed to copy manifest.yml'
+        assert_equal '', `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config')}`.strip,
+                     'failed to recursively copy config dir'
+        assert_equal '', `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip,
+                     'failed to copy manifest.yml'
 
         sleep 6 # need to guarantee that this disappears after 5 seconds.
         assert_selector 'span', text: '100% copy files', count: 0
@@ -190,7 +194,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
 
         # select dir to move
         visit files_url('alias_remote', '/bucket')
-        %w(app config manifest.yml).each do |f|
+        ['app', 'config', 'manifest.yml'].each do |f|
           find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
         end
         assert_selector '.selected', count: 3
@@ -205,9 +209,12 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
 
         # verify contents moved
-        assert_equal '', `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app')}`.strip, 'failed to mv app and all contents'
-        assert_equal '', `diff -rq #{File.join(dest, 'config')} #{Rails.root.join('config')}`.strip, 'failed to recursively copy config dir'
-        assert_equal '', `diff -q #{File.join(dest, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip, 'failed to copy manifest.yml'
+        assert_equal '', `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app')}`.strip,
+                     'failed to mv app and all contents'
+        assert_equal '', `diff -rq #{File.join(dest, 'config')} #{Rails.root.join('config')}`.strip,
+                     'failed to recursively copy config dir'
+        assert_equal '', `diff -q #{File.join(dest, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip,
+                     'failed to copy manifest.yml'
 
         # verify original does not exist
         refute File.directory?(File.join(dir, 'app'))
@@ -233,7 +240,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
 
         # select dir to move
         visit files_url('extra_remote', dir)
-        %w(app config manifest.yml).each do |f|
+        ['app', 'config', 'manifest.yml'].each do |f|
           find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
         end
         assert_selector '.selected', count: 3
@@ -248,9 +255,12 @@ class RemoteFilesTest < ApplicationSystemTestCase
         find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
 
         # verify contents moved
-        assert_equal '', `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app')}`.strip, 'failed to mv app and all contents'
-        assert_equal '', `diff -rq #{File.join(dest, 'config')} #{Rails.root.join('config')}`.strip, 'failed to recursively copy config dir'
-        assert_equal '', `diff -q #{File.join(dest, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip, 'failed to copy manifest.yml'
+        assert_equal '', `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app')}`.strip,
+                     'failed to mv app and all contents'
+        assert_equal '', `diff -rq #{File.join(dest, 'config')} #{Rails.root.join('config')}`.strip,
+                     'failed to recursively copy config dir'
+        assert_equal '', `diff -q #{File.join(dest, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip,
+                     'failed to copy manifest.yml'
 
         # verify original does not exist
         refute File.directory?(File.join(dir, 'app'))
@@ -294,7 +304,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
     end
   end
 
-  test "uploading files" do
+  test 'uploading files' do
     Dir.mktmpdir do |dir|
       with_rclone_conf(dir) do
         FileUtils.mkpath File.join(dir, 'foo')
@@ -326,7 +336,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
     end
   end
 
-  test "changing directory" do
+  test 'changing directory' do
     with_rclone_conf(Rails.root.to_s) do
       visit files_url('alias_remote', '/')
 
@@ -347,7 +357,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
     end
   end
 
-  test "edit file" do
+  test 'edit file' do
     OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
 
