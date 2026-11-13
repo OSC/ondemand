@@ -1,4 +1,4 @@
-import { storeBoolean, getBoolean } from './utils';
+import { storeBoolean } from './utils';
 import { csrfToken, settingsPath, safeViewingEnabled as serverSafeViewingEnabled } from './config';
 
 export const STORAGE_KEY = 'ood_safe_viewing';
@@ -32,22 +32,20 @@ function updateToggleButton(enabled) {
     return;
   }
 
-  const label = button.querySelector('.ood-theme-toggle__label');
-  const lightLabel = button.dataset.lightLabel;
-  const darkLabel = button.dataset.darkLabel;
-
   button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
   button.classList.toggle('ood-theme-toggle--dark', enabled);
   button.title = enabled ? button.dataset.disableLabel : button.dataset.enableLabel;
+}
 
-  if (label) {
-    label.textContent = enabled ? darkLabel : lightLabel;
+function clearLocalFallback() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (_e) {
+    // localStorage may be unavailable in private browsing
   }
 }
 
 function persistSafeViewing(enabled) {
-  storeBoolean(STORAGE_KEY, enabled);
-
   const body = new URLSearchParams();
   body.append('settings[safe_viewing]', enabled ? 'true' : 'false');
 
@@ -58,8 +56,15 @@ function persistSafeViewing(enabled) {
       Accept: 'application/json',
     },
     body,
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(`Failed to persist safe viewing (${response.status})`);
+    }
+    // UserSettingStore is source of truth — drop any device-local fallback.
+    clearLocalFallback();
   }).catch(() => {
-    // Preference remains in localStorage as a short-term fallback if the request fails.
+    // Remember on this device only when the server write fails.
+    storeBoolean(STORAGE_KEY, enabled);
   });
 }
 
@@ -69,19 +74,9 @@ export function initDarkMode() {
     return;
   }
 
-  const serverEnabled = serverSafeViewingEnabled();
-  const localEnabled = getBoolean(STORAGE_KEY);
-  let enabled = serverEnabled;
-
-  // Migrate legacy localStorage-only preference into UserSettingStore.
-  if (!serverEnabled && localEnabled) {
-    enabled = true;
-    persistSafeViewing(true);
-  } else {
-    storeBoolean(STORAGE_KEY, enabled);
-  }
-
-  applySafeViewing(enabled);
+  // Trust server-rendered UserSettingStore (and default_to_dark_mode).
+  // localStorage is only a write-failure fallback, never an override.
+  applySafeViewing(serverSafeViewingEnabled());
 
   button.addEventListener('click', () => {
     const next = !isSafeViewingEnabled();

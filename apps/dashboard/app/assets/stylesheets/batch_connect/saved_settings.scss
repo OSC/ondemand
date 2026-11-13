@@ -7,6 +7,13 @@
     color: rgba(0, 0, 0, 0.25);
   }
 
+  [data-bs-theme="dark"] &,
+  .ood-safe-viewing & {
+    .saved-settings-list .app-icon {
+      color: rgba(255, 255, 255, 0.45);
+    }
+  }
+
   .saved-settings-list .list-group-item {
     border-top: none;
     border-right: none;

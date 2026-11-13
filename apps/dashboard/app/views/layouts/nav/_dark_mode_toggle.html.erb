@@ -7,11 +7,8 @@
     aria-pressed="<%= safe_viewing_enabled? %>"
     title="<%= safe_viewing_enabled? ? t('dashboard.nav_dark_mode_disable') : t('dashboard.nav_dark_mode_enable') %>"
     data-enable-label="<%= t('dashboard.nav_dark_mode_enable') %>"
-    data-disable-label="<%= t('dashboard.nav_dark_mode_disable') %>"
-    data-light-label="<%= t('dashboard.nav_dark_mode_light') %>"
-    data-dark-label="<%= t('dashboard.nav_dark_mode_dark') %>">
-    <span class="ood-theme-toggle__label d-md-none d-xxl-inline"><%= safe_viewing_enabled? ? t('dashboard.nav_dark_mode_dark') : t('dashboard.nav_dark_mode_light') %></span>
-    <span class="ood-theme-toggle__track ms-1" aria-hidden="true">
+    data-disable-label="<%= t('dashboard.nav_dark_mode_disable') %>">
+    <span class="ood-theme-toggle__track" aria-hidden="true">
       <span class="ood-theme-toggle__thumb">
         <i class="fas fa-sun ood-theme-toggle__icon ood-theme-toggle__icon--sun" aria-hidden="true"></i>
         <i class="fas fa-moon ood-theme-toggle__icon ood-theme-toggle__icon--moon" aria-hidden="true"></i>

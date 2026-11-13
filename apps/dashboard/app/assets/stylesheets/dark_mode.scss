@@ -511,8 +511,7 @@ $ood-toggle-pad: 0.1875rem;
 }
 
 // Button.nav-link does not keep navbar colors on blur like <a.nav-link>; set explicitly.
-.navbar-dark .ood-theme-toggle.nav-link,
-.navbar-dark .ood-theme-toggle.nav-link .ood-theme-toggle__label {
+.navbar-dark .ood-theme-toggle.nav-link {
   color: var(--bs-navbar-color);
 }
 
@@ -523,8 +522,7 @@ $ood-toggle-pad: 0.1875rem;
   color: var(--bs-navbar-hover-color);
 }
 
-.navbar-light .ood-theme-toggle.nav-link,
-.navbar-light .ood-theme-toggle.nav-link .ood-theme-toggle__label {
+.navbar-light .ood-theme-toggle.nav-link {
   color: var(--bs-navbar-color);
 }
 
@@ -533,10 +531,6 @@ $ood-toggle-pad: 0.1875rem;
 .navbar-light .ood-theme-toggle.nav-link:active,
 .navbar-light .ood-theme-toggle.nav-link:focus-visible {
   color: var(--bs-navbar-hover-color);
-}
-
-.ood-theme-toggle__label {
-  color: inherit;
 }
 
 .ood-theme-toggle__track {

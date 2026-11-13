@@ -1,21 +1,23 @@
 'use strict';
 
 import ace from 'ace-code/esm-resolver';
-import { isSafeViewingEnabled } from './dark_mode.js';
+import { isSafeViewingEnabled, SAFE_VIEWING_CHANGE_EVENT } from './dark_mode.js';
 
 const KEY_PREFIX = "ood_editor_store_";
-const SAFE_VIEWING_EDITOR_THEME = 'ace/theme/tomorrow_night';
+const LIGHT_THEME_KEY = 'theme';
+const DARK_THEME_KEY = 'theme_dark';
+const DEFAULT_LIGHT_THEME = 'ace/theme/solarized_light';
+const DEFAULT_DARK_THEME = 'ace/theme/twilight';
 
-function isLightAceTheme(themePath) {
-  return document.querySelector(`#theme optgroup[label="Bright"] option[value="${themePath}"]`) !== null;
+function themePreferenceKey() {
+  return isSafeViewingEnabled() ? DARK_THEME_KEY : LIGHT_THEME_KEY;
 }
 
 function resolveEditorTheme() {
-  const saved = getUserPreference('theme') || 'ace/theme/solarized_light';
-  if (isSafeViewingEnabled() && isLightAceTheme(saved)) {
-    return SAFE_VIEWING_EDITOR_THEME;
+  if (isSafeViewingEnabled()) {
+    return getUserPreference(DARK_THEME_KEY) || DEFAULT_DARK_THEME;
   }
-  return saved;
+  return getUserPreference(LIGHT_THEME_KEY) || DEFAULT_LIGHT_THEME;
 }
 
 function normalizeKey(key) {
@@ -148,8 +150,15 @@ jQuery(function () {
 
     // Change the theme
     $("#theme").on('change', function () {
-      editor.setTheme($("#theme option:selected").val());
-      setUserPreference('theme', $("#theme option:selected").val());
+      const theme = $("#theme option:selected").val();
+      editor.setTheme(theme);
+      setUserPreference(themePreferenceKey(), theme);
+    });
+
+    document.addEventListener(SAFE_VIEWING_CHANGE_EVENT, () => {
+      const theme = resolveEditorTheme();
+      $("#theme").val(theme);
+      editor.setTheme(theme);
     });
 
     // Change the mode
