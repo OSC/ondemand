@@ -233,7 +233,7 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        redirect_to(files_path(next_valid), alert: exception.message.to_s)
+        redirect_to(next_valid, alert: exception.message.to_s)
       end
       format.json do
         @files = []
@@ -300,7 +300,8 @@ class FilesController < ApplicationController
   def next_valid
     next_valid = @path.parent.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
     present_path = next_valid.nil? ? Dir.home : next_valid
-    AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home
+    return root_path if present_path.to_s == '/'
+    files_path(AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home)
   end
 
   def uppy_upload_path
