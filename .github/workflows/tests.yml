@@ -88,6 +88,9 @@ jobs:
       - name: Run System Dashboard tests
         run: cd apps/dashboard; bin/rake test:system
 
+      - name: Run System Dashboard tests in dark mode
+        run: cd apps/dashboard; OOD_DEFAULT_TO_DARK_MODE=true bin/rake test:system
+
       - name: Upload system test failures.
         if: failure()
         uses: actions/upload-artifact@v6

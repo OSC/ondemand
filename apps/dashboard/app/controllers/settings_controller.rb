@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 # The Controller for user level settings /dashboard/settings.
-# Current supported settings: profile, announcement
+# Current supported settings: profile, announcement, safe_viewing
 class SettingsController < ApplicationController
   include UserSettingStore
-  ALLOWED_SETTINGS = [:profile, { announcements: {} }].freeze
+  ALLOWED_SETTINGS = [:profile, :safe_viewing, { announcements: {} }].freeze
 
   def update
     new_settings = read_settings(settings_param)
@@ -34,6 +34,12 @@ class SettingsController < ApplicationController
   end
 
   def read_settings(params)
-    params.to_h
+    return {} if params.nil?
+
+    settings = params.to_h.deep_symbolize_keys
+    if settings.key?(:safe_viewing)
+      settings[:safe_viewing] = ActiveModel::Type::Boolean.new.cast(settings[:safe_viewing])
+    end
+    settings
   end
 end

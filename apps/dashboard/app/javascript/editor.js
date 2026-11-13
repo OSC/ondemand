@@ -1,8 +1,24 @@
 'use strict';
 
 import ace from 'ace-code/esm-resolver';
+import { isSafeViewingEnabled, SAFE_VIEWING_CHANGE_EVENT } from './dark_mode.js';
 
 const KEY_PREFIX = "ood_editor_store_";
+const LIGHT_THEME_KEY = 'theme';
+const DARK_THEME_KEY = 'theme_dark';
+const DEFAULT_LIGHT_THEME = 'ace/theme/solarized_light';
+const DEFAULT_DARK_THEME = 'ace/theme/twilight';
+
+function themePreferenceKey() {
+  return isSafeViewingEnabled() ? DARK_THEME_KEY : LIGHT_THEME_KEY;
+}
+
+function resolveEditorTheme() {
+  if (isSafeViewingEnabled()) {
+    return getUserPreference(DARK_THEME_KEY) || DEFAULT_DARK_THEME;
+  }
+  return getUserPreference(LIGHT_THEME_KEY) || DEFAULT_LIGHT_THEME;
+}
 
 function normalizeKey(key) {
   return `${KEY_PREFIX}${key}`;
@@ -134,8 +150,15 @@ jQuery(function () {
 
     // Change the theme
     $("#theme").on('change', function () {
-      editor.setTheme($("#theme option:selected").val());
-      setUserPreference('theme', $("#theme option:selected").val());
+      const theme = $("#theme option:selected").val();
+      editor.setTheme(theme);
+      setUserPreference(themePreferenceKey(), theme);
+    });
+
+    document.addEventListener(SAFE_VIEWING_CHANGE_EVENT, () => {
+      const theme = resolveEditorTheme();
+      $("#theme").val(theme);
+      editor.setTheme(theme);
     });
 
     // Change the mode
@@ -210,8 +233,9 @@ jQuery(function () {
       editor.setFontSize($("#fontsize option:selected").val());
       $("#mode").val(getUserPreference('mode') || "text");
       editor.session.setMode("ace/mode/" + $("#mode option:selected").val());
-      $("#theme").val(getUserPreference('theme') || "ace/theme/solarized_light");
-      editor.setTheme($("#theme option:selected").val());
+      const theme = resolveEditorTheme();
+      $("#theme").val(theme);
+      editor.setTheme(theme);
       $("#wordwrap").prop("checked", getUserPreference('wordwrap') === "true");
       editor.getSession().setUseWrapMode($("#wordwrap").is(':checked'));
 
