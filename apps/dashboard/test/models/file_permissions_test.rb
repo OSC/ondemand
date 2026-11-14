@@ -140,4 +140,27 @@ class FilePermissionsTest < ActiveSupport::TestCase
       refute PosixFile.new(readonly).to_h[:editable]
     end
   end
+
+  test 'listing helpers share editor and download limits for remote entries' do
+    editor_max = FilePermissions.editor_max_size
+
+    assert FilePermissions.listing_downloadable?(directory: true)
+    assert FilePermissions.listing_downloadable?(directory: false, size: Configuration.download_file_max)
+    refute FilePermissions.listing_downloadable?(directory: false, size: Configuration.download_file_max + 1)
+
+    assert FilePermissions.listing_editable?(directory: false, size: editor_max)
+    refute FilePermissions.listing_editable?(directory: false, size: editor_max + 1)
+    refute FilePermissions.listing_editable?(directory: true, size: 1)
+  end
+
+  test 'PosixFile includes FilePermissions instance methods' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'included.txt').tap { |path| File.write(path, 'ok') }
+      posix = PosixFile.new(file)
+
+      assert posix.can_open_file?
+      assert posix.can_edit_file?
+      assert posix.downloadable?
+    end
+  end
 end

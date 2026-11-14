@@ -1,7 +1,45 @@
 # frozen_string_literal: true
 
-class FilePermissions
+module FilePermissions
+  # Instance API used when this module is included into a file model.
+  def can_open_file?
+    FilePermissions.can_open_file?(self)
+  end
+
+  def can_edit_file?
+    FilePermissions.can_edit_file?(self)
+  end
+
+  def can_access_directory?
+    FilePermissions.can_access_directory?(self)
+  end
+
+  def downloadable?
+    FilePermissions.downloadable?(self)
+  end
+
+  def permitted?
+    FilePermissions.permitted?(self)
+  end
+
   class << self
+    # Effective editor size limit (smaller of editor and download caps).
+    def editor_max_size
+      [Configuration.file_editor_max_size, Configuration.download_file_max].min
+    end
+
+    # Listing helpers for entries where size/directory are already known (e.g. rclone ls).
+    def listing_downloadable?(directory:, size: nil)
+      return false unless Configuration.download_enabled?
+      return true if directory
+
+      size.to_i <= Configuration.download_file_max
+    end
+
+    def listing_editable?(directory:, size: nil)
+      !directory && size.to_i <= editor_max_size
+    end
+
     # Whether the user can open/view this path as a file in the Files app.
     # Considers download feature flag, allowlist, POSIX readability, file type, and size.
     def can_open_file?(path)
@@ -31,9 +69,9 @@ class FilePermissions
       return allowlist_denied(file) if local?(file) && !permitted?(file)
       return [false, "#{file} is not an editable file"] unless file.editable?
 
-      editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
-      if file.size > editor_max
-        human_max = ActiveSupport::NumberHelper.number_to_human_size(editor_max)
+      max = editor_max_size
+      if file.size > max
+        human_max = ActiveSupport::NumberHelper.number_to_human_size(max)
         return [false, "#{file} exceeds editor limit of #{human_max}. Please download the file to edit or view it locally."]
       end
 

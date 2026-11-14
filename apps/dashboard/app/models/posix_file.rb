@@ -1,5 +1,6 @@
 # PosixFile is a class representing a file on a local file system.
 class PosixFile
+  include FilePermissions
 
   attr_reader :path, :stat
 
@@ -70,12 +71,8 @@ class PosixFile
       mode:         stat.mode,
       dev:          stat.dev,
       downloadable: downloadable?,
-      editable:     FilePermissions.can_edit_file?(self)
+      editable:     can_edit_file?
     }
-  end
-
-  def downloadable?
-    FilePermissions.downloadable?(self)
   end
 
   def human_size

@@ -2,8 +2,10 @@
 
 require 'rclone_util'
 
-# PosixFile is a class representing a file on a remote file system.
+# RemoteFile is a class representing a file on a remote file system.
 class RemoteFile
+  include FilePermissions
+
   attr_reader :path, :remote
 
   delegate :basename, :descend, :parent, :join, :to_s, to: :path
@@ -27,7 +29,6 @@ class RemoteFile
 
   def ls
     files = RcloneUtil.ls(remote, path)
-    editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
     # Need to return same fields as PosixFile.
     # owner, mode and dev are not defined for remote files, leaving them empty
     files.map do |file|
@@ -42,8 +43,8 @@ class RemoteFile
         owner:        '',
         mode:         '',
         dev:          0,
-        downloadable: Configuration.download_enabled? && (is_dir || size.to_i <= Configuration.download_file_max),
-        editable:     !is_dir && size.to_i <= editor_max
+        downloadable: FilePermissions.listing_downloadable?(directory: is_dir, size: size),
+        editable:     FilePermissions.listing_editable?(directory: is_dir, size: size)
       }
     end.select do |stats|
       valid_encoding = stats[:name].to_s.valid_encoding?
