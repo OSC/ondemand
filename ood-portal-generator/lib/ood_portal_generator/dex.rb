@@ -126,6 +126,10 @@ module OodPortalGenerator
       @tls_key ||= @config.fetch(:tls_key, nil)
     end
 
+    def client_remote_ip
+      @config.fetch(:client_remote_ip, nil)
+    end
+    
     def issuer_default_https_port?
       issuer_protocol == 'https://' && @view.port.to_s == '443' && !issuer_uri.empty?
     end

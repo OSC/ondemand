@@ -498,6 +498,11 @@
   # tls_cert and tls_key take OnDemand configured values for ssl and copy keys to /etc/ood/dex maintaining file names
 #  tls_cert: null
 #  tls_key: null
+  # Sets web -> clientRemoteIP in the Dex configuration (client IPs in Dex logs)
+#  client_remote_ip:
+#    header: X-Forwarded-For
+#    trustedProxies:
+#      - 127.0.0.1/32
 #  storage_file: /etc/ood/dex/dex.db
 #  grpc: null
 #  expiry: null
