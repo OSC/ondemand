@@ -31,6 +31,7 @@ module OodPortalGenerator
       @dex_config[:web][:https] = "#{listen}:#{https_port}" if ssl?
       @dex_config[:web][:tlsCert] = tls_cert unless tls_cert.nil?
       @dex_config[:web][:tlsKey] = tls_key unless tls_key.nil?
+      @dex_config[:web][:clientRemoteIP] = client_remote_ip unless client_remote_ip.nil?
       copy_ssl_certs
       @dex_config[:grpc] = grpc unless grpc.nil?
       @dex_config[:expiry] = expiry unless expiry.nil?
@@ -129,7 +130,7 @@ module OodPortalGenerator
     def client_remote_ip
       @config.fetch(:client_remote_ip, nil)
     end
-    
+
     def issuer_default_https_port?
       issuer_protocol == 'https://' && @view.port.to_s == '443' && !issuer_uri.empty?
     end
