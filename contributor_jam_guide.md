@@ -493,15 +493,15 @@ If you have access to an Open OnDemand portal, the easiest way to set up your de
 
 1. Create the Development Folder: If you don't see the "Develop" menu in your dashboard, you typically need to create a specific directory in your terminal to signal the system:
 
-```{bash}
-mkdir -p ~/ondemand/dev
-```
+    ```{bash}
+    mkdir -p ~/ondemand/dev
+    ```
 
 2. Open the Dashboard: Log in to the Open OnDemand portal.
 
 3. Navigate to Sandbox: In the top navigation bar, click the "Develop" menu and select "My Sandbox Apps (Development)".
 
-<img src="docs/imgs/sandbox.png" width="50%">
+    <img src="docs/imgs/sandbox.png" width="50%">
 
 4. Launch Your App: From this page, you can see a list of applications currently in your ~/ondemand/dev folder. Click Launch next to an app to start its session in a new tab.
 
@@ -549,41 +549,41 @@ as follows:
 ### Display user projects in form.yml.erb
 1. Add an initializer that captures the output of a command that lists a user's projects, one project per line.
 
-```{ruby}
-# /etc/ood/config/apps/dashboard/initializers/user_attributes.rb  (root owned)
-
-require 'open3'
-
-module OodSupport
-  class User
-    def myprojects
-      @myprojects ||= begin
-        # the custom myproject command below returns a list of a user's projects, one per line
-        cmd = "/sw/local/bin/myproject"
-        o, e, s = Open3.capture3(cmd)
-        o.chomp.split
+    ```{ruby}
+    # /etc/ood/config/apps/dashboard/initializers/user_attributes.rb  (root owned)
+    
+    require 'open3'
+    
+    module OodSupport
+      class User
+        def myprojects
+          @myprojects ||= begin
+            # the custom myproject command below returns a list of a user's projects, one per line
+            cmd = "/sw/local/bin/myproject"
+            o, e, s = Open3.capture3(cmd)
+            o.chomp.split
+          end
+        end
       end
     end
-  end
-end
-```
+    ```
 
 2. Display user projects in a form.yml.erb app file
-```
-# /var/www/ood/apps/sys/jupyter/form.yml.erb
-
-attributes:
-  project:
-    widget: 'select'
-    label: 'Project'
-    options:
-        <%  OodSupport::User.new.myprojects.each do |line| %>
-        - "<%= line %>"
-        <%- end %>
-
-form:
-  - project
-```   
+    ```
+    # /var/www/ood/apps/sys/jupyter/form.yml.erb
+    
+    attributes:
+      project:
+        widget: 'select'
+        label: 'Project'
+        options:
+            <%  OodSupport::User.new.myprojects.each do |line| %>
+            - "<%= line %>"
+            <%- end %>
+    
+    form:
+      - project
+    ```   
 ### Predefined attributes
 There are several automatic predefined [attributes](https://osc.github.io/ood-documentation/latest/how-tos/app-development/interactive/form.html#automatic-predefined-attributes) that dynamically populate form fields with system values such as clusters, queues, accounts, and software modules. Simply add the attribute name to the form: list in your form.yml.erb file.
 ```{ruby}
@@ -626,44 +626,44 @@ form:
 ### Add initializers in global form items
 We can make the `project` attribute we defined previously a global form item to simplify its use. Due to the order in which files are read, a subclass file will need to be created in order to use initializers in global form items.
 1. add the initializer in a subclass file (root owned).
-```{ruby}
-# /etc/ood/config/apps/dashboard/initializers/init4globals.rb
-
-require 'ood_support'
-
-class MyUser < OodSupport::User
-  def myprojects
-      @myprojects ||= begin
-        # the custom myproject command below returns a list of a user's projects, one per line
-        cmd = "/sw/local/bin/myproject"
-        o, e, s = Open3.capture3(cmd)
-        o.chomp.split
+    ```{ruby}
+    # /etc/ood/config/apps/dashboard/initializers/init4globals.rb
+    
+    require 'ood_support'
+    
+    class MyUser < OodSupport::User
+      def myprojects
+          @myprojects ||= begin
+            # the custom myproject command below returns a list of a user's projects, one per line
+            cmd = "/sw/local/bin/myproject"
+            o, e, s = Open3.capture3(cmd)
+            o.chomp.split
+          end
       end
-  end
-end
-```
+    end
+    ```
 2. Add a line in the global_bc_items.yml.erb file to include the subclass file and define the global_project form item.
-```{ruby}
-# /etc/ood/config/ondemand.d/global_bc_items.yml.erb
-
-<% require '/etc/ood/config/apps/dashboard/initializers/init4globals.rb' %>
-
-global_bc_form_items:
-  global_project:
-    label: 'Project'
-    widget: 'select'
-    options:
-        <%  MyUser.new.myprojects.each do |line| %>
-        - "<%= line %>"
-        <%- end %>
-```
+    ```{ruby}
+    # /etc/ood/config/ondemand.d/global_bc_items.yml.erb
+    
+    <% require '/etc/ood/config/apps/dashboard/initializers/init4globals.rb' %>
+    
+    global_bc_form_items:
+      global_project:
+        label: 'Project'
+        widget: 'select'
+        options:
+            <%  MyUser.new.myprojects.each do |line| %>
+            - "<%= line %>"
+            <%- end %>
+    ```
 3. Add the global_project to any app forms where you want to display the field.
-```{ruby}
-# /var/www/ood/apps/sys/myapp/form.yml.erb
-
-form:
-  - global_project
-```
+    ```{ruby}
+    # /var/www/ood/apps/sys/myapp/form.yml.erb
+    
+    form:
+      - global_project
+    ```
 
 > [!TIP] 
 > The filename can affect load order because the files are evaluated alphabetically. 
