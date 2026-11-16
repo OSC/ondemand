@@ -16,6 +16,24 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Bug fix/next_valid redirect loops (#6140)\
+Ensure e2e also has concurrency (#6142)\
+Fix e2e repo username (#6141)\
+Feature/app specific announcements (#5956)\
+lint a random file (#6125)\
+Bump addressable from 2.9.0 to 2.9.1 in /apps/myjobs (#6138)\
+Bump loofah from 2.25.2 to 2.25.3 in /apps/myjobs (#6137)\
+Use code to wait instead of sleep in Files test (#6133)\
+Add concurrency settings to tests workflow (#6104)\
+Revert  and fix up #6124 (#6126)\
+Omit data-hide-by-default from HTML when false (#6113)\
+Upgrade checkout action from v6 to v7 (#6124)\
+Refactor dashboard_docs_url into string_configs for ondemand.d support (#6035)\
+Update Changelog (#6120)\
+Split e2e tests to use pull_request_target (#6119)\
+Refactor dashboard_help_custom_url into string_configs for ondemand.d support (#6054)\
+Refactor files app actions dropdown item template (#6056)\
+Update SECURITY.md with section on patched binaries (#6118)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
