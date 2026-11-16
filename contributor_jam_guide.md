@@ -883,4 +883,4 @@ In this small snippet, we get a good overview of what a basic model contains
 
 The biggest advantage of MVC is it allows us to independently develop our models, views, and controllers.
 This means that as long as the `update` and `editable?` methods continue to exist on the Workflow model, 
-we can update the underlying logic (like what makes a workflow 'editable') in a single place, while its interactions (like hiding certain elements when it is not) remain the same. nteractions (like hiding certain elements when it is not) remain the same. 
+we can update the underlying logic (like what makes a workflow 'editable') in a single place, while its interactions (like hiding certain elements when it is not) remain the same.
