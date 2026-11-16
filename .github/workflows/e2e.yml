@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.head.sha }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: ${{ github.event_name == 'pull_request_target' }}
 
 env:
@@ -78,7 +78,7 @@ jobs:
         with:
           fetch-depth: 0
           allow-unsafe-pr-checkout: true
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
