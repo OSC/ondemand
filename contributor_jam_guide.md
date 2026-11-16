@@ -501,7 +501,7 @@ mkdir -p ~/ondemand/dev
 
 3. Navigate to Sandbox: In the top navigation bar, click the "Develop" menu and select "My Sandbox Apps (Development)".
 
-<img src="sandbox.png" width="50%">
+<img src="docs/imgs/sandbox.png" width="50%">
 
 4. Launch Your App: From this page, you can see a list of applications currently in your ~/ondemand/dev folder. Click Launch next to an app to start its session in a new tab.
 
