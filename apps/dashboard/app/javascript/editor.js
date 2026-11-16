@@ -203,10 +203,11 @@ jQuery(function () {
     };
 
 
+    // Restore saved editor preferences, falling back to defaults for new users.
     function setOptions() {
       $("#keybindings").val(getUserPreference('keybindings') || "default");
       setKeyBinding();
-      $("#fontsize").val(getUserPreference('fontsize') || '12px');
+      $('#fontsize').val(getUserPreference('fontsize') || '14px');
       editor.setFontSize($("#fontsize option:selected").val());
       $("#mode").val(getUserPreference('mode') || "text");
       editor.session.setMode("ace/mode/" + $("#mode option:selected").val());
