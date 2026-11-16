@@ -16,24 +16,6 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
-Bug fix/next_valid redirect loops (#6140)\
-Ensure e2e also has concurrency (#6142)\
-Fix e2e repo username (#6141)\
-Feature/app specific announcements (#5956)\
-lint a random file (#6125)\
-Bump addressable from 2.9.0 to 2.9.1 in /apps/myjobs (#6138)\
-Bump loofah from 2.25.2 to 2.25.3 in /apps/myjobs (#6137)\
-Use code to wait instead of sleep in Files test (#6133)\
-Add concurrency settings to tests workflow (#6104)\
-Revert  and fix up #6124 (#6126)\
-Omit data-hide-by-default from HTML when false (#6113)\
-Upgrade checkout action from v6 to v7 (#6124)\
-Refactor dashboard_docs_url into string_configs for ondemand.d support (#6035)\
-Update Changelog (#6120)\
-Split e2e tests to use pull_request_target (#6119)\
-Refactor dashboard_help_custom_url into string_configs for ondemand.d support (#6054)\
-Refactor files app actions dropdown item template (#6056)\
-Update SECURITY.md with section on patched binaries (#6118)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
@@ -74,9 +56,12 @@ Update SECURITY.md with section on patched binaries (#6118)
   - OOD_DASHBOARD_PASSWD_URL in [6052](https://github.com/OSC/ondemand/pull/6052).
   - OOD_ALLOWLIST_PATH in [5962](https://github.com/OSC/ondemand/pull/5962).
   - OOD_DASHBOARD_2FA_URL in [6037](https://github.com/OSC/ondemand/pull/6037).
+  - OOD_DASHBOARD_DOCS_URL in [6035](https://github.com/OSC/ondemand/pull/6035).
+  - OOD_DASHBOARD_HELP_CUSTOM_URL in [6054](https://github.com/OSC/ondemand/pull/6054).
 - NSF Access outages widget in [5864](https://github.com/OSC/ondemand/pull/5864).
 - NSF announcements widget in [5875](https://github.com/OSC/ondemand/pull/5875).
 - Proxy locations now set a CSP header in [5832](https://github.com/OSC/ondemand/pull/5832).
+- Announcements can be made for batch connect apps specifically in [5956](https://github.com/OSC/ondemand/pull/5956).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -121,6 +106,7 @@ Update SECURITY.md with section on patched binaries (#6118)
 - The select all checkbox in the file browser now responds to the enter key in [5979](https://github.com/OSC/ondemand/pull/5979).
 - Long favorite paths in sidebar and path selector do not overflow in [5986](https://github.com/OSC/ondemand/pull/5986).
 - Announcement banners use space efficiently in [6019](https://github.com/OSC/ondemand/pull/6019).
+- Redirect in the files app shouldn't cause infinite redirects in [6140](https://github.com/OSC/ondemand/pull/6140).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
