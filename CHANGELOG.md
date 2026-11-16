@@ -56,9 +56,12 @@ Changes are grouped by type:
   - OOD_DASHBOARD_PASSWD_URL in [6052](https://github.com/OSC/ondemand/pull/6052).
   - OOD_ALLOWLIST_PATH in [5962](https://github.com/OSC/ondemand/pull/5962).
   - OOD_DASHBOARD_2FA_URL in [6037](https://github.com/OSC/ondemand/pull/6037).
+  - OOD_DASHBOARD_DOCS_URL in [6035](https://github.com/OSC/ondemand/pull/6035).
+  - OOD_DASHBOARD_HELP_CUSTOM_URL in [6054](https://github.com/OSC/ondemand/pull/6054).
 - NSF Access outages widget in [5864](https://github.com/OSC/ondemand/pull/5864).
 - NSF announcements widget in [5875](https://github.com/OSC/ondemand/pull/5875).
 - Proxy locations now set a CSP header in [5832](https://github.com/OSC/ondemand/pull/5832).
+- Announcements can be made for batch connect apps specifically in [5956](https://github.com/OSC/ondemand/pull/5956).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -103,6 +106,7 @@ Changes are grouped by type:
 - The select all checkbox in the file browser now responds to the enter key in [5979](https://github.com/OSC/ondemand/pull/5979).
 - Long favorite paths in sidebar and path selector do not overflow in [5986](https://github.com/OSC/ondemand/pull/5986).
 - Announcement banners use space efficiently in [6019](https://github.com/OSC/ondemand/pull/6019).
+- Redirect in the files app shouldn't cause infinite redirects in [6140](https://github.com/OSC/ondemand/pull/6140).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
