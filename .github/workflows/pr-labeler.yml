@@ -4,10 +4,21 @@ name: Pull Request Labeler
 
 on:
   workflow_dispatch:
+
+  # This event runs in the context of the base of the pull request, rather than
+  # in the context of the merge commit, as the pull_request event does. This
+  # prevents execution of unsafe code from the head of the pull request that
+  # could alter your repository or steal any secrets you use in your workflow.
+  # This event allows your workflow to do things like label or comment on pull
+  # requests from forks. Avoid using this event if you need to build or run
+  # code from the pull request.
+  #
+  # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request_target
   pull_request_target:
 
 permissions:
-  pull-requests: read
+  pull-requests: write
+  contents: read
 
 jobs:
   triage:
@@ -16,6 +27,6 @@ jobs:
     steps:
     - uses: actions/labeler@v6
       with:
-        repo-token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
         configuration-path: .github/labeler.yml
         sync-labels: true # Revert the labels applied to the PR when changes are reverted.
