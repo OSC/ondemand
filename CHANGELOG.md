@@ -56,9 +56,12 @@ Changes are grouped by type:
   - OOD_DASHBOARD_PASSWD_URL in [6052](https://github.com/OSC/ondemand/pull/6052).
   - OOD_ALLOWLIST_PATH in [5962](https://github.com/OSC/ondemand/pull/5962).
   - OOD_DASHBOARD_2FA_URL in [6037](https://github.com/OSC/ondemand/pull/6037).
+  - OOD_DASHBOARD_DOCS_URL in [6035](https://github.com/OSC/ondemand/pull/6035).
+  - OOD_DASHBOARD_HELP_CUSTOM_URL in [6054](https://github.com/OSC/ondemand/pull/6054).
 - NSF Access outages widget in [5864](https://github.com/OSC/ondemand/pull/5864).
 - NSF announcements widget in [5875](https://github.com/OSC/ondemand/pull/5875).
 - Proxy locations now set a CSP header in [5832](https://github.com/OSC/ondemand/pull/5832).
+- Announcements can be made for batch connect apps specifically in [5956](https://github.com/OSC/ondemand/pull/5956).
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -103,6 +106,7 @@ Changes are grouped by type:
 - The select all checkbox in the file browser now responds to the enter key in [5979](https://github.com/OSC/ondemand/pull/5979).
 - Long favorite paths in sidebar and path selector do not overflow in [5986](https://github.com/OSC/ondemand/pull/5986).
 - Announcement banners use space efficiently in [6019](https://github.com/OSC/ondemand/pull/6019).
+- Redirect in the files app shouldn't cause infinite redirects in [6140](https://github.com/OSC/ondemand/pull/6140).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
@@ -117,6 +121,26 @@ Changes are grouped by type:
 - Workflows are now disabled for schedulers that don't support them in [5435](https://github.com/OSC/ondemand/pull/5435).
 - File uploads now show error messages in [6059](https://github.com/OSC/ondemand/pull/6059).
 - e2e tests now login to the staging repos in [6090](https://github.com/OSC/ondemand/pull/6090).
+
+## [4.2.6] - 2026-11-04
+
+### Fixed
+
+- Rclone remotes are sorted fixing an issue with newer rclone versions in [5972](https://github.com/OSC/ondemand/pull/5972).
+- The Project Manager Launchers now work for HTCondor in [6000](https://github.com/OSC/ondemand/pull/6000).
+- File browser navigation with Select All clicked works correctly in [6001](https://github.com/OSC/ondemand/pull/6001).
+- The select all checkbox in the file browser now responds to the enter key in [6002](https://github.com/OSC/ondemand/pull/6002).
+- The file browser correctly shows errors in [6026](https://github.com/OSC/ondemand/pull/6026).
+- Long favorite paths in sidebar and path selector do not overflow in [6027](https://github.com/OSC/ondemand/pull/6027).
+- The button to expand the navigation bar on mobile is better position horizontally in [6028](https://github.com/OSC/ondemand/pull/6028).
+- File uploads now show error messages in [6059](https://github.com/OSC/ondemand/pull/6059).
+
+
+### Security
+
+- Resolved GHSA-x67g-76xw-v22g (no CVE yet). Fixes conditions where certain files
+  can execute javascript in the file browser when viewed in [6095](https://github.com/OSC/ondemand/pull/6095).
+
 
 ## [4.2.5] - 2026-09-24
 
@@ -2129,7 +2153,8 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v4.2.6...HEAD
+[4.2.6]: https://github.com/OSC/ondemand/compare/v4.2.5...v4.2.6
 [4.2.5]: https://github.com/OSC/ondemand/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/OSC/ondemand/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/OSC/ondemand/compare/v4.2.2...v4.2.3
