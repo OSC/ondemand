@@ -94,11 +94,12 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_link('/apps/show/pseudofun'), 1
     assert_select pinned_app_link('/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
 
-    # pinned apps show captions
+    # pinned apps show captions with tightened spacing
+    assert_select "a[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.app-caption.text-muted", 1
     assert_equal  'A really cool Jupyter app',
-                  css_select("a[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.text-muted").text
+                  css_select("a[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.app-caption").text
     assert_equal  'System Installed App',
-                  css_select("a[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.text-muted").text
+                  css_select("a[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.app-caption").text
   end
 
   test 'should add tile attributes to pinned app HTML' do
@@ -117,6 +118,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] i.fa-configuration-icon", 1
     assert_equal  'Configuration Title',
                   css_select("a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] p.app-title").text
+    assert_select "a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] div.app-caption", 1
     assert_equal  'Configuration Sub Caption',
                   css_select("a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] p.app-description").text
   end
@@ -470,10 +472,10 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   def pinned_app_links
-    'div.col-sm-3.col-md-3.app-launcher-container > div > a'
+    'div.app-launcher-container > div > a'
   end
 
   def pinned_app_link(ref)
-    "div.col-sm-3.col-md-3.app-launcher-container > div > a[href='#{ref}']"
+    "div.app-launcher-container > div > a[href='#{ref}']"
   end
 end
