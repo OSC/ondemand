@@ -167,62 +167,60 @@
 
   <!-- Joyride steps -->
   <ol id="joyride" style="display: none;" data-joyride>
-    <li data-id="new_job_button">
+    <li data-id="new_job_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <ol>
         <h4>
-          Steps to create a job:
+          <%= t('jobcomposer.joyride.workflows_index.steps_heading') %>
         </h4>
         <li>
-          <b>Create</b> a new job by copying from an existing job template directory or a previously run job directory.
+          <%= t('jobcomposer.joyride.workflows_index.create_step_html') %>
         </li>
         <li>
-          <b>Edit</b> the files in the job via the file explorer.
+          <%= t('jobcomposer.joyride.workflows_index.edit_step_html') %>
         </li>
         <li>
-          <b>Submit</b> the job and monitor the progress from the "Job Composer" index page.
+          <%= t('jobcomposer.joyride.workflows_index.submit_step_html') %>
         </li>
       </ol>
     </li>
-    <li data-id="new_job_button">
+    <li data-id="new_job_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <p>
-      1. Create: Begin by creating a new job from an existing template,
-      from any arbitrary path on the file system, or by copying a job you have
-      already created through the Job Composer.
+      <%= t('jobcomposer.joyride.workflows_index.create_details') %>
       </p>
     </li>
-    <li data-id="open_dir_button">
+    <li data-id="open_dir_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <p>
-        2. Edit: Select a job and click here to open the path in the file explorer so you can edit the job's files.
+        <%= t('jobcomposer.joyride.workflows_index.open_directory') %>
       </p>
     </li>
-    <li data-id="edit_button">
+    <li data-id="edit_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <p>
-        2. Edit: Select an existing job and click here to specify the jobs's server and submit script.
+        <%= t('jobcomposer.joyride.workflows_index.job_options') %>
       </p>
     </li>
-    <li data-id="terminal_button">
+    <li data-id="terminal_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <p>
-        2. Edit: Select an existing job and click here to open a new terminal to the job path.
+        <%= t('jobcomposer.joyride.workflows_index.open_terminal') %>
       </p>
     </li>
-    <li data-id="submit_button">
+    <li data-id="submit_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <p>
-        3. Submit: Select an existing job and click here to submit the job to the batch queue.
+        <%= t('jobcomposer.joyride.workflows_index.submit_job') %>
       </p>
     </li>
-    <li data-id="stop_button">
+    <li data-id="stop_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <p>
-        Select a running or queued job and click here to stop the job.
+        <%= t('jobcomposer.joyride.workflows_index.stop_job') %>
       </p>
     </li>
-    <li data-id="destroy_button">
+    <li data-id="destroy_button" data-button="<%= t('jobcomposer.joyride.next') %>">
       <p>
-        Select an existing job and click here to remove the job from the list.
+        <%= t('jobcomposer.joyride.workflows_index.delete_job') %>
       </p>
     </li>
-    <li data-id="template_button" data-button="Close">
+    <li data-id="template_button" data-button="<%= t('jobcomposer.joyride.close') %>">
       <p>
-        You can also create new job templates from existing jobs. This way, you can use that job as a template for future jobs. Select the job in the table to copy, then click "Create Template" to initiate the template creation process.
+        <%= t('jobcomposer.joyride.workflows_index.create_template') %>
       </p>
     </li>
   </ol>
