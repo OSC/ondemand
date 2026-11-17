@@ -30,20 +30,29 @@ describe 'nginx_clean stale state' do
     allow(generator).to receive(:session_count).and_return(0)
   end
 
-  after { FileUtils.remove_entry(dir) }
+  after do
+    @unix_socket.close if @unix_socket && !@unix_socket.closed?
+    FileUtils.remove_entry(dir)
+  end
 
-  # Model only the socket probe: native AF_UNIX calls are unavailable in the
-  # local review runtime. Beaker exercises cleanup on the target host.
-  def socket_probe(error = nil)
+  # A real AF_UNIX socket at socket_path. A listening one is a live PUN. A
+  # closed one leaves the file behind with nothing accepting connections, which
+  # is what a crashed nginx leaves. Skipped where AF_UNIX is unavailable.
+  def unix_socket(listening:)
+    @unix_socket = UNIXServer.new(socket_path)
+    @unix_socket.close unless listening
+  rescue NotImplementedError, SystemCallError => e
+    skip "AF_UNIX sockets are not available here (#{e.class})"
+  end
+
+  # The errno for a full accept backlog is platform specific (EAGAIN on Linux),
+  # so model the probe's answer instead of trying to provoke it.
+  def stub_probe_error(error)
     File.write(socket_path, '')
     allow(File).to receive(:socket?).and_call_original
     allow(File).to receive(:socket?).with(socket_path).and_return(true)
     socket = instance_double(Socket)
-    if error
-      allow(socket).to receive(:connect_nonblock).and_raise(error)
-    else
-      allow(socket).to receive(:connect_nonblock).and_return(0)
-    end
+    allow(socket).to receive(:connect_nonblock).and_raise(error)
     allow(Socket).to receive(:open).with(Socket::AF_UNIX, Socket::SOCK_STREAM, 0).and_yield(socket)
   end
 
@@ -56,17 +65,9 @@ describe 'nginx_clean stale state' do
 
   it 'still signals a live PUN when its socket is absent' do
     allow(Process).to receive(:getpgid).with(4242).and_return(4242)
-    allow(File).to receive(:read).and_call_original
-    stat = "4242 (nginx) #{(['S'] + Array.new(18, '0') + ['12345']).join(' ')}"
-    allow(File).to receive(:read).with('/proc/4242/stat').and_return(stat)
-    allow(File).to receive(:read).with('/proc/4242/cmdline')
-      .and_return("nginx: master process (spec) -c #{config_path}\0")
-    allow(File).to receive(:identical?).and_call_original
-    allow(File).to receive(:identical?).with('/proc/4242/exe', NginxStage.nginx_bin).and_return(true)
     status = instance_double(Process::Status, success?: true)
     expect(Open3).to receive(:capture2e) do
       File.delete(pid_path)
-      allow(File).to receive(:read).with('/proc/4242/stat').and_raise(Errno::ENOENT)
       ['', status]
     end
 
@@ -74,21 +75,29 @@ describe 'nginx_clean stale state' do
   end
 
   it 'preserves an existing live listener despite a stale PID' do
-    socket_probe
+    unix_socket(listening: true)
 
     expect { generator.invoke }.to output(/refusing to remove live PUN socket/).to_stderr
     expect([pid_path, socket_path].all? { |path| File.exist?(path) }).to be(true)
   end
 
+  it 'removes an abandoned socket file that nothing is listening on' do
+    unix_socket(listening: false)
+    expect(File.socket?(socket_path)).to be(true)
+
+    expect { generator.invoke }.to output(/stale pid file removed/).to_stderr.and output("spec\n").to_stdout
+    expect([pid_path, socket_path].any? { |path| File.exist?(path) }).to be(false)
+  end
+
   it 'removes an abandoned socket when connecting is refused' do
-    socket_probe(Errno::ECONNREFUSED)
+    stub_probe_error(Errno::ECONNREFUSED)
 
     expect { generator.invoke }.to output(/stale pid file removed/).to_stderr.and output("spec\n").to_stdout
     expect([pid_path, socket_path].any? { |path| File.exist?(path) }).to be(false)
   end
 
   it 'preserves state when a nonblocking connect is inconclusive' do
-    socket_probe(Errno::EAGAIN)
+    stub_probe_error(Errno::EAGAIN)
 
     expect { generator.invoke }.to output(/temporarily unavailable/).to_stderr
     expect([pid_path, socket_path].all? { |path| File.exist?(path) }).to be(true)
@@ -118,10 +127,39 @@ describe 'nginx_clean stale state' do
   it 'preserves disabled-user config when its socket is still live' do
     allow(NginxStage).to receive(:active_users).and_return([])
     allow(NginxStage).to receive(:inactive_users).and_return(['gone'])
-    socket_probe
+    unix_socket(listening: true)
 
     expect { generator.invoke }.to output(/refusing to remove live PUN socket/).to_stderr
       .and output("gone (disabled)\n").to_stdout
     expect([pid_path, socket_path, config_path, secret_path].all? { |path| File.exist?(path) }).to be(true)
+  end
+
+  context 'when a stale file cannot be removed' do
+    before { allow(File).to receive(:delete).and_call_original }
+
+    it 'reports the failure instead of claiming the PID file was removed' do
+      allow(File).to receive(:delete).with(pid_path).and_raise(Errno::EACCES)
+
+      expect { generator.invoke }.to output("Permission denied\n").to_stderr.and output('').to_stdout
+      expect(File.exist?(pid_path)).to be(true)
+    end
+
+    it 'keeps the PID file when the socket cannot be removed so the next run retries' do
+      File.write(socket_path, '')
+      allow(File).to receive(:delete).with(socket_path).and_raise(Errno::EACCES)
+
+      expect { generator.invoke }.to output("Permission denied\n").to_stderr
+      expect(File.exist?(pid_path)).to be(true)
+    end
+
+    it 'keeps a disabled user\'s config when its stale PID file cannot be removed' do
+      allow(NginxStage).to receive(:active_users).and_return([])
+      allow(NginxStage).to receive(:inactive_users).and_return(['gone'])
+      allow(File).to receive(:delete).with(pid_path).and_raise(Errno::EACCES)
+
+      expect { generator.invoke }.to output(/Error trying to clean up disabled user gone: Permission denied/).to_stderr
+        .and output("gone (disabled)\n").to_stdout
+      expect([config_path, secret_path].all? { |path| File.exist?(path) }).to be(true)
+    end
   end
 end

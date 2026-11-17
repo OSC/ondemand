@@ -98,7 +98,8 @@ module NginxStage
           else
             cleanup_stale_files(pid_path, NginxStage.pun_socket_path(user: u), quiet: true)
           end
-          FileUtils.rm_f([NginxStage.pun_secret_key_base_path(user: u), NginxStage.pun_config_path(user: u)])
+          remove_path(NginxStage.pun_secret_key_base_path(user: u))
+          remove_path(NginxStage.pun_config_path(user: u))
           pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
           pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
         rescue StandardError => e
@@ -128,11 +129,23 @@ module NginxStage
     # cleanup keeps its existing quiet output for the Beaker checks.
     def cleanup_stale_files(pid_path, socket_path, quiet: false)
       check_stale_socket(socket_path) if File.socket?(socket_path)
-      FileUtils.rm_f([pid_path.to_s, socket_path])
+      # Remove the PID file last. It is what lists the user on the next run, so
+      # if the socket cannot be removed the cleanup is retried, not orphaned.
+      remove_path(socket_path)
+      remove_path(pid_path.to_s)
       $stderr.puts "stale pid file removed: #{pid_path}" unless quiet
     end
 
     private
+
+      # A path that is already gone is fine. Any other failure (permissions, a
+      # directory in the way) propagates so it is reported, not hidden behind a
+      # success message.
+      def remove_path(path)
+        File.delete(path)
+      rescue Errno::ENOENT
+        nil
+      end
 
       # Only a missing/refused listener permits deletion. A full backlog or
       # any other probe error propagates without removing state.
