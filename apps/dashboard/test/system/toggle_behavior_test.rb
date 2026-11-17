@@ -128,7 +128,32 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
       assert_equal('true', button['aria-expanded'])
     end
   end
-  
+
+  test 'collapsible saved settings menu toggles' do
+    Configuration.stubs(:bc_saved_settings?).returns(true)
+    Configuration.stubs(:user_settings_file)
+                 .returns("#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_menu.yml")
+    visit(batch_connect_sessions_path)
+
+    within('#saved-settings-menu') do
+      button = find('button.collapsible-app-card-toggle')
+
+      assert_selector('#saved-settings-menu-items.show')
+      assert_equal('true', button['aria-expanded'])
+
+      button.click
+
+      refute_selector('#saved-settings-menu-items.show')
+      refute_selector('#saved-settings-menu-items.collapsing')
+      assert_equal('false', button['aria-expanded'])
+
+      button.click
+
+      assert_selector('#saved-settings-menu-items.show')
+      assert_equal('true', button['aria-expanded'])
+    end
+  end
+
   test 'project launcher list toggle works' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
