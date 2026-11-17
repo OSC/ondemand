@@ -109,27 +109,24 @@ class SavedSettingsTest < ApplicationSystemTestCase
   end
 
   test 'editing saved settings can save them under a new name' do
-    with_modified_env({ ENABLE_NATIVE_VNC: '1' }) do
-      Dir.mktmpdir do |dir|
-        user_settings_file = "#{dir}/user_settings.yml"
-        FileUtils.cp("#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_edit.yml", user_settings_file)
-        stub_user_settings(user_settings_file)
+    Dir.mktmpdir do |dir|
+      user_settings_file = "#{dir}/user_settings.yml"
+      FileUtils.cp("#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_edit.yml", user_settings_file)
+      stub_user_settings(user_settings_file)
 
-        visit(batch_connect_edit_settings_url('sys/bc_paraview', 'edit_name'))
+      visit(batch_connect_edit_settings_url('sys/bc_paraview', 'edit_name'))
 
-        fill_in(bc_ele_id('bc_num_hours'), with: 12)
-        fill_in('batch_connect_session_template_name', with: 'new_name')
-        click_button('Save settings and close')
+      fill_in(bc_ele_id('bc_num_hours'), with: 12)
+      fill_in('batch_connect_session_template_name', with: 'new_name')
+      click_button('Save settings and close')
 
-        sleep 1
-        assert_equal(batch_connect_setting_path('sys/bc_paraview', 'new_name'), current_path)
+      assert_current_path(batch_connect_setting_path('sys/bc_paraview', 'new_name'))
 
-        # the original settings are kept, the new ones are saved next to them
-        settings = YAML.safe_load(File.read(user_settings_file)).to_h['batch_connect_templates']['sys/bc_paraview']
-        assert_equal(['edit_name', 'new_name'], settings.keys.sort)
-        assert_equal('10', settings['edit_name']['bc_num_hours'])
-        assert_equal('12', settings['new_name']['bc_num_hours'])
-      end
+      # the original settings are kept, the new ones are saved next to them
+      settings = YAML.safe_load(File.read(user_settings_file)).to_h['batch_connect_templates']['sys/bc_paraview']
+      assert_equal(['edit_name', 'new_name'], settings.keys.sort)
+      assert_equal('10', settings['edit_name']['bc_num_hours'])
+      assert_equal('12', settings['new_name']['bc_num_hours'])
     end
   end
 
