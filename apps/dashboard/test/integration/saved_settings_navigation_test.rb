@@ -46,7 +46,7 @@ class SavedSettingsNavigationTest < ActionDispatch::IntegrationTest
       assert_response :ok
 
       assert_select 'div#saved-settings-menu'
-      assert_equal 'Saved Settings', css_select('div#saved-settings-menu div.card-header').text.strip
+      assert_equal 'Saved Settings', css_select('div#saved-settings-menu .card-header').text.strip
 
       assert_equal 'Paraview', css_select('div#saved-settings-menu p.header').text.strip
       menu_links = css_select('div#saved-settings-menu div.saved-settings-list a.list-group-item-action')
@@ -66,7 +66,7 @@ class SavedSettingsNavigationTest < ActionDispatch::IntegrationTest
         assert_response :ok
 
         assert_select 'div#saved-settings-menu'
-        assert_equal 'Saved Settings', css_select('div#saved-settings-menu div.card-header').text.strip
+        assert_equal 'Saved Settings', css_select('div#saved-settings-menu .card-header').text.strip
         assert_equal 'You have no saved settings.', css_select('div#saved-settings-menu span.list-group-item-action').text.strip
       end
     end
