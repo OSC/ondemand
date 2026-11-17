@@ -364,7 +364,12 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
-          dex: true
+          dex: {
+            client_remote_ip: {
+              header: 'X-Forwarded-For',
+              trustedProxies: ['127.0.0.1/32'],
+            },
+          },
         })
         expected_rendered = read_fixture('ood-portal.conf.dex-full')
         expect(described_class.output).to receive(:write).with(expected_rendered)
