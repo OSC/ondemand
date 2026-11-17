@@ -117,6 +117,8 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       assert_select 'input#batch_connect_session_template_name[list="batch_connect_session_template_names"]'
       assert_select 'datalist#batch_connect_session_template_names option[value="edit_name"]'
       assert_select 'div#batch_connect_session_save_template_fields[hidden]'
+      assert_select 'input#batch_connect_session_template_name[placeholder="App settings name"]'
+      assert_select 'span#batch_connect_session_template_name_error[hidden]', text: 'Please type a valid name to continue'
       assert_select 'input#batch_connect_session_save_template_submit'
     end
   end
@@ -141,7 +143,8 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
                    css_select('input[name="batch_connect_session_context[bc_vnc_resolution]"]').first['value']
       assert_equal 'edit_name', css_select('input[name="template_name"]').first['value']
       assert_select 'div#batch_connect_session_save_template_fields:not([hidden])'
-      assert_select 'input#batch_connect_session_template_name[readonly]'
+      # editable, so the settings can also be saved under a new name
+      assert_select 'input#batch_connect_session_template_name:not([readonly])'
     end
   end
 

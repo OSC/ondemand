@@ -63,6 +63,8 @@ ja_JP:
       * このセッションの %{title} セッションデータは
         %{data_link_tag} の下でアクセスできます。
     batch_connect_form_template_name_label: 設定名
+    batch_connect_form_type_new_name: アプリ設定名
+    batch_connect_form_type_new_name_error: 続行するには有効な名前を入力してください
     batch_connect_invalid_form_array: "'form'要素はform.ymlで配列ではありません"
     batch_connect_invalid_form_attributes: "'attributes'要素はform.ymlでマップではありません"
     batch_connect_missing_cluster: |

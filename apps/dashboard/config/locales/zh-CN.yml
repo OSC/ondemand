@@ -62,6 +62,8 @@ zh-CN:
     batch_connect_form_select_template: 选择一个模版
     batch_connect_form_session_data_html: "* 你可以通过%{data_link_tag}来获取会话数据%{title}。\n"
     batch_connect_form_template_name_label: 设置名称
+    batch_connect_form_type_new_name: 在这里输入你的新模版名称
+    batch_connect_form_type_new_name_error: 请输入一个有效的名称以继续
     batch_connect_invalid_form_array: "'form' 元素在 form.yml 中不是数组"
     batch_connect_invalid_form_attributes: "'attributes' 元素在 form.yml 中不是映射"
     batch_connect_missing_cluster: |

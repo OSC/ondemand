@@ -62,6 +62,8 @@ fa-IR:
     batch_connect_form_select_template: انتخاب تنظیمات ذخیره‌شده
     batch_connect_form_session_data_html: "* داده‌های نشست %{title} از طریق %{data_link_tag} در دسترس است.\n"
     batch_connect_form_template_name_label: نام تنظیم
+    batch_connect_form_type_new_name: نام تنظیمات برنامه
+    batch_connect_form_type_new_name_error: برای ادامه، یک نام معتبر وارد کنید
     batch_connect_invalid_form_array: عنصر «form» در form.yml از نوع Array نیست
     batch_connect_invalid_form_attributes: عنصر «attributes» در form.yml از نوع Map نیست
     batch_connect_missing_cluster: 'کلاستر تنظیم نشده است. آن را در form.yml.erb با `cluster` یا `form.cluster` تنظیم کنید، یا `cluster` را در submit.yml.erb قرار دهید.

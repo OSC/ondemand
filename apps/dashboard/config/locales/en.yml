@@ -66,6 +66,8 @@ en:
         under the %{data_link_tag}.
     batch_connect_form_template_name_help: Type a new name, or pick an existing one to overwrite it.
     batch_connect_form_template_name_label: Settings name
+    batch_connect_form_type_new_name: App settings name
+    batch_connect_form_type_new_name_error: Please type a valid name to continue
     batch_connect_invalid_form_array: "'form' element in form.yml is not an Array"
     batch_connect_invalid_form_attributes: "'attributes' element in form.yml is not a Map"
     batch_connect_missing_cluster: |

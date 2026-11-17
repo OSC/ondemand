@@ -65,6 +65,8 @@ fr-CA:
       * Les données de session %{title} pour cette session sont accessibles
         sous %{data_link_tag}.
     batch_connect_form_template_name_label: nom du paramètre
+    batch_connect_form_type_new_name: Nom des paramètres de l’application
+    batch_connect_form_type_new_name_error: Veuillez saisir un nom valide pour continuer
     batch_connect_invalid_form_array: "'form' dans form.yml n'est pas un tableau"
     batch_connect_invalid_form_attributes: "'attributes' dans form.yml n'est pas une carte"
     batch_connect_missing_cluster: |

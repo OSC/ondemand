@@ -32,8 +32,9 @@
       <label class="form-label" for="batch_connect_session_template_name"><%= t('dashboard.batch_connect_form_template_name_label') %></label>
       <div class="d-flex gap-2">
         <input class="form-control" name="template_name" value="<%= @template_name %>" type="text" id="batch_connect_session_template_name"
+               placeholder="<%= t('dashboard.batch_connect_form_type_new_name') %>"
                list="batch_connect_session_template_names" autocomplete="off" aria-describedby="batch_connect_session_template_name_help"
-               <%= @template_name ? 'required readonly' : '' %>>
+               <%= @template_name ? 'required' : '' %>>
         <datalist id="batch_connect_session_template_names">
           <% @prefill_templates.each_key do |name| %>
             <option value="<%= name %>"></option>
@@ -42,6 +43,8 @@
         <%= f.submit t('dashboard.batch_connect_form_save_submit'), id: 'batch_connect_session_save_template_submit', class: "btn btn-primary text-nowrap", formaction: batch_connect_save_settings_path(token: @app.token), disabled: @template_name ? false : true %>
       </div>
       <div id="batch_connect_session_template_name_help" class="form-text"><%= t('dashboard.batch_connect_form_template_name_help') %></div>
+      <%# read by prefill_submit.js as the validation message for an empty name %>
+      <span id="batch_connect_session_template_name_error" hidden><%= t('dashboard.batch_connect_form_type_new_name_error') %></span>
     </div>
   </div>
   <%- end -%>
