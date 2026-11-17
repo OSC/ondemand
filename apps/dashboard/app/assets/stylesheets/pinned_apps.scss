@@ -38,6 +38,12 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 1em;
+
+  @media (max-width: 575.98px) {
+    max-width: 20rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .app-launcher {
