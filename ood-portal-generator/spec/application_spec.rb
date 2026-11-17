@@ -364,7 +364,12 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
-          dex: true
+          dex: {
+            client_remote_ip: {
+              header: 'X-Forwarded-For',
+              trustedProxies: ['127.0.0.1/32'],
+            },
+          },
         })
         expected_rendered = read_fixture('ood-portal.conf.dex-full')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -528,21 +533,6 @@ describe OodPortalGenerator::Application do
           }
         })
         expected_dex_yaml = read_fixture('dex.yaml.secret').gsub('/etc/ood/dex', config_dir)
-        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
-        described_class.generate()
-      end
-
-      it 'generates Dex config with client_remote_ip' do
-        allow(described_class).to receive(:context).and_return({
-          oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f',
-          dex: {
-            client_remote_ip: {
-              header: 'X-Forwarded-For',
-              trustedProxies: ['127.0.0.1/32'],
-            },
-          },
-        })
-        expected_dex_yaml = read_fixture('dex.yaml.client_remote_ip').gsub('/etc/ood/dex', config_dir)
         expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
         described_class.generate()
       end
