@@ -4,7 +4,7 @@
 <%- if @user_configuration.pinned_apps_group_by.present? -%>
   <%= render(partial: "/widgets/pinned_apps/group", collection: OodAppGroup.groups_for(apps: @pinned_apps, group_by: @user_configuration.pinned_apps_group_by.to_sym))  %>
 <%- else -%>
-  <div class="row">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 app-launcher-row">
     <%= render partial: "/widgets/pinned_apps/app", collection: @pinned_apps %>
   </div>
 <%- end -%>
