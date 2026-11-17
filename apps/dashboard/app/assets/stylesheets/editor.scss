@@ -3,6 +3,26 @@
   height: 100%;
 }
 
+[data-bs-theme="dark"] {
+  #editor.ace_editor {
+    border: 1px solid var(--bs-border-color);
+  }
+
+  .editor-controls.card,
+  .editor-controls .card-header,
+  .editor-controls .card-body,
+  .editor-controls .list-group-item {
+    background-color: var(--bs-body-bg);
+    --bs-card-bg: var(--bs-body-bg);
+    --bs-list-group-bg: var(--bs-body-bg);
+    color: var(--bs-body-color);
+  }
+
+  .editor-controls.card {
+    --bs-card-border-color: var(--bs-border-color);
+  }
+}
+
 #save-button {
   :hover {
     cursor: pointer;

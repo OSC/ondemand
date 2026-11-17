@@ -87,6 +87,7 @@ class ConfigurationSingleton
       :project_size_enabled         => true,
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
+      :default_to_dark_mode         => false,
       :open_apps_in_new_window      => true,
       :bc_ssh_to_compute_node       => true,
     }.freeze
