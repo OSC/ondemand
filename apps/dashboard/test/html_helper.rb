@@ -41,11 +41,11 @@ class ActiveSupport::TestCase
   end
 
   def pinned_app_link_css_query(col_size, ref)
-    "div.row > div.col-md-#{col_size} > div.row > div.col-sm-3.col-md-3.app-launcher-container > div > a[href='#{ref}']"
+    "div.row > div.col-md-#{col_size} > div.row > div.app-launcher-container > div > a[href='#{ref}']"
   end
 
   def pinned_app_row_css_query(col_size)
-    "div.row > div.col-md-#{col_size} > div.row > div.col-sm-3.col-md-3.app-launcher-container"
+    "div.row > div.col-md-#{col_size} > div.row > div.app-launcher-container"
   end
 
 end
