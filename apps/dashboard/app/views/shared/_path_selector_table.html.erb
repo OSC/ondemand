@@ -34,9 +34,9 @@
           <div class="row">
           <% if favorites %>
             <div class="col-sm-5">
-              <div class="panel panel-default">
-                <div class="panel-heading">Favorites</div>
-                <div id="favorites" class="list-group text-nowrap">
+              <div class="card">
+                <div class="card-header">Favorites</div>
+                <div id="favorites" class="list-group list-group-flush text-nowrap">
                   <% homedir = FavoritePath.new(Dir.home, title:I18n.t('dashboard.home_directory')) %>
                   <%= render(partial: 'batch_connect/session_contexts/favorites', collection: favorites.unshift(homedir), as: :path) %>
                 </div>

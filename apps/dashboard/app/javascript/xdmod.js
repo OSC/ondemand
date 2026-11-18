@@ -245,7 +245,7 @@ function renderEfficiencyPanel(panelId, context) {
     cardBody.appendChild(paragraph);
   } else {
     const efficiencyParagraph = document.createElement('p');
-    efficiencyParagraph.className = 'd-flex justify-content-between card-text font-weight-bold';
+    efficiencyParagraph.className = 'd-flex justify-content-between card-text fw-bold';
     efficiencyParagraph.innerHTML = `<span class="text-success">${efficiencyHelpers.good_percent.call(context)}% efficient</span> <span class="text-danger">${efficiencyHelpers.bad_percent.call(context)}% inefficient</span>`;
     cardBody.appendChild(efficiencyParagraph);
 

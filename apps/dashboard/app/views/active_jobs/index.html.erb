@@ -7,7 +7,7 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <% filters.each do |filter| %>
-            <%= '<li class="divider"></li>'.html_safe if filter == filters.last %>
+            <%= '<li class="dropdown-divider" role="separator"></li>'.html_safe if filter == filters.last %>
             <li id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');">
               <a class="dropdown-item" href="#"><%= filter.title %></a>
             </li>
@@ -25,7 +25,7 @@
                 <a class="dropdown-item" href="#"><%= cluster.title %></a>
               </li>
           <% end %>
-          <li class="divider"></li>
+          <li class="dropdown-divider" role="separator"></li>
           <li id="cluster-id-all" onclick="set_cluster_id('all');" data-title="<%= t('dashboard.all_clusters') %>">
             <a class="dropdown-item" href="#"><%= t('dashboard.all_clusters') %></a>
           </li>

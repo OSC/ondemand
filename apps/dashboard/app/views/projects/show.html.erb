@@ -14,14 +14,14 @@
     <h1 class="my-2 h3"><%= @project.title %></h1>
   </div>
   <div class="col-6 col-sm-3 align-self-center justify-content-end d-flex mt-2 order-3">
-    <%= link_to 'Back to Projects', projects_path, class: 'btn btn-default align-self-start', title: 'Return to projects page' %>
+    <%= link_to 'Back to Projects', projects_path, class: 'btn btn-outline-secondary align-self-start', title: 'Return to projects page' %>
   </div>
 </div>
 
 <div class="row mb-3">
   <div class="col-sm-4 col-lg-2 mt-3">
     <div class="list-group bg-white rounded">
-      <button class="list-group-item list-group-item-action bg-light font-weight-bold list-toggler"
+      <button class="list-group-item list-group-item-action bg-light fw-bold list-toggler"
           data-bs-toggle="collapse" data-bs-target="#launcher_list"
           aria-expanded="true" aria-controls="launcher_list">
         <span class="lead fw-bolder"><%= t('dashboard.jobs_launchers') %></span>
@@ -47,7 +47,7 @@
         <%- end -%>
       </div>
 
-      <a class="list-group-item list-group-item-action text-info font-weight-bold"
+      <a class="list-group-item list-group-item-action text-info fw-bold"
         href="<%= new_project_launcher_path(@project.id) %>">
         <%= t('dashboard.jobs_new_launcher') %>
       </a>
@@ -101,7 +101,7 @@
 <% unless @project.readme_path.nil? %>
   <div class="card">
     <div class="card-header">
-      <button class="btn btn-default fa fa-chevron-right" type="button" data-bs-toggle="collapse" data-bs-target="#readme" aria-expanded="true" aria-controls="readme"></button>
+      <button class="btn btn-outline-secondary fa fa-chevron-right" type="button" data-bs-toggle="collapse" data-bs-target="#readme" aria-expanded="true" aria-controls="readme"></button>
       <%= File.basename(@project.readme_path) %>
     </div>
     <div class="card-body collapse show" id="readme">
