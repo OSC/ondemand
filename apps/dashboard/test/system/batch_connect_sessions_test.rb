@@ -203,15 +203,15 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     end
   end
 
-  # Visible, enabled controls of a card in DOM order. Every poll re-renders the same
-  # card, so an index names the same control before and after a replacement.
-  CARD_CONTROLS_JS = <<~JS.squish
-    (card) => Array.from(document.querySelector(card).querySelectorAll(
-      'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )).filter((el) => el.checkVisibility() && !el.disabled)
-  JS
-
   test 'session cards hold focus when replaced' do
+    # Visible, enabled controls of a card in DOM order. Every poll re-renders the same
+    # card, so an index names the same control before and after a replacement.
+    card_controls_js = <<~JS.squish
+      (card) => Array.from(document.querySelector(card).querySelectorAll(
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )).filter((el) => el.checkVisibility() && !el.disabled)
+    JS
+
     Dir.mktmpdir do |dir|
       # OOD_BC_SESSIONS_POLL_DELAY is clamped to at least 10s, far beyond Capybara's wait.
       Configuration.stubs(:bc_sessions_poll_delay).returns(100)
@@ -221,21 +221,21 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
       card = "#id_#{get_test_bc_id}"
       assert_selector(card)
-      count = evaluate_script("(#{CARD_CONTROLS_JS})(arguments[0]).length", card)
+      count = evaluate_script("(#{card_controls_js})(arguments[0]).length", card)
       assert_operator(count, :>, 0)
 
       count.times do |i|
         # Mark the card and focus the control in one script, so no poll lands in between.
         execute_script(<<~JS, card, i)
           document.querySelector(arguments[0]).dataset.stale = 'true';
-          (#{CARD_CONTROLS_JS})(arguments[0])[arguments[1]].focus();
+          (#{card_controls_js})(arguments[0])[arguments[1]].focus();
         JS
 
         # The poller swaps the card and restores focus in one task, so once the
         # marked card is gone, focus is already where it will end up.
         # wait: 5 matches the connection-tabs test below, which polls at the same rate.
         assert_no_selector("#{card}[data-stale]", wait: 5)
-        focused = evaluate_script("(#{CARD_CONTROLS_JS})(arguments[0]).indexOf(document.activeElement)", card)
+        focused = evaluate_script("(#{card_controls_js})(arguments[0]).indexOf(document.activeElement)", card)
         assert_equal(i, focused, "focus was not restored to control #{i}")
       end
 
