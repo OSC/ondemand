@@ -3,7 +3,7 @@
 
 <%= javascript_include_tag 'script_show', nonce: true %>
 
-<%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default my-3',  title: 'Return to projects page' %>
+<%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-outline-secondary my-3',  title: 'Return to projects page' %>
 
 <%= bootstrap_form_for(@launcher, url: submit_project_launcher_path) do |f| %>
   <% @launcher.smart_attributes.each do |attrib| %>
