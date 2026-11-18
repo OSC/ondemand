@@ -107,7 +107,6 @@ module BatchConnect::SessionsHelper
       form_class: %w[d-inline relaunch],
       title: title,
       'aria-label': title,
-      data: { toggle: "tooltip", placement: "left" },
       params: params
     ) do
       "#{fa_icon('sync', classes: nil, title: nil)}".html_safe
@@ -123,7 +122,6 @@ module BatchConnect::SessionsHelper
       form_class: %w[d-inline edit-session],
       title: title,
       'aria-label': title,
-      data: { toggle: "tooltip", placement: "left" },
       params: {session_id: session.id}
     ) do
       "#{fa_icon('pen', classes: nil, title: nil)}".html_safe
@@ -146,7 +144,7 @@ module BatchConnect::SessionsHelper
       class: "btn btn-danger float-end btn-delete",
       title: title,
       'aria-label': title,
-      data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
+      data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm')}
     ) do
       "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_delete_title')}</span>".html_safe
     end
@@ -160,7 +158,7 @@ module BatchConnect::SessionsHelper
       class: "btn btn-danger float-end btn-cancel",
       title: title,
       'aria-label': title,
-      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom" }
+      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm') }
     ) do
       "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_cancel_title')}</span>".html_safe
     end

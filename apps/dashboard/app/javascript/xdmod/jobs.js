@@ -95,7 +95,7 @@ function table(context, helpers) {
   const thead = document.createElement('thead');
   // Empty th to accommodate for the job analytics button
   thead.innerHTML = '<tr> \
-                      <th class="sr-only">Analytics Toggle</th> \
+                      <th class="visually-hidden">Analytics Toggle</th> \
                       <th class="id">ID</th> \
                       <th class="name">Name</th> \
                       <th class="date">Date</th> \
