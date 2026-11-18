@@ -1,9 +1,7 @@
 
-<div class="panel panel-default">
+<div>
 
-	<div class="col-xs-12">
-		<div class="job_data" data-jobid="<%= d.pbsid || d.name %>" ></div>
-	</div>
+	<div class="job_data" data-jobid="<%= d.pbsid || d.name %>" ></div>
 
 	<% if !d.nodes.nil? %>
 		<% d.nodes.each do |node| %>
