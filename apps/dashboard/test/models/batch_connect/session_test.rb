@@ -302,12 +302,45 @@ module BatchConnect
         status: :running
       )
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
+      BatchConnect::Session.any_instance.stubs(:connect_file).returns(stub(file?: false))
       OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
       session = BatchConnect::Session.new
 
       # holds the right connection info
       assert session.connection_in_info?
       assert_equal session.connect.to_h, connect
+    end
+
+    test 'session prefers connection.yml over info.ood_connection_info' do
+      Dir.mktmpdir('staged_root') do |dir|
+        info_connect = {
+          host:     'info.host.edu',
+          port:     8080,
+          password: 'infoPassword'
+        }
+        file_connect = {
+          'host'       => 'file.host.edu',
+          'port'       => 9090,
+          'password'   => 'filePassword',
+          'csrf_token' => 'token-from-connection-yml'
+        }
+        info = OodCore::Job::Info.new(
+          id:     'test-123',
+          status: :running
+        )
+        OodAppkit.stubs(:dataroot).returns(Pathname.new(dir.to_s))
+        BatchConnect::Session.any_instance.stubs(:info).returns(info)
+        OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(info_connect)
+        session = BatchConnect::Session.new
+        session.stubs(:id).returns('test-id')
+        session.stage(bc_jupyter_app, context: bc_jupyter_app.build_session_context)
+
+        File.open(session.connect_file, 'w') { |file| file.write(file_connect.to_yaml) }
+
+        assert session.connection_in_info?
+        assert_equal file_connect.symbolize_keys, session.connect.to_h
+        assert_equal 'token-from-connection-yml', session.connect.csrf_token
+      end
     end
 
     test 'queued sessions with ood connection info are starting when there is connect info' do
@@ -321,6 +354,7 @@ module BatchConnect
         status: :queued
       )
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
+      BatchConnect::Session.any_instance.stubs(:connect_file).returns(stub(file?: false))
       OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
       session = BatchConnect::Session.new
 
