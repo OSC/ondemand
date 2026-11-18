@@ -92,11 +92,17 @@ module ActiveSupport
       UserConfiguration.stubs(:new).returns(user_configuration)
     end
 
+    # ood_core passes SLURM_TIME_FORMAT to every Slurm command except sbatch, salloc and srun.
+    # Versions before that pass an empty environment, so accept both.
+    def slurm_env
+      any_of({}, { 'SLURM_TIME_FORMAT' => '%Y-%m-%dT%H:%M:%S%z' })
+    end
+
     def stub_scontrol(clusters = DEFAULT_CLUSTERS)
       clusters.each do |cluster|
         Open3
           .stubs(:capture3)
-          .with({}, 'scontrol', 'show', 'part', '-o', '-M', cluster.to_s, stdin_data: '')
+          .with(slurm_env, 'scontrol', 'show', 'part', '-o', '-M', cluster.to_s, stdin_data: '')
           .returns([File.read("test/fixtures/cmd_output/scontrol_show_partitions_#{cluster}.txt"), '', exit_success])
       end
     end
@@ -104,7 +110,7 @@ module ActiveSupport
     def stub_sacctmgr(clusters = DEFAULT_CLUSTERS)
       clusters.each do |cluster|
         Open3.stubs(:capture3)
-             .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
+             .with(slurm_env, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
                    'format=account,qos', 'where', 'user=me', "cluster=#{cluster}", stdin_data: '')
              .returns([File.read("test/fixtures/cmd_output/sacctmgr_show_accts_#{cluster}.txt"), '', exit_success])
       end
@@ -122,7 +128,7 @@ module ActiveSupport
       clusters.each do |cluster|
         Open3
           .stubs(:capture3)
-          .with({}, 'sinfo', '-ho', "\u001E%c\u001F%n\u001F%f", '-M', cluster, stdin_data: '')
+          .with(slurm_env, 'sinfo', '-ho', "\u001E%c\u001F%n\u001F%f", '-M', cluster, stdin_data: '')
           .returns([File.read("test/fixtures/cmd_output/sinfo_nodes_#{cluster}.txt"), '', exit_success])
       end
     end
