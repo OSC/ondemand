@@ -21,6 +21,7 @@
   align-items: center;
 
   background-color: rgba(0, 0, 0, 0.5);
+  border-radius: var(--bs-border-radius-xl);
   color: #fff;
 
   .spinner-border {
@@ -29,60 +30,26 @@
   }
 }
 
-.app-launcher-row {
-  --bs-gutter-x: 1em;
-}
-
-// Stretch tiles to the tallest in the row (no aspect-ratio / no text clipping)
-.app-launcher-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1em;
-
-  @media (max-width: 575.98px) {
-    max-width: 20rem;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
+// Launcher tiles (pinned apps and recently used apps) are Bootstrap cards, see the
+// classes in widgets/pinned_apps/_app.html.erb. Only the border colour lives here,
+// so the tile.border_color classes below can override it.
 .app-launcher {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  flex: 1 1 auto;
-
-  border-radius: 10%;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-
-
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  word-wrap: break-word;
-  background-clip: border-box;
-
-  form.button_to {
-    height: 100%;
-  }
-
-  button {
-    outline: none;
-    display: block;
-    background-color: inherit;
-    width: 100%;
-    height: 100%;
-  }
-
   .launcher-click {
-    height: 100%;
-    color: black;
-    text-decoration: none;
-
-    border: 4px solid $launcher_border;
-    border-radius: 10%;
+    --launcher-border-color: var(--bs-primary);
+    border-color: var(--launcher-border-color);
   }
+
+  .app-icon {
+    width: auto;
+    height: 3rem;
+    margin: 0 auto .75rem;
+    font-size: 3rem;
+  }
+
+  img.app-icon {
+    max-width: 90%;
+  }
+
 /**
   Pinned Apps border color overrides:
   - Any standard CSS named color
@@ -116,79 +83,18 @@
 
   @each $color_name in $css_named_colors {
     .launcher-click.#{$color_name} {
-      border-color: unquote($color_name);
+      --launcher-border-color: #{unquote($color_name)};
     }
   }
 
-  .launcher-click.primary {
-    border-color: var(--primary);
-  }
-
-  .launcher-click.secondary {
-    border-color: var(--secondary);
-  }
-
-  .launcher-click.success {
-    border-color: var(--success);
-  }
-
-  .launcher-click.info {
-    border-color: var(--info);
-  }
-
-  .launcher-click.warning {
-    border-color: var(--warning);
-  }
-
-  .launcher-click.danger {
-    border-color: var(--danger);
-  }
-
-  .launcher-click.light {
-    border-color: var(--light);
-  }
-
-  .launcher-click.dark {
-    border-color: var(--dark);
-  }
-
-  i, img {
-    text-align: center;
-    padding-top: 1rem;
-    width: unset;
-    font-size: 6.25rem;
-  }
-
-  i {
-    height: 1.2em;
-  }
-
-  img {
-    max-width: 90%;
-    margin-bottom: 0.2em;
-  }
-
-  .app-icon {
-    margin-right: 0;
-  }
-
-  p.app-title {
-    margin: 0;
-  }
-
-  p.app-description {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 300;
-  }
-
-  .app-caption {
-    margin-top: 0.125rem;
-    margin-bottom: 0;
-    padding-bottom: 0.5rem;
+  @each $color_name, $_ in $theme-colors {
+    .launcher-click.#{$color_name} {
+      --launcher-border-color: var(--bs-#{$color_name});
+    }
   }
 }
 
-.app-launcher-hover:hover, .app-launcher-hover:focus-within {
-  transform: scale(0.98);
+// thicker border on hover: an outline right outside the 2px border, so nothing shifts
+.app-launcher-hover .launcher-click:is(:hover, :focus-visible) {
+  outline: 2px solid var(--launcher-border-color);
 }
