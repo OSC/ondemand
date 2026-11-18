@@ -92,8 +92,8 @@ class UserConfiguration
     add_property_methods
   end
 
-  # Sets the Bootstrap 4 navbar type
-  # See more about Bootstrap color schemes: https://getbootstrap.com/docs/4.6/components/navbar/#color-schemes
+  # Sets the Bootstrap 5 navbar type
+  # See more about Bootstrap color schemes: https://getbootstrap.com/docs/5.3/components/navbar/#color-schemes
   # Supported values: ['dark', 'inverse', 'light', 'default']
   # @return [String, 'dark'] Default to dark
   def navbar_type

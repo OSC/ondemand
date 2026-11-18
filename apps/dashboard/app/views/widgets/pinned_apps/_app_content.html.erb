@@ -1,5 +1,5 @@
 <%- tile_data = link.tile -%>
-<div class="center-block text-center">
+<div class="text-center">
   <%= icon_tag(URI(tile_data.fetch(:icon, link.icon_uri).to_s)) %>
   <%= content_tag(:p, tile_data.fetch(:title, link.title), class: "app-title") %>
 

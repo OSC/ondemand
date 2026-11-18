@@ -4,7 +4,7 @@
   <li class="breadcrumb-item"><%= @product.title %></li>
 <% end %>
 
-<div class="page-header">
+<div>
   <h2>
     <%= @product.name %>
     <%= git_prompt(@product) if @product.git_repo? %>
