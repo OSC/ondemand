@@ -65,7 +65,7 @@
     </p>
   </div><!-- /.col-md-6 -->
   <div class="d-grid gap-2 col-md-2 col-6 mb-auto">
-    <%= link_to 'Edit Metadata', edit_product_path(@product.name, type: @type), class: 'btn btn-outline-secondary' %>
+    <%= link_to 'Edit Metadata', edit_product_path(@product.name, type: @type), class: 'btn btn-light border' %>
     <%= command_btn(title: "Bundle Install", key: "bundle_install", display: "bundle install --path=vendor/bundle") if @product.can_run_bundle_install? %>
     <%= command_btn(title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear") if @type == :usr && @product.passenger_rails_app? %>
     <%= command_btn(title: "Restart App", key: "restart_app", display: "mkdir -p tmp && touch tmp/restart.txt") if @product.passenger_app? %>
@@ -74,7 +74,7 @@
   <div class="d-grid gap-2 col-md-2 col-6 mb-auto">
     <%= render(partial: 'shared/shell_button', locals: { host: ENV['OOD_DEV_SSH_HOST'],path: @product.router.path.realdirpath }) %>
     <% if Configuration.can_access_files? %>
-      <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, class: 'btn btn-outline-secondary' %>
+      <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, class: 'btn btn-light border' %>
     <% end %>
   </div><!-- /.col-md-2 -->
 
@@ -104,7 +104,7 @@
     </table>
 
     <p>
-      <%= link_to 'New User Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :user), class: 'btn btn-outline-secondary' %>
+      <%= link_to 'New User Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :user), class: 'btn btn-light border' %>
     </p>
   </div>
   <div class="col-md-5 col-sm-6 col-12">
@@ -126,7 +126,7 @@
     </table>
 
     <p>
-      <%= link_to 'New Group Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :group), class: 'btn btn-outline-secondary' %>
+      <%= link_to 'New Group Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :group), class: 'btn btn-light border' %>
     </p>
   </div>
 </div>
@@ -158,7 +158,7 @@
 </div>
 <% end %>
 
-<%= link_to 'Back', products_path(type: @type), class: 'btn btn-outline-secondary' %>
+<%= link_to 'Back', products_path(type: @type), class: 'btn btn-light border' %>
 
 <%= button_tag 'Delete App',
   class: 'btn btn-danger float-end',

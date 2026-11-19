@@ -5,11 +5,11 @@
 <%= render 'breadcrumbs' %>
 
 <p>
-  <%= link_to 'New App', new_product_path(type: @type), class: 'btn btn-outline-secondary' %>
+  <%= link_to 'New App', new_product_path(type: @type), class: 'btn btn-light border' %>
   <span class="float-end">
     <%= render(partial: 'shared/shell_button', locals: { label: 'Launch Shell', path: product_class.router.base_path.realdirpath }) %>
     <% if Configuration.can_access_files? %>
-      <%= link_to 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, class: 'btn btn-outline-secondary' %>
+      <%= link_to 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, class: 'btn btn-light border' %>
     <% end %>
   </span>
 </p>

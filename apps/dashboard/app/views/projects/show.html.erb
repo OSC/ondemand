@@ -14,7 +14,7 @@
     <h1 class="my-2 h3"><%= @project.title %></h1>
   </div>
   <div class="col-6 col-sm-3 align-self-center justify-content-end d-flex mt-2 order-3">
-    <%= link_to 'Back to Projects', projects_path, class: 'btn btn-outline-secondary align-self-start', title: 'Return to projects page' %>
+    <%= link_to 'Back to Projects', projects_path, class: 'btn btn-light border align-self-start', title: 'Return to projects page' %>
   </div>
 </div>
 
@@ -101,7 +101,7 @@
 <% unless @project.readme_path.nil? %>
   <div class="card">
     <div class="card-header">
-      <button class="btn btn-outline-secondary fa fa-chevron-right" type="button" data-bs-toggle="collapse" data-bs-target="#readme" aria-expanded="true" aria-controls="readme"></button>
+      <button class="btn btn-light border fa fa-chevron-right" type="button" data-bs-toggle="collapse" data-bs-target="#readme" aria-expanded="true" aria-controls="readme"></button>
       <%= File.basename(@project.readme_path) %>
     </div>
     <div class="card-body collapse show" id="readme">
