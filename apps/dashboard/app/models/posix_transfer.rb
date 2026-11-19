@@ -1,6 +1,8 @@
 # PosixTransfer is a class for transferring local files.
 class PosixTransfer < Transfer
 
+  COPY_ENTRY_TYPES = %w[directory file link].freeze
+
   validates_each :files do |record, _attr, files|
 
     if record.move? || record.copy?
@@ -41,26 +43,39 @@ class PosixTransfer < Transfer
   def steps
     return @steps if @steps
 
-    names = files.keys.map { |f| File.basename(f) }
-
     # a move to a different device does a cp then mv
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
     elsif copy?
       @steps = files.keys.sum do |source|
-        next 1 if File.symlink?(source) || !File.directory?(source)
-
-        # Count the root separately, since the glob can also return it as '.'.
-        1 + Dir.glob('**/*', File::FNM_DOTMATCH, base: source, sort: false).count { |entry| entry != '.' }
+        case copy_entry_type(source)
+        when 'directory'
+          # Count the root separately, since the glob can also return it as '.'.
+          1 + Dir.glob('**/*', File::FNM_DOTMATCH, base: source, sort: false).count do |entry|
+            entry != '.' && COPY_ENTRY_TYPES.include?(copy_entry_type(File.join(source, entry)))
+          end
+        when 'file', 'link', nil
+          # Keep one planned step for a source whose type could not be read.
+          1
+        else
+          0
+        end
       end
     elsif remove?
-      @steps = names.size
+      @steps = files.size
     else
+      names = files.keys.map { |f| File.basename(f) }
       @steps = PosixFile.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end
 
     @steps
+  end
+
+  def copy_entry_type(path)
+    File.ftype(path)
+  rescue SystemCallError
+    nil
   end
 
   # PosixTransfer no longer issues CLI commands to transfer files.
@@ -155,9 +170,10 @@ class PosixTransfer < Transfer
   end
 
   def cp_r(src, dest)
-    if src.symlink? || src.file?
+    case copy_entry_type(src)
+    when 'file', 'link'
       cp_single(src, dest)
-    elsif src.directory?
+    when 'directory'
       children = src.children
       FileUtils.mkdir_p(dest.parent)
       # Keep partial copies private and fail if the destination already exists.
@@ -188,18 +204,18 @@ class PosixTransfer < Transfer
     FileUtils.mkdir_p(dest.parent)
 
     if src.symlink?
-
-      # you're symlinking a directory, but the name of the link can differ
-      # from the actual directory, so we have to ensure that the name
-      # of the new link we're making is the same name as the original
-      dest = dest.join(src.basename) if dest.directory?
-      FileUtils.symlink(src.readlink, dest)
+      File.symlink(src.readlink, dest)
     else
       # have to get the real path, validate and copy _it_
       # in case it's under a symlink outside of the allowlist.
       real_src = src.realpath
       AllowlistPolicy.default.validate!(real_src.to_s)
-      FileUtils.cp(real_src, dest)
+      File.open(real_src, 'rb') do |source|
+        flags = File::WRONLY | File::CREAT | File::EXCL | File::BINARY
+        File.open(dest, flags, source.stat.mode) do |target|
+          IO.copy_stream(source, target)
+        end
+      end
     end
 
     inc_cp_percent

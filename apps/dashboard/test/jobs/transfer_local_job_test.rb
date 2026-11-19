@@ -116,6 +116,8 @@ class TransferLocalJobTest < ActiveJob::TestCase
       src.join('nested', 'deep', 'file').write('file')
       src.join('one').write('one')
       src.join('.hidden').write('hidden')
+      pipe = src.join('pipe')
+      File.mkfifo(pipe)
       dest = Pathname.new(dir).join('new', 'dest')
       empty = Pathname.new(dir).join('empty').tap(&:mkdir)
       link = Pathname.new(dir).join('link')
@@ -124,7 +126,8 @@ class TransferLocalJobTest < ActiveJob::TestCase
       link_copy = dest.parent.join('link')
 
       transfer = PosixTransfer.build(action: 'cp', files: {
-        src.to_s => dest.to_s, empty.to_s => empty_copy.to_s, link.to_s => link_copy.to_s
+        src.to_s => dest.to_s, empty.to_s => empty_copy.to_s, link.to_s => link_copy.to_s,
+        pipe.to_s => dest.parent.join('pipe').to_s
       })
       seen = []
       transfer.define_singleton_method(:percent=) { |pct| seen << pct }
@@ -133,9 +136,11 @@ class TransferLocalJobTest < ActiveJob::TestCase
       assert transfer.success?, transfer.errors.full_messages.inspect
       assert_equal 9, transfer.steps
       assert_equal [11, 22, 33, 44, 55, 66, 77, 88, 100], seen
-      assert system('diff', '-r', src.to_s, dest.to_s)
+      assert system('diff', '-r', '-x', pipe.basename.to_s, src.to_s, dest.to_s)
       assert_predicate empty_copy, :empty?
       assert_equal src, link_copy.readlink
+      refute_predicate dest.join('pipe'), :exist?
+      refute_predicate dest.parent.join('pipe'), :exist?
     end
   end
 
@@ -209,9 +214,11 @@ class TransferLocalJobTest < ActiveJob::TestCase
       child.join('file').write('data')
       project = root.join('project').tap(&:mkdir)
 
-      unless system('setfacl', '-m', 'd:u::rwx,d:g::---,d:o::---', project.to_s, out: File::NULL, err: File::NULL)
-        skip 'default ACLs require setfacl and filesystem support'
+      acl_set = system('setfacl', '-m', 'd:u::rwx,d:g::---,d:o::---', project.to_s, out: File::NULL)
+      if ENV['OOD_TEST_REQUIRE_ACL'] == '1'
+        assert acl_set, 'setfacl must be able to set a default ACL'
       end
+      skip 'default ACLs require setfacl and filesystem support' unless acl_set
 
       dest = project.join('copy')
       transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
@@ -261,6 +268,44 @@ class TransferLocalJobTest < ActiveJob::TestCase
       refute transfer.success?
       assert_predicate dest, :empty?
       assert_equal 0o755, dest.stat.mode & 0o777
+    end
+  end
+
+  test "file copy leaves a file created after validation alone" do
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('source')
+      src.write('source data')
+      dest = Pathname.new(dir).join('target')
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      assert transfer.valid?
+
+      dest.write('existing data')
+      transfer.perform
+
+      refute transfer.success?
+      assert_equal 'existing data', dest.read
+    end
+  end
+
+  test "file and symlink copies leave a directory created after validation alone" do
+    Dir.mktmpdir do |dir|
+      root = Pathname.new(dir)
+      src = root.join('source').tap { |path| path.write('source data') }
+      link = root.join('link').tap { |path| path.make_symlink(src) }
+
+      [src, link].each do |source|
+        dest = root.join("#{source.basename}-target")
+        transfer = PosixTransfer.build(action: 'cp', files: { source.to_s => dest.to_s })
+        assert transfer.valid?
+
+        dest.mkdir
+        existing = dest.join(src.basename).tap { |path| path.write('existing data') }
+        transfer.perform
+
+        refute transfer.success?
+        assert_equal [existing], dest.children
+        assert_equal 'existing data', existing.read
+      end
     end
   end
 
