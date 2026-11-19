@@ -127,7 +127,8 @@ OodShell.prototype.installTouchKeyboard = function (term) {
           term.getDocument().activeElement === screen) {
         term.blur();
       }
-      term.focus();
+      // Keep focus from zooming or panning the page when the keyboard opens.
+      term.focus({ preventScroll: true });
     }
 
     touchStart = null;

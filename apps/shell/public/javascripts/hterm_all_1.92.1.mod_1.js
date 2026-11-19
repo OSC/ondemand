@@ -13031,10 +13031,13 @@ hterm.ScrollPort.prototype.setUserCssText = function(text) {
   this.userCssText_.textContent = text;
 };
 
-/** Focus. */
-hterm.ScrollPort.prototype.focus = function() {
-  this.iframe_.focus();
-  this.screen_.focus();
+/**
+ * Focus.
+ * @param {FocusOptions=} options DOM focus options.
+ */
+hterm.ScrollPort.prototype.focus = function(options) {
+  this.iframe_.focus(options);
+  this.screen_.focus(options);
   this.publish('focus');
 };
 
@@ -16261,9 +16264,10 @@ hterm.Terminal.prototype.getDocument = function() {
 
 /**
  * Focus the terminal.
+ * @param {FocusOptions=} options DOM focus options.
  */
-hterm.Terminal.prototype.focus = function() {
-  this.scrollPort_.focus();
+hterm.Terminal.prototype.focus = function(options) {
+  this.scrollPort_.focus(options);
 };
 
 /**

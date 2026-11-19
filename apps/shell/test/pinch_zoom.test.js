@@ -18,16 +18,16 @@ const SLOP = 20;
 // Check that the new handler still skips events that are already
 // defaultPrevented and that hterm still listens for touches on x-screen
 // rather than on the document or window, then update the lookup below.
-function loadHtermOnTouch() {
+function loadHtermMethod(name, globals = {}) {
   const bundle = fs.readdirSync(jsDir).find((name) => /^hterm_all_.*\.js$/.test(name));
   const text = fs.readFileSync(path.join(jsDir, bundle), 'utf8');
-  const start = text.indexOf('hterm.ScrollPort.prototype.onTouch_ = function');
+  const start = text.indexOf(`hterm.${name} = function`);
   if (start === -1) {
-    throw new Error(`hterm.ScrollPort.prototype.onTouch_ not found in ${bundle}`);
+    throw new Error(`hterm.${name} not found in ${bundle}`);
   }
   const end = text.indexOf('\n};\n', start);
   const fn = text.slice(text.indexOf('function', start), end + 2);
-  return vm.runInNewContext(`(${fn})`, { hterm: { os: 'linux' }, window: {} });
+  return vm.runInNewContext(`(${fn})`, globals);
 }
 
 // An element reduced to the listeners that were added to it.
@@ -378,7 +378,10 @@ describe('Resize messages', () => {
 });
 
 describe('With hterm’s own touch handler', () => {
-  const onTouch = loadHtermOnTouch();
+  const onTouch = loadHtermMethod('ScrollPort.prototype.onTouch_', {
+    hterm: { os: 'linux' },
+    window: {}
+  });
 
   function gesture() {
     const scrollPort = {
@@ -442,6 +445,41 @@ describe('With hterm’s own touch handler', () => {
     move({ 3: [0, 130] });
     expect(scrollPort.screen_.scrollTop).toBe(470);
   });
+});
+
+test.each([false, true])('a WebKit tap requests focus without scrolling (already focused: %s)', (focused) => {
+  const screen = makeElement();
+  const doc = { querySelector: () => screen, activeElement: focused ? screen : null };
+  const actions = [];
+  screen.focus = (options) => actions.push(['screen focus', options]);
+  const term = {
+    getDocument: () => doc,
+    blur: () => actions.push(['blur']),
+    focus: loadHtermMethod('Terminal.prototype.focus'),
+    scrollPort_: {
+      focus: loadHtermMethod('ScrollPort.prototype.focus'),
+      iframe_: { focus: (options) => actions.push(['iframe focus', options]) },
+      screen_: screen,
+      publish: (name) => actions.push(['publish', name])
+    }
+  };
+  const OodShell = loadOodShell({
+    navigator: { maxTouchPoints: 1 },
+    CSS: { supports: () => true }
+  });
+  const shell = new OodShell({}, 'ws://localhost', 'default');
+  shell.installTouchKeyboard(term);
+
+  const touch = finger(1, 20, 30);
+  screen.listeners.touchstart[0].fn({ touches: [touch], timeStamp: 0 });
+  screen.listeners.touchend[0].fn({ touches: [], changedTouches: [touch], timeStamp: 10 });
+
+  expect(actions).toEqual([
+    ...(focused ? [['blur']] : []),
+    ['iframe focus', { preventScroll: true }],
+    ['screen focus', { preventScroll: true }],
+    ['publish', 'focus']
+  ]);
 });
 
 test('installs pinch zoom when hterm becomes ready', () => {
