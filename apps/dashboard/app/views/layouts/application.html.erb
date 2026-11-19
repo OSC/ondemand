@@ -51,7 +51,7 @@
     <div id="js-alert-danger-template" class="d-none" aria-hidden="true">
       <div class="alert alert-danger alert-dismissible" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
+          <span class="visually-hidden">Close</span>
         </button>
         ALERT_MSG
       </div>
@@ -60,7 +60,7 @@
     <% if flash[:announcement_parse_errors].present? %>
       <div class="alert alert-danger alert-dismissible" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert">
-          <span class="sr-only">Close</span>
+          <span class="visually-hidden">Close</span>
         </button>
         <%= flash[:announcement_parse_errors] %>
       </div>

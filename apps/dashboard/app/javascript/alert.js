@@ -53,7 +53,7 @@ function closeButton() {
   button.dataset.bsDismiss = 'alert';
 
   const span = document.createElement('span');
-  span.classList.add('sr-only');
+  span.classList.add('visually-hidden');
   span.innerText = 'Close';
 
   button.appendChild(span);
