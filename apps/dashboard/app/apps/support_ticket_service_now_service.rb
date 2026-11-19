@@ -67,13 +67,12 @@ class SupportTicketServiceNowService
     template_path = File.join('support_ticket/servicenow', service_config.fetch(:template, 'servicenow_content'))
     ApplicationController.render(
       template: template_path,
-      formats: [:text], # so Rails prefers *.text.* variants
-      locals: {
+      formats:  [:text], # so Rails prefers *.text.* variants
+      locals:   {
         context: ticket_template_context,
         helpers: TemplateHelpers.new
       }
     )
-
   end
 
   class TemplateHelpers

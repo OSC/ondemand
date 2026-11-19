@@ -157,6 +157,14 @@ class ActiveSupport::TestCase
   HEREDOC
 
   def inject_contrast_observer
+    # MutationObserver callbacks run asynchronously. Yield one browser event-loop
+    # turn so pending mutations are recorded before checking changed elements.
+    # Capybara supplies the evaluate_async_script completion callback as
+    # the last JavaScript argument, so use the last argument rather than
+    # assuming the callback is arguments[0].
+    page.evaluate_async_script(
+      'setTimeout(arguments[arguments.length - 1], 0)'
+    )
     page.execute_script(CONTRAST_WATCH_SCRIPT)
   end
 end

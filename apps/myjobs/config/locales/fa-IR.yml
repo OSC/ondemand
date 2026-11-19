@@ -1,0 +1,52 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at https://guides.rubyonrails.org/i18n.html.
+
+fa_IR:
+  jobcomposer:
+    skip_navigation: "پرش از پیمایش"
+    # Site specific translations
+    options_account_help:  "حساب اختیاری است. اگر تنظیم نشود، ممکن است فیلتر ارسال آن را به‌صورت خودکار تعیین کند."
+
+    # General translations
+    options_account_title: "حساب"
+    options_array_help: "آرایه‌های کار اختیاری هستند؛ برای نمونه ۱-۱۰"
+    options_array_help_with_clusters: |
+      آرایه‌های کار اختیاری هستند. در حال حاضر، OnDemand از آرایه‌های کار برای کلاسترهای زیر پشتیبانی نمی‌کند: %{cluster_list}.
+    options_array_title: "مشخصات آرایه کار"
+    options_cluster_title: "کلاستر"
+    options_errors: "لطفاً خطاهای زیر را برطرف کنید."
+    options_name_title: "نام"
+    options_script_title: "اسکریپت کار را مشخص کنید"
+    options_script_help: "فایل‌های بزرگ‌تر از 65KB در فیلد اسکریپت کار نمایش داده نمی‌شوند"
+    options_title: "گزینه‌های کار"
+    options_copy_environment: "کپی کردن محیط"
+    xdmod_url_warning_message: "ممکن است این کار تا 24 ساعت پس از تکمیل آن در Open XDMoD نمایش داده نشود."
+    xdmod_url_warning_message_seconds_after_job_completion: 86400

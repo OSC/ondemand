@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class ActivejobsInitializerTest < ActiveSupport::TestCase
@@ -7,9 +9,9 @@ class ActivejobsInitializerTest < ActiveSupport::TestCase
     load Rails.root.join('config/initializers/activejobs.rb')
   end
 
-  test "should exclude hidden clusters from OODClusters" do
+  test 'should exclude hidden clusters from OODClusters' do
     OodCore::Clusters.load_file('test/fixtures/config/clusters.d')
-      .select { |c| c.metadata.hidden }
-      .each { |cluster| assert_nil OODClusters[cluster.id.to_s] }
+                     .select { |c| c.metadata.hidden }
+                     .each { |cluster| assert_nil OODClusters[cluster.id.to_s] }
   end
 end

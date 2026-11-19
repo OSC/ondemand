@@ -395,6 +395,12 @@ module NginxStage
     # @return [String] Error message
     attr_accessor :disabled_shell_message
 
+    # Define an error message that is displayed to users when their account
+    #     cannot be found on the local system (e.g. not yet provisioned).
+    #     Use %s as a placeholder for the username.
+    # @return [String] Error message
+    attr_accessor :missing_user_message
+
     # Hide the stderr "Run 'nginx_stage --help' to see a full list of available 
     #     command line options." message when calling nginx_stage
     # @return [Boolean]
@@ -523,6 +529,7 @@ module NginxStage
       self.min_uid        = 1000
       self.disabled_shell = '/access/denied'
       self.disabled_shell_message = 'user has a disabled shell: %s'
+      self.missing_user_message = "can't find user for %s"
       self.show_nginx_stage_help_message = true
 
       self.disable_bundle_user_config = true

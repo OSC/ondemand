@@ -114,7 +114,11 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       assert_equal 2, saved_template_options.size
       assert_equal '-- select saved settings --', saved_template_options[0].text.strip
       assert_equal 'edit_name', saved_template_options[1].text.strip
-      assert_select 'input#batch_connect_session_template_name'
+      assert_select 'input#batch_connect_session_template_name[list="batch_connect_session_template_names"]'
+      assert_select 'datalist#batch_connect_session_template_names option[value="edit_name"]'
+      assert_select 'div#batch_connect_session_save_template_fields[hidden]'
+      assert_select 'input#batch_connect_session_template_name[placeholder="App settings name"]'
+      assert_select 'span#batch_connect_session_template_name_error[hidden]', text: 'Please type a valid name to continue'
       assert_select 'input#batch_connect_session_save_template_submit'
     end
   end
@@ -124,6 +128,12 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       file = "#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_edit.yml"
       Configuration.stubs(:user_settings_file).returns(file)
 
+      # Keep bc_account non-cacheable to test that it works regardless of caching.
+      bc_account_attr = BatchConnect::App.from_token('sys/bc_paraview')
+                                         .attributes.find { |a| a.id == 'bc_account' }
+      refute bc_account_attr.cacheable?(true),
+             'bc_account must stay `cacheable: false` in the sys/bc_paraview fixture'
+
       get batch_connect_edit_settings_path(token: 'sys/bc_paraview', id: 'edit_name')
       assert_response :ok
 
@@ -132,6 +142,9 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
       assert_equal '800x600',
                    css_select('input[name="batch_connect_session_context[bc_vnc_resolution]"]').first['value']
       assert_equal 'edit_name', css_select('input[name="template_name"]').first['value']
+      assert_select 'div#batch_connect_session_save_template_fields:not([hidden])'
+      # editable, so the settings can also be saved under a new name
+      assert_select 'input#batch_connect_session_template_name:not([readonly])'
     end
   end
 
@@ -140,5 +153,33 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     header_link = css_select('span.form_header_supports_some_html>a').first
     assert_equal 'a link', header_link.text
     assert_equal 'https://openondemand.org', header_link['href']
+  end
+
+  test 'app version is displayed at the bottom of the form' do
+    BatchConnect::App.any_instance.stubs(:version).returns('1.2.3')
+
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :success
+
+    assert_equal 'Jupyter Notebook', css_select('div.col-md-6 > h3').first.text.strip
+    assert_select 'div.col-md-6 > h3 small', false
+    assert_select 'p#app_version', text: /version:\s*1\.2\.3/
+  end
+
+  test 'app version is not displayed when version is nil' do
+    BatchConnect::App.any_instance.stubs(:version).returns(nil)
+
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :success
+
+    assert_select 'p#app_version', false
+  end
+  
+  test 'PUN restarts if user groups change' do
+    stub_usr_router
+    OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me', 'us']))
+    
+    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_response :redirect
   end
 end

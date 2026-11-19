@@ -193,8 +193,7 @@ module RakeHelper
     @image_names ||=
       {
         ood:  'ood',
-        dev:  'ood-dev',
-        demo: 'ood-demo'
+        dev:  'ood-dev'
       }.freeze
   end
 

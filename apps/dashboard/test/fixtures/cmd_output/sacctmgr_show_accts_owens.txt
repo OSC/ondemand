@@ -1,5 +1,5 @@
 pzs1124|owens-default,staff,phoenix,geophys,hal,gpt
-pzs1118|owens-default
+pzs1118|owens-default,geophys
 pzs1117|owens-default
 pzs1010|owens-default
 pzs0715|owens-default

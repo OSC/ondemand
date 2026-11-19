@@ -4,6 +4,8 @@
 class WorkflowsController < ApplicationController
   wrap_parameters false
   
+  before_action :ensure_workflows_supported!
+
   # GET /projects/:id/workflows/:id
   def show
     return unless load_project_and_workflow_objects
@@ -120,6 +122,17 @@ class WorkflowsController < ApplicationController
   end
 
   private
+
+  def ensure_workflows_supported!
+    return if Workflow.supported?
+
+    message = I18n.t('dashboard.jobs_workflows_not_supported')
+
+    respond_to do |format|
+      format.html { redirect_to(project_path(params[:project_id]), alert: message) }
+      format.json { render json: { message: message }, status: :not_implemented }
+    end
+  end
 
   def load_project_and_workflow_objects(render_json: false)
     @project = Project.find(project_id)

@@ -109,3 +109,30 @@ describe('Helper function definedHosts()', () => {
   })
 });
 
+describe('Helper function userCSS()', () => {
+  const OLD_ENV = process.env;
+
+  beforeEach(() => {
+    jest.resetModules();
+    process.env = { ...OLD_ENV };
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  test('returns the default relative stylesheet joined to baseURI', () => {
+    expect(helpers.userCSS('/pun/sys/shell')).toEqual('/pun/sys/shell/stylesheets/fonts.css');
+  });
+
+  test('returns a relative OOD_SHELL_USER_CSS_URL joined to baseURI', () => {
+    process.env.OOD_SHELL_USER_CSS_URL = 'stylesheets/custom.css';
+    expect(helpers.userCSS('/pun/sys/shell')).toEqual('/pun/sys/shell/stylesheets/custom.css');
+  });
+
+  test('ignores baseURI when OOD_SHELL_USER_CSS_URL is absolute', () => {
+    process.env.OOD_SHELL_USER_CSS_URL = '/public/custom.css';
+    expect(helpers.userCSS('/something/else')).toEqual('/public/custom.css');
+  });
+});
+

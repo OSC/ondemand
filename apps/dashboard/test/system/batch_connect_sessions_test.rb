@@ -11,7 +11,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     stub_sys_apps
   end
 
-  def get_test_data(token: 'sys/bc_paraview', title: 'Paraview')
+  def get_test_data(token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
     {
       'id':              get_test_bc_id,
       'cluster_id':      'owens',
@@ -19,7 +19,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       "created_at":      1_701_184_869,
       "token":           token,
       "title":           title,
-      "script_type":     'basic',
+      "script_type":     script_type,
       "cache_completed": false
     }
   end
@@ -32,9 +32,29 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     'abc-123'
   end
 
-  def create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview')
+  def create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
     BatchConnect::Session.stubs(:db_root).returns(Pathname.new(dir))
-    File.write("#{dir}/#{get_test_bc_id}", get_test_data(token: token, title: title).to_json)
+    File.write("#{dir}/#{get_test_bc_id}", get_test_data(token: token, title: title, script_type: script_type).to_json)
+  end
+
+  def create_vnc_running_session(dir, token: 'sys/bc_paraview', title: 'Paraview')
+    create_test_file(dir, token: token, title: title, script_type: 'vnc')
+    OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+
+    session = BatchConnect::Session.new.from_json(
+      get_test_data(token: token, title: title, script_type: 'vnc').to_json
+    )
+    FileUtils.mkdir_p(session.staged_root)
+    File.write(session.connect_file, vnc_connect_info.stringify_keys.to_yaml)
+  end
+
+  def vnc_connect_info
+    {
+      host:      'node1.example.edu',
+      port:      5901,
+      password:  'testpassword',
+      websocket: '5901'
+    }
   end
 
   def stub_scheduler(state, cores: 1, nodes: 1)
@@ -183,30 +203,94 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'session cards hold focus when replaced' do 
+  test 'session cards hold focus when replaced' do
+    # Visible, enabled controls of a card in DOM order. Every poll re-renders the same
+    # card, so an index names the same control before and after a replacement.
+    card_controls_js = <<~JS.squish
+      (card) => Array.from(document.querySelector(card).querySelectorAll(
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )).filter((el) => el.checkVisibility() && !el.disabled)
+    JS
+
     Dir.mktmpdir do |dir|
-      with_modified_env({OOD_BC_SESSIONS_POLL_DELAY: '10'}) do
-        create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
-        stub_scheduler(:running, nodes: 2, cores: 2)
+      # OOD_BC_SESSIONS_POLL_DELAY is clamped to at least 10s, far beyond Capybara's wait.
+      Configuration.stubs(:bc_sessions_poll_delay).returns(100)
+      create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
+      stub_scheduler(:running, nodes: 2, cores: 2)
+      visit(batch_connect_sessions_path)
+
+      card = "#id_#{get_test_bc_id}"
+      assert_selector(card)
+      count = evaluate_script("(#{card_controls_js})(arguments[0]).length", card)
+      assert_operator(count, :>, 0)
+
+      count.times do |i|
+        # Mark the card and focus the control in one script, so no poll lands in between.
+        execute_script(<<~JS, card, i)
+          document.querySelector(arguments[0]).dataset.stale = 'true';
+          (#{card_controls_js})(arguments[0])[arguments[1]].focus();
+        JS
+
+        # The poller swaps the card and restores focus in one task, so once the
+        # marked card is gone, focus is already where it will end up.
+        # wait: 5 matches the connection-tabs test below, which polls at the same rate.
+        assert_no_selector("#{card}[data-stale]", wait: 5)
+        focused = evaluate_script("(#{card_controls_js})(arguments[0]).indexOf(document.activeElement)", card)
+        assert_equal(i, focused, "focus was not restored to control #{i}")
+      end
+
+      # Stop the 100ms poller before Dir.mktmpdir deletes the session database it reads.
+      visit(root_path)
+    end
+  end
+
+  test 'session card connection tabs remain selected when replaced' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
+        Configuration.stubs(:bc_sessions_poll_delay).returns(100)
+        create_vnc_running_session(dir)
+        stub_scheduler(:running)
+
         visit(batch_connect_sessions_path)
-  
+
         card_selector = "#id_#{get_test_bc_id}"
-
         assert_selector(card_selector)
-        within(card_selector) do 
-          focusable_elements = all('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
-          # since these elements are repeated on every card, they must have a unique classlist within a card
-          focusable_selectors = focusable_elements.map{ |el| "#{el.tag_name}.#{el[:class].split(' ').join('.')}" }
 
-          focusable_selectors.each do |selector|
-            assert_selector(selector)
-            execute_script("$('#{card_selector}').attr('data-original-marker', 'true')")
-            execute_script("$('#{card_selector} #{selector}').focus()")
-
-            assert_no_selector("#{card_selector}[data-original-marker='true']")
-            assert_equal(selector.split('.')[1..], evaluate_script('document.activeElement.classList'))
-          end
+        within(card_selector) do
+          assert_selector('.h5', text: /Running/)
+          assert_selector('.nav-link', text: 'Native Instructions')
+          click_link('Native Instructions')
+          assert_selector('.nav-link.active', text: 'Native Instructions')
         end
+
+        execute_script("$('#{card_selector}').attr('data-original-marker', 'true')")
+        assert_no_selector("#{card_selector}[data-original-marker='true']", wait: 5)
+
+        within(card_selector) do
+          assert_selector('.nav-link.active', text: 'Native Instructions')
+          assert_text('establish the SSH tunnel')
+        end
+
+        visit root_path
+      end
+    end
+  end
+
+  test 'running vnc session shows internationalized novnc compression and quality labels' do
+    Dir.mktmpdir do |dir|
+      create_vnc_running_session(dir)
+      stub_scheduler(:running)
+
+      visit(batch_connect_sessions_path)
+
+      card = find("#id_#{get_test_bc_id}")
+      assert_not_nil(card)
+
+      within(card) do
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_compression'))
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_compression_help'))
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_image_quality'))
+        assert_text(I18n.t('dashboard.batch_connect_sessions_novnc_image_quality_help'))
       end
     end
   end

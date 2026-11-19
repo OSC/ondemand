@@ -1,16 +1,18 @@
 # Table of Contents
 
 1. [Contributing](#contributing) 
-    1. [Issues](#issues)
-    2. [Other repositories](#other-repositories)
-    3. [Branches and Tags](#branches-and-tags)
-    4. [Pull Request Process](#pull-request-process)
+    1. [AI Agent Generated Content](#ai-agent-generated-content)
+    2. [Issues](#issues)
+    3. [Other repositories](#other-repositories)
+    4. [Branches and Tags](#branches-and-tags)
+    5. [Pull Request Process](#pull-request-process)
 2. [Branch Naming and Issue Tagging](#branch-naming-and-issue-tagging)
     1. [Adding a Feature](#adding-a-feature)
     2. [Fixing a Bug](#fixing-a-bug)
     3. [Tagging Your Issue](#tagging-your-issue)
     4. [Pull Request Comments](#pull-request-comments)
     5. [Tests in Pull Requests](#tests-in-pull-requests)
+    6. [Updating Locales](#update-locales)
 3. [Project Style Guide](#project-style-guide)
     1. [Project Conventions](#project-conventions)
     2. [Linters](#linters)
@@ -38,6 +40,17 @@ take a look at our list of [good first issues].
 
 Please note we have a [code of conduct]. We ask that you please follow it in all your
 interactions with the project.
+
+## AI Agent Generated Content
+
+AI tools can be used to help with code, documentation, review or other contributions,
+but a person must understand, review, answer questions and take responsibility for
+anything they submit to this repository. 
+
+AI agents or bots may not submit contributions or interact with the community on
+someone's behalf. Content submitted without meaningful human involvement will be
+rejected and closed. Additionally, accounts that repeatedly do this may be blocked
+or reported.
 
 ## Issues
 
@@ -112,11 +125,10 @@ A best guess is encouraged.
 
 All new issues are reviewed weekly by the OOD team to categorize correctly regardless.
 
-## Pull Request Comments
+## Pull Request Notes
 
-Ensure to include what issue this fixes in the **PR comment** to help with automated issue closing:
-
-* "fixes #1234"
+Ensure to include what issue this fixes in the **PR comment** to help with automated issue closing. Please do not
+put the issue number in the title of the PR since this can make things more difficult to track for the maintainers.
 
 ## Tests in Pull Requests
 
@@ -137,6 +149,11 @@ If you do not include tests, add a short note in the PR description that explain
 * Why tests were not added
 * What manual testing was performed
 * Any areas reviewers should pay close attention to
+
+## Updating Locales
+
+You may be adding new translatable text in your pull request. If so, please only add the English (en)
+locale as we have automation in place to update the other locales when they have missing keys.
 
 ## Project Style Guide 
 

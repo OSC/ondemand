@@ -29,6 +29,23 @@ class FilesTest < ApplicationSystemTestCase
     assert_selector '.selected', count: 2
   end
 
+  test 'select all checkbox responds to enter key' do
+    Dir.mktmpdir do |dir|
+      %w[a.txt b.txt c.txt].each { |f| FileUtils.touch(File.join(dir, f)) }
+
+      visit files_url(dir)
+      assert_selector '#directory-contents tbody tr', count: 3
+
+      find('#select_all').send_keys(:return)
+      assert_selector '#select_all:checked'
+      assert_selector '.selected', count: 3
+
+      find('#select_all').send_keys(:return)
+      assert_selector '#select_all:not(:checked)'
+      assert_selector '.selected', count: 0
+    end
+  end
+  
   test 'visiting files app with bad directory does not duplicate errors' do
     bad_path = Rails.root / "nonexistent"
     visit files_url(bad_path.to_s)
@@ -57,6 +74,30 @@ class FilesTest < ApplicationSystemTestCase
       find('#files_input_modal_ok_button').click
       assert_selector('tbody a[data-type="d"]', exact_text: 'bar')
       assert File.directory? File.join(dir, 'bar')
+    end
+  end
+
+  test 'reports errors when creating new directories and files' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+      
+      visit files_url(unwritable_dir)
+      find('#new-file-btn').click
+      find('#files_input_modal_input').set('bar.txt')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new file: Permission denied @ rb_sysopen - #{unwritable_dir.join('bar.txt')}"
+      assert_selector('.alert-danger', text: msg)
+
+      find('.alert-danger .btn-close').click
+      refute_selector('.alert-danger')
+      find('#new-dir-btn').click
+      find('#files_input_modal_input').set('bar')
+      find('#files_input_modal_ok_button').click
+      msg = "Error occurred when attempting to create new directory: Permission denied @ dir_s_mkdir - #{unwritable_dir.join('bar')}"
+      assert_selector('.alert-danger', text: msg)
     end
   end
 
@@ -90,6 +131,24 @@ class FilesTest < ApplicationSystemTestCase
         find('#favorites a', exact_text: "#{dir}/fav_dir").click
         assert_selector('tbody a', exact_text: 'bar.txt')
       end
+    end
+  end
+
+  # Regression test for #5628: long favorite paths used to overflow the
+  # sidebar container because the anchor elements had no width constraint.
+  test 'long favorite path stays within the sidebar container (regression #5628)' do
+    Dir.mktmpdir do |dir|
+      long_subdir = 'a' * 100
+      long_path = "#{dir}/#{long_subdir}"
+      `mkdir -p #{long_path}`
+      OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(long_path)])
+
+      visit files_url(dir)
+
+      container_width = find('#favorites').rect.width
+      anchor_width = find('#favorites a', text: long_subdir).rect.width
+      assert anchor_width <= container_width,
+             "favorite anchor (#{anchor_width}px) exceeds sidebar container (#{container_width}px)"
     end
   end
 
@@ -127,6 +186,133 @@ class FilesTest < ApplicationSystemTestCase
 
       sleep 6 # need to guarantee that this disappears after 5 seconds.
       assert_selector 'span', text: '100% copy files', count: 0
+    end
+  end
+
+  test 'copying files with ctrl-c and ctrl-v keyboard shortcuts' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      find('tbody a', exact_text: 'bar.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 2
+
+      # Focus remains on the checkbox after selection; shortcuts should still work.
+      page.send_keys([:control, 'c'])
+
+      assert_selector '#clipboard li', count: 2
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      visit files_url("#{dir}/dest")
+      assert_selector '#clipboard li', count: 2
+
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
+      assert File.file?(File.join(dir, 'src', 'foo.txt'))
+      assert File.file?(File.join(dir, 'src', 'bar.txt'))
+    end
+  end
+
+  test 'moving files with ctrl-x and ctrl-v keyboard shortcuts' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      find('tbody a', exact_text: 'bar.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 2
+
+      page.send_keys([:control, 'x'])
+
+      assert_selector '#clipboard li', count: 2
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      visit files_url("#{dir}/dest")
+      assert_selector '#clipboard li', count: 2
+
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
+      refute File.exist?(File.join(dir, 'src', 'foo.txt'))
+      refute File.exist?(File.join(dir, 'src', 'bar.txt'))
+    end
+  end
+
+  test 'ctrl-v defaults to copy after opening clipboard with copy-move button' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/foo.txt")
+
+      visit files_url("#{dir}/src")
+      find('tbody a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
+      assert_selector '.selected', count: 1
+
+      # Opening via the button (not Ctrl+X) should default Ctrl+V to copy.
+      find('#copy-move-btn').click
+      assert_selector '#clipboard li', count: 1
+
+      visit files_url("#{dir}/dest")
+      find('#directory-contents').click
+      page.send_keys([:control, 'v'])
+
+      find('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'src', 'foo.txt'))
+    end
+  end
+
+  test 'copying directory contents with select all' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src/app", "#{dir}/dest"])
+      FileUtils.touch("#{dir}/src/app/contents.txt")
+      FileUtils.touch("#{dir}/src/foo.txt")
+      FileUtils.touch("#{dir}/src/bar.txt")
+
+      visit files_url("#{dir}/src")
+      find('#select_all').click
+
+      assert_selector '.selected', count: 3
+
+      find('#copy-move-btn').click
+
+      assert_selector '#clipboard li', count: 3
+      assert_selector '#clipboard li', text: 'app'
+      assert_selector '#clipboard li', text: 'foo.txt'
+      assert_selector '#clipboard li', text: 'bar.txt'
+
+      find('li.breadcrumb-item', text: File.basename(dir)).click
+      find('a.name', text: 'dest').click
+
+      assert_selector '#clipboard li', count: 3
+
+      find('#clipboard-copy-to-dir').click
+
+      assert_selector('tbody a', exact_text: 'app')
+      assert_selector('tbody a', exact_text: 'foo.txt')
+      assert_selector('tbody a', exact_text: 'bar.txt')
+
+      assert File.file?(File.join(dir, 'dest', 'app', 'contents.txt'))
+      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
+      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
     end
   end
 
@@ -350,6 +536,16 @@ class FilesTest < ApplicationSystemTestCase
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
       assert_no_selector 'tbody a', exact_text: 'single_file', wait: 10
 
+      # The completed transfer fades out after four seconds. Include hidden
+      # status so synchronization does not depend on catching that window.
+      assert_selector(
+        '.transfers-status span',
+        text: '100% remove files',
+        count: 1,
+        visible: :all,
+        wait: MAX_WAIT
+      )
+
       # verify app dir & single_file were actually deleted
       refute(File.exist?(src), Dir.children(dir))
       refute(File.exist?(single_file), Dir.children(dir))
@@ -385,6 +581,40 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'failed uploads show server error message' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('unwritable')
+      unwritable_dir.mkdir
+      `chmod -w #{unwritable_dir}`
+
+      visit files_url(unwritable_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/hello-world.c'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+
+      error_message = nil
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+        error_message = page.evaluate_script(<<~JS)
+          document.querySelector('.uppy-Dashboard-Item-errorDetails')?.getAttribute('aria-label')
+        JS
+        error_message.present?
+      end
+      page.execute_script('window.__changedElements = []')
+
+      assert_match(/Permission denied/, error_message)
+    end
+  end
+
+  def assert_overwrite_buttons
+    assert_selector('.uppy-StatusBar-actions #safe-upload-btn.uppy-StatusBar-actionBtn--upload', text: 'Upload New Files')
+    assert_selector('.uppy-StatusBar-actions .uppy-StatusBar-actionBtn--upload-danger', text: 'Upload and Overwrite')
+    assert_selector('.uppy-StatusBar-actions span', text: 'Duplicate files identified. Uploading these files will overwrite existing content.')
+  end
+
   test 'uploading duplicate files' do
     Dir.mktmpdir do |dir|
       File.stubs(:umask).returns(18) # ensure default umask is 644
@@ -397,11 +627,11 @@ class FilesTest < ApplicationSystemTestCase
 
       visit files_url(upload_dir)
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
 
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: File.basename(src_file))
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
       assert_equal(33_188, File.stat(upload_file).mode) # default 644
@@ -415,15 +645,393 @@ class FilesTest < ApplicationSystemTestCase
 
       # upload the file again
       find('#upload-btn').click
-      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      assert_selector('.uppy-Dashboard-AddFiles')
       attach_file 'files[]', src_file, visible: false, match: :first
-      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
-      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2")
+      assert_overwrite_buttons
+
+      click_on('Upload and Overwrite')
+      refute_selector('.uppy-Dashboard-AddFiles')
+      assert_selector('tbody a', exact_text: File.basename(src_file))
 
       # and it's still there, now with new content and it keeps the 755 permissions
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
       assert_equal File.stat(upload_file).mode, 33_261 # still 755
+    end
+  end
+
+  test 'uploading duplicate files without overwriting' do
+    Dir.mktmpdir do |dir|
+      File.stubs(:umask).returns(18) # ensure default umask is 644
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_file = "#{dir}/testfile.sh"
+      new_file = "#{dir}/newfile.sh"
+      upload_file = "#{upload_dir}/testfile.sh"
+      new_upload_file = "#{upload_dir}/newfile.sh"
+
+      `echo 'here some initial content' > #{src_file}`
+      `echo 'here some new content' > #{new_file}`
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_selector('tbody a', exact_text: File.basename(src_file))
+      assert File.exist?(upload_file)
+      assert_equal File.read(src_file), File.read(upload_file)
+      assert_equal(33_188, File.stat(upload_file).mode) # default 644
+
+      # now change the permissions and verify
+      `chmod 755 #{upload_file}`
+      assert_equal(33_261, File.stat(upload_file).mode) # now 755
+
+      # add something more to the original file
+      `echo 'and some more content' >> #{src_file}`
+
+      # save original file content
+      original_content = File.read(upload_file)
+
+      # upload the file again
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+      attach_file 'files[]', src_file, visible: false, match: :first
+      click_on('Add more')
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
+      assert_selector('.uppy-Dashboard-AddFiles')
+      attach_file 'files[]', new_file, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(new_file)}']")
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 1)
+      assert_overwrite_buttons
+
+      click_on('Upload New Files')
+      assert_selector('tbody a', exact_text: File.basename(src_file))
+      assert_selector('tbody a', exact_text: File.basename(new_file))
+
+      # and it's still there, with content and mode unchanged
+      assert File.exist?(upload_file)
+      assert_equal original_content, File.read(upload_file)
+      assert_equal File.stat(upload_file).mode, 33_261 # still 755
+
+      # and the new file now exists
+      assert File.exist?(new_upload_file)
+      assert_equal File.read(new_file), File.read(new_upload_file)
+    end
+  end
+
+  test 'uploading duplicate files and removing overwrites manually' do
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_file = "#{dir}/testfile.sh"
+      new_file = "#{dir}/newfile.sh"
+      upload_file = "#{upload_dir}/testfile.sh"
+      new_upload_file = "#{upload_dir}/newfile.sh"
+
+      `echo 'here some initial content' > #{src_file}`
+      `echo 'here some new content' > #{new_file}`
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert_selector('tbody a', exact_text: File.basename(src_file))
+      assert File.exist?(upload_file)
+      assert_equal File.read(src_file), File.read(upload_file)
+
+      # add something more to the original file
+      `echo 'and some more content' >> #{src_file}`
+
+      # save original file content
+      original_content = File.read(upload_file)
+
+      # upload the file again
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+      attach_file 'files[]', src_file, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
+      click_on('Add more')
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
+      attach_file 'files[]', new_file, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item-name[title='#{File.basename(new_file)}']")
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 1)
+      assert_overwrite_buttons
+      find('.uppy-Dashboard-Item.bg-danger .uppy-Dashboard-Item-action--remove').click
+
+      # after the duplicate file is removed, things return to normal
+      refute_selector(".uppy-Dashboard-Item-name[title='#{File.basename(src_file)}']")
+      refute_selector('.uppy-Dashboard-Item.bg-danger')
+      refute_selector('#safe-upload-btn')
+      refute_selector('.uppy-StatusBar-actionBtn--upload-danger')
+      refute_selector('.uppy-StatusBar-actions span')
+
+      click_on('Upload 1 file')
+
+      assert_selector('tbody a', exact_text: File.basename(src_file))
+      assert_selector('tbody a', exact_text: File.basename(new_file))
+
+      # and it's still there, with content and mode unchanged
+      assert File.exist?(upload_file)
+      assert_equal original_content, File.read(upload_file)
+
+      # and the new file now exists
+      assert File.exist?(new_upload_file)
+      assert_equal File.read(new_file), File.read(new_upload_file)
+    end
+  end
+  
+  # The following scripts are required when uploading directories
+  SWAP_FILE_INPUT_SCRIPT = <<~HEREDOC
+    const inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+    const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+    const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+    inputsWrapper.insertBefore(dirInput, fileInput);
+  HEREDOC
+
+  RESET_FILE_INPUT_SCRIPT = <<~HEREDOC
+    const inputsWrapper = document.querySelector('.uppy-Dashboard-AddFiles');
+    const fileInput = inputsWrapper.querySelector('input:not([webkitdirectory])');
+    const dirInput = inputsWrapper.querySelector('[webkitdirectory]');
+    inputsWrapper.insertBefore(fileInput, dirInput);
+  HEREDOC
+
+  test 'uploading duplicate files within directories' do
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_dir = "#{dir}/testdir"
+
+      target_dir = "#{upload_dir}/testdir"
+
+      Dir.mkdir(src_dir)
+      src_file_1 = "#{src_dir}/test1.sh"
+      src_file_2 = "#{src_dir}/test2.sh"
+      src_file_3 = "#{src_dir}/test3.sh"
+      src_file_4 = "#{src_dir}/test4.sh"
+      src_file_5 = "#{src_dir}/test5.sh"
+
+      src_files = [src_file_1, src_file_2, src_file_3, src_file_4, src_file_5]
+      src_files.each_with_index do |file, index|
+        `echo 'some content in file #{index + 1}' > #{file}`
+      end
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+
+      # in order to find the directory input, we have to swap so that it is first in the DOM
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
+      click_on('Upload 5 files')
+
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      click_on(File.basename(src_dir))
+      src_files.each do |file|
+        assert_selector('tbody a', exact_text: File.basename(file))
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        assert_equal File.read(file), File.read(target_path)
+      end
+
+      # Delete one file so we can re-upload it later
+      deleted_file = src_file_3
+      find('tbody a', exact_text: File.basename(deleted_file)).ancestor('tr').check
+      accept_alert do
+        find('#delete-btn').click
+      end
+      refute_selector('tbody a', exact_text: File.basename(deleted_file))
+
+      click_on(File.basename(upload_dir))
+      assert_selector('tbody a', exact_text: File.basename(target_dir))
+
+      # add new content to each file
+      src_files.each do |file|
+        `echo ' and some new content too!' >> #{file}`
+      end
+
+      # upload the directory again
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 4)
+      assert_selector(".uppy-Dashboard-Item:not(.bg-danger)", count: 1)
+      assert_overwrite_buttons
+
+      click_on('Upload New Files')
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      # only the file we deleted has updated content
+      src_files.each do |file|
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        if file == deleted_file
+          assert_equal File.read(file), File.read(target_path)
+        else
+          assert File.read(file) != File.read(target_path), message: "expected #{File.read(file)} to have more content than #{File.read(target_path)}"
+        end
+      end
+
+      # repeat the process but overwrite this time
+      src_files.each do |file|
+        `echo ' and some even newer content!' >> #{file}`
+      end
+
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 5)
+      assert_overwrite_buttons
+
+      click_on('Upload and Overwrite')
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      click_on(File.basename(src_dir))
+      src_files.each do |file|
+        assert_selector('tbody a', exact_text: File.basename(file))
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        assert_equal File.read(file), File.read(target_path)
+      end
+    end
+  end
+
+  test 'uppy count remains accurate after overwrite warning' do
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_dir = "#{dir}/testdir"
+
+      target_dir = "#{upload_dir}/testdir"
+
+      Dir.mkdir(src_dir)
+      src_file_1 = "#{src_dir}/test1.sh"
+      src_file_2 = "#{src_dir}/test2.sh"
+      src_file_3 = "#{src_dir}/test3.sh"
+      src_file_4 = "#{src_dir}/test4.sh"
+      src_file_5 = "#{src_dir}/test5.sh"
+
+      src_files = [src_file_1, src_file_2, src_file_3, src_file_4, src_file_5]
+      src_files.each_with_index do |file, index|
+        `echo 'some content in file #{index + 1}' > #{file}`
+      end
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+
+      # in order to find the directory input, we have to swap so that it is first in the DOM
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
+      click_on('Upload 5 files')
+
+      assert_selector('tbody a', exact_text: File.basename(src_dir))
+      click_on(File.basename(src_dir))
+      src_files.each do |file|
+        assert_selector('tbody a', exact_text: File.basename(file))
+        target_path = File.join(target_dir, File.basename(file))
+        assert File.exist?(target_path)
+        assert_equal File.read(file), File.read(target_path)
+      end
+      
+      # delete all but one file
+      saved_file = src_file_3
+      src_files.each do |file|
+        if file != saved_file
+          find('tbody a', exact_text: File.basename(file)).ancestor('tr').check
+        end
+      end
+      accept_alert do
+        find('#delete-btn').click
+      end
+
+      src_files.each do |file|
+        if file != saved_file
+          refute_selector('tbody a', exact_text: File.basename(file))
+        else
+          assert_selector('tbody a', exact_text: File.basename(file))
+        end
+      end
+
+      # reupload and check overwrite warning
+      click_on(File.basename(upload_dir))
+      assert_selector('tbody a', exact_text: File.basename(target_dir))
+      find('#upload-btn').click
+      assert_selector('.uppy-Dashboard-AddFiles')
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', src_dir, visible: false, match: :first
+
+      assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 1)
+      assert_selector(".uppy-Dashboard-Item:not(.bg-danger)", count: 4)
+      assert_overwrite_buttons
+
+      # remove overwrite file and check buttons again
+      find('.uppy-Dashboard-Item.bg-danger .uppy-Dashboard-Item-action--remove').click
+      refute_selector(".uppy-Dashboard-Item-name[title='#{File.basename(saved_file)}']")
+      refute_selector('.uppy-Dashboard-Item.bg-danger')
+      refute_selector('#safe-upload-btn')
+      refute_selector('.uppy-StatusBar-actionBtn--upload-danger')
+      refute_selector('.uppy-StatusBar-actions span')
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 4 files')
+
+      # count remains accurate when removing files
+      find('.uppy-Dashboard-Item .uppy-Dashboard-Item-action--remove', match: :first).click
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 3 files')     
+      find('.uppy-Dashboard-Item .uppy-Dashboard-Item-action--remove', match: :first).click
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 2 files')
+
+      # count remains accurate when adding files
+      new_file = "#{dir}/newfile.sh"
+      `echo 'some content in this file' > #{new_file}`
+      click_on('Add more')
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
+      assert_selector('.uppy-Dashboard-AddFiles')
+      # have to swap back to add a file
+      page.execute_script(RESET_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', new_file, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', exact_text: 'Upload 3 files')
+
+      # count remains accurate when adding directories
+      new_dir = "#{dir}/testdir/subdir"
+      Dir.mkdir(new_dir)
+      new_file_1 = "#{new_dir}/file1"
+      new_file_2 = "#{new_dir}/file2"
+      new_file_3 = "#{new_dir}/file3"
+      `echo 'new content in subdir file 1' > #{new_file_1}`
+      `echo 'new content in subdir file 2' > #{new_file_2}`
+      `echo 'new content in subdir file 3' > #{new_file_3}`
+      click_on('Add more')
+      # Even though we attach to the hidden input, we need to shift focus from 'Add more' before the next contrast check
+      click_on('browse files')
+      assert_selector('.uppy-Dashboard-AddFiles')
+      page.execute_script(SWAP_FILE_INPUT_SCRIPT)
+      attach_file 'files[]', new_dir, visible: false, match: :first
+      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 6 files')
+
+      # verify upload since we're here
+      click_on('Upload 6 files')
+      assert_selector('tbody a', exact_text: File.basename(new_file))
+      click_on(File.basename(src_dir))
+      assert_selector('tbody a', count: 3)
+      click_on(File.basename(upload_dir))
+      click_on(File.basename(new_dir))
+      assert_selector('tbody a', count: 3)
     end
   end
 
@@ -608,8 +1216,9 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'test_dir').ancestor('tr').click
       click_on('Download')
 
-      sleep 5 # give it enough time to download
-      assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT, message: "#{zip_file} was never downloaded!").until do
+        File.exist?(zip_file)
+      end
 
       # unzip all the files you downloaded into a new tmp directory and iterate
       # though them. Verify that the file you downloaded exists in the original tmpdir 'dir'.
@@ -630,6 +1239,71 @@ class FilesTest < ApplicationSystemTestCase
       end
 
       File.delete(zip_file) if File.exist?(zip_file)
+    end
+  end
+
+  test 'cannot download directories that are too large' do
+    with_modified_env({OOD_DOWNLOAD_DIR_MAX: '100'}) do
+      zip_file = DOWNLOAD_DIRECTORY.join('dir_to_download.zip')
+      File.delete(zip_file) if File.exist?(zip_file)
+
+      Dir.mktmpdir do |dir|
+        dir_size = 101
+        PosixFile.any_instance.stubs(:calculate_directory_size)
+          .returns(dir_size)
+        Open3.stubs(:capture3).returns(["#{dir_size} #{dir} 
+          \n #{dir_size} total", "", exit_success])
+
+        dir_to_dl = "#{dir}/dir_to_download"
+        `mkdir -p #{dir_to_dl}`
+        `echo 'abc123' > #{dir_to_dl}/real_file`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'dir_to_download').ancestor('tr').click
+
+        click_on('Download')
+        alert_text = "Error while downloading: #{I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: '100')}"
+        assert_selector '.alert-danger span', text: alert_text
+        refute(File.exist?(zip_file), "#{zip_file} was downloaded despite being too large")
+      end
+    end
+  end
+
+  test 'can download files' do
+    new_file = DOWNLOAD_DIRECTORY.join('file_to_download')
+    File.delete(new_file) if File.exist?(new_file)
+
+    Dir.mktmpdir do |dir|
+      `echo 'some content' > #{dir}/file_to_download`
+
+      visit files_url(dir)
+      find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
+      click_on('Download')
+      sleep 5
+      assert(File.exist?(new_file), "#{new_file} was not downloaded")
+    end
+  end
+
+  test 'cannot open or download files that are too large' do
+    with_modified_env({OOD_DOWNLOAD_FILE_MAX: '116'}) do
+      new_file = DOWNLOAD_DIRECTORY.join('file_to_download')
+      File.delete(new_file) if File.exist?(new_file)
+
+      Dir.mktmpdir do |dir|
+        content = 'some content '*9 # produces 117 Bytes of text
+        `echo '#{content}' > #{dir}/file_to_download`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'file_to_download').click
+        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
+        find('.alert-danger button.btn-close').click
+        refute_selector('.alert-danger')
+
+        find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
+        click_on('Download')
+        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
+        refute(File.exist?(new_file), "#{new_file} was downloaded despite being too large")
+      end
     end
   end
 
@@ -702,6 +1376,31 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'actions dropdown shows expected links for files and directories' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      file = 'readable.txt'
+      nested = 'subdir'
+      FileUtils.touch(File.join(dir, file))
+      FileUtils.mkdir_p(File.join(dir, nested))
+
+      visit files_url(dir)
+
+      file_row = find('tbody a', exact_text: file).ancestor('tr')
+      file_row.find('button.dropdown-toggle').click
+      file_links = file_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      dir_row = find('tbody a', exact_text: nested).ancestor('tr')
+      dir_row.find('button.dropdown-toggle').click
+      dir_links = dir_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      assert_equal(['View', 'Edit', 'Rename', 'Download', 'Delete'], file_links)
+      assert_equal(['Rename', 'Download', 'Favorite', 'Delete'], dir_links)
+    end
+  end
+  
   test 'unreadable files and fifos are not downloadable' do
     Dir.mktmpdir do |dir|
       cant_read = 'cant_read.txt'

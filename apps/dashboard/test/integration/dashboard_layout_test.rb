@@ -35,7 +35,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row', 0
   end
 
-  test 'nil MOTD and pinned apps render empty elements' do
+  test 'default MOTD renders when MOTD_PATH is unset' do
     stub_user_configuration({
                               dashboard_layout: {
                                 rows: [
@@ -61,11 +61,48 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-8', 1
     assert_select 'div.row > div.col-md-4', 1
 
+    assert_select 'div.row > div.col-md-8 h2', 1
+    assert_equal(I18n.t('dashboard.motd_title'), css_select('div.row > div.col-md-8 h2').text)
+    assert_select 'div.row > div.col-md-8 [data-motd-md]', 1
+
+    pinned_apps = css_select('div.row > div.col-md-4')
+    assert_equal pinned_apps.children.size, 1
+    assert_equal pinned_apps.children.first.to_s.gsub(/[\s\n]/, ''), ''
+  end
+
+  test 'empty MOTD_PATH and pinned apps render empty elements' do
+    stub_user_configuration({
+                              dashboard_layout: {
+                                rows: [
+                                  {
+                                    columns: [
+                                      {
+                                        width:   8,
+                                        widgets: 'motd'
+                                      },
+                                      {
+                                        width:   4,
+                                        widgets: 'pinned_apps'
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            })
+
+    with_modified_env({ MOTD_PATH: '' }) do
+      get '/'
+    end
+
+    assert_select 'div.row', 1
+    assert_select 'div.row > div.col-md-8', 1
+    assert_select 'div.row > div.col-md-4', 1
+    assert_select 'div.row > div.col-md-8 h2', 0
+    assert_select '[data-motd-md]', 0
+
     motd = css_select('div.row > div.col-md-8')
     pinned_apps = css_select('div.row > div.col-md-4')
 
-    # they exist, but they're empty. No errors because you've configured to show them,
-    # but not configured to create them
     assert_equal motd.children.size, 1
     assert_equal motd.children.first.to_s.gsub(/[\s\n]/, ''), ''
     assert_equal pinned_apps.children.size, 1

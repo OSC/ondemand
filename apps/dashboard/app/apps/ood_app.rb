@@ -93,7 +93,7 @@ class OodApp
           tile: tile
         )
       ].concat(
-        OodFilesApp.new.favorite_paths.map do |favorite_path|
+        UserCustomization.favorite_paths.map do |favorite_path|
           OodAppLink.new(
             title: favorite_path.title || favorite_path.path.to_s,
             subtitle: favorite_path.title ? favorite_path.path.to_s : nil,
@@ -221,7 +221,11 @@ class OodApp
   end
 
   def manifest_path
-    path.join("manifest.yml")
+    potentials = Pathname.glob(path.join("manifest.{yml,yaml}"))
+    mp = potentials.select { |p| p.file? }.first
+
+    # if mp is nil here, just return this path and let another layer deal with the error.
+    mp.nil? ? path.join("manifest.yml") : mp
   end
 
   def svg_icon?

@@ -6,6 +6,8 @@ module BatchConnect
     include ActiveModel::Serializers::JSON
     include SanitizedEnv
 
+    class InvalidDbRoot < StandardError; end
+
     # This class describes the object that is bound to the ERB template file
     # when it is rendered
     TemplateBinding = Struct.new(:session, :context) do
@@ -128,8 +130,25 @@ module BatchConnect
 
       # Root directory for file system database
       # @return [Pathname] root directory of file system database
+      # @raise [InvalidDbRoot] if directory is invalid or lacks required permissions
       def db_root
-        dataroot.join("db").tap { |p| p.mkpath unless p.exist? }
+        path = dataroot.join("db")
+
+        begin
+          path.mkpath unless path.exist?
+        rescue StandardError => e
+          raise InvalidDbRoot, "Failed to create Batch Connect database directory '#{path}': #{e.message}"
+        end
+
+        unless path.directory?
+          raise InvalidDbRoot, "Batch Connect database root '#{path}' exists but is not a directory."
+        end
+
+        unless path.readable? && path.writable? && path.executable?
+          raise InvalidDbRoot, "Batch Connect database root '#{path}' lacks required read, write, or execute permissions."
+        end
+
+        path
       end
 
       # Root directory for file system database
@@ -614,7 +633,7 @@ module BatchConnect
 
     # @return [Boolean]
     def global_ssh_to_compute_node?
-      Configuration.ood_bc_ssh_to_compute_node
+      Configuration.bc_ssh_to_compute_node
     end
 
     # A unique identifier that details the current state of a session

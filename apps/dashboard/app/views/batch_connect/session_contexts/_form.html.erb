@@ -7,24 +7,50 @@
   <span class='sr-only' tabindex='0'><%= t('dashboard.batch_connect_form_dynamic_disclaimer') %></span>
 <% end %>
 <%= bootstrap_form_for(@session_context, html: { autocomplete: "off", }) do |f| %>
-  <% f.object.each do |attrib| %>
-    <%= create_widget(f, attrib, format: @render_format) %>
-  <% end %>
+  <%- @app.form_layout.each do |form_item| -%>
+    <%- if form_item.is_a?(Array) -%>
+    <div class="row">
+      <%- form_item.each do |grouped_item| -%>
+        <%- attrib = @session_context[format_bc_id(grouped_item)] %>
+        <%= create_widget(f, attrib, format: @render_format, grouped: true) %>
+      <%- end -%>
+    </div>
+    <%- else -%>
+      <%- attrib = @session_context[format_bc_id(form_item)] %>
+      <%= create_widget(f, attrib, format: @render_format) %>
+    <%-  end -%>
+  <%- end -%>
 
   <%- if Configuration.bc_saved_settings? -%>
-  <div class="mb-3 form-check">
-      <input class="form-check-input align-self-center" name="save_template" type="checkbox" id="batch_connect_session_save_template" <%= @template_name ? 'checked' : '' %>>
-      <label class="form-check-label align-self-center" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
-  </div>
+  <div class="mb-3">
+    <div class="form-check">
+      <input class="form-check-input" name="save_template" type="checkbox" id="batch_connect_session_save_template" aria-controls="batch_connect_session_save_template_fields" <%= @template_name ? 'checked' : '' %>>
+      <label class="form-check-label" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
+    </div>
 
-  <div class="mb-3 d-flex">
-    <input class="form-control w-50 me-2" name="template_name" value="<%= @template_name %>" type="text" id="batch_connect_session_template_name" aria-label="<%= t('dashboard.batch_connect_form_template_name_label') %>" readonly>
-    <%= f.submit t('dashboard.batch_connect_form_save_submit'), id: 'batch_connect_session_save_template_submit', class: "ms-auto btn btn-primary", formaction: batch_connect_save_settings_path(token: @app.token), disabled: @template_name ? false : true %>
+    <div id="batch_connect_session_save_template_fields" class="mt-2" <%= @template_name ? '' : 'hidden' %>>
+      <label class="form-label" for="batch_connect_session_template_name"><%= t('dashboard.batch_connect_form_template_name_label') %></label>
+      <div class="d-flex gap-2">
+        <input class="form-control" name="template_name" value="<%= @template_name %>" type="text" id="batch_connect_session_template_name"
+               placeholder="<%= t('dashboard.batch_connect_form_type_new_name') %>"
+               list="batch_connect_session_template_names" autocomplete="off" aria-describedby="batch_connect_session_template_name_help"
+               <%= @template_name ? 'required' : '' %>>
+        <datalist id="batch_connect_session_template_names">
+          <% @prefill_templates.each_key do |name| %>
+            <option value="<%= name %>"></option>
+          <% end %>
+        </datalist>
+        <%= f.submit t('dashboard.batch_connect_form_save_submit'), id: 'batch_connect_session_save_template_submit', class: "btn btn-primary text-nowrap", formaction: batch_connect_save_settings_path(token: @app.token), disabled: @template_name ? false : true %>
+      </div>
+      <div id="batch_connect_session_template_name_help" class="form-text"><%= t('dashboard.batch_connect_form_template_name_help') %></div>
+      <%# read by prefill_submit.js as the validation message for an empty name %>
+      <span id="batch_connect_session_template_name_error" hidden><%= t('dashboard.batch_connect_form_type_new_name_error') %></span>
+    </div>
   </div>
   <%- end -%>
 
   <div class="d-grid gap-2">
-    <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary" %>
+    <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary", id: 'batch_connect_session_context_launch' %>
   </div>
 <% end %>
 

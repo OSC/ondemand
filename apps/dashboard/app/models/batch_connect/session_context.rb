@@ -69,9 +69,9 @@ module BatchConnect
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
     end
 
-    def update_with_cache(cache)
+    def update_with_cache(cache, ignore_cacheable: false)
       self.attributes = cache.select do |k, _v|
-        self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)
+        self[k.to_sym] && (ignore_cacheable || self[k.to_sym].cacheable?(app_specific_cache_enabled?))
       end
     end
 
@@ -89,6 +89,26 @@ module BatchConnect
       end
 
       OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
+    end
+
+    # Redefine 'partition' from Enumerable so that sites can use it in a form.
+    def partition(&block)
+      if block_given?
+        @attributes.partition(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['partition'].value
+      end
+    end
+
+    # Redefine 'filter' from Enumerable so that sites can use it in a form.
+    def filter(&block)
+      if block_given?
+        @attributes.filter(&block)
+      else
+        # method_missing above returns value, so this does too.
+        self['filter'].value
+      end
     end
 
     private

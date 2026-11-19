@@ -228,10 +228,13 @@ class ProjectManagerTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
 
       click_on 'Edit'
+      assert_current_path(edit_project_path(project_id))
       find('#project_name').set('my-test-project', clear: :backspace)
       click_on 'Save'
+      assert_current_path(projects_path)
       assert_selector "[href='/projects/#{project_id}']", text: 'My Test Project'
       click_on 'Edit'
+      assert_current_path(edit_project_path(project_id))
       assert_selector 'h1', text: 'Editing: My Test Project'
       assert_equal 'my-test-project', find('#project_name').value
       assert_equal "#{dir}/projects/#{project_id}", find('#project_directory').value
@@ -250,7 +253,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       click_on I18n.t('dashboard.jobs_create_blank_project')
       find('#project_name').set(proj)
       find('#product_icon_select').set(icon)
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(projects_path)
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
@@ -258,10 +262,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   test 'update with invalid icon' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
       click_on 'Edit'
       find('#product_icon_select').set('fas://bad&icon')
-      click_on 'Save'
+      find('input[title="Save project"]').click
+      assert_current_path(project_path(project_id))
 
       assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
@@ -736,7 +741,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the launcher title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
-                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar'].to_set
+                           'pzs1117', 'pzs1118', 'pzs1124', 'p_s1.71', 'p-s1.71', 'p.s1.71', 'foo-bar', 'p_s1345'].to_set
 
       assert_equal(expected_accounts, page.all('#launcher_auto_accounts option').map(&:value).to_set)
       assert_equal(["#{project_dir}/my_cool_script.sh", "#{project_dir}/my_cooler_script.bash"].to_set,
@@ -905,6 +910,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
         .returns(['', 'some error message', exit_failure])
 
       click_on 'Launch'
+      assert_current_path(project_path(project_id))
       assert_selector('.alert-danger', text: "some error message")
       assert_nil YAML.safe_load(File.read("#{ondemand_dir}/job_log.yml"))
     end
@@ -1301,6 +1307,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
             - pzs1124
             - pzs1118
             - pzs1117
+            - p_s1345
             - pzs1010
             - pzs0715
             - pzs0714
@@ -1394,6 +1401,21 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'workflows are hidden and disabled when unsupported' do
+    Workflow.stubs(:supported?).returns(false)
+
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+
+      visit project_path(project_id)
+      assert_no_text(I18n.t('dashboard.jobs_workflows'))
+
+      visit new_project_workflow_path(project_id)
+      assert_current_path(project_path(project_id))
+      assert_selector('.alert-danger', text: I18n.t('dashboard.jobs_workflows_not_supported'))
+    end
+  end
+
   # this test:
   # creates a project & launcher with auto_accounts
   # excludes some of the accounts from auto_accounts in launcher#edit
@@ -1412,7 +1434,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find('#edit_launcher_auto_accounts').click
 
       # There are 7 allowed accounts before the 4 excluded ones
-      counter = 7
+      counter = 8
       exclude_accounts = ['pas2051', 'pas1871', 'p_s1.71', 'p-s1.71']
       exclude_accounts.each do |_acct|
         counter += 1
@@ -1444,7 +1466,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       visit edit_project_launcher_path(project_id, launcher_id)
       find('#edit_launcher_auto_accounts').click
 
-      counter = 7
+      counter = 8
       exclude_accounts.each do |acct|
         counter += 1
         html_acct = "option#{counter}"
@@ -1610,9 +1632,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
       select('Chemistry 5533', from: 'project_template')
       click_on(I18n.t('dashboard.save'))
 
-      find('i.fa-atom').click
-      input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
+      assert_current_path(projects_root_path)
+      ref = find("a[title='#{I18n.t('dashboard.jobs_project_open_label', name: 'Chemistry 5533')}']")
+      chem_project_path = ref[:href]
+      ref.click
 
+      input_data = File.read('test/fixtures/projects/chemistry-5533/assignment_1.sh')
       project_dir = Dir.children(dir).select { |p| Pathname.new("#{dir}/#{p}").directory? }.first
       project_dir = "#{dir}/#{project_dir}"
 
@@ -1627,6 +1652,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
+      assert_current_path(chem_project_path)
       find('#launch_8woi7ghd').click
 
       assert_selector('.alert-success', text: 'job-id-123')
@@ -1642,16 +1668,18 @@ class ProjectManagerTest < ApplicationSystemTestCase
       Project.stubs(:dataroot).returns(Pathname.new(dir))
 
       visit(projects_root_path)
-      assert_text(I18n.t('dashboard.jobs_import_shared_project'))
       find("a[title='#{I18n.t('dashboard.jobs_import_shared_project')}']").click
 
-      fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
-      click_on(I18n.t('dashboard.import'))
+      # Bootstrap adds .show only once the collapse transition has finished.
+      within('#load-import-pane.show') do
+        fill_in('project_directory', with: "#{Rails.root}/test/fixtures/projects/chemistry-5533")
+        find('#import_project').click
+      end
 
-      # redirected back to the index and it has imported the project with a success notice
+      # The flash exists only on the page rendered after the import's redirect.
+      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
       assert_current_path(projects_root_path)
       assert_selector('a[href="/projects/abc123"]', text: 'Chemistry 5533')
-      assert_selector('.alert-success', text: I18n.t('dashboard.jobs_project_imported'))
     end
   end
 end

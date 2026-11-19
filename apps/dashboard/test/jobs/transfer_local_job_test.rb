@@ -1,7 +1,10 @@
 require 'test_helper'
 
 class TransferLocalJobTest < ActiveJob::TestCase
-  # include ActiveJob::TestHelper
+  # Override test.rb's AsyncAdapter so enqueueing cannot start a copy.
+  def queue_adapter_for_test
+    ActiveJob::QueueAdapters::TestAdapter.new
+  end
 
   test "copy job copies a file" do
     Dir.mktmpdir do |dir|
@@ -94,13 +97,46 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
       transfer.save
-      job = TransferLocalJob.perform_later(transfer)
-      assert job.job_id != nil
+      assert_enqueued_with(job: TransferLocalJob, args: [transfer]) do
+        assert_not_nil TransferLocalJob.perform_later(transfer).job_id
+      end
       assert transfer.status.queued?
     end
-
+  ensure
     Transfer.transfers.clear
   end
+
+
+  def worst_case_update_calls(src_paths)
+    # This method computes the maximum number of update calls from the copy
+    # in the next test. There is guaranteed to be a call for each file and
+    # empty directory, but depending on filesystem order the number of mkdir_p
+    # calls can vary. This method assumes that every directory with a file child
+    # gets mkdir_p called on the file child before it gets called on a subdirectory,
+    # giving us an upper bound on how many calls we should expect.
+
+    files = 0
+    empty_dirs = 0
+    dirs_with_direct_children = Set.new
+
+    walk = ->(path) {
+      path = Pathname.new(path)
+      if path.file? || path.symlink?
+        files += 1
+      elsif path.directory?
+        if path.children.empty?
+          empty_dirs += 1
+        else
+          dirs_with_direct_children.add(path) if path.children.any? { |c| c.file? || c.symlink? }
+          path.children.each { |c| walk.call(c) }
+        end
+      end
+    }
+
+    src_paths.each { |sp| walk.call(sp) }
+    files + empty_dirs + dirs_with_direct_children.size
+  end
+
 
   # FIXME: need to change this interface to something simpler
   # and then use validations to limit the scope
@@ -117,11 +153,12 @@ class TransferLocalJobTest < ActiveJob::TestCase
       num_paths = src_paths.map do |path|
         Dir["#{path}/**/*"].length
       end.sum
+
       transfer = PosixTransfer.build(action: 'cp', files: input)
       assert_equal(num_paths, transfer.steps)
-      # FIXME: This is a littly buggy - it's updating percent for all the parent
-      # directories + 1 more time.
-      transfer.expects(:percent=).times(num_paths..num_paths + src_paths.length + 1)
+      # The difference here depends on the file traversal order, since some mkdir_p 
+      # calls create more paths than others. See worst_case_update_calls for more info
+      transfer.expects(:percent=).times(num_paths..worst_case_update_calls(src_paths))
 
       transfer.perform
 
