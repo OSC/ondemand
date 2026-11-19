@@ -198,6 +198,53 @@ class TransferLocalJobTest < ActiveJob::TestCase
     File.umask(old_umask)
   end
 
+  test "copy respects default ACLs on the destination" do
+    Dir.mktmpdir do |dir|
+      root = Pathname.new(dir)
+      src = root.join('src')
+      child = src.join('child')
+      child.mkpath
+      src.chmod(0o755)
+      child.chmod(0o755)
+      child.join('file').write('data')
+      project = root.join('project').tap(&:mkdir)
+
+      unless system('setfacl', '-m', 'd:u::rwx,d:g::---,d:o::---', project.to_s, out: File::NULL, err: File::NULL)
+        skip 'default ACLs require setfacl and filesystem support'
+      end
+
+      dest = project.join('copy')
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      transfer.perform
+
+      assert transfer.success?, transfer.errors.full_messages.inspect
+      assert_equal 0o700, dest.stat.mode & 0o777
+      assert_equal 0o700, dest.join('child').stat.mode & 0o777
+      assert_equal 'data', dest.join('child', 'file').read
+    end
+  end
+
+  test "copy rejects destinations inside the source directory" do
+    Dir.mktmpdir do |dir|
+      root = Pathname.new(dir)
+      src = root.join('src')
+      nested = src.join('nested').tap(&:mkpath)
+      link = root.join('link')
+      link.make_symlink(nested)
+
+      [nested, link].each do |parent|
+        missing_parent = parent.join('missing')
+        dest = missing_parent.join('copy')
+        transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+        transfer.perform
+
+        refute transfer.success?
+        assert_match(/cannot copy a directory into itself/, transfer.errors.full_messages.first)
+        refute_predicate missing_parent, :exist?
+      end
+    end
+  end
+
   test "copy leaves a directory created after validation alone" do
     Dir.mktmpdir do |dir|
       src = Pathname.new(dir).join('src')

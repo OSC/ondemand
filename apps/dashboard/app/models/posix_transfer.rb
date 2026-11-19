@@ -130,11 +130,28 @@ class PosixTransfer < Transfer
       src = Pathname.new(cp_info[0])
       dest = Pathname.new(cp_info[1])
 
+      validate_copy_destination(src, dest)
       cp_r(src, dest)
     rescue => e
       Rails.logger.warn("error encountered during copy: #{e}")
       errors.add(:copy, e.message)
     end
+  end
+
+  def validate_copy_destination(src, dest)
+    return if src.symlink? || !src.directory?
+    return unless resolve_copy_destination(dest).ascend.include?(src.realpath)
+
+    raise ArgumentError, "cannot copy a directory into itself: #{src} to #{dest}"
+  end
+
+  def resolve_copy_destination(path)
+    path.realdirpath
+  rescue Errno::ENOENT
+    parent = path.dirname
+    raise if parent == path
+
+    resolve_copy_destination(parent).join(path.basename)
   end
 
   def cp_r(src, dest)
@@ -145,16 +162,26 @@ class PosixTransfer < Transfer
       FileUtils.mkdir_p(dest.parent)
       # Keep partial copies private and fail if the destination already exists.
       Dir.mkdir(dest, 0o700)
+      final_mode = copied_directory_mode(src, dest)
       children.each { |child| cp_r(child, dest.join(child.basename)) }
-      copy_dir_mode(src, dest)
+      dest.chmod(final_mode)
       inc_cp_percent
     end
   end
 
-  def copy_dir_mode(src, dest)
-    # Match GNU cp -r by retaining the sticky bit and any inherited setgid bit.
-    inherited_setgid = dest.stat.mode & 0o2000
-    dest.chmod((src.stat.mode & 0o1777 & ~File.umask) | inherited_setgid)
+  def copied_directory_mode(src, dest)
+    mode = dest.stat.mode
+    dest.chmod(0o700 | (mode & 0o2000)) if (mode & 0o700) != 0o700
+
+    # The new destination inherited the parent's default ACL and setgid bit.
+    # Let mkdir apply them (or the umask) inside this still-private directory.
+    probe = dest.join('.ondemand-copy-mode')
+    Dir.mkdir(probe, src.stat.mode & 0o1777)
+    begin
+      probe.stat.mode & 0o3777
+    ensure
+      Dir.rmdir(probe)
+    end
   end
 
   def cp_single(src, dest)
