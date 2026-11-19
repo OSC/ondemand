@@ -119,6 +119,16 @@ describe NginxStage::PunConfigGenerator do
 
       expect(generator.send(:pun_running?)).to be(false)
     end
+
+    it 'blocks startup when a socket exists and its PID file is invalid' do
+      allow(File).to receive(:socket?)
+        .with('/var/run/ondemand-nginx/spec/passenger.sock').and_return(true)
+      allow(NginxStage::PidFile).to receive(:new)
+        .with('/var/run/ondemand-nginx/spec/passenger.pid').and_raise(NginxStage::InvalidPidFile)
+
+      hook = described_class.hooks.fetch(:skip_running_pun)
+      expect { generator.instance_eval(&hook) }.to raise_error(NginxStage::InvalidPidFile)
+    end
   end
 
   describe 'missing user' do

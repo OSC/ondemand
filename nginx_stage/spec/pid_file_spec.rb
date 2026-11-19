@@ -22,7 +22,10 @@ describe NginxStage::PidFile do
     expect(described_class.new(path).pid).to eq(2**31 - 1)
   end
 
-  ['', "\n", '0', '-1', '+1', '12abc', '1 2', '2147483648', '9' * 1000].each do |contents|
+  [
+    '', "\n", '0', '-1', '+1', '12abc', '1 2', '2147483648', '9' * 1000,
+    "\x00123", "123\x00\n"
+  ].each do |contents|
     it "rejects invalid PID contents #{contents.inspect}" do
       File.write(path, contents)
 

@@ -183,7 +183,7 @@ module NginxStage
         return false unless File.socket?(NginxStage.pun_socket_path(user: user))
 
         PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
-      rescue MissingPidFile, InvalidPidFile
+      rescue MissingPidFile
         false
       end
 
