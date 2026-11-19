@@ -7,12 +7,7 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::AutoGroups] the attribute object
     def self.build_auto_groups(opts = {})
-      options = begin
-        CurrentUser.group_names.grep(/#{Configuration.auto_groups_filter}/)
-      rescue RegexpError => e
-        Rails.logger.warn("auto_groups_filter does not compile, throwing this error: #{e}")
-        []
-      end
+      options = CurrentUser.filtered_group_names
 
       static_opts = {
         options: options

@@ -315,8 +315,7 @@ $ ->
 
 @update_notes = (notes) ->
   if notes?
-
-    $("#notes-field").html("#{Handlebars.escapeExpression(notes)}")
+    $("#notes-field").html(notes)
   else
     $("#notes-field").text("")
 

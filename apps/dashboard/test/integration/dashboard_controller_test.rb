@@ -59,6 +59,41 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     ], dditemurls, 'Files dropdown URLs are incorrect'
   end
 
+  test 'should preserve Files dropdown order for files app nav_bar entries by default' do
+    scratch_path = File.expand_path 'test/fixtures/dummy_fs/scratch'
+    project_path = File.expand_path 'test/fixtures/dummy_fs/project'
+    project_path2 = Pathname.new('test/fixtures/dummy_fs/project2').expand_path
+
+    OodFilesApp.stubs(:candidate_favorite_paths).returns(
+      [
+        FavoritePath.new(scratch_path, title: 'Scratch'),
+        project_path,
+        project_path2
+      ]
+    )
+
+    stub_user_configuration(
+      nav_bar: [
+        'files',
+        { title: 'Files App', apps: 'sys/files' }
+      ]
+    )
+
+    get root_path
+
+    expected_items = [
+      I18n.t('dashboard.home_directory'),
+      "Scratch #{scratch_path}",
+      project_path,
+      project_path2.to_s
+    ]
+
+    ['Files', 'Files App'].each do |menu_title|
+      dditems = dropdown_list_items(dropdown_list(menu_title))
+      assert_equal expected_items, dditems.map { |e| e.gsub(/\s+/, ' ') }
+    end
+  end
+
   test 'should create Clusters dropdown with valid clusters that are alphabetically ordered by title' do
     OodAppkit.stubs(:clusters).returns(
       OodCore::Clusters.new([
@@ -159,9 +194,9 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     get root_path
     assert_response :success
     assert_select dropdown_links, 4 # +1 here is 'Help'
-    assert_select  dropdown_link(1), text: 'Files'
-    assert_select  dropdown_link(2), text: 'Interactive Apps'
-    assert_select  dropdown_link(3), text: 'Clusters'
+    assert_equal 'Files', dropdown_link(1).text.strip
+    assert_equal 'Interactive Apps', dropdown_link(2).text.strip
+    assert_equal 'Clusters', dropdown_link(3).text.strip
   end
 
   test 'should not create app menus if UserConfiguration.categories is empty' do
@@ -175,7 +210,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
     get root_path
     assert_response :success
     assert_select dropdown_links, 1 # +1 here is 'Help'
-    assert_select dropdown_link(1), text: 'Help' # ensure is Help
+    assert_equal 'Help', dropdown_link(1).text.strip # ensure is Help
   end
 
   test 'apps with no category should not appear in menu' do
@@ -184,7 +219,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
 
-    assert_select ".navbar-expand-md > #navbar li.dropdown[title='System Installed Apps']", 0,
+    assert_select "#navbar li.dropdown[title='System Installed Apps']", 0,
                   'Apps with no category should not appear in menus (thus System Installed Apps)'
   end
 

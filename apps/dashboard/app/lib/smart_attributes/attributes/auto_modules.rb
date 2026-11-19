@@ -61,7 +61,7 @@ module SmartAttributes
       def hpc_versions
         HpcModule.all_versions(@hpc_module).map do |mod|
           data_opts = Configuration.job_clusters.map do |cluster|
-            { "data-option-for-cluster-#{cluster.id}": false } unless mod.on_cluster?(cluster.id)
+            { "data-option-for-cluster-#{cluster.id.to_s.tr('_', '-')}" => false } unless mod.on_cluster?(cluster.id)
           end.compact
 
           [mod.version, mod.to_s].concat(data_opts)

@@ -118,6 +118,17 @@ cacheable: true } }, form: ['bc_account', 'num_cores']
       assert_equal ['', '28'], [context['bc_account'].value, context['num_cores'].value]
     end
 
+    test 'should update field ignoring cacheable when ignore_cacheable is true' do
+      app = BatchConnect::App.new(router: nil)
+      app.stubs(:form_config).returns(cacheable: false,
+                                      attributes: { num_cores: { widget: 'number_field', value: '1', cacheable: false } }, form: ['bc_account', 'num_cores'])
+      context = app.build_session_context
+
+      context.update_with_cache({ 'bc_account' => 'project_1234', 'num_cores' => '28' }, ignore_cacheable: true)
+
+      assert_equal ['project_1234', '28'], [context['bc_account'].value, context['num_cores'].value]
+    end
+
     test 'should ignore bad cache keys when updating cache using update_with_cache' do
       app = BatchConnect::App.new(router: nil)
       app.stubs(:form_config).returns(attributes: { num_cores: { widget: 'number_field', value: '1' } },
@@ -128,6 +139,19 @@ cacheable: true } }, form: ['bc_account', 'num_cores']
 'bad_key_2' => '2' })
 
       assert_equal ['PZS0714', '28'], [context['bc_account'].value, context['num_cores'].value]
+    end
+
+    test 'as_json includes attributes whose ids match Kernel method names' do
+      app = BatchConnect::App.new(router: nil)
+      app.stubs(:form_config).returns(
+        attributes: { format: { widget: 'text_field', value: 'pdf' } },
+        form:       ['bc_account', 'format']
+      )
+      context = app.build_session_context
+
+      expected = { 'bc_account' => '', 'format' => 'pdf' }
+      assert_equal expected, context.serializable_hash
+      assert_equal expected, context.as_json
     end
 
     test 'to_openstruct throws error when using OpenStruct methods' do
@@ -164,6 +188,30 @@ cacheable: true } }, form: ['bc_account', 'num_cores']
       struct = context.to_openstruct(addons: { :new_thing => 'some_new_thing' })
 
       assert_equal struct.to_h, { :bc_account => '', :queue => 'gpu', :new_thing => 'some_new_thing' }
+    end
+
+    test 'enumerable filter still works' do
+      test_attrs = [
+        SmartAttributes::Attribute.new('cb', { widget: 'check_box' }),
+        SmartAttributes::Attribute.new('filter')
+      ]
+      cxt = BatchConnect::SessionContext.new(test_attrs)
+      filtered = cxt.filter { |a| a.id == 'cb' }
+      assert_equal(1, filtered.size)
+      assert_equal('cb', filtered.first.id)
+    end
+
+    test 'enumerable partition still works' do
+      test_attrs = [
+        SmartAttributes::Attribute.new('cb', { widget: 'check_box' }),
+        SmartAttributes::Attribute.new('parititon')
+      ]
+      cxt = BatchConnect::SessionContext.new(test_attrs)
+      partitioned = cxt.partition { |a| a.widget == 'check_box' }
+
+      # splits the input array into 2 arrays of size 1
+      assert_equal(1, partitioned[0].size)
+      assert_equal(1, partitioned[1].size)
     end
   end
 end

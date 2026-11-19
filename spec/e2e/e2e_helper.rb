@@ -27,6 +27,27 @@ def browser_login(browser)
   browser.text_field(id: 'username').set 'ood@localhost'
   browser.text_field(id: 'password').set 'password'
   browser.button(id: 'submit-login').click
+  # The submit click is asynchronous. Do not let callers race the Dex
+  # and authenticated dashboard navigation.
+  Watir::Wait.until(timeout: 60, interval: 0.25) do
+    browser.title == 'Dashboard - Open OnDemand'
+  end
+end
+
+def clean_nginx
+  on hosts, <<~SH
+    set -e
+    socket=/var/run/ondemand-nginx/ood/passenger.sock
+    /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force
+    for _ in $(seq 1 30); do
+      if [ ! -e "$socket" ] && [ ! -L "$socket" ]; then
+        exit 0
+      fi
+      sleep 1
+    done
+    echo "PUN socket still exists after nginx cleanup: $socket" >&2
+    exit 1
+  SH
 end
 
 def hook_fixture(file)
@@ -183,15 +204,22 @@ def install_ondemand
     release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     on hosts, "dnf config-manager --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
+    on hosts, "dnf config-manager --save --setopt=ondemand-web.username=#{ENV['OOD_REPO_USERNAME']} --setopt=ondemand-web.password=#{ENV['OOD_REPO_PASSWORD']}"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
     on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
-       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
+    auth = <<~EOS
+      machine apt.osc.edu
+      login #{ENV['OOD_REPO_USERNAME']}
+      password #{ENV['OOD_REPO_PASSWORD']}
+    EOS
+    create_remote_file(hosts, '/etc/apt/auth.conf.d/ondemand-web.conf', auth)
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end

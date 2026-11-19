@@ -10,8 +10,8 @@ module ApplicationHelper
     OodCore::Clusters.new(clusters.select(&:login_allow?))
   end
 
-  def restart_url
-    "/nginx/stop?redir=#{root_path}"
+  def restart_url(path = root_path)
+    "/nginx/stop?redir=#{path}"
   end
 
   # Render a bootstrap nav link if the url is specified.
@@ -33,22 +33,6 @@ module ApplicationHelper
 
   def support_url
     ENV['OOD_DASHBOARD_SUPPORT_URL']
-  end
-
-  def docs_url
-    ENV['OOD_DASHBOARD_DOCS_URL']
-  end
-
-  def configure_2fa_url
-    ENV['OOD_DASHBOARD_2FA_URL']
-  end
-
-  def passwd_url
-    ENV['OOD_DASHBOARD_PASSWD_URL']
-  end
-
-  def help_custom_url
-    ENV['OOD_DASHBOARD_HELP_CUSTOM_URL']
   end
 
   def fa_icon(icon, fa_style: 'fas', id: '', classes: 'app-icon', title: "FontAwesome icon specified: #{icon}")

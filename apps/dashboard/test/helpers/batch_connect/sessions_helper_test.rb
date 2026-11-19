@@ -62,7 +62,7 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
     assert_equal true, form['class'].include?('relaunch')
 
     button = html.at_css('button')
-    assert_equal  'Relaunch AppName Session', button['title']
+    assert_equal I18n.t('dashboard.batch_connect_sessions_relaunch_full_title', title: 'AppName'), button['title']
     assert_equal true, button['class'].include?('relaunch')
   end
 
@@ -80,10 +80,23 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
   end
 
   def cancel_session_title
-    "#{I18n.t('dashboard.batch_connect_sessions_cancel_title')} AppName #{I18n.t('dashboard.batch_connect_sessions_word')}"
+    I18n.t('dashboard.batch_connect_sessions_cancel_full_title', title: 'AppName')
   end
 
   def delete_session_title
-    "#{I18n.t('dashboard.batch_connect_sessions_delete_title')} AppName #{I18n.t('dashboard.batch_connect_sessions_word')}"
+    I18n.t('dashboard.batch_connect_sessions_delete_full_title', title: 'AppName')
+  end
+
+  test 'connection_tabs marks the first tab as the default tab' do
+    tabs = [
+      { title: 'Tab One', partial: 'starting', locals: {} },
+      { title: 'Tab Two', partial: 'queued', locals: {} }
+    ]
+
+    html = Nokogiri::HTML(connection_tabs('session-id', tabs))
+
+    assert_equal 1, html.css('.nav-tabs .nav-link[data-default-tab="true"]').size
+    assert_equal 'Tab One', html.at_css('.nav-tabs .nav-link[data-default-tab="true"]').text.strip
+    assert_nil html.at_css('.nav-tabs .nav-link[href="#c_session-id_1"][data-default-tab]')
   end
 end

@@ -34,4 +34,10 @@ end
     expected_link = "<a target=\"_top\" class=\"btn btn-primary btn-sm files-button\" href=\"/files/fs/blargh/cat_videos/projects/path/to/file\">Open in files app</a>"
     assert_equal(expected_link, files_button(path)) 
   end
+
+  test 'url_encode_url_path encodes hash without double encoding OodAppkit paths' do
+    editor_url = '/files/edit/fs/home/A%20B/bstepanovski#foo.txt#'
+    expected = '/files/edit/fs/home/A%20B/bstepanovski%23foo.txt%23'
+    assert_equal(expected, url_encode_url_path(editor_url))
+  end
 end

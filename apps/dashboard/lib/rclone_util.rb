@@ -257,7 +257,7 @@ class RcloneUtil
     def list_remotes
       o, e, s = rclone("listremotes")
       if s.success?
-        o.lines.map { |l| l.strip.delete_suffix(":") }
+        o.lines.map { |l| l.strip.delete_suffix(":") }.sort
       else
         raise RcloneError.new(s.exitstatus), I18n.t("dashboard.files_remote_error_listing_remotes", error: e)
       end

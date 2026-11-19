@@ -16,11 +16,17 @@ class PosixFile
     end
 
     def num_files(from, names)
-      args = names.map {|n| Shellwords.escape(n) }.join(' ')
-      o, e, s = Open3.capture3("find 2>/dev/null #{args} | wc -l", chdir: from)
-
-      # FIXME: handle status error
-      o.lines.last.to_i
+      names.map do |name|
+        path = Pathname.new(Pathname.new(from).join(name))
+        if path.file? || path.symlink?
+          1
+        elsif path.directory?
+          Dir.glob("#{path}/**/*", File::FNM_DOTMATCH).length
+        else
+          # not real?
+          0
+        end
+      end.sum
     end
 
     def username(uid)
@@ -204,7 +210,7 @@ class PosixFile
 
   # This serves the same function as can_download_as_zip?, but for files
   def can_download_file?
-    download_file_size_limit = Configuration.file_download_max
+    download_file_size_limit = Configuration.download_file_max
     unless file? && readable?
       error = I18n.t('dashboard.files_directory_download_unauthorized')
       return [false, error]

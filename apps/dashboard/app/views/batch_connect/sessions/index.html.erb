@@ -1,4 +1,4 @@
-<% content_for :title, "#{t('dashboard.breadcrumbs_my_sessions')} - #{@user_configuration.dashboard_title}" %>
+<% content_for :title, t('dashboard.page_title', page: t('dashboard.breadcrumbs_my_sessions'), site: @user_configuration.dashboard_title) %>
 <%-
   any_apps = (@sys_app_groups + @usr_app_groups + @dev_app_groups).any?
 -%>

@@ -116,12 +116,26 @@ module OodPortalGenerator
       @oidc_redirect_uri                = opts.fetch(:oidc_redirect_uri, @oidc_uri || '/oidc')
       @oidc_remote_user_claim           = opts.fetch(:oidc_remote_user_claim, 'preferred_username')
       @oidc_scope                       = opts.fetch(:oidc_scope, "openid profile email")
-      @oidc_crypto_passphrase           = opts.fetch(:oidc_crypto_passphrase, Digest::SHA1.hexdigest(servername))
       @oidc_session_inactivity_timeout  = opts.fetch(:oidc_session_inactivity_timeout, 28800)
       @oidc_session_max_duration        = opts.fetch(:oidc_session_max_duration, 28800)
       @oidc_state_max_number_of_cookies = opts.fetch(:oidc_state_max_number_of_cookies, '10 true')
       @oidc_cookie_same_site            = opts.fetch(:oidc_cookie_same_site, @ssl ? 'Off' : 'On')
       @oidc_settings                    = opts.fetch(:oidc_settings, {})
+
+      @oidc_crypto_passphrase           = fetch_oidc_crypto_passphrase(opts)
+    end
+
+    def fetch_oidc_crypto_passphrase(opts)
+      # if you're trying to use OIDC
+      if @oidc_uri && @oidc_provider_metadata_url && @oidc_client_id
+        config_passphrase = opts.fetch(:oidc_crypto_passphrase, nil)
+        raise(StandardError, 'oidc_crypto_passphrase must be set when using OIDC.') if config_passphrase.nil?
+
+        return config_passphrase
+      end
+
+      # not trying to use OIDC, so it's OK to be nil
+      nil
     end
 
     def servername
@@ -130,6 +144,23 @@ module OodPortalGenerator
 
     def auth?
       !@auth.empty?
+    end
+
+    def csp_port
+      if @proxy_server == @servername
+        ['443', '80'].include?(port) ? nil : ":#{port}"
+      else
+        nil
+      end
+    end
+
+    # Helper that builds a Header directive to set the Content-Security-Policy for a given uri
+    def node_csp_header(uri)
+      ws_proto = @ssl ? 'wss' : 'ws'  
+
+      http_origin = "#{@protocol}#{@proxy_server}#{csp_port}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+      wss_origin = "#{ws_proto}://#{@proxy_server}#{csp_port}#{uri}/%{MATCH_HOST}e/%{MATCH_PORT}e/"
+      "Header always set Content-Security-Policy \"connect-src #{http_origin} #{wss_origin}; form-action #{http_origin}\""
     end
 
     # Helper method to set the filename and path for access and error logs
@@ -205,6 +236,7 @@ module OodPortalGenerator
       end
 
       @auth = Dex.default_auth unless auth?
+      @oidc_crypto_passphrase = fetch_oidc_crypto_passphrase(attrs)
     end
   end
 end

@@ -10,9 +10,9 @@ class RequestTrackerService
     @queues = rt_config[:queues]
     @priority = rt_config[:priority]
 
-    if !queues || queues.empty? || !priority
-      raise ArgumentError, 'queues and priority are required options for RequestTrackerService'
-    end
+    return unless !queues || queues.empty? || !priority
+
+    raise ArgumentError, 'queues and priority are required options for RequestTrackerService'
   end
 
   def create_ticket(support_ticket_request, session, job)
@@ -26,8 +26,8 @@ class RequestTrackerService
     template_path = File.join('support_ticket/rt', rt_config.fetch(:template, 'rt_ticket_content'))
     ticket_text = ApplicationController.render(
       template: template_path,
-      formats: [:text], # so Rails prefers *.text.* variants
-      locals: {
+      formats:  [:text], # so Rails prefers *.text.* variants
+      locals:   {
         context: ticket_template_context,
         helpers: TemplateHelpers.new
       }
@@ -44,11 +44,10 @@ class RequestTrackerService
     # default to first configured queue
     queue = queues[0]
     if support_ticket_request.queue && support_ticket_request.queue != ''
-      if queues.include?(support_ticket_request.queue)
-        queue = support_ticket_request.queue
-      else
-        raise ArgumentError, 'invalid queue selection'
-      end
+      raise ArgumentError, 'invalid queue selection' unless queues.include?(support_ticket_request.queue)
+
+      queue = support_ticket_request.queue
+
     end
 
     payload = {

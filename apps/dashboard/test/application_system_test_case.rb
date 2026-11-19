@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'accessibility_helper'
+require_relative 'support/chrome_stale_visibility'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
@@ -18,6 +20,23 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
+
+  def visit(path)
+    super(path)
+    inject_contrast_observer
+  end
+
+  def find(*args, **options, &block)
+    result = super(*args, **options, &block)
+    inject_contrast_observer
+    result
+  end
+
+  def assert_selector(*args, &block)
+    result = super(*args, &block)
+    inject_contrast_observer
+    result
+  end
 
   def find_option_style(ele, opt)
     find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
@@ -52,10 +71,15 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   def verify_bc_alert(token, header, message)
-    assert_equal batch_connect_session_contexts_path(token), current_path
-    assert_equal header, find('div[role="alert"]').find('h4').text
-    assert_equal message, find('div[role="alert"]').find('pre').text
-    find('div[role="alert"]').find('button').click
+    # Wait for the post-submit page before locating elements in the new document.
+    assert_current_path(batch_connect_session_contexts_path(token), ignore_query: true)
+    alert = find('div[role="alert"][data-notice]', text: header)
+    within(alert) do
+      assert_selector('h4', exact_text: header)
+      assert_selector('pre', exact_text: message)
+      find('button[data-bs-dismiss="alert"]').click
+    end
+    assert_no_selector('div[role="alert"][data-notice]', text: header)
   end
 
   def expect_no_page_reload(&block)

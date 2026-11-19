@@ -169,9 +169,9 @@ class ApplicationHelperTest < ActionView::TestCase
     Rails.stubs(:env).returns(stub('production?', production?: true))
 
     @user_configuration = stub({ public_url: Pathname.new('/public') })
-    html = Nokogiri::HTML(favicon())
-    
-    favicon_html = html.at_css("link")
+    html = Nokogiri::HTML(favicon)
+
+    favicon_html = html.at_css('link')
     assert_equal '/public/favicon.ico', favicon_html['href']
   end
 
@@ -179,9 +179,9 @@ class ApplicationHelperTest < ActionView::TestCase
     Rails.stubs(:env).returns(stub('production?', production?: false))
 
     @user_configuration = stub({ public_url: Pathname.new('/public') })
-    html = Nokogiri::HTML(favicon())
-    
-    favicon_html = html.at_css("link")
+    html = Nokogiri::HTML(favicon)
+
+    favicon_html = html.at_css('link')
     assert_equal '/images/favicon.ico', favicon_html['href']
   end
 
@@ -189,9 +189,9 @@ class ApplicationHelperTest < ActionView::TestCase
     Rails.stubs(:env).returns(stub('production?', production?: true))
 
     @user_configuration = stub({ public_url: Pathname.new('/public') })
-    html = Nokogiri::HTML(favicon())
+    html = Nokogiri::HTML(favicon)
 
-    favicon_html = html.at_css("link")
+    favicon_html = html.at_css('link')
     assert_equal 'origin', favicon_html['referrerpolicy']
-  end 
+  end
 end

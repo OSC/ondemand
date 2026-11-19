@@ -9,7 +9,7 @@
     <div class="row">
       <% @projects.each do |project| %>
         <div id="<%= project.id %>" class="project-card">
-          <%= link_to(project_path(project.id), class: "text-dark project-icon #{project.mine? ? '' : 'shared'}", aria: {label: t('dashboard.jobs_project_open_label', name: project.title) }) do %>
+          <%= link_to(project_path(project.id), class: "text-dark project-icon #{project.mine? ? '' : 'shared'}", title: t('dashboard.jobs_project_open_label', name: project.title)) do %>
             <div class="text-center d-flex justify-content-center">
               <strong>
                 <%= icon_tag(URI.parse(project.icon)) %>

@@ -52,7 +52,9 @@
         <%= t('dashboard.jobs_new_launcher') %>
       </a>
     </div>
-    <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
+    <% if Workflow.supported? %>
+      <%= render partial: 'workflows/workflow', locals: { project: @project, workflows: @workflows } %>
+    <% end %>
   </div>
   
   <div id="project_jobs_files_col" class="row col-sm-8 col-lg-10 d-flex">
@@ -77,7 +79,7 @@
     </div>
     <div class="col-12 col-lg-7 jobs-files-item">
       <div id="directory_browser" class="border border-2 px-1 py-3 mt-3 mb-5 bg-white rounded">
-        <h2 class="lead fw-bolder d-flex justify-content-center"><%= "#{t('dashboard.project')} #{t('dashboard.directory')}" %>: &nbsp<i><%= @project.id %></i></h2>
+        <h2 class="lead fw-bolder d-flex justify-content-center"><%= t('dashboard.project_directory') %>: &nbsp<i><%= @project.id %></i></h2>
         <hr>
         <%= turbo_frame_tag 'project_directory', 
               src: directory_frame_path(

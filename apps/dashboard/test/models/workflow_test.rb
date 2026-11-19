@@ -15,6 +15,12 @@ class WorkflowsTest < ActiveSupport::TestCase
     assert_equal '0', workflow.sync_key_enabled
   end
 
+  test 'save without project_dir returns translated error message' do
+    workflow = Workflow.new(name: 'test', launcher_ids: ['sample'])
+    assert_not workflow.save
+    assert_equal I18n.t('dashboard.jobs_project_directory_error'), workflow.errors[:save].first
+  end
+
   test 'create workflow validation' do
     Dir.mktmpdir do |tmp|
       # add error in workflow save if project_dir is not valid
@@ -66,7 +72,7 @@ class WorkflowsTest < ActiveSupport::TestCase
         launcher_ids: ['sample']
       )
 
-      assert workflow.errors.inspect
+      assert_empty workflow.errors
       assert Dir.entries("#{project_dir}/.ondemand/workflows").include?("#{workflow_id}.yml")
       assert_equal workflow_id,          workflow.id
       assert_equal 'MyLocalName',        workflow.name
@@ -86,7 +92,7 @@ class WorkflowsTest < ActiveSupport::TestCase
         sync_key_enabled: '1'
       )
 
-      assert workflow.errors.inspect
+      assert_empty workflow.errors
       manifest_file = Pathname.new("#{project_dir}/.ondemand/workflows/#{workflow.id}.yml")
       assert_equal manifest_file, workflow.manifest_file
       assert File.file?(manifest_file)
@@ -181,6 +187,38 @@ class WorkflowsTest < ActiveSupport::TestCase
 
     with_key = workflow.submit_launcher_params(launcher, ['1234'], 'abc123TOKEN')
     assert_equal({'bc_num_hours' => '1', 'auto_queues' => 'batch', 'afterok' => ['1234'], 'ood_workflow_sync_key' => 'abc123TOKEN'}, with_key)
+  end
+
+  test 'supported? returns false when no job clusters exist' do
+    Configuration.stubs(:job_clusters).returns([])
+    assert_equal false, Workflow.supported?
+  end
+
+  test 'supported? returns false when adapter does not support job dependencies' do
+    adapter = stub(supports_job_dependencies?: false)
+    Configuration.stubs(:job_clusters).returns([stub(job_adapter: adapter)])
+    assert_equal false, Workflow.supported?
+  end
+
+  test 'supported? returns true when adapter supports job dependencies' do
+    adapter = stub(supports_job_dependencies?: true)
+    Configuration.stubs(:job_clusters).returns([stub(job_adapter: adapter)])
+    assert_equal true, Workflow.supported?
+  end
+
+  test 'supported? honors OOD_WORKFLOWS_ENABLED=false override' do
+    adapter = stub(supports_job_dependencies?: true)
+    Configuration.stubs(:job_clusters).returns([stub(job_adapter: adapter)])
+    with_modified_env(OOD_WORKFLOWS_ENABLED: 'false') do
+      assert_equal false, Workflow.supported?
+    end
+  end
+
+  test 'supported? honors OOD_WORKFLOWS_ENABLED=true override' do
+    Configuration.stubs(:job_clusters).returns([])
+    with_modified_env(OOD_WORKFLOWS_ENABLED: 'true') do
+      assert_equal true, Workflow.supported?
+    end
   end
 
   def create_workflow(id: nil, name: 'test-workflow', description: 'description', project_dir: nil, launcher_ids: [], sync_key_enabled: '0')

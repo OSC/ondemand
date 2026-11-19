@@ -1,4 +1,4 @@
-<% content_for :title, "#{t('dashboard.module_browser_title')} - #{@user_configuration.dashboard_title}" %>
+<% content_for :title, t('dashboard.page_title', page: t('dashboard.module_browser_title'), site: @user_configuration.dashboard_title) %>
 
 <h1 class="mb-4 d-flex justify-content-between">
   <%= t('dashboard.module_browser_title') %>

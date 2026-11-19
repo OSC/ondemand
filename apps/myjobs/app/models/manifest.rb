@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Manifest
+  include ActionView::Helpers::SanitizeHelper
+
   attr_accessor :name, :path, :host, :notes, :script
 
   # @param [Pathname] path Pathname object pointing to manifest file
@@ -34,7 +36,7 @@ class Manifest
 
     if Configuration.render_template_notes_as_markdown?
       begin
-        @notes = OodAppkit.markdown.render(@notes)
+        @notes = sanitize(OodAppkit.markdown.render(@notes.to_s))
       rescue StandardError
         Rails.logger.warn "Markdown rendering failed for manifest #{@path}"
       end

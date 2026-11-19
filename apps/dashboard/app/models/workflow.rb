@@ -5,6 +5,17 @@ class Workflow
   include ProjectPermissions
 
   class << self
+    def supported?
+      enabled = Configuration.workflows_enabled
+      return enabled unless enabled.nil?
+
+      Configuration.job_clusters.any? do |cluster|
+        cluster.job_adapter.supports_job_dependencies?
+      rescue OodCore::AdapterNotSpecified, NoMethodError
+        false
+      end
+    end
+
     def workflow_dir(project_dir)
       Pathname.new("#{project_dir}/.ondemand/workflows")
     end
@@ -84,7 +95,7 @@ class Workflow
     return false unless valid?(:create)
 
     if @project_dir.empty?
-      errors.add(:save, "I18n.t('dashboard.jobs_project_directory_error')")
+      errors.add(:save, I18n.t('dashboard.jobs_project_directory_error'))
       return false
     end
 

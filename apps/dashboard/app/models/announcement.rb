@@ -42,6 +42,29 @@ class Announcement
     end
   end
 
+  # Whether this announcement is a global announcement or an app specific announcement
+  # @return [Boolean] whether it is global
+  def global?
+    token.empty?
+  end
+
+  # The token of the app this announcement targets, e.g. "sys/bc_desktop"
+  # @return [String] the app token if it is set
+  def token
+    opts.fetch(:token, '').to_s.strip
+  end
+
+  # Whether this announcement should be shown for the given request
+  # @param request_token [String, nil] the app token from the current route,
+  #   e.g. "sys/bc_desktop/owens", or nil on non-app pages
+  # @return [Boolean] whether the announcement applies
+  def applies_to?(request_token)
+    return true if global?
+    return false if request_token.blank?
+
+    TokenMatcher.new(token).matches_app?(OpenStruct.new(token: request_token))
+  end
+
   # The announcement's button text displayed for required or dismissible announcements
   #  @return [String] the button text
   def button_text
@@ -52,6 +75,7 @@ class Announcement
   # Whether this is a valid announcement
   # @return [Boolean] whether it is valid
   def valid?
+    return false if parse_error?
     return false unless message
     return false if dismissible? && !id
     true
@@ -75,6 +99,30 @@ class Announcement
     opts.fetch(:required, false)
   end
 
+  # Whether this announcement is a parse/render error
+  # @return [Boolean] whether it is a parse/render error
+  def parse_error?
+    opts.fetch(:parse_error, false)
+  end
+
+  # Raw error message when parsing failed
+  # @return [String, nil] the error message if parsing failed
+  def error_message
+    opts[:error_message]
+  end
+
+  # Exception class name when parsing failed
+  # @return [String, nil] the exception class name if parsing failed
+  def error_class
+    opts[:error_class]
+  end
+
+  # Source file path for the announcement (if any)
+  # @return [String, nil] the source file path if it exists
+  def source
+    opts[:file]
+  end
+
   private
 
   def opts
@@ -86,15 +134,19 @@ class Announcement
               else
                 {}
               end
-    @opts.symbolize_keys.compact
-  rescue Errno::ENOENT # File does not exist
+    (@opts || {}).symbolize_keys.compact
+  rescue Errno::ENOENT => e # File does not exist
     Rails.logger.warn "Announcement file not found: #{@path}"
-    @opts = {}
+    @opts = build_error_opts("Announcement file not found: #{@path}", e)
   rescue SyntaxError => e # Syntax errors
     Rails.logger.warn "Syntax error in announcement file '#{@path}': #{e.message}. Please check the file for proper syntax."
-    @opts = {}
+    @opts = build_error_opts("Syntax error parsing announcement file '#{@path}': #{e.message}", e)
   rescue StandardError => e # Other exceptions
     Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
-    @opts = {}
+    @opts = build_error_opts("Error parsing announcement file '#{@path}': #{e.message}", e)
+  end
+
+  def build_error_opts(message, e)
+    { type: :danger, message: message, parse_error: true, error_message: e.message, error_class: e.class.to_s, file: @path.to_s }
   end
 end

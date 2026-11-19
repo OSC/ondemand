@@ -44,9 +44,9 @@ class CustomNavigationTest < ActionDispatch::IntegrationTest
 
     # Check nav menus
     assert_select dropdown_links, 3
-    assert_select dropdown_link(1), text: 'Custom Menu'
-    assert_select dropdown_link(2), text: 'Custom Apps'
-    assert_select dropdown_link(3), text: 'Help'
+    assert_equal 'Custom Menu', dropdown_link(1).text.strip
+    assert_equal 'Custom Apps', dropdown_link(2).text.strip
+    assert_equal 'Help', dropdown_link(3).text.strip
 
     menu_items = dropdown_list('Custom Menu')
     menu_links = css_select(menu_items, 'a')
