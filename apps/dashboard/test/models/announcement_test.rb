@@ -94,6 +94,14 @@ class AnnouncementTest < ActiveSupport::TestCase
     assert_equal(true, target.valid?)
   end
 
+  test 'valid? should be true with or without a token' do
+    target = Announcement.new({ msg: 'message value', token: 'sys/bc_desktop' })
+    assert_equal(true, target.valid?)
+
+    target = Announcement.new({ msg: 'message value' })
+    assert_equal(true, target.valid?)
+  end
+
   test 'completed? should be true if announcement is dismissible and id is stored in the user settings' do
     file = "#{Rails.root}/test/fixtures/file_output/user_settings/announcements.yml" if file.blank?
     Configuration.stubs(:user_settings_file).returns(file)
@@ -103,4 +111,83 @@ class AnnouncementTest < ActiveSupport::TestCase
     target = Announcement.new({ id: 'completed_id', dismissible: true })
     assert_equal(true, target.completed?)
   end
+
+  test 'global? is true when token is missing or empty' do
+    assert_equal(true, Announcement.new({ msg: 'test' }).global?)
+    assert_equal(true, Announcement.new({ msg: 'test', token: '' }).global?)
+    assert_equal(true, Announcement.new({ msg: 'test', token: '   ' }).global?)
+  end
+
+  test 'global? is false when token is set' do
+    target = Announcement.new({ msg: 'test', token: 'sys/app' })
+
+    assert_equal(false, target.global?)
+  end
+
+  test 'token returns the configured token as a string' do
+    target = Announcement.new({ msg: 'test', token: 'sys/app' })
+    assert_equal('sys/app', target.token)
+
+    target = Announcement.new({ msg: 'test', token: 123 })
+    assert_equal('123', target.token)
+  end
+
+  test 'token is empty when missing or blank' do
+    target = Announcement.new({ msg: 'test' })
+    assert_equal('', target.token)
+
+    target = Announcement.new({ msg: 'test', token: '' })
+    assert_equal('', target.token)
+
+    target = Announcement.new({ msg: 'test', token: '   ' })
+    assert_equal('', target.token)
+  end
+
+  test 'applies_to? is true for global announcements on any request' do
+    target = Announcement.new({ msg: 'test' })
+    assert_equal(true, target.applies_to?('sys/bc_desktop'))
+    assert_equal(true, target.applies_to?(nil))
+    assert_equal(true, target.applies_to?(''))
+  end
+
+  test 'applies_to? is true for the targeted app and its sub-apps' do
+    target = Announcement.new({ msg: 'test', token: 'sys/bc_desktop' })
+
+    assert_equal(true, target.applies_to?('sys/bc_desktop'))
+    assert_equal(true, target.applies_to?('sys/bc_desktop/owens'))
+  end
+
+  test 'applies_to? is false for other apps' do
+    target = Announcement.new({ msg: 'test', token: 'sys/bc_desktop' })
+
+    assert_equal(false, target.applies_to?('sys/bc_desktop_gpu'))
+    assert_equal(false, target.applies_to?('sys/other_app'))
+  end
+
+  test 'applies_to? is false for app announcements when request_token is nil or empty' do
+    target = Announcement.new({ msg: 'test', token: 'sys/bc_desktop' })
+
+    assert_equal(false, target.applies_to?(nil))
+    assert_equal(false, target.applies_to?(''))
+  end
+
+  test 'applies_to? supports glob tokens' do
+    target = Announcement.new({ msg: 'test', token: 'sys/*' })
+
+    assert_equal(true, target.applies_to?('sys/bc_desktop'))
+    assert_equal(false, target.applies_to?('dev/my_app'))
+  end
+
+  test 'applies_to? is true for a sub-app announcement on its own page' do
+    target = Announcement.new({ msg: 'test', token: 'sys/bc_desktop/owens' })
+
+    assert_equal(true, target.applies_to?('sys/bc_desktop/owens'))
+  end
+
+  test 'applies_to? does not match a sub-app announcement on its base app' do
+    target = Announcement.new({ msg: 'test', token: 'sys/bc_desktop/owens' })
+
+    assert_equal(false, target.applies_to?('sys/bc_desktop'))
+  end
+
 end
