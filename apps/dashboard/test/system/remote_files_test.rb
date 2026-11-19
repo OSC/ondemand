@@ -6,13 +6,10 @@ require 'rclone_helper'
 class RemoteFilesTest < ApplicationSystemTestCase
   MAX_WAIT = 120
 
-  def setup
-    # Reading the console log empties it, so this drops messages from the previous test.
-    page.driver.browser.logs.get(:browser)
-  end
-
   test "visiting files app doesn't raise js errors" do
     with_rclone_conf(Rails.root.to_s) do
+      # Start with a fresh browser so this test only sees its own console messages.
+      Capybara.current_session.quit
       visit files_url('alias_remote', '/')
       messages = page.driver.browser.logs.get(:browser)
       content = messages.join("\n")

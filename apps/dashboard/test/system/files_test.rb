@@ -8,12 +8,11 @@ class FilesTest < ApplicationSystemTestCase
   def setup
     FileUtils.rm_rf(DOWNLOAD_DIRECTORY.to_s)
     FileUtils.mkdir_p(DOWNLOAD_DIRECTORY.to_s)
-
-    # Reading the console log empties it, so this drops messages from the previous test.
-    page.driver.browser.logs.get(:browser)
   end
 
   test "visiting files app doesn't raise js errors" do
+    # Start with a fresh browser so this test only sees its own console messages.
+    Capybara.current_session.quit
     visit files_url(Rails.root.to_s)
 
     messages = page.driver.browser.logs.get(:browser)
