@@ -1,30 +1,10 @@
 // Place all Bootstrap 5 variable overrides in this file.
 // Bootstrap 5 SASS variables list: https://github.com/twbs/bootstrap/blob/v5.0.2/scss/_variables.scss
 
-// Miscellaneous
-$enable-responsive-font-sizes: "true";
-$enable-shadows: "true";
-
 // Colors
 $blue: rgb(51, 122, 183);
 $green: #5cb85c;
 $body-color: rgb(51, 51, 51);
-
-// see https://getbootstrap.com/docs/5.0/customize/sass/#modify-map
-$theme-colors: (
-  "primary": $blue,
-  "success": $green,
-  "danger": #dc3545,
-  "secondary": #6c757d,
-  "info": #0dcaf0,
-  "warning": #ffc107,
-  "light": #f8f9fa,
-  "dark": #212529
-);
-
-// NOTE: bootstrap 3 info color was not teal but #5bc0de
-// however bootstrap's calculation to determine the text ends up with black instead of white text
-// so we avoid overriding this
 
 // Navbar color default overrides
 $navbar-light-color: rgb(119, 119, 119);
@@ -35,13 +15,6 @@ $navbar-dark-color: #fff;
 $navbar-dark-active-color: rgba(#fff, .75);
 $navbar-dark-brand-color: #fff;
 $navbar-dark-disabled-color: rgba(#fff, .75);
-
-// pinned_apps widget colors
-$launcher_border: rgb(45,155,240);
-$launcher_border_hover: rgb(0,95,133);
-
-// support ticket colors
-$support_ticket_error: #a94442;
 
 // Grid layout
 $container-max-widths: (

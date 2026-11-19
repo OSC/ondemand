@@ -112,7 +112,8 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_links, 1
     assert_select pinned_app_link('/batch_connect/sys/bc_desktop/oakley/session_contexts/new') do |elements|
       assert_equal 1, elements.size
-      assert_equal 'launcher-click css_class_value', elements[0]['class']
+      assert_includes elements[0]['class'].split, 'launcher-click'
+      assert_includes elements[0]['class'].split, 'css_class_value'
     end
 
     assert_select "a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] i.fa-configuration-icon", 1
@@ -331,10 +332,10 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h3[class='apps-section-header-blue']", 2
+    assert_select "h3.apps-section-header", 2
     assert_select pinned_app_links, 3
-    assert_equal 'Gateway Apps', css_select("h3[class='apps-section-header-blue']")[0].text
-    assert_equal 'Interactive Apps', css_select("h3[class='apps-section-header-blue']")[1].text
+    assert_equal 'Gateway Apps', css_select("h3.apps-section-header")[0].text
+    assert_equal 'Interactive Apps', css_select("h3.apps-section-header")[1].text
   end
 
   test 'groups the apps by sub-categories' do
@@ -353,10 +354,10 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h3[class='apps-section-header-blue']", 2
+    assert_select "h3.apps-section-header", 2
     assert_select pinned_app_links, 3
-    assert_equal 'Apps', css_select("h3[class='apps-section-header-blue']")[0].text
-    assert_equal 'Biomedical Informatics', css_select("h3[class='apps-section-header-blue']")[1].text
+    assert_equal 'Apps', css_select("h3.apps-section-header")[0].text
+    assert_equal 'Biomedical Informatics', css_select("h3.apps-section-header")[1].text
   end
 
   test 'still shows ungroupable apps' do
@@ -375,9 +376,9 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h3[class='apps-section-header-blue']", 1
+    assert_select "h3.apps-section-header", 1
     assert_select pinned_app_links, 3
-    assert_equal I18n.t('dashboard.not_grouped'), css_select("h3[class='apps-section-header-blue']")[0].text
+    assert_equal I18n.t('dashboard.not_grouped'), css_select("h3.apps-section-header")[0].text
   end
 
   test 'group by metadata fields works' do
@@ -396,11 +397,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select "h3[class='apps-section-header-blue']", 3
+    assert_select "h3.apps-section-header", 3
     assert_select pinned_app_links, 3
-    assert_equal 'go erLANG python', css_select("h3[class='apps-section-header-blue']")[0].text
-    assert_equal 'python julia R Ruby', css_select("h3[class='apps-section-header-blue']")[1].text
-    assert_equal I18n.t('dashboard.not_grouped'), css_select("h3[class='apps-section-header-blue']")[2].text
+    assert_equal 'go erLANG python', css_select("h3.apps-section-header")[0].text
+    assert_equal 'python julia R Ruby', css_select("h3.apps-section-header")[1].text
+    assert_equal I18n.t('dashboard.not_grouped'), css_select("h3.apps-section-header")[2].text
   end
 
   test 'shows only the shared apps that have been configured' do

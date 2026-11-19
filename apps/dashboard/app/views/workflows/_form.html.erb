@@ -62,6 +62,6 @@
 <br>
 <p>
   <%= form.submit I18n.t('dashboard.save'), class: 'btn btn-primary', title: 'Save project' %>
-  <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
-  <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-default', title: 'Return to projects page' %>
+  <%= form.button I18n.t('dashboard.reset'), type: :reset, class: 'btn btn-light border', title: 'Clear form fields' %>
+  <%= link_to I18n.t('dashboard.back'), project_path(params[:project_id]), class: 'btn btn-light border', title: 'Return to projects page' %>
 </p>

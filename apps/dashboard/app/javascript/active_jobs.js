@@ -197,7 +197,7 @@ function create_datatable(options){
                 "searchable":       false,
                 render: function (data, type, row, meta) {
                   let { cluster_title, jobname, } = row
-                  return `<button class="details-control fa fa-plus btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
+                  return `<button class="details-control fa fa-plus btn btn-light border" aria-expanded="false" aria-label="Toggle visibility of job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
                 },
             },
             {
@@ -279,7 +279,7 @@ function create_datatable(options){
                     support_url.searchParams.set("cluster", cluster);
                     support_ticket = `
                         <a
-                          class="btn btn-primary btn-xs"
+                          class="btn btn-primary btn-sm"
                           href="${escapeHtml(support_url.toString())}"
                           aria-labeled-by"title"
                           aria-label="Submit support ticket for job with ID ${pbsid}"
@@ -299,7 +299,7 @@ function create_datatable(options){
                     return `
                       <div>
                         <a
-                          class="btn btn-danger btn-xs"
+                          class="btn btn-danger btn-sm"
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
                           href="${escapeHtml(delete_path)}"

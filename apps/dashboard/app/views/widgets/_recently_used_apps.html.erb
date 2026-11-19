@@ -1,8 +1,8 @@
 <%- apps = recently_used_apps -%>
 <%- unless apps.empty? -%>
-  <div class="recently-used-apps-header">
-    <h4 class="apps-section-header-blue"><%= t('dashboard.recently_used_apps_title') %></h4>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 app-launcher-row">
+  <div class="recently-used-apps-header mb-4">
+    <h4 class="apps-section-header fw-light bg-body-tertiary rounded-3 px-3 py-2 mb-3"><%= t('dashboard.recently_used_apps_title') %></h4>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 app-launcher-row">
     <%- apps.each do |app| -%>
       <%- link = app.link -%>
       <%- tile_data = link.tile -%>
@@ -10,11 +10,12 @@
         params = app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", attribute.value]}.to_h
       -%>
       <div class="col app-launcher-container">
-        <div class="app-launcher app-launcher-hover" data-bs-toggle="launcher-button">
+        <div class="app-launcher app-launcher-hover position-relative h-100" data-bs-toggle="launcher-button">
           <%=
             button_to(
               batch_connect_session_contexts_path(token: app.token),
-              class: ['launcher-click', tile_data[:border_color]],
+              class: ['launcher-click card h-100 justify-content-center border-2 rounded-4 shadow-sm text-center text-reset text-decoration-none px-3 py-4 w-100', tile_data[:border_color]],
+              form: { class: 'button_to h-100' },
               params: params,
               title: (displayable_settings?(app)? 'Parameters' : nil),
               data: {

@@ -1,14 +1,14 @@
 <%- tile_data = link.tile -%>
 <div class="center-block text-center">
   <%= icon_tag(URI(tile_data.fetch(:icon, link.icon_uri).to_s)) %>
-  <%= content_tag(:p, tile_data.fetch(:title, link.title), class: "app-title") %>
+  <%= content_tag(:p, tile_data.fetch(:title, link.title), class: "app-title fw-semibold mb-0") %>
 
   <% if tile_data.blank? %>
-    <%= content_tag(:p, content_tag(:span, link.caption), class: "app-caption text-muted") if link.caption %>
+    <%= content_tag(:p, content_tag(:span, link.caption), class: "app-caption text-muted small mt-1 mb-0") if link.caption %>
   <% else %>
-    <div class="app-caption">
+    <div class="app-caption mt-1">
       <%- tile_data.fetch(:sub_caption, "").each_line do |line| -%>
-        <%= content_tag(:p, line, class: "app-description text-muted") %>
+        <%= content_tag(:p, line, class: "app-description text-muted small mb-0") %>
       <%- end -%>
     </div>
   <% end %>

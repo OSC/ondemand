@@ -3,11 +3,11 @@
 <% links.each do |link| %>
   <%- tile_data = link.tile -%>
   <div class="col app-launcher-container">
-    <div class="app-launcher app-launcher-hover" data-bs-toggle="<%= link.new_tab? ? '' : 'launcher-button' %>">
+    <div class="app-launcher app-launcher-hover position-relative h-100" data-bs-toggle="<%= link.new_tab? ? '' : 'launcher-button' %>">
     <%=
       link_to(
         link.url.to_s,
-        class: ['launcher-click', tile_data[:border_color]],
+        class: ['launcher-click card h-100 justify-content-center border-2 rounded-4 shadow-sm text-center text-reset text-decoration-none px-3 py-4', tile_data[:border_color]],
         target: link.new_tab? ? "_blank" : nil,
         data: link.data
       ) do
