@@ -3,7 +3,8 @@
     font-size: 12px;
   }
 
-  .saved-settings-list .app-icon {
+  // muted file icons, except on the highlighted preset where they follow the white text
+  .saved-settings-list .list-group-item:not(.active) .app-icon {
     color: rgba(0, 0, 0, 0.25);
   }
 

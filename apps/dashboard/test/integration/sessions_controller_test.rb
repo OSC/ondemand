@@ -61,7 +61,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select '.col-md-3 nav div.card button.card-header' do |menu_headers|
+    assert_select '.col-md-3 nav div.card:not(#saved-settings-menu) button.card-header' do |menu_headers|
       assert_equal 2, menu_headers.size
       assert_equal 'Shared apps title', menu_headers[0].text.strip
       assert_equal 'Interactive apps title', menu_headers[1].text.strip
