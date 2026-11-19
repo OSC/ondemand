@@ -108,8 +108,8 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     visit(batch_connect_sessions_path)
 
     within('nav[aria-label="Interactive Apps Menu"]') do
-      card = find('.collapsible-app-card', match: :first)
-      button = card.find('button.collapsible-app-card-toggle')
+      card = find('.card', match: :first)
+      button = card.find('button.card-header')
       target_id = button['aria-controls']
       list_group = card.find("##{target_id}", visible: :all)
 
@@ -136,7 +136,7 @@ class ToggleBehaviorTest < ApplicationSystemTestCase
     visit(batch_connect_sessions_path)
 
     within('#saved-settings-menu') do
-      button = find('button.collapsible-app-card-toggle')
+      button = find('button.card-header')
 
       assert_selector('#saved-settings-menu-items.show')
       assert_equal('true', button['aria-expanded'])
