@@ -39,7 +39,7 @@ function alertDiv(message, type) {
   span.innerText = message;
 
   const div = document.createElement('div');
-  div.classList.add('alert', `alert-${type}`, 'alert-dismissible');
+  div.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'text-break');
   div.setAttribute('role', 'alert');
   div.appendChild(span);
   div.appendChild(closeButton());
