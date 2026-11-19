@@ -26,12 +26,38 @@ html, body {
 
 .navbar {
   padding: 3px;
+  flex-wrap: wrap;
+}
+
+/* Let the host and toolbar options share a row until they no longer fit. */
+.navbar > .container-fluid {
+  flex-wrap: wrap;
+  gap: 2px 8px;
+}
+
+.navbar-nav,
+.terminal-options {
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+/* A long hostname or directory should not make the toolbar scroll sideways. */
+.navbar-nav .nav-item {
+  min-width: 0;
+}
+
+#host,
+#directory {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
 }
 
 .terminal-options {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   gap: 2px 8px;
   width: max-content;
@@ -46,15 +72,6 @@ html, body {
 
 .terminal-options label {
   min-width: 4rem;
-}
-
-@media screen and (max-width: 350px) {
-  .navbar {
-    flex-wrap: wrap;
-  }
-  .terminal-options {
-    justify-content: flex-start;
-  }
 }
 
 .navbar-dark {

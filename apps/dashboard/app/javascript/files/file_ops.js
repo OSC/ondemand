@@ -23,6 +23,9 @@ const EVENTNAME = {
   newDirectory: 'newDirectory',
   renameFile: 'renameFile',
   renameFilePrompt: 'renameFilePrompt',
+  addFavorite: 'addFavorite',
+  renameFavoritePrompt: 'renameFavoritePrompt',
+  renameFavorite: 'renameFavorite'
 }
 
 
@@ -131,22 +134,50 @@ jQuery(function() {
     };
     
     $(CONTENTID).trigger(EVENTNAME.renameFilePrompt, eventData);
-
   });
 
   $(document).on('click', '.delete-file', function (e) {
-      e.preventDefault();
-      let table = $(CONTENTID).DataTable();
-      let rowId = e.currentTarget.dataset.rowIndex;
-      let row = table.row(rowId).data();
-      let fileName = $($.parseHTML(row.name)).text();
+    e.preventDefault();
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+    let fileName = $($.parseHTML(row.name)).text();
 
-      const eventData = {
-          files: [fileName]
-      };
+    const eventData = {
+        files: [fileName]
+    };
 
-      $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+    $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+  });
 
+  $(document).on('click', '.add-favorite', function (e) {
+    e.preventDefault();
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+    let fileName = $($.parseHTML(row.name)).text();
+
+    const eventData = {
+      file: fileName
+    }
+
+    $(CONTENTID).trigger(EVENTNAME.addFavorite, eventData);
+  }); 
+
+  $(document).on('click', '.rename-favorite', function (e) {
+    e.preventDefault();
+    const clicked = e.currentTarget;
+    const path = clicked.dataset.favoritePath;
+    const parent = $(clicked).closest('.input-group');
+    const link = parent.find('.nav-link');
+    const oldName = link.text().trim();
+
+    const eventData = {
+      name: oldName,
+      path: path
+    }
+
+    $(CONTENTID).trigger(EVENTNAME.renameFavoritePrompt, eventData);
   });
 
   $(CONTENTID).on(EVENTNAME.newFilePrompt, function () {
@@ -209,6 +240,17 @@ jQuery(function() {
     fileOps.changeDirectory(options.result.value);
   });
 
+  $(CONTENTID).on(EVENTNAME.addFavorite, function (e, options) {
+    fileOps.addFavorite(options.file);
+  });
+
+  $(CONTENTID).on(EVENTNAME.renameFavoritePrompt, function (e, options) {
+    fileOps.renameFavoritePrompt(options);
+  });
+
+  $(CONTENTID).on(EVENTNAME.renameFavorite, function (e, options) {
+    fileOps.renameFavorite(options.path, options.result.value);
+  });
 });
 
 class FileOps {
@@ -460,6 +502,21 @@ class FileOps {
       document.body.removeChild(iframe);
     }, TIME);
   }
+
+  jsonRequestOptions(method, body = null) {
+    let basicOpts = {
+      method: method,
+      headers: {
+        'X-CSRF-Token': csrfToken(),
+        'Accept': 'application/json'
+      },
+      mode: 'same-origin'
+    };
+    if (body) {
+      basicOpts.body = body;
+    }
+    return basicOpts;
+  }
   
   dataFromJsonResponse(response) {
     return new Promise((resolve, reject) => {
@@ -471,7 +528,52 @@ class FileOps {
             .catch((e) => reject(e))
     });
   }
-    
+
+  sharedFavoriteRequest(formData, action) {
+    fetch(history.state.currentFavoritesPath, this.jsonRequestOptions('post', formData))
+      .then(response => this.dataFromJsonResponse(response))
+      .then(function() {
+        window.location.reload();
+      })
+      .catch(e => {
+        this.doneLoading();
+        OODAlertError(`Error occurred when attempting to ${action} file favorite: ${e.message}`);
+        console.error(e);
+      });
+  }
+   
+  addFavorite(file) {
+    const formData = new FormData();
+    formData.append('user_customization[add_files_favorite]', [history.state.currentDirectory, file].join('/'));
+    this.showSwalLoading('Adding favorite path');
+    this.sharedFavoriteRequest(formData, 'add');
+  }
+
+  renameFavoritePrompt(options) {
+    const eventData = {
+      action: EVENTNAME.renameFavorite,
+      path: options.path,
+      'inputOptions': {
+        title: `Rename favorite ${options.path}`,
+        input: 'text',
+        inputLabel: 'Name',
+        inputValue: options.name,
+        inputAttributes: {
+          spellcheck: 'false',
+        },
+        showCancelButton: true,
+      }
+    };
+
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
+  }
+
+  renameFavorite(path, name) {
+    const formData = new FormData();
+    formData.append('user_customization[rename_files_favorite]', JSON.stringify({ path: path, name: name }));
+    this.showSwalLoading('Renaming favorite path');
+    this.sharedFavoriteRequest(formData, 'rename');
+  }
   
   delete(files) {
     this.showSwalLoading('Deleting files...: ');

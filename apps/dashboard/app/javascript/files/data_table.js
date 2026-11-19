@@ -526,6 +526,15 @@ class DataTable {
             ));
         }
 
+        // Add favorite shortcut to directories
+        if (!file) {
+            dropdownMenu.appendChild(this.actionsDropdownItem(
+                ['add-favorite'],
+                rowIndex,
+                '<i class="fas fa-heart" aria-hidden="true"></i> Favorite'
+            ));
+        }
+ 
         // Add a divider between options
         dropdownMenu.appendChild(this.actionsDropdownDivider());
 
@@ -571,6 +580,7 @@ class DataTable {
                             currentDirectory: data.path,
                             currentDirectoryUrl: data.url,
                             currentFilesPath: data.files_path,
+                            currentFavoritesPath: history.state.currentFavoritesPath,
                             currentFilesUploadPath: data.files_upload_path,
                             currentFilesystem: data.filesystem,
                             currentFilenames: Array.from(data.files, x => x.name)
