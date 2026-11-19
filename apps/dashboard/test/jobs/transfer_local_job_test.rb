@@ -110,26 +110,32 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
   test "copy progress ticks once per entry and finishes at 100" do
     Dir.mktmpdir do |dir|
-      src = Pathname.new(dir).join('src')
+      src = Pathname.new(dir).join('src[1]')
       src.join('empty').mkpath
       src.join('nested', 'deep').mkpath
       src.join('nested', 'deep', 'file').write('file')
       src.join('one').write('one')
       src.join('.hidden').write('hidden')
       dest = Pathname.new(dir).join('new', 'dest')
+      empty = Pathname.new(dir).join('empty').tap(&:mkdir)
+      link = Pathname.new(dir).join('link')
+      link.make_symlink(src)
+      empty_copy = dest.parent.join('empty')
+      link_copy = dest.parent.join('link')
 
-      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      transfer = PosixTransfer.build(action: 'cp', files: {
+        src.to_s => dest.to_s, empty.to_s => empty_copy.to_s, link.to_s => link_copy.to_s
+      })
       seen = []
       transfer.define_singleton_method(:percent=) { |pct| seen << pct }
       transfer.perform
 
-      # empty, nested, nested/deep, nested/deep/file, one, .hidden
       assert transfer.success?, transfer.errors.full_messages.inspect
-      assert_equal 6, transfer.steps
-      assert_equal 6, seen.size
-      assert_equal seen.sort, seen, "progress went backwards: #{seen.inspect}"
-      assert_equal 100, seen.last, seen.inspect
-      assert_equal '', `diff -r #{src} #{dest}`.strip
+      assert_equal 9, transfer.steps
+      assert_equal [11, 22, 33, 44, 55, 66, 77, 88, 100], seen
+      assert system('diff', '-r', src.to_s, dest.to_s)
+      assert_predicate empty_copy, :empty?
+      assert_equal src, link_copy.readlink
     end
   end
 
@@ -143,7 +149,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       src.join('readonly', 'file').write('file')
       src.join('notes.txt').chmod(0o644)
       src.join('sub', 'empty').chmod(0o700)
-      src.join('sub').chmod(0o750)
+      src.join('sub').chmod(0o1750)
       src.join('readonly').chmod(0o555)
       src.chmod(0o700)
       dest = Pathname.new(dir).join('dest')
@@ -156,7 +162,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
         mode = ->(path) { format('%o', path.stat.mode & 0o7777) }
 
         assert_equal '700', mode.call(dest), 'a private directory became readable by others'
-        assert_equal '750', mode.call(dest.join('sub'))
+        assert_equal '1750', mode.call(dest.join('sub'))
         assert_equal '700', mode.call(dest.join('sub', 'empty'))
         assert_equal '555', mode.call(dest.join('readonly'))
         assert_equal '644', mode.call(dest.join('notes.txt'))
@@ -167,6 +173,48 @@ class TransferLocalJobTest < ActiveJob::TestCase
     end
   ensure
     File.umask(old_umask)
+  end
+
+  test "copy keeps a partial directory private when a child copy fails" do
+    old_umask = File.umask(0o022)
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('src')
+      src.mkdir(0o700)
+      src.join('notes').write('notes')
+      dest = Pathname.new(dir).join('dest')
+
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      transfer.define_singleton_method(:cp_single) do |source, target|
+        super(source, target)
+        raise Errno::EIO, target.to_s
+      end
+      transfer.perform
+
+      refute transfer.success?
+      assert_equal 'notes', dest.join('notes').read
+      assert_equal 0o700, dest.stat.mode & 0o777
+    end
+  ensure
+    File.umask(old_umask)
+  end
+
+  test "copy leaves a directory created after validation alone" do
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('src')
+      src.mkdir(0o700)
+      src.join('notes').write('notes')
+      dest = Pathname.new(dir).join('dest')
+
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      assert transfer.valid?
+      dest.mkdir
+      dest.chmod(0o755)
+      transfer.perform
+
+      refute transfer.success?
+      assert_predicate dest, :empty?
+      assert_equal 0o755, dest.stat.mode & 0o777
+    end
   end
 
   test "copy into a setgid directory keeps the inherited setgid bit" do
@@ -192,7 +240,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       assert_equal '2750', format('%o', dest.join('inner').stat.mode & 0o7777)
     end
   ensure
-    File.umask(old_umask)
+    File.umask(old_umask) if old_umask
   end
 
   # lots of things are covered in test/system/files_test.rb

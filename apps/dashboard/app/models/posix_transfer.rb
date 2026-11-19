@@ -47,12 +47,12 @@ class PosixTransfer < Transfer
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
     elsif copy?
-      @steps = files.keys.map do |source|
-        path = Pathname.new(source)
-        # every entry under the source, dotfiles included; cp_r ticks once for each.
-        # FNM_DOTMATCH also returns '.' (the source directory itself), which isn't copied as a step.
-        path.directory? ? Dir.glob('**/*', File::FNM_DOTMATCH, base: source).count { |p| p != '.' } : 1
-      end.sum
+      @steps = files.keys.sum do |source|
+        next 1 if File.symlink?(source) || !File.directory?(source)
+
+        # Count the root separately, since the glob can also return it as '.'.
+        1 + Dir.glob('**/*', File::FNM_DOTMATCH, base: source, sort: false).count { |entry| entry != '.' }
+      end
     elsif remove?
       @steps = names.size
     else
@@ -137,39 +137,28 @@ class PosixTransfer < Transfer
     end
   end
 
-  def cp_r(src, dest, original_src = nil)
-    original_src = src if original_src.nil?
-    new_dest = translate_cp_path(src, dest, original_src)
-
-    if src.file? || src.symlink?
-      cp_single(src, new_dest)
+  def cp_r(src, dest)
+    if src.symlink? || src.file?
+      cp_single(src, dest)
     elsif src.directory?
-      # read the children first so an unreadable source raises before we create anything.
       children = src.children
-
-      # the source directory itself isn't counted in steps, everything under it is.
-      inc_cp_percent unless src == original_src
-      FileUtils.mkdir_p(new_dest)
-      children.each { |child| cp_r(child, dest, original_src) }
-      # set the mode after the children are copied, so a read-only
-      # source directory doesn't stop us from writing into the copy.
-      copy_dir_mode(src, new_dest)
+      FileUtils.mkdir_p(dest.parent)
+      # Keep partial copies private and fail if the destination already exists.
+      Dir.mkdir(dest, 0o700)
+      children.each { |child| cp_r(child, dest.join(child.basename)) }
+      copy_dir_mode(src, dest)
+      inc_cp_percent
     end
   end
 
-  # Give a copied directory the same mode `cp -r` would: the source's
-  # permission bits filtered by the umask. setuid and sticky bits are not
-  # copied, and a setgid bit the new directory inherited from its parent
-  # (e.g. a group project directory) is kept.
   def copy_dir_mode(src, dest)
-    inherited_setgid = File.stat(dest).mode & 0o2000
-    File.chmod((src.stat.mode & 0o777 & ~File.umask) | inherited_setgid, dest)
+    # Match GNU cp -r by retaining the sticky bit and any inherited setgid bit.
+    inherited_setgid = dest.stat.mode & 0o2000
+    dest.chmod((src.stat.mode & 0o1777 & ~File.umask) | inherited_setgid)
   end
 
   def cp_single(src, dest)
-    dest_parent = dest.parent.to_s
-    # only needed when copying a single file; cp_r creates directories itself.
-    FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
+    FileUtils.mkdir_p(dest.parent)
 
     if src.symlink?
 
@@ -189,25 +178,11 @@ class PosixTransfer < Transfer
     inc_cp_percent
   end
 
-  # you're copying /tmp/dir to /home/users/foo
-  # you've descended /tmp/dir down to say /tmp/dir/one/two/three/foo.txt
-  # So you want to translate the src - /tmp/dir/one/two/three/foo.txt
-  # to the destination path (dest) using relative path one/two/three/foo.txt
-  # (relative to the orginal_src which is /tmp/dir)
-  def translate_cp_path(src, dest, original_src)
-
-    # no translation needed if you're not descending into a directory
-    return dest if src == original_src
-
-    relative_path = src.to_s.gsub("#{original_src}/", '')
-    dest.join(relative_path)
-  end
-
   # FIXME: copy commands are the only thing that use their own variable
   # for how many steps it's taken. We should find a way to refactor this.
   def inc_cp_percent
     @current_cp_step += 1
-    update_percent(@current_cp_step)
+    update_percent([@current_cp_step, steps].min)
   end
 
   def mv
