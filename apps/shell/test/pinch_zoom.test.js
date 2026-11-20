@@ -332,26 +332,27 @@ describe('Resize messages', () => {
     jest.advanceTimersByTime(16);
   });
 
-  test('wait for the size to settle and send only the last one', () => {
+  test('sends sizes immediately outside a pinch', () => {
     const { shell } = setup();
     shell.onTerminalResize(80, 24);
     shell.onTerminalResize(100, 30);
-    expect(shell.socket.send).not.toHaveBeenCalled();
-    jest.runAllTimers();
-    expect(shell.socket.send).toHaveBeenCalledTimes(1);
-    expect(shell.socket.send).toHaveBeenCalledWith(
-      JSON.stringify({ resize: { cols: 100, rows: 30 } }));
+    expect(sentColumns(shell)).toEqual([80, 100]);
   });
 
-  test('keep waiting while the size keeps changing', () => {
-    const { shell } = setup();
-    for (let columns = 80; columns < 100; columns++) {
-      shell.onTerminalResize(columns, 24);
-      jest.advanceTimersByTime(20);
-    }
+  test('a pause or lifting just one finger does not send an intermediate size', () => {
+    const context = setup();
+    reportResizes(context);
+    const { shell, fire, engage } = context;
+    engage(100);
+    pinchThrough(fire, [150]);
+    jest.advanceTimersByTime(250);
+    pinchThrough(fire, [200]);
+    fire('touchend', [finger(2, 200)]);
+    jest.advanceTimersByTime(250);
     expect(shell.socket.send).not.toHaveBeenCalled();
+    fire('touchend', []);
     jest.runAllTimers();
-    expect(sentColumns(shell)).toEqual([99]);
+    expect(sentColumns(shell)).toEqual([20]);
   });
 
   test('a pinch sends its final size once', () => {
@@ -371,22 +372,23 @@ describe('Resize messages', () => {
     reportResizes(context, 50);
     const { shell, fire, engage } = context;
     engage(100);
-    pinchThrough(fire, [150, 200]);
+    pinchThrough(fire, [150]);
+    jest.advanceTimersByTime(50);
+    pinchThrough(fire, [200]);
     fire('touchend', []);
     jest.runAllTimers();
     expect(sentColumns(shell)).toEqual([20]);
   });
 
-  test('a second pinch is sent on its own', () => {
+  test('keeps two quick pinches separate', () => {
     const context = setup();
     reportResizes(context);
     const { shell, fire, engage } = context;
     engage(100);
     pinchThrough(fire, [200]);
     fire('touchend', []);
-    jest.runAllTimers();
-    expect(sentColumns(shell)).toEqual([20]);
     engage(100);
+    expect(sentColumns(shell)).toEqual([20]);
     pinchThrough(fire, [50]);
     fire('touchend', []);
     jest.runAllTimers();

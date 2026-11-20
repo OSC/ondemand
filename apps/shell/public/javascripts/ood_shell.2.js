@@ -6,11 +6,14 @@ function OodShell(element, url, profile) {
   this.socket  = null;
   this.term    = null;
 
-  // hterm reports a new terminal size for every step of a pinch. Send only the
-  // last one, once the steps stop, so the remote program gets one resize
-  // (SIGWINCH) instead of one per step.
-  this.sendResize = _.debounce((size) => {
-    this.socket.send(JSON.stringify({ resize: size }));
+  this.pinchResize = null;
+  // hterm can report the last font-size change after the fingers lift.
+  this.finishPinchResize = _.debounce(() => {
+    const { size } = this.pinchResize;
+    this.pinchResize = null;
+    if (size) {
+      this.sendResize(size);
+    }
   }, 100);
 }
 
@@ -198,7 +201,7 @@ OodShell.prototype.installPinchZoom = function (term) {
 
   // A finger landed, lifted or was cancelled. End the gesture once no fingers
   // remain, and start measuring a new pair if exactly two are down.
-  const onTouchesChanged = function (ev) {
+  const onTouchesChanged = (ev) => {
     if (ev.type === 'touchstart') {
       for (let i = 0; i < ev.changedTouches.length; i++) {
         follow(ev.changedTouches[i].target);
@@ -207,6 +210,9 @@ OodShell.prototype.installPinchZoom = function (term) {
 
     if (ev.touches.length === 0) {
       unfollowAll();
+      if (claimed) {
+        this.finishPinchResize();
+      }
       claimed = false;
     }
 
@@ -220,7 +226,7 @@ OodShell.prototype.installPinchZoom = function (term) {
     }
   };
 
-  const onTouchMove = function (ev) {
+  const onTouchMove = (ev) => {
     if (claimed) {
       ev.preventDefault();
     }
@@ -241,6 +247,8 @@ OodShell.prototype.installPinchZoom = function (term) {
       pinch.engaged = true;
       pinch.distance = distance;
       claimed = true;
+      this.finishPinchResize.flush();
+      this.pinchResize = { size: null };
       ev.preventDefault();
       return;
     }
@@ -340,8 +348,14 @@ OodShell.prototype.changeTheme = function (theme) {
 }
 
 OodShell.prototype.onTerminalResize = function (columns, rows) {
-  // React to size changes here.
-  // Secure Shell pokes at NaCl, which eventually results in
-  // some ioctls on the host.
-  this.sendResize({ cols: columns, rows: rows });
+  const size = { cols: columns, rows: rows };
+  if (this.pinchResize) {
+    this.pinchResize.size = size;
+  } else {
+    this.sendResize(size);
+  }
+};
+
+OodShell.prototype.sendResize = function (size) {
+  this.socket.send(JSON.stringify({ resize: size }));
 };
