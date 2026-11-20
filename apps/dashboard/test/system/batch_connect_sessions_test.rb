@@ -11,11 +11,10 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     stub_sys_apps
   end
 
-  # The sessions page keeps polling until Rails takes the failure screenshot and
-  # resets Capybara in super, so remove the session database only after that.
+  # Remove the session database only once Capybara resets the browser and drains
+  # pending requests. A failed reset can leave the poller reading this directory.
   def after_teardown
     super
-  ensure
     FileUtils.remove_entry(@session_dir) if @session_dir
   end
 
