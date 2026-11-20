@@ -232,8 +232,10 @@ OodShell.prototype.installMobileSelection = function (term) {
   const clipboard = navigator.clipboard;
   const canCopy = clipboard && typeof clipboard.writeText === 'function';
   const canPaste = clipboard && typeof clipboard.readText === 'function';
+  const isConnected = () => this.socket.readyState === WebSocket.OPEN;
   copyButton.disabled = true;
-  pasteButton.disabled = !canPaste;
+  pasteButton.disabled = !canPaste || !isConnected();
+  this.selectionPasteButton = pasteButton;
   if (!canPaste) {
     pasteButton.title = 'Clipboard paste is unavailable in this browser or connection';
   }
@@ -351,11 +353,16 @@ OodShell.prototype.installMobileSelection = function (term) {
     }
   });
   pasteButton.addEventListener('click', async () => {
-    if (!canPaste) return;
+    if (!canPaste || !isConnected()) return;
     // hterm's paste() does not expose or handle readText rejection. Its paste
     // data handler preserves its newline and bracketed-paste processing.
     try {
-      term.onPasteData_(await clipboard.readText());
+      const text = await clipboard.readText();
+      if (!isConnected()) {
+        status.textContent = 'Paste failed. The terminal has disconnected.';
+        return;
+      }
+      term.onPasteData_(text);
       status.textContent = 'Pasted.';
     } catch (error) {
       status.textContent = 'Paste failed. Check clipboard permission.';
@@ -369,6 +376,10 @@ OodShell.prototype.getMessage = function (ev) {
 
 OodShell.prototype.closeTerminal = function (ev) {
   let errorDiv;
+
+  if (this.selectionPasteButton) {
+    this.selectionPasteButton.disabled = true;
+  }
 
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;

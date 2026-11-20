@@ -64,6 +64,7 @@ function setup({ touch = true, clipboard } = {}) {
     };
   }
   const term = {
+    io: { print: jest.fn() },
     useDefaultWindowCopy: false,
     getDocument: () => doc,
     getSelectionText: () => selected ? 'selected text' : null,
@@ -76,10 +77,13 @@ function setup({ touch = true, clipboard } = {}) {
   const context = vm.createContext({
     window: { matchMedia: () => ({ matches: touch }), setTimeout, clearTimeout },
     document: page,
-    navigator: { maxTouchPoints: touch ? 1 : 0, clipboard }
+    navigator: { maxTouchPoints: touch ? 1 : 0, clipboard },
+    WebSocket: { OPEN: 1 }
   });
   vm.runInContext(source, context);
   const shell = new context.OodShell(container, '', '');
+  shell.socket = { readyState: 1 };
+  shell.term = term;
   shell.installMobileSelection(term);
   const toolbar = container.children[0];
   return {
@@ -156,6 +160,23 @@ test('paste works without a selection and delegates to hterm paste processing', 
   await flush();
   expect(s.pastes).toEqual(['paste\ntext']);
   expect(s.status.textContent).toBe('Pasted.');
+});
+
+test('disabling paste on disconnect also prevents an in-flight paste', async () => {
+  let finishRead;
+  const readText = jest.fn(() => new Promise((resolve) => { finishRead = resolve; }));
+  const s = setup({ clipboard: { readText } });
+  s.paste.dispatch('click');
+  s.shell.socket.readyState = 3;
+  s.shell.closeTerminal({ code: 1000 });
+  expect(s.paste.disabled).toBe(true);
+  s.paste.dispatch('click');
+  expect(readText).toHaveBeenCalledTimes(1);
+
+  finishRead('too late');
+  await flush();
+  expect(s.pastes).toEqual([]);
+  expect(s.status.textContent).toBe('Paste failed. The terminal has disconnected.');
 });
 
 test('paste rejection is reported and unavailable clipboard controls are disabled', async () => {
