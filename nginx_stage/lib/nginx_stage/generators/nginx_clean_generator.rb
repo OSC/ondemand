@@ -1,5 +1,3 @@
-require 'socket'
-
 module NginxStage
   # This generator cleans all running per-user NGINX processes that are
   # inactive (i.e., not active connections).
@@ -63,13 +61,16 @@ module NginxStage
         begin
           next if (user && user != u.to_s)
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
-          socket_path = NginxStage.pun_socket_path(user: u)
-          running = pid_path.running_process?
+          running = !skip_nginx && pid_path.running_process?
           sessions = session_count(u)
-          cleanup_stale_files(pid_path, socket_path) unless skip_nginx || running
+          if !skip_nginx && !running
+            remove_path(NginxStage.pun_socket_path(user: u))
+            remove_path(pid_path.to_s)
+            $stderr.puts "stale pid file removed: #{pid_path}"
+          end
           if sessions.zero? || force
             puts u
-            if !skip_nginx && running
+            if running
               NginxStage.clean_nginx_env(user: u)
               o, s = Open3.capture2e(
                 NginxStage.nginx_bin,
@@ -93,13 +94,16 @@ module NginxStage
 
           # Send a SIGTERM to the master nginx process to kill the PUN.
           # 'nginx stop' won't work, since getpwnam(3) will cause an error.
-          if pid_path.running_process?
+          running = pid_path.running_process?
+          if running
             `kill -s TERM #{pid_path.pid}`
           else
-            cleanup_stale_files(pid_path, NginxStage.pun_socket_path(user: u), quiet: true)
+            remove_path(NginxStage.pun_socket_path(user: u))
           end
           remove_path(NginxStage.pun_secret_key_base_path(user: u))
           remove_path(NginxStage.pun_config_path(user: u))
+          # Keep the PID file discoverable until cleanup can finish.
+          remove_path(pid_path.to_s) unless running
           pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
           pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
         rescue StandardError => e
@@ -125,37 +129,12 @@ module NginxStage
       end
     end
 
-    # Use the same safe removal for active and disabled accounts. Disabled
-    # cleanup keeps its existing quiet output for the Beaker checks.
-    def cleanup_stale_files(pid_path, socket_path, quiet: false)
-      check_stale_socket(socket_path) if File.socket?(socket_path)
-      # Remove the PID file last. It is what lists the user on the next run, so
-      # if the socket cannot be removed the cleanup is retried, not orphaned.
-      remove_path(socket_path)
-      remove_path(pid_path.to_s)
-      $stderr.puts "stale pid file removed: #{pid_path}" unless quiet
-    end
-
     private
 
-      # A path that is already gone is fine. Any other failure (permissions, a
-      # directory in the way) propagates so it is reported, not hidden behind a
-      # success message.
-      def remove_path(path)
-        File.delete(path)
-      rescue Errno::ENOENT
-        nil
-      end
-
-      # Only a missing/refused listener permits deletion. A full backlog or
-      # any other probe error propagates without removing state.
-      def check_stale_socket(path)
-        Socket.open(Socket::AF_UNIX, Socket::SOCK_STREAM, 0) do |socket|
-          socket.connect_nonblock(Socket.sockaddr_un(path))
-        end
-        raise Error, "refusing to remove live PUN socket #{path}"
-      rescue Errno::ECONNREFUSED, Errno::ENOENT
-        nil
-      end
+    def remove_path(path)
+      File.delete(path)
+    rescue Errno::ENOENT
+      nil
+    end
   end
 end
