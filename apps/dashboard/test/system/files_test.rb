@@ -13,10 +13,9 @@ class FilesTest < ApplicationSystemTestCase
     Capybara.current_session.quit
   end
 
-  # Rails captures failure screenshots and resets browser sessions before cleanup.
+  # Leave fixtures available if the browser reset fails before requests drain.
   def after_teardown
     super
-  ensure
     FileUtils.remove_entry(@upload_fixture_directory) if @upload_fixture_directory
   end
 
@@ -631,7 +630,7 @@ class FilesTest < ApplicationSystemTestCase
   # Wait for the upload result using one timeout for modal closure and file contents.
   def assert_upload_complete(expected_contents, wait: MAX_WAIT)
     observed = nil
-    page.document.synchronize(wait, errors: [Capybara::ExpectationNotMet]) do
+    page.document.synchronize(wait) do
       page.document.assert_no_selector('.uppy-Dashboard--modal', visible: true, wait: 0)
       observed = expected_contents.keys.to_h do |path|
         [path, File.file?(path) ? File.read(path) : nil]
