@@ -9,7 +9,7 @@ describe NginxStage::SessionFinder do
 
   def ps_result(out, err, exitstatus)
     status = instance_double(Process::Status, success?: exitstatus == 0, exitstatus: exitstatus)
-    allow(Open3).to receive(:capture3).with('timeout', '10', 'ps', '-o', 'cmd=', '-u', 'spec')
+    allow(Open3).to receive(:capture3).with('timeout', '10', 'ps', '-ww', '-o', 'cmd=', '-u', 'spec')
       .and_return([out, err, status])
   end
 

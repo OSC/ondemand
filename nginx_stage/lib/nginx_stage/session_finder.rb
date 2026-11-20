@@ -5,7 +5,7 @@ require 'open3'
 module NginxStage
   module SessionFinder
     def session_count(user)
-      out, err, status = Open3.capture3('timeout', '10', 'ps', '-o', 'cmd=', '-u', user.to_s)
+      out, err, status = Open3.capture3('timeout', '10', 'ps', '-ww', '-o', 'cmd=', '-u', user.to_s)
       # ps exits 1 with no error when the user has no processes. Any other
       # failure (e.g. a timeout) must not look like a PUN with no sessions.
       unless status.success? || (status.exitstatus == 1 && err.empty? && out.empty?)
