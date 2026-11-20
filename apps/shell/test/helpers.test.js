@@ -136,3 +136,64 @@ describe('Helper function userCSS()', () => {
   });
 });
 
+
+describe('Helper function urlParamNames()', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  test('returns an empty list when unset or empty', () => {
+    expect(helpers.urlParamNames(undefined)).toEqual([]);
+    expect(helpers.urlParamNames('')).toEqual([]);
+  });
+
+  test('splits, trims and deduplicates names', () => {
+    expect(helpers.urlParamNames(' job_id, path ,,job_id')).toEqual(['job_id', 'path']);
+  });
+
+  test('ignores csrf and invalid names', () => {
+    expect(helpers.urlParamNames('csrf,job-id,bad=name,job_id')).toEqual(['job_id']);
+    expect(console.warn).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('Helper function urlParamsEnv()', () => {
+  const URL = '/pun/sys/shell/ssh/login.example.org/home/user?job_id=12345&path=%2Fhome%2Fuser%2Fsome%20dir&other=1&csrf=abc';
+
+  test('returns no variables when no names are allowed', () => {
+    expect(helpers.urlParamsEnv(URL, [])).toEqual({});
+  });
+
+  test('exports allowed parameters only, decoded and with uppercased names', () => {
+    expect(helpers.urlParamsEnv(URL, ['job_id', 'path'])).toEqual({
+      'OOD_SHELL_URL_PARAM_JOB_ID': '12345',
+      'OOD_SHELL_URL_PARAM_PATH': '/home/user/some dir',
+    });
+  });
+
+  test('skips allowed parameters missing from the url', () => {
+    expect(helpers.urlParamsEnv('/pun/sys/shell/ssh/default', ['job_id'])).toEqual({});
+  });
+
+  test('keeps empty values', () => {
+    expect(helpers.urlParamsEnv('/ssh/default?job_id=', ['job_id'])).toEqual({ 'OOD_SHELL_URL_PARAM_JOB_ID': '' });
+  });
+
+  test('uses the first value of a repeated parameter', () => {
+    expect(helpers.urlParamsEnv('/ssh/default?job_id=1&job_id=2', ['job_id'])).toEqual({ 'OOD_SHELL_URL_PARAM_JOB_ID': '1' });
+  });
+
+  test('drops values with NUL bytes or over 4096 characters', () => {
+    expect(helpers.urlParamsEnv('/ssh/default?job_id=1%002', ['job_id'])).toEqual({});
+    expect(helpers.urlParamsEnv(`/ssh/default?job_id=${'a'.repeat(4097)}`, ['job_id'])).toEqual({});
+    expect(helpers.urlParamsEnv(`/ssh/default?job_id=${'a'.repeat(4096)}`, ['job_id'])).toEqual({ 'OOD_SHELL_URL_PARAM_JOB_ID': 'a'.repeat(4096) });
+  });
+
+  test('matches parameter names case sensitively', () => {
+    expect(helpers.urlParamsEnv('/ssh/default?JOB_ID=1', ['job_id'])).toEqual({});
+  });
+});
