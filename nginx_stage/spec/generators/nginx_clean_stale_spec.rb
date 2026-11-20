@@ -25,29 +25,73 @@ describe 'nginx_clean stale state' do
     allow(NginxStage).to receive(:pun_secret_key_base_path).and_return(secret_path)
     allow(NginxStage).to receive(:active_users).and_return(['spec'])
     allow(NginxStage).to receive(:inactive_users).and_return([])
-    allow(NginxStage).to receive(:clean_nginx_env)
     allow(Process).to receive(:getpgid).with(4242).and_raise(Errno::ESRCH)
     allow(generator).to receive(:session_count).and_return(0)
   end
 
   after { FileUtils.remove_entry(dir) }
 
+  def stub_live_pid(title: "nginx: master process (spec) -c #{config_path}", executable_matches: true)
+    allow(Process).to receive(:getpgid).with(4242).and_return(4242)
+    allow(File).to receive(:binread).and_call_original
+    allow(File).to receive(:binread).with('/proc/4242/cmdline').and_return("#{title}\0")
+    allow(File).to receive(:binread).with('/proc/4242/stat').and_return("4242 (nginx) S #{'0 ' * 18}123")
+    allow(File).to receive(:identical?).with('/proc/4242/exe', NginxStage.nginx_bin).and_return(executable_matches)
+  end
+
   it 'removes a stale PID when the socket is already absent' do
-    expect(Open3).not_to receive(:capture2e)
+    expect(Process).not_to receive(:kill)
 
     expect { generator.invoke }.to output(/stale pid file removed/).to_stderr.and output("spec\n").to_stdout
     expect(File.exist?(pid_path)).to be(false)
   end
 
   it 'still signals a live PUN when its socket is absent' do
-    allow(Process).to receive(:getpgid).with(4242).and_return(4242)
-    status = instance_double(Process::Status, success?: true)
-    expect(Open3).to receive(:capture2e) do
-      File.delete(pid_path)
-      ['', status]
-    end
+    stub_live_pid
+    expect(Process).to receive(:kill).with('TERM', 4242)
 
     expect { generator.invoke }.to output("spec\n").to_stdout.and output('').to_stderr
+  end
+
+  it 'preserves the PID file when the PID points to a different PUN' do
+    stub_live_pid(title: "nginx: master process (spec) -c #{config_path}.other")
+    expect(Process).not_to receive(:kill)
+
+    expect { generator.invoke }.to output(/refusing to signal unverified PUN process 4242/).to_stderr
+      .and output('').to_stdout
+    expect(File.exist?(pid_path)).to be(true)
+  end
+
+  it 'preserves disabled-user state when the executable does not match' do
+    allow(NginxStage).to receive(:active_users).and_return([])
+    allow(NginxStage).to receive(:inactive_users).and_return(['gone'])
+    stub_live_pid(executable_matches: false)
+    expect(Process).not_to receive(:kill)
+
+    expect { generator.invoke }.to output(/refusing to signal unverified PUN process 4242/).to_stderr
+      .and output("gone (disabled)\n").to_stdout
+    expect([pid_path, config_path, secret_path].all? { |path| File.exist?(path) }).to be(true)
+  end
+
+  it 'does not signal a PID that was reused during verification' do
+    stub_live_pid
+    allow(File).to receive(:binread).with('/proc/4242/stat')
+      .and_return("4242 (nginx) S #{'0 ' * 18}123", "4242 (nginx) S #{'0 ' * 18}456")
+    expect(Process).not_to receive(:kill)
+
+    expect { generator.invoke }.to output(/refusing to signal unverified PUN process 4242/).to_stderr
+  end
+
+  it 'preserves a live listener when the PID is stale' do
+    listener = UNIXServer.new(socket_path)
+
+    expect { generator.invoke }.to output(/refusing to remove live PUN socket/).to_stderr
+    expect(File.socket?(socket_path)).to be(true)
+    expect(File.exist?(pid_path)).to be(true)
+  rescue NotImplementedError, Errno::EAFNOSUPPORT, Errno::EPERM => e
+    skip "AF_UNIX sockets are unavailable (#{e.class})"
+  ensure
+    listener&.close
   end
 
   it 'removes an abandoned socket file that nothing is listening on' do
@@ -60,18 +104,33 @@ describe 'nginx_clean stale state' do
     skip "AF_UNIX sockets are unavailable (#{e.class})"
   end
 
+  it 'leaves the PID and socket in place when the probe is inconclusive' do
+    socket = instance_double(Socket, close: nil)
+    allow(Socket).to receive(:new).with(:UNIX, :STREAM).and_return(socket)
+    allow(socket).to receive(:connect_nonblock).and_raise(Errno::EAGAIN)
+    allow(File).to receive(:lstat).and_call_original
+    allow(File).to receive(:lstat).with(socket_path).and_return(instance_double(File::Stat, socket?: true))
+    expect(File).not_to receive(:delete).with(socket_path)
+
+    expect { generator.invoke }.to output(/#{Regexp.escape(Errno::EAGAIN.new.message)}/).to_stderr
+    expect(File.exist?(pid_path)).to be(true)
+  end
+
   it 'keeps the PID file when the socket cannot be removed' do
+    UNIXServer.new(socket_path).close
     allow(File).to receive(:delete).and_call_original
     allow(File).to receive(:delete).with(socket_path).and_raise(Errno::EACCES)
 
     expect { generator.invoke }.to output(/Permission denied/).to_stderr
     expect(File.exist?(pid_path)).to be(true)
+  rescue NotImplementedError, Errno::EAFNOSUPPORT, Errno::EPERM => e
+    skip "AF_UNIX sockets are unavailable (#{e.class})"
   end
 
   it 'retries disabled-user cleanup after a config removal failure' do
     allow(NginxStage).to receive(:active_users).and_return([])
     allow(NginxStage).to receive(:inactive_users).and_return(['gone'])
-    expect(generator).not_to receive('`')
+    expect(Process).not_to receive(:kill)
     allow(File).to receive(:delete).and_call_original
     allow(File).to receive(:delete).with(config_path).and_raise(Errno::EACCES)
 

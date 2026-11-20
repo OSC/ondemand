@@ -1,3 +1,5 @@
+require 'socket'
+
 module NginxStage
   # This generator cleans all running per-user NGINX processes that are
   # inactive (i.e., not active connections).
@@ -64,20 +66,13 @@ module NginxStage
           running = !skip_nginx && pid_path.running_process?
           sessions = session_count(u)
           if !skip_nginx && !running
-            remove_path(NginxStage.pun_socket_path(user: u))
+            remove_stale_socket(NginxStage.pun_socket_path(user: u))
             remove_path(pid_path.to_s)
             $stderr.puts "stale pid file removed: #{pid_path}"
           end
           if sessions.zero? || force
+            stop_pun(pid_path.pid, u) if running
             puts u
-            if running
-              NginxStage.clean_nginx_env(user: u)
-              o, s = Open3.capture2e(
-                NginxStage.nginx_bin,
-                *NginxStage.nginx_args(user: u, signal: :stop)
-              )
-              $stderr.puts o unless s.success?
-            end
           end
         rescue
           $stderr.puts "#{$!.to_s}"
@@ -92,13 +87,11 @@ module NginxStage
           next if skip_nginx
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
-          # Send a SIGTERM to the master nginx process to kill the PUN.
-          # 'nginx stop' won't work, since getpwnam(3) will cause an error.
           running = pid_path.running_process?
           if running
-            `kill -s TERM #{pid_path.pid}`
+            stop_pun(pid_path.pid, u)
           else
-            remove_path(NginxStage.pun_socket_path(user: u))
+            remove_stale_socket(NginxStage.pun_socket_path(user: u))
           end
           remove_path(NginxStage.pun_secret_key_base_path(user: u))
           remove_path(NginxStage.pun_config_path(user: u))
@@ -130,6 +123,53 @@ module NginxStage
     end
 
     private
+
+    def stop_pun(pid, user)
+      unless pid.positive? && pun_master?(pid, NginxStage.pun_config_path(user: user))
+        raise Error, "refusing to signal unverified PUN process #{pid} for #{user}"
+      end
+
+      # TERM is nginx -s stop. Signal the verified PID directly so nginx does
+      # not reread the PID file or try to load a disabled user's config.
+      Process.kill('TERM', pid)
+    end
+
+    def pun_master?(pid, config_path)
+      start_time = process_start_time(pid)
+      title = File.binread("/proc/#{pid}/cmdline").split("\0", 2).first.to_s
+      start_time && title.start_with?('nginx: master process ') && title.end_with?(" -c #{config_path}") &&
+        File.identical?("/proc/#{pid}/exe", NginxStage.nginx_bin) && start_time == process_start_time(pid)
+    rescue SystemCallError
+      false
+    end
+
+    def process_start_time(pid)
+      # Fields after the final ') ' start with field 3; starttime is field 22.
+      File.binread("/proc/#{pid}/stat").rpartition(') ').last.split[19]
+    end
+
+    def remove_stale_socket(path)
+      original = File.lstat(path)
+      raise Error, "refusing to remove non-socket PUN path #{path}" unless original.socket?
+
+      socket = Socket.new(:UNIX, :STREAM)
+      begin
+        socket.connect_nonblock(Socket.sockaddr_un(path))
+      rescue Errno::ECONNREFUSED
+        current = File.lstat(path)
+        unless current.dev == original.dev && current.ino == original.ino
+          raise Error, "PUN socket changed during cleanup: #{path}"
+        end
+
+        return remove_path(path)
+      end
+
+      raise Error, "refusing to remove live PUN socket #{path}"
+    rescue Errno::ENOENT
+      nil
+    ensure
+      socket&.close
+    end
 
     def remove_path(path)
       File.delete(path)
