@@ -3,6 +3,7 @@
 require 'capybara'
 require 'selenium-webdriver'
 require 'capybara/selenium/driver'
+require 'capybara/selenium/driver_specializations/chrome_driver'
 
 # Recover the driver whose reset failed. Capybara checks Rails server errors
 # separately after resetting the driver.
@@ -19,4 +20,4 @@ module QuitFailedSeleniumDriver
   end
 end
 
-Capybara::Selenium::Driver.prepend(QuitFailedSeleniumDriver)
+Capybara::Selenium::Driver::ChromeDriver.prepend(QuitFailedSeleniumDriver)
