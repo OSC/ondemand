@@ -73,6 +73,29 @@ describe 'nginx_clean stale state' do
     expect([pid_path, config_path, secret_path].all? { |path| File.exist?(path) }).to be(true)
   end
 
+  it 'accepts a verified master whose executable was replaced during an upgrade' do
+    stub_live_pid(executable_matches: false)
+    allow(File).to receive(:realpath).and_call_original
+    allow(File).to receive(:realpath).with(NginxStage.nginx_bin).and_return('/trusted/nginx')
+    allow(File).to receive(:readlink).with('/proc/4242/exe').and_return('/trusted/nginx (deleted)')
+    expect(Process).to receive(:kill).with('TERM', 4242)
+
+    expect { generator.invoke }.to output("spec\n").to_stdout.and output('').to_stderr
+  end
+
+  it 'reads the PID file only after acquiring the startup lock' do
+    expect(NginxStage).to receive(:with_pun_start_lock).with(user: 'spec') do |&cleanup|
+      File.write(pid_path, '4243')
+      cleanup.call
+    end
+    allow(Process).to receive(:getpgid).with(4243).and_return(4243)
+    allow(generator).to receive(:session_count).and_return(1)
+    allow(generator).to receive(:force).and_return(false)
+
+    expect { generator.invoke }.to output('').to_stdout.and output('').to_stderr
+    expect(File.read(pid_path)).to eq('4243')
+  end
+
   it 'does not signal a PID that was reused during verification' do
     stub_live_pid
     allow(File).to receive(:binread).with('/proc/4242/stat')
@@ -143,4 +166,49 @@ describe 'nginx_clean stale state' do
     expect { generator.invoke }.to output("gone (disabled)\n").to_stdout.and output('').to_stderr
     expect([run_dir, config_path].any? { |path| File.exist?(path) }).to be(false)
   end
+  it 'discovers unfinished disabled-user cleanup after nginx removes its PID' do
+    user = 'ood-test-no-such-account'
+    allow(NginxStage).to receive(:active_users).and_return([])
+    allow(NginxStage).to receive(:inactive_users).and_call_original
+    allow(NginxStage::User).to receive(:new).with(user).and_raise(ArgumentError)
+    allow(NginxStage).to receive(:pun_pid_path).with(user: '*')
+      .and_return(File.join(dir, '*', '*-passenger.pid'))
+    actual_run_dir = File.join(dir, user)
+    File.rename(run_dir, actual_run_dir)
+    actual_pid = File.join(actual_run_dir, "#{user}-passenger.pid")
+    File.rename(File.join(actual_run_dir, 'passenger.pid'), actual_pid)
+    allow(NginxStage).to receive(:pun_pid_path).with(user: user).and_return(actual_pid)
+    actual_config = File.join(dir, "#{user}.conf")
+    File.rename(config_path, actual_config)
+    allow(NginxStage).to receive(:pun_config_path).with(user: '*').and_return(File.join(dir, '*.conf'))
+    allow(NginxStage).to receive(:pun_config_path).with(user: user).and_return(actual_config)
+
+    stub_live_pid(title: "nginx: master process (spec) -c #{actual_config}")
+    expect(Process).to receive(:kill).with('TERM', 4242) { File.delete(actual_pid) }
+    allow(File).to receive(:delete).and_call_original
+    allow(File).to receive(:delete).with(actual_config).and_raise(Errno::EACCES)
+
+    expect { generator.invoke }.to output(/Permission denied/).to_stderr
+      .and output("#{user} (disabled)\n").to_stdout
+    expect(File).to exist("#{actual_config}.cleanup")
+
+    allow(File).to receive(:delete).with(actual_config).and_call_original
+    expect { generator.invoke }.to output('').to_stderr.and output("#{user} (disabled)\n").to_stdout
+    expect(File).not_to exist(actual_config)
+    expect(File).not_to exist("#{actual_config}.cleanup")
+  end
+
+  it 'clears the pending marker when only unrelated files remain in the run directory' do
+    allow(NginxStage).to receive(:active_users).and_return([])
+    allow(NginxStage).to receive(:inactive_users).and_return(['gone'])
+    expect(Process).not_to receive(:kill)
+    unrelated_file = File.join(run_dir, 'unrelated')
+    File.write(unrelated_file, '')
+    allow(generator).to receive(:sleep).with(0.5)
+
+    expect { generator.invoke }.to output(/Directory not empty/).to_stderr.and output("gone (disabled)\n").to_stdout
+    expect(File).to exist(unrelated_file)
+    expect(File).not_to exist("#{config_path}.cleanup")
+  end
+
 end

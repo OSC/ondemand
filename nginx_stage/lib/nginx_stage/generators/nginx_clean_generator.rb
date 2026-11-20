@@ -62,67 +62,84 @@ module NginxStage
       NginxStage.active_users.each do |u|
         begin
           next if (user && user != u.to_s)
-          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
-          running = !skip_nginx && pid_path.running_process?
-          sessions = session_count(u)
-          if !skip_nginx && !running
-            remove_stale_socket(NginxStage.pun_socket_path(user: u))
-            remove_path(pid_path.to_s)
-            $stderr.puts "stale pid file removed: #{pid_path}"
+          if skip_nginx
+            puts u if session_count(u).zero? || force
+            next
           end
-          if sessions.zero? || force
-            stop_pun(pid_path.pid, u) if running
-            puts u
+
+          NginxStage.with_pun_start_lock(user: u) do
+            pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
+            running = pid_path.running_process?
+            unless running
+              remove_stale_socket(NginxStage.pun_socket_path(user: u))
+              remove_path(pid_path.to_s)
+              $stderr.puts "stale pid file removed: #{pid_path}"
+            end
+            if session_count(u).zero? || force
+              stop_pun(pid_path.pid, u) if running
+              puts u
+            end
           end
         rescue
           $stderr.puts "#{$!.to_s}"
         end
       end
 
-      pid_parent_dirs_to_remove_later = []
       NginxStage.inactive_users.each do |u|
         next if user && user != u
+
         begin
           puts "#{u} (disabled)"
           next if skip_nginx
-          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
 
-          running = pid_path.running_process?
-          if running
-            stop_pun(pid_path.pid, u)
-          else
-            remove_stale_socket(NginxStage.pun_socket_path(user: u))
-          end
-          remove_path(NginxStage.pun_secret_key_base_path(user: u))
-          remove_path(NginxStage.pun_config_path(user: u))
-          # Keep the PID file discoverable until cleanup can finish.
-          remove_path(pid_path.to_s) unless running
-          pid_path_parent_dir = Pathname.new(pid_path.to_s).parent
-          pid_parent_dirs_to_remove_later.push(pid_path_parent_dir)
+          NginxStage.with_pun_start_lock(user: u) { clean_disabled_pun(u) }
         rescue StandardError => e
           warn "Error trying to clean up disabled user #{u}: #{e.message}"
-        end
-      end
-
-      # Remove the PID path parent directories now that the nginx processes have
-      # had time to clean up their Passenger PID file and socket.
-      pid_parent_dirs_to_remove_later.each do |dir|
-        begin
-          begin
-            FileUtils.rmdir(dir)
-          rescue Errno::ENOTEMPTY
-            # Wait for a short time, while Nginx cleans up its PID file.
-            sleep(0.5)
-            # Then try again once.
-            FileUtils.rmdir(dir)
-          end
-        rescue StandardError => e
-          warn "Error trying to clean up the PID file directory '#{dir}' of disabled user: #{e.message}"
         end
       end
     end
 
     private
+
+    def clean_disabled_pun(user)
+      pid_path = NginxStage.pun_pid_path(user: user)
+      socket_path = NginxStage.pun_socket_path(user: user)
+      pending_path = NginxStage.pun_cleanup_path(user: user)
+      pid_file = begin
+        PidFile.new(pid_path)
+      rescue MissingPidFile
+        raise unless File.file?(pending_path)
+      end
+
+      # nginx may remove its PID as soon as it receives TERM.
+      File.open(pending_path, File::WRONLY | File::CREAT | File::EXCL, 0600) {} unless File.exist?(pending_path)
+
+      running = pid_file&.running_process?
+      if running
+        stop_pun(pid_file.pid, user)
+      else
+        remove_stale_socket(socket_path)
+      end
+      remove_path(NginxStage.pun_secret_key_base_path(user: user))
+      remove_path(NginxStage.pun_config_path(user: user))
+      remove_path(pid_path) unless running
+      begin
+        remove_disabled_run_directory(File.dirname(pid_path))
+      ensure
+        remove_path(pending_path) unless File.exist?(pid_path) || File.exist?(socket_path)
+      end
+    end
+
+    def remove_disabled_run_directory(path)
+      begin
+        Dir.rmdir(path)
+      rescue Errno::ENOTEMPTY
+        sleep(0.5)
+        Dir.rmdir(path)
+      end
+    rescue Errno::ENOENT
+      nil
+    end
 
     def stop_pun(pid, user)
       unless pid.positive? && pun_master?(pid, NginxStage.pun_config_path(user: user))
@@ -138,9 +155,16 @@ module NginxStage
       start_time = process_start_time(pid)
       title = File.binread("/proc/#{pid}/cmdline").split("\0", 2).first.to_s
       start_time && title.start_with?('nginx: master process ') && title.end_with?(" -c #{config_path}") &&
-        File.identical?("/proc/#{pid}/exe", NginxStage.nginx_bin) && start_time == process_start_time(pid)
+        nginx_executable?(pid) && start_time == process_start_time(pid)
     rescue SystemCallError
       false
+    end
+
+    def nginx_executable?(pid)
+      executable = "/proc/#{pid}/exe"
+      installed = NginxStage.nginx_bin
+      File.identical?(executable, installed) ||
+        File.readlink(executable) == "#{File.realpath(installed)} (deleted)"
     end
 
     def process_start_time(pid)

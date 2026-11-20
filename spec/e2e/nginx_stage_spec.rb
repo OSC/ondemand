@@ -31,7 +31,7 @@ describe 'Nginx stage' do
       on hosts, 'rm -f /var/lib/ondemand-nginx/config/puns/deleted_user.conf /var/lib/ondemand-nginx/config/puns/deleted_user.secret_key_base.txt'
     end
 
-    it 'does not crash login when pre hook is misconfigured' do
+    it 'removes stale files for a disabled user' do
       # get the 'ood' users' pun ready
       browser_login(browser)
       expect(browser.title).to eq('Dashboard - Open OnDemand')
