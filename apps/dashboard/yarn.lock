@@ -352,14 +352,6 @@ datatables.net-bs5@^2, datatables.net-bs5@^2.3:
     datatables.net "2.3.8"
     jquery ">=1.7"
 
-datatables.net-bs@^2.3:
-  version "2.3.8"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-2.3.8.tgz#1dd57f2320e2fb1e928aa4a809fca7b65550f37e"
-  integrity sha512-lM8sriL2WNDPimRi/Yh5tD+u1mWcaUa8EOo34dyDWaIBcOwWy78tdSnIjVobngyFYer3AieR83QEEyih+IR+Aw==
-  dependencies:
-    datatables.net "2.3.8"
-    jquery ">=1.7"
-
 datatables.net-plugins@^2.3:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/datatables.net-plugins/-/datatables.net-plugins-2.3.6.tgz#c7809797bebc272e1dbecbab1f55ed9d4710eadf"
