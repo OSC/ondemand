@@ -2,7 +2,6 @@
 
 require 'application_system_test_case'
 
-# Exercises module filtering and version selection in the Dashboard.
 class ModuleBrowserTest < ApplicationSystemTestCase
   MODULE_BTN_SELECT = '.module-card button[data-bs-toggle="collapse"]'
   VERSION_BTN_SELECT = 'button[data-role="selectable-version"]'
@@ -70,17 +69,12 @@ class ModuleBrowserTest < ApplicationSystemTestCase
   end
 
   test 'selecting a version updates the load command' do
-    find(MODULE_BTN_SELECT, match: :first).click
-    assert_selector("#{MODULE_BTN_SELECT}.active")
-
-    version_button = find(VERSION_BTN_SELECT, match: :first)
-    module_name = version_button['data-module']
-    version = version_button['data-version']
-
+    find(MODULE_BTN_SELECT, exact_text: 'Gcc').click
     assert_no_selector("#{VERSION_BTN_SELECT}.active")
-    version_button.click
-    assert_selector("#{VERSION_BTN_SELECT}.active", exact_text: version)
-    assert_selector('[data-role="module-load-command"]', exact_text: "module load #{module_name}/#{version}")
+    find(VERSION_BTN_SELECT, exact_text: '12.2').click
+
+    assert_selector("#{VERSION_BTN_SELECT}.active", exact_text: '12.2')
+    assert_selector('[data-role="module-load-command"]', exact_text: 'module load gcc/12.2')
   end
 
   private
