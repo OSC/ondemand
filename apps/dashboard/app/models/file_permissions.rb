@@ -25,11 +25,6 @@ module FilePermissions
   end
 
   class << self
-    # Effective editor size limit (smaller of editor and download caps).
-    def editor_max_size
-      [Configuration.file_editor_max_size, Configuration.download_file_max].min
-    end
-
     # Listing helpers for entries where size/directory are already known (e.g. rclone ls).
     def listing_downloadable?(directory:, size: nil)
       return false unless Configuration.download_enabled?
@@ -122,6 +117,11 @@ module FilePermissions
     end
 
       private
+
+      # Effective editor size limit (smaller of editor and download caps).
+      def editor_max_size
+        [Configuration.file_editor_max_size, Configuration.download_file_max].min
+      end
 
       # Class#=== is is_a?, so `when PosixFile` matches PosixFile instances.
       def coerce(path)

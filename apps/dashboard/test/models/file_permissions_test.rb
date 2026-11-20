@@ -128,7 +128,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
   end
 
   test 'listing helpers share editor and download limits for remote entries' do
-    editor_max = FilePermissions.editor_max_size
+    editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
 
     assert FilePermissions.listing_downloadable?(directory: true)
     assert FilePermissions.listing_downloadable?(directory: false, size: Configuration.download_file_max)
