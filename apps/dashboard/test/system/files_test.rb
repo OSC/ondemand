@@ -8,14 +8,14 @@ class FilesTest < ApplicationSystemTestCase
   def setup
     FileUtils.rm_rf(DOWNLOAD_DIRECTORY.to_s)
     FileUtils.mkdir_p(DOWNLOAD_DIRECTORY.to_s)
-
-    # we want to clear the console logs from any previous test.
-    Capybara.current_session.quit
   end
 
   test "visiting files app doesn't raise js errors" do
+    # Start with a fresh browser so this test only sees its own console messages.
+    Capybara.current_session.quit
     visit files_url(Rails.root.to_s)
 
+    assert_selector '#directory-contents tbody a', exact_text: 'app'
     messages = page.driver.browser.logs.get(:browser)
     content = messages.join("\n")
     assert_equal 0, messages.length, "console error messages include:\n\n#{content}\n\n"
