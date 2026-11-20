@@ -108,7 +108,7 @@ function htermBackspace(backspaceSendsBackspace) {
 // installKeys() wired to just enough of a page and terminal to run its
 // Backspace listener. onVTKeystroke follows hterm's Terminal, which hands the
 // string to the io object that runTerminal binds to OodShell#onVTKeystroke.
-function setupKeys({ backspaceSendsBackspace = false } = {}) {
+function setupKeys({ backspaceSendsBackspace = false, applicationCursor = false } = {}) {
   const listeners = [];
   const screen = { addEventListener: (type, fn) => { if (type === 'keydown') listeners.push(fn); } };
   const makeElement = () => ({
@@ -134,7 +134,7 @@ function setupKeys({ backspaceSendsBackspace = false } = {}) {
   const shell = new OodShell({}, 'ws://localhost', 'default');
   shell.socket = { send: jest.fn() };
   shell.term = {
-    keyboard: { backspaceSendsBackspace },
+    keyboard: { backspaceSendsBackspace, applicationCursor },
     getDocument: () => ({ querySelector: () => screen, hasFocus: () => true }),
     onVTKeystroke: (str) => shell.onVTKeystroke(str)
   };
@@ -153,6 +153,36 @@ function setupKeys({ backspaceSendsBackspace = false } = {}) {
   const sent = () => shell.socket.send.mock.calls.map(([json]) => JSON.parse(json).input);
   return { shell, keydown, sent, modifierButtons };
 }
+
+describe('Shift+Up/Down with an on-screen modifier', () => {
+  test.each([
+    ['ArrowUp', 'ctrl', '\x1b[1;6A'],
+    ['ArrowDown', 'alt', '\x1b[1;4B']
+  ])('sends %s with Shift and sticky %s instead of scrolling', (key, modifier, sequence) => {
+    const { shell, keydown, sent } = setupKeys();
+    shell.setModifier(modifier, true);
+
+    const event = keydown({ key, shiftKey: true });
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(event.stopPropagation).toHaveBeenCalled();
+    expect(sent()).toEqual([sequence]);
+    expect(shell.modifiers[modifier]).toBe(false);
+  });
+
+  test.each([
+    [false, false],
+    [true, true]
+  ])('leaves Shift+Up to hterm when applicationCursor=%s and Ctrl=%s', (applicationCursor, ctrl) => {
+    const { shell, keydown, sent } = setupKeys({ applicationCursor });
+    shell.setModifier('ctrl', ctrl);
+
+    const event = keydown({ key: 'ArrowUp', shiftKey: true });
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(sent()).toEqual([]);
+  });
+});
 
 describe('Backspace with Ctrl armed on the on-screen keys', () => {
   test.each([false, true])(

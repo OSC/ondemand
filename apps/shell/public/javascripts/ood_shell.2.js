@@ -181,12 +181,24 @@ OodShell.prototype.installKeys = function () {
   // hterm sends for Ctrl+Backspace, which is the opposite of plain Backspace:
   // BS (^H) by default, DEL when backspaceSendsBackspace is set.
   terminalDocument.querySelector('x-screen')?.addEventListener('keydown', function (ev) {
-    if (that.modifiers.ctrl && ev.key === 'Backspace' && !ev.isComposing &&
-        !ev.defaultPrevented && !ev.ctrlKey && !ev.altKey && !ev.metaKey) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      that.term.onVTKeystroke(that.term.keyboard.backspaceSendsBackspace ? '\x7f' : '\b');
+    if (ev.isComposing || ev.defaultPrevented || ev.ctrlKey || ev.altKey || ev.metaKey) {
+      return;
     }
+
+    let sequence;
+    if (that.modifiers.ctrl && ev.key === 'Backspace') {
+      sequence = that.term.keyboard.backspaceSendsBackspace ? '\x7f' : '\b';
+    } else if ((that.modifiers.ctrl || that.modifiers.alt) && ev.shiftKey &&
+        !that.term.keyboard.applicationCursor && (ev.key === 'ArrowUp' || ev.key === 'ArrowDown')) {
+      // hterm would scroll locally without seeing the armed modifier.
+      sequence = ev.key === 'ArrowUp' ? '\x1b[1;2A' : '\x1b[1;2B';
+    } else {
+      return;
+    }
+
+    ev.preventDefault();
+    ev.stopPropagation();
+    that.term.onVTKeystroke(sequence);
   });
 };
 
