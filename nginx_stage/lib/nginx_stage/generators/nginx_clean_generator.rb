@@ -89,10 +89,17 @@ module NginxStage
         next if user && user != u
 
         begin
-          puts "#{u} (disabled)"
-          next if skip_nginx
+          if skip_nginx
+            puts "#{u} (disabled)"
+            next
+          end
 
-          NginxStage.with_pun_start_lock(user: u) { clean_disabled_pun(u) }
+          NginxStage.with_pun_start_lock(user: u) do
+            next if account_exists?(u)
+
+            puts "#{u} (disabled)"
+            clean_disabled_pun(u)
+          end
         rescue StandardError => e
           warn "Error trying to clean up disabled user #{u}: #{e.message}"
         end
@@ -100,6 +107,13 @@ module NginxStage
     end
 
     private
+
+    def account_exists?(user)
+      NginxStage::User.new(user)
+      true
+    rescue ArgumentError
+      false
+    end
 
     def clean_disabled_pun(user)
       pid_path = NginxStage.pun_pid_path(user: user)

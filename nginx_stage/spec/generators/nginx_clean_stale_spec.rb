@@ -227,4 +227,23 @@ describe 'nginx_clean stale state' do
     expect(File).not_to exist("#{config_path}.cleanup")
   end
 
+  it 'leaves a restored account alone once it obtains the startup lock' do
+    allow(NginxStage).to receive(:active_users).and_return([])
+    allow(NginxStage).to receive(:inactive_users).and_return(['gone'])
+    expect(NginxStage).to receive(:with_pun_start_lock).with(user: 'gone') do |&cleanup|
+      allow(NginxStage::User).to receive(:new).with('gone').and_return(double('restored account'))
+      cleanup.call
+    end
+    stub_live_pid
+    allow(Process).to receive(:kill)
+    allow(generator).to receive(:force).and_return(false)
+    allow(generator).to receive(:session_count).and_return(1)
+
+    expect { generator.invoke }.not_to output.to_stdout
+
+    expect(Process).not_to have_received(:kill)
+    expect(File).to exist(config_path)
+    expect(File).to exist(secret_path)
+  end
+
 end
