@@ -1,9 +1,18 @@
 # frozen_string_literal: true
 
+require 'shellwords'
 require 'watir'
 
 def new_browser
-  Watir::Browser.new :chrome, headless: true, options: { args: ['--disable-dev-shm-usage'] }
+  # ARM runners provide Firefox and geckodriver rather than Chrome.
+  case ENV.fetch('OOD_E2E_BROWSER', 'chrome')
+  when 'chrome'
+    Watir::Browser.new :chrome, headless: true, options: { args: ['--disable-dev-shm-usage'] }
+  when 'firefox'
+    Watir::Browser.new :firefox, headless: true
+  else
+    raise ArgumentError, "Unsupported E2E browser: #{ENV['OOD_E2E_BROWSER']}"
+  end
 end
 
 def ctr_base_url
@@ -162,6 +171,14 @@ def bootstrap_repos
   install_packages(repos) unless repos.empty?
 end
 
+def built_ondemand_deb
+  pattern = File.join(proj_root, "dist/#{dist}-#{arch}/ondemand_*.deb")
+  packages = Dir.glob(pattern)
+  raise "Expected one local OnDemand package at #{pattern}, found #{packages.length}" unless packages.one?
+
+  packages.first
+end
+
 def ondemand_repo
   on hosts, 'mkdir -p /repo'
   if ['redhat', 'amazon'].include?(host_inventory['platform'])
@@ -178,6 +195,7 @@ def ondemand_repo
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}-#{arch}/*.rpm"), '/repo')
     on hosts, 'createrepo /repo'
   elsif apt?
+    built_ondemand_deb
     install_packages(['dpkg-dev'])
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}-#{arch}/*.deb"), '/repo')
     on hosts, 'cd /repo ; dpkg-scanpackages .  | gzip -9c > Packages.gz'
@@ -221,7 +239,8 @@ def install_ondemand
     EOS
     create_remote_file(hosts, '/etc/apt/auth.conf.d/ondemand-web.conf', auth)
     on hosts, 'apt-get update'
-    install_packages(['ondemand', 'ondemand-dex'])
+    local_package = File.join('/repo', File.basename(built_ondemand_deb))
+    install_packages([Shellwords.escape(local_package), 'ondemand-dex'])
   end
   if host_inventory['platform'] == 'amazon'
     on hosts, 'alternatives --install /usr/bin/node node /usr/bin/node-22 1'
