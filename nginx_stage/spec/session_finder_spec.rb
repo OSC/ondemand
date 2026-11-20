@@ -9,23 +9,23 @@ describe NginxStage::SessionFinder do
 
   def ps_result(out, err, exitstatus)
     status = instance_double(Process::Status, success?: exitstatus == 0, exitstatus: exitstatus)
-    allow(Open3).to receive(:capture3).with('timeout', '10', 'ps', '-o', 'cmd', '-u', 'spec')
+    allow(Open3).to receive(:capture3).with('timeout', '10', 'ps', '-o', 'cmd=', '-u', 'spec')
       .and_return([out, err, status])
   end
 
   it 'counts Passenger application processes' do
-    ps_result("CMD\nPassenger RubyApp: /app\nnginx: worker process\nPassenger NodeApp: /other\n", '', 0)
+    ps_result("Passenger RubyApp: /app\nnginx: worker process\nPassenger NodeApp: /other\n", '', 0)
 
     expect(finder.session_count('spec')).to eq(2)
   end
 
   it 'accepts an empty process selection from ps' do
-    ps_result("CMD\n", '', 1)
+    ps_result('', '', 1)
 
     expect(finder.session_count('spec')).to eq(0)
   end
 
-  [1, 124, 127, nil].each do |exitstatus|
+  [1, 127, nil].each do |exitstatus|
     it "rejects ps failure #{exitstatus.inspect} instead of reporting zero sessions" do
       ps_result('', 'process listing failed', exitstatus)
 
@@ -33,14 +33,14 @@ describe NginxStage::SessionFinder do
     end
   end
 
-  it 'rejects a timeout even when stderr is empty' do
-    ps_result('', '', 124)
+  it 'rejects exit 1 with an incomplete listing and no stderr' do
+    ps_result("Passenger RubyApp: /app\n", '', 1)
 
-    expect { finder.session_count('spec') }.to raise_error(NginxStage::Error, /ps exit 124/)
+    expect { finder.session_count('spec') }.to raise_error(NginxStage::Error, /ps exit 1/)
   end
 
   it 'does not accept a partial process listing after a timeout' do
-    ps_result("CMD\nPassenger RubyApp: /app\n", '', 124)
+    ps_result("Passenger RubyApp: /app\n", '', 124)
 
     expect { finder.session_count('spec') }.to raise_error(NginxStage::Error, /ps exit 124/)
   end
