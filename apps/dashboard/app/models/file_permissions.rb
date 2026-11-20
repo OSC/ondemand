@@ -2,7 +2,7 @@
 
 module FilePermissions
   class Error < StandardError; end
-  
+
   # Instance API used when this module is included into a file model.
   def can_open_file?
     FilePermissions.can_open_file?(self)
@@ -32,7 +32,7 @@ module FilePermissions
     def listing_editable?(directory:, size: nil)
       return false unless Configuration.download_enabled?
       return false if directory
-      
+
       size.to_i <= editor_max_size
     end
 
@@ -116,37 +116,39 @@ module FilePermissions
       false
     end
 
-      private
+    private
 
-      # Effective editor size limit (smaller of editor and download caps).
-      def editor_max_size
-        [Configuration.file_editor_max_size, Configuration.download_file_max].min
-      end
+    # Effective editor size limit (smaller of editor and download caps).
+    def editor_max_size
+      [Configuration.file_editor_max_size, Configuration.download_file_max].min
+    end
 
-      # Class#=== is is_a?, so `when PosixFile` matches PosixFile instances.
-      def coerce(path)
-        case path
-        when PosixFile, RemoteFile
-          path
-        else
-          PosixFile.new(path)
-        end
+    # Class#=== is is_a?, so `when PosixFile` matches PosixFile instances.
+    def coerce(path)
+      case path
+      when PosixFile, RemoteFile
+        path
+      else
+        PosixFile.new(path)
       end
+    end
 
-      def path_value(path)
-        path.respond_to?(:path) ? path.path : path
-      end
+    def path_value(path)
+      path.respond_to?(:path) ? path.path : path
+    end
 
-      def local?(file)
-        file.is_a?(PosixFile)
-      end
+    def local?(file)
+      file.is_a?(PosixFile)
+    end
 
-      def permitted?(path)
-        AllowlistPolicy.default.permitted?(path_value(path))
-      end
-      
-      def executable?(file)
-        !local?(file) || file.path.executable?
-      end
+    def permitted?(path)
+      AllowlistPolicy.default.permitted?(path_value(path))
+    end
+
+    # RemoteFile has no POSIX mode bits from rclone; treat remotes as executable
+    # for browse checks (favorites already skip access checks for remote? paths).
+    def executable?(file)
+      !local?(file) || file.path.executable?
+    end
   end
 end

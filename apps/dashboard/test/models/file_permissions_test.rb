@@ -87,6 +87,18 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'can_edit! raises when the file exceeds the editor size limit' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'too_big.txt').tap { |path| FileUtils.touch(path) }
+      editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
+      Pathname.any_instance.stubs(:lstat).returns(OpenStruct.new(size: editor_max + 1, symlink?: false))
+
+      refute FilePermissions.can_edit?(file)
+      error = assert_raises(FilePermissions::Error) { FilePermissions.can_edit!(file) }
+      assert_match(/exceeds editor limit/, error.message)
+    end
+  end
+
   test 'can_access_directory? is true for a readable and executable directory' do
     Dir.mktmpdir do |dir|
       assert FilePermissions.can_access_directory?(dir)
@@ -96,6 +108,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
   test 'can_access_directory? is false for files' do
     Dir.mktmpdir do |dir|
       file = File.join(dir, 'file.txt').tap { |path| FileUtils.touch(path) }
+
       refute FilePermissions.can_access_directory?(file)
     end
   end
@@ -126,6 +139,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |dir|
       fifo = "#{dir}/test.fifo"
       `mkfifo #{fifo}`
+
       refute FilePermissions.downloadable?(fifo)
     end
   end
@@ -178,7 +192,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
       posix = PosixFile.new(file)
 
       assert posix.can_open_file?
-      ssert posix.can_edit?
+      assert posix.can_edit?
       assert posix.downloadable?
     end
   end
