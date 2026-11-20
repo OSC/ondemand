@@ -63,7 +63,7 @@ describe 'nginx_clean session counting' do
 
   it 'bypasses session counting with --force' do
     generator = NginxStage::NginxCleanGenerator.new(force: true, skip_nginx: true)
-    expect(generator).not_to receive(:session_count)
+    expect(Open3).not_to receive(:capture3)
 
     expect { generator.invoke }.to output("spec\n").to_stdout.and output('').to_stderr
   end
@@ -72,6 +72,7 @@ describe 'nginx_clean session counting' do
     generator = NginxStage::NginxCleanGenerator.new
     allow(generator).to receive(:session_count).and_raise(NginxStage::Error, 'ps failed')
     expect(Open3).not_to receive(:capture2e)
+    expect(Process).not_to receive(:kill)
 
     expect { generator.invoke }.to output("ps failed\n").to_stderr.and output('').to_stdout
     expect(File.exist?(pid_path)).to be(true)
