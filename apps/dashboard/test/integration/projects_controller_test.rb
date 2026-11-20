@@ -12,11 +12,13 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get projects_path
     assert_response :success
+    assert_select '.page-header', text: /Project Manager/
   end
 
   test "should get new" do
     get new_project_path
     assert_response :success
+    assert_select '.page-header'
   end
 
   test 'should redirect when it cannot find the project' do
