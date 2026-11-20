@@ -11,6 +11,17 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     stub_sys_apps
   end
 
+  # Remove the session database only once Capybara resets the browser and drains
+  # pending requests. A failed reset can leave the poller reading this directory.
+  def after_teardown
+    super
+    FileUtils.remove_entry(@session_dir) if @session_dir
+  end
+
+  def with_session_dir
+    yield(@session_dir = Dir.mktmpdir)
+  end
+
   def get_test_data(token: 'sys/bc_paraview', title: 'Paraview', script_type: 'basic')
     {
       'id':              get_test_bc_id,
@@ -72,7 +83,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'queued session' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir)
       stub_scheduler(:queued)
       visit(batch_connect_sessions_path)
@@ -86,7 +97,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'completed session' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:completed)
       visit(batch_connect_sessions_path)
@@ -100,7 +111,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'completed session with completed view' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir)
       stub_scheduler(:completed)
       visit(batch_connect_sessions_path)
@@ -117,7 +128,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running session' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running)
       visit(batch_connect_sessions_path)
@@ -131,7 +142,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running session with info view' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_paraview', title: 'Paraview')
       stub_scheduler(:running)
       visit(batch_connect_sessions_path)
@@ -148,7 +159,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running sessions with 0 nodes and cores' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 0, cores: 0)
       visit(batch_connect_sessions_path)
@@ -162,7 +173,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running sessions with 0 nodes and 1 core' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 0, cores: 1)
       visit(batch_connect_sessions_path)
@@ -175,22 +186,22 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'running sessions with 1 nodes and 0 cores' do
-    Dir.mktmpdir do |dir|
+  test 'running sessions with 1 node and 0 cores' do
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
-      stub_scheduler(:running, nodes: 0, cores: 1)
+      stub_scheduler(:running, nodes: 1, cores: 0)
       visit(batch_connect_sessions_path)
 
       card = find("#id_#{get_test_bc_id}")
       assert_not_nil(card)
 
       header_text = card.find('.h5').text
-      assert_equal("Jupyter (#{get_test_job_id})\n1 core | Starting", header_text)
+      assert_equal("Jupyter (#{get_test_job_id})\n1 node | Starting", header_text)
     end
   end
 
   test 'running sessions correctly pluralize nodes and cores' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
       stub_scheduler(:running, nodes: 2, cores: 2)
       visit(batch_connect_sessions_path)
@@ -212,7 +223,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       )).filter((el) => el.checkVisibility() && !el.disabled)
     JS
 
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       # OOD_BC_SESSIONS_POLL_DELAY is clamped to at least 10s, far beyond Capybara's wait.
       Configuration.stubs(:bc_sessions_poll_delay).returns(100)
       create_test_file(dir, token: 'sys/bc_jupyter', title: 'Jupyter')
@@ -239,13 +250,13 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
         assert_equal(i, focused, "focus was not restored to control #{i}")
       end
 
-      # Stop the 100ms poller before Dir.mktmpdir deletes the session database it reads.
+      # Stop the 100ms poller once the focus checks have finished.
       visit(root_path)
     end
   end
 
   test 'session card connection tabs remain selected when replaced' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
         Configuration.stubs(:bc_sessions_poll_delay).returns(100)
         create_vnc_running_session(dir)
@@ -277,7 +288,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   end
 
   test 'running vnc session shows internationalized novnc compression and quality labels' do
-    Dir.mktmpdir do |dir|
+    with_session_dir do |dir|
       create_vnc_running_session(dir)
       stub_scheduler(:running)
 
