@@ -5,6 +5,8 @@ require 'pathname'
 module NginxStage
   # A class to handle a PID file
   class PidFile
+    MAX_PID_FILE_BYTES = 22
+
     # Process id that describes this object
     # @return [Integer] the pid object was initialized with
     attr_reader :pid
@@ -17,7 +19,14 @@ module NginxStage
       raise MissingPidFile, "missing PID file: #{pid_path}" unless @pid_path.exist?
       raise InvalidPidFile, "invalid PID file: #{pid_path}" unless @pid_path.file?
 
-      @pid = @pid_path.read.to_i
+      # Bound the read and require a positive Linux pid_t. PID 0 and negative
+      # values would signal a process group instead of one process.
+      contents = @pid_path.binread(MAX_PID_FILE_BYTES + 1).to_s
+      digits = contents[/\A\s*([0-9]+)\s*\z/, 1] if contents.bytesize <= MAX_PID_FILE_BYTES
+      pid = digits&.to_i
+      raise InvalidPidFile, "invalid PID file: #{pid_path}" unless pid&.between?(1, 2**31 - 1)
+
+      @pid = pid
     end
 
     # Whether the corresponding pid is a running process
