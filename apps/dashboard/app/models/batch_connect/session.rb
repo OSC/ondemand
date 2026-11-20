@@ -578,13 +578,15 @@ module BatchConnect
       Configuration.disable_bc_shell? ? nil : Pathname.new('/bin/bash')
     end
 
-    # The connection information for this session (job must be running)
+    # The connection information for this session (job must be running).
     # @return [OpenStruct] connection information
     def connect
-      if connection_in_info?
+      if connect_file.file?
+        OpenStruct.new(YAML.safe_load(connect_file.read) || {})
+      elsif connection_in_info?
         OpenStruct.new(info.ood_connection_info || {})
       else
-        OpenStruct.new YAML.safe_load(connect_file.read)
+        OpenStruct.new
       end
     end
 
