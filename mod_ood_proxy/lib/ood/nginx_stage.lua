@@ -156,7 +156,7 @@ function exports_to_table(r, exports)
 
   if exports then
     for key in string.gmatch(exports, '([^,]+)') do
-        value = r.subprocess_env[key]
+        local value = r.subprocess_env[key]
         if value then
           export_table[key] = value
         end
