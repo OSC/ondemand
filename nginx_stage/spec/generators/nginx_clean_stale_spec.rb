@@ -211,4 +211,20 @@ describe 'nginx_clean stale state' do
     expect(File).not_to exist("#{config_path}.cleanup")
   end
 
+  it 'retains a retry marker after a transient run directory removal failure' do
+    allow(NginxStage).to receive(:active_users).and_return([])
+    allow(NginxStage).to receive(:inactive_users).and_return(['gone'])
+    allow(Dir).to receive(:rmdir).and_call_original
+    expect(Dir).to receive(:rmdir).with(run_dir).ordered.and_raise(Errno::EACCES)
+    expect(Dir).to receive(:rmdir).with(run_dir).ordered.and_call_original
+
+    expect { generator.invoke }.to output(/Permission denied/).to_stderr
+      .and output("gone (disabled)\n").to_stdout
+    expect(File).not_to exist(pid_path)
+    expect(File).to exist("#{config_path}.cleanup")
+    expect { generator.invoke }.to output('').to_stderr.and output("gone (disabled)\n").to_stdout
+    expect(File).not_to exist(run_dir)
+    expect(File).not_to exist("#{config_path}.cleanup")
+  end
+
 end

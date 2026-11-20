@@ -125,9 +125,10 @@ module NginxStage
       remove_path(pid_path) unless running
       begin
         remove_disabled_run_directory(File.dirname(pid_path))
-      ensure
-        remove_path(pending_path) unless File.exist?(pid_path) || File.exist?(socket_path)
+      rescue Errno::ENOTEMPTY => e
+        warn "Error trying to clean up disabled user #{user}: #{e.message}"
       end
+      remove_path(pending_path) unless File.exist?(pid_path) || File.exist?(socket_path)
     end
 
     def remove_disabled_run_directory(path)
