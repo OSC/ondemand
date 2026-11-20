@@ -295,3 +295,19 @@ test.each([true, false])('only the latest copy updates the toolbar (success=%s)'
   expect(s.status.textContent).toContain(success ? 'Copied.' : 'Copy failed');
   expect(s.selectButton.textContent).toBe(success ? 'Select text' : 'Done');
 });
+
+test('ignores a second paste click while the clipboard read is pending', async () => {
+  let finishRead;
+  const readText = jest.fn(() => new Promise((resolve) => { finishRead = resolve; }));
+  const s = setup({ clipboard: { readText } });
+
+  s.paste.dispatch('click');
+  expect(s.paste.disabled).toBe(true);
+  s.paste.dispatch('click');
+  expect(readText).toHaveBeenCalledTimes(1);
+
+  finishRead('first');
+  await flush();
+  expect(s.pastes).toEqual(['first']);
+  expect(s.paste.disabled).toBe(false);
+});

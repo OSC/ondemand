@@ -356,7 +356,8 @@ OodShell.prototype.installMobileSelection = function (term) {
     }
   });
   pasteButton.addEventListener('click', async () => {
-    if (!canPaste || !isConnected()) return;
+    if (pasteButton.disabled || !isConnected()) return;
+    pasteButton.disabled = true;
     // hterm's paste() does not expose or handle readText rejection. Its paste
     // data handler preserves its newline and bracketed-paste processing.
     try {
@@ -369,6 +370,8 @@ OodShell.prototype.installMobileSelection = function (term) {
       status.textContent = 'Pasted.';
     } catch {
       status.textContent = 'Paste failed. Check clipboard permission.';
+    } finally {
+      pasteButton.disabled = !isConnected();
     }
   });
 };
