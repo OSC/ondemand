@@ -312,8 +312,7 @@ class FilesController < ApplicationController
   end
 
   def show_file
-    can_open, error = FilePermissions.open_file(@path)
-    raise(StandardError, error) unless can_open
+    FilePermissions.can_open_file!(@path)
 
     if html_file? && ::Configuration.unsafe_render_html
       render(file: @path.realpath, layout: false)

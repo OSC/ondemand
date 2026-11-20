@@ -42,20 +42,26 @@ module FilePermissions
       !directory && size.to_i <= editor_max_size
     end
 
-    # Whether the user can open/view this path as a file in the Files app.
-    # Considers download feature flag, allowlist, POSIX readability, file type, and size.
-    def can_open_file?(path)
-      open_file(path).first
-    end
-
-    # @return [Array(Boolean, String, nil)] whether the file can be opened and an error message
-    def open_file(path)
+    # Raises FilePermissions::Error when the path cannot be opened/viewed as a file.
+    def can_open_file!(path)
       file = coerce(path)
 
-      return [false, I18n.t('dashboard.files_download_not_enabled')] unless Configuration.download_enabled?
-      return allowlist_denied(file) if local?(file) && !permitted?(file)
+      raise Error, I18n.t('dashboard.files_download_not_enabled') unless Configuration.download_enabled?
+      if local?(file) && !permitted?(file)
+        raise Error, "#{file} does not have an ancestor directory specified in ALLOWLIST_PATH"
+      end
+      raise Error, I18n.t('dashboard.files_directory_download_unauthorized') unless file.file?
 
-      file.can_download_file?
+      can_download, error = file.can_download_file?
+      raise Error, error unless can_download
+
+      true
+    end
+
+    def can_open_file?(path)
+      can_open_file!(path)
+    rescue Error
+      false
     end
 
     # Raises FilePermissions::Error when the path cannot be opened in the editor.
@@ -141,10 +147,6 @@ module FilePermissions
         else
           true
         end
-      end
-
-      def allowlist_denied(file)
-        [false, "#{file} does not have an ancestor directory specified in ALLOWLIST_PATH"]
       end
   end
 end

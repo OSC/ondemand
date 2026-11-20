@@ -8,7 +8,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
       file = File.join(dir, 'open.txt').tap { |path| File.write(path, 'hello') }
 
       assert FilePermissions.can_open_file?(file)
-      assert_equal [true, nil], FilePermissions.open_file(file)
+      assert FilePermissions.can_open_file!(file)
     end
   end
 
@@ -18,7 +18,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
       Configuration.stubs(:download_enabled?).returns(false)
 
       refute FilePermissions.can_open_file?(file)
-      assert_equal [false, I18n.t('dashboard.files_download_not_enabled')], FilePermissions.open_file(file)
+      assert_raises(FilePermissions::Error) { FilePermissions.can_open_file!(file) }
     end
   end
 
@@ -31,15 +31,14 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
-  test 'can_open_file? is false when the file exceeds the download size limit' do
+  test 'can_open_file! raises when the file exceeds the download size limit' do
     Dir.mktmpdir do |dir|
       file = File.join(dir, 'big.txt').tap { |path| FileUtils.touch(path) }
       Pathname.any_instance.stubs(:lstat).returns(OpenStruct.new(size: Configuration.download_file_max + 1, symlink?: false))
 
       refute FilePermissions.can_open_file?(file)
-      result, error = FilePermissions.open_file(file)
-      refute result
-      assert_equal I18n.t('dashboard.files_file_too_large', download_file_size_limit: Configuration.download_file_max), error
+      error = assert_raises(FilePermissions::Error) { FilePermissions.can_open_file!(file) }
+      assert_equal I18n.t('dashboard.files_file_too_large', download_file_size_limit: Configuration.download_file_max), error.message
     end
   end
 
