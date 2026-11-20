@@ -15,6 +15,7 @@ class FilesTest < ApplicationSystemTestCase
     Capybara.current_session.quit
     visit files_url(Rails.root.to_s)
 
+    assert_selector '#directory-contents tbody a', exact_text: 'app'
     messages = page.driver.browser.logs.get(:browser)
     content = messages.join("\n")
     assert_equal 0, messages.length, "console error messages include:\n\n#{content}\n\n"
