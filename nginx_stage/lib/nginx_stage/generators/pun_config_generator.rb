@@ -169,14 +169,8 @@ module NginxStage
 
 
     private
-      def with_pun_start_lock
-        lock_path = "#{NginxStage.pun_config_path(user: user)}.lock"
-        FileUtils.mkdir_p File.dirname(lock_path)
-
-        File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
-          lock.flock(File::LOCK_EX)
-          yield
-        end
+      def with_pun_start_lock(&block)
+        NginxStage.with_pun_start_lock(user: user, &block)
       end
 
       def pun_running?
