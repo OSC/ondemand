@@ -269,6 +269,7 @@ en-CA:
     jobs_workflows_not_supported: Workflows are not supported by the configured scheduler.
     launch: Launch
     load_report: Load Report + %{node}
+    locale_name: Canadian English
     logo_alt_text: Welcome to Open OnDemand
     maximum: Maximum
     mem_report: Memory Report + %{node}
@@ -300,6 +301,7 @@ en-CA:
     nav_help_support_ticket: Submit Support Ticket
     nav_help_title: Help
     nav_help_two_factor: Configure Two-Factor Authentication
+    nav_language: Language
     nav_limit_caption: showing %{subset_count} of %{total_count}
     nav_logout: Sign Out
     nav_restart_server: Restart Web Server

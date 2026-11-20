@@ -118,6 +118,27 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
+  # Colon-separated list of paths to locale files that users are allowed to
+  # choose from. Defaults to just the default locale's path so the feature
+  # is opt-in. Mirrors the dashboard's Configuration#supported_locales.
+  def supported_locales
+    ENV['OOD_SUPPORTED_LOCALES'] || File.join(locales_root, locale.to_s)
+  end
+
+  # The portal name, used to derive the per-user settings file path.
+  # Mirrors the dashboard's Configuration#ood_portal so both apps read the
+  # same user settings file.
+  def ood_portal
+    ENV['OOD_PORTAL'] || 'ondemand'
+  end
+
+  # Path to the per-user settings file shared with the dashboard app.
+  # Read-only here: myjobs consumes the locale the user selected in the
+  # dashboard, it never writes to this file.
+  def user_settings_file
+    ENV['OOD_USER_SETTINGS_FILE'] || Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s
+  end
+
   # Permit sites to disable Markdown rendering of Template notes
   def render_template_notes_as_markdown?
     preference = ENV['RENDER_TEMPLATE_NOTES_AS_MARKDOWN']

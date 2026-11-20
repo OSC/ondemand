@@ -255,6 +255,7 @@ zh-CN:
     jobs_workflows_not_supported: 已配置的调度程序不支持工作流。
     launch: 启动
     load_report: 加载报告 + %{node}
+    locale_name: 简体中文
     logo_alt_text: 欢迎使用 Open OnDemand
     maximum: 最大值
     mem_report: 内存报告 + %{node}
@@ -280,6 +281,7 @@ zh-CN:
     nav_help_support_ticket: 提交支持票
     nav_help_title: 帮助
     nav_help_two_factor: 配置双重身份验证
+    nav_language: 语言
     nav_limit_caption: 显示 %{subset_count} 的 %{total_count}
     nav_logout: 登出
     nav_restart_server: 重启网页服务器

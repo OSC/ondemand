@@ -266,6 +266,7 @@ ja_JP:
     jobs_workflows_not_supported: 設定されたスケジューラではワークフローはサポートされていません。
     launch: 起動
     load_report: ロードレポート + %{node}
+    locale_name: 日本語
     logo_alt_text: Open OnDemandへようこそ
     maximum: 最大
     mem_report: メモリレポート + %{node}
@@ -297,6 +298,7 @@ ja_JP:
     nav_help_support_ticket: サポートチケットを提出
     nav_help_title: ヘルプ
     nav_help_two_factor: 二要素認証を設定
+    nav_language: 言語
     nav_limit_caption: "%{total_count} のうち %{subset_count} を表示中"
     nav_logout: ログアウト
     nav_restart_server: Web サーバーを再起動

@@ -3,7 +3,7 @@
 <%= return "turbo_rails/frame" if turbo_frame_request? %>
 
 <!DOCTYPE html>
-<html lang="<%= Configuration.locale %>">
+<html lang="<%= I18n.locale %>">
 <head>
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{@user_configuration.dashboard_title}" %></title>
   <%= favicon %>

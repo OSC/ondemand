@@ -269,6 +269,7 @@ fr-CA:
     jobs_workflows_not_supported: Les flux de travail ne sont pas pris en charge par le planificateur configuré.
     launch: Lancer
     load_report: Rapport de chargement + %{node}
+    locale_name: Français canadien
     logo_alt_text: Bienvenue dans Open OnDemand
     maximum: Maximum
     mem_report: Rapport de mémoire + %{node}
@@ -292,6 +293,7 @@ fr-CA:
     nav_help_support_ticket: Soumettre un billet de soutien
     nav_help_title: Aide
     nav_help_two_factor: Configurer l’authentification à deux facteurs
+    nav_language: Langue
     nav_limit_caption: affichage de %{subset_count} sur %{total_count}
     nav_logout: Déconnexion
     nav_restart_server: Redémarrer le serveur web
