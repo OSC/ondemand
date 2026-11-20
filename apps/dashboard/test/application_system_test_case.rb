@@ -3,6 +3,7 @@
 require 'test_helper'
 require 'accessibility_helper'
 require_relative 'support/chrome_stale_visibility'
+require_relative 'support/quit_failed_selenium_driver'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
@@ -20,16 +21,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
-
-  # If Capybara can't reset the browser after a test (usually because Chrome
-  # crashed or disconnected), quit it so the next test starts a fresh one
-  # instead of failing on the dead session. The error is still reported.
-  def after_teardown
-    super
-  rescue StandardError
-    Capybara.current_session.quit
-    raise
-  end
 
   def visit(path)
     super(path)
