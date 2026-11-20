@@ -184,7 +184,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
     old_umask = File.umask(0o022)
     Dir.mktmpdir do |dir|
       src = Pathname.new(dir).join('src')
-      src.mkdir(0o700)
+      src.mkdir(0o755)
       src.join('notes').write('notes')
       dest = Pathname.new(dir).join('dest')
 
