@@ -23,7 +23,7 @@ describe NginxStage::PidFile do
   end
 
   [
-    '', "\n", '0', '-1', '+1', '12abc', '1 2', '2147483648', '9' * 1000,
+    '', "\n", '0', '-1', '+1', '12abc', '1 2', '2147483648',
     "\x00123", "123\x00\n"
   ].each do |contents|
     it "rejects invalid PID contents #{contents.inspect}" do
@@ -33,8 +33,14 @@ describe NginxStage::PidFile do
     end
   end
 
-  it 'rejects an oversized file even if its stripped value would be valid' do
-    File.write(path, '123' + ' ' * 1000)
+  it 'accepts a valid PID file at the size limit' do
+    File.write(path, '123' + ' ' * 19)
+
+    expect(described_class.new(path).pid).to eq(123)
+  end
+
+  it 'rejects a valid PID file one byte over the size limit' do
+    File.write(path, '123' + ' ' * 20)
 
     expect { described_class.new(path) }.to raise_error(NginxStage::InvalidPidFile)
   end
