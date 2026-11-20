@@ -142,11 +142,7 @@ module FilePermissions
       end
 
       def executable?(file)
-        if file.is_a?(PosixFile)
-          file.path.executable?
-        else
-          true
-        end
+        !local?(file) || file.path.executable?
       end
   end
 end
