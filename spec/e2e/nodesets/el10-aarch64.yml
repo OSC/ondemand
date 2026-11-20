@@ -2,7 +2,7 @@ HOSTS:
   el10:
     roles:
       - agent
-    platform: el-10-x86_64
+    platform: el-10-aarch64
     hypervisor: docker
     image: arm64v8/almalinux:10
     docker_preserve_image: true
