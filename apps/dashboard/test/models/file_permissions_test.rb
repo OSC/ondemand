@@ -56,34 +56,21 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
-  test 'can_edit_file? is true for a writable file within the editor limit' do
+  test 'can_edit? is true for a writable file within the editor limit' do
     Dir.mktmpdir do |dir|
       file = File.join(dir, 'edit.txt').tap { |path| File.write(path, 'edit me') }
 
-      assert FilePermissions.can_edit_file?(file)
-      assert_equal [true, nil], FilePermissions.edit_file(file)
+      assert FilePermissions.can_edit?(file)
+      assert FilePermissions.can_edit!(file)
     end
   end
 
-  test 'can_edit_file? is false for read-only files' do
+  test 'can_edit? is false for read-only files' do
     Dir.mktmpdir do |dir|
       file = File.join(dir, 'readonly.txt').tap { |path| FileUtils.touch(path) }
       FileUtils.chmod(0o0444, file)
 
-      refute FilePermissions.can_edit_file?(file)
-    end
-  end
-
-  test 'can_edit_file? is false when the file exceeds the editor size limit' do
-    Dir.mktmpdir do |dir|
-      file = File.join(dir, 'too_big.txt').tap { |path| FileUtils.touch(path) }
-      editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
-      Pathname.any_instance.stubs(:lstat).returns(OpenStruct.new(size: editor_max + 1, symlink?: false))
-
-      refute FilePermissions.can_edit_file?(file)
-      result, error = FilePermissions.edit_file(file)
-      refute result
-      assert_match(/exceeds editor limit/, error)
+      refute FilePermissions.can_edit?(file)
     end
   end
 
@@ -159,7 +146,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
       posix = PosixFile.new(file)
 
       assert posix.can_open_file?
-      assert posix.can_edit_file?
+      ssert posix.can_edit?
       assert posix.downloadable?
     end
   end

@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 module FilePermissions
+  class Error < StandardError; end
+  
   # Instance API used when this module is included into a file model.
   def can_open_file?
     FilePermissions.can_open_file?(self)
   end
 
-  def can_edit_file?
-    FilePermissions.can_edit_file?(self)
+  def can_edit?
+    FilePermissions.can_edit?(self)
   end
 
   def can_access_directory?
@@ -56,26 +58,30 @@ module FilePermissions
       file.can_download_file?
     end
 
-    # Whether the user can open this path in the file editor.
-    # Considers allowlist, POSIX read/write, file type, and editor size limits.
-    def can_edit_file?(path)
-      edit_file(path).first
-    end
-
-    # @return [Array(Boolean, String, nil)] whether the file can be edited and an error message
-    def edit_file(path)
+    # Raises FilePermissions::Error when the path cannot be opened in the editor.
+    # Requires downloads enabled so edit links stay aligned with download UX.
+    def can_edit!(path)
       file = coerce(path)
 
-      return allowlist_denied(file) if local?(file) && !permitted?(file)
-      return [false, "#{file} is not an editable file"] unless file.editable?
+      raise Error, I18n.t('dashboard.files_download_not_enabled') unless Configuration.download_enabled?
+      if local?(file) && !permitted?(file)
+        raise Error, "#{file} does not have an ancestor directory specified in ALLOWLIST_PATH"
+      end
+      raise Error, "#{file} is not an editable file" unless file.editable?
 
       max = editor_max_size
       if file.size > max
         human_max = ActiveSupport::NumberHelper.number_to_human_size(max)
-        return [false, "#{file} exceeds editor limit of #{human_max}. Please download the file to edit or view it locally."]
+        raise Error, "#{file} exceeds editor limit of #{human_max}. Please download the file to edit or view it locally."
       end
 
-      [true, nil]
+      true
+    end
+
+    def can_edit?(path)
+      can_edit!(path)
+    rescue Error
+      false
     end
 
     # Whether the user can browse this directory in the Files app.
@@ -111,6 +117,7 @@ module FilePermissions
 
       private
 
+      # Class#=== is is_a?, so `when PosixFile` matches PosixFile instances.
       def coerce(path)
         case path
         when PosixFile, RemoteFile

@@ -71,7 +71,7 @@ class PosixFile
       mode:         stat.mode,
       dev:          stat.dev,
       downloadable: downloadable?,
-      editable:     can_edit_file?
+      editable:     can_edit?
     }
   end
 

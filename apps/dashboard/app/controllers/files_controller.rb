@@ -197,13 +197,9 @@ class FilesController < ApplicationController
     parse_path(filepath, fs)
     validate_path!
 
-    can_edit, error = FilePermissions.edit_file(@path)
-    if can_edit
-      @content = @path.read
-      render :edit, status: status, layout: 'editor'
-    else
-      redirect_back(fallback_location: root_path, alert: error)
-    end
+    FilePermissions.can_edit!(@path)
+    @content = @path.read
+    render :edit, status: status, layout: 'editor'
   rescue StandardError => e
     redirect_back(fallback_location: root_path, alert: e.message)
   end
