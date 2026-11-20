@@ -176,11 +176,15 @@ class PosixTransfer < Transfer
     when 'directory'
       children = src.children
       FileUtils.mkdir_p(dest.parent)
-      # Keep partial copies private and fail if the destination already exists.
-      Dir.mkdir(dest, 0o700)
-      final_mode = copied_directory_mode(src, dest)
-      children.each { |child| cp_r(child, dest.join(child.basename)) }
-      dest.chmod(final_mode)
+      if children.empty?
+        Dir.mkdir(dest, src.stat.mode & 0o1777)
+      else
+        # Keep partial copies private while populating their contents.
+        Dir.mkdir(dest, 0o700)
+        final_mode = copied_directory_mode(src, dest)
+        children.each { |child| cp_r(child, dest.join(child.basename)) }
+        dest.chmod(final_mode)
+      end
       inc_cp_percent
     end
   end

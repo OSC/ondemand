@@ -70,7 +70,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
         err_message = transfer.errors.full_messages[0]
 
-        assert_equal("Copy Permission denied @ dir_initialize - #{dir}/foo/bar", err_message)
+        assert_match(/Permission denied.*#{Regexp.escape(File.join(dir, "foo/bar"))}/, err_message)
         refute File.exist?(File.join(dir, 'dest/foo/bar')), 'an unreadable directory should not be created'
       ensure
         FileUtils.chmod 0755, File.join(dir, 'foo/bar')
@@ -229,6 +229,9 @@ class TransferLocalJobTest < ActiveJob::TestCase
       src = root.join('src')
       child = src.join('child')
       child.mkpath
+      empty = src.join('empty')
+      empty.mkdir(0o755)
+      empty.chmod(0o755)
       src.chmod(0o755)
       child.chmod(0o755)
       child.join('file').write('data')
@@ -247,6 +250,8 @@ class TransferLocalJobTest < ActiveJob::TestCase
       assert transfer.success?, transfer.errors.full_messages.inspect
       assert_equal 0o700, dest.stat.mode & 0o777
       assert_equal 0o700, dest.join('child').stat.mode & 0o777
+      assert_equal 0o700, dest.join('empty').stat.mode & 0o777
+      assert_predicate dest.join('empty'), :empty?
       assert_equal 'data', dest.join('child', 'file').read
     end
   end
