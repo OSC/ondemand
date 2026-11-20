@@ -51,9 +51,8 @@ function makeElement() {
 
 // Dispatch synchronously so listener exceptions fail the test that caused them.
 //
-// Events are routed like a browser routes touches: the document's capture
-// listeners, then the listeners on the element the touch landed on, then
-// hterm's on x-screen. A touch keeps sending events to the element it landed
+// Events reach the original target, then bubble through x-screen to the
+// document. A touch keeps sending events to the element it landed
 // on, but once that element has left the document, the document and x-screen
 // no longer see them.
 function setup({ fontSize = 15, hterm = null } = {}) {
@@ -79,12 +78,10 @@ function setup({ fontSize = 15, hterm = null } = {}) {
     };
     const run = (element) => (element.listeners[type] || []).slice()
       .forEach((listener) => listener.fn(event));
-    if (target.isConnected) {
-      run(doc);
-    }
     run(target);
-    if (target.isConnected && hterm) {
-      hterm(event);
+    if (target.isConnected) {
+      if (hterm) hterm(event);
+      run(doc);
     }
     return event;
   };
@@ -229,11 +226,11 @@ describe('Pinch zoom', () => {
   });
 
   describe('listeners', () => {
-    test('the document gets only touchstart', () => {
+    test('the document observes touchstart after screen handlers', () => {
       const { doc } = setup();
       expect(doc.addEventListener).toHaveBeenCalledTimes(1);
       expect(doc.addEventListener).toHaveBeenCalledWith('touchstart',
-        expect.any(Function), { capture: true, passive: true });
+        expect.any(Function), { passive: true });
     });
 
     test('the rest go on the touched element, and only touchmove is non-passive', () => {

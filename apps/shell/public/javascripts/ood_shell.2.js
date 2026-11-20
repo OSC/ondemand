@@ -249,7 +249,8 @@ OodShell.prototype.installPinchZoom = function (term) {
     }
   };
 
-  doc.addEventListener('touchstart', onTouchesChanged, passive);
+  // Let screen handlers consume the gesture before tracking its touch targets.
+  doc.addEventListener('touchstart', onTouchesChanged, { passive: true });
 };
 
 OodShell.prototype.installVisualViewportSizing = function () {
