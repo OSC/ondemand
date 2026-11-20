@@ -3,6 +3,7 @@
 require 'test_helper'
 require 'accessibility_helper'
 require_relative 'support/chrome_stale_visibility'
+require_relative 'support/quit_failed_selenium_driver'
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
