@@ -188,9 +188,9 @@ GEM
       logger
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.25.2)
+    loofah (2.25.3)
       crass (~> 1.0.2)
-      nokogiri (>= 1.12.0)
+      nokogiri (>= 1.19.5)
     mail (2.9.1)
       logger
       mini_mime (>= 0.1.1)
@@ -222,13 +222,14 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokogiri (1.19.4)
+    nokogiri (1.19.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    ood_appkit (2.2.1)
+    ood_appkit (2.2.2)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_core (~> 0.1)
+      ostruct
       rails (>= 6.0.0)
       redcarpet (~> 3.2)
     ood_core (0.31.2)
@@ -255,7 +256,7 @@ GEM
     puma (7.2.1)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.2.7)
+    rack (3.2.8)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -405,7 +406,7 @@ DEPENDENCIES
   dotiw
   erubi
   highline
-  i18n-tasks (~> 1.1.0)
+  i18n-tasks
   jbuilder (~> 2.0)
   jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
