@@ -17,6 +17,13 @@ class UserCustomizationTest < ApplicationSystemTestCase
     OodFilesApp.any_instance.stubs(:candidate_favorite_paths).returns(favorites)
   end
 
+  def wait_for_favorites_reload
+    execute_script("document.documentElement.setAttribute('data-before-favorites-reload', '')")
+    yield
+    # Match the new document without querying visibility on nodes that are unloading.
+    assert_selector('html:not([data-before-favorites-reload]) #favorites', visible: :all)
+  end
+
   test 'adding files favorites' do
     Dir.mktmpdir do |dir|
       stub_system_favorites(dir)
@@ -25,7 +32,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
         visit files_url(Rails.root.to_s)
         tr = find('a', exact_text: 'config').ancestor('tr')
         tr.find('button.dropdown-toggle').click
-        tr.find('.add-favorite').click
+        wait_for_favorites_reload { tr.find('.add-favorite').click }
 
         assert_selector('#favorites li', count: 4)
         within(find('#favorites a', text: Rails.root.join('config')).ancestor('div.input-group')) do
@@ -36,7 +43,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
         # Add second favorite
         tr = find('a', exact_text: 'test').ancestor('tr')
         tr.find('button.dropdown-toggle').click
-        tr.find('.add-favorite').click
+        wait_for_favorites_reload { tr.find('.add-favorite').click }
 
         assert_selector('#favorites li', count: 5)
         within(find('#favorites a', text: Rails.root.join('test')).ancestor('div.input-group')) do
@@ -82,7 +89,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
         end
 
         find('#files_input_modal_input').set('Custom Title')
-        find('#files_input_modal_ok_button').click
+        wait_for_favorites_reload { find('#files_input_modal_ok_button').click }
 
         assert_selector('#favorites div.input-group', text: 'Custom Title')
         exp_yaml = {'files_favorites' => [
