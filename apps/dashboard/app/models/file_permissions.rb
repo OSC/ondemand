@@ -30,7 +30,10 @@ module FilePermissions
     end
 
     def listing_editable?(directory:, size: nil)
-      !directory && size.to_i <= editor_max_size
+      return false unless Configuration.download_enabled?
+      return false if directory
+      
+      size.to_i <= editor_max_size
     end
 
     # Raises FilePermissions::Error when the path cannot be opened/viewed as a file.

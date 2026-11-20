@@ -78,6 +78,15 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'can_edit? is false when downloads are disabled' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'edit.txt').tap { |path| File.write(path, 'edit me') }
+      Configuration.stubs(:download_enabled?).returns(false)
+
+      refute FilePermissions.can_edit?(file)
+    end
+  end
+
   test 'can_access_directory? is true for a readable and executable directory' do
     Dir.mktmpdir do |dir|
       assert FilePermissions.can_access_directory?(dir)
@@ -158,6 +167,9 @@ class FilePermissionsTest < ActiveSupport::TestCase
     assert FilePermissions.listing_editable?(directory: false, size: editor_max)
     refute FilePermissions.listing_editable?(directory: false, size: editor_max + 1)
     refute FilePermissions.listing_editable?(directory: true, size: 1)
+
+    Configuration.stubs(:download_enabled?).returns(false)
+    refute FilePermissions.listing_editable?(directory: false, size: 1)
   end
 
   test 'PosixFile includes FilePermissions instance methods' do
