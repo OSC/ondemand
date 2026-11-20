@@ -343,14 +343,14 @@ OodShell.prototype.installMobileSelection = function (term) {
     }
     // Call writeText directly in the click handler to retain user activation.
     // Do not clear a newer selection while the clipboard request is pending.
-    const version = selectionVersion;
+    const version = ++selectionVersion;
     try {
       await clipboard.writeText(text);
-      if (selecting && version === selectionVersion) {
-        endSelection();
-      }
+      if (version !== selectionVersion) return;
+      endSelection();
       status.textContent = 'Copied.';
     } catch {
+      if (version !== selectionVersion) return;
       status.textContent = 'Copy failed. Select text again and use the browser Copy menu.';
       updateSelection();
     }

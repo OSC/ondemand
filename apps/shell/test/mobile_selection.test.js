@@ -273,3 +273,25 @@ test('a delayed collapse of the copied selection does not keep selection mode op
   expect(s.status.textContent).toBe('Copied.');
   expect(s.selectButton.textContent).toBe('Select text');
 });
+
+test.each([true, false])('only the latest copy updates the toolbar (success=%s)', async (success) => {
+  const pending = [];
+  const clipboard = {
+    writeText: () => new Promise((resolve, reject) => pending.push({ resolve, reject }))
+  };
+  const s = setup({ clipboard });
+  s.selectButton.dispatch('click');
+  s.select();
+  s.copy.dispatch('click');
+  s.copy.dispatch('click');
+
+  if (success) pending[1].resolve();
+  else pending[1].reject(new Error('denied'));
+  await flush();
+  if (success) pending[0].reject(new Error('denied'));
+  else pending[0].resolve();
+  await flush();
+
+  expect(s.status.textContent).toContain(success ? 'Copied.' : 'Copy failed');
+  expect(s.selectButton.textContent).toBe(success ? 'Select text' : 'Done');
+});
