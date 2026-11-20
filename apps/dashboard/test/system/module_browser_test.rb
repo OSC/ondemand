@@ -21,17 +21,20 @@ class ModuleBrowserTest < ApplicationSystemTestCase
     visit module_browser_url
   end
 
-  test 'searching by module name filters results' do
+  test 'searching by module name respects the cluster filter' do
     assert_modules(ALL_MODULES)
 
     fill_in 'module_search', with: 'GCC'
     assert_modules(['gcc', 'gcc-tools'])
 
+    select 'Oakley', from: 'cluster_filter'
+    assert_modules(['gcc'])
+
     fill_in 'module_search', with: 'nonexistent_module'
     assert_modules([])
 
     fill_in 'module_search', with: ''
-    assert_modules(ALL_MODULES)
+    assert_modules(['gcc', 'openmpi'])
   end
 
   test 'filtering by cluster only shows supported modules' do
@@ -43,14 +46,6 @@ class ModuleBrowserTest < ApplicationSystemTestCase
 
     select 'All Clusters', from: 'cluster_filter'
     assert_modules(ALL_MODULES)
-  end
-
-  test 'search and cluster filters apply together' do
-    fill_in 'module_search', with: 'gcc'
-    assert_modules(['gcc', 'gcc-tools'])
-
-    select 'Oakley', from: 'cluster_filter'
-    assert_modules(['gcc'])
   end
 
   test 'module button expands and collapses the module details' do
