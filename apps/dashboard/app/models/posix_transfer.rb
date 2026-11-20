@@ -170,7 +170,7 @@ class PosixTransfer < Transfer
   end
 
   def cp_r(src, dest)
-    case copy_entry_type(src)
+    case File.ftype(src)
     when 'file', 'link'
       cp_single(src, dest)
     when 'directory'

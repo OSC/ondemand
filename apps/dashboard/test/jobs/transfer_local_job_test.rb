@@ -203,6 +203,26 @@ class TransferLocalJobTest < ActiveJob::TestCase
     File.umask(old_umask)
   end
 
+  test "copy reports an error when it cannot stat a listed child" do
+    skip 'requires an unprivileged user' if Process.euid.zero?
+
+    Dir.mktmpdir do |dir|
+      src = Pathname.new(dir).join('src').tap(&:mkdir)
+      src.join('notes').write('notes')
+      src.chmod(0o400)
+      dest = Pathname.new(dir).join('dest')
+
+      transfer = PosixTransfer.build(action: 'cp', files: { src.to_s => dest.to_s })
+      transfer.perform
+
+      refute transfer.success?
+      assert_match(/Permission denied.*notes/, transfer.errors[:copy].first)
+    ensure
+      src.chmod(0o700)
+      dest.chmod(0o700) if dest.exist?
+    end
+  end
+
   test "copy respects default ACLs on the destination" do
     Dir.mktmpdir do |dir|
       root = Pathname.new(dir)
