@@ -183,7 +183,9 @@ class PosixTransfer < Transfer
         Dir.mkdir(dest, 0o700)
         final_mode = copied_directory_mode(src, dest)
         children.each { |child| cp_r(child, dest.join(child.basename)) }
-        dest.chmod(final_mode)
+        # Linux can clear inherited setgid on chmod when the copier is outside
+        # the destination group. Leave the mode alone when mkdir already set it.
+        dest.chmod(final_mode) unless (dest.stat.mode & 0o3777) == final_mode
       end
       inc_cp_percent
     end
