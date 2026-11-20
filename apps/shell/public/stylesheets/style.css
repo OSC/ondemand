@@ -125,7 +125,7 @@ iframe {
   font: 0.875rem monospace;
 }
 
-#terminal_keys button:nth-child(-n + 8) {
+#terminal_keys .terminal-key-compact {
   flex-basis: clamp(2rem, calc((100% - 7 * var(--key-gap)) / 8), 2.75rem);
   min-width: 0;
   padding-inline: 0;

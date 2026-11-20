@@ -67,24 +67,13 @@ describe('applyModifiers()', () => {
   });
 });
 
-// Sticky Ctrl with the physical Backspace key.
-//
-// hterm sends the opposite byte for Ctrl+Backspace than for plain Backspace
-// (its key map is bs('\x7f', '\b') for plain and bs('\b', '\x7f') for Ctrl), so
-// an armed on-screen Ctrl must do the same. The expected bytes below come from
-// the key map in the vendored hterm bundle rather than from the handler under
-// test. Do not "fix" the handler to send the plain Backspace byte.
-//
-// Updating the vendored hterm bundle: if this suite fails to load the bundle,
-// or the Backspace key definition (keyCode 8) changes, check how hterm now
-// encodes Ctrl+Backspace and update the handler in installKeys to match.
+// Compare sticky Ctrl+Backspace with the checked-in hterm key map.
 const jsDir = path.join(__dirname, '..', 'public', 'javascripts');
 const oodShellSource = fs.readFileSync(path.join(jsDir, 'ood_shell.2.js'), 'utf8');
 const loadOodShell = (globals) => vm.runInNewContext(oodShellSource + '\nOodShell;', globals);
 const codes = (str) => Array.from(str, (ch) => ch.charCodeAt(0));
 
-// A real hterm.Keyboard.KeyMap, evaluated from the vendored bundle.
-function loadHtermKeyMap(backspaceSendsBackspace) {
+function loadHterm() {
   const bundle = fs.readdirSync(jsDir).find((name) => /^hterm_all_.*\.js$/.test(name));
   const sandbox = {
     console, Blob, URL, TextEncoder, TextDecoder, setTimeout, clearTimeout,
@@ -95,13 +84,28 @@ function loadHtermKeyMap(backspaceSendsBackspace) {
   sandbox.self = sandbox;
   vm.createContext(sandbox);
   vm.runInContext(fs.readFileSync(path.join(jsDir, bundle), 'utf8'), sandbox, { filename: bundle });
-  const hterm = vm.runInContext('hterm', sandbox);
-  return new hterm.Keyboard.KeyMap({ backspaceSendsBackspace });
+  return vm.runInContext('hterm', sandbox);
 }
+
+test.each([false, true])('sticky Ctrl matches hterm on BackTab with Alt=%s', (alt) => {
+  const { Keyboard } = loadHterm();
+  const send = jest.fn();
+  const keyboard = new Keyboard({
+    passCtrlTab: false, contextMenu: { hide() {} }, onVTKeystroke: send
+  });
+  keyboard.onKeyDown_({
+    keyCode: 9, shiftKey: true, ctrlKey: true, altKey: alt, metaKey: false,
+    preventDefault() {}, stopPropagation() {}
+  });
+
+  expect(send).toHaveBeenCalledTimes(1);
+  expect(applyModifiers('\x1b[Z', true, alt)).toBe(send.mock.calls[0][0]);
+});
 
 // What hterm sends for Backspace (keyCode 8) with and without Ctrl held.
 function htermBackspace(backspaceSendsBackspace) {
-  const keyDef = loadHtermKeyMap(backspaceSendsBackspace).keyDefs[8];
+  const { Keyboard } = loadHterm();
+  const keyDef = new Keyboard.KeyMap({ backspaceSendsBackspace }).keyDefs[8];
   return { plain: keyDef.normal({}, keyDef), ctrl: keyDef.control({}, keyDef) };
 }
 
@@ -202,12 +206,6 @@ describe('Backspace with Ctrl armed on the on-screen keys', () => {
     }
   );
 
-  test('the default encodings are BS for Ctrl+Backspace and DEL for Backspace', () => {
-    // A readable statement of what the test above reads from hterm.
-    const { plain, ctrl } = htermBackspace(false);
-    expect(codes(plain)).toEqual([0x7f]);
-    expect(codes(ctrl)).toEqual([0x08]);
-  });
 
   test('uses up the armed Ctrl', () => {
     const { shell, keydown, modifierButtons } = setupKeys();

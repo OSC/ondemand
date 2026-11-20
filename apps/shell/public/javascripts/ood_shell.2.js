@@ -26,6 +26,7 @@ OodShell.prototype.runTerminal = function () {
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
+    // The socket can close before hterm finishes initializing.
     if (that.socket.readyState !== WebSocket.OPEN) {
       return;
     }
@@ -246,6 +247,9 @@ OodShell.prototype.setModifier = function (name, armed) {
 // What a keystroke sends with Ctrl and/or Alt held, as hterm and xterm encode
 // a physical keyboard.
 OodShell.applyModifiers = function (str, ctrl, alt) {
+  // hterm strips Ctrl from Shift+Tab and sends the Shift modifier.
+  if (str === '\x1b[Z' && ctrl) return '\x1b[1;2Z';
+
   // Merge modifiers already encoded by hterm on cursor and paging keys.
   const key = /^\x1b[\[O](\d*)(?:;([1-9]|1[0-6]))?([A-Z~])$/.exec(str);
   if (key && (!key[2] || /^(?:1[A-DFH]|[56]~)$/.test(key[1] + key[3]))) {
