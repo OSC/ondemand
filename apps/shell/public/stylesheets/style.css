@@ -61,7 +61,6 @@ html, body {
   align-items: center;
   gap: 2px 8px;
   width: max-content;
-  max-width: 100%;
 }
 
 .terminal-options > div {

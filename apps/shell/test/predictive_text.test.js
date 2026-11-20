@@ -39,19 +39,6 @@ test('opens the opt-in composer without changing normal terminal input', () => {
   expect(input.value).toBe('');
 });
 
-test('sends the finished text once through hterm paste and clears it', () => {
-  const { shell, input, submit } = setup();
-  input.value = 'teh';
-  input.value = 'the “text”';
-  expect(shell.term.onPasteData_).not.toHaveBeenCalled();
-  submit();
-  expect(shell.term.onPasteData_).toHaveBeenCalledTimes(1);
-  expect(shell.term.onPasteData_).toHaveBeenCalledWith('the “text”');
-  expect(input.value).toBe('');
-  submit();
-  expect(shell.term.onPasteData_).toHaveBeenCalledTimes(1);
-});
-
 test('disabling the composer discards unsent text', () => {
   const { shell, input, form, submit } = setup();
   input.value = 'unsent';
@@ -72,4 +59,26 @@ test('closing the WebSocket blocks submission and discards the draft on close', 
   shell.closeTerminal({ code: 1000 });
   expect(form.hidden).toBe(true);
   expect(input.value).toBe('');
+});
+
+test('submits bracketed paste once and clears the composer', () => {
+  const bundle = path.join(__dirname, '..', 'public', 'javascripts', 'hterm_all_1.92.1.mod_1.js');
+  const sandbox = vm.createContext({
+    console, Blob, URL, TextEncoder, TextDecoder, setTimeout, clearTimeout,
+    navigator: { userAgent: '', platform: 'Linux', language: 'en' },
+    document: {}, location: { href: 'http://localhost/' }
+  });
+  sandbox.window = sandbox;
+  sandbox.self = sandbox;
+  vm.runInContext(fs.readFileSync(bundle, 'utf8'), sandbox);
+  const { shell, input, submit } = setup();
+  shell.term.onPasteData_ = vm.runInContext('hterm.Terminal.prototype.onPasteData_', sandbox);
+  shell.term.options_ = { bracketedPaste: true };
+  shell.term.io = { sendString: (text) => shell.onVTKeystroke(text) };
+  input.value = '  the “text”  ';
+  submit();
+  expect(shell.socket.send).toHaveBeenCalledWith(JSON.stringify({ input: '\x1b[200~  the “text”  \x1b[201~' }));
+  expect(input.value).toBe('');
+  submit();
+  expect(shell.socket.send).toHaveBeenCalledTimes(1);
 });
