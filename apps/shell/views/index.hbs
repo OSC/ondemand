@@ -50,12 +50,18 @@
             <select id="fonts" class="form-select form-select-sm"></select>
           </div>
           <div hidden>
-            <input type="checkbox" id="predictive_text" class="form-check-input mt-0" title="Allow the on-screen keyboard to show word suggestions. May autocorrect commands.">
+            <input type="checkbox" id="predictive_text" class="form-check-input mt-0" aria-controls="terminal-composer" title="Show a separate text input with keyboard suggestions.">
             <label for="predictive_text" class="badge">Predictive text</label>
           </div>
         </div>
       </div>
     </nav>
+    <form id="terminal-composer" class="input-group flex-shrink-0 p-1" hidden>
+      <label for="terminal-composer-text" class="visually-hidden">Compose text to send to the terminal</label>
+      <input id="terminal-composer-text" name="text" type="text" class="form-control" dir="auto"
+             placeholder="Compose text to paste" autocomplete="off" autocapitalize="none" autocorrect="on" spellcheck="true">
+      <button type="submit" class="btn btn-outline-secondary">Send text</button>
+    </form>
   </div>
 </body>
 
@@ -213,9 +219,7 @@
     storage.setItem('ood_shell_theme', choice);
     oodShell.changeTheme(choice);
   })
-  // Handled on click so the focus change in setPredictiveText runs inside the
-  // user's gesture, which mobile Safari requires.
-  predictiveTextCheckbox.addEventListener("click", function(ev) {
+  predictiveTextCheckbox.addEventListener("change", function(ev) {
     const enabled = ev.target.checked;
     storage.setItem('ood_shell_predictive_text', String(enabled));
     if (window.oodShell) {
