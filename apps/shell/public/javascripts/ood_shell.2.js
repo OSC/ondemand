@@ -177,7 +177,9 @@ OodShell.prototype.installKeys = function () {
     that.pressKey(button);
   });
 
-  // Handle Backspace while we can still distinguish it from Ctrl+H.
+  // Handle Backspace while we can still distinguish it from Ctrl+H. Send what
+  // hterm sends for Ctrl+Backspace, which is the opposite of plain Backspace:
+  // BS (^H) by default, DEL when backspaceSendsBackspace is set.
   terminalDocument.querySelector('x-screen')?.addEventListener('keydown', function (ev) {
     if (that.modifiers.ctrl && ev.key === 'Backspace' && !ev.isComposing &&
         !ev.defaultPrevented && !ev.ctrlKey && !ev.altKey && !ev.metaKey) {
