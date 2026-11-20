@@ -629,7 +629,6 @@ class FilesTest < ApplicationSystemTestCase
 
   # Wait for the upload result using one timeout for modal closure and file contents.
   def assert_upload_complete(expected_contents, wait: MAX_WAIT)
-    observed = nil
     page.document.synchronize(wait) do
       page.document.assert_no_selector('.uppy-Dashboard--modal', visible: true, wait: 0)
       observed = expected_contents.keys.to_h do |path|
@@ -640,8 +639,6 @@ class FilesTest < ApplicationSystemTestCase
               "Expected uploaded contents #{expected_contents.inspect}; observed #{observed.inspect}"
       end
     end
-    # Synchronization guarantees equality; record the successful Minitest assertion.
-    assert_equal expected_contents, observed
   rescue Capybara::ExpectationNotMet => e
     flunk e.message
   end
@@ -665,8 +662,9 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector('.uppy-Dashboard-AddFiles')
 
       attach_file 'files[]', src_file, visible: false, match: :first
-      assert_selector('.uppy-Dashboard--modal', visible: true)
-      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      within('.uppy-Dashboard--modal', visible: true) do
+        find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      end
       assert_upload_complete({ upload_file => initial_content })
       assert_selector('tbody a', exact_text: File.basename(src_file))
       assert_equal(33_188, File.stat(upload_file).mode) # default 644
@@ -683,8 +681,9 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2")
       assert_overwrite_buttons
 
-      assert_selector('.uppy-Dashboard--modal', visible: true)
-      click_on('Upload and Overwrite')
+      within('.uppy-Dashboard--modal', visible: true) do
+        click_on('Upload and Overwrite')
+      end
       assert_upload_complete({ upload_file => replacement_content })
       assert_selector('tbody a', exact_text: File.basename(src_file))
 
@@ -855,7 +854,7 @@ class FilesTest < ApplicationSystemTestCase
 
       src_files = [src_file_1, src_file_2, src_file_3, src_file_4, src_file_5]
       src_files.each_with_index do |file, index|
-        `echo 'some content in file #{index + 1}' > #{file}`
+        File.write(file, "some content in file #{index + 1}\n")
       end
       initial_contents = src_files.to_h { |file| [File.join(target_dir, File.basename(file)), File.read(file)] }
 
@@ -866,9 +865,9 @@ class FilesTest < ApplicationSystemTestCase
       # in order to find the directory input, we have to swap so that it is first in the DOM
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
-      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
-      assert_selector('.uppy-Dashboard--modal', visible: true)
-      click_on('Upload 5 files')
+      within('.uppy-Dashboard--modal', visible: true) do
+        click_on('Upload 5 files')
+      end
       assert_upload_complete(initial_contents)
 
       assert_selector('tbody a', exact_text: File.basename(src_dir))
@@ -890,7 +889,7 @@ class FilesTest < ApplicationSystemTestCase
 
       # add new content to each file
       src_files.each do |file|
-        `echo ' and some new content too!' >> #{file}`
+        File.write(file, " and some new content too!\n", mode: 'a')
       end
       # Only the missing file gets new contents; existing files must stay unchanged.
       safe_upload_contents = initial_contents.merge(
@@ -907,14 +906,15 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector(".uppy-Dashboard-Item:not(.bg-danger)", count: 1)
       assert_overwrite_buttons
 
-      assert_selector('.uppy-Dashboard--modal', visible: true)
-      click_on('Upload New Files')
+      within('.uppy-Dashboard--modal', visible: true) do
+        click_on('Upload New Files')
+      end
       assert_upload_complete(safe_upload_contents)
       assert_selector('tbody a', exact_text: File.basename(src_dir))
 
       # repeat the process but overwrite this time
       src_files.each do |file|
-        `echo ' and some even newer content!' >> #{file}`
+        File.write(file, " and some even newer content!\n", mode: 'a')
       end
       overwrite_contents = src_files.to_h { |file| [File.join(target_dir, File.basename(file)), File.read(file)] }
 
@@ -925,8 +925,9 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector(".uppy-Dashboard-Item.bg-danger.rounded.p-2", count: 5)
       assert_overwrite_buttons
 
-      assert_selector('.uppy-Dashboard--modal', visible: true)
-      click_on('Upload and Overwrite')
+      within('.uppy-Dashboard--modal', visible: true) do
+        click_on('Upload and Overwrite')
+      end
       assert_upload_complete(overwrite_contents)
       assert_selector('tbody a', exact_text: File.basename(src_dir))
       click_on(File.basename(src_dir))
@@ -954,7 +955,7 @@ class FilesTest < ApplicationSystemTestCase
 
       src_files = [src_file_1, src_file_2, src_file_3, src_file_4, src_file_5]
       src_files.each_with_index do |file, index|
-        `echo 'some content in file #{index + 1}' > #{file}`
+        File.write(file, "some content in file #{index + 1}\n")
       end
 
       visit files_url(upload_dir)
@@ -964,7 +965,6 @@ class FilesTest < ApplicationSystemTestCase
       # in order to find the directory input, we have to swap so that it is first in the DOM
       page.execute_script(SWAP_FILE_INPUT_SCRIPT)
       attach_file 'files[]', src_dir, visible: false, match: :first
-      assert_selector('.uppy-StatusBar-actionBtn--upload', text: 'Upload 5 files')
       click_on('Upload 5 files')
 
       assert_selector('tbody a', exact_text: File.basename(src_dir))
