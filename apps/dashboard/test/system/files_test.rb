@@ -1294,12 +1294,13 @@ class FilesTest < ApplicationSystemTestCase
         `echo '#{content}' > #{dir}/file_to_download`
 
         visit files_url(dir)
-        find('tbody a', exact_text: 'file_to_download').click
-        assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
-        find('.alert-danger button.btn-close').click
-        refute_selector('.alert-danger')
 
-        find('tbody a', exact_text: 'file_to_download').ancestor('tr').click
+        # Oversized files are listed without an open/view link.
+        assert_selector('tbody span', exact_text: 'file_to_download')
+        refute_selector('tbody a', exact_text: 'file_to_download')
+
+        # Selecting the row and using the toolbar still attempts download and surfaces the error.
+        find('tbody span', exact_text: 'file_to_download').ancestor('tr').click
         click_on('Download')
         assert_selector('.alert-danger', text: I18n.t('dashboard.files_file_too_large', download_file_size_limit: '116'))
         refute(File.exist?(new_file), "#{new_file} was downloaded despite being too large")

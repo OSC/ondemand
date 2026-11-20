@@ -2,8 +2,10 @@
 
 require 'rclone_util'
 
-# PosixFile is a class representing a file on a remote file system.
+# RemoteFile is a class representing a file on a remote file system.
 class RemoteFile
+  include FilePermissions
+
   attr_reader :path, :remote
 
   delegate :basename, :descend, :parent, :join, :to_s, to: :path
@@ -30,16 +32,19 @@ class RemoteFile
     # Need to return same fields as PosixFile.
     # owner, mode and dev are not defined for remote files, leaving them empty
     files.map do |file|
+      is_dir = file['IsDir']
+      size = is_dir ? nil : file['Size']
       {
         id:           file['Path'],
         name:         file['Name'],
-        size:         file['IsDir'] ? nil : file['Size'],
-        directory:    file['IsDir'],
+        size:         size,
+        directory:    is_dir,
         date:         DateTime.parse(file['ModTime']).to_time.to_i,
         owner:        '',
         mode:         '',
         dev:          0,
-        downloadable: true
+        downloadable: FilePermissions.listing_downloadable?(directory: is_dir, size: size),
+        editable:     FilePermissions.listing_editable?(directory: is_dir, size: size)
       }
     end.select do |stats|
       valid_encoding = stats[:name].to_s.valid_encoding?
