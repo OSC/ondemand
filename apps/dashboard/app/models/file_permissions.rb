@@ -82,29 +82,35 @@ module FilePermissions
     end
 
     # Whether the user can browse this directory in the Files app.
-    # Considers allowlist and POSIX directory read/execute bits.
+    # Returns false for non-directories.
     def can_access_directory?(path)
       file = coerce(path)
+      return false unless file.directory?
       return false if local?(file) && !permitted?(file)
 
-      file.directory? && file.readable? && executable?(file)
+      file.readable? && executable?(file)
     end
 
-    # Whether the Files app should present download/view affordances for this path.
-    # Directories only need to be readable; files must also pass can_open_file? rules.
-    def downloadable?(path)
+    # Authoritative download check (what the server will allow).
+    # Files use can_open_file!; directories need download enabled, allowlist, and readability.
+    # Zip size limits stay in can_download_as_zip?. UI listing should use listing_downloadable?.
+    def downloadable!(path)
       file = coerce(path)
-      return false unless Configuration.download_enabled?
-      return false if local?(file) && !permitted?(file)
-      return false unless file.readable?
+      return can_open_file!(file) if file.file?
 
-      if file.directory?
-        true
-      elsif file.file?
-        can_open_file?(file)
-      else
-        false
+      raise Error, I18n.t('dashboard.files_download_not_enabled') unless Configuration.download_enabled?
+      if local?(file) && !permitted?(file)
+        raise Error, "#{file} does not have an ancestor directory specified in ALLOWLIST_PATH"
       end
+      raise Error, I18n.t('dashboard.files_directory_download_unauthorized') unless file.directory? && file.readable?
+
+      true
+    end
+
+    def downloadable?(path)
+      downloadable!(path)
+    rescue Error
+      false
     end
 
       private

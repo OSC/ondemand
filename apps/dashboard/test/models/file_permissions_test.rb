@@ -22,6 +22,12 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'can_open_file? is false for directories' do
+    Dir.mktmpdir do |dir|
+      refute FilePermissions.can_open_file?(dir)
+    end
+  end
+
   test 'can_open_file? is false for unreadable files' do
     Dir.mktmpdir do |dir|
       file = File.join(dir, 'secret.txt').tap { |path| FileUtils.touch(path) }
@@ -78,6 +84,13 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'can_access_directory? is false for files' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'file.txt').tap { |path| FileUtils.touch(path) }
+      refute FilePermissions.can_access_directory?(file)
+    end
+  end
+
   test 'can_access_directory? is false for an unreadable directory' do
     Dir.mktmpdir do |dir|
       FileUtils.chmod(0o0333, dir)
@@ -100,6 +113,14 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'downloadable? is false for special files that are neither files nor directories' do
+    Dir.mktmpdir do |dir|
+      fifo = "#{dir}/test.fifo"
+      `mkfifo #{fifo}`
+      refute FilePermissions.downloadable?(fifo)
+    end
+  end
+
   test 'downloadable? is false for files that cannot be opened' do
     Dir.mktmpdir do |dir|
       file = File.join(dir, 'big.txt').tap { |path| FileUtils.touch(path) }
@@ -112,6 +133,7 @@ class FilePermissionsTest < ActiveSupport::TestCase
   test 'downloadable? is true for readable directories when downloads are enabled' do
     Dir.mktmpdir do |dir|
       assert FilePermissions.downloadable?(dir)
+      assert FilePermissions.downloadable!(dir)
     end
   end
 
