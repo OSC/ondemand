@@ -1,10 +1,12 @@
 // Object that defines a terminal element
-function OodShell(element, url, profile) {
+function OodShell(element, url, profile, predictiveText) {
   this.element = element;
   this.url     = url;
   this.profile   = profile || "default";
   this.socket  = null;
   this.term    = null;
+  this.predictiveText = predictiveText;
+  this.textComposer = null;
 }
 
 OodShell.prototype.createTerminal = function () {
@@ -39,6 +41,7 @@ OodShell.prototype.runTerminal = function () {
 
     // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
+    that.installTextComposer();
   };
 
   // Patch cursor setting
@@ -52,6 +55,31 @@ OodShell.prototype.runTerminal = function () {
   window.onbeforeunload = function() {
     return 'Leaving this page will terminate your terminal session.';
   };
+};
+
+OodShell.prototype.installTextComposer = function () {
+  const form = this.element.querySelector('#terminal-composer');
+  const input = form.elements.namedItem('text');
+  this.textComposer = form;
+
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    if (form.hidden || this.socket.readyState !== WebSocket.OPEN || !input.value) return;
+
+    // Send the finished text using hterm's paste handling, including
+    // bracketed paste when the remote program has enabled it.
+    this.term.onPasteData_(input.value);
+    form.reset();
+  });
+  this.setPredictiveText(this.predictiveText);
+};
+
+OodShell.prototype.setPredictiveText = function (enabled) {
+  this.predictiveText = enabled;
+  if (this.textComposer) {
+    this.textComposer.hidden = !enabled || this.socket.readyState !== WebSocket.OPEN;
+    if (this.textComposer.hidden) this.textComposer.reset();
+  }
 };
 
 // This depends on hterm using a contenteditable x-screen with non-capture
@@ -175,6 +203,7 @@ OodShell.prototype.closeTerminal = function (ev) {
 
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
+  this.setPredictiveText(false);
 
   // Inform user they lost connection
   if ( this.term === null ) {
