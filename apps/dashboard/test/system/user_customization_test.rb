@@ -122,6 +122,48 @@ class UserCustomizationTest < ApplicationSystemTestCase
     end
   end
 
+  test 'custom favorite action buttons tile below path when narrow (regression #6168)' do
+    Dir.mktmpdir do |dir|
+      stub_system_favorites(dir)
+      settings_file = File.join(dir, '.user_settings.txt')
+      File.write(settings_file, {
+        'files_favorites' => [
+          { 'title' => 'Custom Favorite Shortcut', 'path' => Rails.root.join('config').to_s }
+        ]
+      }.to_yaml)
+
+      with_modified_env({ 'OOD_USER_SETTINGS_FILE' => settings_file }) do
+        Singleton.__init__(UserCustomization)
+        original_size = page.current_window.size
+
+        page.current_window.resize_to(768, 1024)
+        visit files_url(Rails.root.to_s)
+
+        group = find('#favorites a', text: 'Custom Favorite Shortcut').ancestor('div.input-group')
+        path_link = group.find('a.nav-link')
+        rename_btn = group.find('a.rename-favorite')
+        delete_btn = group.find('button.bg-danger')
+
+        assert path_link.rect.y < rename_btn.rect.y,
+               'expected favorite action buttons to tile below the path when narrow'
+        assert_in_delta rename_btn.rect.y, delete_btn.rect.y, 2,
+                        'expected edit and delete to wrap together on the same row'
+
+        page.current_window.resize_to(1400, 1024)
+        visit files_url(Rails.root.to_s)
+
+        group = find('#favorites a', text: 'Custom Favorite Shortcut').ancestor('div.input-group')
+        path_link = group.find('a.nav-link')
+        rename_btn = group.find('a.rename-favorite')
+
+        assert_in_delta path_link.rect.y, rename_btn.rect.y, 2,
+                        'expected favorite action buttons to stay beside the path when wide'
+
+        page.current_window.resize_to(*original_size)
+      end
+    end
+  end
+
   test 'reports errors and catches them before saving' do
     Dir.mktmpdir do |dir|
       stub_system_favorites(dir)
