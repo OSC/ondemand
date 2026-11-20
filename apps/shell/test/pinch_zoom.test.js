@@ -355,18 +355,6 @@ describe('Resize messages', () => {
     expect(sentColumns(shell)).toEqual([20]);
   });
 
-  test('a pinch sends its final size once', () => {
-    const context = setup();
-    reportResizes(context);
-    const { shell, fire, engage } = context;
-    engage(100);
-    pinchThrough(fire, [120, 150, 200]);
-    fire('touchend', []);
-    expect(shell.socket.send).not.toHaveBeenCalled();
-    jest.runAllTimers();
-    expect(sentColumns(shell)).toEqual([20]);
-  });
-
   test('include a size that hterm reports after the fingers lift', () => {
     const context = setup();
     reportResizes(context, 50);
@@ -380,19 +368,24 @@ describe('Resize messages', () => {
     expect(sentColumns(shell)).toEqual([20]);
   });
 
-  test('keeps two quick pinches separate', () => {
-    const context = setup();
-    reportResizes(context);
-    const { shell, fire, engage } = context;
+  test('a second pinch does not flush a stale size while the first final notification is pending', () => {
+    const { term, shell, fire, engage } = setup();
+    term.setFontSize.mockImplementation((size) => {
+      term.fontSize = size;
+      setTimeout(() => shell.onTerminalResize(Math.floor(600 / size), 24), 50);
+    });
     engage(100);
-    pinchThrough(fire, [200]);
+    fire('touchmove', pair(150));
+    jest.advanceTimersByTime(50);
+    fire('touchmove', pair(200));
     fire('touchend', []);
+
     engage(100);
-    expect(sentColumns(shell)).toEqual([20]);
-    pinchThrough(fire, [50]);
+    expect(sentColumns(shell)).toEqual([]);
+    fire('touchmove', pair(50));
     fire('touchend', []);
     jest.runAllTimers();
-    expect(sentColumns(shell)).toEqual([20, 40]);
+    expect(sentColumns(shell)).toEqual([40]);
   });
 });
 

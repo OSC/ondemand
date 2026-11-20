@@ -7,7 +7,7 @@ function OodShell(element, url, profile) {
   this.term    = null;
 
   this.pinchResize = null;
-  // hterm can report the last font-size change after the fingers lift.
+  // Coalesce gestures that overlap hterm's deferred resize notification.
   this.finishPinchResize = _.debounce(() => {
     const { size } = this.pinchResize;
     this.pinchResize = null;
@@ -50,7 +50,6 @@ OodShell.prototype.runTerminal = function () {
     // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
 
-    // Pinching with two fingers changes the font size.
     that.installPinchZoom(this);
   };
 
@@ -146,23 +145,9 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 };
 
-// Pinching with two fingers changes the font size, like ctrl-plus and
-// ctrl-minus do on a desktop.
-//
-// hterm's ScrollPort.onTouch_ scrolls on every touchmove, but returns early for
-// events that are already defaultPrevented. A move is claimed by preventing it
-// before hterm's listener on x-screen runs.
-//
-// Two fingers scroll as before until the distance between them changes by
-// PINCH_SLOP_PX. From then until every finger has lifted, every move is
-// claimed. hterm skips them all, so its cached finger positions are never read
-// while stale and no private hterm state is touched. pinch_zoom.test.js checks
-// this against hterm's own handler.
-//
-// A touch keeps sending its events to the element it landed on, and hterm
-// replaces its row elements when the font size changes. Once the touched row
-// is gone, the touch's events no longer reach x-screen or the document, so the
-// listeners for moves and for the end of a touch go on the touched elements.
+// Claim two-finger moves once they cross the pinch threshold. Keep claiming
+// until all fingers lift so hterm never scrolls with stale touch positions.
+// Listen on the original touch targets because hterm can replace rows on resize.
 OodShell.prototype.installPinchZoom = function (term) {
   const doc = term.getDocument();
   const PINCH_SLOP_PX = 20;
@@ -247,8 +232,8 @@ OodShell.prototype.installPinchZoom = function (term) {
       pinch.engaged = true;
       pinch.distance = distance;
       claimed = true;
-      this.finishPinchResize.flush();
-      this.pinchResize = { size: null };
+      this.finishPinchResize.cancel();
+      this.pinchResize ||= { size: null };
       ev.preventDefault();
       return;
     }
