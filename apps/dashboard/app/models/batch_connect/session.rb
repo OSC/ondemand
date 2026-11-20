@@ -392,6 +392,10 @@ module BatchConnect
       script_type == "vnc" || script_type == "vnc_container" || script_type == "wayvnc"
     end
 
+    def selkies?
+      script_type == "selkies"
+    end
+
     # Cancel this session's job
     # @return [Boolean] whether successfully canceled
     def cancel
