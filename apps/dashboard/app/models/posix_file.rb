@@ -70,7 +70,7 @@ class PosixFile
       owner:        PosixFile.username_from_cache(stat.uid),
       mode:         stat.mode,
       dev:          stat.dev,
-      downloadable: readable? && FilePermissions.listing_downloadable?(directory: directory?, size: directory? ? nil : size),
+      downloadable: (directory? || file?) && readable? && FilePermissions.listing_downloadable?(directory: directory?, size: directory? ? nil : size),
       editable:     can_edit?
     }
   end

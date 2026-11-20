@@ -171,6 +171,14 @@ class FilePermissionsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'PosixFile#to_h marks fifos as not downloadable' do
+    Dir.mktmpdir do |dir|
+      fifo = "#{dir}/test.fifo"
+      `mkfifo #{fifo}`
+      refute PosixFile.new(fifo).to_h[:downloadable]
+    end
+  end
+  
   test 'listing helpers share editor and download limits for remote entries' do
     editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
 
