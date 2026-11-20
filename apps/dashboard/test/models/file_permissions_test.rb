@@ -50,7 +50,6 @@ class FilePermissionsTest < ActiveSupport::TestCase
         file = File.join(dir, 'blocked', 'file.txt').tap { |path| FileUtils.touch(path) }
 
         refute FilePermissions.can_open_file?(file)
-        refute FilePermissions.permitted?(file)
       end
     end
   end

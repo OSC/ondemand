@@ -20,10 +20,6 @@ module FilePermissions
     FilePermissions.downloadable?(self)
   end
 
-  def permitted?
-    FilePermissions.permitted?(self)
-  end
-
   class << self
     # Listing helpers for entries where size/directory are already known (e.g. rclone ls).
     def listing_downloadable?(directory:, size: nil)
@@ -111,11 +107,6 @@ module FilePermissions
       end
     end
 
-    # Thin wrapper around AllowlistPolicy for a consistent entry point.
-    def permitted?(path)
-      AllowlistPolicy.default.permitted?(path_value(path))
-    end
-
       private
 
       # Effective editor size limit (smaller of editor and download caps).
@@ -141,6 +132,10 @@ module FilePermissions
         file.is_a?(PosixFile)
       end
 
+      def permitted?(path)
+        AllowlistPolicy.default.permitted?(path_value(path))
+      end
+      
       def executable?(file)
         !local?(file) || file.path.executable?
       end
