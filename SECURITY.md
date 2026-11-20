@@ -31,6 +31,14 @@ involving the following steps:
     if the reporter wishes. During investigation the team will ask if the reporter
     wishes the original report to be published in full 90 days after publishing.
 
+## Known non-issues
+
+- **NGINX CVEs**
+  We are aware of the [CVE-2026-120967](https://www.cve.org/CVERecord?id=CVE-2026-120967)
+  affecting `nginx 1.28.0`, which is bundled in Open OnDemand versions 4.2.2 to 4.2.6.
+  After investigation we have determined that we are unaffected because we do not
+  use `ssl_verify_client`, a necessary precondition of that vulnerability.
+  
 ## Access to Patched Binaries
 
 By default, all compiled binary releases will be made available under the early access
