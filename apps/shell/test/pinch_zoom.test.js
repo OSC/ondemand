@@ -5,7 +5,11 @@ const vm = require('vm');
 
 const jsDir = path.join(__dirname, '..', 'public', 'javascripts');
 const source = fs.readFileSync(path.join(jsDir, 'ood_shell.2.js'), 'utf8');
-const loadOodShell = (globals) => vm.runInNewContext(source + '\nOodShell;', globals);
+// The lodash the page loads before ood_shell.js. It is required here, not read
+// into the sandbox, so that Jest's fake timers also drive its debounce.
+const lodash = require(path.join(jsDir, 'lodash-4.17.21', 'lodash.min.js'));
+const loadOodShell = (globals) =>
+  vm.runInNewContext(source + '\nOodShell;', { _: lodash, ...globals });
 const finger = (identifier, clientX, clientY = 0) => ({ identifier, clientX, clientY });
 const pair = (distance) => [finger(1, 0), finger(2, distance)];
 const SLOP = 20;
@@ -277,7 +281,7 @@ describe('Pinch zoom', () => {
       shell.socket.send.mock.calls.map(([json]) => JSON.parse(json).resize.cols);
 
     test('the pinch carries on and ends cleanly', () => {
-      const { term, shell, rows, fire, land, engage } = setup();
+      const { term, rows, fire, land, engage } = setup();
       engage(100);
       fire('touchmove', pair(150));
       rows[0].isConnected = false;
@@ -286,14 +290,13 @@ describe('Pinch zoom', () => {
       fire('touchend', [finger(2, 200)]);
       expect(fire('touchmove', [finger(2, 200, 40)]).defaultPrevented).toBe(true);
       fire('touchend', []);
-      expect(shell.resizeHeld).toBe(false);
 
       rows[0].isConnected = true;
       land([finger(3, 0)]);
       expect(fire('touchmove', [finger(3, 0, 40)]).defaultPrevented).toBe(false);
     });
 
-    test('the terminal size is still sent once, when the fingers lift', () => {
+    test('the terminal size is still sent once, after the pinch', () => {
       const { term, shell, rows, fire, engage } = setup();
       term.setFontSize.mockImplementation((size) => {
         term.fontSize = size;
@@ -301,12 +304,13 @@ describe('Pinch zoom', () => {
       });
       engage(100);
       fire('touchmove', pair(150));
-      jest.runAllTimers();
+      jest.advanceTimersByTime(16);
       rows[0].isConnected = false;
       fire('touchmove', pair(200));
-      jest.runAllTimers();
-      expect(shell.socket.send).not.toHaveBeenCalled();
+      jest.advanceTimersByTime(16);
       fire('touchend', []);
+      expect(shell.socket.send).not.toHaveBeenCalled();
+      jest.runAllTimers();
       expect(sentColumns(shell)).toEqual([20]);
     });
   });
@@ -322,57 +326,70 @@ describe('Resize messages', () => {
   };
   const sentColumns = (shell) =>
     shell.socket.send.mock.calls.map(([json]) => JSON.parse(json).resize.cols);
-
-  test('are sent immediately outside a pinch', () => {
-    const { shell } = setup();
-    shell.onTerminalResize(80, 24);
-    expect(shell.socket.send).toHaveBeenCalledWith(
-      JSON.stringify({ resize: { cols: 80, rows: 24 } }));
+  // Move the fingers about as often as a touch screen reports them.
+  const pinchThrough = (fire, distances) => distances.forEach((distance) => {
+    fire('touchmove', pair(distance));
+    jest.advanceTimersByTime(16);
   });
 
-  test('are held during a pinch and the final size is sent once', () => {
+  test('wait for the size to settle and send only the last one', () => {
+    const { shell } = setup();
+    shell.onTerminalResize(80, 24);
+    shell.onTerminalResize(100, 30);
+    expect(shell.socket.send).not.toHaveBeenCalled();
+    jest.runAllTimers();
+    expect(shell.socket.send).toHaveBeenCalledTimes(1);
+    expect(shell.socket.send).toHaveBeenCalledWith(
+      JSON.stringify({ resize: { cols: 100, rows: 30 } }));
+  });
+
+  test('keep waiting while the size keeps changing', () => {
+    const { shell } = setup();
+    for (let columns = 80; columns < 100; columns++) {
+      shell.onTerminalResize(columns, 24);
+      jest.advanceTimersByTime(20);
+    }
+    expect(shell.socket.send).not.toHaveBeenCalled();
+    jest.runAllTimers();
+    expect(sentColumns(shell)).toEqual([99]);
+  });
+
+  test('a pinch sends its final size once', () => {
     const context = setup();
     reportResizes(context);
     const { shell, fire, engage } = context;
     engage(100);
-    [120, 150, 200].forEach((distance) => {
-      fire('touchmove', pair(distance));
-      jest.runAllTimers();
-    });
-    expect(shell.socket.send).not.toHaveBeenCalled();
+    pinchThrough(fire, [120, 150, 200]);
     fire('touchend', []);
+    expect(shell.socket.send).not.toHaveBeenCalled();
+    jest.runAllTimers();
     expect(sentColumns(shell)).toEqual([20]);
   });
 
-  // This hterm reports before the fingers lift, but a slower report must still
-  // reach the server. An earlier held size may be sent first.
-  test('include a size reported after the fingers lift', () => {
+  test('include a size that hterm reports after the fingers lift', () => {
     const context = setup();
     reportResizes(context, 50);
     const { shell, fire, engage } = context;
     engage(100);
-    fire('touchmove', pair(150));
-    jest.runAllTimers();
-    fire('touchmove', pair(200));
+    pinchThrough(fire, [150, 200]);
     fire('touchend', []);
     jest.runAllTimers();
-    expect(sentColumns(shell).at(-1)).toBe(20);
+    expect(sentColumns(shell)).toEqual([20]);
   });
 
-  test('a second pinch is held and sent on its own', () => {
+  test('a second pinch is sent on its own', () => {
     const context = setup();
     reportResizes(context);
     const { shell, fire, engage } = context;
     engage(100);
-    fire('touchmove', pair(200));
-    jest.runAllTimers();
+    pinchThrough(fire, [200]);
     fire('touchend', []);
+    jest.runAllTimers();
     expect(sentColumns(shell)).toEqual([20]);
     engage(100);
-    fire('touchmove', pair(50));
-    jest.runAllTimers();
-    expect(sentColumns(shell)).toEqual([20]);
+    pinchThrough(fire, [50]);
     fire('touchend', []);
+    jest.runAllTimers();
     expect(sentColumns(shell)).toEqual([20, 40]);
   });
 });

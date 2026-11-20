@@ -5,8 +5,13 @@ function OodShell(element, url, profile) {
   this.profile   = profile || "default";
   this.socket  = null;
   this.term    = null;
-  this.resizeHeld    = false;
-  this.pendingResize = null;
+
+  // hterm reports a new terminal size for every step of a pinch. Send only the
+  // last one, once the steps stop, so the remote program gets one resize
+  // (SIGWINCH) instead of one per step.
+  this.sendResize = _.debounce((size) => {
+    this.socket.send(JSON.stringify({ resize: size }));
+  }, 100);
 }
 
 OodShell.prototype.createTerminal = function () {
@@ -156,7 +161,6 @@ OodShell.prototype.installTouchKeyboard = function (term) {
 // is gone, the touch's events no longer reach x-screen or the document, so the
 // listeners for moves and for the end of a touch go on the touched elements.
 OodShell.prototype.installPinchZoom = function (term) {
-  const shell = this;
   const doc = term.getDocument();
   const PINCH_SLOP_PX = 20;
   const MIN_FONT_SIZE = 8;
@@ -203,10 +207,7 @@ OodShell.prototype.installPinchZoom = function (term) {
 
     if (ev.touches.length === 0) {
       unfollowAll();
-      if (claimed) {
-        claimed = false;
-        shell.releaseResize();
-      }
+      claimed = false;
     }
 
     pinch = null;
@@ -241,8 +242,6 @@ OodShell.prototype.installPinchZoom = function (term) {
       pinch.distance = distance;
       claimed = true;
       ev.preventDefault();
-      // Tell the server the new terminal size once, when the fingers lift.
-      shell.holdResize();
       return;
     }
 
@@ -344,32 +343,5 @@ OodShell.prototype.onTerminalResize = function (columns, rows) {
   // React to size changes here.
   // Secure Shell pokes at NaCl, which eventually results in
   // some ioctls on the host.
-  this.pendingResize = {
-    cols: columns,
-    rows: rows
-  };
-  if (!this.resizeHeld) {
-    this.sendPendingResize();
-  }
-};
-
-// A pinch can change the font size, and with it the column count, many times.
-// While one is in progress, keep only the latest terminal size so the remote
-// program gets one resize (SIGWINCH) per pinch instead of one per step.
-OodShell.prototype.holdResize = function () {
-  this.resizeHeld = true;
-};
-
-OodShell.prototype.releaseResize = function () {
-  this.resizeHeld = false;
-  this.sendPendingResize();
-};
-
-OodShell.prototype.sendPendingResize = function () {
-  const size = this.pendingResize;
-  if (size === null) {
-    return;
-  }
-  this.pendingResize = null;
-  this.socket.send(JSON.stringify({ resize: size }));
+  this.sendResize({ cols: columns, rows: rows });
 };
