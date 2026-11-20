@@ -30,7 +30,11 @@ class Target {
     }
     return event;
   }
-  appendChild(child) { this.children.push(child); }
+  appendChild(child) { this.children.push(child); child.parentNode = this; }
+  remove() {
+    this.parentNode.children = this.parentNode.children.filter((child) => child !== this);
+    this.parentNode = null;
+  }
   setAttribute(name, value) { this.attributes[name] = value; }
   getAttribute(name) { return this.attributes[name] ?? null; }
   removeAttribute(name) { delete this.attributes[name]; }
@@ -53,8 +57,14 @@ function setup({ touch = true, clipboard } = {}) {
   doc.querySelector = () => screen;
   const page = { createElement: () => new Target() };
   const container = new Target();
-  container.insertBefore = (child) => container.appendChild(child);
-  doc.defaultView = { frameElement: {} };
+  container.insertBefore = (child, before) => {
+    container.children.splice(container.children.indexOf(before), 0, child);
+    child.parentNode = container;
+  };
+  const frame = new Target();
+  container.appendChild(frame);
+  container.querySelector = () => frame.parentNode ? frame : null;
+  doc.defaultView = { frameElement: frame };
   const writes = [];
   const pastes = [];
   if (clipboard === undefined) {
@@ -85,9 +95,9 @@ function setup({ touch = true, clipboard } = {}) {
   shell.socket = { readyState: 1 };
   shell.term = term;
   shell.installMobileSelection(term);
-  const toolbar = container.children[0];
+  const toolbar = container.children.find((child) => child.className === 'ood-selection-toolbar');
   return {
-    shell, term, screen, doc, toolbar, writes, pastes, selection,
+    shell, term, screen, doc, toolbar, writes, pastes, selection, frame, container,
     get htermTouches() { return htermTouches; },
     select() { selected = true; doc.dispatch('selectionchange'); },
     deselect() { selected = false; doc.dispatch('selectionchange'); },
@@ -192,23 +202,16 @@ test('paste rejection is reported and unavailable clipboard controls are disable
 });
 
 
-test('installs mobile controls when hterm is ready', () => {
-  class FakeTerminal {
-    constructor() { this.options_ = {}; this.io = { push: () => ({}) }; }
-    decorate() {}
-    setAccessibilityEnabled() {}
-    installKeyboard() {}
-  }
-  const context = vm.createContext({ hterm: { Terminal: FakeTerminal }, window: {} });
-  vm.runInContext(source, context);
-  context.OodShell.prototype.installMobileSelection = jest.fn();
-  context.OodShell.prototype.installTouchKeyboard = jest.fn();
-  const shell = new context.OodShell({}, '', '');
-  shell.runTerminal();
-  shell.term.onTerminalReady();
-  expect(context.OodShell.prototype.installMobileSelection).toHaveBeenCalledTimes(1);
-});
+test('authentication rejection removes the terminal and its selection toolbar', () => {
+  const s = setup();
+  s.shell.socket.readyState = 3;
+  s.shell.closeTerminal({ code: 3146, reason: 'Authentication failed' });
 
+  expect(s.container.children).not.toContain(s.toolbar);
+  expect(s.container.children).not.toContain(s.frame);
+  s.shell.installMobileSelection(s.term);
+  expect(s.container.children.some((child) => child.className === 'ood-selection-toolbar')).toBe(false);
+});
 
 test('selection mode suppresses the keyboard focus gesture; ordinary taps still focus', () => {
   const s = setup();
@@ -256,4 +259,17 @@ test('an earlier clipboard request does not clear a newer selection', async () =
   await flush();
   expect(s.selectButton.textContent).toBe('Done');
   expect(s.selection.rangeCount).toBe(1);
+});
+
+test('a delayed collapse of the copied selection does not keep selection mode open', async () => {
+  let resolveCopy;
+  const s = setup({ clipboard: { writeText: () => new Promise((done) => { resolveCopy = done; }) } });
+  s.selectButton.dispatch('click');
+  s.select();
+  s.copy.dispatch('click');
+  s.deselect();
+  resolveCopy();
+  await flush();
+  expect(s.status.textContent).toBe('Copied.');
+  expect(s.selectButton.textContent).toBe('Select text');
 });

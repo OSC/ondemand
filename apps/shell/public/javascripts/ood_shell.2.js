@@ -227,7 +227,10 @@ OodShell.prototype.installMobileSelection = function (term) {
   toolbar.appendChild(status);
   // Keep the controls in the terminal layout rather than covering the shell
   // menu or terminal text. hterm appends this iframe directly to the element.
-  this.element.insertBefore(toolbar, termDocument.defaultView.frameElement);
+  const frame = termDocument.defaultView?.frameElement;
+  if (!frame || frame.parentNode !== this.element) return;
+  this.element.insertBefore(toolbar, frame);
+  this.selectionToolbar = toolbar;
 
   const clipboard = navigator.clipboard;
   const canCopy = clipboard && typeof clipboard.writeText === 'function';
@@ -250,8 +253,8 @@ OodShell.prototype.installMobileSelection = function (term) {
   let selectionVersion = 0;
 
   const updateSelection = () => {
-    selectionVersion++;
     const active = selecting && this.hasActiveSelection(term);
+    if (active) selectionVersion++;
     // Preserve the snapshot if tapping Copy collapses the iframe selection.
     if (active || !buttonTouch) {
       selectedText = active ? term.getSelectionText() : null;
@@ -347,7 +350,7 @@ OodShell.prototype.installMobileSelection = function (term) {
         endSelection();
       }
       status.textContent = 'Copied.';
-    } catch (error) {
+    } catch {
       status.textContent = 'Copy failed. Select text again and use the browser Copy menu.';
       updateSelection();
     }
@@ -364,7 +367,7 @@ OodShell.prototype.installMobileSelection = function (term) {
       }
       term.onPasteData_(text);
       status.textContent = 'Pasted.';
-    } catch (error) {
+    } catch {
       status.textContent = 'Paste failed. Check clipboard permission.';
     }
   });
@@ -391,7 +394,10 @@ OodShell.prototype.closeTerminal = function (ev) {
     errorDiv.innerHTML = 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
     this.element.appendChild(errorDiv);
   } else if (ev.code === 3146) {
-    document.querySelector('iframe').remove();
+    this.selectionToolbar?.remove();
+    this.selectionToolbar = null;
+    this.selectionPasteButton = null;
+    this.element.querySelector('iframe')?.remove();
     errorDiv = document.createElement('div');
     errorDiv.className = 'error';
     errorDiv.innerHTML = ev.reason;
