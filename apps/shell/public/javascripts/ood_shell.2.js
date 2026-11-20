@@ -26,6 +26,10 @@ OodShell.prototype.runTerminal = function () {
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
+    if (that.socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
+
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
@@ -143,13 +147,8 @@ OodShell.prototype.installKeys = function () {
   const that = this;
   const keys = document.getElementById('terminal_keys');
   const toggle = document.getElementById('terminal_keys_toggle');
+  const terminalDocument = this.term.getDocument();
   const saved = window.localStorage.getItem('ood_shell_keys');
-  let repeatTimer = null;
-  let repeated = false;
-
-  // decorate() appended the terminal; keep the keys below it, just above
-  // the soft keyboard.
-  this.element.appendChild(keys);
 
   const show = function (visible) {
     keys.hidden = !visible;
@@ -162,42 +161,30 @@ OodShell.prototype.installKeys = function () {
     show(keys.hidden);
     window.localStorage.setItem('ood_shell_keys', !keys.hidden);
   });
+  toggle.disabled = false;
 
-  // Keep focus in the terminal so that the soft keyboard stays open, and
-  // don't open a menu on a long press.
+  // Keep focus in the terminal during pointer activation so the soft keyboard stays open.
   keys.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
-  keys.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
 
-  // click covers taps, mice, keyboards and screen readers, and doesn't fire
-  // when a finger slides off a key or scrolls the row of keys.
   keys.addEventListener('click', function (ev) {
     const button = ev.target.closest('button');
-    // Releasing a key that repeated while held sends nothing more.
-    if (button === null || (repeated && ev.detail > 0)) {
+    if (button === null) {
       return;
     }
-    if (!that.term.getDocument().hasFocus()) {
+    if (ev.detail > 0 && !terminalDocument.hasFocus()) {
       that.term.focus();
     }
     that.pressKey(button);
   });
 
-  // Holding an arrow repeats it.
-  keys.addEventListener('pointerdown', function (ev) {
-    const button = ev.target.closest('button[data-repeat]');
-    const press = function () {
-      repeated = true;
-      that.pressKey(button);
-      repeatTimer = setTimeout(press, 50);
-    };
-    clearTimeout(repeatTimer);
-    repeated = false;
-    if (button !== null) {
-      repeatTimer = setTimeout(press, 500);
+  // Handle Backspace while we can still distinguish it from Ctrl+H.
+  terminalDocument.querySelector('x-screen')?.addEventListener('keydown', function (ev) {
+    if (that.modifiers.ctrl && ev.key === 'Backspace' && !ev.isComposing &&
+        !ev.defaultPrevented && !ev.ctrlKey && !ev.altKey && !ev.metaKey) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      that.term.onVTKeystroke(that.term.keyboard.backspaceSendsBackspace ? '\x7f' : '\b');
     }
-  });
-  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (type) {
-    keys.addEventListener(type, function () { clearTimeout(repeatTimer); });
   });
 };
 
@@ -205,6 +192,7 @@ OodShell.prototype.installKeys = function () {
 OodShell.keySequences = {
   Escape:     '\x1b',
   Tab:        '\t',
+  BackTab:    '\x1b[Z',
   ArrowUp:    '\x1b[A',
   ArrowDown:  '\x1b[B',
   ArrowRight: '\x1b[C',
@@ -244,10 +232,11 @@ OodShell.prototype.setModifier = function (name, armed) {
 // What a keystroke sends with Ctrl and/or Alt held, as hterm and xterm encode
 // a physical keyboard.
 OodShell.applyModifiers = function (str, ctrl, alt) {
-  // Cursor and editing keys take a modifier parameter: ESC [ A -> ESC [ 1 ; 5 A
-  const key = /^\x1b[\[O](\d*)([A-Z~])$/.exec(str);
-  if (key) {
-    return '\x1b[' + (key[1] || '1') + ';' + (1 + (alt ? 2 : 0) + (ctrl ? 4 : 0)) + key[2];
+  // Merge modifiers already encoded by hterm on cursor and paging keys.
+  const key = /^\x1b[\[O](\d*)(?:;([1-9]|1[0-6]))?([A-Z~])$/.exec(str);
+  if (key && (!key[2] || /^(?:1[A-DFH]|[56]~)$/.test(key[1] + key[3]))) {
+    const flags = (Number(key[2] || 1) - 1) | (alt ? 2 : 0) | (ctrl ? 4 : 0);
+    return '\x1b[' + (key[1] || '1') + ';' + (flags + 1) + key[3];
   }
   // Leave text from autocomplete or an input method alone.
   if (str.length !== 1) {
@@ -319,6 +308,11 @@ OodShell.prototype.closeTerminal = function (ev) {
 
   // Nothing left for the on-screen keys to type into
   document.getElementById('terminal_keys').hidden = true;
+  const toggle = document.getElementById('terminal_keys_toggle');
+  toggle.disabled = true;
+  toggle.setAttribute('aria-expanded', 'false');
+  this.setModifier('ctrl', false);
+  this.setModifier('alt', false);
 
   // Inform user they lost connection
   if ( this.term === null ) {

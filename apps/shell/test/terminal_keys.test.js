@@ -55,11 +55,14 @@ describe('applyModifiers()', () => {
     expect(applyModifiers('\x1bOD', ...ALT)).toBe('\x1b[1;3D');
     expect(applyModifiers('\x1b[H', ...BOTH)).toBe('\x1b[1;7H');
     expect(applyModifiers('\x1b[5~', ...CTRL)).toBe('\x1b[5;5~');
+    expect(applyModifiers('\x1b[1;2A', ...CTRL)).toBe('\x1b[1;6A');
+    expect(applyModifiers('\x1b[1;5C', ...CTRL)).toBe('\x1b[1;5C');
+    expect(applyModifiers('\x1b[6;5~', ...ALT)).toBe('\x1b[6;7~');
   });
 
   test('other input passes through unchanged', () => {
     expect(applyModifiers('hello', ...CTRL)).toBe('hello');
     expect(applyModifiers('\x1bx', ...CTRL)).toBe('\x1bx');
-    expect(applyModifiers('\x1b[1;2A', ...CTRL)).toBe('\x1b[1;2A');
+    expect(applyModifiers('\x1b[15;2~', ...CTRL)).toBe('\x1b[15;2~');
   });
 });

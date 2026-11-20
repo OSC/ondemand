@@ -98,9 +98,12 @@ iframe {
 
 /* On-screen keys: one row that scrolls sideways when it doesn't fit */
 #terminal_keys {
+  --key-gap: 4px;
   display: flex;
   flex: none;
-  gap: 4px;
+  /* Keep the row before the terminal in tab order and below it visually. */
+  order: 1;
+  gap: var(--key-gap);
   padding: 4px;
   overflow-x: auto;
   background: #222;
@@ -120,6 +123,12 @@ iframe {
   background: #3c3c3c;
   color: #fff;
   font: 0.875rem monospace;
+}
+
+#terminal_keys button:nth-child(-n + 8) {
+  flex-basis: clamp(2rem, calc((100% - 7 * var(--key-gap)) / 8), 2.75rem);
+  min-width: 0;
+  padding-inline: 0;
 }
 
 #terminal_keys button:active {
