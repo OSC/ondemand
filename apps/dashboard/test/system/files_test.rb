@@ -1095,6 +1095,52 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  def open_editor(filename)
+    row = find('a', exact_text: filename).ancestor('tr')
+    row.find('button.dropdown-toggle').click
+    row.find('.edit-file').click
+  end
+
+  test 'edit file sets syntax mode from the file extension' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, 'foo.sh'), "if true; then\n  echo hello\nfi\n")
+
+      visit files_url(dir)
+      open_editor('foo.sh')
+
+      # The modelist load is asynchronous, so wait until the extension mode is applied.
+      assert_selector('#mode option[value="sh"]:checked')
+      assert_selector('#editor .ace_keyword')
+      assert_selector('#save-button:disabled')
+    end
+  end
+
+  test 'edit file keeps the preferred mode for an unknown extension' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, 'job.out'), "plain output\n")
+      File.write(File.join(dir, 'foo.sh'), "if true; then\n  echo hello\nfi\n")
+
+      visit files_url(dir)
+      open_editor('job.out')
+      select 'Python', from: 'mode'
+      assert_selector('#mode option[value="python"]:checked')
+
+      visit files_url(dir)
+      open_editor('foo.sh')
+      assert_selector('#mode option[value="sh"]:checked')
+
+      visit files_url(dir)
+      open_editor('job.out')
+      assert_selector('#mode option[value="python"]:checked')
+    end
+  end
+
   test 'file editor reports errors' do
     OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
