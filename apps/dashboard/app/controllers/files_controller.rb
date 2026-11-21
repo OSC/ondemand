@@ -233,7 +233,7 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        redirect_to(files_path(next_valid), alert: exception.message.to_s)
+        redirect_to(next_valid, alert: exception.message.to_s)
       end
       format.json do
         @files = []
@@ -300,7 +300,8 @@ class FilesController < ApplicationController
   def next_valid
     next_valid = @path.parent.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
     present_path = next_valid.nil? ? Dir.home : next_valid
-    AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home
+    return root_path if present_path.to_s == @path.to_s
+    files_path(AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home)
   end
 
   def uppy_upload_path
@@ -340,9 +341,7 @@ class FilesController < ApplicationController
 
     response.set_header 'Content-Length', @path.stat.size
 
-    # svgs aren't safe to view until we update our CSP
-    if download? || type.to_s == 'image/svg+xml'
-      type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
+    if download?
       send_file @path, type: type
     else
       send_file @path, disposition: 'inline', type: Files.mime_type_for_preview(type)
@@ -364,15 +363,11 @@ class FilesController < ApplicationController
       logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
     end
 
-    # svgs aren't safe to view until we update our CSP
-    download = download? || type.to_s == 'image/svg+xml'
-    type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
-
     response.set_header('X-Accel-Buffering', 'no')
     response.sending_file = true
     response.set_header('Last-Modified', Time.now.httpdate)
 
-    if download
+    if download?
       response.set_header('Content-Type', type) if type.present?
       response.set_header('Content-Disposition', 'attachment')
     else

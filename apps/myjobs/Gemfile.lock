@@ -74,7 +74,7 @@ GEM
       minitest (>= 5.1, < 6)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
-    addressable (2.9.0)
+    addressable (2.9.1)
       public_suffix (>= 2.0.2, < 8.0)
     autoprefixer-rails (8.6.5)
       execjs
@@ -162,9 +162,9 @@ GEM
       logger
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.25.2)
+    loofah (2.25.3)
       crass (~> 1.0.2)
-      nokogiri (>= 1.12.0)
+      nokogiri (>= 1.19.5)
     mail (2.9.1)
       logger
       mini_mime (>= 0.1.1)
@@ -192,19 +192,22 @@ GEM
     net-smtp (0.5.2)
       net-protocol
     nio4r (2.7.5)
-    nokogiri (1.19.4)
+    nokogiri (1.19.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    ood_appkit (2.2.1)
+    ood_appkit (2.2.2)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_core (~> 0.1)
+      ostruct
       rails (>= 6.0.0)
       redcarpet (~> 3.2)
-    ood_core (0.31.1)
+    ood_core (0.31.2)
+      base64
       ffi (~> 1.16.3)
       fog-openstack (~> 1.1.5)
       ood_support (~> 0.0.2)
+      ostruct
       rexml (~> 3.2)
     ood_support (0.0.5)
     osc-machete (2.0.0)
@@ -213,6 +216,7 @@ GEM
     osc_machete_rails (2.1.2)
       osc-machete (~> 2.0)
       rails (>= 5.0.0)
+    ostruct (0.6.3)
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
     pp (0.6.4)
@@ -221,7 +225,7 @@ GEM
     prism (2.0.0)
     public_suffix (5.1.1)
     racc (1.8.1)
-    rack (2.2.24)
+    rack (2.2.25)
     rack-session (1.0.2)
       rack (< 3)
     rack-test (2.3.0)
