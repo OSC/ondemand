@@ -229,6 +229,9 @@ tunable_policy(`ondemand_use_slurm',`
   allow ood_pun_t var_run_t:sock_file { getattr write };
   # Allow configless Slurm in /var/run
   allow ood_pun_t var_run_t:file { read getattr open };
+  # Allow configless Slurm with slurmd, which caches the configuration
+  # in /var/spool/slurmd/conf-cache and links /run/slurm/conf to it
+  files_read_generic_spool(ood_pun_t)
   # SLURM commands like squeue
   allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
   allow ood_pun_t unconfined_service_t:unix_stream_socket { connectto };

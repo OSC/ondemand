@@ -3352,9 +3352,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         fill_in('bc_vnc_resolution_y_field', with: '600')
 
         check('batch_connect_session_save_template')
-        fill_in('modal_input_template_new_name', with: 'test template')
-        sleep 5 # modal needs to sleep?
-        click_on('Save')
+        fill_in('batch_connect_session_template_name', with: 'test template')
 
         sleep 1
         find('#batch_connect_session_context_launch').click
@@ -3382,9 +3380,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         fill_in('bc_vnc_resolution_y_field', with: '600')
 
         check('batch_connect_session_save_template')
-        fill_in('modal_input_template_new_name', with: 'test template')
-        sleep 2 # modal needs to sleep?
-        click_on('Save')
+        fill_in('batch_connect_session_template_name', with: 'test template')
 
         click_on('Save settings and close', wait: 30)
         sleep 2
