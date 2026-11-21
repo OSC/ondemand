@@ -136,24 +136,29 @@ class UserCustomizationTest < ApplicationSystemTestCase
         Singleton.__init__(UserCustomization)
         original_size = page.current_window.size
 
-        page.current_window.resize_to(768, 1024)
+        page.current_window.resize_to(992, 1024)
         visit files_url(Rails.root.to_s)
 
-        group = find('#favorites a', text: 'Custom Favorite Shortcut').ancestor('div.input-group')
-        path_link = group.find('a.nav-link')
-        rename_btn = group.find('a.rename-favorite')
-        delete_btn = group.find('button.bg-danger')
+        group = find('#favorites a', text: 'Custom Favorite Shortcut').ancestor('div.favorite-item')
+        path_link = group.find('a.favorite-path')
+        actions = group.find('.favorite-actions')
+        rename_btn = actions.find('a.rename-favorite')
+        delete_btn = actions.find('button.bg-danger')
 
         assert path_link.rect.y < rename_btn.rect.y,
                'expected favorite action buttons to tile below the path when narrow'
         assert_in_delta rename_btn.rect.y, delete_btn.rect.y, 2,
                         'expected edit and delete to wrap together on the same row'
+        assert_in_delta path_link.rect.width, actions.rect.width, 2,
+                        'expected action buttons to fill the favorite path width'
+        assert_in_delta rename_btn.rect.width, delete_btn.rect.width, 2,
+                        'expected edit and delete buttons to be equal width'
 
         page.current_window.resize_to(1400, 1024)
         visit files_url(Rails.root.to_s)
 
-        group = find('#favorites a', text: 'Custom Favorite Shortcut').ancestor('div.input-group')
-        path_link = group.find('a.nav-link')
+        group = find('#favorites a', text: 'Custom Favorite Shortcut').ancestor('div.favorite-item')
+        path_link = group.find('a.favorite-path')
         rename_btn = group.find('a.rename-favorite')
 
         assert_in_delta path_link.rect.y, rename_btn.rect.y, 2,
