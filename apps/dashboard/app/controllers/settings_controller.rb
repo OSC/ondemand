@@ -7,7 +7,7 @@ class SettingsController < ApplicationController
   ALLOWED_SETTINGS = [:profile, :safe_viewing, { announcements: {} }].freeze
 
   def update
-    new_settings = settings_param.to_h
+    new_settings = read_settings(settings_param)
     update_user_settings(new_settings) unless new_settings.empty?
 
     logger.info "settings: updated user settings to: #{new_settings}"
