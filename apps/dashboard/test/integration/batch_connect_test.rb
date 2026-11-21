@@ -182,4 +182,32 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     get new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_response :redirect
   end
+
+  test 'description does not include dangerous tags while preserving safe tags' do
+    Dir.mktmpdir do |dir|
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      stub_git(app_dir)
+
+      form = <<~HEREDOC
+        ---
+        cluster: owens
+        description: |
+          # A header
+          <script>window.alert('hello');</script>
+          <a href="https://github.com/OSC/ondemand">an html anchor</a>
+          [a markdown anchor](https://github.com/OSC/ondemand)
+        form: []
+      HEREDOC
+      Pathname.new(app_dir).join('form.yml').write(form)
+
+      get new_batch_connect_session_context_url('sys/app')
+      assert_response :success
+
+      scripts = css_select('div.ood-appkit.markdown script').map(&:text).join
+      refute_includes(scripts, "window.alert('hello')")
+      assert_select 'div.ood-appkit.markdown h1', text: 'A header'
+      assert_select 'div.ood-appkit.markdown a[href="https://github.com/OSC/ondemand"]', 2
+    end
+  end
 end
