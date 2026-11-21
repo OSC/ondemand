@@ -1101,19 +1101,32 @@ class FilesTest < ApplicationSystemTestCase
     row.find('.edit-file').click
   end
 
+  def editor_mode_id
+    page.evaluate_script(<<~JS)
+      const editorElement = document.querySelector('#editor');
+      const editor = editorElement && editorElement.env && editorElement.env.editor;
+      return editor ? editor.session.getMode().$id : null;
+    JS
+  end
+
+  def assert_editor_mode(mode_name)
+    Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+      editor_mode_id == "ace/mode/#{mode_name}"
+    end
+    assert_selector("#mode option[value='#{mode_name}']:checked")
+  end
+
   test 'edit file sets syntax mode from the file extension' do
     OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
 
     Dir.mktmpdir do |dir|
-      File.write(File.join(dir, 'foo.sh'), "if true; then\n  echo hello\nfi\n")
+      File.write(File.join(dir, 'foo.sh'), "foobar\n")
 
       visit files_url(dir)
       open_editor('foo.sh')
 
-      # The modelist load is asynchronous, so wait until the extension mode is applied.
-      assert_selector('#mode option[value="sh"]:checked')
-      assert_selector('#editor .ace_keyword')
+      assert_editor_mode('sh')
       assert_selector('#save-button:disabled')
     end
   end
@@ -1123,21 +1136,21 @@ class FilesTest < ApplicationSystemTestCase
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
 
     Dir.mktmpdir do |dir|
-      File.write(File.join(dir, 'job.out'), "plain output\n")
-      File.write(File.join(dir, 'foo.sh'), "if true; then\n  echo hello\nfi\n")
+      File.write(File.join(dir, 'job.out'), "foobar\n")
+      File.write(File.join(dir, 'foo.sh'), "foobar\n")
 
       visit files_url(dir)
       open_editor('job.out')
       select 'Python', from: 'mode'
-      assert_selector('#mode option[value="python"]:checked')
+      assert_editor_mode('python')
 
       visit files_url(dir)
       open_editor('foo.sh')
-      assert_selector('#mode option[value="sh"]:checked')
+      assert_editor_mode('sh')
 
       visit files_url(dir)
       open_editor('job.out')
-      assert_selector('#mode option[value="python"]:checked')
+      assert_editor_mode('python')
     end
   end
 
