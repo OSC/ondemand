@@ -1101,11 +1101,14 @@ class FilesTest < ApplicationSystemTestCase
     row.find('.edit-file').click
   end
 
+  # evaluate_script prefixes the script with `return`, so this has to be one expression.
   def editor_mode_id
     page.evaluate_script(<<~JS)
-      const editorElement = document.querySelector('#editor');
-      const editor = editorElement && editorElement.env && editorElement.env.editor;
-      return editor ? editor.session.getMode().$id : null;
+      (function() {
+        var editorElement = document.querySelector('#editor');
+        var editor = editorElement && editorElement.env && editorElement.env.editor;
+        return editor ? editor.session.getMode().$id : null;
+      })()
     JS
   end
 
