@@ -19,7 +19,6 @@ class SupportTicketController < ApplicationController
     @support_ticket = support_service.default_support_ticket(params)
 
     render get_ui_template
-
   rescue StandardError => e
     logger.error "Could not render support ticket page. Error=#{e}"
     redirect_to root_url, :flash => { :alert => t('dashboard.support_ticket.generic_error', error: e) }
@@ -30,7 +29,7 @@ class SupportTicketController < ApplicationController
     support_service = create_service_class
     @support_ticket = support_service.validate_support_ticket(read_support_ticket_from_request)
 
-    if !@support_ticket.errors.empty?
+    unless @support_ticket.errors.empty?
       flash.now[:alert] = t('dashboard.support_ticket.validation_error')
       render get_ui_template
       return
