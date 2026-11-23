@@ -31,13 +31,20 @@ involving the following steps:
     if the reporter wishes. During investigation the team will ask if the reporter
     wishes the original report to be published in full 90 days after publishing.
 
-## Known non-issues
+## Dependencies
 
-- **NGINX CVEs**
-  We are aware of the [CVE-2026-120967](https://www.cve.org/CVERecord?id=CVE-2026-120967)
-  affecting `nginx 1.28.0`, which is bundled in Open OnDemand versions 4.2.2 to 4.2.6.
-  After investigation we have determined that we are unaffected because we do not
-  use `ssl_verify_client`, a necessary precondition of that vulnerability.
+The development team makes it a priority to keep the latest possible dependencies on
+all currently supported releases. This includes both weekly dependency automations on
+`master` to find upgradeable packages, as well as using Dependabot to identify and
+upgrade dependencies that have reported vulnerabilities. For patch releases only
+necessary upgrades from Dependabot will be considered, and Dependabot suggestions
+may be ignored if they impact current support and behavior.
+
+For a complete Software bill of materials showing all installed packages, see 
+[OSC/open-ondemand-sbom](https://github.com/OSC/open-ondemand-sbom), and for
+information on specific CVEs in dependent packages, see the 
+[Announcements section](https://discourse.openondemand.org/c/announcements/46)
+in Discourse.
   
 ## Access to Patched Binaries
 
