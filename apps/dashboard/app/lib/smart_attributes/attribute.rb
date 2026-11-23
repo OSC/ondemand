@@ -99,6 +99,11 @@ module SmartAttributes
     def hide_by_default?
       !!opts[:hide_by_default]
     end
+
+    def disable_when_hidden?
+      !!opts[:disable_when_hidden]
+    end
+
     # Whether this attribute is required
     # @return [Boolean] is required
     def required
