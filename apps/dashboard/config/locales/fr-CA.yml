@@ -66,6 +66,7 @@ fr-CA:
     batch_connect_form_session_data_html: |
       * Les données de session %{title} pour cette session sont accessibles
         sous %{data_link_tag}.
+    batch_connect_form_template_name_help: Entrez un nouveau nom ou choisissez-en un existant pour le remplacer.
     batch_connect_form_template_name_label: nom du paramètre
     batch_connect_form_type_new_name: Nom des paramètres de l’application
     batch_connect_form_type_new_name_error: Veuillez saisir un nom valide pour continuer
@@ -94,6 +95,10 @@ fr-CA:
       la variable d'environnement OOD_JOB_NAME_ILLEGAL_CHARS.
     batch_connect_sessions_errors_staging: 'Échec du staging du modèle avec l’erreur suivante :'
     batch_connect_sessions_errors_submission: 'Échec de la soumission de la session avec l’erreur suivante :'
+    batch_connect_sessions_novnc_compression: Compression
+    batch_connect_sessions_novnc_compression_help: 1 (faible) à 9 (élevé)
+    batch_connect_sessions_novnc_image_quality: Qualité de l'image
+    batch_connect_sessions_novnc_image_quality_help: 0 (faible) à 9 (élevé)
     batch_connect_sessions_novnc_launch: Lancer %{app_title}
     batch_connect_sessions_novnc_view_only: Vue seule (Lien partageable)
     batch_connect_sessions_path_selector_forbidden_error: Vous n'avez pas la permission de sélectionner ce répertoire ou fichier.
@@ -155,11 +160,14 @@ fr-CA:
       invalid: 'Code de page invalide : %{page}. Cette page n’a pas été configurée'
     date: Date
     delete: Supprimer
+    delete_favorite_title: Supprimer le favori personnalisé %{favorite}
     detailed_metrics: Mesures détaillées
     details: Détails
     development_apps_caption: Application bac à sable
     directory: Répertoire
     edit: Modifier
+    edit_favorite_title: Renommer le favori personnalisé %{favorite}
+    favorites_not_updated: "%{error}. Les favoris personnalisés n'ont pas été mis à jour."
     file: Fichier
     file_quotas: Quotas de fichiers
     files: Fichiers

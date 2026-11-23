@@ -63,6 +63,7 @@ fa-IR:
     batch_connect_form_save_submit: ذخیره تنظیمات و بستن
     batch_connect_form_select_template: انتخاب تنظیمات ذخیره‌شده
     batch_connect_form_session_data_html: "* داده‌های نشست %{title} از طریق %{data_link_tag} در دسترس است.\n"
+    batch_connect_form_template_name_help: یک نام جدید تایپ کنید، یا یک نام موجود را برای جایگزینی آن انتخاب کنید.
     batch_connect_form_template_name_label: نام تنظیم
     batch_connect_form_type_new_name: نام تنظیمات برنامه
     batch_connect_form_type_new_name_error: برای ادامه، یک نام معتبر وارد کنید
@@ -90,6 +91,10 @@ fa-IR:
       '
     batch_connect_sessions_errors_staging: 'آماده‌سازی الگو با خطای زیر ناموفق بود:'
     batch_connect_sessions_errors_submission: 'ارسال نشست با خطای زیر ناموفق بود:'
+    batch_connect_sessions_novnc_compression: فشرده سازی
+    batch_connect_sessions_novnc_compression_help: ۱ (کم) تا ۹ (زیاد)
+    batch_connect_sessions_novnc_image_quality: کیفیت تصویر
+    batch_connect_sessions_novnc_image_quality_help: ۰ (کم) تا ۹ (زیاد)
     batch_connect_sessions_novnc_launch: راه‌اندازی %{app_title}
     batch_connect_sessions_novnc_view_only: فقط مشاهده (پیوند قابل اشتراک)
     batch_connect_sessions_path_selector_forbidden_error: اجازه انتخاب آن پوشه یا فایل را ندارید.
@@ -151,11 +156,14 @@ fa-IR:
       invalid: 'کد صفحه نامعتبر است: %{page}. این صفحه پیکربندی نشده است'
     date: تاریخ
     delete: حذف
+    delete_favorite_title: حذف موارد دلخواه سفارشی %{favorite}
     detailed_metrics: معیارهای دقیق
     details: جزئیات
     development_apps_caption: برنامه آزمایشی
     directory: پوشه
     edit: ویرایش
+    edit_favorite_title: تغییر نام مورد علاقه سفارشی %{favorite}
+    favorites_not_updated: "%{error}. موارد دلخواه سفارشی به‌روزرسانی نشده‌اند."
     file: فایل
     file_quotas: سهمیه فایل‌ها
     files: فایل‌ها

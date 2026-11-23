@@ -66,6 +66,7 @@ en-CA:
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
+    batch_connect_form_template_name_help: Type a new name, or pick an existing one to overwrite it.
     batch_connect_form_template_name_label: setting name
     batch_connect_form_type_new_name: App settings name
     batch_connect_form_type_new_name_error: Please type a valid name to continue
@@ -94,6 +95,10 @@ en-CA:
       environment variable OOD_JOB_NAME_ILLEGAL_CHARS.
     batch_connect_sessions_errors_staging: 'Failed to stage the template with the following error:'
     batch_connect_sessions_errors_submission: 'Failed to submit session with the following error:'
+    batch_connect_sessions_novnc_compression: Compression
+    batch_connect_sessions_novnc_compression_help: 1 (low) to 9 (high)
+    batch_connect_sessions_novnc_image_quality: Image Quality
+    batch_connect_sessions_novnc_image_quality_help: 0 (low) to 9 (high)
     batch_connect_sessions_novnc_launch: Launch %{app_title}
     batch_connect_sessions_novnc_view_only: View Only (Share-able Link)
     batch_connect_sessions_path_selector_forbidden_error: You do not have permission to select that directory or file.
@@ -155,11 +160,14 @@ en-CA:
       invalid: 'Invalid page code: %{page}. This page has not been configured'
     date: Date
     delete: Delete
+    delete_favorite_title: Remove custom favourite %{favorite}
     detailed_metrics: Detailed Metrics
     details: Details
     development_apps_caption: Sandbox App
     directory: Directory
     edit: Edit
+    edit_favorite_title: Rename custom favourite %{favorite}
+    favorites_not_updated: "%{error}. Custom favourites have not been updated."
     file: File
     file_quotas: File Quotas
     files: Files
