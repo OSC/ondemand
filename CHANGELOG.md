@@ -16,6 +16,28 @@ Changes are grouped by type:
 
 
 ## [Unreleased]
+Wait for the Files favorites page to reload (#6177)\
+Allow configless Slurm with slurmd in the SELinux policy (#6165)\
+Remove redundant :hover rule from editor save button (#6067)\
+Make the session card focus test observe replacement (#6064)\
+Add customizable files favorites (#5866)\
+Improve saved settings form: inline name field and Bootstrap 5 select (#6099)\
+Internationalize noVNC compression and image quality labels (#6131)\
+Touch up pinned app icon spacing (#5788)\
+Update contributor_jam_guide.md with new sections (#6155)\
+Localize myjobs Joyride text (#6108)\
+Honor nginx_clean user selection and dry runs - #6045⁠\
+Update e2e.yml concurrency settings (#6154)\
+Make shell toolbar wrap naturally when host and controls do not fit (#6063)\
+update e2e tests a little more (#6153)\
+Add ruby 4.0 to CI (#5805)\
+lint a random file (#6149)\
+Update Changelog (#6150)\
+4.2.6 changelog (#6136)\
+Bump rack from 2.2.24 to 2.2.25 in /apps/myjobs (#6128)\
+Bump rack from 3.2.7 to 3.2.8 in /apps/dashboard (#6127)\
+Bump loofah from 2.25.2 to 2.25.3 in /apps/dashboard (#6135)\
+Update concurrency settings in e2e.yml (#6151)
 
 ### Added
 - Batch Connect app sidebar menus are now collapsible in [5321](https://github.com/OSC/ondemand/pull/5321).
