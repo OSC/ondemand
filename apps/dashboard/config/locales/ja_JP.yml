@@ -64,6 +64,7 @@ ja_JP:
     batch_connect_form_session_data_html: |
       * このセッションの %{title} セッションデータは
         %{data_link_tag} の下でアクセスできます。
+    batch_connect_form_template_name_help: 新しい名前を入力するか、既存の名前を選択して上書きしてください。
     batch_connect_form_template_name_label: 設定名
     batch_connect_form_type_new_name: アプリ設定名
     batch_connect_form_type_new_name_error: 続行するには有効な名前を入力してください
@@ -91,6 +92,10 @@ ja_JP:
       '
     batch_connect_sessions_errors_staging: 次のエラーでテンプレートのステージングに失敗しました：
     batch_connect_sessions_errors_submission: 次のエラーでセッションの送信に失敗しました：
+    batch_connect_sessions_novnc_compression: 圧縮
+    batch_connect_sessions_novnc_compression_help: 1（低）～9（高）
+    batch_connect_sessions_novnc_image_quality: 画質
+    batch_connect_sessions_novnc_image_quality_help: 0（低）～9（高）
     batch_connect_sessions_novnc_launch: "%{app_title}を起動"
     batch_connect_sessions_novnc_view_only: 表示専用（共有可能なリンク）
     batch_connect_sessions_path_selector_forbidden_error: そのディレクトリまたはファイルを選択する権限がありません。
@@ -152,11 +157,14 @@ ja_JP:
       invalid: 無効なページコード：%{page}。このページは構成されていません
     date: 日付
     delete: 削除
+    delete_favorite_title: カスタムお気に入り%{favorite}を削除
     detailed_metrics: 詳細な指標
     details: 詳細
     development_apps_caption: サンドボックスアプリ
     directory: ディレクトリ
     edit: 編集
+    edit_favorite_title: カスタムお気に入りの名前を %{favorite} に変更
+    favorites_not_updated: "%{error}。カスタムお気に入りは更新されていません。"
     file: ファイル
     file_quotas: ファイルクォータ
     files: ファイル
