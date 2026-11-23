@@ -65,6 +65,7 @@ Changes are grouped by type:
 - noVNC compression and image quality labels now respond to international configurations in [6131](https://github.com/OSC/ondemand/pull/6131).
 - The job composers' joyride text respond to international configurations in [6108](https://github.com/OSC/ondemand/pull/6108).
 - Users can now add and manage customizable favorite file locations in [5866](https://github.com/OSC/ondemand/pull/5866).
+- Ruby 4.0 is now supported in [5805](https://github.com/OSC/ondemand/pull/5805)
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
