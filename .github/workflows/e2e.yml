@@ -79,6 +79,11 @@ jobs:
           fetch-depth: 0
           allow-unsafe-pr-checkout: true
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+        if: github.event_name == 'pull_request_target'
+
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v7
+        if: github.event_name != 'pull_request_target'
 
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
