@@ -49,7 +49,6 @@ en:
     balance_warning_prefix_html: "%{units_balance} warning for"
     batch_connect_apps_menu_title: Interactive Apps
     batch_connect_form_attr_cache_error: Unable to use previously cached values, using defaults instead. (%{error_message})
-    batch_connect_form_choose_template_name: 选择模版名称
     batch_connect_form_data_root: data root directory
     batch_connect_form_dynamic_disclaimer: The following form may change dynamically as options are selected. All changes will be announced and are reversible.
     batch_connect_form_invalid: The form.yml has missing options in the %{id} form field.
@@ -60,7 +59,6 @@ en:
     batch_connect_form_resolution_height: Resolution height (pixels)
     batch_connect_form_resolution_width: Resolution width (pixels)
     batch_connect_form_save: Save settings
-    batch_connect_form_save_new_template: 保存为一个新模版
     batch_connect_form_save_submit: Save settings and close
     batch_connect_form_select_template: select saved settings
     batch_connect_form_session_data_html: |
