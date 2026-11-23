@@ -31,6 +31,21 @@ involving the following steps:
     if the reporter wishes. During investigation the team will ask if the reporter
     wishes the original report to be published in full 90 days after publishing.
 
+## Dependencies
+
+The development team makes it a priority to keep the latest possible dependencies on
+all currently supported releases. This includes both weekly dependency automations on
+`master` to find upgradeable packages, as well as using Dependabot to identify and
+upgrade dependencies that have reported vulnerabilities. For patch releases only
+necessary upgrades from Dependabot will be considered, and Dependabot suggestions
+may be ignored if they impact current support and behavior.
+
+For a complete Software bill of materials showing all installed packages, see 
+[OSC/open-ondemand-sbom](https://github.com/OSC/open-ondemand-sbom), and for
+information on specific CVEs in dependent packages, see the 
+[Announcements section](https://discourse.openondemand.org/c/announcements/46)
+in Discourse.
+  
 ## Access to Patched Binaries
 
 By default, all compiled binary releases will be made available under the early access

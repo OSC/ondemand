@@ -49,6 +49,7 @@ module BatchConnect::SessionContextsHelper
       data: {
         widget_type: widget,
         hide_by_default: (true if attrib.hide_by_default?),
+        disable_when_hidden: (true if attrib.disable_when_hidden?)
       }
     ) do
       rendered
@@ -127,7 +128,7 @@ module BatchConnect::SessionContextsHelper
   def pathselector_favorites(favorites)
     # If favorites is false, return nil
     if favorites.nil?
-      OodFilesApp.new.favorite_paths.reject(&:remote?)
+      UserCustomization.favorite_paths.reject(&:remote?)
     elsif favorites
       favorites.map { |f| FavoritePath.new(f) }
     end

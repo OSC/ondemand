@@ -27,6 +27,7 @@ module RecentlyUsedAppsHelper
     # These apps variables are initialized in the ApplicationController class for all requests
     (@sys_apps + @dev_apps + @usr_apps).select(&:batch_connect_app?).each do |ood_app|
       ood_app.sub_app_list.each do |batch_connect_app|
+        # Skip apps that are not valid (e.g., have ERB parsing errors)
         sys_apps_index[batch_connect_app.cache_file] = batch_connect_app if batch_connect_app.valid?
       end
     end

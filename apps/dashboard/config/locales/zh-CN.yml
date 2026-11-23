@@ -48,7 +48,6 @@ zh-CN:
     balance_warning_prefix_html: "%{units_balance} 警告"
     batch_connect_apps_menu_title: 交互式应用
     batch_connect_form_attr_cache_error: 无法使用先前缓存的值，改为使用默认值。(%{error_message})
-    batch_connect_form_choose_template_name: 选择模版名称
     batch_connect_form_data_root: 数据根目录
     batch_connect_form_dynamic_disclaimer: 以下表单可能会随着选项的选择而动态变化。所有更改将会被通知，并且是可逆的。
     batch_connect_form_invalid: form.yml 中的 %{id} 表单字段缺少选项。
@@ -59,10 +58,10 @@ zh-CN:
     batch_connect_form_resolution_height: 分辨率高度（像素）
     batch_connect_form_resolution_width: 分辨率宽度（像素）
     batch_connect_form_save: 保存为模版
-    batch_connect_form_save_new_template: 保存为一个新模版
     batch_connect_form_save_submit: 保存设置并关闭
     batch_connect_form_select_template: 选择一个模版
     batch_connect_form_session_data_html: "* 你可以通过%{data_link_tag}来获取会话数据%{title}。\n"
+    batch_connect_form_template_name_help: 输入新名称，或选择现有名称覆盖它。
     batch_connect_form_template_name_label: 设置名称
     batch_connect_form_type_new_name: 在这里输入你的新模版名称
     batch_connect_form_type_new_name_error: 请输入一个有效的名称以继续
@@ -86,6 +85,10 @@ zh-CN:
     batch_connect_sessions_error_invalid_job_name_html: 如果由于作业名称无效而导致该作业提交失败，请要求管理员配置OnDemand来设置环境变量OOD_JOB_NAME_ILLEGAL_CHARS。
     batch_connect_sessions_errors_staging: 无法调用模板，并显示以下错误：
     batch_connect_sessions_errors_submission: 提交会话失败，出现以下错误：
+    batch_connect_sessions_novnc_compression: 压缩
+    batch_connect_sessions_novnc_compression_help: 1（低）到 9（高）
+    batch_connect_sessions_novnc_image_quality: 图像质量
+    batch_connect_sessions_novnc_image_quality_help: 0（低）到 9（高）
     batch_connect_sessions_novnc_launch: 启动%{app_title}
     batch_connect_sessions_novnc_view_only: 只读 (共享链接)
     batch_connect_sessions_path_selector_forbidden_error: 您没有权限选择该目录或文件。
@@ -141,11 +144,14 @@ zh-CN:
       invalid: 无效的页面代码：%{page}。此页面尚未配置
     date: 日期
     delete: 删除
+    delete_favorite_title: 移除自定义收藏 %{favorite}
     detailed_metrics: 详细指标
     details: 细节
     development_apps_caption: 沙盒应用
     directory: 目录
     edit: 编辑
+    edit_favorite_title: 重命名自定义收藏夹 %{favorite}
+    favorites_not_updated: "%{error}. 自定义收藏夹尚未更新。"
     file: 文件
     file_quotas: 文件配额
     files: 文件

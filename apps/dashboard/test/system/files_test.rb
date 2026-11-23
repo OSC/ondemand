@@ -1397,7 +1397,7 @@ class FilesTest < ApplicationSystemTestCase
       dir_links = dir_row.all('td > div.btn-group > ul > li > a').map(&:text)
 
       assert_equal(['View', 'Edit', 'Rename', 'Download', 'Delete'], file_links)
-      assert_equal(['Rename', 'Download', 'Delete'], dir_links)
+      assert_equal(['Rename', 'Download', 'Favorite', 'Delete'], dir_links)
     end
   end
   

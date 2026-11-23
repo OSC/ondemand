@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request_target' }}
 
 env:
   ACTIONS_STEP_DEBUG: true
@@ -78,7 +78,12 @@ jobs:
         with:
           fetch-depth: 0
           allow-unsafe-pr-checkout: true
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+        if: github.event_name == 'pull_request_target'
+
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v7
+        if: github.event_name != 'pull_request_target'
 
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
