@@ -62,6 +62,10 @@ Changes are grouped by type:
 - NSF announcements widget in [5875](https://github.com/OSC/ondemand/pull/5875).
 - Proxy locations now set a CSP header in [5832](https://github.com/OSC/ondemand/pull/5832).
 - Announcements can be made for batch connect apps specifically in [5956](https://github.com/OSC/ondemand/pull/5956).
+- noVNC compression and image quality labels now respond to international configurations in [6131](https://github.com/OSC/ondemand/pull/6131).
+- The job composers' joyride text respond to international configurations in [6108](https://github.com/OSC/ondemand/pull/6108).
+- Users can now add and manage customizable favorite file locations in [5866](https://github.com/OSC/ondemand/pull/5866).
+- Ruby 4.0 is now supported in [5805](https://github.com/OSC/ondemand/pull/5805)
 
 ### Fixed 
 - File/folder icons in file tables have better screen reader behavior in [5419](https://github.com/OSC/ondemand/pull/5419).
@@ -107,6 +111,8 @@ Changes are grouped by type:
 - Long favorite paths in sidebar and path selector do not overflow in [5986](https://github.com/OSC/ondemand/pull/5986).
 - Announcement banners use space efficiently in [6019](https://github.com/OSC/ondemand/pull/6019).
 - Redirect in the files app shouldn't cause infinite redirects in [6140](https://github.com/OSC/ondemand/pull/6140).
+- SELinux policy allows for configless Slurm with slurmd in [6165](https://github.com/OSC/ondemand/pull/6165).
+- nginx_clean honors user selection and dry runs in [6045](https://github.com/OSC/ondemand/pull/6045).
 
 ### Changed
 - Packages no longer depend on rclone in [5436](https://github.com/OSC/ondemand/pull/5436).
