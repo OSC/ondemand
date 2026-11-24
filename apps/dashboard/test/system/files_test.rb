@@ -1095,6 +1095,73 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  def open_editor(filename)
+    row = find('a', exact_text: filename).ancestor('tr')
+    row.find('button.dropdown-toggle').click
+    row.find('.edit-file').click
+  end
+
+  # evaluate_script prefixes the script with `return`, so this has to be one expression.
+  def editor_mode_id
+    page.evaluate_script(<<~JS)
+      (function() {
+        var editorElement = document.querySelector('#editor');
+        var editor = editorElement && editorElement.env && editorElement.env.editor;
+        return editor ? editor.session.getMode().$id : null;
+      })()
+    JS
+  end
+
+  def assert_editor_mode(mode_name)
+    Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+      editor_mode_id == "ace/mode/#{mode_name}"
+    end
+    assert_selector("#mode option[value='#{mode_name}']:checked")
+  end
+
+  test 'edit file sets syntax mode from the file extension' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, 'foo.sh'), "foobar\n")
+
+      visit files_url(dir)
+      open_editor('foo.sh')
+
+      assert_editor_mode('sh')
+      assert_selector('#save-button:disabled')
+    end
+  end
+
+  test 'edit file keeps the preferred mode for an unknown extension' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, 'job.out'), "foobar\n")
+      File.write(File.join(dir, 'foo.sh'), "foobar\n")
+      File.write(File.join(dir, 'notes.txt'), "foobar\n")
+
+      visit files_url(dir)
+      open_editor('job.out')
+      select 'Python', from: 'mode'
+      assert_editor_mode('python')
+
+      visit files_url(dir)
+      open_editor('foo.sh')
+      assert_editor_mode('sh')
+
+      visit files_url(dir)
+      open_editor('notes.txt')
+      assert_editor_mode('text')
+
+      visit files_url(dir)
+      open_editor('job.out')
+      assert_editor_mode('python')
+    end
+  end
+
   test 'file editor reports errors' do
     OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
