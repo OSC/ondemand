@@ -4,11 +4,10 @@
 # Current supported settings: profile, announcement
 class SettingsController < ApplicationController
   include UserSettingStore
-  ALLOWED_SETTINGS = [:profile, :locale, { announcements: {} }].freeze
+  ALLOWED_SETTINGS = [:profile, { announcements: {} }].freeze
 
   def update
     new_settings = settings_param.to_h
-    new_settings = sanitize_locale(new_settings)
     update_user_settings(new_settings) unless new_settings.empty?
 
     logger.info "settings: updated user settings to: #{new_settings}"
@@ -67,15 +66,5 @@ class SettingsController < ApplicationController
 
   def back_param
     params.permit(:back)[:back]
-  end
-
-  # Only persist a locale that is actually available, to avoid users
-  # storing an arbitrary (or stale) value that would raise I18n::InvalidLocale.
-  def sanitize_locale(settings)
-    return settings unless settings.key?(:locale)
-
-    locale = settings[:locale]
-    settings.delete(:locale) unless locale.present? && supported_locales.include?(locale.to_sym)
-    settings
   end
 end
