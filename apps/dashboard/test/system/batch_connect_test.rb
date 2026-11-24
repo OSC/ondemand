@@ -3526,7 +3526,6 @@ class BatchConnectTest < ApplicationSystemTestCase
         attributes:
           filter:
             widget: select
-            cacheable: true
             options:
             - ["A"]
             - ["B"]
