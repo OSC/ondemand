@@ -233,7 +233,14 @@ class FilesController < ApplicationController
     respond_to do |format|
 
       format.html do
-        redirect_to(next_valid, alert: exception.message.to_s)
+        alert = exception.message.to_s
+        # Browsers keep the original referer across redirects, so the referer can be the
+        # page that just failed. Going "back" to it would loop, so use the fallback instead.
+        if request.referer == request.original_url
+          redirect_to(error_fallback_location, alert: alert)
+        else
+          redirect_back(fallback_location: error_fallback_location, allow_other_host: false, alert: alert)
+        end
       end
       format.json do
         @files = []
@@ -297,11 +304,12 @@ class FilesController < ApplicationController
     fs_params[:download]
   end
 
-  def next_valid
-    next_valid = @path.parent.ascend.find(&:readable?) unless @path.nil? or @path.is_a? RemoteFile
-    present_path = next_valid.nil? ? Dir.home : next_valid
-    return root_path if present_path.to_s == @path.to_s
-    files_path(AllowlistPolicy.default.permitted?(present_path) ? present_path : Dir.home)
+  # Where to send the user after an error when there's no usable referer.
+  # An error at $HOME goes to the dashboard, since redirecting to $HOME would loop.
+  def error_fallback_location
+    return root_path if posix_file? && @path.to_s == Dir.home
+
+    files_path(Dir.home)
   end
 
   def uppy_upload_path
