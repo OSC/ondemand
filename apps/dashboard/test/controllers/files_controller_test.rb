@@ -184,4 +184,33 @@ class FilesControllerTest < ActionController::TestCase
     @request.env['HTTP_ACCEPT'] = 'text/html'
     refute @controller.send(:json_request?)
   end
+
+  # Tests for files_controller#rescue_action redirects
+  test 'error redirects back to the referer' do
+    FilesController.any_instance.stubs(:validate_path!).raises(StandardError, 'boom')
+    referer = "http://test.host#{files_path(Dir.home)}"
+    @request.env['HTTP_REFERER'] = referer
+    get :fs, params: { fs: 'fs', filepath: '/nonexistent' }
+    assert_redirected_to(referer)
+    assert_equal 'boom', flash[:alert]
+  end
+
+  test 'error without a referer redirects to home' do
+    FilesController.any_instance.stubs(:validate_path!).raises(StandardError, 'boom')
+    get :fs, params: { fs: 'fs', filepath: '/' }
+    assert_redirected_to(files_path(Dir.home))
+  end
+
+  test 'error at home without a referer redirects to dashboard instead of looping' do
+    FilesController.any_instance.stubs(:validate_path!).raises(StandardError, 'boom')
+    get :fs, params: { fs: 'fs', filepath: Dir.home }
+    assert_redirected_to(root_path)
+  end
+
+  test 'error ignores a referer that is the failing page itself' do
+    FilesController.any_instance.stubs(:validate_path!).raises(StandardError, 'boom')
+    @request.env['HTTP_REFERER'] = "http://test.host#{files_path(Dir.home)}"
+    get :fs, params: { fs: 'fs', filepath: Dir.home }
+    assert_redirected_to(root_path)
+  end
 end

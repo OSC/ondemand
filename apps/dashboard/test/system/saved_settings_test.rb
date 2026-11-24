@@ -28,10 +28,7 @@ class SavedSettingsTest < ApplicationSystemTestCase
         fill_in('bc_vnc_resolution_y_field', with: '600')
 
         check('Save settings')
-        fill_in('modal_input_template_new_name', with: 'test')
-        sleep 1
-        # find('#batch_connect_session_template_choose_name_button').click
-        click_button('Save')
+        fill_in('batch_connect_session_template_name', with: 'test')
         sleep 1
         click_button('Save settings and close')
 
@@ -111,6 +108,28 @@ class SavedSettingsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'editing saved settings can save them under a new name' do
+    Dir.mktmpdir do |dir|
+      user_settings_file = "#{dir}/user_settings.yml"
+      FileUtils.cp("#{Rails.root}/test/fixtures/file_output/user_settings/saved_settings_edit.yml", user_settings_file)
+      stub_user_settings(user_settings_file)
+
+      visit(batch_connect_edit_settings_url('sys/bc_paraview', 'edit_name'))
+
+      fill_in(bc_ele_id('bc_num_hours'), with: 12)
+      fill_in('batch_connect_session_template_name', with: 'new_name')
+      click_button('Save settings and close')
+
+      assert_current_path(batch_connect_setting_path('sys/bc_paraview', 'new_name'))
+
+      # the original settings are kept, the new ones are saved next to them
+      settings = YAML.safe_load(File.read(user_settings_file)).to_h['batch_connect_templates']['sys/bc_paraview']
+      assert_equal(['edit_name', 'new_name'], settings.keys.sort)
+      assert_equal('10', settings['edit_name']['bc_num_hours'])
+      assert_equal('12', settings['new_name']['bc_num_hours'])
+    end
+  end
+
   test 'password_fields settings are encrypted when saved' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
@@ -139,10 +158,7 @@ class SavedSettingsTest < ApplicationSystemTestCase
       fill_in(bc_ele_id('some_password_field'), with: 'mypassword')
 
       check('Save settings')
-      fill_in('modal_input_template_new_name', with: 'test')
-      sleep 1
-      # find('#batch_connect_session_template_choose_name_button').click
-      click_button('Save')
+      fill_in('batch_connect_session_template_name', with: 'test')
       sleep 1
       click_button('Save settings and close')
 

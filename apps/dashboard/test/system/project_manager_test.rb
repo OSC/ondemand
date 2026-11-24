@@ -44,10 +44,11 @@ class ProjectManagerTest < ApplicationSystemTestCase
   def setup_launcher(project_id)
     visit project_path(project_id)
     click_on 'New Launcher'
-    find('#launcher_title').set('the launcher title')
+    title = 'the launcher title'
+    find('#launcher_title').set(title)
     click_on 'Save'
 
-    launcher_element = all('#launcher_list div.list-group-item').first
+    launcher_element = find('#launcher_list .launcher-title', exact_text: title).ancestor('div.list-group-item')
     launcher_element[:id].gsub('launcher_', '')
   end
 

@@ -1,7 +1,7 @@
 <%- unless @prefill_templates.empty? -%>
-  <div class="form-group">
-    <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
-    <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
+  <div class="mb-3">
+    <label class="form-label" for="batch_connect_session_prefill_template"><%= t('dashboard.batch_connect_form_prefill') %></label>
+    <select class="form-select" id="batch_connect_session_prefill_template">
       <option selected value> -- <%= t('dashboard.batch_connect_form_select_template') %> -- </option>
       <% @prefill_templates.each do |name, template_data| %>
         <option value="<%= template_data.to_json %>"><%= name %></option>
@@ -18,41 +18,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('dashboard.close') %>"></button>
       </div>
       <div class="modal-body" id="batch_connect_session_template_form_error_modal_body"></div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="chooseTemplateName" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title h5" id="chooseTemplateNameLabel"><%= t('dashboard.batch_connect_form_choose_template_name') %></div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('dashboard.close') %>"></button>
-      </div>
-      <div class="modal-body">
-        <select class="form-control selectpicker" id="modal_input_template_name">
-          <option selected value> -- <%= t('dashboard.batch_connect_form_save_new_template') %> -- </option>
-          <% @prefill_templates.each do |name, template_data| %>
-            <option value="<%= name %>"><%= name %></option>
-          <% end %>
-        </select>
-        <input type="text" class="form-control mt-3" id="modal_input_template_new_name" placeholder="<%= t('dashboard.batch_connect_form_type_new_name') %>">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="batch_connect_session_template_choose_name_button"><%= t('dashboard.save') %></button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><%= t('dashboard.close') %></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="batch_connect_session_template_name_error_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title h5"><%= t('dashboard.batch_connect_form_type_new_name_error') %></div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
     </div>
   </div>
 </div>

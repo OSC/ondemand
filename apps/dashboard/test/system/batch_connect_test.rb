@@ -1482,6 +1482,117 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'hide_by_default data attribute is only present when true' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpus
+        - account
+      attributes:
+        gpus:
+          widget: text_field
+          hide_by_default: true
+        account:
+          widget: text_field
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      gpus_wrapper = find("##{bc_ele_id('gpus')}_wrapper", visible: :hidden)
+      account_wrapper = find("##{bc_ele_id('account')}_wrapper")
+
+      assert_equal 'true', gpus_wrapper['data-hide-by-default']
+      assert_nil account_wrapper['data-hide-by-default']
+    end
+  end
+
+  test 'disable_when_hidden disables select and skips data-set while hidden' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - gpu_count
+        - gpu_node_type
+        - node_type
+      attributes:
+        gpu_count:
+          widget: number_field
+          value: 0
+        gpu_node_type:
+          widget: select
+          hide_by_default: true
+          disable_when_hidden: true
+          options:
+            - ['Type A', 'type_a', data-set-gpu-count: 2]
+            - ['Type B', 'type_b', data-set-gpu-count: 4]
+        node_type:
+          widget: select
+          options:
+            - ['Standard', 'standard']
+            - ['GPU', 'gpu', data-hide-gpu-node-type: false]
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      assert_selector("##{bc_ele_id('gpu_node_type')}", visible: :hidden)
+      assert find("##{bc_ele_id('gpu_node_type')}", visible: :hidden).disabled?
+      assert_equal '0', find_value('gpu_count')
+
+      select 'GPU', from: bc_ele_id('node_type')
+      assert_selector("##{bc_ele_id('gpu_node_type')}")
+      refute find("##{bc_ele_id('gpu_node_type')}").disabled?
+
+      select 'Type B', from: bc_ele_id('gpu_node_type')
+      assert_equal '4', find_value('gpu_count')
+
+      select 'Standard', from: bc_ele_id('node_type')
+      assert_selector("##{bc_ele_id('gpu_node_type')}", visible: :hidden)
+      assert find("##{bc_ele_id('gpu_node_type')}", visible: :hidden).disabled?
+      assert_equal '4', find_value('gpu_count')
+    end
+  end
+
+  test 'data-set still applies to hidden_field widgets' do
+    form = <<~HEREDOC
+      ---
+      cluster:
+        - owens
+      form:
+        - account
+        - classroom
+      attributes:
+        account:
+          widget: hidden_field
+          value: ''
+        classroom:
+          widget: select
+          options:
+            - ['Physics', 'physics', data-set-account: 'phy3005']
+            - ['Astronomy', 'astronomy', data-set-account: 'ast1001']
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      account = find("##{bc_ele_id('account')}", visible: :hidden)
+      assert_equal 'hidden', account[:type]
+      refute account.disabled?
+      assert_equal 'phy3005', find_value('account')
+
+      select 'Astronomy', from: bc_ele_id('classroom')
+      assert_equal 'ast1001', find_value('account')
+      refute find("##{bc_ele_id('account')}", visible: :hidden).disabled?
+    end
+  end
+  
   def data_help_basic_test(form)
     Dir.mktmpdir do |dir|
       make_bc_app(dir, form)
@@ -3324,9 +3435,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         fill_in('bc_vnc_resolution_y_field', with: '600')
 
         check('batch_connect_session_save_template')
-        fill_in('modal_input_template_new_name', with: 'test template')
-        sleep 5 # modal needs to sleep?
-        click_on('Save')
+        fill_in('batch_connect_session_template_name', with: 'test template')
 
         sleep 1
         find('#batch_connect_session_context_launch').click
@@ -3354,9 +3463,7 @@ class BatchConnectTest < ApplicationSystemTestCase
         fill_in('bc_vnc_resolution_y_field', with: '600')
 
         check('batch_connect_session_save_template')
-        fill_in('modal_input_template_new_name', with: 'test template')
-        sleep 2 # modal needs to sleep?
-        click_on('Save')
+        fill_in('batch_connect_session_template_name', with: 'test template')
 
         click_on('Save settings and close', wait: 30)
         sleep 2

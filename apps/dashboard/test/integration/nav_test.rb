@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'html_helper'
 
 class NavTest < ActionDispatch::IntegrationTest
   test 'default for app to open in new window' do
@@ -186,10 +187,10 @@ class NavTest < ActionDispatch::IntegrationTest
         assert_select("nav.navbar div.collapse li.nav-item") do
           assert_select("a.nav-link.dropdown-toggle[title = '#{I18n.t("dashboard.nav_help_title")}']", 1)
           assert_select("ul.dropdown-menu") do
-            assert_select('a', text: I18n.t('dashboard.nav_help_support'))
-            assert_select('a', text: I18n.t('dashboard.nav_help_docs'))
-            assert_select('a', text: I18n.t('dashboard.nav_help_change_password'))
-            assert_select('a', text: I18n.t('dashboard.nav_help_two_factor'))
+            assert_select("a.dropdown-item[href='/support']", text: I18n.t('dashboard.nav_help_support'))
+            assert_select("a.dropdown-item[href='/docs']", text: I18n.t('dashboard.nav_help_docs'))
+            assert_select("a.dropdown-item[href='/password']", text: I18n.t('dashboard.nav_help_change_password'))
+            assert_select("a.dropdown-item[href='/two-factor']", text: I18n.t('dashboard.nav_help_two_factor'))
           end
         end
       end
@@ -216,4 +217,31 @@ class NavTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'help menu omits Appverse link when appverse_url is unset' do
+    SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys'))
+    Configuration.stubs(:appverse_url).returns(nil)
+
+    get root_path
+    assert_response :success
+
+    menu_links = css_select(dropdown_list('Help'), 'a')
+    appverse_link = menu_links.find { |link| link.text.include?('Appverse') }
+
+    assert_nil appverse_link
+  end
+
+  test 'help menu includes Appverse link when appverse_url is set' do
+    SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys'))
+    Configuration.stubs(:appverse_url).returns('https://ondemand.connectci.org/appverse')
+
+    get root_path
+    assert_response :success
+
+    menu_links = css_select(dropdown_list('Help'), 'a')
+    appverse_link = menu_links.find { |link| link.text.include?('Appverse') }
+
+    assert appverse_link, 'Appverse link not found in Help menu'
+    assert_equal 'https://ondemand.connectci.org/appverse', appverse_link['href']
+    assert_equal '_blank', appverse_link['target']
+  end
 end

@@ -39,3 +39,70 @@ div.datatables-status, div.transfers-status {
   z-index: 999;
 }
 
+// wrap edit/delete together under the path when the favorites sidebar is too narrow
+// Wide layout: path and actions share one row (input-group style).
+// Narrow layout: actions wrap under the path, fill its width, and use stacked border radii.
+#favorites .favorite-item {
+  flex-wrap: nowrap;
+
+  .favorite-path {
+    min-width: 0;
+  }
+
+  .favorite-actions {
+    display: flex;
+    flex: 0 0 auto;
+
+    > .rename-favorite {
+      border-radius: 0;
+    }
+
+    > form {
+      display: flex;
+      margin-bottom: 0;
+    }
+
+    .btn.bg-danger {
+      height: 100%;
+      border-radius: 0;
+      border-top-right-radius: var(--bs-border-radius);
+      border-bottom-right-radius: var(--bs-border-radius);
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  #favorites .favorite-item {
+    flex-wrap: wrap;
+
+    .favorite-path {
+      flex: 1 1 100%;
+      border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
+    }
+
+    .favorite-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1 1 100%;
+      width: 100%;
+
+      > .rename-favorite,
+
+      > form .btn {
+        width: 100%;
+        height: auto;
+      }
+
+      > .rename-favorite {
+        border-radius: 0;
+        border-bottom-left-radius: var(--bs-border-radius);
+      }
+
+      .btn.bg-danger {
+        border-radius: 0;
+        border-bottom-right-radius: var(--bs-border-radius);
+      }
+    }
+  }
+}
+

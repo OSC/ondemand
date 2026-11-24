@@ -88,7 +88,7 @@ class ConfigurationSingleton
       :widget_partials_enabled      => false,
       :unsafe_render_html           => false,
       :open_apps_in_new_window      => true,
-      :bc_ssh_to_compute_node => true,
+      :bc_ssh_to_compute_node       => true,
     }.freeze
   end
 
@@ -108,6 +108,10 @@ class ConfigurationSingleton
       :default_profile                => nil,
       :plugins_directory              => '/etc/ood/config/plugins',
       :locales_root                   => '/etc/ood/config/locales',
+      :dashboard_dev_docs_url         => 'https://go.osu.edu/ood-app-dev',
+      :appverse_url                   => nil,
+      :dashboard_docs_url             => nil,
+      :dashboard_help_custom_url      => nil,
       :dashboard_passwd_url           => nil,
       :dashboard_2fa_url              => nil,
       :native_vnc_login_host          => nil,
@@ -317,10 +321,6 @@ class ConfigurationSingleton
 
   def batch_connect_global_cache_enabled?
     read_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
-  end
-
-  def developer_docs_url
-    ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
   end
 
   def dataroot

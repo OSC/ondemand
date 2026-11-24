@@ -1095,6 +1095,73 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  def open_editor(filename)
+    row = find('a', exact_text: filename).ancestor('tr')
+    row.find('button.dropdown-toggle').click
+    row.find('.edit-file').click
+  end
+
+  # evaluate_script prefixes the script with `return`, so this has to be one expression.
+  def editor_mode_id
+    page.evaluate_script(<<~JS)
+      (function() {
+        var editorElement = document.querySelector('#editor');
+        var editor = editorElement && editorElement.env && editorElement.env.editor;
+        return editor ? editor.session.getMode().$id : null;
+      })()
+    JS
+  end
+
+  def assert_editor_mode(mode_name)
+    Selenium::WebDriver::Wait.new(timeout: MAX_WAIT).until do
+      editor_mode_id == "ace/mode/#{mode_name}"
+    end
+    assert_selector("#mode option[value='#{mode_name}']:checked")
+  end
+
+  test 'edit file sets syntax mode from the file extension' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, 'foo.sh'), "foobar\n")
+
+      visit files_url(dir)
+      open_editor('foo.sh')
+
+      assert_editor_mode('sh')
+      assert_selector('#save-button:disabled')
+    end
+  end
+
+  test 'edit file keeps the preferred mode for an unknown extension' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, 'job.out'), "foobar\n")
+      File.write(File.join(dir, 'foo.sh'), "foobar\n")
+      File.write(File.join(dir, 'notes.txt'), "foobar\n")
+
+      visit files_url(dir)
+      open_editor('job.out')
+      select 'Python', from: 'mode'
+      assert_editor_mode('python')
+
+      visit files_url(dir)
+      open_editor('foo.sh')
+      assert_editor_mode('sh')
+
+      visit files_url(dir)
+      open_editor('notes.txt')
+      assert_editor_mode('text')
+
+      visit files_url(dir)
+      open_editor('job.out')
+      assert_editor_mode('python')
+    end
+  end
+
   test 'file editor reports errors' do
     OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
     OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
@@ -1216,8 +1283,9 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'test_dir').ancestor('tr').click
       click_on('Download')
 
-      sleep 5 # give it enough time to download
-      assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT, message: "#{zip_file} was never downloaded!").until do
+        File.exist?(zip_file)
+      end
 
       # unzip all the files you downloaded into a new tmp directory and iterate
       # though them. Verify that the file you downloaded exists in the original tmpdir 'dir'.
@@ -1375,6 +1443,31 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'actions dropdown shows expected links for files and directories' do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      file = 'readable.txt'
+      nested = 'subdir'
+      FileUtils.touch(File.join(dir, file))
+      FileUtils.mkdir_p(File.join(dir, nested))
+
+      visit files_url(dir)
+
+      file_row = find('tbody a', exact_text: file).ancestor('tr')
+      file_row.find('button.dropdown-toggle').click
+      file_links = file_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      dir_row = find('tbody a', exact_text: nested).ancestor('tr')
+      dir_row.find('button.dropdown-toggle').click
+      dir_links = dir_row.all('td > div.btn-group > ul > li > a').map(&:text)
+
+      assert_equal(['View', 'Edit', 'Rename', 'Download', 'Delete'], file_links)
+      assert_equal(['Rename', 'Download', 'Favorite', 'Delete'], dir_links)
+    end
+  end
+  
   test 'unreadable files and fifos are not downloadable' do
     Dir.mktmpdir do |dir|
       cant_read = 'cant_read.txt'

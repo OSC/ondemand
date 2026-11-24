@@ -195,11 +195,17 @@ jQuery(function () {
       };
     });
 
-    // Automatically Sets the dropdown and mode to the modelist option
+    // Sets the dropdown and mode from the file extension when Ace knows it.
+    // Unknown extensions keep the mode from the user preference.
+    // The select is updated without a change event so that preference is not overwritten.
     function setModeFromModelist() {
-      var modelist = ace.require("ace/ext/modelist").getModeForPath(filePath);
-      $("#mode").val(modelist.name);
-      editor.session.setMode(modelist.mode);
+      ace.config.loadModule("ace/ext/modelist", function (modelist) {
+        const mode = modelist.getModeForPath(filePath);
+        if (mode.name === "text" && !filePath.endsWith(".txt")) return;
+
+        $("#mode").val(mode.name);
+        editor.session.setMode(mode.mode);
+      });
     };
 
 
@@ -210,6 +216,7 @@ jQuery(function () {
       editor.setFontSize($("#fontsize option:selected").val());
       $("#mode").val(getUserPreference('mode') || "text");
       editor.session.setMode("ace/mode/" + $("#mode option:selected").val());
+      setModeFromModelist();
       $("#theme").val(getUserPreference('theme') || "ace/theme/solarized_light");
       editor.setTheme($("#theme option:selected").val());
       $("#wordwrap").prop("checked", getUserPreference('wordwrap') === "true");
