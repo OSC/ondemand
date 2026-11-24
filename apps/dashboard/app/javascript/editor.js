@@ -201,7 +201,7 @@ jQuery(function () {
     function setModeFromModelist() {
       ace.config.loadModule("ace/ext/modelist", function (modelist) {
         const mode = modelist.getModeForPath(filePath);
-        if (mode.name === "text") return;
+        if (mode.name === "text" && !filePath.endsWith(".txt")) return;
 
         $("#mode").val(mode.name);
         editor.session.setMode(mode.mode);

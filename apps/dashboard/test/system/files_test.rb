@@ -1141,6 +1141,7 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       File.write(File.join(dir, 'job.out'), "foobar\n")
       File.write(File.join(dir, 'foo.sh'), "foobar\n")
+      File.write(File.join(dir, 'notes.txt'), "foobar\n")
 
       visit files_url(dir)
       open_editor('job.out')
@@ -1150,6 +1151,10 @@ class FilesTest < ApplicationSystemTestCase
       visit files_url(dir)
       open_editor('foo.sh')
       assert_editor_mode('sh')
+
+      visit files_url(dir)
+      open_editor('notes.txt')
+      assert_editor_mode('text')
 
       visit files_url(dir)
       open_editor('job.out')
