@@ -9,11 +9,12 @@
 <li class="dropdown-header"><%= t('dashboard.nav_language') %></li>
 <% locale_options.each do |name, loc| %>
   <li role="none">
-    <%= link_to settings_path('settings[locale]' => loc),
-                class: 'dropdown-item d-flex align-items-center',
-                title: name, role: 'menuitem',
-                data: { method: :post } do %>
-      <% if loc.to_sym == I18n.locale %>
+    <%= button_to( update_customization_path,
+          class: 'dropdown-item d-flex align-items-center',
+          method: :post, title: name, role: 'menuitem',
+          params: { user_customization: {set_locale: loc }},
+        ) do %>
+      <% if loc == UserCustomization.locale %>
         <i class="fas fa-check fa-fw me-1" aria-hidden="true"></i>
       <% else %>
         <i class="fa-fw me-1" aria-hidden="true"></i>
