@@ -68,27 +68,27 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def boolean_configs
     {
-      :csp_enabled                  => false,
-      :csp_report_only              => false,
-      :bc_dynamic_js                => false,
-      :bc_simple_auto_accounts      => false,
-      :bc_clean_old_dirs            => false,
-      :bc_saved_settings            => false,
-      :per_cluster_dataroot         => false,
-      :remote_files_enabled         => false,
-      :remote_files_validation      => false,
-      :host_based_profiles          => false,
-      :disable_bc_shell             => false,
-      :cancel_session_enabled       => false,
-      :hide_app_version             => true,
-      :motd_render_html             => false,
-      :upload_enabled               => true,
-      :download_enabled             => true,
-      :project_size_enabled         => true,
-      :widget_partials_enabled      => false,
-      :unsafe_render_html           => false,
-      :open_apps_in_new_window      => true,
-      :bc_ssh_to_compute_node       => true,
+      :bc_clean_old_dirs       => false,
+      :bc_dynamic_js           => false,
+      :bc_saved_settings       => false,
+      :bc_simple_auto_accounts => false,
+      :bc_ssh_to_compute_node  => true,
+      :cancel_session_enabled  => false,
+      :csp_enabled             => false,
+      :csp_report_only         => false,
+      :disable_bc_shell        => false,
+      :download_enabled        => true,
+      :hide_app_version        => true,
+      :host_based_profiles     => false,
+      :motd_render_html        => false,
+      :open_apps_in_new_window => true,
+      :per_cluster_dataroot    => false,
+      :project_size_enabled    => true,
+      :remote_files_enabled    => false,
+      :remote_files_validation => false,
+      :unsafe_render_html      => false,
+      :upload_enabled          => true,
+      :widget_partials_enabled => false,
     }.freeze
   end
 
@@ -98,27 +98,27 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def string_configs
     {
-      :module_file_dir                => nil,
-      :user_settings_file             => Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s,
-      :facl_domain                    => nil,
-      :auto_groups_filter             => nil,
-      :google_analytics_tag_id        => nil,
-      :project_template_dir           => "#{config_root}/projects",
-      :rclone_extra_config            => nil,
-      :default_profile                => nil,
-      :plugins_directory              => '/etc/ood/config/plugins',
-      :dashboard_dev_docs_url         => 'https://go.osu.edu/ood-app-dev',
       :appverse_url                   => nil,
+      :auto_groups_filter             => nil,
+      :dashboard_2fa_url              => nil,
+      :dashboard_dev_docs_url         => 'https://go.osu.edu/ood-app-dev',
       :dashboard_docs_url             => nil,
       :dashboard_help_custom_url      => nil,
       :dashboard_passwd_url           => nil,
-      :dashboard_2fa_url              => nil,
+      :default_profile                => nil,
+      :facl_domain                    => nil,
+      :google_analytics_tag_id        => nil,
+      :module_file_dir                => nil,
       :native_vnc_login_host          => nil,
-      :xdmod_host                     => nil,
       :nsf_access_announcements_url   => 'https://support.access-ci.org/api/2.2/announcements',
       :nsf_access_current_outages_url => 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/current_outages/',
       :nsf_access_events_url          => 'https://support.access-ci.org/api/2.1/events',
-      :nsf_access_future_outages_url  => 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/future_outages/'
+      :nsf_access_future_outages_url  => 'https://operations-api.access-ci.org/wh2/news/v1/affiliation/access-ci.org/future_outages/',
+      :plugins_directory              => '/etc/ood/config/plugins',
+      :project_template_dir           => "#{config_root}/projects",
+      :rclone_extra_config            => nil,
+      :user_settings_file             => Pathname.new("~/.config/#{ood_portal}/settings.yml").expand_path.to_s,
+      :xdmod_host                     => nil,
     }.freeze
   end
 
@@ -129,13 +129,13 @@ class ConfigurationSingleton
   def int_configs
     {
       :bc_clean_old_dirs_days       => 30,
-      :download_dir_timeout_seconds => 5,
       :download_dir_max             => 10_737_418_240, # 10*1024*1024*1024 bytes
-      :file_editor_max_size         => 12_582_912,     # 12*1024*1024 bytes
+      :download_dir_timeout_seconds => 5,
       :download_file_max            => 10_737_418_240, # 10*1024*1024*1024 bytes
-      :project_size_timeout         => 15,
+      :file_editor_max_size         => 12_582_912,     # 12*1024*1024 bytes
       :novnc_default_compression    => 6,
       :novnc_default_quality        => 2,
+      :project_size_timeout         => 15,
     }.freeze
   end
 

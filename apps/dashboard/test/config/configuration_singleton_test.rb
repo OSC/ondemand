@@ -25,7 +25,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "considers all .env files before reading config" do
     Dir.mktmpdir do |dir|
-      with_modified_env(OOD_LOAD_EXTERNAL_CONFIG: 'true') do
+      with_modified_env(OOD_LOAD_EXTERNAL_CONFIG: 'true', OOD_CONFIG_D_DIRECTORY: nil) do
         dir = Pathname.new(dir)
         app_root = dir.join('app')
         config_d_dir = dir.join('ondemand.d')
@@ -218,7 +218,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have app sharing disabled by default" do
-    refute ConfigurationSingleton.new.app_sharing_enabled?
+    with_modified_env(OOD_APP_SHARING: nil) do
+      refute ConfigurationSingleton.new.app_sharing_enabled?
+    end
   end
 
   test "can configure whether app sharing is enabled or disabled" do
@@ -928,8 +930,11 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test 'boolean configs have correct default' do
     c = ConfigurationSingleton.new
+    env = c.boolean_configs.take(5).each_with_object(no_config_env.dup) do |(config, _), hsh|
+      hsh["OOD_#{config.upcase}"] = nil
+    end
 
-    with_modified_env(no_config_env) do
+    with_modified_env(env) do
       c.boolean_configs.take(5).each do |config, default|
         assert_equal default, c.send(config), "#{config} should have been #{default} through the default value."
       end
@@ -938,8 +943,11 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test 'string configs have correct default' do
     c = ConfigurationSingleton.new
+    env = c.string_configs.take(5).each_with_object(no_config_env.dup) do |(config, _), hsh|
+      hsh["OOD_#{config.upcase}"] = nil
+    end
 
-    with_modified_env(no_config_env) do
+    with_modified_env(env) do
       c.string_configs.take(5).each do |config, default|
         if default.nil?
           # assert_equal on nil is deprecated
@@ -1459,6 +1467,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         assert(cfg.csp_enabled)
         assert(cfg.csp_enabled?)
       end
+    end
+  end
+
+  test "boolean_configs, string_configs, and int_configs keys are alphabetically ordered" do
+    c = ConfigurationSingleton.new
+    [
+      [:boolean_configs, c.boolean_configs],
+      [:string_configs, c.string_configs],
+      [:int_configs, c.int_configs]
+    ].each do |name, configs|
+      keys = configs.keys
+      assert_equal keys.sort, keys,
+                   "#{name} keys must be alphabetically ordered.\n" \
+                   "Expected: #{keys.sort.inspect}\n" \
+                   "Actual:   #{keys.inspect}"
     end
   end
 end
