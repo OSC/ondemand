@@ -355,13 +355,14 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
-  # Colon-separated list of paths to locale files that users are allowed to
-  # choose from in the language switcher. The locale code is derived from
-  # each path's basename (without extension). Defaults to just the default
-  # locale's path, making the switcher opt-in (hidden unless admins
-  # explicitly enable additional locales via OOD_SUPPORTED_LOCALES).
+  # Colon-separated list or YAML array of locale keys that users can 
+  # choose from. Defaults to just the default locale's key, making the 
+  # switcher opt-in (hidden unless admins explicitly enable additional locales.
   def supported_locales
-    ENV['OOD_SUPPORTED_LOCALES'] || File.join(locales_root, locale.to_s)
+    list = ENV['OOD_SUPPORTED_LOCALES'] || config.fetch(:supported_locales, [])
+    Array.wrap(list).flat_map { |item| item.to_s.strip.split(':') }.tap do |locales|
+      return [locale.to_s] if locales.empty?
+    end
   end
   
   # Set the global configuration directory
