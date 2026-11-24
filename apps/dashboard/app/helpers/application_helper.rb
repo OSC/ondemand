@@ -84,7 +84,7 @@ module ApplicationHelper
   # untranslated locale_name keys from falling back to :en and showing
   # "English" for every locale.
   def locale_options
-    supported_locales.map do |loc|
+    Configuration.supported_locales.map do |loc|
       [I18n.t('dashboard.locale_name', locale: loc, fallback: false, default: loc.to_s), loc.to_s]
     end
   end
