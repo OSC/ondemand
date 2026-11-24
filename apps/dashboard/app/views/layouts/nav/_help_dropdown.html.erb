@@ -17,7 +17,7 @@
       <%= nav_link(t('dashboard.nav_help_support_ticket'), "medkit", support_path, new_tab: false) %>
     <% end %>
 
-    <% if supported_locales.size > 1 %>
+    <% if Configuration.supported_locales.size > 1 %>
       <%= render partial: 'layouts/nav/locale_switcher' %>
     <% end %>
 
