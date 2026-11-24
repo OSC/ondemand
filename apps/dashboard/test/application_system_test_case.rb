@@ -21,6 +21,14 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
 
+  setup do
+    use_empty_user_settings_file
+  end
+
+  teardown do
+    clear_empty_user_settings_file
+  end
+  
   def visit(path)
     super(path)
     inject_contrast_observer

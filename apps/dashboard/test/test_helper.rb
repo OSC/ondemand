@@ -134,6 +134,25 @@ module ActiveSupport
       OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([ascend]))
     end
 
+    # clear the cache so settings from earlier tests don't leak into this one.
+    def use_empty_user_settings_file
+      @empty_user_settings_dir = Dir.mktmpdir('user_settings')
+      settings_file = File.join(@empty_user_settings_dir, 'settings.yml')
+      File.write(settings_file, '')
+      @previous_ood_user_settings_file = ENV.fetch('OOD_USER_SETTINGS_FILE', nil)
+      ENV['OOD_USER_SETTINGS_FILE'] = settings_file
+      Singleton.__init__(UserCustomization)
+    end
+
+    def clear_empty_user_settings_file
+      return unless @empty_user_settings_dir
+
+      ENV['OOD_USER_SETTINGS_FILE'] = @previous_ood_user_settings_file
+      FileUtils.remove_entry(@empty_user_settings_dir)
+      @empty_user_settings_dir = nil
+      Singleton.__init__(UserCustomization)
+    end
+
     def output_fixture(file)
       File.read("#{Rails.root}/test/fixtures/file_output/#{file}")
     end
