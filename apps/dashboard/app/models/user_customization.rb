@@ -4,12 +4,12 @@ class UserCustomization
   include Singleton
   include UserSettingStore
     
-  attr_reader :custom_files_favorites
+  attr_reader :custom_files_favorites, :custom_locale
 
   class << self
     # supported actions modify customization in a clear way, and raise if they fail
     def supported_actions
-      [:add_files_favorite, :delete_files_favorite, :rename_files_favorite].freeze
+      [:add_files_favorite, :delete_files_favorite, :rename_files_favorite, :set_locale].freeze
     end
     
     def favorite_paths
@@ -20,6 +20,12 @@ class UserCustomization
       OodFilesApp.new.favorite_paths.map do |system_favorite| 
         {favorite: system_favorite, origin: :system}
       end + favorites_from_array(instance.custom_files_favorites)
+    end
+
+    def locale
+      instance.custom_locale.tap do |custom|
+        return Configuration.locale.to_s if custom.nil?
+      end
     end
 
     private
@@ -34,6 +40,12 @@ class UserCustomization
 
   def initialize
     @custom_files_favorites ||= user_settings[:files_favorites].to_a
+
+    begin
+      set_locale(user_settings[:locale].to_s)
+    rescue StandardError
+      update_locale(nil)
+    end
   end
 
   def add_files_favorite(favorite_path)
@@ -58,6 +70,12 @@ class UserCustomization
     update_favorites
   end
 
+  def set_locale(locale)
+    validate_locale!(locale)
+    I18n.locale = locale
+    update_locale(locale)
+  end
+
   private
 
   def update_favorites
@@ -73,5 +91,21 @@ class UserCustomization
 
     msg = "Invalid path specified: #{path.inspect}"
     raise msg unless File.absolute_path?(path) && File.directory?(path) && File.readable?(path) && AllowlistPolicy.default.permitted?(path)
+  end
+
+  def update_locale(locale)
+    @custom_locale = locale
+    update_user_settings({ locale: locale })
+  end
+  
+  def validate_locale!(locale)
+    reason = nil
+    if !Configuration.supported_locales.include?(locale) 
+      reason = "Locale #{locale.inspect} is not approved. Please contact an administrator to enable this locale"
+    elsif !I18n.locale_available?(locale)
+      reason = "Could not find a matching locale file for #{locale.inspect}. Please check your 'OOD_LOCALES_ROOT' configuration."
+    end
+
+    raise reason if reason
   end
 end
