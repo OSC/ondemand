@@ -2,6 +2,8 @@ csp_enabled: true
 csp_report_only: true
 bc_dynamic_js: true
 bc_simple_auto_accounts: true
+bc_saved_settings: true
+bc_ssh_to_compute_node: false
 per_cluster_dataroot: true
 file_navigator: true
 remote_files_enabled: true
