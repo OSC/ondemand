@@ -6,6 +6,10 @@ storage:
     file: "/etc/ood/dex/dex.db"
 web:
   http: localhost:5556
+  clientRemoteIP:
+    header: X-Forwarded-For
+    trustedProxies:
+    - 127.0.0.1/32
 telemetry:
   http: 0.0.0.0:5558
 staticClients:
