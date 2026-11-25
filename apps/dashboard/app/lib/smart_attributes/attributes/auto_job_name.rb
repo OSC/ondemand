@@ -25,7 +25,7 @@ module SmartAttributes
       end
 
       def label(*)
-        (opts[:label] || 'Job Name').to_s
+        (opts[:label] || I18n.t('dashboard.smart_attributes.job_name')).to_s
       end
 
       # Submission hash describing how to submit this attribute

@@ -392,4 +392,34 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal expected_opts, app.submit_opts(app.build_session_context)
     end
   end
+
+  test "cluster widget label and validation_reason localize according to I18n.locale" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster:\n  - owens\n  - oakley\nform:\n  - bc_num_hours\n")
+
+      I18n.with_locale(:'fr-CA') do
+        app = BatchConnect::App.new(router: r)
+        cluster_attr = app.attributes.find { |a| a.id == 'cluster' }
+        hours_attr = app.attributes.find { |a| a.id == 'bc_num_hours' }
+        assert_equal 'Grappe', cluster_attr.label
+        assert_equal "Nombre d'heures", hours_attr.label
+      end
+
+      inaccessible_dir = Pathname.new(dir).join('inaccessible_app').tap(&:mkdir)
+      inaccessible_dir.join('form.yml').write("cluster:\n  - ruby\n")
+      I18n.with_locale(:'fr-CA') do
+        invalid_app = BatchConnect::App.new(router: PathRouter.new(inaccessible_dir))
+        refute invalid_app.valid?
+        assert_equal I18n.t('dashboard.batch_connect_validation.inaccessible_clusters'), invalid_app.validation_reason
+      end
+
+      missing_dir = Pathname.new(dir).join('does_not_exist')
+      I18n.with_locale(:'fr-CA') do
+        missing_app = BatchConnect::App.new(router: PathRouter.new(missing_dir))
+        refute missing_app.valid?
+        assert_equal I18n.t('dashboard.batch_connect_validation.app_not_found', root: missing_dir), missing_app.validation_reason
+      end
+    end
+  end
 end

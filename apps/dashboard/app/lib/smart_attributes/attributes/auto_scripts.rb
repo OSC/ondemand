@@ -55,7 +55,7 @@ module SmartAttributes
       end
 
       def label(*)
-        (opts[:label] || 'Script').to_s
+        (opts[:label] || I18n.t('dashboard.smart_attributes.script')).to_s
       end
 
       # Submission hash describing how to submit this attribute

@@ -27,7 +27,7 @@ module SmartAttributes
       end
 
       def label(*)
-        @opts[:label] || (@hpc_module.nil? ? 'Auto modules (none given)' : "#{@hpc_module.titleize} version")
+        @opts[:label] || (@hpc_module.nil? ? I18n.t('dashboard.smart_attributes.auto_modules_none') : I18n.t('dashboard.smart_attributes.module_version', module: @hpc_module.titleize))
       end
 
       def select_choices(*)

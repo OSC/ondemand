@@ -35,11 +35,11 @@ module SmartAttributes
       def label(fmt: nil)
         str = opts[:label] || case fmt
                               when 'lsf'
-                                'Number of processors'
+                                I18n.t('dashboard.smart_attributes.num_processors')
                               when 'pbspro'
-                                'Number of CPUs on single node'
+                                I18n.t('dashboard.smart_attributes.num_cpus_single_node')
                               else
-                                'Number of nodes'
+                                I18n.t('dashboard.smart_attributes.num_nodes')
                               end
         str.to_s
       end

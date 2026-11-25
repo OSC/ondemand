@@ -131,6 +131,12 @@ fr-CA:
       Votre session démarre actuellement... Veuillez patienter car ce processus peut
       prendre quelques minutes.
     batch_connect_sessions_word: Session
+    batch_connect_validation:
+      app_not_found: "Cette application n'existe pas sous le répertoire '%{root}'"
+      inaccessible_clusters: Cette application nécessite des grappes qui n'existent pas ou auxquelles vous n'avez pas accès.
+      missing_form_file: "Cette application ne fournit pas de fichier de formulaire sous le répertoire '%{root}'"
+      missing_sub_app_form_file: "Cette application ne fournit pas de fichier de formulaire de sous-application sous le répertoire '%{root}'"
+      no_cluster_specified: Cette application ne spécifie aucune grappe.
     bc_saved_settings:
       delete_confirm: Êtes-vous sûr ?
       delete_title: Supprimer les paramètres enregistrés %{settings_name}
@@ -366,6 +372,28 @@ fr-CA:
     show: Afficher
     size: Taille
     skip_navigation: Ignorer la navigation
+    smart_attributes:
+      account: Compte
+      auto_modules_none: Modules automatiques (aucun indiqué)
+      cluster: Grappe
+      cores: Cœurs
+      email_on_started: Je souhaite recevoir un courriel lorsque la session démarre
+      environment_variable: Variable d'environnement
+      environment_variable_key: "Variable d'environnement : %{key}"
+      job_name: Nom de la tâche
+      module_version: "Version de %{module}"
+      num_cpus_single_node: Nombre de processeurs sur un seul nœud
+      num_hours: Nombre d'heures
+      num_nodes: Nombre de nœuds
+      num_processors: Nombre de processeurs
+      partition: Partition
+      qos: QoS
+      queue: File d'attente
+      script: Script
+      vnc_idle_help: "Quitter si ce nombre de secondes s'écoule sans connexion au visualiseur VNC"
+      vnc_idle_label: Délai d'inactivité
+      vnc_resolution_help: La résolution est uniquement utilisée par les connexions VNC natives
+      vnc_resolution_label: Résolution
     soft_tabs: Tabulations souples
     soft_tabs_info: Les tabulations souples sont des espaces dans le fichier au lieu de véritables caractères de tabulation.
     status: Statut

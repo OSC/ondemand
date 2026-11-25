@@ -24,7 +24,7 @@ module SmartAttributes
       end
 
       def label(*)
-        (opts[:label] || 'Account').to_s
+        (opts[:label] || I18n.t('dashboard.smart_attributes.account')).to_s
       end
 
       # Submission hash describing how to submit this attribute

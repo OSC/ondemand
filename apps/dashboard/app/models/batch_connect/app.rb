@@ -237,10 +237,9 @@ module BatchConnect
       return @validation_reason if @validation_reason
 
       if configured_clusters.empty?
-        'This app does not specify any cluster.'
+        I18n.t('dashboard.batch_connect_validation.no_cluster_specified')
       elsif clusters.empty?
-        'This app requires clusters that do not exist ' \
-          'or you do not have access to.'
+        I18n.t('dashboard.batch_connect_validation.inaccessible_clusters')
       else
         ''
       end
@@ -446,16 +445,16 @@ module BatchConnect
     def form_config(binding: nil)
       return @form_config if defined?(@form_config)
 
-      raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
+      raise AppNotFound, I18n.t('dashboard.batch_connect_validation.app_not_found', root: root) unless root.directory?
 
       file = form_file(root: root)
-      raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
+      raise AppNotFound, I18n.t('dashboard.batch_connect_validation.missing_form_file', root: root) unless file
 
       hsh = read_yaml_erb(path: file, binding: binding)
       if sub_app
         file = form_file(root: sub_app_root, name: sub_app)
         unless file
-          msg = "This app does not supply a sub app form file under the directory '#{sub_app_root}'"
+          msg = I18n.t('dashboard.batch_connect_validation.missing_sub_app_form_file', root: sub_app_root)
           raise AppNotFound, msg
         end
 
@@ -495,7 +494,7 @@ module BatchConnect
       attributes[:cluster] = if clusters.size > 1
                                {
                                  widget:  'select',
-                                 label:   'Cluster',
+                                 label:   I18n.t('dashboard.smart_attributes.cluster'),
                                  options: clusters.map do |c|
                                             [c.title, c.id]                         
                                           end

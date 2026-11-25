@@ -22,12 +22,13 @@ module SmartAttributes
         end
 
         def original_label
-          return 'Environment Variable' if !@opts[:label] || opts[:label].match('Environment Variable')
+          default_base = I18n.t('dashboard.smart_attributes.environment_variable')
+          return default_base if !@opts[:label] || opts[:label].to_s.match?(/Environment Variable|#{Regexp.escape(default_base)}/)
           @opts[:label].to_s
         end
 
         def label(*)
-          (opts[:label] || "Environment Variable: #{@key}").to_s
+          (opts[:label] || I18n.t('dashboard.smart_attributes.environment_variable_key', key: @key)).to_s
         end
 
         def field_options(fmt: nil)

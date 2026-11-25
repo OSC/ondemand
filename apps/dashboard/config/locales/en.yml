@@ -131,6 +131,12 @@ en:
       Your session is currently starting... Please be patient as this process can
       take a few minutes.
     batch_connect_sessions_word: Session
+    batch_connect_validation:
+      app_not_found: "This app does not exist under the directory '%{root}'"
+      inaccessible_clusters: This app requires clusters that do not exist or you do not have access to.
+      missing_form_file: "This app does not supply a form file under the directory '%{root}'"
+      missing_sub_app_form_file: "This app does not supply a sub app form file under the directory '%{root}'"
+      no_cluster_specified: This app does not specify any cluster.
     bc_saved_settings:
       delete_confirm: Are you sure?
       delete_title: Delete %{settings_name} saved settings
@@ -377,6 +383,28 @@ en:
     show: Show
     size: Size
     skip_navigation: Skip Navigation
+    smart_attributes:
+      account: Account
+      auto_modules_none: Auto modules (none given)
+      cluster: Cluster
+      cores: Cores
+      email_on_started: I would like to receive an email when the session starts
+      environment_variable: Environment Variable
+      environment_variable_key: "Environment Variable: %{key}"
+      job_name: Job Name
+      module_version: "%{module} version"
+      num_cpus_single_node: Number of CPUs on single node
+      num_hours: Number of hours
+      num_nodes: Number of nodes
+      num_processors: Number of processors
+      partition: Partition
+      qos: QoS
+      queue: Queue
+      script: Script
+      vnc_idle_help: "Exit if # seconds elapse with no VNC viewer connections"
+      vnc_idle_label: Idle timeout
+      vnc_resolution_help: Resolution is only used by native VNC connections
+      vnc_resolution_label: Resolution
     soft_tabs: Soft Tabs
     soft_tabs_info: Soft tabs are spaces in the file instead of actual tab characters.
     status: Status

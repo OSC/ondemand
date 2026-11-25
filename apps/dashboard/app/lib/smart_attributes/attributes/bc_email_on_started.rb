@@ -22,7 +22,7 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of form label
       # @return [String] form label
       def label(fmt: nil)
-        (opts[:label] || 'I would like to receive an email when the session starts').to_s
+        (opts[:label] || I18n.t('dashboard.smart_attributes.email_on_started')).to_s
       end
 
       # Submission hash describing how to submit this attribute
