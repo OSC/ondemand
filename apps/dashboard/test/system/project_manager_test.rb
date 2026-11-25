@@ -307,7 +307,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
     iclass = type == :file ? 'fa-file' : 'fa-folder'
     icon = cell.find('i')
     assert_equal "fa #{iclass}",       icon[:class]
-    assert_equal type.to_s.capitalize, cell.find('.sr-only').text
+    assert_equal type.to_s.capitalize, cell.find('.visually-hidden').text
   end
 
   def check_link(link, text, path)
@@ -389,9 +389,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # check table
       headers = all("#{tframe_selector} th")
       assert_equal 5,         headers.length
-      assert_equal 'Type',    headers[0].find('.sr-only').text
+      assert_equal 'Type',    headers[0].find('.visually-hidden').text
       assert_equal 'Name',    headers[1].text
-      assert_equal 'Actions', headers[2].find('.sr-only').text
+      assert_equal 'Actions', headers[2].find('.visually-hidden').text
       assert_equal 'Size',    headers[3].text
       assert_equal 'Date',    headers[4].text
 
@@ -444,9 +444,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # check table
       headers = all("#{tframe_selector} th")
       assert_equal 7,         headers.length
-      assert_equal 'Type',    headers[0].find('.sr-only').text
+      assert_equal 'Type',    headers[0].find('.visually-hidden').text
       assert_equal 'Name',    headers[1].text
-      assert_equal 'Actions', headers[2].find('.sr-only').text
+      assert_equal 'Actions', headers[2].find('.visually-hidden').text
       assert_equal 'Size',    headers[3].text
       assert_equal 'Date',    headers[4].text
       assert_equal 'Owner',   headers[5].text
@@ -481,9 +481,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       new_headers = all("#{tframe_selector} th")
       assert_equal 5,         new_headers.length
-      assert_equal 'Type',    new_headers[0].find('.sr-only').text
+      assert_equal 'Type',    new_headers[0].find('.visually-hidden').text
       assert_equal 'Name',    new_headers[1].text
-      assert_equal 'Actions', new_headers[2].find('.sr-only').text
+      assert_equal 'Actions', new_headers[2].find('.visually-hidden').text
       assert_equal 'Owner',    new_headers[3].text
       assert_equal 'Mode',    new_headers[4].text
 

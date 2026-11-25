@@ -1,16 +1,10 @@
 // Bootstrap custom CSS
 
-.sr-only * {
-  @extend .sr-only;
-}
-
-.sr-only.focusable, .sr-only.focusable * {
-  position: initial;
+// The hidden clone sits next to its trigger (e.g. inside the white-text sidebar
+// headers), so give it dark text to keep its content above the contrast minimum.
+.visually-hidden.focusable.popover-hidden-clone,
+.visually-hidden.focusable.popover-hidden-clone * {
   color: black;
-}
-
-.sr-only.focusable.popover-hidden-clone,
-.sr-only.focusable.popover-hidden-clone * {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;

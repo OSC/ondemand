@@ -32,12 +32,12 @@
               link.url.to_s,
               class: "btn btn-primary",
               data: {
-                toggle: "popover",
-                content: manifest_markdown(link.description),
-                html: true,
-                trigger: "hover focus",
-                title: link.title,
-                container: "body",
+                'bs-toggle': "popover",
+                'bs-content': manifest_markdown(link.description),
+                'bs-html': true,
+                'bs-trigger': "hover focus",
+                'bs-title': link.title,
+                'bs-container': "body",
               },
               target: link.new_tab? ? "_blank" : nil
             )
