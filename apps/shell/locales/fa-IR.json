@@ -1,0 +1,18 @@
+{
+  "page_title": "پوسته - %{siteTitle}",
+  "menu_aria": "منوی پوسته",
+  "host_label": "میزبان: %{host}",
+  "initial_directory": "پوشه اولیه: %{dir}",
+  "themes_label": "پوسته‌ها:",
+  "theme_default": "پیش‌فرض",
+  "theme_bright": "روشن",
+  "theme_dark": "تیره",
+  "fonts_label": "قلم‌ها:",
+  "leave_page_warning": "خروج از این صفحه نشست پایانه شما را پایان می‌دهد.",
+  "websocket_failed": "برقراری اتصال WebSocket انجام نشد. مطمئن شوید مرورگر شما از WebSocket پشتیبانی می‌کند.",
+  "connection_terminated": "اتصال شما به سرور راه‌دور پایان یافت.",
+  "auth_no_clusters": "هیچ کلاستری تعریف نشده است.",
+  "auth_invalid_origin": "مبدأ نامعتبر است.",
+  "auth_bad_csrf": "توکن CSRF نامعتبر است.",
+  "auth_host_not_allowed": "میزبان \"%{host}\" در فهرست مجاز یا پیکربندی کلاسترها مشخص نشده است."
+}

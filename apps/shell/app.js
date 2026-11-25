@@ -15,6 +15,7 @@ const os        = require('os');
 const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 const helpers   = require('./utils/helpers');
+const i18n      = require('./utils/i18n');
 
 const username  = os.userInfo().username;
 
@@ -66,15 +67,28 @@ router.get(['/', '/ssh'], function (req, res) {
 router.get('/ssh{*splat}', function (req, res) {
   var theHost, theDir;
   [theHost, theDir] = host_and_dir_from_url(req.url);
+  const locale = i18n.resolveLocale(req);
+  const siteTitle = (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand");
+  const catalog = i18n.catalogFor(locale);
   res.render('index',
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
       host: theHost,
       dir: theDir,
+      locale: locale,
+      pageTitle: i18n.t(locale, 'page_title', { siteTitle: siteTitle }),
+      hostLabel: i18n.t(locale, 'host_label', { host: theHost || '' }),
+      initialDirectoryLabel: theDir ? i18n.t(locale, 'initial_directory', { dir: theDir }) : '',
+      i18n: catalog,
+      clientI18nJson: JSON.stringify({
+        leave_page_warning: catalog.leave_page_warning,
+        websocket_failed: catalog.websocket_failed,
+        connection_terminated: catalog.connection_terminated,
+      }).replace(/</g, '\\u003c'),
       colorThemes: color_themes,
       userCSS: helpers.userCSS(req.baseUrl),
-      siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
+      siteTitle: siteTitle,
     });
 });
 
@@ -148,17 +162,17 @@ function default_server_origin(headers){
   return origin;
 }
 
-function detect_auth_error(requestToken, client_origin, server_origin, host) {
+function detect_auth_error(requestToken, client_origin, server_origin, host, locale = 'en') {
   if (host_allowlist.length == 0) {
-    return "No clusters defined.";
+    return i18n.t(locale, 'auth_no_clusters');
   } else if (client_origin &&
     client_origin.startsWith('http') &&
     server_origin && client_origin !== server_origin) {
-    return "Invalid Origin.";
+    return i18n.t(locale, 'auth_invalid_origin');
   } else if (!tokens.verify(secret, requestToken)) {
-    return "Bad CSRF Token.";
+    return i18n.t(locale, 'auth_bad_csrf');
   } else if (!helpers.hostInAllowList(host_allowlist, host)) {
-    return `Host "${host}" not specified in allowlist or cluster configs.`;
+    return i18n.t(locale, 'auth_host_not_allowed', { host: host });
   } else {
     return null;
   }
@@ -232,7 +246,8 @@ wss.on('connection', function connection (ws, req) {
 
   // Verify authentication
   token = req.url.match(/csrf=([^&]*)/)[1];
-  authError = detect_auth_error(token, req.origin, custom_server_origin(default_server_origin(req)), host);
+  const wsLocale = i18n.resolveLocale(req);
+  authError = detect_auth_error(token, req.origin, custom_server_origin(default_server_origin(req.headers || req)), host, wsLocale);
   if (authError) {
     // 3146 has no meaning, any number between 3000-3999 is fair to use
     ws.close(3146, authError);

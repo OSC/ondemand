@@ -1,0 +1,18 @@
+{
+  "page_title": "シェル - %{siteTitle}",
+  "menu_aria": "シェルメニュー",
+  "host_label": "ホスト: %{host}",
+  "initial_directory": "初期ディレクトリ: %{dir}",
+  "themes_label": "テーマ:",
+  "theme_default": "デフォルト",
+  "theme_bright": "ライト",
+  "theme_dark": "ダーク",
+  "fonts_label": "フォント:",
+  "leave_page_warning": "このページを離れるとターミナルセッションが終了します。",
+  "websocket_failed": "WebSocket接続を確立できませんでした。WebSocketに対応したブラウザをご使用ください。",
+  "connection_terminated": "リモートサーバーへの接続が終了しました。",
+  "auth_no_clusters": "クラスターが定義されていません。",
+  "auth_invalid_origin": "無効なオリジンです。",
+  "auth_bad_csrf": "無効なCSRFトークンです。",
+  "auth_host_not_allowed": "ホスト \"%{host}\" は許可リストまたはクラスター設定に含まれていません。"
+}

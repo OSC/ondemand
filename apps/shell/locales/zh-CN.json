@@ -1,0 +1,18 @@
+{
+  "page_title": "终端 - %{siteTitle}",
+  "menu_aria": "终端菜单",
+  "host_label": "主机: %{host}",
+  "initial_directory": "初始目录: %{dir}",
+  "themes_label": "主题:",
+  "theme_default": "默认",
+  "theme_bright": "浅色",
+  "theme_dark": "深色",
+  "fonts_label": "字体:",
+  "leave_page_warning": "离开此页面将终止您的终端会话。",
+  "websocket_failed": "无法建立 WebSocket 连接。请确保您使用的是支持 WebSocket 连接的浏览器。",
+  "connection_terminated": "您与远程服务器的连接已终止。",
+  "auth_no_clusters": "未定义集群。",
+  "auth_invalid_origin": "无效的来源。",
+  "auth_bad_csrf": "无效的 CSRF 令牌。",
+  "auth_host_not_allowed": "主机 \"%{host}\" 未在允许列表或集群配置中指定。"
+}

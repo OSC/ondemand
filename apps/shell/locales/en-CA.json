@@ -1,0 +1,18 @@
+{
+  "page_title": "Shell - %{siteTitle}",
+  "menu_aria": "Shell Menu",
+  "host_label": "Host: %{host}",
+  "initial_directory": "Initial directory: %{dir}",
+  "themes_label": "Themes:",
+  "theme_default": "Default",
+  "theme_bright": "Bright",
+  "theme_dark": "Dark",
+  "fonts_label": "Fonts:",
+  "leave_page_warning": "Leaving this page will terminate your terminal session.",
+  "websocket_failed": "Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.",
+  "connection_terminated": "Your connection to the remote server has been terminated.",
+  "auth_no_clusters": "No clusters defined.",
+  "auth_invalid_origin": "Invalid Origin.",
+  "auth_bad_csrf": "Bad CSRF Token.",
+  "auth_host_not_allowed": "Host \"%{host}\" not specified in allowlist or cluster configs."
+}

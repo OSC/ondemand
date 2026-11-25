@@ -1,0 +1,18 @@
+{
+  "page_title": "Terminal - %{siteTitle}",
+  "menu_aria": "Menu du terminal",
+  "host_label": "Hôte : %{host}",
+  "initial_directory": "Répertoire initial : %{dir}",
+  "themes_label": "Thèmes :",
+  "theme_default": "Par défaut",
+  "theme_bright": "Clair",
+  "theme_dark": "Sombre",
+  "fonts_label": "Polices :",
+  "leave_page_warning": "Quitter cette page mettra fin à votre session de terminal.",
+  "websocket_failed": "Impossible d'établir une connexion WebSocket. Assurez-vous d'utiliser un navigateur compatible avec les connexions WebSocket.",
+  "connection_terminated": "Votre connexion au serveur distant a été interrompue.",
+  "auth_no_clusters": "Aucune grappe définie.",
+  "auth_invalid_origin": "Origine non valide.",
+  "auth_bad_csrf": "Jeton CSRF non valide.",
+  "auth_host_not_allowed": "L'hôte « %{host} » ne figure pas dans la liste d'autorisation ni dans la configuration des grappes."
+}

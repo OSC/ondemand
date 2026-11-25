@@ -1,8 +1,9 @@
 // Object that defines a terminal element
-function OodShell(element, url, profile) {
+function OodShell(element, url, profile, i18n) {
   this.element = element;
   this.url     = url;
   this.profile   = profile || "default";
+  this.i18n    = i18n || {};
   this.socket  = null;
   this.term    = null;
 }
@@ -50,7 +51,7 @@ OodShell.prototype.runTerminal = function () {
 
   // Warn user if he/she unloads page
   window.onbeforeunload = function() {
-    return 'Leaving this page will terminate your terminal session.';
+    return that.i18n.leave_page_warning || 'Leaving this page will terminate your terminal session.';
   };
 };
 
@@ -180,16 +181,16 @@ OodShell.prototype.closeTerminal = function (ev) {
   if ( this.term === null ) {
     errorDiv = document.createElement('div');
     errorDiv.className = 'error';
-    errorDiv.innerHTML = 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
+    errorDiv.textContent = this.i18n.websocket_failed || 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
     this.element.appendChild(errorDiv);
   } else if (ev.code === 3146) {
     document.querySelector('iframe').remove();
     errorDiv = document.createElement('div');
     errorDiv.className = 'error';
-    errorDiv.innerHTML = ev.reason;
+    errorDiv.textContent = ev.reason;
     this.element.appendChild(errorDiv);
   } else {
-    this.term.io.print('\r\nYour connection to the remote server has been terminated.');
+    this.term.io.print('\r\n' + (this.i18n.connection_terminated || 'Your connection to the remote server has been terminated.'));
   }
 }
 
