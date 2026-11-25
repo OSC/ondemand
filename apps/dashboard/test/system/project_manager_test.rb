@@ -821,12 +821,12 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       select('owens', from: 'launcher_auto_batch_clusters')
       select('pas1871', from: 'launcher_auto_accounts')
-      select('parallel', from: 'launcher_auto_queues')
+      find('#launcher_auto_queues').find("option[value='gpubackfill-parallel']").select_option
       select('my_cooler_script.bash', from: 'launcher_auto_scripts')
 
       Open3
         .stubs(:capture3)
-        .with({}, 'sbatch', '-D', project_dir, '-p', 'parallel', '-A', 'pas1871',
+        .with({}, 'sbatch', '-D', project_dir, '-p', 'gpubackfill-parallel', '-A', 'pas1871',
               '--export', 'NONE', '--parsable', '-M', 'owens',
               stdin_data: "hostname\n")
         .returns(['job-id-123', '', exit_success])
@@ -838,7 +838,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_selector('.alert-success', text: 'job-id-123')
 
       cache = JSON.parse(File.read("#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"))
-      assert_equal('parallel', cache['auto_queues'])
+      assert_equal('gpubackfill-parallel', cache['auto_queues'])
       assert_equal('pas1871', cache['auto_accounts'])
       assert_equal('owens', cache['auto_batch_clusters'])
     end
@@ -1127,7 +1127,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
               'sbatch', '-D', project_dir, 
               '-J', 'project-manager/my chosen job name',
               '-o', '/my_chosen_logfile.out',
-              '-p', 'parallel',
+              '-p', 'gpubackfill-parallel',
               '-A', 'pas1871', 
               '-t', '04:00:00',
               '-n', '5',
@@ -1143,7 +1143,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       select('owens', from: 'launcher_auto_batch_clusters')
       select('pas1871', from: 'launcher_auto_accounts')
-      select('parallel', from: 'launcher_auto_queues')
+      # Prefer value lookup: shared queue names like "parallel" appear once per cluster.
+      find('#launcher_auto_queues').find("option[value='gpubackfill-parallel']").select_option
       select('my_cooler_script.bash', from: 'launcher_auto_scripts')
       fill_in('launcher_auto_job_name', with: '')
       fill_in('launcher_auto_job_name', with: 'my chosen job name')
@@ -1161,7 +1162,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       
       assert_equal('owens', cache['auto_batch_clusters'])
       assert_equal('pas1871', cache['auto_accounts'])
-      assert_equal('parallel', cache['auto_queues'])
+      assert_equal('gpubackfill-parallel', cache['auto_queues'])
       assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
       assert_equal('my chosen job name', cache['auto_job_name'])
       assert_equal('/my_chosen_logfile.out', cache['auto_log_location'])
@@ -1187,7 +1188,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       cached_values = {
         'auto_batch_clusters'                     => 'owens',
         'auto_accounts'                           => 'pas1871',
-        'auto_queues'                             => 'parallel',
+        'auto_queues'                             => 'gpubackfill-parallel',
         'auto_scripts'                            => "#{project_dir}/my_cooler_script.bash",
         'auto_job_name'                           => 'my chosen job name',
         'auto_log_location'                       => '/my_chosen_logfile.out',
@@ -1210,7 +1211,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
               'sbatch', '-D', project_dir, 
               '-J', 'project-manager/my chosen job name',
               '-o', '/my_chosen_logfile.out',
-              '-p', 'parallel',
+              '-p', 'gpubackfill-parallel',
               '-A', 'pas1871', 
               '-t', '04:00:00',
               '-n', '5',
