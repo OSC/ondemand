@@ -55,8 +55,52 @@ function userCSS(baseURI) {
   return `${baseURI}/${css}`;
 }
 
+// Parse a comma separated list of URL query parameter names (OOD_SHELL_URL_PARAMS)
+// that are exported as environment variables for use by the OOD_SSH_WRAPPER command.
+function urlParamNames(config) {
+  if (!config) {
+    return [];
+  }
+
+  const names = config.split(',').map((name) => name.trim()).filter((name) => name !== '');
+  return Array.from(new Set(names)).filter((name) => {
+    if (name === 'csrf') {
+      console.warn('OOD_SHELL_URL_PARAMS: ignoring reserved parameter name "csrf"');
+      return false;
+    } else if (!/^[A-Za-z0-9_]+$/.test(name)) {
+      console.warn(`OOD_SHELL_URL_PARAMS: ignoring invalid parameter name "${name}"`);
+      return false;
+    }
+    return true;
+  });
+}
+
+// Map the allowed query parameters of the url to OOD_SHELL_URL_PARAM_<NAME> environment
+// variables. Only the first value of a repeated parameter is used, and values containing
+// NUL bytes or longer than 4096 characters are dropped.
+function urlParamsEnv(url, names) {
+  const env = {};
+  if (names.length === 0) {
+    return env;
+  }
+
+  const params = new URL(url, 'http://localhost').searchParams;
+  names.forEach((name) => {
+    const value = params.get(name);
+    if (value === null || value.includes('\0') || value.length > 4096) {
+      return;
+    }
+
+    env[`OOD_SHELL_URL_PARAM_${name.toUpperCase()}`] = value;
+  });
+
+  return env;
+}
+
 module.exports = {
   hostInAllowList,
   definedHosts,
   userCSS,
+  urlParamNames,
+  urlParamsEnv,
 }
