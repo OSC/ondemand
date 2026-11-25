@@ -1,8 +1,8 @@
 <%- if Configuration.bc_saved_settings? -%>
   <% all_settings = @bc_saved_settings %>
-  <div id="saved-settings-menu" class="card collapsible-app-card system-and-shared-apps-header">
+  <div id="saved-settings-menu" class="card system-and-shared-apps-header">
     <button
-      class="card-header collapsible-app-card-toggle"
+      class="card-header collapse-chevron d-flex align-items-center w-100 border-0"
       data-bs-toggle="collapse"
       data-bs-target="#saved-settings-menu-items"
       aria-expanded="true"
@@ -22,15 +22,20 @@
         link = app.link
       %>
         <p class="list-group-item mb-0 header border-0">
-          <a href="#" class="" data-bs-toggle="collapse" data-bs-target="<%= "#saved-settings-#{index}" %>" aria-expanded="true" aria-controls="<%= "saved-settings-#{index}" %>">
+          <a href="#" class="collapse-chevron d-flex align-items-center gap-1" data-bs-toggle="collapse" data-bs-target="<%= "#saved-settings-#{index}" %>" aria-expanded="true" aria-controls="<%= "saved-settings-#{index}" %>">
             <%= icon_tag(link.icon_uri) unless link.icon_uri.to_s.blank? %>
             <%= app.title %>
           </a>
         </p>
-        <div id="<%= "saved-settings-#{index}" %>" class="show saved-settings-list">
+        <div id="<%= "saved-settings-#{index}" %>" class="collapse show saved-settings-list">
           <% app_saved_settings.sort.each do |setting_name, _| %>
-            <a class="list-group-item list-group-item-action border-0"
-               href="<%= batch_connect_setting_path(token: app.token, id: setting_name) %>"
+            <%-
+              setting_path = batch_connect_setting_path(token: app.token, id: setting_name)
+              current = current_page?(setting_path) || current_page?(batch_connect_edit_settings_path(token: app.token, id: setting_name))
+            -%>
+            <a class="list-group-item list-group-item-action border-0 <%= 'active' if current %>"
+               href="<%= setting_path %>"
+               <%= 'aria-current="page"'.html_safe if current %>
                title="">
               <i id="" class="fa fa-file fa-fw app-icon" aria-hidden="true"></i>
               <%= setting_name %>

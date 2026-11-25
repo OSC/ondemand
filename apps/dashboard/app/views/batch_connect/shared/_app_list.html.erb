@@ -2,9 +2,9 @@
   slug = title.to_s.parameterize(separator: "_").presence || "group"
   list_dom_id = "bc_app_list_#{slug}_items"
 %>
-<div class="card collapsible-app-card <%= local_assigns.fetch(:style, "system-and-shared-apps-header") %>">
+<div class="card <%= local_assigns.fetch(:style, "system-and-shared-apps-header") %>">
   <button
-    class="card-header collapsible-app-card-toggle"
+    class="card-header collapse-chevron d-flex align-items-center w-100 border-0"
     data-bs-toggle="collapse"
     data-bs-target="#<%= list_dom_id %>"
     aria-expanded="true"

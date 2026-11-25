@@ -56,6 +56,29 @@ class SavedSettingsNavigationTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'saved settings menu highlights the preset that is being viewed or edited' do
+    with_modified_env({ OOD_BC_SAVED_SETTINGS: 'true' }) do
+      stub_user_settings
+
+      [
+        batch_connect_setting_path(token: 'sys/bc_paraview', id: 'menu_name'),
+        batch_connect_edit_settings_path(token: 'sys/bc_paraview', id: 'menu_name')
+      ].each do |page_path|
+        get page_path
+        assert_response :ok
+
+        active = css_select('div#saved-settings-menu div.saved-settings-list a.list-group-item-action.active')
+        assert_equal 1, active.size, "expected the preset to be highlighted on #{page_path}"
+        assert_equal 'menu_name', active.first.text.strip
+        assert_equal 'page', active.first['aria-current']
+      end
+
+      get batch_connect_sessions_path
+      assert_response :ok
+      assert_select 'div#saved-settings-menu div.saved-settings-list a.list-group-item-action.active', 0
+    end
+  end
+
   test 'saved settings menu should be empty message when no saved settings available' do
     with_modified_env({ OOD_BC_SAVED_SETTINGS: 'true' }) do
       Dir.mktmpdir do |dir|
