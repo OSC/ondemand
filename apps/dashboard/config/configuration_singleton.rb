@@ -353,6 +353,16 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
+  # Colon-separated list or YAML array of locale keys that users can 
+  # choose from. Defaults to just the default locale's key, making the 
+  # switcher opt-in (hidden unless admins explicitly enable additional locales.
+  def supported_locales
+    list = ENV['OOD_SUPPORTED_LOCALES'] || config.fetch(:supported_locales, [])
+    Array.wrap(list).flat_map { |item| item.to_s.strip.split(':') }.tap do |locales|
+      return [locale.to_s] if locales.empty?
+    end
+  end
+  
   # Set the global configuration directory
   def config_directory
     Pathname.new(ENV['OOD_CONFIG_D_DIRECTORY'] || "/etc/ood/config/ondemand.d")
