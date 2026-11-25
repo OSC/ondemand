@@ -34,9 +34,9 @@ module BatchConnect
           when 'usr'
             owner, name, sub_app = app
             router = UsrRouter.new(name, owner)
-          else # "sys"
+          else
             name, sub_app = app
-            router = SysRouter.new(name)
+            router = SysRouter.new(name, prefix: type.to_sym)
           end
           new(router: router, sub_app: sub_app)
         end
