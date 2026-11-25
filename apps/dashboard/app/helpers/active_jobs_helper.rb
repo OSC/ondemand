@@ -28,7 +28,7 @@ module ActiveJobsHelper
         from: "#{start_seconds}000",
         to: 'now',
         "var-#{server[:labels]['cluster']}": cluster,
-        "var-#{server[:labels]['host']}": node_num.split('.')[0],
+        "var-#{server[:labels]['host']}": node_num.nil? ? '$__all' : node_num.split('.')[0],
       }
       if ['cpu','memory','gpu-util','gpu-memory'].include?(report_type)
         url_base = 'd-solo'
