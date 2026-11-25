@@ -11,22 +11,6 @@ tr.app {
   }
 }
 
-.apps-section-header {
-  font-size: 24px;
-
-  color: #fff;
-  font-weight: 300;
-  width: 100%;
-
-  padding-left: 105px;
-  padding-top: 5px;
-  padding-bottom: 10px;
-
-  // awesim grey
-  background-color: rgb(128, 130, 133);
-
-}
-
 .app-icon {
   width: 100px;
   height: 100px;
@@ -56,47 +40,6 @@ i.app-icon.fa-fw {
   width: 24px;
   height: 24px;
   font-size: 14px;
-}
-
-// awesim colors - FIXME: awful lot for a list of colors to cycle through
-// would be better to gave a default grey and then cycle based on a list in an
-// initializer
-.apps-section-header-blue {
-  @extend .apps-section-header;
-  background-color: rgb(0, 95, 133);
-}
-
-.apps-section-header-red {
-  @extend .apps-section-header;
-  background-color: rgb(196, 32, 50);
-}
-
-.apps-section-header-teal {
-  @extend .apps-section-header;
-  background-color: rgb(28, 115, 127);
-}
-
-.apps-section-header-purple {
-  @extend .apps-section-header;
-  background-color: rgb(86, 44, 135);
-}
-
-.app-card {
-  @extend .card;
-  @extend .rounded;
-  @extend .p-2;
-  @extend .mb-3;
-
-  color: black;
-
-  // HACK: this happens to make the icons mostly fill space below & line up
-  height: 95%;
-
-  &:hover, &:focus {
-    color: rgb(0, 95, 133);
-    border-color: rgb(0, 95, 133);
-    text-decoration: none;
-  }
 }
 
 .app-settings-popup {

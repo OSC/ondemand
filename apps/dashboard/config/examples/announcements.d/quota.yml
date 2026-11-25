@@ -13,11 +13,11 @@
         archiving files.
       </p>
       <ul class="list-inline" style="margin-bottom: 10px;">
-        <li>&bull; Current disk space used: <strong>#{size}</strong></li>
-        <li>&bull; Total disk space available: <strong>#{max_size}</strong></li>
+        <li class="list-inline-item">&bull; Current disk space used: <strong>#{size}</strong></li>
+        <li class="list-inline-item">&bull; Total disk space available: <strong>#{max_size}</strong></li>
       </ul>
       <div class="progress">
-        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="#{percent}" aria-valuemin="0" aria-valuemax="100" style="width: #{percent}%;">
+        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="#{percent}" aria-valuemin="0" aria-valuemax="100" style="width: #{percent}%;">
           #{percent}%
         </div>
       </div>
@@ -36,11 +36,11 @@
         archiving files.
       </p>
       <ul class="list-inline" style="margin-bottom: 10px;">
-        <li>&bull; Current number of files used: <strong>#{size}</strong></li>
-        <li>&bull; Total number of files available: <strong>#{max_size}</strong></li>
+        <li class="list-inline-item">&bull; Current number of files used: <strong>#{size}</strong></li>
+        <li class="list-inline-item">&bull; Total number of files available: <strong>#{max_size}</strong></li>
       </ul>
       <div class="progress">
-        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="#{percent}" aria-valuemin="0" aria-valuemax="100" style="width: #{percent}%;">
+        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="#{percent}" aria-valuemin="0" aria-valuemax="100" style="width: #{percent}%;">
           #{percent}%
         </div>
       </div>

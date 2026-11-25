@@ -13,7 +13,7 @@
   fixed_name = "#{form.object_name}[#{attrib.id}_fixed]"
 -%>
 
-<div class="editable-form-field">
+<div class="editable-form-field border rounded-3 p-4 mt-3">
   <%= render(partial: 'launchers/editable_form_fields/form_item_preview', locals: {form: form, attrib: attrib, format: format }) %>
 
   <div id="edit_field_<%= field_id %>" class="d-none edit-group mb-3">

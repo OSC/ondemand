@@ -2,7 +2,7 @@
   field_id = "#{form.object_name}_#{attrib.id}"
 -%>
 
-<div class="editable-form-field">
+<div class="editable-form-field border rounded-3 p-4 mt-3">
   <%= render(partial: 'launchers/editable_form_fields/form_item_preview', locals: {form: form, attrib: attrib, format: format }) %>
 
   <div id="edit_field_<%= field_id %>" class="d-none edit-group">

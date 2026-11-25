@@ -203,7 +203,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
       find("[href='/projects/#{project_id}']").click
       assert_selector 'h1', text: 'Test Project'
-      assert_selector '.btn.btn-default', text: 'Back'
+      assert_selector '.btn.btn-light', text: 'Back'
     end
   end
 
@@ -241,7 +241,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       assert_equal "#{dir}/projects/#{project_id}", find('#project_directory').value
       assert_equal 'test-description', find('#project_description').value
       assert_equal 'arrow-right', find('#product_icon_select').value
-      assert_selector '.btn.btn-default', text: 'Back'
+      assert_selector '.btn.btn-light', text: 'Back'
     end
   end
 

@@ -1,7 +1,11 @@
 <%-
   session_class = status_context(session)
   badge_class = "bg-#{session_class}"
-  alert_class = "alert-#{session_class}"
+  header_class = if session_class == 'default'
+                   'bg-body-tertiary'
+                 else
+                   "bg-#{session_class}-subtle text-#{session_class}-emphasis border-#{session_class}-subtle"
+                 end
   info_labels = { 
                   'node' => session.info.allocated_nodes.size, 
                   'core' => session.info.procs.to_i, 
@@ -10,8 +14,8 @@
 -%>
 
 <div class="card-heading">
-  <div class="h5 card-header overflow-auto alert <%= alert_class %>">
-    <a href="<%= new_batch_connect_session_context_path(token: session.token) %>" class="alert-heading">
+  <div class="h5 card-header overflow-auto <%= header_class %>">
+    <a href="<%= new_batch_connect_session_context_path(token: session.token) %>" class="text-reset">
       <span class="card-text"><%= session.title %></span>
     </a>
     <span class="card-text"> (<%= session.job_id %>)</span>

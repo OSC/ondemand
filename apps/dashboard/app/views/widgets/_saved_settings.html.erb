@@ -23,14 +23,14 @@
               <span class="card-text"><%= settings.name %></span>
             </a>
           </div>
-          <span class="list-group-item header d-flex align-items-center pl-0">
-            <a href="#" class="btn px-1 py-0 saved-settings-toggle" data-bs-toggle="collapse" data-bs-target="#<%= toggle_id %>"><%= fa_icon('plus', classes: nil) %></a>
+          <div class="card-body saved-settings-app d-flex align-items-center gap-1 py-2 ps-1 small text-body-secondary">
+            <a href="#" class="btn btn-sm px-1 py-0 saved-settings-toggle" data-bs-toggle="collapse" data-bs-target="#<%= toggle_id %>"><%= fa_icon('plus', classes: nil) %></a>
             <%= icon_tag(icon_uri) unless icon_uri.to_s.blank? %>
             <%= settings.app.title %>
-          </span>
+          </div>
         </div>
 
-        <div id="<%= toggle_id %>" class="card-body collapse">
+        <div id="<%= toggle_id %>" class="card-body collapse border-top">
           <% settings.app.attributes.each do |attribute| %>
             <p>
               <strong><%= attribute.label %>:</strong>

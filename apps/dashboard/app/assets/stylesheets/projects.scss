@@ -18,83 +18,17 @@ div#directory_browser td a {
   overflow-wrap: anywhere;
 }
 
-.project-card {
-  width: fit-content;
-}
-
-.project-icon {
-  padding: 2rem;
-  margin: 0.5rem;
-
-  outline: 0.25em solid rgb(26, 118, 211);
-  border-radius: 10%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 20rem;
-
-  &:hover, &:focus {
-    outline: 0.4em solid rgb(26, 118, 211);
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  button {
-    text-decoration: none !important;
-  }
-
-  .project-title {
-    font-size: 1.25rem;
-    margin: 1rem 0rem;
-    font-weight: bold;
-    max-width: 18rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-
-.project-icon.shared {
-  padding: 1.75rem 2rem;
-
-  .project-title {
-    margin: .5rem 0rem;
-  }
-
-  small {
-    display: block;
-    font-size: 1rem;
-  }
-}
-
-.thin-outline {
-  outline: 0.15em solid rgb(36, 36, 36);
-}
-
-.button-icon {
-  font-size: 175%;
-  margin-left: 2rem;
+// project cards on the projects index and in the import pane
+.project-icon.card:is(:hover, :focus-visible) {
+  outline: 2px solid var(--bs-primary);
 }
 
 #import-wrapper {
   padding-bottom: 1rem;
   border-radius: 0px 0px var(--bs-border-radius) var(--bs-border-radius);
 
-  .project-icon {
-    width: fit-content;
-    aspect-ratio: 1;
-  }
-
-  .app-icon {
-    font-size: 4rem;
-    height: auto;
-  }
-
   .project-title {
     width: 7rem;
-    font-size: 1rem;
   }
 }
 

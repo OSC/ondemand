@@ -38,7 +38,7 @@ class SavedSettingsWidgetTest < ActionDispatch::IntegrationTest
       assert_equal batch_connect_setting_path(token: 'sys/bc_paraview', id: 'widget_name'),
                    saved_setting_link.first['href']
 
-      assert_equal 'Paraview', css_select('div.settings-widget span.list-group-item.header').text.strip
+      assert_equal 'Paraview', css_select('div.settings-widget .saved-settings-app').text.strip
     end
   end
 

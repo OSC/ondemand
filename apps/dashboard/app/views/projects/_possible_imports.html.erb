@@ -12,10 +12,10 @@
                   params: { project: { directory: project.directory } },
                   data: { turbo_frame: '_top' },
                   title: "import #{project.title}",
-                  class: 'project-icon p-2 border-0 bg-transparent' do %>
+                  class: 'project-icon card border-2 border-primary rounded-4 shadow-sm p-3 m-1 text-center' do %>
               <div class="text-center d-flex justify-content-center">
                 <strong>
-                  <%= icon_tag(URI.parse(project.icon)) %>
+                  <%= icon_tag(URI.parse(project.icon), classes: ['fa-2x']) %>
                   <div class="project-title mt-2 mb-0">
                     <%= project.title %>
                     <%= content_tag(:small, PosixFile.username_from_cache(project.directory.stat.uid), class:'text-muted d-block') %>

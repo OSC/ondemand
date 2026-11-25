@@ -371,7 +371,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
       ruas = css_select('div.row > div.col-md-12 > div.recently-used-apps-header > div.row > div.app-launcher-container')
       assert_equal(1, ruas.size)
 
-      header_text = css_select('h4.apps-section-header-blue').text
+      header_text = css_select('h4.apps-section-header').text
       assert_equal(I18n.t('dashboard.recently_used_apps_title'), header_text)
     end
   end

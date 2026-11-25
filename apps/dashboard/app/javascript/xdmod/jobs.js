@@ -139,7 +139,7 @@ function tableRows(context, helpers) {
     button.setAttribute('data-bs-toggle', 'collapse');
     button.setAttribute('data-bs-target', `#${detailsPanelId()}`);
     button.setAttribute('aria-expanded', 'false');
-    button.classList.add('btn', 'btn-default', 'btn-xs');
+    button.classList.add('btn', 'btn-light', 'border', 'btn-sm');
     button.innerHTML = `<i class="fa fa-plus fa-fw app-icon closed" aria-hidden="true"></i>
                         <i class="fa fa-minus fa-fw app-icon open" aria-hidden="true"></i>`;
     // OK to call this on open or close because the response is cached.

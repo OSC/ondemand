@@ -31,14 +31,14 @@ jQuery(function (){
 
     function clearAttachmentsError() {
         const $errorElement = $("#attachments_error");
-        $errorElement.parent().removeClass("has-error");
+        $errorElement.prev().removeClass("is-invalid");
         $errorElement.remove();
     }
 
     function showAttachmentsError(message) {
         const $attachmentsElement = $("[data-bs-toggle='attachments-error']");
-        $attachmentsElement.parent().addClass("has-error");
-        $attachmentsElement.after(`<div class="help-block" id="attachments_error">${message}</div>`);
+        $attachmentsElement.addClass("is-invalid");
+        $attachmentsElement.after(`<div class="invalid-feedback" id="attachments_error">${message}</div>`);
     }
 
     function deleteAttachment(event) {
