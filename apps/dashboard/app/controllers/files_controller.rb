@@ -197,16 +197,9 @@ class FilesController < ApplicationController
     parse_path(filepath, fs)
     validate_path!
 
-    editor_max = [::Configuration.file_editor_max_size, ::Configuration.download_file_max].min
-
-    if !@path.editable?
-      redirect_back(fallback_location: root_path, alert: "#{@path} is not an editable file")
-    elsif @path.size > editor_max
-      redirect_back(fallback_location: root_path, alert: "#{@path} exceeds editor limit of #{number_to_human_size(editor_max)}. Please download the file to edit or view it locally.")
-    else
-      @content = @path.read
-      render :edit, status: status, layout: 'editor'
-    end
+    FilePermissions.can_edit!(@path)
+    @content = @path.read
+    render :edit, status: status, layout: 'editor'
   rescue StandardError => e
     redirect_back(fallback_location: root_path, alert: e.message)
   end
@@ -327,9 +320,7 @@ class FilesController < ApplicationController
   end
 
   def show_file
-    raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
-    can_download, error = @path.can_download_file?
-    raise(StandardError, error) unless can_download
+    FilePermissions.can_open_file!(@path)
 
     if html_file? && ::Configuration.unsafe_render_html
       render(file: @path.realpath, layout: false)

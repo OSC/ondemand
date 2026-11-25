@@ -1,0 +1,207 @@
+# frozen_string_literal: true
+
+require 'test_helper'
+
+class FilePermissionsTest < ActiveSupport::TestCase
+  test 'can_open_file? is true for a readable file within the size limit' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'open.txt').tap { |path| File.write(path, 'hello') }
+
+      assert FilePermissions.can_open_file?(file)
+      assert FilePermissions.can_open_file!(file)
+    end
+  end
+
+  test 'can_open_file? is false when downloads are disabled' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'open.txt').tap { |path| FileUtils.touch(path) }
+      Configuration.stubs(:download_enabled?).returns(false)
+
+      refute FilePermissions.can_open_file?(file)
+      assert_raises(FilePermissions::Error) { FilePermissions.can_open_file!(file) }
+    end
+  end
+
+  test 'can_open_file? is false for directories' do
+    Dir.mktmpdir do |dir|
+      refute FilePermissions.can_open_file?(dir)
+    end
+  end
+
+  test 'can_open_file? is false for unreadable files' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'secret.txt').tap { |path| FileUtils.touch(path) }
+      FileUtils.chmod(0o0333, file)
+
+      refute FilePermissions.can_open_file?(file)
+    end
+  end
+
+  test 'can_open_file! raises when the file exceeds the download size limit' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'big.txt').tap { |path| FileUtils.touch(path) }
+      Pathname.any_instance.stubs(:lstat).returns(OpenStruct.new(size: Configuration.download_file_max + 1, symlink?: false))
+
+      refute FilePermissions.can_open_file?(file)
+      error = assert_raises(FilePermissions::Error) { FilePermissions.can_open_file!(file) }
+      assert_equal I18n.t('dashboard.files_file_too_large', download_file_size_limit: Configuration.download_file_max), error.message
+    end
+  end
+
+  test 'can_open_file? is false for paths outside the allowlist' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOWLIST_PATH: "#{dir}/allowed" }) do
+        FileUtils.mkdir_p("#{dir}/allowed")
+        FileUtils.mkdir_p("#{dir}/blocked")
+        file = File.join(dir, 'blocked', 'file.txt').tap { |path| FileUtils.touch(path) }
+
+        refute FilePermissions.can_open_file?(file)
+      end
+    end
+  end
+
+  test 'can_edit? is true for a writable file within the editor limit' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'edit.txt').tap { |path| File.write(path, 'edit me') }
+
+      assert FilePermissions.can_edit?(file)
+      assert FilePermissions.can_edit!(file)
+    end
+  end
+
+  test 'can_edit? is false for read-only files' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'readonly.txt').tap { |path| FileUtils.touch(path) }
+      FileUtils.chmod(0o0444, file)
+
+      refute FilePermissions.can_edit?(file)
+    end
+  end
+
+  test 'can_edit? is false when downloads are disabled' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'edit.txt').tap { |path| File.write(path, 'edit me') }
+      Configuration.stubs(:download_enabled?).returns(false)
+
+      refute FilePermissions.can_edit?(file)
+    end
+  end
+
+  test 'can_edit! raises when the file exceeds the editor size limit' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'too_big.txt').tap { |path| FileUtils.touch(path) }
+      editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
+      Pathname.any_instance.stubs(:lstat).returns(OpenStruct.new(size: editor_max + 1, symlink?: false))
+
+      refute FilePermissions.can_edit?(file)
+      error = assert_raises(FilePermissions::Error) { FilePermissions.can_edit!(file) }
+      assert_match(/exceeds editor limit/, error.message)
+    end
+  end
+
+  test 'can_access_directory? is true for a readable and executable directory' do
+    Dir.mktmpdir do |dir|
+      assert FilePermissions.can_access_directory?(dir)
+    end
+  end
+
+  test 'can_access_directory? is false for files' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'file.txt').tap { |path| FileUtils.touch(path) }
+
+      refute FilePermissions.can_access_directory?(file)
+    end
+  end
+
+  test 'can_access_directory? is false for an unreadable directory' do
+    Dir.mktmpdir do |dir|
+      FileUtils.chmod(0o0333, dir)
+
+      refute FilePermissions.can_access_directory?(dir)
+    ensure
+      FileUtils.chmod(0o0755, dir)
+    end
+  end
+
+  test 'can_access_directory? is false for directories outside the allowlist' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOWLIST_PATH: "#{dir}/allowed" }) do
+        FileUtils.mkdir_p("#{dir}/allowed")
+        blocked = File.join(dir, 'blocked').tap { |path| FileUtils.mkdir_p(path) }
+
+        refute FilePermissions.can_access_directory?(blocked)
+        assert FilePermissions.can_access_directory?("#{dir}/allowed")
+      end
+    end
+  end
+
+  test 'downloadable? is false for special files that are neither files nor directories' do
+    Dir.mktmpdir do |dir|
+      fifo = "#{dir}/test.fifo"
+      `mkfifo #{fifo}`
+
+      refute FilePermissions.downloadable?(fifo)
+    end
+  end
+
+  test 'downloadable? is false for files that cannot be opened' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'big.txt').tap { |path| FileUtils.touch(path) }
+      Pathname.any_instance.stubs(:lstat).returns(OpenStruct.new(size: Configuration.download_file_max + 1, symlink?: false))
+
+      refute FilePermissions.downloadable?(file)
+    end
+  end
+
+  test 'downloadable? is true for readable directories when downloads are enabled' do
+    Dir.mktmpdir do |dir|
+      assert FilePermissions.downloadable?(dir)
+      assert FilePermissions.downloadable!(dir)
+    end
+  end
+
+  test 'PosixFile#to_h exposes editable using FilePermissions' do
+    Dir.mktmpdir do |dir|
+      writable = File.join(dir, 'writable.txt').tap { |path| FileUtils.touch(path) }
+      readonly = File.join(dir, 'readonly.txt').tap { |path| FileUtils.touch(path) }
+      FileUtils.chmod(0o0444, readonly)
+
+      assert PosixFile.new(writable).to_h[:editable]
+      refute PosixFile.new(readonly).to_h[:editable]
+    end
+  end
+
+  test 'PosixFile#to_h marks fifos as not downloadable' do
+    Dir.mktmpdir do |dir|
+      fifo = "#{dir}/test.fifo"
+      `mkfifo #{fifo}`
+      refute PosixFile.new(fifo).to_h[:downloadable]
+    end
+  end
+  
+  test 'listing helpers share editor and download limits for remote entries' do
+    editor_max = [Configuration.file_editor_max_size, Configuration.download_file_max].min
+
+    assert FilePermissions.listing_downloadable?(directory: true)
+    assert FilePermissions.listing_downloadable?(directory: false, size: Configuration.download_file_max)
+    refute FilePermissions.listing_downloadable?(directory: false, size: Configuration.download_file_max + 1)
+
+    assert FilePermissions.listing_editable?(directory: false, size: editor_max)
+    refute FilePermissions.listing_editable?(directory: false, size: editor_max + 1)
+    refute FilePermissions.listing_editable?(directory: true, size: 1)
+
+    Configuration.stubs(:download_enabled?).returns(false)
+    refute FilePermissions.listing_editable?(directory: false, size: 1)
+  end
+
+  test 'PosixFile includes FilePermissions instance methods' do
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'included.txt').tap { |path| File.write(path, 'ok') }
+      posix = PosixFile.new(file)
+
+      assert posix.can_open_file?
+      assert posix.can_edit?
+      assert posix.downloadable?
+    end
+  end
+end
