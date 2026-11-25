@@ -121,7 +121,74 @@ module AccountCache
     end
   end
 
+  # To be used with dynamic forms. This method stitches together data
+  # about the reservation's availability WRT clusters & accounts.
+  # Only reservations the current user is allowed to use are returned.
+  #
+  # @return [Array] - the dynamic form options
+  def dynamic_reservations
+    Rails.cache.fetch('dynamic_reservations', expires_in: 5.minutes) do
+      cluster_ids = Configuration.job_clusters.map { |c| c.id.to_s }
+
+      usable_reservations.sort_by { |r| [r.name, r.cluster.to_s] }.map do |reservation|
+        cluster_data = (cluster_ids - [reservation.cluster.to_s]).map do |other_cluster|
+          cluster_token = other_cluster.tr('_', '-')
+          [
+            ["data-option-for-cluster-#{cluster_token}", false],
+            ["data-option-for-auto-batch-clusters-#{cluster_token}", false]
+          ]
+        end.flatten(1).to_h
+
+        unavailable_accounts = account_names.reject { |account| reservation_account_allowed?(reservation, account) }
+        data = cluster_data.merge(disabled_account_data(unavailable_accounts))
+
+        [reservation.name, reservation.name, data]
+      end
+    end
+  end
+
   private
+
+  def reservations
+    Configuration.job_clusters.flat_map do |cluster|
+      cluster.job_adapter.reservations
+    rescue StandardError => e
+      Rails.logger.warn("Did not get reservations from cluster #{cluster.id} with error #{e}")
+      []
+    end
+  end
+
+  # reservations the current user can submit to with at least one of their accounts.
+  def usable_reservations
+    reservations.select do |reservation|
+      next false unless reservation_user_allowed?(reservation)
+      next true if reservation.allow_accounts.nil? && reservation.deny_accounts.empty?
+
+      cluster_accounts = accounts.select { |account| account.cluster.to_s == reservation.cluster.to_s }.map(&:to_s)
+
+      # without account information for this cluster, let the scheduler decide when the job is submitted.
+      cluster_accounts.empty? || cluster_accounts.any? { |account| reservation_account_allowed?(reservation, account) }
+    end
+  end
+
+  # can the current user submit to this reservation?
+  # Slurm does not allow both users and groups on one reservation.
+  def reservation_user_allowed?(reservation)
+    user = CurrentUser.name
+    return false if reservation.deny_users.include?(user)
+    return reservation.allow_users.include?(user) unless reservation.allow_users.nil?
+    return (reservation.allow_groups & CurrentUser.group_names).any? unless reservation.allow_groups.nil?
+
+    true
+  end
+
+  # can _this_ account submit to this reservation?
+  def reservation_account_allowed?(reservation, account)
+    return false if reservation.deny_accounts.include?(account.to_s)
+    return reservation.allow_accounts.include?(account.to_s) unless reservation.allow_accounts.nil?
+
+    true
+  end
 
   def unique_qos_names
     [].tap do |arr|

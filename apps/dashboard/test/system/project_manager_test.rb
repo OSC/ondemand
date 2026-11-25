@@ -1619,7 +1619,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # use different accounts than what the template was generated with
       ['oakley', 'owens'].each do |cluster|
         Open3.stubs(:capture3)
-             .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
+             .with(slurm_env, 'sacctmgr', '-nP', 'show', 'users', 'withassoc',
                    'format=account,qos', 'where', 'user=me', "cluster=#{cluster}", stdin_data: '')
              .returns([File.read("test/fixtures/cmd_output/sacctmgr_show_accts_#{cluster}_alt.txt"), '', exit_success])
       end

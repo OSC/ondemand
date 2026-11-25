@@ -14,6 +14,7 @@ module SmartAttributes
   require 'smart_attributes/attributes/auto_primary_group'
   require 'smart_attributes/attributes/auto_queues'
   require 'smart_attributes/attributes/auto_qos'
+  require 'smart_attributes/attributes/auto_reservations'
   require 'smart_attributes/attributes/auto_scripts'
   require 'smart_attributes/attributes/bc_account'
   require 'smart_attributes/attributes/bc_email_on_started'
