@@ -152,6 +152,35 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'long error path in delete-failure alert stays within its container (regression #6097)' do
+    Dir.mktmpdir do |dir|
+      dir = Pathname.new(dir)
+      unwritable_dir = dir.join('a' * 150, 'unwritable')
+      unwritable_dir.mkpath
+      FileUtils.touch(unwritable_dir.join('victim.txt'))
+      `chmod -w #{unwritable_dir}`
+
+      visit files_url(unwritable_dir)
+      find('tbody a', exact_text: 'victim.txt').ancestor('tr').check
+      accept_alert do
+        find('#delete-btn').click
+      end
+
+      find('#main_container .alert-danger', wait: MAX_WAIT, text: 'Error occurred')
+      widths = page.evaluate_script(<<~JS)
+        (() => {
+          const d = document.querySelector('#main_container .alert-danger');
+          const s = d.querySelector('span');
+          return { span: s.getBoundingClientRect().width, content: d.clientWidth };
+        })()
+      JS
+      assert widths['span'] <= widths['content'],
+             "alert text (#{widths['span']}px) exceeds alert content box (#{widths['content']}px)"
+    ensure
+      `chmod +w #{unwritable_dir}` if unwritable_dir&.exist?
+    end
+  end
+
   test 'copying files' do
     visit files_url(Rails.root.to_s)
     ['app', 'config', 'manifest.yml'].each do |f|
