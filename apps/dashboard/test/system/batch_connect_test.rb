@@ -3537,11 +3537,14 @@ class BatchConnectTest < ApplicationSystemTestCase
       value = find("##{id}").value
       assert_equal('A', value)
 
+      select('B', from: id)
       find('#batch_connect_session_context_launch').click
+      assert_current_path(batch_connect_sessions_path)
+
       visit(new_batch_connect_session_context_url('sys/app'))
+      assert_equal('B', find("##{id}").value)
       cache_data = YAML.safe_load(File.read(cache_file.to_s)).to_h
-      assert_equal('A', value)
-      assert_equal({ 'cluster' => 'owens', 'filter' => 'A' }, cache_data)
+      assert_equal({ 'cluster' => 'owens', 'filter' => 'B' }, cache_data)
     end
   end
 
