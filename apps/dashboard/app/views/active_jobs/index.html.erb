@@ -3,7 +3,7 @@
     <div class="float-end">
       <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span id="selected-filter-label"></span> <span class="caret"></span>
+          <span id="selected-filter-label"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <% filters.each do |filter| %>
@@ -17,7 +17,7 @@
 
         <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span id="selected-cluster-label"></span> <span class="caret"></span>
+          <span id="selected-cluster-label"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <% OODClusters.sort_by {|cluster| cluster.title }.each do |cluster| %>

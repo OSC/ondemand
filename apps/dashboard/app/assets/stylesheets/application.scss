@@ -69,12 +69,6 @@ a.navbar-brand.navbar-brand-logo {
   }
 }
 
-// for inverse, lets make the text slightliy darker so its
-// different than the links
-.navbar.navbar-inverse .navbar-text {
-  color: #ddd;
-}
-
 // Add colors
 $ood-white: rgb(255, 255, 255);
 $ood-red: rgb(200, 16, 46);
@@ -149,16 +143,6 @@ pre.motd-monospaced {
   color: $ood-white;
   margin-bottom: 2rem;
 }
-
-/**
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max + 125) {
-  @include responsive-invisibility('.hidden-sm-nav');
-}
-
-@media (min-width: $screen-md-min) and (max-width: $screen-md-max + 135) {
-  @include responsive-invisibility('.hidden-md-nav');
-}
-**/
 
 pre:not(#editor) {
   @extend .bg-light !optional;
