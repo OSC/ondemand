@@ -256,13 +256,13 @@ describe OodPortalGenerator::Application do
       end
 
       it 'rasies an error with incomplete oidc configs in dex' do
-        config = { dex: true }
+        config = { dex: {} }
         allow(described_class).to receive(:context).and_return(config)
         expect { described_class.generate }.to raise_error(StandardError, 'oidc_crypto_passphrase must be set when using OIDC.')
       end
 
       it 'generates default dex configs' do
-        allow(described_class).to receive(:context).and_return({ dex: true, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
+        allow(described_class).to receive(:context).and_return({ dex: {}, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
         expected_rendered = read_fixture('ood-portal.conf.dex')
         expect(described_class.output).to receive(:write).with(expected_rendered)
         expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
@@ -270,18 +270,30 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
-      it 'generates default dex configs from nil' do
-        # this simulates a config of 'dex: '. I.e., uncommented dex
+      it 'does not enable dex when dex is null' do
+        # dex: and dex: null both load as nil
         allow(described_class).to receive(:context).and_return({ dex: nil, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
-        expected_rendered = read_fixture('ood-portal.conf.dex')
-        expect(described_class.output).to receive(:write).with(expected_rendered)
-        expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
-        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        expect(described_class.output).to receive(:write).with(read_fixture('ood-portal.conf.default'))
+        expect(described_class.dex_output).not_to receive(:write)
         described_class.generate()
+      end
+
+      it 'does not enable dex when dex is true' do
+        allow(described_class).to receive(:context).and_return({ dex: true, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
+        expect(described_class.output).to receive(:write).with(read_fixture('ood-portal.conf.default'))
+        expect(described_class.dex_output).not_to receive(:write)
+        described_class.generate()
+      end
+
+      it 'does not raise when dex is null and dex is not installed' do
+        allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(false)
+        allow(described_class).to receive(:context).and_return({ dex: nil })
+        expect(described_class.output).to receive(:write).with(read_fixture('ood-portal.conf.default'))
+        expect { described_class.generate }.not_to raise_error
       end
 
       it 'generates insecure default dex configs' do
-        allow(described_class).to receive(:context).and_return({ dex: true, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
+        allow(described_class).to receive(:context).and_return({ dex: {}, oidc_crypto_passphrase: '0caaf24ab1a0c33440c06afe99df986365b0781f' })
         allow(described_class).to receive(:insecure).and_return(true)
         expected_rendered = read_fixture('ood-portal.conf.dex')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -344,7 +356,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
-          dex: true,
+          dex: {},
         })
         expected_rendered = read_fixture('ood-portal.dex-full.proxy.conf')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -364,7 +376,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
-          dex: true
+          dex: {}
         })
         expected_rendered = read_fixture('ood-portal.conf.dex-full')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -385,7 +397,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
           dex_uri: false,
-          dex: true
+          dex: {}
         })
         expected_rendered = read_fixture('ood-portal.conf.dex-no-proxy')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -442,7 +454,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
           dex_uri: false,
-          dex: true
+          dex: {}
         })
         described_class.generate()
         expect(File.exist?(File.join(config_dir, 'cert'))).to eq(true)
@@ -532,10 +544,10 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
-      it 'raises an error when config is provided, but dex is not installed' do
+      it 'raises an error when a dex mapping is provided, but dex is not installed' do
         allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(false)
         expect {
-          allow(described_class).to receive(:context).and_return({ dex: nil })
+          allow(described_class).to receive(:context).and_return({ dex: {} })
           described_class.generate
         }.to(raise_error(ArgumentError, /You do not have dex installed/))
       end

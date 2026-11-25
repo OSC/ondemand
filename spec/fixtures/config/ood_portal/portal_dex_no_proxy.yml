@@ -7,5 +7,5 @@ listen_addr_port: 8080
 servername: localhost
 port: 8080
 dex_uri: false
-dex: true
+dex: {}
 oidc_crypto_passphrase: '449df16c-6f17-11f1-84a7-5c6f69576620'
