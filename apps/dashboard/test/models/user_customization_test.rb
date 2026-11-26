@@ -15,21 +15,25 @@ class UserCustomizationTest < ActiveSupport::TestCase
 
   test 'favorite_paths include system favorites' do
     Dir.mktmpdir do |dir|
-      path1 = File.join(dir, 'fav_dir_1')
-      path2 = File.join(dir, 'other_dir')
-      favorites = [path1, path2].map do |d| 
-        FileUtils.mkdir_p(d)
-        FavoritePath.new(d)
-      end
-      OodFilesApp.any_instance.stubs(:candidate_favorite_paths).returns(favorites)
+      with_modified_env({ 'OOD_USER_SETTINGS_FILE' => File.join(dir, '.user_settings.txt') }) do
+        Singleton.__init__(UserCustomization)
+        path1 = File.join(dir, 'fav_dir_1')
+        path2 = File.join(dir, 'other_dir')
+        favorites = [path1, path2].map do |d|
+          FileUtils.mkdir_p(d)
+          FavoritePath.new(d)
+        end
+        OodFilesApp.any_instance.stubs(:candidate_favorite_paths).returns(favorites)
 
-      assert UserCustomization.favorite_paths == favorites
+        assert UserCustomization.favorite_paths == favorites
+      end
     end
   end
 
   test 'custom favorites append to system favorites' do
     Dir.mktmpdir do |dir|
       with_modified_env({'OOD_USER_SETTINGS_FILE' => File.join(dir, '.user_settings.txt')}) do
+        Singleton.__init__(UserCustomization)
         path1 = File.join(dir, 'fav_dir_1')
         path2 = File.join(dir, 'other_dir')
         favorites = [path1, path2].map do |d| 
@@ -44,6 +48,36 @@ class UserCustomizationTest < ActiveSupport::TestCase
         exp_favorites = favorites.clone.push(FavoritePath.new(custom_path))
         assert_equal UserCustomization.favorite_paths.map(&:to_s), exp_favorites.map(&:to_s)
       end
+    end
+  end
+
+  test 'empty user settings file drops settings cached from a previous file' do
+    pollute_user_customization_settings
+
+    Dir.mktmpdir do |dir|
+      settings_file = File.join(dir, 'settings.yml')
+      File.write(settings_file, '')
+      with_modified_env({ 'OOD_USER_SETTINGS_FILE' => settings_file }) do
+        Singleton.__init__(UserCustomization)
+        custom_path = File.join(dir, 'custom_dir')
+        FileUtils.mkdir_p(custom_path)
+
+        UserCustomization.instance.add_files_favorite(custom_path)
+        saved = YAML.safe_load(File.read(settings_file))
+        expected = { 'files_favorites' => [{ 'title' => '', 'path' => custom_path }] }
+        assert_equal expected, saved
+      end
+    end
+  end
+
+  private
+
+  def pollute_user_customization_settings
+    fixture = Rails.root.join('test/fixtures/file_output/user_settings/saved_settings_menu.yml').to_s
+    with_modified_env({ 'OOD_USER_SETTINGS_FILE' => fixture }) do
+      Singleton.__init__(UserCustomization)
+      settings = UserCustomization.instance.send(:user_settings)
+      assert_includes settings.keys, :batch_connect_templates
     end
   end
 end
