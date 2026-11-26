@@ -180,11 +180,15 @@ module NginxStage
       end
 
       def pun_running?
-        return false unless File.socket?(NginxStage.pun_socket_path(user: user))
+        socket_path = NginxStage.pun_socket_path(user: user)
+        return false unless File.socket?(socket_path)
 
         PidFile.new(NginxStage.pun_pid_path(user: user)).running_process?
-      rescue MissingPidFile, InvalidPidFile
+      rescue MissingPidFile
         false
+      rescue InvalidPidFile => e
+        raise InvalidPidFile, "PUN startup blocked (#{e.message}). Verify that the PUN has stopped " \
+                              "before removing the PID file and stale socket #{socket_path}. Then retry startup."
       end
 
       # per-user NGINX config path
