@@ -53,16 +53,21 @@ class UserCustomizationTest < ActiveSupport::TestCase
 
   test 'empty user settings file drops settings cached from a previous file' do
     pollute_user_customization_settings
-    use_empty_user_settings_file
-    custom_path = Dir.mktmpdir
 
-    UserCustomization.instance.add_files_favorite(custom_path)
-    saved = YAML.safe_load(File.read(ENV.fetch('OOD_USER_SETTINGS_FILE')))
-    expected = { 'files_favorites' => [{ 'title' => '', 'path' => custom_path }] }
-    assert_equal expected, saved
-  ensure
-    clear_empty_user_settings_file
-    FileUtils.remove_entry(custom_path) if custom_path
+    Dir.mktmpdir do |dir|
+      settings_file = File.join(dir, 'settings.yml')
+      File.write(settings_file, '')
+      with_modified_env({ 'OOD_USER_SETTINGS_FILE' => settings_file }) do
+        Singleton.__init__(UserCustomization)
+        custom_path = File.join(dir, 'custom_dir')
+        FileUtils.mkdir_p(custom_path)
+
+        UserCustomization.instance.add_files_favorite(custom_path)
+        saved = YAML.safe_load(File.read(settings_file))
+        expected = { 'files_favorites' => [{ 'title' => '', 'path' => custom_path }] }
+        assert_equal expected, saved
+      end
+    end
   end
 
   private
