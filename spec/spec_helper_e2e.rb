@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Must come before beaker-rspec, which provisions the hosts when required.
+require 'e2e/beaker_docker_platform'
 require 'beaker-rspec'
 require 'e2e/e2e_helper'
 
