@@ -1379,20 +1379,25 @@ class FilesTest < ApplicationSystemTestCase
     File.delete(zip_file) if File.exist?(zip_file)
 
     Dir.mktmpdir do |dir|
-      allowed_dir = "#{dir}/allowed"
-      with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
-        `mkdir -p #{allowed_dir}/real_directory`
-        `touch #{allowed_dir}/real_file`
-        `touch #{allowed_dir}/real_directory/other_real_file`
-        `ln -s #{Rails.root.join('README.md')} #{allowed_dir}/sym_linked_file`
-        `ln -s #{Rails.root} #{allowed_dir}/sym_linked_directory`
+      browse_dir = File.join(dir, 'browse')
+      allowed_dir = File.join(browse_dir, 'allowed')
+      outside_dir = File.join(dir, 'outside')
+      with_modified_env({ OOD_ALLOWLIST_PATH: browse_dir }) do
+        FileUtils.mkdir_p([File.join(allowed_dir, 'real_directory'), outside_dir])
+        FileUtils.touch(File.join(allowed_dir, 'real_file'))
+        FileUtils.touch(File.join(allowed_dir, 'real_directory', 'other_real_file'))
+        outside_file = File.join(outside_dir, 'outside.txt')
+        FileUtils.touch(outside_file)
+        File.symlink(outside_file, File.join(allowed_dir, 'sym_linked_file'))
+        File.symlink(outside_dir, File.join(allowed_dir, 'sym_linked_directory'))
 
-        visit files_url(dir)
+        visit files_url(browse_dir)
         find('tbody a', exact_text: 'allowed').ancestor('tr').click
         click_on('Download')
 
-        sleep 5 # give it enough time to download
-        assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
+        Selenium::WebDriver::Wait.new(timeout: MAX_WAIT, message: "#{zip_file} was never downloaded!").until do
+          File.exist?(zip_file)
+        end
 
         Dir.mktmpdir do |unzip_tmp_dir|
           `cd #{unzip_tmp_dir}; unzip #{zip_file}`
