@@ -5,6 +5,8 @@ function OodShell(element, url, profile) {
   this.profile   = profile || "default";
   this.socket  = null;
   this.term    = null;
+  // Ctrl and Alt armed on the on-screen keys, applied to the next keystroke
+  this.modifiers = { ctrl: false, alt: false };
 }
 
 OodShell.prototype.createTerminal = function () {
@@ -24,6 +26,11 @@ OodShell.prototype.runTerminal = function () {
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
+    // The socket can close before hterm finishes initializing.
+    if (that.socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
+
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
     // things to the JS console.)
@@ -39,6 +46,9 @@ OodShell.prototype.runTerminal = function () {
 
     // hterm prevents Safari's normal tap-to-focus by preventing touch defaults.
     that.installTouchKeyboard(this);
+
+    // Esc, Ctrl, Alt, arrows and the like, which soft keyboards lack
+    that.installKeys();
   };
 
   // Patch cursor setting
@@ -132,6 +142,144 @@ OodShell.prototype.installTouchKeyboard = function (term) {
   }, touchOptions);
 };
 
+// On-screen keys for phone and tablet keyboards. Touch devices show them by
+// default; the Keys menu button shows or hides them and remembers the choice.
+OodShell.prototype.installKeys = function () {
+  const that = this;
+  const keys = document.getElementById('terminal_keys');
+  const toggle = document.getElementById('terminal_keys_toggle');
+  const terminalDocument = this.term.getDocument();
+  const saved = window.localStorage.getItem('ood_shell_keys');
+
+  const show = function (visible) {
+    keys.hidden = !visible;
+    toggle.setAttribute('aria-expanded', visible);
+    that.setModifier('ctrl', false);
+    that.setModifier('alt', false);
+  };
+  show(saved === null ? window.matchMedia('(pointer: coarse)').matches : saved === 'true');
+  toggle.addEventListener('click', function () {
+    show(keys.hidden);
+    window.localStorage.setItem('ood_shell_keys', !keys.hidden);
+  });
+  toggle.disabled = false;
+
+  // Keep focus in the terminal during pointer activation so the soft keyboard stays open.
+  keys.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
+
+  keys.addEventListener('click', function (ev) {
+    const button = ev.target.closest('button');
+    if (button === null) {
+      return;
+    }
+    if (ev.detail > 0 && !terminalDocument.hasFocus()) {
+      that.term.focus();
+    }
+    that.pressKey(button);
+  });
+
+  // Handle Backspace while we can still distinguish it from Ctrl+H. Send what
+  // hterm sends for Ctrl+Backspace, which is the opposite of plain Backspace:
+  // BS (^H) by default, DEL when backspaceSendsBackspace is set.
+  terminalDocument.querySelector('x-screen')?.addEventListener('keydown', function (ev) {
+    if (ev.isComposing || ev.defaultPrevented || ev.ctrlKey || ev.altKey || ev.metaKey) {
+      return;
+    }
+
+    let sequence;
+    if (that.modifiers.ctrl && ev.key === 'Backspace') {
+      sequence = that.term.keyboard.backspaceSendsBackspace ? '\x7f' : '\b';
+    } else if ((that.modifiers.ctrl || that.modifiers.alt) && ev.shiftKey &&
+        !that.term.keyboard.applicationCursor && (ev.key === 'ArrowUp' || ev.key === 'ArrowDown')) {
+      // hterm would scroll locally without seeing the armed modifier.
+      sequence = ev.key === 'ArrowUp' ? '\x1b[1;2A' : '\x1b[1;2B';
+    } else {
+      return;
+    }
+
+    ev.preventDefault();
+    ev.stopPropagation();
+    that.term.onVTKeystroke(sequence);
+  });
+};
+
+// Bytes sent by the on-screen keys. Other keys send their data-key as text.
+OodShell.keySequences = {
+  Escape:     '\x1b',
+  Tab:        '\t',
+  BackTab:    '\x1b[Z',
+  ArrowUp:    '\x1b[A',
+  ArrowDown:  '\x1b[B',
+  ArrowRight: '\x1b[C',
+  ArrowLeft:  '\x1b[D',
+  Home:       '\x1b[H',
+  End:        '\x1b[F',
+  PageUp:     '\x1b[5~',
+  PageDown:   '\x1b[6~',
+  '^C':       '\x03',
+  '^D':       '\x04',
+  '^X':       '\x18',
+  '^Z':       '\x1a'
+};
+
+// Send an on-screen key as if it were typed, so that hterm scrolls to the
+// cursor and onVTKeystroke applies any armed Ctrl or Alt.
+OodShell.prototype.pressKey = function (button) {
+  const modifier = button.dataset.modifier;
+  if (modifier) {
+    this.setModifier(modifier, !this.modifiers[modifier]);
+    return;
+  }
+
+  let str = OodShell.keySequences[button.dataset.key] || button.dataset.key;
+  // vim, less and the like switch cursor keys to application mode (ESC O A).
+  if (this.term.keyboard.applicationCursor) {
+    str = str.replace(/^\x1b\[([A-DFH])$/, '\x1bO$1');
+  }
+  this.term.onVTKeystroke(str);
+};
+
+OodShell.prototype.setModifier = function (name, armed) {
+  this.modifiers[name] = armed;
+  document.querySelector('[data-modifier="' + name + '"]').setAttribute('aria-pressed', armed);
+};
+
+// What a keystroke sends with Ctrl and/or Alt held, as hterm and xterm encode
+// a physical keyboard.
+OodShell.applyModifiers = function (str, ctrl, alt) {
+  // hterm strips Ctrl from Shift+Tab and sends the Shift modifier.
+  if (str === '\x1b[Z' && ctrl) return '\x1b[1;2Z';
+
+  // Merge modifiers already encoded by hterm on cursor and paging keys.
+  const key = /^\x1b[\[O](\d*)(?:;([1-9]|1[0-6]))?([A-Z~])$/.exec(str);
+  if (key && (!key[2] || /^(?:1[A-DFH]|[56]~)$/.test(key[1] + key[3]))) {
+    const flags = (Number(key[2] || 1) - 1) | (alt ? 2 : 0) | (ctrl ? 4 : 0);
+    return '\x1b[' + (key[1] || '1') + ';' + (flags + 1) + key[3];
+  }
+  // Leave text from autocomplete or an input method alone.
+  if (str.length !== 1) {
+    return str;
+  }
+  if (ctrl) {
+    str = OodShell.ctrlChar(str);
+  }
+  // Alt sends ESC first, which readline and emacs read as Meta.
+  return alt ? '\x1b' + str : str;
+};
+
+// Ctrl-A is \x01 and so on through Ctrl-_ (lowercase and shifted forms too),
+// plus hterm's Ctrl with Space, digits, / and ?. Others are sent unchanged.
+OodShell.ctrlChar = function (ch) {
+  const code = ch.charCodeAt(0);
+  if (code >= 0x40 && code < 0x7f) {
+    return String.fromCharCode(code & 0x1f);
+  }
+  return {
+    ' ': '\x00', '2': '\x00', '3': '\x1b', '4': '\x1c', '5': '\x1d',
+    '6': '\x1e', '7': '\x1f', '8': '\x7f', '/': '\x1f', '?': '\x7f'
+  }[ch] || ch;
+};
+
 OodShell.prototype.installVisualViewportSizing = function () {
   const viewport = window.visualViewport;
   const element = this.element;
@@ -176,6 +324,14 @@ OodShell.prototype.closeTerminal = function (ev) {
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
 
+  // Nothing left for the on-screen keys to type into
+  document.getElementById('terminal_keys').hidden = true;
+  const toggle = document.getElementById('terminal_keys_toggle');
+  toggle.disabled = true;
+  toggle.setAttribute('aria-expanded', 'false');
+  this.setModifier('ctrl', false);
+  this.setModifier('alt', false);
+
   // Inform user they lost connection
   if ( this.term === null ) {
     errorDiv = document.createElement('div');
@@ -194,18 +350,22 @@ OodShell.prototype.closeTerminal = function (ev) {
 }
 
 OodShell.prototype.onVTKeystroke = function (str) {
-  // Do something useful with str here.
-  // For example, Secure Shell forwards the string onto the NaCl plugin.
-  this.socket.send(JSON.stringify({
-    input: str
-  }));
+  // Keys typed or tapped by the user. Ctrl or Alt armed on the on-screen
+  // keys applies to this one only.
+  if (this.modifiers.ctrl || this.modifiers.alt) {
+    str = OodShell.applyModifiers(str, this.modifiers.ctrl, this.modifiers.alt);
+    this.setModifier('ctrl', false);
+    this.setModifier('alt', false);
+  }
+  this.sendString(str);
 };
 
 OodShell.prototype.sendString = function (str) {
-  // Just like a keystroke, except str was generated by the
-  // terminal itself.
-  // Most likely you'll do the same this as onVTKeystroke.
-  this.onVTKeystroke(str)
+  // Just like a keystroke, except str was generated by the terminal itself
+  // (pastes, replies to queries), so on-screen modifiers don't apply.
+  this.socket.send(JSON.stringify({
+    input: str
+  }));
 };
 
 OodShell.prototype.changeTheme = function (theme) {
