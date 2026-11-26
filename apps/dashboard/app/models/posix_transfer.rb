@@ -1,6 +1,8 @@
 # PosixTransfer is a class for transferring local files.
 class PosixTransfer < Transfer
 
+  COPY_ENTRY_TYPES = %w[directory file link].freeze
+
   validates_each :files do |record, _attr, files|
 
     if record.move? || record.copy?
@@ -41,24 +43,39 @@ class PosixTransfer < Transfer
   def steps
     return @steps if @steps
 
-    names = files.keys.map { |f| File.basename(f) }
-
     # a move to a different device does a cp then mv
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
     elsif copy?
-      @steps = files.keys.map do |source|
-        path = Pathname.new(source)
-        path.directory? ? Dir["#{source}/**/*"].length : 1
-      end.sum
+      @steps = files.keys.sum do |source|
+        case copy_entry_type(source)
+        when 'directory'
+          # Count the root separately, since the glob can also return it as '.'.
+          1 + Dir.glob('**/*', File::FNM_DOTMATCH, base: source, sort: false).count do |entry|
+            entry != '.' && COPY_ENTRY_TYPES.include?(copy_entry_type(File.join(source, entry)))
+          end
+        when 'file', 'link', nil
+          # Keep one planned step for a source whose type could not be read.
+          1
+        else
+          0
+        end
+      end
     elsif remove?
-      @steps = names.size
+      @steps = files.size
     else
+      names = files.keys.map { |f| File.basename(f) }
       @steps = PosixFile.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end
 
     @steps
+  end
+
+  def copy_entry_type(path)
+    File.ftype(path)
+  rescue SystemCallError
+    nil
   end
 
   # PosixTransfer no longer issues CLI commands to transfer files.
@@ -141,22 +158,21 @@ class PosixTransfer < Transfer
 
     if src.file? || src.symlink?
       cp_single(src, new_dest)
-    elsif src.directory? && src.empty?
+    elsif src.directory?
+      if src.empty?
+        # TODO: probably need to preserve permissions here.
+        FileUtils.mkdir_p(new_dest)
+      else
+        src.each_child { |child| cp_r(child, dest, original_src) }
+      end
       inc_cp_percent
-      # TODO: probably need to preserve permissions here.
-      FileUtils.mkdir_p(new_dest)
-    elsif src.directory? && !src.empty?
-      src.each_child { |child| cp_r(child, dest, original_src) }
     end
   end
 
   def cp_single(src, dest)
     dest_parent = dest.parent.to_s
     # TODO: probably need to preserve permissions here.
-    unless File.exist?(dest_parent)
-      FileUtils.mkdir_p(dest_parent)
-      inc_cp_percent
-    end
+    FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
 
     if src.symlink?
 
@@ -194,7 +210,7 @@ class PosixTransfer < Transfer
   # for how many steps it's taken. We should find a way to refactor this.
   def inc_cp_percent
     @current_cp_step += 1
-    update_percent(@current_cp_step)
+    update_percent([@current_cp_step, steps].min)
   end
 
   def mv
