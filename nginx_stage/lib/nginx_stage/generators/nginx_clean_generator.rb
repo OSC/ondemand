@@ -5,6 +5,13 @@ module NginxStage
 
     include NginxStage::SessionFinder
 
+    # Forced cleanup skips the process listing regardless of active sessions.
+    def session_count(user)
+      return 0 if force
+
+      super
+    end
+
     desc 'Clean all user running PUNs with no active connections'
 
     footer <<-EOF.gsub(/^ {4}/, '')
