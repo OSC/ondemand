@@ -19,7 +19,7 @@ module OodPortalGenerator
       config = opts.fetch(:dex, NO_CONFIG)
       set_enable(config)
 
-      @config = config == true || config == NO_CONFIG || config.nil? || !enabled? ? {} : config
+      @config = config.is_a?(Hash) ? config : {}
       @view = view
       @view.dex_enabled = enabled?
       @dex_config = {}
@@ -77,17 +77,14 @@ module OodPortalGenerator
 
     # determine if this config would enable dex configurations.
     def set_enable(config)
-      if !Dex.installed? && config != NO_CONFIG && config != false
+      configuring = config.is_a?(Hash)
+      if configuring && !Dex.installed?
         msg = 'You do not have dex installed, but are trying to configure it. Please install ondemand-dex' \
               ' or remove the configurations to continue.'
         raise(ArgumentError, msg)
       end
 
-      @enable = if config == NO_CONFIG || config == false || !Dex.installed?
-                  false
-                else
-                  true
-                end
+      @enable = configuring && Dex.installed?
     end
 
     def listen

@@ -486,8 +486,8 @@
 #dex_uri: /dex
 
 # Dex configurations, values inside the "dex" structure are directly used to configure Dex
-# If the value for "dex" key is false or null, Dex support is disabled
-# Dex support will auto-enable if ondemand-dex package is installed
+# Dex is enabled only when "dex" is a mapping and the ondemand-dex package is installed
+# false, null, and true disable Dex. An empty mapping (`dex: {}`) uses default settings
 #dex:
   # Default based on if ssl key for ood-portal-generator is defined
 #  ssl: false
