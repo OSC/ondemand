@@ -33,7 +33,7 @@ function nginx_handler(r)
   end
 
   -- grab "redir" query param
-  local GET, GETMULTI = r:parseargs()
+  local GET = r:parseargs()
   local redir = GET['redir']
 
   -- grab task specified in nginx URI request
@@ -41,7 +41,7 @@ function nginx_handler(r)
 
   -- generate shell command from requested task
   -- please see `nginx_stage` documentation for explanation of shell command
-  local err = nil
+  local err
   if task == "init" then
     -- initialize app based on "redir" param (require a valid redir parameter)
     if not redir then return http.http404(r, 'requires a `redir` query parameter') end

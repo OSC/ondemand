@@ -67,7 +67,7 @@ function logger(r)
     msg["time_proxy"]    = time_begin_proxy and (r:clock() - time_begin_proxy)/1000.0 or 0
     msg["time_user_map"] = time_user_map and tonumber(time_user_map) or 0
 
-    msg_str = {}
+    local msg_str = {}
     for k, v in pairs(msg) do
       table.insert(msg_str, k .. "=\"" .. string.gsub(tostring(v), "\"", "'") .. "\"")
     end
