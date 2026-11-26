@@ -301,18 +301,76 @@ class FilesTest < ApplicationSystemTestCase
 
       find('li.breadcrumb-item', text: File.basename(dir)).click
       find('a.name', text: 'dest').click
+      assert_current_path(files_path("#{dir}/dest"))
 
       assert_selector '#clipboard li', count: 3
 
       find('#clipboard-copy-to-dir').click
 
-      assert_selector('tbody a', exact_text: 'app')
-      assert_selector('tbody a', exact_text: 'foo.txt')
-      assert_selector('tbody a', exact_text: 'bar.txt')
+      # A directory can appear in the listing before all its files are copied.
+      expected_files = ['app/contents.txt', 'foo.txt', 'bar.txt']
+      Selenium::WebDriver::Wait.new(timeout: MAX_WAIT, message: 'Copied files never appeared in dest').until do
+        expected_files.all? { |file| File.file?(File.join(dir, 'dest', file)) }
+      end
 
-      assert File.file?(File.join(dir, 'dest', 'app', 'contents.txt'))
-      assert File.file?(File.join(dir, 'dest', 'foo.txt'))
-      assert File.file?(File.join(dir, 'dest', 'bar.txt'))
+      assert_selector('tbody a', exact_text: 'app', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'foo.txt', wait: MAX_WAIT)
+      assert_selector('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+    end
+  end
+
+  test 'a refresh during navigation uses the destination without waiting for the older listing' do
+    Dir.mktmpdir do |dir|
+      destination = File.join(dir, 'dest')
+      FileUtils.mkdir_p(destination)
+      FileUtils.touch(File.join(destination, 'copied.txt'))
+
+      visit files_url(dir)
+      find('tbody a', exact_text: 'dest')
+      destination_path = files_path(destination)
+      page.execute_script(<<~JS, destination_path)
+        const destination = arguments[0];
+        const originalFetch = window.fetch;
+        const staleListing = new Promise(resolve => {
+          window.releaseStaleListing = () => resolve({
+            ok: true,
+            headers: new Headers(),
+            json: async () => ({
+              files: [],
+              path: destination,
+              url: destination,
+              shell_dropdown_html: '',
+              breadcrumbs_html: ''
+            })
+          });
+        });
+
+        window.directoryRequests = [];
+        window.fetch = (url, options) => {
+          if (options?.headers?.Accept === 'application/json') {
+            window.directoryRequests.push(url);
+            if (window.directoryRequests.length === 1) {
+              return staleListing;
+            }
+          }
+          return originalFetch(url, options);
+        };
+
+        const listing = $('#directory-contents');
+        listing.trigger('goto', { path: destination });
+        listing.trigger('reloadTable');
+      JS
+
+      assert_current_path(destination_path)
+      assert_selector('tbody a', exact_text: 'copied.txt')
+      assert_equal([destination_path, destination_path], page.evaluate_script('window.directoryRequests'))
+
+      page.evaluate_async_script(<<~JS)
+        window.releaseStaleListing();
+        setTimeout(arguments[arguments.length - 1], 0);
+      JS
+      assert_current_path(destination_path)
+      assert_selector('tbody a', exact_text: 'copied.txt')
     end
   end
 
