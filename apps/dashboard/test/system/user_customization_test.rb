@@ -29,6 +29,7 @@ class UserCustomizationTest < ApplicationSystemTestCase
       stub_system_favorites(dir)
       settings_file = File.join(dir, '.user_settings.txt')
       with_modified_env({'OOD_USER_SETTINGS_FILE' => settings_file}) do
+        Singleton.__init__(UserCustomization)
         visit files_url(Rails.root.to_s)
         tr = find('a', exact_text: 'config').ancestor('tr')
         tr.find('button.dropdown-toggle').click
