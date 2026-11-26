@@ -175,6 +175,8 @@ jQuery(function () {
 
 class DataTable {
     _table = null;
+    _listingRequest = null;
+    _navigation = null;
 
     constructor() {
         this.loadDataTable();
@@ -291,13 +293,21 @@ class DataTable {
     }
 
     async reloadTable(url) {
-        var request_url = url || history.state.currentDirectoryUrl;
-
-        this.toggleSpinner();
+        const navigation = this._navigation;
+        // A refresh during navigation should load and commit the pending destination.
+        const requestUrl = navigation?.url || url || history.state.currentDirectoryUrl;
+        this._listingRequest?.abort();
+        this._listingRequest = new AbortController();
+        const { signal } = this._listingRequest;
+        this.setLoading(true);
 
         try {
-            const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+            const response = await fetch(requestUrl, {
+                headers: { 'Accept': 'application/json' }, cache: 'no-store', signal
+            });
             const data = await this.dataFromJsonResponse(response);
+            if (signal.aborted) return;
+
             history.state.currentFilenames = Array.from(data.files, x => x.name);
             $('#shell-wrapper').replaceWith(this.cleanHtml(data.shell_dropdown_html));
 
@@ -318,7 +328,6 @@ class DataTable {
                 document.title = data.page_title;
             }
 
-            let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
                 if (event.which === 13) {
                     this.checked = !this.checked;
@@ -331,24 +340,26 @@ class DataTable {
                 }
             });
 
-            this.toggleSpinner();
-
-            return result;
+            if (navigation) this.finishNavigation(navigation, data);
         } catch (e) {
+            if (signal.aborted) return;
+
             OODAlertError(e.message);
             console.error(e);
-
             $('#open-in-terminal-btn').addClass('disabled');
-            this.toggleSpinner();
-            
-            // Removed this as it was causing a JS Error and there is no reprocution from removing it.
-            // return await Promise.reject(e);
+        } finally {
+            // Only the active request may clear pending navigation and hide the spinner.
+            if (!signal.aborted) {
+                this._listingRequest = null;
+                this._navigation = null;
+                this.setLoading(false);
+            }
         }
     }
 
-    toggleSpinner() {
-        document.querySelector(SPINNERID).classList.toggle('d-none');
-        document.querySelector(CONTENTID).classList.toggle('d-none');
+    setLoading(loading) {
+        document.querySelector(SPINNERID).classList.toggle('d-none', !loading);
+        document.querySelector(CONTENTID).classList.toggle('d-none', loading);
     }
 
     updateDotFileVisibility() {
@@ -562,37 +573,27 @@ class DataTable {
         $('#directory-contents_info').html(`${msg} - ${rows} rows selected`);
     }
 
-    goto(url, pushState = true, show_processing_indicator = true) {
-        if(url == history.state.currentDirectoryUrl)
-            pushState = false;
+    goto(url, pushState = true) {
+        this._navigation = { url, pushState };
+        return this.reloadTable();
+    }
 
-	const shouldPushState = pushState;
-	const navigatingTo = url;
-        this.reloadTable(url)
-	    .then((data) => {
-                if(data) {
-                    $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
-                    if(shouldPushState && location.href !== navigatingTo) {
-                        // Clear search query when moving to another directory.
-                        this._table.search('').draw();
+    finishNavigation({ url, pushState }, data) {
+        $('#path-breadcrumbs').html(this.cleanHtml(data.breadcrumbs_html));
+        if (pushState && url !== history.state.currentDirectoryUrl && location.href !== url) {
+            // Clear search query when moving to another directory.
+            this._table.search('').draw();
 
-                        history.pushState({
-                            currentDirectory: data.path,
-                            currentDirectoryUrl: data.url,
-                            currentFilesPath: data.files_path,
-                            currentFavoritesPath: history.state.currentFavoritesPath,
-                            currentFilesUploadPath: data.files_upload_path,
-                            currentFilesystem: data.filesystem,
-                            currentFilenames: Array.from(data.files, x => x.name)
-                        }, data.name, data.url);
-                    }
-                    this.updateGlobus();
-                }
-            })
-            .finally(() => {
-                //TODO: after processing is available via ActiveJobs merge
-                // if(show_processing_indicator)
-                //   table.processing(false)
-            });
-    } 
+            history.pushState({
+                currentDirectory: data.path,
+                currentDirectoryUrl: data.url,
+                currentFilesPath: data.files_path,
+                currentFavoritesPath: history.state.currentFavoritesPath,
+                currentFilesUploadPath: data.files_upload_path,
+                currentFilesystem: data.filesystem,
+                currentFilenames: Array.from(data.files, x => x.name)
+            }, data.name, data.url);
+        }
+        this.updateGlobus();
+    }
 }
