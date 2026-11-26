@@ -53,10 +53,7 @@ describe 'nginx_clean selection and dry runs' do
 
   it 'does not remove stale active-user files during a dry run' do
     allow(NginxStage).to receive(:active_users).and_return(['spec'])
-    allow(Process).to receive(:getpgid).with(4242).and_raise(Errno::ESRCH)
-    socket = instance_double(NginxStage::SocketFile)
-    allow(NginxStage::SocketFile).to receive(:new).and_return(socket)
-    expect(socket).not_to receive(:delete)
+    expect(Process).not_to receive(:getpgid)
     generator = NginxStage::NginxCleanGenerator.new(skip_nginx: true)
     allow(generator).to receive(:session_count).and_return(0)
 

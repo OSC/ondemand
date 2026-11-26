@@ -195,16 +195,32 @@ module NginxStage
   # List of inactive users.
   # @return [Array<String>] the list of inactive users.
   def self.inactive_users
-    Dir[pun_pid_path(user: '*')].map do |v|
-      name = v[/#{pun_pid_path(user: '(.+)')}/, 1]
+    patterns = [pun_pid_path(user: '*'), pun_cleanup_path(user: '*')]
+    names = patterns.flat_map do |pattern|
+      username_pattern = Regexp.escape(pattern).sub('\\*', '([^/]+)').gsub('\\*') { '\\1' }
+      matcher = /\A#{username_pattern}\z/
+      Dir.glob(pattern).filter_map { |path| path[matcher, 1] }
+    end
+    names.uniq.filter_map do |name|
       User.new(name)
-
-      # return nil here because we actually _want_ to rescue.
-      # i.e., a User is inactive if it _can't_ be instanitated.
       nil
-    rescue ArgumentError => e
+    rescue ArgumentError
       name
-    end.compact
+    end
+  end
+
+  def self.pun_cleanup_path(user:)
+    "#{pun_config_path(user: user)}.cleanup"
+  end
+
+  def self.with_pun_start_lock(user:)
+    lock_path = "#{pun_config_path(user: user)}.lock"
+    FileUtils.mkdir_p File.dirname(lock_path)
+
+    File.open(lock_path, File::RDWR | File::CREAT, 0644) do |lock|
+      lock.flock(File::LOCK_EX)
+      yield
+    end
   end
 
   # Get a hash of all the staged app configs
