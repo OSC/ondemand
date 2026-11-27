@@ -77,11 +77,26 @@ class ProjectManagerTest < ApplicationSystemTestCase
     click_on(I18n.t('dashboard.save'))
   end
 
+  def add_queues(project_id, launcher_id, save: true)
+    visit project_path(project_id)
+    edit_launcher_path = edit_project_launcher_path(project_id, launcher_id)
+    find("[href='#{edit_launcher_path}']").click
+
+    find('#add_new_field_button').click
+    select('Queues', from: 'add_new_field_select')
+    find('[data-new-field-action="add"]').click
+    find('#save_launcher_edit').click if save
+  end
+
   def add_auto_environment_variable(_project_id, _launcher_id, save: true)
     # now add 'auto_environment_variable'
     click_on('Add new option')
     select('Environment Variable', from: 'add_new_field_select')
     click_on(I18n.t('dashboard.add'))
+  end
+
+  def launcher_option_style(ele, opt)
+    find("#launcher_#{ele} option[value='#{opt}']")['style'].to_s
   end
 
   test 'create a new project on fs and display the table entry' do
@@ -753,6 +768,82 @@ class ProjectManagerTest < ApplicationSystemTestCase
     end
   end
 
+  test 'showing launchers with auto_queues' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      add_account(project_id, launcher_id)
+      add_queues(project_id, launcher_id)
+
+      launcher_path = project_launcher_path(project_id, launcher_id)
+      find("[href='#{launcher_path}'].btn-info").click
+      assert_selector('h1', text: 'the launcher title', count: 1)
+
+      assert_equal 'oakley', find('#launcher_auto_batch_clusters').value
+      assert_equal 'pzs1124', find('#launcher_auto_accounts').value
+      assert_equal 'batch', find('#launcher_auto_queues').value
+
+      # oakley-only queues are available on the default cluster
+      assert_equal '', launcher_option_style('auto_queues', 'serial-40core')
+      assert_equal '', launcher_option_style('auto_queues', 'serial-48core')
+
+      # systems is blocked for every account, so it never appears
+      assert_selector('#launcher_auto_queues option[value="systems"]', count: 0)
+
+      # switch cluster
+      select('owens', from: 'launcher_auto_batch_clusters')
+      assert_equal 'batch', find('#launcher_auto_queues').value
+      assert_equal 'display: none;', launcher_option_style('auto_queues', 'serial-40core')
+      assert_equal 'display: none;', launcher_option_style('auto_queues', 'serial-48core')
+
+      # account-aware
+      select('oakley', from: 'launcher_auto_batch_clusters')
+      assert_equal('display: none;', launcher_option_style('auto_queues', 'condo-osumed-cpu-40core'))
+      assert_equal('', launcher_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
+
+      select('pas2051', from: 'launcher_auto_accounts')
+      assert_equal('', launcher_option_style('auto_queues', 'condo-osumed-cpu-40core'))
+      assert_equal('display: none;', launcher_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
+    end
+  end
+
+  test 'submitting a launcher with auto_queues' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      launcher_id = setup_launcher(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      ondemand_dir = File.join(project_dir, '.ondemand')
+      add_account(project_id, launcher_id)
+      add_queues(project_id, launcher_id)
+
+      launcher_path = project_launcher_path(project_id, launcher_id)
+      find("[href='#{launcher_path}'].btn-info").click
+
+      select('owens', from: 'launcher_auto_batch_clusters')
+      select('pas1871', from: 'launcher_auto_accounts')
+      find('#launcher_auto_queues').find("option[value='gpubackfill-parallel']").select_option
+      select('my_cooler_script.bash', from: 'launcher_auto_scripts')
+
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-D', project_dir, '-p', 'gpubackfill-parallel', '-A', 'pas1871',
+              '--export', 'NONE', '--parsable', '-M', 'owens',
+              stdin_data: "hostname\n")
+        .returns(['job-id-123', '', exit_success])
+
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+      find("input[value='#{I18n.t('dashboard.batch_connect_form_launch')}']").click
+      assert_selector('.alert-success', text: 'job-id-123')
+
+      cache = JSON.parse(File.read("#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"))
+      assert_equal('gpubackfill-parallel', cache['auto_queues'])
+      assert_equal('pas1871', cache['auto_accounts'])
+      assert_equal('owens', cache['auto_batch_clusters'])
+    end
+  end
+
   test 'deleting a launcher that succeeds' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
@@ -919,6 +1010,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
 
   def launcher_cache_test_setup(project_id, launcher_id)
     add_account(project_id, launcher_id)
+    add_queues(project_id, launcher_id)
     add_bc_num_hours(project_id, launcher_id)
 
     find("#edit_#{launcher_id}").click
@@ -967,6 +1059,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
               'sbatch', '-D', project_dir, 
               '-J', 'project-manager/my default job name',
               '-o', '/my_default_logfile.out',
+              '-p', 'batch',
               '-A', 'pzs1124', 
               '-t', '01:00:00',
               '-n', '2',
@@ -988,6 +1081,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       
       assert_equal('oakley', cache['auto_batch_clusters'])
       assert_equal('pzs1124', cache['auto_accounts'])
+      assert_equal('batch', cache['auto_queues'])
       assert_equal("#{project_dir}/my_cool_script.sh", cache['auto_scripts'])
       assert_equal('my default job name', cache['auto_job_name'])
       assert_equal('/my_default_logfile.out', cache['auto_log_location'])
@@ -1013,6 +1107,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       cached_values = {
         'auto_batch_clusters'                     => 'oakley',
         'auto_accounts'                           => 'pzs1124',
+        'auto_queues'                             => 'batch',
         'auto_scripts'                            => "#{project_dir}/my_cool_script.sh",
         'auto_job_name'                           => 'my default job name',
         'auto_log_location'                       => '/my_default_logfile.out',
@@ -1032,7 +1127,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
               'sbatch', '-D', project_dir, 
               '-J', 'project-manager/my chosen job name',
               '-o', '/my_chosen_logfile.out',
-              '-A', 'pas2051', 
+              '-p', 'gpubackfill-parallel',
+              '-A', 'pas1871', 
               '-t', '04:00:00',
               '-n', '5',
               '--export', 'SOME_VARIABLE', 
@@ -1046,7 +1142,9 @@ class ProjectManagerTest < ApplicationSystemTestCase
       find("#show_#{launcher_id}").click
 
       select('owens', from: 'launcher_auto_batch_clusters')
-      select('pas2051', from: 'launcher_auto_accounts')
+      select('pas1871', from: 'launcher_auto_accounts')
+      # Prefer value lookup: shared queue names like "parallel" appear once per cluster.
+      find('#launcher_auto_queues').find("option[value='gpubackfill-parallel']").select_option
       select('my_cooler_script.bash', from: 'launcher_auto_scripts')
       fill_in('launcher_auto_job_name', with: '')
       fill_in('launcher_auto_job_name', with: 'my chosen job name')
@@ -1063,7 +1161,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       cache = JSON.parse(File.read(cache_file))
       
       assert_equal('owens', cache['auto_batch_clusters'])
-      assert_equal('pas2051', cache['auto_accounts'])
+      assert_equal('pas1871', cache['auto_accounts'])
+      assert_equal('gpubackfill-parallel', cache['auto_queues'])
       assert_equal("#{project_dir}/my_cooler_script.bash", cache['auto_scripts'])
       assert_equal('my chosen job name', cache['auto_job_name'])
       assert_equal('/my_chosen_logfile.out', cache['auto_log_location'])
@@ -1075,7 +1174,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
   end
 
   test 'launchers quick-launch with cached values when present' do
-        Dir.mktmpdir do |dir|
+    Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
       launcher_id = setup_launcher(project_id)
       project_dir = File.join(dir, 'projects', project_id)
@@ -1088,7 +1187,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
       # We simulate the cached values observed in the last test
       cached_values = {
         'auto_batch_clusters'                     => 'owens',
-        'auto_accounts'                           => 'pas2051',
+        'auto_accounts'                           => 'pas1871',
+        'auto_queues'                             => 'gpubackfill-parallel',
         'auto_scripts'                            => "#{project_dir}/my_cooler_script.bash",
         'auto_job_name'                           => 'my chosen job name',
         'auto_log_location'                       => '/my_chosen_logfile.out',
@@ -1111,7 +1211,8 @@ class ProjectManagerTest < ApplicationSystemTestCase
               'sbatch', '-D', project_dir, 
               '-J', 'project-manager/my chosen job name',
               '-o', '/my_chosen_logfile.out',
-              '-A', 'pas2051', 
+              '-p', 'gpubackfill-parallel',
+              '-A', 'pas1871', 
               '-t', '04:00:00',
               '-n', '5',
               '--export', 'SOME_VARIABLE', 
