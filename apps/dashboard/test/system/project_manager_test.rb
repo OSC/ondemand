@@ -82,10 +82,10 @@ class ProjectManagerTest < ApplicationSystemTestCase
     edit_launcher_path = edit_project_launcher_path(project_id, launcher_id)
     find("[href='#{edit_launcher_path}']").click
 
-    click_on('Add new option')
+    find('#add_new_field_button').click
     select('Queues', from: 'add_new_field_select')
-    click_on(I18n.t('dashboard.add'))
-    click_on(I18n.t('dashboard.save')) if save
+    find('[data-new-field-action="add"]').click
+    find('#save_launcher_edit').click if save
   end
 
   def add_auto_environment_variable(_project_id, _launcher_id, save: true)
@@ -834,7 +834,7 @@ class ProjectManagerTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
-      click_on 'Launch'
+      find("input[value='#{I18n.t('dashboard.batch_connect_form_launch')}']").click
       assert_selector('.alert-success', text: 'job-id-123')
 
       cache = JSON.parse(File.read("#{ondemand_dir}/launchers/#{launcher_id}/#{CurrentUser.name}-cache.json"))
