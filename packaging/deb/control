@@ -5,7 +5,7 @@ Maintainer: Ohio Supercomputer Center <oschelp@osc.edu>
 Build-Depends: debhelper (>=11~), curl, build-essential,
   tzdata, libxml2-dev, libxslt-dev, pkg-config, zlib1g-dev, liblzma-dev,
   ruby, ruby-dev, libyaml-dev, libxml2 | libxml2-16,
-  nodejs (>= 22.0), nodejs (<< 23.0),
+  nodejs (>= 24.0), nodejs (<< 25.0),
   sqlite3, libsqlite3-dev, python3@EXTRA_DEPENDS@
 Standards-Version: 4.1.4
 Rules-Requires-Root: binary-targets
@@ -16,9 +16,9 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends},
   ruby, apache2, sudo | sudo-rs, lsof, lua-posix, tzdata, file, cron,
-  nodejs (>= 22.0), nodejs (<< 23.0),
-  ondemand-nginx (>= 1.28.0.p6.1.2.ood4.2.0),  ondemand-nginx (<< 1.29),
-  ondemand-passenger (>= 6.1.2.ood4.2.0), ondemand-passenger (<< 6.1.3),
+  nodejs (>= 24.0), nodejs (<< 25.0),
+  ondemand-nginx (>= 1.30.8.p6.2.2.ood4.3.0),  ondemand-nginx (<< 1.31),
+  ondemand-passenger (>= 6.2.2.ood4.3.0), ondemand-passenger (<< 6.2.3),
 Description: Open OnDemand is an open source release of the Ohio SuperComputer Center's
   OnDemand platform to provide HPC access via a web browser, supporting web based file
   management, shell access, job submission and interactive work on compute nodes.

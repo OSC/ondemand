@@ -85,8 +85,8 @@ Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
 Requires:        python3
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.28.0-1.p6.1.2.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.1.2-1.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.30.8-1.p6.2.2.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.2.2-1.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}

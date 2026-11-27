@@ -153,8 +153,8 @@ def bootstrap_repos
     repos << 'epel-release'
     # Avoid DNF modules for el10 until Ruby and NodeJS use modules
     if host_inventory['platform_version'] !~ /^10/
-      on hosts, 'dnf -y module enable ruby:3.3'
-      on hosts, 'dnf -y module enable nodejs:22'
+      on hosts, 'dnf -y module enable ruby:4.0'
+      on hosts, 'dnf -y module enable nodejs:24'
     end
   when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
@@ -196,12 +196,12 @@ def ondemand_repo
 end
 
 def build_repo_version
-  ENV['OOD_BUILD_REPO'] || '4.2'
+  ENV['OOD_BUILD_REPO'] || '4.3'
 end
 
 def install_ondemand
   if ['redhat', 'amazon'].include?(host_inventory['platform'])
-    release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
+    release_rpm = "https://yum.osc.edu/ondemand/staging/#{build_repo_version}/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
@@ -210,7 +210,7 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
-    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
+    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/staging/#{build_repo_version}/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/staging/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
@@ -222,10 +222,6 @@ def install_ondemand
     create_remote_file(hosts, '/etc/apt/auth.conf.d/ondemand-web.conf', auth)
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
-  end
-  if host_inventory['platform'] == 'amazon'
-    on hosts, 'alternatives --install /usr/bin/node node /usr/bin/node-22 1'
-    on hosts, 'alternatives --install /usr/bin/npm npm /usr/bin/npm-22 1'
   end
   # Avoid 'update_ood_portal --rpm' so that --insecure can be used
   on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
